@@ -7,7 +7,7 @@ import { addDays, format, startOfToday, isSameDay } from 'date-fns';
 import EarningsFilters from './EarningsFilters';
 import EarningsCard from './EarningsCard';
 import { Skeleton } from '@/components/ui/skeleton';
-import { generateICS } from '../lib/calendar.js';
+import { generateICS } from '@/components/lib/calendar';
 import DetailedEarningsModal from './DetailedEarningsModal'; // Added import for the new modal
 
 const mockEarningsEvents = [
