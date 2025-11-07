@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight } from 'lucide-react';
@@ -5,10 +6,10 @@ import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
 // MACRO EQUILIBRIUM GRID V2.0 - OS HORIZON FINAL (macOS Tahoe)
-// Instant comprehension (<5s) with calm, coherent breathing motion
+// Liquid Silk luminous orbs with frosted glass depth
 // ============================================================================
 
-// OS Horizon Theming Tokens (macOS Tahoe inspired)
+// OS Horizon Theming Tokens + Motion Curves
 const HORIZON = {
   colors: {
     bg: "#0D1015",
@@ -23,7 +24,13 @@ const HORIZON = {
     geo: "#D8AE6C"
   },
   radii: { glass: 16, chip: 12 },
-  blur: { glass: 12, canvas: 28 }
+  blur: { glass: 12, canvas: 28 },
+  // Horizon motion curve system
+  ease: {
+    standard: [0.45, 0, 0.1, 1],
+    liquid: [0.32, 0.72, 0, 1],
+    bounce: [0.22, 1, 0.36, 1]
+  }
 };
 
 // Mock macro domain data
@@ -92,6 +99,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
   const [time, setTime] = useState(0);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const domains = MOCK_DOMAINS;
 
@@ -234,6 +242,15 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     return <Minus className="w-4 h-4" />;
   };
 
+  // Handle drawer open with transition state
+  const handleOpenDrawer = useCallback((domain) => {
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setSelectedDomain(domain);
+      setIsTransitioning(false);
+    }, 100);
+  }, []);
+
   return (
     <motion.section
       variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
@@ -261,22 +278,23 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 color: HORIZON.colors.textTertiary
               }}
             >
-              Global macro balance at a glance.
+              Living balance of global macro forces.
             </p>
           </div>
         </div>
         
-        {/* Powered by Lyra */}
+        {/* Powered by Lyra - 60% opacity with soft glow */}
         <motion.div
           className="group cursor-pointer relative"
           whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
+          style={{ opacity: 0.6 }}
         >
           <motion.div
             className="absolute -inset-3 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
             style={{
-              background: 'radial-gradient(ellipse at center, rgba(129, 140, 248, 0.15) 0%, transparent 70%)',
-              filter: 'blur(8px)',
+              background: 'radial-gradient(ellipse at center, rgba(129, 140, 248, 0.2) 0%, transparent 70%)',
+              filter: 'blur(12px)',
             }}
           />
           
@@ -287,12 +305,13 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
               backdropFilter: 'blur(14px)',
               WebkitBackdropFilter: 'blur(14px)',
               border: `1px solid ${HORIZON.colors.border}`,
-              borderRadius: '10px'
+              borderRadius: '10px',
+              boxShadow: '0 0 16px rgba(129, 140, 248, 0.15)'
             }}
             whileHover={{
               background: 'rgba(255, 255, 255, 0.08)',
               borderColor: 'rgba(129, 140, 248, 0.3)',
-              boxShadow: '0 8px 32px rgba(129, 140, 248, 0.2)',
+              boxShadow: '0 0 24px rgba(129, 140, 248, 0.25)',
             }}
             transition={{ duration: 0.3 }}
           >
@@ -333,8 +352,18 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
         }}
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.8, ease: HORIZON.ease.bounce }}
       >
+        {/* Ambient background haze for spatial depth */}
+        <div 
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse 60% 50% at 50% 45%, rgba(126, 119, 255, 0.05) 0%, rgba(110, 203, 224, 0.05) 40%, transparent 70%)',
+            filter: 'blur(40px)',
+          }}
+          aria-hidden="true"
+        />
+
         {/* Ambient particles (reduced motion aware) */}
         {!shouldReduceMotion && (
           <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
@@ -372,11 +401,20 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           style={{ overflow: 'visible' }}
         >
           <defs>
-            {/* Glow filters for each domain */}
+            {/* Liquid Silk radial gradients for luminous orbs */}
+            {domains.map((domain) => (
+              <radialGradient key={`orb-gradient-${domain.id}`} id={`orb-gradient-${domain.id}`}>
+                <stop offset="0%" stopColor={getDomainColor(domain.id)} stopOpacity="1" />
+                <stop offset="50%" stopColor={getDomainColor(domain.id)} stopOpacity="0.6" />
+                <stop offset="100%" stopColor={getDomainColor(domain.id)} stopOpacity="0.25" />
+              </radialGradient>
+            ))}
+
+            {/* Enhanced glow filters */}
             {domains.map((domain) => (
               <filter key={`glow-${domain.id}`} id={`glow-${domain.id}`} x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="8" result="blur" />
-                <feFlood floodColor={getDomainColor(domain.id)} floodOpacity="0.5" />
+                <feGaussianBlur stdDeviation="12" result="blur" />
+                <feFlood floodColor={getDomainColor(domain.id)} floodOpacity="0.4" />
                 <feComposite in2="blur" operator="in" result="glow" />
                 <feMerge>
                   <feMergeNode in="glow" />
@@ -385,11 +423,15 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
               </filter>
             ))}
 
-            {/* Halo line gradients */}
+            {/* Pulsing halo line gradients */}
             {domains.map((domain) => (
               <linearGradient key={`halo-${domain.id}`} id={`halo-${domain.id}`}>
-                <stop offset="0%" stopColor={getDomainColor(domain.id)} stopOpacity="0.3" />
-                <stop offset="100%" stopColor={getDomainColor(domain.id)} stopOpacity="0.65" />
+                <stop offset="0%" stopColor={getDomainColor(domain.id)} stopOpacity="0.2">
+                  <animate attributeName="stop-opacity" values="0.2;0.35;0.2" dur="4s" repeatCount="indefinite" />
+                </stop>
+                <stop offset="100%" stopColor={getDomainColor(domain.id)} stopOpacity="0.6">
+                  <animate attributeName="stop-opacity" values="0.6;0.75;0.6" dur="4s" repeatCount="indefinite" />
+                </stop>
               </linearGradient>
             ))}
           </defs>
@@ -415,15 +457,15 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 strokeLinecap="round"
                 initial={{ opacity: 0, pathLength: 0 }}
                 animate={{ 
-                  opacity: hoveredDomain === domain.id ? 0.8 : 0.65,
+                  opacity: hoveredDomain === domain.id ? 0.85 : 0.65,
                   pathLength: 1
                 }}
                 transition={{ 
-                  opacity: { duration: 0.3 },
-                  pathLength: { duration: 1.2, delay: index * 0.15, ease: [0.22, 1, 0.36, 1] }
+                  opacity: { duration: 0.3, ease: HORIZON.ease.standard },
+                  pathLength: { duration: 1.2, delay: index * 0.15, ease: HORIZON.ease.bounce }
                 }}
                 style={{
-                  filter: `drop-shadow(0 0 ${4 + domain.strength * 4}px ${getDomainColor(domain.id)}40)`
+                  filter: `drop-shadow(0 0 ${6 + domain.strength * 6}px ${getDomainColor(domain.id)}50)`
                 }}
               />
             );
@@ -449,7 +491,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             }}
           />
 
-          {/* Domain Orbs */}
+          {/* Liquid Silk Luminous Orbs */}
           {domains.map((domain, index) => {
             const pos = getDomainPosition(domain.id, index);
             const breathing = getBreathingOffset(index);
@@ -461,43 +503,49 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
 
             return (
               <g key={domain.id}>
-                {/* Outer glow */}
+                {/* Outer glow layer */}
                 <motion.circle
                   cx={pos.x}
                   cy={pos.y + breathing.y}
-                  r={radius + 10}
+                  r={radius + 14}
                   fill={color}
-                  opacity={0.2}
+                  opacity={0.15}
                   filter={`url(#glow-${domain.id})`}
                   animate={{
-                    opacity: isHovered ? 0.35 : 0.2
+                    opacity: isHovered ? 0.3 : 0.15,
+                    r: isHovered ? radius + 18 : radius + 14
                   }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: 0.35, ease: HORIZON.ease.standard }}
+                  style={{
+                    filter: `blur(16px)`
+                  }}
                 />
 
-                {/* Main orb */}
+                {/* Liquid Silk luminous orb with radial gradient */}
                 <motion.circle
                   cx={pos.x}
                   cy={pos.y + breathing.y}
                   r={radius}
-                  fill={color}
-                  opacity={0.75}
+                  fill={`url(#orb-gradient-${domain.id})`}
                   className="cursor-pointer"
                   style={{
-                    filter: `drop-shadow(0 10px 30px rgba(0,0,0,0.45))`,
+                    filter: `drop-shadow(0 ${isHovered ? 14 : 10}px ${isHovered ? 35 : 30}px rgba(0,0,0,0.45))`,
                     transformOrigin: `${pos.x}px ${pos.y}px`,
                     pointerEvents: 'all'
                   }}
                   animate={{
                     scale: breathing.scale * (isHovered ? 1.08 : 1),
-                    opacity: isHovered ? 0.85 : 0.75
+                    y: isHovered ? -4 : 0
                   }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ 
+                    duration: 0.35, 
+                    ease: HORIZON.ease.standard 
+                  }}
                   onMouseEnter={() => setHoveredDomain(domain.id)}
                   onMouseLeave={() => setHoveredDomain(null)}
-                  onClick={() => setSelectedDomain(domain)}
+                  onClick={() => handleOpenDrawer(domain)}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') setSelectedDomain(domain);
+                    if (e.key === 'Enter') handleOpenDrawer(domain);
                   }}
                   tabIndex={0}
                   role="button"
@@ -505,28 +553,49 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                   aria-describedby={`tooltip-${domain.id}`}
                 />
 
-                {/* Inner core */}
+                {/* Inner radiance layer */}
                 <circle
                   cx={pos.x}
                   cy={pos.y + breathing.y}
-                  r={radius * 0.65}
+                  r={radius * 0.4}
                   fill={color}
                   opacity={0.95}
-                  style={{ pointerEvents: 'none' }}
+                  style={{ 
+                    pointerEvents: 'none',
+                    filter: 'blur(2px)'
+                  }}
                 />
 
-                {/* Highlight */}
+                {/* Highlight for glass effect */}
                 <ellipse
-                  cx={pos.x - radius * 0.3}
-                  cy={pos.y + breathing.y - radius * 0.3}
-                  rx={radius * 0.25}
-                  ry={radius * 0.3}
-                  fill="rgba(255, 255, 255, 0.4)"
+                  cx={pos.x - radius * 0.25}
+                  cy={pos.y + breathing.y - radius * 0.25}
+                  rx={radius * 0.3}
+                  ry={radius * 0.35}
+                  fill="rgba(255, 255, 255, 0.5)"
                   style={{
-                    filter: 'blur(3px)',
+                    filter: 'blur(4px)',
                     pointerEvents: 'none'
                   }}
                 />
+
+                {/* Hover glow emission (5% extra) */}
+                {isHovered && (
+                  <motion.circle
+                    cx={pos.x}
+                    cy={pos.y + breathing.y}
+                    r={radius + 10}
+                    fill={color}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.05 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    style={{
+                      filter: 'blur(20px)',
+                      pointerEvents: 'none'
+                    }}
+                  />
+                )}
               </g>
             );
           })}
@@ -559,9 +628,9 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           );
         })}
 
-        {/* Hover Card */}
+        {/* Hover Card with liquid morph to drawer */}
         <AnimatePresence>
-          {hoveredDomain && (
+          {hoveredDomain && !selectedDomain && !isTransitioning && (
             <motion.div
               id={`tooltip-${hoveredDomain}`}
               className="absolute pointer-events-none z-50"
@@ -571,8 +640,8 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
               }}
               initial={{ opacity: 0, y: 8, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 8, scale: 0.95 }}
-              transition={{ duration: 0.25, ease: [0.22, 0.61, 0.36, 1] }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.25, ease: HORIZON.ease.standard }}
             >
               {(() => {
                 const domain = domains.find(d => d.id === hoveredDomain);
@@ -642,23 +711,23 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           )}
         </AnimatePresence>
 
-        {/* Micro-Summary Bar (always visible) */}
+        {/* Floating Translucent Micro-Summary Strip */}
         <motion.div
           className="absolute bottom-6 left-6 right-6"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
+          transition={{ duration: 0.6, delay: 0.8, ease: HORIZON.ease.bounce }}
           role="status"
           aria-live="polite"
         >
           <div
             style={{
-              background: HORIZON.colors.glass,
+              background: 'rgba(17, 23, 30, 0.75)',
               border: `1px solid ${HORIZON.colors.border}`,
               borderRadius: `${HORIZON.radii.chip}px`,
-              backdropFilter: `blur(${HORIZON.blur.glass}px)`,
-              WebkitBackdropFilter: `blur(${HORIZON.blur.glass}px)`,
-              boxShadow: '0 4px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)',
+              backdropFilter: `blur(20px)`,
+              WebkitBackdropFilter: `blur(20px)`,
+              boxShadow: '0 0 20px rgba(255, 255, 255, 0.08), 0 4px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)',
               padding: '12px 16px'
             }}
           >
@@ -722,20 +791,26 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
         </motion.div>
       </motion.div>
 
-      {/* Detailed Drawer (right slide-in) */}
+      {/* Frosted Translucent Drawer */}
       <AnimatePresence>
         {selectedDomain && (
           <>
-            {/* Backdrop */}
+            {/* Frosted backdrop (not solid black) */}
             <motion.div
-              className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm"
+              className="fixed inset-0 z-40"
+              style={{
+                background: 'rgba(10, 12, 20, 0.55)',
+                backdropFilter: 'blur(30px)',
+                WebkitBackdropFilter: 'blur(30px)',
+              }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              transition={{ duration: 0.3, ease: HORIZON.ease.standard }}
               onClick={() => setSelectedDomain(null)}
             />
 
-            {/* Drawer Panel */}
+            {/* Drawer Panel with liquid ease-in-out morph */}
             <motion.div
               className="fixed top-0 right-0 h-full z-50 overflow-y-auto"
               style={{
@@ -747,10 +822,10 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 borderLeft: `1px solid ${HORIZON.colors.border}`,
                 boxShadow: '-8px 0 32px rgba(0,0,0,0.5)'
               }}
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ duration: 0.42, ease: [0.22, 0.61, 0.36, 1] }}
+              initial={{ x: '100%', opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: '100%', opacity: 0 }}
+              transition={{ duration: 0.6, ease: HORIZON.ease.liquid }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Drawer Header */}
@@ -768,7 +843,8 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                       className="w-10 h-10 rounded-full flex items-center justify-center"
                       style={{
                         background: `${getDomainColor(selectedDomain.id)}20`,
-                        border: `1px solid ${getDomainColor(selectedDomain.id)}40`
+                        border: `1px solid ${getDomainColor(selectedDomain.id)}40`,
+                        boxShadow: `0 0 16px ${getDomainColor(selectedDomain.id)}30`
                       }}
                     >
                       <span style={{ fontSize: '20px' }}>
@@ -835,7 +911,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                         animate={{ 
                           strokeDashoffset: 176 - (176 * selectedDomain.confidence_pct / 100) 
                         }}
-                        transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                        transition={{ duration: 1, delay: 0.3, ease: HORIZON.ease.bounce }}
                       />
                     </svg>
                     <div 
@@ -868,7 +944,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
 
               {/* Drawer Content */}
               <div className="p-6 space-y-6">
-                {/* Translation (plain language) */}
+                {/* Translation (plain language - max 2 sentences, 22-36 words) */}
                 <div>
                   <h4 
                     className="text-xs font-bold uppercase tracking-wide mb-3"
@@ -887,7 +963,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                   </p>
                 </div>
 
-                {/* Ripple Impact */}
+                {/* Ripple Impact (2-3 bullets, ≤9 words each) */}
                 <div>
                   <h4 
                     className="text-xs font-bold uppercase tracking-wide mb-3"
@@ -906,7 +982,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                         }}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.4 + i * 0.1 }}
+                        transition={{ delay: 0.4 + i * 0.1, ease: HORIZON.ease.standard }}
                       >
                         <div 
                           className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0"
@@ -944,14 +1020,14 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                     <svg width="100%" height="60" className="overflow-visible">
                       <defs>
                         <linearGradient id={`sparkline-${selectedDomain.id}`} x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor={getDomainColor(selectedDomain.id)} stopOpacity="0.3" />
+                          <stop offset="0%" stopColor={getDomainColor(selectedDomain.id)} stopOpacity="0.4" />
                           <stop offset="100%" stopColor={getDomainColor(selectedDomain.id)} stopOpacity="0.05" />
                         </linearGradient>
                       </defs>
                       
                       {(() => {
                         const data = selectedDomain.sparkline;
-                        const width = containerRef.current?.offsetWidth - 88 || 400;
+                        const width = 450;
                         const height = 60;
                         const padding = 4;
                         
@@ -986,7 +1062,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                               strokeLinejoin="round"
                               initial={{ pathLength: 0 }}
                               animate={{ pathLength: 1 }}
-                              transition={{ duration: 1.2, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                              transition={{ duration: 1.2, delay: 0.6, ease: HORIZON.ease.bounce }}
                             />
                           </>
                         );
@@ -1031,11 +1107,12 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           shape-rendering: geometricPrecision;
         }
 
-        /* Focus ring styling */
+        /* Enhanced focus ring with domain color */
         circle:focus-visible {
           outline: none;
-          filter: drop-shadow(0 0 0 2px ${HORIZON.colors.textPrimary}) 
-                  drop-shadow(0 0 8px currentColor) !important;
+          filter: drop-shadow(0 0 0 1px ${HORIZON.colors.textPrimary}) 
+                  drop-shadow(0 0 0 2px currentColor)
+                  drop-shadow(0 0 12px currentColor) !important;
         }
       `}</style>
     </motion.section>
