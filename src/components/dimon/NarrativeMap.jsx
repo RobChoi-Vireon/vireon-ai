@@ -392,10 +392,12 @@ const Node = ({ title, icon, color, delay, items = [], position, avgConfidence }
 const Connector = ({ delay }) => (
   <motion.div 
     className="flex-1 h-1 relative overflow-hidden"
-    style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.1), rgba(255,255,255,0.05))' }}
+    style={{ 
+      background: 'linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.1), rgba(255,255,255,0.05))',
+      transformOrigin: 'left' 
+    }}
     variants={{ hidden: { scaleX: 0 }, visible: { scaleX: 1 } }}
     transition={{ duration: 0.8, delay, ease: 'easeInOut' }}
-    style={{ transformOrigin: 'left' }}
   >
     <motion.div
       className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-400/50 to-transparent"
