@@ -1,0 +1,1406 @@
+
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, ChevronLeft, ChevronRight, Target, Activity, Sparkles, AlertCircle, ShieldCheck, Link2, ArrowRight, Clock, TrendingUp } from 'lucide-react';
+
+// ============================================================================
+// HORIZON OS TOKENS + LIVING INTELLIGENCE
+// ============================================================================
+const HORIZON = {
+  glass: {
+    base: 'rgba(24, 26, 29, 0.55)',
+    tint: 'rgba(10, 10, 10, 0.42)',
+    border: 'rgba(255, 255, 255, 0.06)',
+    subsurface: 'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0.12) 100%)',
+    radius: 20,
+    blur: 26,
+    shadow: '0 20px 60px rgba(0, 0, 0, 0.40)',
+  },
+  type: {
+    h1: { size: 22, weight: 600, tracking: -0.03, opacity: 0.92 },
+    h2: { size: 18, weight: 600, tracking: -0.02, opacity: 0.88 },
+    body: { size: 15, weight: 400, lh: 1.55, opacity: 0.82 },
+    meta: { size: 12, weight: 500, tracking: 0.06, opacity: 0.60 },
+    label: { size: 13, weight: 600, tracking: 0.04, opacity: 0.70 },
+  },
+  motion: {
+    ease: [0.18, 0.82, 0.23, 1],
+    ease_io: [0.4, 0, 0.2, 1],
+    dur: { open: 260, close: 260, toggle: 250, fast: 180 },
+  },
+  color: {
+    risk: '#F26A6A',
+    opportunity: '#2ECF8D',
+    neutral: '#5EA7FF',
+    accent: '#7DD3FC',
+  },
+  ri: {
+    gapLg: '28px',
+    gapMd: '14px',
+    riskTint: 'rgba(255, 60, 60, 0.08)',
+    opptyTint: 'rgba(60, 220, 160, 0.08)',
+    neutralTint: 'rgba(140, 170, 200, 0.06)',
+    riskRim: '0 0 0 1px rgba(255,90,90,0.35), 0 8px 30px rgba(255,60,60,0.20)',
+    opptyRim: '0 0 0 1px rgba(70,230,170,0.35), 0 8px 30px rgba(60,220,160,0.18)',
+  },
+  li: {
+    haloRisk: 'rgba(255,75,75,0.25)',
+    haloOppty: 'rgba(60,240,180,0.25)',
+    haloNeutral: 'rgba(160,190,230,0.2)',
+    aiVoice: 'rgba(90,150,255,0.35)',
+  }
+};
+
+// ============================================================================
+// CONFIDENCE RING COMPONENT (WITH BREATHING)
+// ============================================================================
+const ConfidenceRing = ({ value, color, size = 42, sentiment = 'neutral' }) => {
+  const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setShouldReduceMotion(mediaQuery.matches);
+    const handler = (e) => setShouldReduceMotion(e.matches);
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
+
+  const radius = (size - 6) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (value / 100) * circumference;
+
+  return (
+    <div 
+      className={`relative inline-flex confidence-ring ${!shouldReduceMotion ? 'hzn-confidence-ring' : ''}`} 
+      style={{ width: size, height: size }}
+      data-sentiment={sentiment}
+    >
+      <svg width={size} height={size} className="transform -rotate-90">
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke="rgba(255,255,255,0.08)"
+          strokeWidth="3"
+        />
+        <motion.circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke={color}
+          strokeWidth="3"
+          strokeDasharray={circumference}
+          strokeLinecap="round"
+          initial={{ strokeDashoffset: circumference }}
+          animate={{
+            strokeDashoffset: shouldReduceMotion ? offset : offset,
+          }}
+          transition={
+            shouldReduceMotion
+              ? { duration: 0 }
+              : {
+                  duration: 0.8,
+                  ease: HORIZON.motion.ease,
+                  delay: 0.4,
+                }
+          }
+        />
+      </svg>
+      <div
+        className="absolute inset-0 flex items-center justify-center"
+        style={{
+          fontSize: 14,
+          fontWeight: 700,
+          color,
+          letterSpacing: '-0.02em',
+        }}
+      >
+        {value}
+      </div>
+    </div>
+  );
+};
+
+// ============================================================================
+// NARRATIVE LINK (VISUAL CONNECTOR)
+// ============================================================================
+const NarrativeLink = () => (
+  <div 
+    className="li-link"
+    aria-hidden="true"
+    style={{
+      position: 'relative',
+      margin: '16px 0',
+      height: '1px',
+      background: 'linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.15), rgba(255,255,255,0))',
+    }}
+  />
+);
+
+// ============================================================================
+// SENTIMENT CHIP
+// ============================================================================
+const SentimentChip = ({ sentiment }) => {
+  const styles = {
+    risk: { bg: HORIZON.ri.riskTint, fg: HORIZON.color.risk, label: 'Policy Shock / Risk' },
+    opportunity: { bg: HORIZON.ri.opptyTint, fg: HORIZON.color.opportunity, label: 'Opportunity Signal' },
+    neutral: { bg: HORIZON.ri.neutralTint, fg: HORIZON.color.neutral, label: 'Market Signal' },
+  };
+
+  const style = styles[sentiment] || styles.neutral;
+
+  return (
+    <div
+      className="inline-flex items-center px-3 py-1.5 rounded-full"
+      style={{
+        background: style.bg,
+        color: style.fg,
+        fontSize: 13,
+        fontWeight: 600,
+        letterSpacing: '0.02em',
+      }}
+    >
+      {style.label}
+    </div>
+  );
+};
+
+// ============================================================================
+// IMPACT CHIP
+// ============================================================================
+const ImpactChip = ({ text, tone = 'neutral' }) => {
+  const styles = {
+    risk: { bg: HORIZON.ri.riskTint, fg: HORIZON.color.risk },
+    opportunity: { bg: HORIZON.ri.opptyTint, fg: HORIZON.color.opportunity },
+    neutral: { bg: HORIZON.ri.neutralTint, fg: HORIZON.color.neutral },
+  };
+
+  const style = styles[tone] || styles.neutral;
+
+  return (
+    <div
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+      style={{
+        background: style.bg,
+        color: style.fg,
+        fontSize: 13,
+        fontWeight: 600,
+        whiteSpace: 'nowrap',
+      }}
+    >
+      {text}
+    </div>
+  );
+};
+
+// ============================================================================
+// CONTEXT TAGS (TEMPORAL AWARENESS)
+// ============================================================================
+const ContextTags = ({ signalAge, durationBias }) => (
+  <div className="li-meta-tags flex items-center gap-2 mb-3">
+    <span className="li-tag flex items-center gap-1.5">
+      <Clock className="w-3 h-3" />
+      Signal Age • {signalAge}
+    </span>
+    <span className="li-tag flex items-center gap-1.5">
+      <TrendingUp className="w-3 h-3" />
+      Duration Bias • {durationBias}
+    </span>
+  </div>
+);
+
+// ============================================================================
+// CORRELATED SIGNAL CHIP WITH PREVIEW
+// ============================================================================
+const CorrelatedChip = ({ signal, onNavigate }) => {
+  const [showPreview, setShowPreview] = useState(false);
+
+  return (
+    <div className="relative inline-block">
+      <button 
+        className="ri-chip" 
+        onMouseEnter={() => setShowPreview(true)}
+        onMouseLeave={() => setShowPreview(false)}
+        onClick={() => onNavigate?.(signal.id)}
+      >
+        {signal.label}
+      </button>
+      {showPreview && (
+        <div 
+          className="li-preview absolute bottom-full left-0 mb-2 px-3 py-2 rounded-lg text-xs whitespace-nowrap"
+          style={{
+            background: 'rgba(0, 0, 0, 0.85)',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            color: 'rgba(255, 255, 255, 0.9)',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
+          }}
+        >
+          Related to current signal
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ============================================================================
+// MAIN DRAWER COMPONENT
+// ============================================================================
+export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate }) {
+  const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
+  const [showHint, setShowHint] = useState(true);
+  const [viewMode, setViewMode] = useState('simplified');
+  const [isAnimatingIn, setIsAnimatingIn] = useState(false);
+  const containerRef = useRef(null);
+  const previousFocusRef = useRef(null);
+  const beamRef = useRef(null);
+  const scrollTimeout = useRef(null);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setShouldReduceMotion(mediaQuery.matches);
+
+    const handler = (e) => setShouldReduceMotion(e.matches);
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
+
+  useEffect(() => {
+    if (showHint) {
+      const timer = setTimeout(() => setShowHint(false), 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [showHint, isOpen]);
+
+  // Handle liquid silk opening animation - responsive + luxurious
+  useEffect(() => {
+    if (isOpen) {
+      // Immediate start for responsiveness, silk easing for luxury
+      requestAnimationFrame(() => {
+        setIsAnimatingIn(true);
+      });
+    } else {
+      setIsAnimatingIn(false);
+    }
+  }, [isOpen]);
+
+  // Focus management and body scroll lock
+  useEffect(() => {
+    if (isOpen) {
+      previousFocusRef.current = document.activeElement;
+      document.body.style.overflow = 'hidden';
+      
+      setShowHint(true);
+      setViewMode('simplified');
+
+      setTimeout(() => {
+        const firstFocusable = containerRef.current?.querySelector(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        firstFocusable?.focus();
+      }, 100);
+
+      const handleKeyDown = (e) => {
+        if (e.key === 'Escape') {
+          onClose?.();
+        }
+        if ((e.metaKey || e.ctrlKey) && e.key === 'ArrowLeft') {
+          e.preventDefault();
+          onNavigate?.('prev');
+        }
+        if ((e.metaKey || e.ctrlKey) && e.key === 'ArrowRight') {
+          e.preventDefault();
+          onNavigate?.('next');
+        }
+        if (e.key === 'd' && !e.metaKey && !e.ctrlKey) {
+          e.preventDefault();
+          setViewMode(prev => prev === 'detailed' ? 'simplified' : 'detailed');
+        }
+      };
+
+      document.addEventListener('keydown', handleKeyDown);
+
+      return () => {
+        document.body.style.overflow = '';
+        document.removeEventListener('keydown', handleKeyDown);
+        
+        if (previousFocusRef.current && typeof previousFocusRef.current.focus === 'function') {
+          previousFocusRef.current.focus();
+        }
+      };
+    }
+  }, [isOpen, onClose, onNavigate]);
+
+  // Light beam scroll dampening
+  useEffect(() => {
+    const drawer = containerRef.current?.querySelector('.overflow-y-auto');
+    if (!drawer || !beamRef.current) return;
+
+    const handleScroll = () => {
+      if (beamRef.current && viewMode === 'detailed') {
+        beamRef.current.style.opacity = '0.02';
+        clearTimeout(scrollTimeout.current);
+        scrollTimeout.current = setTimeout(() => {
+          if (beamRef.current && viewMode === 'detailed') {
+            beamRef.current.style.opacity = '0.035';
+          }
+        }, 350);
+      }
+    };
+
+    drawer.addEventListener('scroll', handleScroll);
+    return () => {
+      drawer.removeEventListener('scroll', handleScroll);
+      if (scrollTimeout.current) {
+        clearTimeout(scrollTimeout.current);
+      }
+    };
+  }, [viewMode]);
+
+  if (!isOpen || !signal) return null;
+
+  // Extract signal metadata
+  const sentiment = signal.urgency === 'critical' ? 'risk' : signal.urgency === 'high' ? 'risk' : 'neutral';
+  const primarySector = 'Technology';
+  const ageLabel = '2h ago';
+  const durationBias = 'Short-term risk-off';
+  const confOverall = 78;
+
+  // Generate content
+  const whyItMatters = signal.why_it_matters || 'Regulatory shift implies rising costs and compressed valuations — focus: Technology.';
+  const translation = 'This suggests tech companies will need to spend more on compliance, potentially reducing their profit margins and making their stocks less attractive to investors.';
+  const rippleImpact = 'Watch tech sector margins and growth multiple compression for continued pressure.'; // NEW: Ripple Impact content
+
+  const analysis = {
+    what: `${signal.text}. This move signals a potential hardening of regulatory frameworks, affecting projections for the tech sector's compliance-related capital expenditures.`,
+    why: whyItMatters,
+    impacts: [
+      { text: 'Tech Equities', tone: 'risk' },
+      { text: 'Treasuries', tone: 'opportunity' },
+      { text: 'USD', tone: 'opportunity' },
+      { text: 'HY Spreads', tone: 'risk' },
+    ],
+    quote: signal.tag === 'Policy Shock' ? 'The new framework represents the most significant regulatory shift in technology oversight since the early 2000s.' : null,
+    relevance: {
+      impacts: 'Inflation expectations; Fed policy; growth valuations',
+      sectors: 'Technology (negative), Financials (neutral), Industrials (indirectly negative)',
+      assetClasses: 'Equities (growth-sensitive), Rates (short-end yield pressure)',
+    },
+    downside: {
+      text: 'Potential for accelerated tightening could trigger a risk-off event, particularly in long-duration assets and high-growth tech.',
+      confidence: 85,
+    },
+    upside: {
+      text: 'A hawkish pivot could strengthen the dollar and create rotational opportunities into value and cyclical sectors.',
+      confidence: 60,
+    },
+    strategy: 'Traders may hedge duration risk via short-term bond futures, overweight value factor ETFs (e.g., VTV), and rotate away from high-beta growth stocks.',
+    correlated: [
+      { id: 1, label: 'Fed Rate Decision' },
+      { id: 2, label: 'Tech Earnings Miss' },
+      { id: 3, label: 'EU Data Privacy' },
+      { id: 4, label: 'AI Regulation Vote' },
+    ]
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          <style>{`
+            /* ============================================================================
+               HORIZON OS DRAWER - LIQUID SILK MOTION (SWEET SPOT)
+            ============================================================================ */
+            
+            :root {
+              --hzn-dur-open: 280ms;          /* +20ms sweet spot: luxurious but responsive */
+              --hzn-dur-close: 200ms;
+              --hzn-dur-stagger: 60ms;        /* +10ms for smoother cascade */
+              --hzn-ease-silk: cubic-bezier(0.19, 1, 0.22, 1);  /* Ultra-smooth easing */
+              --hzn-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+              --hzn-ease-io: cubic-bezier(0.4, 0, 0.2, 1);
+              --hzn-open-scale: 0.96;         /* More pronounced lift */
+              --hzn-open-translate: 8px;      /* Subtler vertical motion */
+              
+              --ri-gap-lg: 28px;
+              --ri-gap-md: 14px;
+              --ri-dur: 280ms;
+              --ri-dur-fast: 180ms;
+              --ri-ease-weight: cubic-bezier(0.18, 0.82, 0.23, 1);
+              
+              --li-duration: 280ms;
+              --li-ease: cubic-bezier(0.4, 0, 0.2, 1);
+              --li-halo-risk: rgba(255,75,75,0.25);
+              --li-halo-oppty: rgba(60,240,180,0.25);
+              --li-halo-neutral: rgba(160,190,230,0.2);
+              --li-ai-voice: rgba(105,160,255,0.60);
+              
+              --mp-radius: 16px;
+              --mp-border: 1px solid rgba(255,255,255,0.06);
+              --mp-shadow-soft: 0 8px 24px rgba(0,0,0,0.25);
+              --mp-risk-rim: inset 0 0 0 1px rgba(255,90,90,0.38), 0 0 22px rgba(255,60,60,0.22);
+              --mp-up-rim: inset 0 0 0 1px rgba(60,220,160,0.34), 0 0 22px rgba(60,220,160,0.20);
+              --mp-gap: 12px;
+              --mp-dur: 260ms;
+              --mp-ease: cubic-bezier(0.4,0,0.2,1);
+            }
+            
+            /* Frosted Backdrop - Synchronized Timing */
+            .hzn-frosted-backdrop {
+              position: fixed;
+              inset: 0;
+              z-index: 80;
+              background: rgba(24, 26, 29, 0.55);
+              backdrop-filter: blur(26px) saturate(1.3) brightness(1.15);
+              -webkit-backdrop-filter: blur(26px) saturate(1.3) brightness(1.15);
+              opacity: 0;
+              transition: opacity var(--hzn-dur-open) var(--hzn-ease-silk),  /* Match drawer timing */
+                          filter var(--li-duration) var(--li-ease),
+                          backdrop-filter var(--li-duration) var(--li-ease);
+              will-change: opacity, filter, backdrop-filter;
+              contain: paint;
+              mask-image: linear-gradient(to bottom, transparent 0, black calc(72px + 8px));
+              -webkit-mask-image: linear-gradient(to bottom, transparent 0, black calc(72px + 8px));
+            }
+            
+            .hzn-frosted-backdrop--open {
+              opacity: 1;
+            }
+            
+            /* Ambient hue drift based on sentiment */
+            [data-sentiment="risk"] .hzn-frosted-backdrop {
+              filter: blur(26px) saturate(1.15) brightness(1.03) hue-rotate(0deg);
+            }
+            
+            [data-sentiment="opportunity"] .hzn-frosted-backdrop {
+              filter: blur(26px) saturate(1.15) brightness(1.03) hue-rotate(150deg);
+            }
+            
+            [data-sentiment="neutral"] .hzn-frosted-backdrop {
+              filter: blur(26px) saturate(1.05) brightness(1.02) hue-rotate(220deg);
+            }
+            
+            .hzn-frosted-backdrop::after {
+              content: "";
+              position: absolute;
+              inset: -2%;
+              pointer-events: none;
+              background: radial-gradient(70% 60% at 50% 40%, rgba(255,255,255,0.02), rgba(0,0,0,0.22) 70%, rgba(0,0,0,0.30) 100%), linear-gradient(to top right, transparent 60%, rgba(90, 150, 255, 0.06));
+              mix-blend-mode: soft-light;
+              mask-image: radial-gradient(circle at 50% 45%, rgba(0,0,0,0) 42%, black 100%);
+              -webkit-mask-image: radial-gradient(circle at 50% 45%, rgba(0,0,0,0) 42%, black 100%);
+            }
+            
+            @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+              .hzn-frosted-backdrop {
+                background: rgba(24, 26, 29, 0.82);
+              }
+            }
+            
+            /* Header Scrim - Synchronized Timing */
+            .hzn-header-scrim {
+              position: fixed;
+              inset-inline: 0;
+              top: 0;
+              height: 72px;
+              z-index: 95;
+              pointer-events: none;
+              background: linear-gradient(to bottom, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.22) 35%, rgba(0, 0, 0, 0.00) 100%);
+              box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+              mix-blend-mode: normal;
+              opacity: 0;
+              transition: opacity var(--hzn-dur-open) var(--hzn-ease-silk);  /* Match drawer timing */
+              will-change: opacity;
+            }
+            
+            .hzn-header-scrim--open {
+              opacity: 1;
+            }
+            
+            /* Priority Drawer - Liquid Silk Motion (Sweet Spot) */
+            .hzn-drawer {
+              position: fixed;
+              z-index: 90;
+              left: 0;
+              right: 0;
+              margin-inline: auto;
+              top: calc(72px + 14px);
+              max-width: min(820px, 90vw);
+              border: 1px solid rgba(255, 255, 255, 0.06);
+              background: linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(0,0,0,0.12));
+              box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+              border-radius: calc(var(--mp-radius) + 8px);
+              overflow: visible;
+              
+              /* Liquid Silk Initial State */
+              transform: translateY(var(--hzn-open-translate)) scale(var(--hzn-open-scale));
+              opacity: 0;
+              will-change: transform, opacity;
+              transition: 
+                transform var(--hzn-dur-open) var(--hzn-ease-silk),
+                opacity var(--hzn-dur-open) var(--hzn-ease-silk);
+            }
+            
+            .hzn-drawer--open {
+              transform: translateY(0) scale(1);
+              opacity: 1;
+            }
+            
+            .hzn-drawer::before {
+              content: "";
+              position: absolute;
+              left: 0;
+              right: 0;
+              top: 0;
+              height: 18px;
+              pointer-events: none;
+              background: linear-gradient(to bottom, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.05) 40%, rgba(255, 255, 255, 0.00) 100%);
+              mix-blend-mode: screen;
+              opacity: 0.6;
+              z-index: 1;
+            }
+            
+            .hzn-drawer::after {
+              content: "";
+              position: absolute;
+              left: 12px;
+              right: 12px;
+              top: 0;
+              height: 1px;
+              pointer-events: none;
+              background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.08), transparent);
+              opacity: 0.9;
+              z-index: 1;
+            }
+            
+            /* Center Light Beam - Subtle & Stateful */
+            .li-beam {
+              position: absolute;
+              inset: 0;
+              pointer-events: none;
+              background: linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(255,255,255,0) 40%), linear-gradient(to bottom, rgba(255,255,255,0) 60%, rgba(255,255,255,0.04) 100%);
+              mask-image: linear-gradient(to right, transparent 48.5%, black 50%, transparent 51.5%);
+              -webkit-mask-image: linear-gradient(to right, transparent 48.5%, black 50%, transparent 51.5%);
+              opacity: 0;
+              transition: opacity var(--mp-dur) var(--mp-ease);
+            }
+            
+            .drawer--detailed .li-beam {
+              opacity: 0.035;
+            }
+            
+            @media (prefers-reduced-motion: no-preference) {
+              .drawer--detailed .li-beam {
+                animation: liBeamBreath 8s ease-in-out infinite;
+              }
+            }
+            
+            @keyframes liBeamBreath {
+              0%, 100% { opacity: 0.028; }
+              50% { opacity: 0.045; }
+            }
+            
+            /* Narrative Link - Animated Pulse Line */
+            .li-link {
+              animation: liPulseLine 3s ease-in-out infinite;
+            }
+            
+            @keyframes liPulseLine {
+              0%, 100% { opacity: 0.3; }
+              50% { opacity: 0.7; }
+            }
+            
+            /* Micro-Transitions for Thought Flow - Enhanced Cascade */
+            .ri-section {
+              margin-bottom: var(--ri-gap-lg);
+              line-height: 1.55;
+              opacity: 0;
+              transform: translateY(4px);
+              transition: opacity var(--li-duration) var(--li-ease), 
+                          transform var(--li-duration) var(--li-ease);
+            }
+            
+            .hzn-drawer--open .ri-section {
+              animation: giFadeUp 320ms var(--hzn-ease-silk) forwards;
+            }
+            
+            .hzn-drawer--open .ri-section:nth-of-type(1) { animation-delay: calc(var(--hzn-dur-stagger) * 0); }
+            .hzn-drawer--open .ri-section:nth-of-type(2) { animation-delay: calc(var(--hzn-dur-stagger) * 1); }
+            .hzn-drawer--open .ri-section:nth-of-type(3) { animation-delay: calc(var(--hzn-dur-stagger) * 2); }
+            .hzn-drawer--open .ri-section:nth-of-type(4) { animation-delay: calc(var(--hzn-dur-stagger) * 3); }
+            .hzn-drawer--open .ri-section:nth-of-type(5) { animation-delay: calc(var(--hzn-dur-stagger) * 4); }
+            .hzn-drawer--open .ri-section:nth-of-type(6) { animation-delay: calc(var(--hzn-dur-stagger) * 5); }
+            
+            @keyframes giFadeUp {
+              from { opacity: 0; transform: translateY(4px); }
+              to { opacity: 1; transform: translateY(0); }
+            }
+            
+            /* Auto-reveal Details */
+            .ri-details {
+              overflow: clip;
+              max-height: 0;
+              opacity: 0;
+              transform: translateY(6px);
+              transition: max-height var(--ri-dur) var(--ri-ease-io), 
+                          opacity var(--ri-dur) var(--ri-ease-io), 
+                          transform var(--ri-dur) var(--ri-ease-io);
+            }
+            
+            .drawer--detailed .ri-details {
+              max-height: 1200px;
+              opacity: 1;
+              transform: translateY(0);
+            }
+            
+            /* Confidence Ring Breathing */
+            .confidence-ring {
+              transition: box-shadow var(--li-duration) var(--li-ease);
+            }
+            
+            .confidence-ring[data-sentiment="risk"] {
+              animation: confidenceBreathe 5s ease-in-out infinite;
+              box-shadow: 0 0 0 0 var(--li-halo-risk);
+            }
+            
+            .confidence-ring[data-sentiment="opportunity"] {
+              animation: confidenceBreathe 5s ease-in-out infinite;
+              box-shadow: 0 0 0 0 var(--li-halo-oppty);
+            }
+            
+            .confidence-ring[data-sentiment="neutral"] {
+              animation: confidenceBreathe 5s ease-in-out infinite;
+              box-shadow: 0 0 0 0 var(--li-halo-neutral);
+            }
+            
+            @keyframes confidenceBreathe {
+              0%, 100% { box-shadow: 0 0 0 0 currentColor; }
+              50% { box-shadow: 0 0 0 8px currentColor; }
+            }
+            
+            /* Confidence Row Baseline Alignment */
+            .ri-confidence-inline {
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              line-height: 1.2;
+              transform: translateY(-1px);
+            }
+            
+            /* Context Tags - Temporal Awareness */
+            .li-meta-tags {
+              display: flex;
+              align-items: center;
+              flex-wrap: wrap;
+            }
+            
+            .li-tag {
+              background: rgba(255, 255, 255, 0.06);
+              border: 1px solid rgba(255, 255, 255, 0.08);
+              border-radius: 10px;
+              padding: 4px 10px;
+              font-size: 12px;
+              color: rgba(255, 255, 255, 0.65);
+              display: inline-flex;
+              align-items: center;
+            }
+            
+            /* AI Voice Tone - Enhanced Contrast */
+            .ai-voice {
+              color: var(--li-ai-voice);
+              font-style: italic;
+              font-weight: 500;
+              letter-spacing: -0.01em;
+              font-size: 14px;
+              margin-bottom: 12px;
+              display: flex;
+              align-items: center;
+            }
+            
+            .li-ai-voice-dot {
+              display: inline-block;
+              width: 6px;
+              height: 6px;
+              border-radius: 50%;
+              background: var(--li-ai-voice);
+              margin-right: 8px;
+              animation: pulseAI 2s ease-in-out infinite;
+            }
+            
+            @keyframes pulseAI {
+              0%, 100% { opacity: 0.4; }
+              50% { opacity: 1; }
+            }
+            
+            /* Grid for Risk/Upside Cards (with visible overflow) */
+            .ri-grid {
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 16px;
+              overflow: visible;
+            }
+            
+            /* Luminous Active Cards - Normalized Radii & Shadows */
+            .ri-card {
+              border-radius: var(--mp-radius);
+              padding: 20px;
+              background: rgba(255, 255, 255, 0.02);
+              border: var(--mp-border);
+              box-shadow: var(--mp-shadow-soft);
+              overflow: visible;
+              transition: box-shadow var(--ri-dur) var(--ri-ease-io), background var(--ri-dur) var(--ri-ease-io);
+            }
+            
+            .ri-card.active.risk {
+              box-shadow: var(--mp-risk-rim), var(--mp-shadow-soft);
+              background: linear-gradient(180deg, rgba(255, 60, 60, 0.08), transparent);
+              filter: drop-shadow(0 10px 18px rgba(120,20,20,0.25));
+            }
+            
+            .ri-card.active.oppty {
+              box-shadow: var(--mp-up-rim), var(--mp-shadow-soft);
+              background: linear-gradient(180deg, rgba(60, 220, 160, 0.08), transparent);
+              filter: drop-shadow(0 10px 18px rgba(14,70,52,0.22));
+            }
+            
+            .ri-card p {
+              margin-bottom: 10px;
+            }
+            
+            /* Quote Block - Breathing & Crisp */
+            blockquote.ri-section-body {
+              border-left: 2px solid rgba(90,150,255,0.50);
+              padding-left: 12px;
+              margin: 10px 0 6px;
+            }
+            
+            /* Correlated Signals Strip - Balanced Spacing */
+            .ri-next {
+              display: flex;
+              align-items: center;
+              gap: var(--mp-gap);
+              padding: 14px 16px;
+              border-radius: 14px;
+              border: 1px solid rgba(255, 255, 255, 0.08);
+              background: rgba(255, 255, 255, 0.04);
+              transition: transform var(--ri-dur-fast) var(--ri-ease-io), filter var(--ri-dur-fast) var(--ri-ease-io);
+            }
+            
+            .ri-carousel {
+              display: flex;
+              gap: var(--mp-gap);
+              overflow-x: auto;
+              scrollbar-width: none;
+              flex: 1;
+              padding-right: 6px;
+            }
+            
+            .ri-carousel::-webkit-scrollbar {
+              display: none;
+            }
+            
+            .ri-chip {
+              padding: 6px 10px;
+              border-radius: 999px;
+              background: rgba(255, 255, 255, 0.06);
+              white-space: nowrap;
+              font-size: 13px;
+              font-weight: 500;
+              color: rgba(255, 255, 255, 0.85);
+              border: 1px solid rgba(255, 255, 255, 0.08);
+              cursor: pointer;
+              transition: background var(--ri-dur-fast) var(--ri-ease-io), 
+                          transform var(--ri-dur-fast) var(--ri-ease-io);
+            }
+            
+            .ri-chip:hover {
+              background: rgba(255, 255, 255, 0.10);
+              transform: translateY(-1px);
+            }
+            
+            /* Correlated Signal Preview */
+            .li-preview {
+              z-index: 100;
+              pointer-events: none;
+            }
+            
+            /* Header Controls - Smoother Entrance */
+            .hzn-drawer .drawer-controls [data-icon] {
+              opacity: 0;
+              transform: scale(0.96);
+            }
+            
+            .hzn-drawer--open .drawer-controls [data-icon] {
+              animation: hznControlsIn 260ms var(--hzn-ease-silk) 120ms forwards;
+            }
+            
+            @keyframes hznControlsIn {
+              to { opacity: 1; transform: scale(1); }
+            }
+            
+            /* Confidence Ring Initial State */
+            .hzn-confidence-ring {
+              opacity: 0;
+              transform: scale(0.92);
+            }
+            
+            .hzn-drawer--open .hzn-confidence-ring {
+              animation: hznRingIn 320ms var(--hzn-ease-silk) 180ms forwards;
+            }
+            
+            @keyframes hznRingIn {
+              to { opacity: 1; transform: scale(1); }
+            }
+            
+            /* Typography - Section Headers & Body */
+            .ri-section-title {
+              font-size: 13px;
+              font-weight: 600;
+              letter-spacing: -0.01em;
+              text-transform: uppercase;
+              color: #AAB1B8;
+              opacity: 0.70;
+              margin-bottom: 6px;
+              display: flex;
+              align-items: center;
+              gap: 6px;
+            }
+            
+            .ri-section-body {
+              font-size: 15px;
+              font-weight: 400;
+              line-height: 1.55;
+              color: #FFFFFF;
+              opacity: 0.82;
+            }
+            
+            .ri-section-body strong {
+              font-weight: 600;
+              opacity: 0.92;
+            }
+            
+            .ri-translation {
+              margin-top: 8px;
+              color: rgba(255, 255, 255, 0.78);
+              opacity: 0.85;
+              font-size: 14px;
+              font-style: italic;
+              line-height: 1.5;
+            }
+            
+            /* Accessibility - Minimum Contrast */
+            .vireon-text-secondary {
+              color: rgba(255, 255, 255, 0.78);
+            }
+            
+            .vireon-text-tertiary {
+              color: rgba(255, 255, 255, 0.64);
+            }
+            
+            /* Icon hover */
+            [data-icon]:hover {
+              transform: translateY(-1px);
+              filter: brightness(1.1);
+              transition: transform 180ms cubic-bezier(0.4, 0, 0.2, 1), filter 180ms cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            
+            /* Performance */
+            .hzn-drawer,
+            .hzn-frosted-backdrop,
+            .hzn-header-scrim {
+              transform: translateZ(0);
+              backface-visibility: hidden;
+              perspective: 1000px;
+            }
+            
+            /* Reduced Motion */
+            @media (prefers-reduced-motion: reduce) {
+              .hzn-drawer,
+              .hzn-frosted-backdrop,
+              .hzn-header-scrim,
+              .ri-section,
+              .ri-details,
+              .li-beam,
+              .drawer-controls [data-icon],
+              .hzn-confidence-ring,
+              .confidence-ring,
+              .li-link,
+              .li-ai-voice-dot {
+                transition: none !important;
+                animation: none !important;
+                transform: none !important;
+                filter: none !important;
+              }
+              
+              .drawer--detailed .ri-details {
+                max-height: none !important;
+                opacity: 1 !important;
+              }
+              
+              .hzn-drawer--open .ri-section,
+              .hzn-drawer--open .drawer-controls [data-icon],
+              .hzn-drawer--open .hzn-confidence-ring {
+                opacity: 1 !important;
+                transform: none !important;
+              }
+            }
+          `}</style>
+
+          {/* Header Scrim */}
+          <div
+            className={`hzn-header-scrim ${isAnimatingIn ? 'hzn-header-scrim--open' : ''}`}
+            aria-hidden="true"
+          />
+
+          {/* Sentiment-Aware Frosted Backdrop (Living Awareness) */}
+          <div
+            data-sentiment={sentiment}
+            className={`hzn-frosted-backdrop ${isAnimatingIn ? 'hzn-frosted-backdrop--open' : ''}`}
+            onClick={onClose}
+            role="presentation"
+            aria-hidden={!isOpen}
+          />
+
+          {/* Priority Drawer Panel */}
+          <aside
+            ref={containerRef}
+            data-sentiment={sentiment}
+            className={`hzn-drawer ${isAnimatingIn ? 'hzn-drawer--open' : ''} ${viewMode === 'detailed' ? 'drawer--detailed' : ''}`}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Priority Signal Analysis"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Center Light Beam - Subtle & Stateful */}
+            <div ref={beamRef} className="li-beam" aria-hidden="true" />
+
+            <div className="relative w-full max-h-[88vh]" style={{ overflow: 'hidden' }}>
+              {/* Keyboard Hints */}
+              <AnimatePresence>
+                {showHint && (
+                  <motion.div
+                    className="absolute top-4 left-1/2 -translate-x-1/2 z-10 px-4 py-2 rounded-full text-xs"
+                    style={{
+                      background: 'rgba(0, 0, 0, 0.75)',
+                      backdropFilter: 'blur(16px)',
+                      color: '#AAB1B8',
+                      border: '1px solid rgba(255, 255, 255, 0.12)',
+                      fontSize: 11,
+                      fontWeight: 500,
+                    }}
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.2, ease: HORIZON.motion.ease }}
+                  >
+                    ⌘ ← / → to navigate • D to toggle details • Esc to close
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* HEADER */}
+              <div
+                className="relative z-10 p-8 pb-6"
+                style={{
+                  borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+                }}
+              >
+                <div className="flex items-start justify-between gap-6 mb-4">
+                  <div className="flex-1 min-w-0">
+                    <h1
+                      className="mb-2"
+                      style={{
+                        fontSize: HORIZON.type.h1.size,
+                        fontWeight: HORIZON.type.h1.weight,
+                        letterSpacing: `${HORIZON.type.h1.tracking}em`,
+                        color: '#FFFFFF',
+                        opacity: HORIZON.type.h1.opacity,
+                      }}
+                    >
+                      Priority Signal Analysis
+                    </h1>
+                    <p
+                      className="mb-3"
+                      style={{
+                        fontSize: HORIZON.type.meta.size,
+                        fontWeight: HORIZON.type.meta.weight,
+                        color: '#AAB1B8',
+                        opacity: HORIZON.type.meta.opacity,
+                        textTransform: 'uppercase',
+                        letterSpacing: `${HORIZON.type.meta.tracking}em`,
+                      }}
+                    >
+                      Sector: {primarySector} • Source: {signal.source?.toUpperCase()}
+                    </p>
+                    
+                    {/* Temporal Awareness Tags */}
+                    <ContextTags signalAge={ageLabel} durationBias={durationBias} />
+                    
+                    <SentimentChip sentiment={sentiment} />
+                  </div>
+
+                  {/* Navigation Controls */}
+                  <div className="drawer-controls flex items-center gap-2">
+                    <button
+                      onClick={() => onNavigate?.('prev')}
+                      className="p-2.5 rounded-xl transition-all duration-180"
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.06)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        color: '#D7DBE0',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
+                        e.currentTarget.style.transform = 'scale(1.03)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                        e.currentTarget.style.transform = 'scale(1)';
+                      }}
+                      aria-label="Previous signal"
+                    >
+                      <ChevronLeft className="w-5 h-5" data-icon />
+                    </button>
+
+                    <button
+                      onClick={() => onNavigate?.('next')}
+                      className="p-2.5 rounded-xl transition-all duration-180"
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.06)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        color: '#D7DBE0',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
+                        e.currentTarget.style.transform = 'scale(1.03)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                        e.currentTarget.style.transform = 'scale(1)';
+                      }}
+                      aria-label="Next signal"
+                    >
+                      <ChevronRight className="w-5 h-5" data-icon />
+                    </button>
+
+                    <button
+                      onClick={onClose}
+                      className="p-2.5 rounded-xl ml-2 transition-all duration-180"
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.06)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        color: '#D7DBE0',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
+                        e.currentTarget.style.transform = 'scale(1.03)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                        e.currentTarget.style.transform = 'scale(1)';
+                      }}
+                      aria-label="Close"
+                    >
+                      <X className="w-6 h-6" data-icon />
+                    </button>
+
+                    <button
+                      onClick={() => setViewMode(prev => prev === 'detailed' ? 'simplified' : 'detailed')}
+                      className="p-2.5 rounded-xl ml-2 transition-all duration-180"
+                      style={{
+                        background: viewMode === 'detailed' ? 'rgba(94, 167, 255, 0.15)' : 'rgba(255, 255, 255, 0.06)',
+                        border: viewMode === 'detailed' ? '1px solid rgba(94, 167, 255, 0.30)' : '1px solid rgba(255, 255, 255, 0.08)',
+                        color: viewMode === 'detailed' ? '#5EA7FF' : '#D7DBE0',
+                        fontSize: 12,
+                        fontWeight: 600,
+                        padding: '8px 14px',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = viewMode === 'detailed' ? 'rgba(94, 167, 255, 0.20)' : 'rgba(255, 255, 255, 0.10)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = viewMode === 'detailed' ? 'rgba(94, 167, 255, 0.15)' : 'rgba(255, 255, 255, 0.06)';
+                      }}
+                      aria-label={viewMode === 'detailed' ? 'Switch to simplified view' : 'Switch to detailed view'}
+                    >
+                      {viewMode === 'detailed' ? 'Simplified' : 'Detailed'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* BODY - Living Narrative Flow */}
+              <div
+                className="relative z-10 overflow-y-auto"
+                style={{
+                  maxHeight: 'calc(88vh - 180px)',
+                  scrollbarWidth: 'thin',
+                  scrollbarColor: 'rgba(255, 255, 255, 0.18) rgba(255, 255, 255, 0.04)',
+                }}
+              >
+                <style>{`
+                  .overflow-y-auto::-webkit-scrollbar {
+                    width: 6px;
+                  }
+                  .overflow-y-auto::-webkit-scrollbar-track {
+                    background: rgba(255, 255, 255, 0.04);
+                    border-radius: 6px;
+                  }
+                  .overflow-y-auto::-webkit-scrollbar-thumb {
+                    background: rgba(255, 255, 255, 0.18);
+                    border-radius: 6px;
+                  }
+                  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+                    background: rgba(255, 255, 255, 0.25);
+                  }
+                `}</style>
+
+                <div className="p-8 pt-6">
+                  {/* WHAT HAPPENED */}
+                  <section className="ri-section">
+                    <h3 className="ri-section-title">
+                      <Target className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                      What Happened
+                    </h3>
+                    <p className="ri-section-body">{analysis.what}</p>
+                  </section>
+
+                  {/* Narrative Link */}
+                  <NarrativeLink />
+
+                  {/* WHY IT MATTERS + Confidence + Translation */}
+                  <section className="ri-section">
+                    <h3 className="ri-section-title">
+                      <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                      Why It Matters
+                    </h3>
+                    <p className="ri-section-body">
+                      <strong>{analysis.why}</strong>
+                    </p>
+                    
+                    <div className="ri-confidence-inline mt-4">
+                      <span className="text-xs font-medium uppercase tracking-wide" style={{ color: '#AAB1B8', opacity: 0.7 }}>
+                        Confidence
+                      </span>
+                      <ConfidenceRing value={confOverall} color={HORIZON.color.neutral} size={42} sentiment={sentiment} />
+                    </div>
+
+                    <div className="ri-translation">
+                      <strong>Translation:</strong> {translation}
+                    </div>
+                  </section>
+
+                  {/* Narrative Link */}
+                  <NarrativeLink />
+
+                  {/* IMPACT OVERVIEW */}
+                  <section className="ri-section">
+                    <h3 className="ri-section-title">
+                      <Activity className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                      Impact Overview
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {analysis.impacts.map((impact, i) => (
+                        <ImpactChip key={i} text={impact.text} tone={impact.tone} />
+                      ))}
+                    </div>
+
+                    {/* RIPPLE IMPACT - ONLY IN DETAILED MODE (v1.4.1) */}
+                    {viewMode === 'detailed' && rippleImpact && (
+                      <motion.div
+                        className="mt-6 flex items-start gap-2"
+                        initial={{ opacity: 0, y: 2 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.18, delay: 0.4 }}
+                        whileHover={{ y: -1 }}
+                        role="region"
+                        aria-label={`Ripple Impact: ${rippleImpact}`}
+                      >
+                        <svg 
+                          width="16" 
+                          height="16" 
+                          viewBox="0 0 16 16" 
+                          fill="none"
+                          className="mt-0.5 flex-shrink-0"
+                          style={{ color: 'rgba(255, 255, 255, 0.38)' }}
+                          aria-hidden="true"
+                        >
+                          <path 
+                            d="M3 8h10M8 3l5 5-5 5" 
+                            stroke="currentColor" 
+                            strokeWidth="1.5" 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                        <div>
+                          <span 
+                            className="text-xs font-medium uppercase tracking-wide mr-2"
+                            style={{ color: 'rgba(255, 255, 255, 0.5)' }}
+                          >
+                            Ripple Impact
+                          </span>
+                          <span 
+                            style={{ 
+                              fontSize: '14px', 
+                              lineHeight: '20px', 
+                              color: 'rgba(255, 255, 255, 0.82)',
+                              fontWeight: 500
+                            }}
+                          >
+                            {rippleImpact}
+                          </span>
+                        </div>
+                      </motion.div>
+                    )}
+                  </section>
+
+                  {/* AUTO-REVEAL DETAILS */}
+                  <div className="ri-details">
+                    <NarrativeLink />
+
+                    {/* Quote */}
+                    {analysis.quote && (
+                      <>
+                        <blockquote
+                          className="ri-section-body mb-6 pl-4 italic"
+                          style={{
+                            borderLeft: `2px solid ${HORIZON.color.accent}`,
+                            opacity: 0.85,
+                          }}
+                        >
+                          "{analysis.quote}"
+                        </blockquote>
+                        
+                        {/* Narrative Link after quote for better spacing */}
+                        <NarrativeLink />
+                      </>
+                    )}
+
+                    {/* Market Relevance */}
+                    <div className="mb-6">
+                      <h4 className="ri-section-title">Market Relevance</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
+                            Impacts
+                          </div>
+                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
+                            {analysis.relevance.impacts}
+                          </p>
+                        </div>
+                        <div>
+                          <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
+                            Sectors
+                          </div>
+                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
+                            {analysis.relevance.sectors}
+                          </p>
+                        </div>
+                        <div>
+                          <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
+                            Asset Classes
+                          </div>
+                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
+                            {analysis.relevance.assetClasses}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <NarrativeLink />
+
+                    {/* Luminous Risk/Opportunity Cards with Grid */}
+                    <div className="ri-grid mb-6">
+                      {/* Downside Risk */}
+                      <div className={`ri-card ${sentiment === 'risk' ? 'active risk' : ''}`}>
+                        <div className="flex items-center gap-3 mb-3">
+                          <AlertCircle className="w-5 h-5" style={{ color: HORIZON.color.risk }} />
+                          <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
+                            Downside Risk
+                          </h4>
+                        </div>
+                        <p className="text-sm mb-3" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
+                          {analysis.downside.text}
+                        </p>
+                        <div className="text-xs" style={{ color: '#AAB1B8' }}>
+                          Confidence: <span style={{ color: HORIZON.color.risk, fontWeight: 700 }}>
+                            {analysis.downside.confidence}%
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Potential Upside */}
+                      <div className={`ri-card ${sentiment === 'opportunity' ? 'active oppty' : ''}`}>
+                        <div className="flex items-center gap-3 mb-3">
+                          <ShieldCheck className="w-5 h-5" style={{ color: HORIZON.color.opportunity }} />
+                          <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
+                            Potential Upside
+                          </h4>
+                        </div>
+                        <p className="text-sm mb-3" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
+                          {analysis.upside.text}
+                        </p>
+                        <div className="text-xs" style={{ color: '#AAB1B8' }}>
+                          Confidence: <span style={{ color: HORIZON.color.opportunity, fontWeight: 700 }}>
+                            {analysis.upside.confidence}%
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <NarrativeLink />
+
+                    {/* AI Strategy Lens with Voice */}
+                    <div
+                      className="ri-card mb-6"
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.04)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                      }}
+                    >
+                      <div className="flex items-center gap-2 mb-3">
+                        <Link2 className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                        <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
+                          AI Strategy Lens
+                        </h4>
+                      </div>
+                      <p className="ai-voice">
+                        <span className="li-ai-voice-dot" />
+                        Vireon detects alignment across macro positioning data:
+                      </p>
+                      <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
+                        {analysis.strategy}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* CORRELATED SIGNALS (Story Continuation with Preview) */}
+                  <section className="ri-section">
+                    <div className="ri-next">
+                      <strong style={{ fontSize: 14, color: 'rgba(255, 255, 255, 0.88)' }}>
+                        Correlated Signals
+                      </strong>
+                      <div className="ri-carousel">
+                        {analysis.correlated.map((s) => (
+                          <CorrelatedChip 
+                            key={s.id} 
+                            signal={s} 
+                            onNavigate={(id) => console.log('Navigate to signal:', id)} 
+                          />
+                        ))}
+                      </div>
+                      <ArrowRight className="w-4 h-4" style={{ color: 'rgba(255, 255, 255, 0.6)', flexShrink: 0 }} />
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}

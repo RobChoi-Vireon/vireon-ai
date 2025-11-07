@@ -1,0 +1,296 @@
+
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown, Shield, TrendingUp, AlertTriangle } from 'lucide-react';
+import { SourceLogo } from './Logos'; // New import
+
+const sourceLogos = {
+  wapo: { name: "WP", bg: "bg-blue-600", text: "text-white" },
+  nyt: { name: "NYT", bg: "bg-gray-800", text: "text-white" },
+  wsj: { name: "WSJ", bg: "bg-orange-600", text: "text-white" },
+  ft: { name: "FT", bg: "bg-pink-600", text: "text-white" },
+  economist: { name: "ECN", bg: "bg-red-700", text: "text-white" }
+};
+
+const getSourceWeight = (source) => {
+    // Mock weighting based on a hypothetical influence/reliability score
+    const influence = source.influence || 3;
+    const reliability = source.reliability || 3;
+    const score = (influence + reliability) / 10;
+    return Math.round(score * 30 + 10); // Scale to a reasonable %
+};
+
+const AnglePill = ({ icon: Icon, title, text, color, delay }) => (
+  <motion.div
+    className="p-4 rounded-xl border backdrop-blur-sm"
+    style={{ 
+      background: `linear-gradient(135deg, ${color}1A, ${color}0D)`,
+      borderColor: `${color}33`,
+      boxShadow: `0 4px 15px ${color}1A`
+    }}
+    variants={{
+      hidden: { opacity: 0, y: 15, scale: 0.95 },
+      visible: { 
+        opacity: 1, 
+        y: 0, 
+        scale: 1,
+        transition: { delay: delay * 0.1, type: 'spring', stiffness: 200, damping: 20 }
+      }
+    }}
+    whileHover={{ 
+      y: -3, 
+      scale: 1.03,
+      boxShadow: `0 8px 25px ${color}26`,
+      background: `linear-gradient(135deg, ${color}26, ${color}1A)`
+    }}
+  >
+    <div className="flex items-center mb-2">
+      <Icon className="w-4 h-4 mr-2" style={{ color }} />
+      <h4 className="text-sm font-semibold" style={{ color }}>{title}</h4>
+    </div>
+    <p className="text-sm text-neutral-300">{text}</p>
+  </motion.div>
+);
+
+const RiskFlagPill = ({ flag, delay }) => {
+  const riskLevels = {
+    'high': { icon: AlertTriangle, color: '#F87171' },
+    'medium': { icon: AlertTriangle, color: '#FBBF24' },
+    'low': { icon: Shield, color: '#34D399' },
+  };
+
+  const getLevel = (f) => {
+    if (['rates', 'credit', 'regulatory'].includes(f)) return 'high';
+    if (['geopolitical', 'liquidity', 'fx'].includes(f)) return 'medium';
+    return 'low';
+  }
+  
+  const level = getLevel(flag);
+  const { icon: Icon, color } = riskLevels[level];
+
+  return (
+    <motion.div
+      className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full border backdrop-blur-sm"
+      style={{
+        background: `linear-gradient(135deg, ${color}1A, ${color}0D)`,
+        borderColor: `${color}4D`
+      }}
+      variants={{
+        hidden: { opacity: 0, scale: 0.8 },
+        visible: { 
+          opacity: 1, 
+          scale: 1,
+          transition: { delay: delay * 0.05, type: 'spring', stiffness: 300, damping: 20 }
+        }
+      }}
+      whileHover={{ y: -2, scale: 1.05 }}
+    >
+      <Icon className="w-4 h-4" style={{ color }} />
+      <span className="text-xs font-semibold capitalize" style={{ color: `${color}E6` }}>
+        {flag}
+      </span>
+    </motion.div>
+  );
+};
+
+const ToneIndicator = ({ tones = [] }) => {
+  const primaryTone = tones[0] || 'neutral';
+  
+  const toneConfig = {
+    cautionary: { 
+      label: 'Cautionary', 
+      dotColor: '#FB7185', 
+      color: 'text-rose-300', 
+      bg: 'bg-gradient-to-r from-rose-900/60 to-orange-900/50', 
+      border: 'border-rose-400/50',
+      shadow: '0 0 6px rgba(251, 113, 133, 0.4)'
+    },
+    supportive: { label: 'Supportive', dotColor: '#34D399', color: 'text-green-300', bg: 'bg-green-900/50', border: 'border-green-500/40' },
+    alarmist: { label: 'Alarmist', dotColor: '#F87171', color: 'text-red-300', bg: 'bg-red-900/50', border: 'border-red-500/40' },
+    neutral: { label: 'Neutral', dotColor: '#9CA3AF', color: 'text-gray-300', bg: 'bg-gray-700/50', border: 'border-gray-500/40' }
+  };
+
+  const config = toneConfig[primaryTone];
+
+  return (
+    <motion.div 
+      className={`inline-flex items-center gap-2.5 pl-3 pr-4 py-1.5 text-sm font-medium rounded-full border ${config.bg} ${config.border}`}
+      style={{ 
+        backdropFilter: 'blur(4px)',
+        boxShadow: config.shadow || 'none'
+      }}
+      whileHover={{ 
+        scale: 1.03,
+        boxShadow: config.shadow ? config.shadow.replace('0.4', '0.6') : 'none'
+      }}
+      transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+    >
+      <motion.div 
+        className="w-2 h-2 rounded-full"
+        style={{ 
+          backgroundColor: config.dotColor, 
+          boxShadow: `0 0 5px ${config.dotColor}B3, 0 0 10px ${config.dotColor}80` 
+        }}
+        animate={{
+          scale: [1, 1.1, 1],
+          opacity: [0.8, 1, 0.8]
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
+      <span className={`${config.color} font-semibold`}>{config.label}</span>
+    </motion.div>
+  );
+};
+
+
+export default function SourceAccordion({ source, density, index = 0 }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
+  if (!source) return null;
+
+  const logoInfo = sourceLogos[source.source] || { name: source.source.substring(0, 3).toUpperCase(), bg: "bg-gray-500", text: "text-white" };
+  const weight = getSourceWeight(source);
+  
+  const expandedSectionVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { 
+        staggerChildren: 0.1,
+        delayChildren: 0.1
+      }
+    }
+  };
+
+  const contentVariants = {
+    hidden: { opacity: 0, height: 0 },
+    visible: {
+      opacity: 1,
+      height: 'auto',
+      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+    }
+  };
+
+  return (
+    <motion.div
+      layout
+      className="rounded-2xl border overflow-hidden"
+      style={{
+        background: 'linear-gradient(145deg, rgba(35, 38, 48, 0.9), rgba(25, 28, 38, 0.9))',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
+        borderColor: 'rgba(255,255,255,0.1)'
+      }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ 
+        opacity: 1, 
+        y: 0,
+        transition: { delay: index * 0.05, type: 'spring', stiffness: 200, damping: 25 } 
+      }}
+      whileHover={{ 
+        y: -5,
+        borderColor: 'rgba(99, 102, 241, 0.4)',
+        boxShadow: '0 15px 40px rgba(99, 102, 241, 0.15)'
+      }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+    >
+      <header
+        className="flex items-center p-4 cursor-pointer"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        {/* Left Side: Logo and Weight */}
+        <div className="flex items-center space-x-4 flex-shrink-0 pr-4">
+          <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm ${logoInfo.bg} ${logoInfo.text}`}>
+            {logoInfo.name}
+          </div>
+          <div>
+            <div className="text-white font-semibold text-lg">{weight}%</div>
+            <div className="w-12 h-1 bg-neutral-800 rounded-full mt-1 overflow-hidden">
+               <motion.div
+                 className="h-full rounded-full"
+                 style={{
+                    backgroundImage: 'linear-gradient(110deg, #6366f1, #3b82f6, #22d3ee, #6366f1)',
+                    backgroundSize: '200% 100%'
+                 }}
+                 initial={{ width: 0 }}
+                 animate={{ 
+                    width: `${weight}%`,
+                    backgroundPosition: ['0% center', '200% center']
+                 }}
+                 transition={{
+                   width: { duration: 1.5, delay: 0.5 + index * 0.1, ease: [0.16, 1, 0.3, 1] },
+                   backgroundPosition: {
+                       duration: 3,
+                       repeat: Infinity,
+                       ease: 'linear',
+                       repeatDelay: 0.5
+                   }
+                 }}
+               />
+            </div>
+          </div>
+        </div>
+
+        {/* Center: Name and Topline */}
+        <div className="flex-1 min-w-0">
+          <h3 className="font-bold text-white text-lg truncate">{source.name}</h3>
+          <p className="text-sm text-neutral-400 truncate">{source.topline}</p>
+        </div>
+
+        {/* Right Side: Badge and Chevron */}
+        <div className="flex items-center space-x-4 pl-4 flex-shrink-0">
+          <ToneIndicator tones={source.tones} /> {/* Replaced old tone badge */}
+          <motion.div
+            animate={{ rotate: isExpanded ? 180 : 0 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+          >
+            <ChevronDown className="w-5 h-5 text-neutral-400" />
+          </motion.div>
+        </div>
+      </header>
+
+      <AnimatePresence initial={false}>
+        {isExpanded && (
+          <motion.section
+            key="content"
+            variants={contentVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            className="px-4 pb-4 overflow-hidden"
+          >
+            <motion.div 
+              className="pt-4 border-t border-white/10 space-y-4"
+              variants={expandedSectionVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              {/* Policy & Market/Macro Angles */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <AnglePill icon={Shield} title="Policy Angle" text={source.policy} color="#60A5FA" delay={0} />
+                  <AnglePill icon={TrendingUp} title="Market/Macro Angle" text={source.market_macro} color="#34D399" delay={1} />
+              </div>
+
+              {/* Risk Flags */}
+              {(source.risk_flags && source.risk_flags.length > 0) && (
+                 <motion.div variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05 }}}}>
+                    <h4 className="text-sm font-semibold text-neutral-300 mb-3">Key Risk Factors</h4>
+                    <div className="flex flex-wrap gap-2">
+                        {source.risk_flags.map((flag, i) => (
+                           <RiskFlagPill key={i} flag={flag} delay={i + 2} />
+                        ))}
+                    </div>
+                 </motion.div>
+              )}
+            </motion.div>
+          </motion.section>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
