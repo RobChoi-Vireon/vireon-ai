@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Shield, TrendingUp, AlertTriangle } from 'lucide-react';
-import { SourceLogo } from './Logos'; // New import
 
 const sourceLogos = {
   wapo: { name: "WP", bg: "bg-blue-600", text: "text-white" },
