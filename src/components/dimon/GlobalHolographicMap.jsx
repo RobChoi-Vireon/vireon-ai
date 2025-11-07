@@ -4,7 +4,7 @@ import { Globe } from 'lucide-react';
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// MACRO EQUILIBRIUM GRID - OS HORIZON V1.5
+// MACRO EQUILIBRIUM GRID V2.0 - THE LIVING BALANCE (OS HORIZON)
 // ============================================================================
 
 const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
@@ -16,95 +16,110 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
   const [isInteracting, setIsInteracting] = useState(false);
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
+  const [time, setTime] = useState(0);
 
-  // Horizon easing
+  // OS Horizon easing
   const HORIZON_EASE = [0.45, 0, 0.1, 1];
 
-  // Macro domains with fixed grid positions
+  // Living color palette - desaturated, calm tones
+  const LIVING_COLORS = {
+    rates: '#A89BFA',      // Lavender
+    fx: '#8CC8E7',         // Soft Aqua
+    growth: '#A1D0B5',     // Mist Green
+    geopolitics: '#E1B97A' // Warm Amber
+  };
+
+  // Macro domains with living properties
   const macroDomains = useMemo(() => {
-    const baseStrength = [78, 65, 71, 58]; // Rates, FX, Growth, Geo
+    const baseStrength = [78, 65, 71, 58];
     const baseVolatility = [0.8, 0.6, 0.9, 0.7];
     
     return [
       {
         id: 'rates',
         name: 'Rates',
-        color: '#8C83F2',
-        opacity: 0.50,
-        gridPosition: 'top-left', // Top-Left quadrant
+        color: LIVING_COLORS.rates,
+        opacity: 0.85,
+        gridPosition: 'top-left',
         strength: baseStrength[0],
         volatility: baseVolatility[0],
-        trend: 'Hawkish tilt continues, spread stress rising',
-        nodeSize: 16 + (baseStrength[0] / 100) * 32, // Size based on strength: 16-48px
+        trend: 'Hawkish tilt continues',
+        bias: 'Hawkish Tilt ↑',
+        nodeSize: 16 + (baseStrength[0] / 100) * 32,
         confidence: Math.round((baseStrength[0] + baseVolatility[0] * 20) / 2)
       },
       {
         id: 'fx',
         name: 'FX',
-        color: '#7FD0F2',
-        opacity: 0.50,
-        gridPosition: 'top-right', // Top-Right quadrant
+        color: LIVING_COLORS.fx,
+        opacity: 0.85,
+        gridPosition: 'top-right',
         strength: baseStrength[1],
         volatility: baseVolatility[1],
-        trend: 'USD strength persists on rate differentials',
+        trend: 'USD strength persists',
+        bias: 'Dollar Strength →',
         nodeSize: 16 + (baseStrength[1] / 100) * 32,
         confidence: Math.round((baseStrength[1] + baseVolatility[1] * 20) / 2)
       },
       {
         id: 'growth',
         name: 'Growth',
-        color: '#9DE2C1',
-        opacity: 0.50,
-        gridPosition: 'bottom-left', // Bottom-Left quadrant
+        color: LIVING_COLORS.growth,
+        opacity: 0.85,
+        gridPosition: 'bottom-left',
         strength: baseStrength[2],
         volatility: baseVolatility[2],
-        trend: 'China slowdown weighing on global outlook',
+        trend: 'China slowdown weighing',
+        bias: 'Soft Landing ~',
         nodeSize: 16 + (baseStrength[2] / 100) * 32,
         confidence: Math.round((baseStrength[2] + baseVolatility[2] * 20) / 2)
       },
       {
         id: 'geopolitics',
         name: 'Geopolitics',
-        color: '#E4C088',
-        opacity: 0.50,
-        gridPosition: 'bottom-right', // Bottom-Right quadrant
+        color: LIVING_COLORS.geopolitics,
+        opacity: 0.85,
+        gridPosition: 'bottom-right',
         strength: baseStrength[3],
         volatility: baseVolatility[3],
-        trend: 'Energy security concerns elevate risk premium',
+        trend: 'Energy security concerns',
+        bias: 'Risk Premium ↑',
         nodeSize: 16 + (baseStrength[3] / 100) * 32,
         confidence: Math.round((baseStrength[3] + baseVolatility[3] * 20) / 2)
       }
     ];
   }, []);
 
-  // Calculate global posture
+  // Calculate global posture with light hue
   const getGlobalPosture = useCallback(() => {
     const avgStrength = macroDomains.reduce((sum, d) => sum + d.strength, 0) / macroDomains.length;
     const riskOffWeight = (macroDomains[0].strength + macroDomains[3].strength) / 2;
     const riskOnWeight = (macroDomains[1].strength + macroDomains[2].strength) / 2;
     
-    // Find dominant driver
     const maxStrength = Math.max(...macroDomains.map(d => d.strength));
     const dominantDomain = macroDomains.find(d => d.strength === maxStrength);
     
     if (riskOffWeight > riskOnWeight + 10) {
       return { 
         label: 'Lean Risk-Off', 
-        color: '#E4C088', 
+        color: '#E1B97A',
+        lightHue: '#F5E6C8', // Amber White
         confidence: Math.round(avgStrength),
         dominantDriver: dominantDomain.name
       };
     } else if (riskOnWeight > riskOffWeight + 10) {
       return { 
         label: 'Lean Risk-On', 
-        color: '#6FE4D0', 
+        color: '#8CC8E7',
+        lightHue: '#D7F2F7', // Aqua White
         confidence: Math.round(avgStrength),
         dominantDriver: dominantDomain.name
       };
     } else {
       return { 
         label: 'Neutral', 
-        color: '#D0D3DB', 
+        color: '#C7CCD4',
+        lightHue: '#C7CCD4', // Soft Slate
         confidence: Math.round(avgStrength),
         dominantDriver: 'Balanced'
       };
@@ -113,7 +128,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
 
   const globalPosture = getGlobalPosture();
 
-  // Check correlations (show lines when > 0.7)
+  // Correlations
   const getCorrelations = useCallback(() => {
     return [
       { from: 'rates', to: 'fx', strength: 0.75 },
@@ -146,6 +161,29 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
+  // Living pulse animation loop
+  useEffect(() => {
+    if (shouldReduceMotion) return;
+
+    let animationFrameId;
+    let startTime = Date.now();
+
+    const animate = () => {
+      const now = Date.now();
+      const elapsed = (now - startTime) / 1000;
+      setTime(elapsed);
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+  }, [shouldReduceMotion]);
+
   // Parallax tracking
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -173,7 +211,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     }
   }, [isInteracting]);
 
-  // Reset parallax with 400ms decay
+  // Reset parallax
   useEffect(() => {
     if (!isInteracting) {
       const timer = setTimeout(() => {
@@ -183,11 +221,11 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     }
   }, [isInteracting]);
 
-  // Calculate fixed grid position for each domain
+  // Calculate fixed grid position
   const getGridPosition = useCallback((domain) => {
     const centerX = dimensions.width / 2;
     const centerY = dimensions.height / 2;
-    const offset = 100; // Distance from center
+    const offset = 100;
     
     const positions = {
       'top-left': { x: centerX - offset, y: centerY - offset },
@@ -199,12 +237,35 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     return positions[domain.gridPosition] || { x: centerX, y: centerY };
   }, [dimensions]);
 
+  // Calculate living drift (vertical ±3px over 6s)
+  const getLivingDrift = useCallback((index) => {
+    if (shouldReduceMotion) return 0;
+    // Synchronized phase across all orbs
+    const phase = (time / 6) * Math.PI * 2;
+    return Math.sin(phase + (index * Math.PI / 4)) * 3;
+  }, [time, shouldReduceMotion]);
+
+  // Calculate nucleus ripple (every 8s)
+  const getNucleusRipple = useCallback(() => {
+    if (shouldReduceMotion) return { scale: 1, opacity: 0 };
+    const ripplePhase = (time % 8) / 8;
+    if (ripplePhase < 0.3) {
+      return {
+        scale: 1 + ripplePhase * 0.5,
+        opacity: (1 - ripplePhase / 0.3) * 0.25
+      };
+    }
+    return { scale: 1, opacity: 0 };
+  }, [time, shouldReduceMotion]);
+
+  const ripple = getNucleusRipple();
+
   return (
     <motion.section
       variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
       aria-label="Visual equilibrium map of global macro domains"
     >
-      {/* Header with Powered by Lyra */}
+      {/* Header */}
       <div className="flex items-center justify-between mb-6 pl-2">
         <div className="flex items-center space-x-3">
           <Globe className="w-6 h-6 text-blue-300" />
@@ -226,12 +287,12 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 color: 'rgba(255, 255, 255, 0.68)'
               }}
             >
-              Fixed visual balance of global macro forces.
+              Living balance of global macro forces.
             </p>
           </div>
         </div>
         
-        {/* Powered by Lyra - Frosted Glass Chip */}
+        {/* Powered by Lyra */}
         <motion.div
           className="group cursor-pointer relative"
           whileHover={{ scale: 1.05 }}
@@ -283,7 +344,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
         </motion.div>
       </div>
 
-      {/* Grid Container with Global Breathing */}
+      {/* Living Grid Container */}
       <motion.div 
         ref={containerRef}
         className="relative w-full rounded-3xl overflow-hidden"
@@ -318,20 +379,62 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           ease: 'easeInOut'
         }}
       >
-        {/* Inner Glow Layer */}
+        {/* Ambient Mist Particles */}
+        {!shouldReduceMotion && (
+          <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+            {[...Array(12)].map((_, i) => (
+              <motion.div
+                key={`mist-${i}`}
+                className="absolute rounded-full"
+                style={{
+                  width: 2 + Math.random() * 3,
+                  height: 2 + Math.random() * 3,
+                  background: 'rgba(255, 255, 255, 0.025)',
+                  filter: 'blur(1px)',
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                }}
+                animate={{
+                  x: [0, Math.random() * 40 - 20],
+                  y: [0, Math.random() * 40 - 20],
+                  opacity: [0.025, 0.03, 0.025]
+                }}
+                transition={{
+                  duration: 8 + Math.random() * 4,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                  delay: Math.random() * 2
+                }}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Dynamic Ambient Light Layer */}
+        <div 
+          className="absolute inset-0 pointer-events-none transition-colors duration-1000"
+          style={{
+            background: `radial-gradient(ellipse at center, ${globalPosture.lightHue}08 0%, transparent 70%)`,
+            mixBlendMode: 'screen',
+            opacity: 0.4
+          }}
+          aria-hidden="true"
+        />
+
+        {/* Subsurface Glow Layer */}
         <div 
           className="absolute inset-0 pointer-events-none"
           style={{
             background: 'rgba(255, 255, 255, 0.04)',
-            backdropFilter: 'blur(22px)',
-            WebkitBackdropFilter: 'blur(22px)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
             mixBlendMode: 'overlay',
             borderRadius: '24px'
           }}
           aria-hidden="true"
         />
 
-        {/* Grid System with Parallax */}
+        {/* Grid System with Living Motion */}
         <motion.div 
           className="absolute inset-0"
           animate={{
@@ -356,11 +459,11 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             style={{ pointerEvents: 'none' }}
           >
             <defs>
-              {/* Glow filters for nodes */}
+              {/* Enhanced glow filters */}
               {macroDomains.map((domain) => (
                 <filter key={`glow-${domain.id}`} id={`node-glow-${domain.id}`} x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation="14" result="blur" />
-                  <feFlood floodColor={domain.color} floodOpacity="0.5" />
+                  <feGaussianBlur stdDeviation="16" result="blur" />
+                  <feFlood floodColor={domain.color} floodOpacity="0.6" />
                   <feComposite in2="blur" operator="in" result="glow" />
                   <feMerge>
                     <feMergeNode in="glow" />
@@ -371,7 +474,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
 
               {/* Nucleus gradient */}
               <radialGradient id="nucleus-gradient">
-                <stop offset="0%" stopColor={globalPosture.color} stopOpacity="0.12" />
+                <stop offset="0%" stopColor={globalPosture.color} stopOpacity="0.15" />
                 <stop offset="100%" stopColor={globalPosture.color} stopOpacity="0.02" />
               </radialGradient>
 
@@ -381,14 +484,14 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 const toDomain = macroDomains.find(d => d.id === corr.to);
                 return (
                   <linearGradient key={`corr-${i}`} id={`corr-gradient-${i}`} x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor={fromDomain.color} stopOpacity="0.35" />
-                    <stop offset="100%" stopColor={toDomain.color} stopOpacity="0.35" />
+                    <stop offset="0%" stopColor={fromDomain.color} stopOpacity="0.4" />
+                    <stop offset="100%" stopColor={toDomain.color} stopOpacity="0.4" />
                   </linearGradient>
                 );
               })}
             </defs>
 
-            {/* Connection Lines (only when correlation > 0.7) */}
+            {/* Connection Lines */}
             {correlations.filter(c => c.strength > 0.7).map((corr, i) => {
               const fromDomain = macroDomains.find(d => d.id === corr.from);
               const toDomain = macroDomains.find(d => d.id === corr.to);
@@ -401,23 +504,39 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 <motion.line
                   key={`line-${i}`}
                   x1={fromPos.x}
-                  y1={fromPos.y}
+                  y1={fromPos.y + getLivingDrift(macroDomains.findIndex(d => d.id === corr.from))}
                   x2={toPos.x}
-                  y2={toPos.y}
+                  y2={toPos.y + getLivingDrift(macroDomains.findIndex(d => d.id === corr.to))}
                   stroke={`url(#corr-gradient-${i})`}
                   strokeWidth="2"
                   initial={{ opacity: 0 }}
                   animate={{
-                    opacity: isHighlighted ? 0.55 : 0.35
+                    opacity: isHighlighted ? 0.6 : 0.4
                   }}
-                  transition={{ duration: 0.25, ease: 'easeInOut' }}
+                  transition={{ duration: 0.35, ease: 'easeOut' }}
                 />
               );
             })}
 
-            {/* Center Nucleus */}
+            {/* Center Nucleus with Ripple */}
             <g>
-              {/* Outer glow with breathing */}
+              {/* Ripple wave */}
+              {ripple.opacity > 0 && (
+                <motion.circle
+                  cx={dimensions.width / 2}
+                  cy={dimensions.height / 2}
+                  r={50 * ripple.scale}
+                  fill="none"
+                  stroke={globalPosture.color}
+                  strokeWidth="2"
+                  opacity={ripple.opacity}
+                  style={{
+                    filter: 'blur(2px)'
+                  }}
+                />
+              )}
+
+              {/* Outer glow */}
               <motion.circle
                 cx={dimensions.width / 2}
                 cy={dimensions.height / 2}
@@ -457,55 +576,76 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                   filter: `drop-shadow(0 0 22px ${globalPosture.color}80)`,
                   pointerEvents: 'all',
                   transformOrigin: `${dimensions.width / 2}px ${dimensions.height / 2}px`,
-                  opacity: 0.6
+                  opacity: 0.7
                 }}
               />
 
-              {/* Subtle highlight */}
+              {/* Highlight */}
               <ellipse
                 cx={dimensions.width / 2 - 5}
                 cy={dimensions.height / 2 - 5}
                 rx="5"
                 ry="6"
-                fill="rgba(255, 255, 255, 0.4)"
+                fill="rgba(255, 255, 255, 0.5)"
                 style={{
                   filter: 'blur(2px)'
                 }}
               />
             </g>
 
-            {/* Grid Nodes (Fixed Positions) */}
+            {/* Living Orbs */}
             {macroDomains.map((domain, index) => {
               const pos = getGridPosition(domain);
+              const drift = getLivingDrift(index);
               const isHovered = hoveredDomain === domain.id;
+              
+              // Cascading wave response (0.6s delay between rings)
+              const waveDelay = index * 0.6;
+              const waveResponse = ripple.opacity > 0 ? 1 + ripple.scale * 0.05 : 1;
               
               return (
                 <g key={domain.id}>
-                  {/* Node glow */}
+                  {/* Anticipatory pre-glow (50px radius detection) */}
                   <motion.circle
                     cx={pos.x}
-                    cy={pos.y}
+                    cy={pos.y + drift}
+                    r={domain.nodeSize + 12}
+                    fill={domain.color}
+                    opacity={0}
+                    animate={{
+                      opacity: isHovered ? domain.opacity * 0.4 : 0
+                    }}
+                    transition={{ duration: 0.2 }}
+                    style={{
+                      filter: 'blur(18px)'
+                    }}
+                  />
+
+                  {/* Node glow with wave response */}
+                  <motion.circle
+                    cx={pos.x}
+                    cy={pos.y + drift}
                     r={domain.nodeSize + 8}
                     fill={domain.color}
                     opacity={domain.opacity * 0.3}
                     filter={`url(#node-glow-${domain.id})`}
                     animate={shouldReduceMotion ? {} : {
-                      scale: isHovered ? 1.08 : [1, 1.03, 1],
-                      opacity: isHovered ? domain.opacity * 0.5 : [domain.opacity * 0.3, domain.opacity * 0.35, domain.opacity * 0.3]
+                      scale: isHovered ? 1.1 : (hoveredDomain && hoveredDomain !== domain.id ? 1 : waveResponse),
+                      opacity: isHovered ? domain.opacity * 0.5 : (hoveredDomain && hoveredDomain !== domain.id ? domain.opacity * 0.25 : domain.opacity * 0.3)
                     }}
-                    transition={shouldReduceMotion ? { duration: 0 } : {
-                      scale: isHovered ? { duration: 0.25 } : { duration: 6, repeat: Infinity, ease: 'easeInOut' },
-                      opacity: { duration: isHovered ? 0.25 : 6, repeat: isHovered ? 0 : Infinity }
+                    transition={{
+                      scale: { duration: 0.35, ease: 'easeOut', delay: waveDelay },
+                      opacity: { duration: 0.35 }
                     }}
                     style={{
-                      transformOrigin: `${pos.x}px ${pos.y}px`
+                      transformOrigin: `${pos.x}px ${pos.y + drift}px`
                     }}
                   />
 
                   {/* Node core */}
                   <motion.circle
                     cx={pos.x}
-                    cy={pos.y}
+                    cy={pos.y + drift}
                     r={domain.nodeSize}
                     fill={domain.color}
                     opacity={domain.opacity}
@@ -513,27 +653,27 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                     onMouseEnter={() => setHoveredDomain(domain.id)}
                     onMouseLeave={() => setHoveredDomain(null)}
                     animate={shouldReduceMotion ? {} : {
-                      scale: isHovered ? 1.08 : [1, 1.03, 1],
+                      scale: isHovered ? 1.1 : waveResponse,
                       opacity: isHovered ? domain.opacity + 0.1 : domain.opacity
                     }}
-                    transition={shouldReduceMotion ? { duration: 0 } : {
-                      scale: isHovered ? { duration: 0.25, ease: HORIZON_EASE } : { duration: 6, repeat: Infinity, ease: 'easeInOut' },
-                      opacity: { duration: 0.25 }
+                    transition={{
+                      scale: { duration: 0.35, ease: 'easeOut', delay: waveDelay },
+                      opacity: { duration: 0.35 }
                     }}
                     style={{
                       pointerEvents: 'all',
-                      transformOrigin: `${pos.x}px ${pos.y}px`,
-                      filter: `drop-shadow(0 0 22px ${domain.color}40)`
+                      transformOrigin: `${pos.x}px ${pos.y + drift}px`,
+                      filter: `drop-shadow(0 0 22px ${domain.color}60)`
                     }}
                   />
 
-                  {/* Node highlight */}
+                  {/* Highlight */}
                   <ellipse
                     cx={pos.x - 3}
-                    cy={pos.y - 3}
+                    cy={pos.y + drift - 3}
                     rx="3"
                     ry="4"
-                    fill="rgba(255, 255, 255, 0.5)"
+                    fill="rgba(255, 255, 255, 0.6)"
                     style={{
                       filter: 'blur(1px)'
                     }}
@@ -542,6 +682,39 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
               );
             })}
           </svg>
+
+          {/* Always-Visible Captions */}
+          {macroDomains.map((domain, index) => {
+            const pos = getGridPosition(domain);
+            const drift = getLivingDrift(index);
+            const isHovered = hoveredDomain === domain.id;
+            
+            return (
+              <motion.div
+                key={`caption-${domain.id}`}
+                className="absolute pointer-events-none"
+                style={{
+                  left: pos.x,
+                  top: pos.y + drift + domain.nodeSize + 18,
+                  transform: 'translateX(-50%)',
+                  fontFamily: 'SF Pro Text, -apple-system, system-ui, sans-serif',
+                  fontSize: '12px',
+                  fontWeight: 500,
+                  letterSpacing: '-0.01em',
+                  color: domain.color,
+                  opacity: 0.8,
+                  textShadow: `0 0 8px ${domain.color}20`,
+                  whiteSpace: 'nowrap'
+                }}
+                animate={{
+                  opacity: isHovered ? 1 : 0.8
+                }}
+                transition={{ duration: 0.2 }}
+              >
+                {domain.name} – {domain.bias}
+              </motion.div>
+            );
+          })}
         </motion.div>
 
         {/* Center Hover Tooltip */}
@@ -554,10 +727,10 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 top: dimensions.height / 2 - 70,
                 transform: 'translateX(-50%)'
               }}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.14, ease: HORIZON_EASE }}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 12 }}
+              transition={{ duration: 0.35, ease: HORIZON_EASE }}
             >
               <div
                 className="px-4 py-2.5 rounded-xl"
@@ -566,7 +739,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                   backdropFilter: 'blur(18px)',
                   WebkitBackdropFilter: 'blur(18px)',
                   border: `1px solid ${globalPosture.color}40`,
-                  boxShadow: `0 6px 16px rgba(0,0,0,0.25)`,
+                  boxShadow: `0 8px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08)`,
                   borderRadius: '14px'
                 }}
               >
@@ -595,7 +768,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           )}
         </AnimatePresence>
 
-        {/* Domain Hover Tooltip */}
+        {/* Domain Hover Glass Card */}
         <AnimatePresence>
           {hoveredDomain && (
             <motion.div
@@ -604,10 +777,10 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 left: cursorPosition.x + 16,
                 top: cursorPosition.y - 40,
               }}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.14, ease: HORIZON_EASE }}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 12 }}
+              transition={{ duration: 0.35, ease: HORIZON_EASE }}
             >
               {(() => {
                 const domain = macroDomains.find(d => d.id === hoveredDomain);
@@ -615,19 +788,20 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 
                 return (
                   <div
-                    className="px-3 py-2 rounded-xl"
+                    className="px-4 py-3 rounded-xl"
                     style={{
                       background: 'rgba(255, 255, 255, 0.08)',
                       backdropFilter: 'blur(18px)',
                       WebkitBackdropFilter: 'blur(18px)',
                       border: `1px solid ${domain.color}40`,
-                      boxShadow: `0 6px 16px rgba(0,0,0,0.25)`,
-                      borderRadius: '14px'
+                      boxShadow: `0 8px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08)`,
+                      borderRadius: '14px',
+                      minWidth: '240px'
                     }}
                   >
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2 mb-2">
                       <div 
-                        className="w-2 h-2 rounded-full"
+                        className="w-2.5 h-2.5 rounded-full"
                         style={{ 
                           background: domain.color,
                           boxShadow: `0 0 8px ${domain.color}80`
@@ -641,20 +815,49 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                       </span>
                     </div>
                     <p 
-                      className="text-xs mb-1"
+                      className="text-xs mb-2"
                       style={{ 
                         color: 'rgba(255, 255, 255, 0.75)',
                         lineHeight: '1.4',
-                        maxWidth: '240px',
-                        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
-                        fontSize: '13.5px'
+                        fontFamily: 'SF Pro Text, -apple-system, system-ui, sans-serif',
+                        fontSize: '13px'
                       }}
                     >
                       {domain.trend}
                     </p>
-                    <div className="text-xs" style={{ color: 'rgba(255, 255, 255, 0.65)' }}>
-                      Confidence: {domain.confidence}%
+                    <div className="flex items-center justify-between text-xs">
+                      <span style={{ color: 'rgba(255, 255, 255, 0.65)' }}>
+                        Confidence: {domain.confidence}%
+                      </span>
+                      <span style={{ color: domain.color, fontWeight: 600 }}>
+                        {domain.bias}
+                      </span>
                     </div>
+                    
+                    {/* Correlation ripple indicator */}
+                    <motion.div 
+                      className="mt-2 pt-2 border-t"
+                      style={{ borderColor: 'rgba(255, 255, 255, 0.08)' }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <motion.div
+                          className="w-1.5 h-1.5 rounded-full"
+                          style={{ background: domain.color }}
+                          animate={{
+                            scale: [1, 1.5, 1],
+                            opacity: [0.6, 1, 0.6]
+                          }}
+                          transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            ease: 'easeInOut'
+                          }}
+                        />
+                        <span style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '11px' }}>
+                          Correlation pulse active
+                        </span>
+                      </div>
+                    </motion.div>
                   </div>
                 );
               })()}
