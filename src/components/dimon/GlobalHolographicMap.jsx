@@ -1,216 +1,124 @@
-
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
-import { motion, AnimatePresence, useSpring } from 'framer-motion';
-import { Globe } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight } from 'lucide-react';
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// MACRO EQUILIBRIUM GRID V2.2 - GLASS ECHOES (OS HORIZON)
-// Parallax reflections + subsurface ripples for macOS Tahoe realism
+// MACRO EQUILIBRIUM GRID V2.0 - OS HORIZON FINAL (macOS Tahoe)
+// Instant comprehension (<5s) with calm, coherent breathing motion
 // ============================================================================
 
-// Visual state definitions for each macro posture
-const POSTURE_STATES = {
-  RISK_ON: {
-    id: 'RISK_ON',
-    label: 'Risk-On',
-    coreHue: ['#D7F2F7', '#A7E9EF'], // Aqua-white gradient
-    nucleusGlowMultiplier: 1.1,
-    motionAmplitudeMultiplier: 1.05,
-    pulseInterval: 6,
-    mistSpeedMultiplier: 1.1,
-    labelTone: 'rgba(255, 255, 255, 0.92)',
-    accentReflection: '#91E7F2',
-    emotionTone: 'buoyant clarity',
-    breathingScale: [1.00, 1.018, 1.00]
+// OS Horizon Theming Tokens (macOS Tahoe inspired)
+const HORIZON = {
+  colors: {
+    bg: "#0D1015",
+    glass: "rgba(17, 23, 30, 0.85)",
+    border: "rgba(255,255,255,0.06)",
+    textPrimary: "rgba(255,255,255,0.92)",
+    textSecondary: "rgba(255,255,255,0.72)",
+    textTertiary: "rgba(255,255,255,0.60)",
+    rates: "#7E77FF",
+    fx: "#6ECBE0",
+    growth: "#7AD8B3",
+    geo: "#D8AE6C"
   },
-  NEUTRAL: {
-    id: 'NEUTRAL',
-    label: 'Neutral',
-    coreHue: ['#C7CCD4', '#AEB5BE'], // Slate-silver gradient
-    nucleusGlowMultiplier: 1.0,
-    motionAmplitudeMultiplier: 1.0,
-    pulseInterval: 8,
-    mistSpeedMultiplier: 1.0,
-    labelTone: 'rgba(255, 255, 255, 0.85)',
-    accentReflection: '#DADDE2',
-    emotionTone: 'stable equilibrium',
-    breathingScale: [1.00, 1.015, 1.00]
-  },
-  RISK_OFF: {
-    id: 'RISK_OFF',
-    label: 'Risk-Off',
-    coreHue: ['#F5E6C8', '#EBC69C'], // Amber-white gradient
-    nucleusGlowMultiplier: 0.85,
-    motionAmplitudeMultiplier: 0.8,
-    pulseInterval: 10,
-    mistSpeedMultiplier: 0.9,
-    labelTone: 'rgba(255, 255, 255, 0.78)',
-    accentReflection: '#E6C082',
-    emotionTone: 'measured caution',
-    breathingScale: [1.00, 1.012, 1.00]
-  }
+  radii: { glass: 16, chip: 12 },
+  blur: { glass: 12, canvas: 28 }
 };
 
-const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRAL', macroSignalStrength = 1.0 }) => {
+// Mock macro domain data
+const MOCK_DOMAINS = [
+  {
+    id: "rates",
+    posture: "hawkish",
+    confidence_pct: 78,
+    strength: 0.82,
+    summary: "Fed holding firm; terminal rate expectations drift higher on sticky services inflation.",
+    ripple: [
+      "Credit spreads widen",
+      "Tech multiples compress",
+      "EM funding costs rise"
+    ],
+    last_updated_iso: new Date().toISOString(),
+    sparkline: [0.72, 0.74, 0.76, 0.75, 0.78, 0.80, 0.79, 0.81, 0.82]
+  },
+  {
+    id: "fx",
+    posture: "stable",
+    confidence_pct: 65,
+    strength: 0.58,
+    summary: "Dollar range-bound as yield differentials narrow; carry trades unwind slowly.",
+    ripple: [
+      "EM currencies stabilize",
+      "Energy imports neutral"
+    ],
+    last_updated_iso: new Date().toISOString(),
+    sparkline: [0.60, 0.59, 0.58, 0.57, 0.58, 0.59, 0.58, 0.57, 0.58]
+  },
+  {
+    id: "growth",
+    posture: "softening",
+    confidence_pct: 71,
+    strength: 0.68,
+    summary: "China slowdown weighs on global demand; US consumer resilient but moderating.",
+    ripple: [
+      "Commodity prices soften",
+      "Defensive rotation begins",
+      "Services hold up"
+    ],
+    last_updated_iso: new Date().toISOString(),
+    sparkline: [0.75, 0.74, 0.72, 0.70, 0.69, 0.68, 0.67, 0.68, 0.68]
+  },
+  {
+    id: "geopolitics",
+    posture: "tightening",
+    confidence_pct: 58,
+    strength: 0.72,
+    summary: "Energy security concerns persist; trade fragmentation continues to reshape supply chains.",
+    ripple: [
+      "Energy premium elevated",
+      "Onshoring accelerates"
+    ],
+    last_updated_iso: new Date().toISOString(),
+    sparkline: [0.65, 0.66, 0.68, 0.70, 0.71, 0.72, 0.71, 0.72, 0.72]
+  }
+];
+
+const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
   const containerRef = useRef(null);
   const [hoveredDomain, setHoveredDomain] = useState(null);
-  const [isHoveringCenter, setIsHoveringCenter] = useState(false);
-  const [dimensions, setDimensions] = useState({ width: 800, height: 500 });
-  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
-  const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
-  const [isInteracting, setIsInteracting] = useState(false);
+  const [selectedDomain, setSelectedDomain] = useState(null);
+  const [dimensions, setDimensions] = useState({ width: 800, height: 480 });
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
   const [time, setTime] = useState(0);
-  const [isStateTransitioning, setIsStateTransitioning] = useState(false);
-  
-  // Glass Echoes v2.2 state
-  const [ripples, setRipples] = useState([]);
-  const [labelLift, setLabelLift] = useState({});
-  const [trailGlows, setTrailGlows] = useState([]);
-  const [fpsStable, setFpsStable] = useState(true);
-  const lastRippleTime = useRef({});
-  const frameTimesRef = useRef([]);
-  
-  // Spring-animated values for smooth state transitions
-  const glowIntensity = useSpring(1.0, { stiffness: 80, damping: 25 });
-  const motionAmplitude = useSpring(1.0, { stiffness: 80, damping: 25 });
-  
-  // Glass reflection parallax spring
-  const glassReflectionX = useSpring(0, { stiffness: 400, damping: 40 });
-  const glassReflectionY = useSpring(0, { stiffness: 400, damping: 40 });
+  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
 
-  // OS Horizon easing
-  const HORIZON_EASE = [0.45, 0, 0.1, 1];
+  const domains = MOCK_DOMAINS;
 
-  // Living color palette - desaturated, calm tones
-  const LIVING_COLORS = {
-    rates: '#A89BFA',      // Lavender
-    fx: '#8CC8E7',         // Soft Aqua
-    growth: '#A1D0B5',     // Mist Green
-    geopolitics: '#E1B97A' // Warm Amber
-  };
-
-  // Get active posture state with fallback
-  const activePosture = useMemo(() => {
-    return POSTURE_STATES[globalPostureState] || POSTURE_STATES.NEUTRAL;
-  }, [globalPostureState]);
-
-  // Calculate modulated glow intensity with optional strength parameter
-  const modulatedGlowIntensity = useMemo(() => {
-    const baseMultiplier = activePosture.nucleusGlowMultiplier;
-    const strengthModulation = 0.85 + (0.15 * Math.max(0, Math.min(1, macroSignalStrength)));
-    return baseMultiplier * strengthModulation;
-  }, [activePosture, macroSignalStrength]);
-
-  // Update spring values when state changes
-  useEffect(() => {
-    setIsStateTransitioning(true);
+  // Calculate dominant driver
+  const dominantDriver = useMemo(() => {
+    const maxStrength = Math.max(...domains.map(d => d.strength));
+    const dominant = domains.find(d => d.strength === maxStrength);
     
-    // Optional "breath catch" — 200ms pause for human feel
-    const breathCatchTimer = setTimeout(() => {
-      glowIntensity.set(modulatedGlowIntensity);
-      motionAmplitude.set(activePosture.motionAmplitudeMultiplier);
-    }, 200);
-
-    const transitionCompleteTimer = setTimeout(() => {
-      setIsStateTransitioning(false);
-    }, 1100); // 200ms breath + 900ms transition
-
-    return () => {
-      clearTimeout(breathCatchTimer);
-      clearTimeout(transitionCompleteTimer);
-    };
-  }, [activePosture, modulatedGlowIntensity, glowIntensity, motionAmplitude]);
-
-  // Macro domains with living properties
-  const macroDomains = useMemo(() => {
-    const baseStrength = [78, 65, 71, 58];
-    const baseVolatility = [0.8, 0.6, 0.9, 0.7];
+    if (maxStrength < 0.65) return "balanced";
     
-    return [
-      {
-        id: 'rates',
-        name: 'Rates',
-        color: LIVING_COLORS.rates,
-        opacity: 0.85,
-        gridPosition: 'top-left',
-        strength: baseStrength[0],
-        volatility: baseVolatility[0],
-        trend: 'Hawkish tilt continues',
-        bias: 'Hawkish Tilt ↑',
-        nodeSize: 16 + (baseStrength[0] / 100) * 32,
-        confidence: Math.round((baseStrength[0] + baseVolatility[0] * 20) / 2)
-      },
-      {
-        id: 'fx',
-        name: 'FX',
-        color: LIVING_COLORS.fx,
-        opacity: 0.85,
-        gridPosition: 'top-right',
-        strength: baseStrength[1],
-        volatility: baseVolatility[1],
-        trend: 'USD strength persists',
-        bias: 'Dollar Strength →',
-        nodeSize: 16 + (baseStrength[1] / 100) * 32,
-        confidence: Math.round((baseStrength[1] + baseVolatility[1] * 20) / 2)
-      },
-      {
-        id: 'growth',
-        name: 'Growth',
-        color: LIVING_COLORS.growth,
-        opacity: 0.85,
-        gridPosition: 'bottom-left',
-        strength: baseStrength[2],
-        volatility: baseVolatility[2],
-        trend: 'China slowdown weighing',
-        bias: 'Soft Landing ~',
-        nodeSize: 16 + (baseStrength[2] / 100) * 32,
-        confidence: Math.round((baseStrength[2] + baseVolatility[2] * 20) / 2)
-      },
-      {
-        id: 'geopolitics',
-        name: 'Geopolitics',
-        color: LIVING_COLORS.geopolitics,
-        opacity: 0.85,
-        gridPosition: 'bottom-right',
-        strength: baseStrength[3],
-        volatility: baseVolatility[3],
-        trend: 'Energy security concerns',
-        bias: 'Risk Premium ↑',
-        nodeSize: 16 + (baseStrength[3] / 100) * 32,
-        confidence: Math.round((baseStrength[3] + baseVolatility[3] * 20) / 2)
-      }
-    ];
-  }, []);
-
-  // Calculate global posture with light hue (now using activePosture)
-  const getGlobalPosture = useCallback(() => {
-    const avgStrength = macroDomains.reduce((sum, d) => sum + d.strength, 0) / macroDomains.length;
-    const maxStrength = Math.max(...macroDomains.map(d => d.strength));
-    const dominantDomain = macroDomains.find(d => d.strength === maxStrength);
+    const sortedByStrength = [...domains].sort((a, b) => b.strength - a.strength);
+    if (sortedByStrength[0].strength - sortedByStrength[1].strength < 0.1) {
+      return "balanced";
+    }
     
-    return { 
-      label: activePosture.label,
-      color: activePosture.coreHue[0],
-      lightHue: activePosture.coreHue[0],
-      confidence: Math.round(avgStrength),
-      dominantDriver: dominantDomain.name,
-      emotionTone: activePosture.emotionTone
-    };
-  }, [macroDomains, activePosture]);
+    return dominant.id;
+  }, [domains]);
 
-  const globalPosture = getGlobalPosture();
-
-  // Correlations
-  const getCorrelations = useCallback(() => {
-    return [
-      { from: 'rates', to: 'fx', strength: 0.75 },
-      { from: 'growth', to: 'geopolitics', strength: 0.72 }
-    ];
-  }, []);
-
-  const correlations = getCorrelations();
+  // Generate global summary
+  const globalSummary = useMemo(() => {
+    const ratesDomain = domains.find(d => d.id === "rates");
+    const fxDomain = domains.find(d => d.id === "fx");
+    const growthDomain = domains.find(d => d.id === "growth");
+    const geoDomain = domains.find(d => d.id === "geopolitics");
+    
+    return `Rates leaning ${ratesDomain.posture}; FX ${fxDomain.posture}; Growth ${growthDomain.posture}; Geopolitics ${geoDomain.posture}.`;
+  }, [domains]);
 
   // Check reduced motion
   useEffect(() => {
@@ -221,40 +129,12 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
     return () => mediaQuery.removeEventListener('change', handler);
   }, []);
 
-  // FPS monitoring for performance guard
-  useEffect(() => {
-    if (shouldReduceMotion) return;
-    
-    let lastTime = performance.now();
-    let frameId;
-    
-    const checkFPS = () => {
-      const now = performance.now();
-      const frameTime = now - lastTime;
-      lastTime = now;
-      
-      frameTimesRef.current.push(frameTime);
-      if (frameTimesRef.current.length > 5) {
-        frameTimesRef.current.shift();
-      }
-      
-      // Check if consistently over 16.6ms (60 FPS threshold)
-      const avgFrameTime = frameTimesRef.current.reduce((a, b) => a + b, 0) / frameTimesRef.current.length;
-      setFpsStable(avgFrameTime <= 16.6);
-      
-      frameId = requestAnimationFrame(checkFPS);
-    };
-    
-    frameId = requestAnimationFrame(checkFPS);
-    return () => cancelAnimationFrame(frameId);
-  }, [shouldReduceMotion]);
-
   // Update dimensions
   useEffect(() => {
     const updateDimensions = () => {
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
-        setDimensions({ width: rect.width, height: Math.min(rect.height, 500) });
+        setDimensions({ width: rect.width, height: 480 });
       }
     };
 
@@ -263,54 +143,32 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
     return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
-  // Living pulse animation loop
+  // Animation loop for breathing motion
   useEffect(() => {
     if (shouldReduceMotion) return;
 
     let animationFrameId;
-    let startTime = Date.now();
+    const startTime = performance.now();
 
     const animate = () => {
-      const now = Date.now();
-      const elapsed = (now - startTime) / 1000;
+      const elapsed = (performance.now() - startTime) / 1000;
       setTime(elapsed);
       animationFrameId = requestAnimationFrame(animate);
     };
 
     animationFrameId = requestAnimationFrame(animate);
-
-    return () => {
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
-    };
+    return () => cancelAnimationFrame(animationFrameId);
   }, [shouldReduceMotion]);
 
-  // Glass reflection parallax tracking
+  // Track cursor position
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        setCursorPosition({ x, y });
-        
-        if (isInteracting && !shouldReduceMotion) {
-          const centerX = rect.width / 2;
-          const centerY = rect.height / 2;
-          
-          // Parallax for content
-          const offsetX = ((x - centerX) / centerX) * 5;
-          const offsetY = ((y - centerY) / centerY) * 5;
-          setParallaxOffset({ x: offsetX, y: offsetY });
-          
-          // Glass reflection parallax (smaller range, clamped)
-          const glassOffsetX = Math.max(-10, Math.min(10, ((x - centerX) / centerX) * 0.035 * rect.width));
-          const glassOffsetY = Math.max(-10, Math.min(10, ((y - centerY) / centerY) * 0.035 * rect.height));
-          glassReflectionX.set(glassOffsetX);
-          glassReflectionY.set(glassOffsetY);
-        }
+        setCursorPosition({
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top
+        });
       }
     };
 
@@ -318,165 +176,63 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
       containerRef.current.addEventListener('mousemove', handleMouseMove);
       return () => containerRef.current?.removeEventListener('mousemove', handleMouseMove);
     }
-  }, [isInteracting, shouldReduceMotion, glassReflectionX, glassReflectionY]);
+  }, []);
 
-  // Reset parallax
-  useEffect(() => {
-    if (!isInteracting) {
-      const timer = setTimeout(() => {
-        setParallaxOffset({ x: 0, y: 0 });
-        glassReflectionX.set(0);
-        glassReflectionY.set(0);
-      }, 30);
-      return () => clearTimeout(timer);
-    }
-  }, [isInteracting, glassReflectionX, glassReflectionY]);
-
-  // Spawn subsurface ripple
-  const spawnRipple = useCallback((x, y, elementId, isNucleus = false) => {
-    if (shouldReduceMotion) return;
-    
-    const now = Date.now();
-    const lastTime = lastRippleTime.current[elementId] || 0;
-    
-    // Throttle: min 700ms between ripples per element
-    if (now - lastTime < 700) return;
-    
-    lastRippleTime.current[elementId] = now;
-    
-    // Cap at 2 concurrent ripples
-    setRipples(prev => {
-      const newRipples = [...prev];
-      if (newRipples.length >= 2) {
-        newRipples.shift(); // Remove oldest
-      }
-      
-      // Ripple params adjusted by posture state
-      const baseRadius = isNucleus ? 14 : 14;
-      const baseMaxRadius = isNucleus ? 180 : 140;
-      const baseDuration = isNucleus ? 1100 : 900;
-      const baseOpacity = 0.10;
-      
-      let radiusMultiplier = 1;
-      let opacityMultiplier = 1;
-      let durationMultiplier = 1;
-      
-      if (activePosture.id === 'RISK_ON') {
-        radiusMultiplier = 1.1;
-        durationMultiplier = 0.9;
-      } else if (activePosture.id === 'RISK_OFF') {
-        radiusMultiplier = 0.9;
-        opacityMultiplier = 0.8;
-        durationMultiplier = 1.1;
-      }
-      
-      const ripple = {
-        id: `${elementId}-${now}`,
-        x,
-        y,
-        startRadius: baseRadius,
-        maxRadius: baseMaxRadius * radiusMultiplier,
-        duration: baseDuration * durationMultiplier,
-        opacity: baseOpacity * opacityMultiplier,
-        startTime: now
-      };
-      
-      newRipples.push(ripple);
-      
-      // Auto-remove after duration
-      setTimeout(() => {
-        setRipples(current => current.filter(r => r.id !== ripple.id));
-      }, ripple.duration);
-      
-      return newRipples;
-    });
-    
-    // Trigger label lift for nearby labels
-    setLabelLift(prev => ({ ...prev, [elementId]: true }));
-    setTimeout(() => {
-      setLabelLift(prev => ({ ...prev, [elementId]: false }));
-    }, 320);
-  }, [shouldReduceMotion, activePosture]);
-
-  // Spawn trail glow during pulse peak
-  const spawnTrailGlow = useCallback((domain, index) => {
-    if (shouldReduceMotion || !fpsStable) return;
-    
-    const pos = getGridPosition(domain);
-    const drift = getLivingDrift(index);
-    
-    const trail = {
-      id: `trail-${domain.id}-${Date.now()}`,
-      x: pos.x,
-      y: pos.y + drift,
-      color: domain.color,
-      startTime: Date.now()
-    };
-    
-    setTrailGlows(prev => [...prev, trail]);
-    
-    setTimeout(() => {
-      setTrailGlows(current => current.filter(t => t.id !== trail.id));
-    }, 480);
-  }, [shouldReduceMotion, fpsStable, dimensions, time, activePosture, motionAmplitude]); // Added missing dependencies to useCallback
-
-  // Calculate fixed grid position
-  const getGridPosition = useCallback((domain) => {
+  // Get diamond position for each domain
+  const getDomainPosition = useCallback((domainId, index) => {
     const centerX = dimensions.width / 2;
-    const centerY = dimensions.height / 2;
-    const offset = 100;
-    
+    const centerY = dimensions.height / 2 - 20;
+    const radius = 140;
+
     const positions = {
-      'top-left': { x: centerX - offset, y: centerY - offset },
-      'top-right': { x: centerX + offset, y: centerY - offset },
-      'bottom-left': { x: centerX - offset, y: centerY + offset },
-      'bottom-right': { x: centerX + offset, y: centerY + offset }
+      rates: { x: centerX, y: centerY - radius }, // Top
+      fx: { x: centerX + radius, y: centerY }, // Right
+      growth: { x: centerX, y: centerY + radius }, // Bottom
+      geopolitics: { x: centerX - radius, y: centerY } // Left
     };
-    
-    return positions[domain.gridPosition] || { x: centerX, y: centerY };
+
+    return positions[domainId] || { x: centerX, y: centerY };
   }, [dimensions]);
 
-  // Calculate living drift (vertical ±3px over dynamic interval, respecting state)
-  const getLivingDrift = useCallback((index) => {
-    if (shouldReduceMotion) return 0;
-    const currentAmplitude = motionAmplitude.get();
-    const phase = (time / activePosture.pulseInterval) * Math.PI * 2;
-    return Math.sin(phase + (index * Math.PI / 4)) * 3 * currentAmplitude;
-  }, [time, shouldReduceMotion, activePosture, motionAmplitude]);
+  // Breathing animation (shared harmonic rhythm)
+  const getBreathingOffset = useCallback((index) => {
+    if (shouldReduceMotion) return { y: 0, scale: 1 };
+    
+    const phase = (time / 1000) + (index * Math.PI * 0.25);
+    const y = Math.sin(phase) * 6; // 6px max drift
+    const scale = 1 + Math.sin(phase + 0.6) * 0.03; // ±3% scale
+    
+    return { y, scale };
+  }, [time, shouldReduceMotion]);
 
-  // Calculate nucleus ripple (using dynamic pulse interval)
-  const getNucleusRipple = useCallback(() => {
-    if (shouldReduceMotion) return { scale: 1, opacity: 0 };
-    const ripplePhase = (time % activePosture.pulseInterval) / activePosture.pulseInterval;
-    if (ripplePhase < 0.3) {
-      return {
-        scale: 1 + ripplePhase * 0.5,
-        opacity: (1 - ripplePhase / 0.3) * 0.25 * glowIntensity.get()
-      };
-    }
-    return { scale: 1, opacity: 0 };
-  }, [time, shouldReduceMotion, activePosture, glowIntensity]);
-
-  const ripple = getNucleusRipple();
-
-  // Get state-aware accent color for info cards
-  const getStateAccentColor = () => {
-    return activePosture.accentReflection;
+  // Get domain color
+  const getDomainColor = (domainId) => {
+    const colorMap = {
+      rates: HORIZON.colors.rates,
+      fx: HORIZON.colors.fx,
+      growth: HORIZON.colors.growth,
+      geopolitics: HORIZON.colors.geo
+    };
+    return colorMap[domainId] || HORIZON.colors.rates;
   };
 
-  // Detect pulse peak for trail glow spawning
-  useEffect(() => {
-    if (shouldReduceMotion || !fpsStable) return;
-    
-    const phase = (time / activePosture.pulseInterval) % 1;
-    
-    // Spawn trails at pulse peak (phase ~0.5)
-    if (phase > 0.48 && phase < 0.52) {
-      macroDomains.forEach((domain, index) => {
-        spawnTrailGlow(domain, index);
-      });
-    }
-  }, [time, activePosture, shouldReduceMotion, fpsStable, macroDomains, spawnTrailGlow]);
+  // Get domain icon
+  const getDomainIcon = (domainId) => {
+    const iconMap = {
+      rates: "📊",
+      fx: "💱",
+      growth: "📈",
+      geopolitics: "🌍"
+    };
+    return iconMap[domainId] || "•";
+  };
+
+  // Get posture icon
+  const getPostureIcon = (posture) => {
+    if (["hawkish", "tightening", "firming"].includes(posture)) return <TrendingUp className="w-4 h-4" />;
+    if (["dovish", "loosening", "softening"].includes(posture)) return <TrendingDown className="w-4 h-4" />;
+    return <Minus className="w-4 h-4" />;
+  };
 
   return (
     <motion.section
@@ -489,23 +245,23 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
           <Globe className="w-6 h-6 text-blue-300" />
           <div>
             <h2 
-              className="font-bold text-gray-100"
+              className="font-bold"
               style={{
                 fontSize: '16px',
                 lineHeight: '22px',
-                letterSpacing: '0.01em'
+                letterSpacing: '0.01em',
+                color: HORIZON.colors.textPrimary
               }}
             >
               Macro Equilibrium Grid
             </h2>
             <p 
-              className="text-gray-400"
               style={{
                 fontSize: '13px',
-                color: 'rgba(255, 255, 255, 0.68)'
+                color: HORIZON.colors.textTertiary
               }}
             >
-              Living balance of global macro forces • {activePosture.emotionTone}
+              Global macro balance at a glance.
             </p>
           </div>
         </div>
@@ -530,7 +286,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
               background: 'rgba(255, 255, 255, 0.05)',
               backdropFilter: 'blur(14px)',
               WebkitBackdropFilter: 'blur(14px)',
-              border: '1px solid rgba(255, 255, 255, 0.06)',
+              border: `1px solid ${HORIZON.colors.border}`,
               borderRadius: '10px'
             }}
             whileHover={{
@@ -540,11 +296,12 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
             }}
             transition={{ duration: 0.3 }}
           >
-            <motion.span 
-              className="text-xs font-medium text-gray-400 group-hover:text-gray-300 transition-colors duration-300"
+            <span 
+              className="text-xs font-medium transition-colors duration-300"
+              style={{ color: HORIZON.colors.textTertiary }}
             >
               Powered by
-            </motion.span>
+            </span>
             
             <motion.div
               whileHover={{ scale: 1.1, rotate: [0, -2, 2, 0] }}
@@ -553,662 +310,331 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
               <LyraLogo className="w-5 h-5" />
             </motion.div>
             
-            <motion.span 
-              className="text-sm font-bold text-white group-hover:text-blue-200 transition-colors duration-300"
+            <span 
+              className="text-sm font-bold"
+              style={{ color: HORIZON.colors.textPrimary }}
             >
               Lyra
-            </motion.span>
+            </span>
           </motion.div>
         </motion.div>
       </div>
 
-      {/* Living Grid Container */}
+      {/* Glass Canvas */}
       <motion.div 
         ref={containerRef}
-        className="relative w-full rounded-3xl overflow-hidden"
+        className="relative w-full rounded-3xl overflow-visible"
         style={{
-          height: '500px',
+          height: '480px',
           background: 'radial-gradient(ellipse at center, rgba(10, 12, 18, 0.96) 0%, rgba(6, 8, 12, 0.98) 100%)',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          backdropFilter: 'blur(22px)',
+          border: `1px solid ${HORIZON.colors.border}`,
+          backdropFilter: `blur(${HORIZON.blur.canvas}px)`,
           boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 12px 40px rgba(0,0,0,0.3)',
-          willChange: 'transform, opacity'
         }}
-        onMouseEnter={() => {
-          setIsInteracting(true);
-          if (containerRef.current) {
-            containerRef.current.style.filter = 'brightness(1.02)';
-          }
-        }}
-        onMouseLeave={() => {
-          setIsInteracting(false);
-          setHoveredDomain(null);
-          setIsHoveringCenter(false);
-          if (containerRef.current) {
-            containerRef.current.style.filter = 'brightness(1)';
-          }
-        }}
-        animate={shouldReduceMotion ? {} : {
-          scale: activePosture.breathingScale,
-        }}
-        transition={shouldReduceMotion ? {} : {
-          duration: activePosture.pulseInterval,
-          repeat: Infinity,
-          ease: 'easeInOut'
-        }}
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       >
-        {/* Glass Reflection Pane - v2.2 */}
-        {!shouldReduceMotion && (
-          <motion.div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%, rgba(255,255,255,0.10) 100%)',
-              mixBlendMode: 'overlay',
-              x: glassReflectionX,
-              y: glassReflectionY,
-              willChange: 'transform',
-              zIndex: 5
-            }}
-            animate={shouldReduceMotion ? {} : {
-              opacity: [0.06, 0.10, 0.06]
-            }}
-            transition={{
-              duration: 16,
-              repeat: Infinity,
-              ease: 'easeInOut'
-            }}
-            aria-hidden="true"
-          />
-        )}
-
-        {/* Ambient Mist Particles with state-aware speed */}
+        {/* Ambient particles (reduced motion aware) */}
         {!shouldReduceMotion && (
           <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-            {[...Array(12)].map((_, i) => (
+            {[...Array(8)].map((_, i) => (
               <motion.div
-                key={`mist-${i}`}
+                key={`particle-${i}`}
                 className="absolute rounded-full"
                 style={{
-                  width: 2 + Math.random() * 3,
-                  height: 2 + Math.random() * 3,
-                  background: `${activePosture.coreHue[0]}15`,
-                  filter: 'blur(1px)',
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
+                  width: 2,
+                  height: 2,
+                  background: 'rgba(255, 255, 255, 0.12)',
+                  filter: 'blur(0.5px)',
+                  left: `${20 + (i * 10)}%`,
+                  top: `${30 + (i % 3) * 20}%`,
                 }}
                 animate={{
-                  x: [0, Math.random() * 40 - 20],
-                  y: [0, Math.random() * 40 - 20],
-                  opacity: [0.025, 0.03, 0.025]
+                  y: [0, -20, 0],
+                  opacity: [0.12, 0.25, 0.12]
                 }}
                 transition={{
-                  duration: (8 + Math.random() * 4) / activePosture.mistSpeedMultiplier,
+                  duration: 6 + i * 0.5,
                   repeat: Infinity,
                   ease: 'easeInOut',
-                  delay: Math.random() * 2
+                  delay: i * 0.3
                 }}
               />
             ))}
           </div>
         )}
 
-        {/* Dynamic Ambient Light Layer - crossfades with state */}
-        <motion.div 
-          className="absolute inset-0 pointer-events-none transition-colors duration-1000"
-          style={{
-            background: `radial-gradient(ellipse at center, ${activePosture.coreHue[0]}08 0%, transparent 70%)`,
-            mixBlendMode: 'screen',
-            opacity: 0.4
-          }}
-          animate={{
-            background: `radial-gradient(ellipse at center, ${activePosture.coreHue[0]}08 0%, transparent 70%)`
-          }}
-          transition={{
-            duration: 0.9,
-            ease: [0.25, 0.1, 0.25, 1]
-          }}
-          aria-hidden="true"
-        />
-
-        {/* Subsurface Glow Layer */}
-        <div 
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: 'rgba(255, 255, 255, 0.04)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
-            mixBlendMode: 'overlay',
-            borderRadius: '24px'
-          }}
-          aria-hidden="true"
-        />
-
-        {/* Subsurface Ripples - v2.2 */}
-        <AnimatePresence>
-          {ripples.map(ripple => {
-            const elapsed = (Date.now() - ripple.startTime) / ripple.duration;
-            if (elapsed >= 1) return null;
-            
-            const currentRadius = ripple.startRadius + (ripple.maxRadius - ripple.startRadius) * elapsed;
-            const currentOpacity = ripple.opacity * (1 - elapsed);
-            
-            return (
-              <motion.div
-                key={ripple.id}
-                className="absolute pointer-events-none"
-                style={{
-                  left: ripple.x,
-                  top: ripple.y,
-                  width: currentRadius * 2,
-                  height: currentRadius * 2,
-                  marginLeft: -currentRadius,
-                  marginTop: -currentRadius,
-                  borderRadius: '50%',
-                  border: `2px solid rgba(255, 255, 255, ${currentOpacity})`,
-                  boxShadow: `0 0 12px rgba(255, 255, 255, ${currentOpacity * 0.5})`,
-                  filter: 'blur(12px)',
-                  mixBlendMode: 'soft-light',
-                  zIndex: 2,
-                  willChange: 'transform, opacity'
-                }}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ 
-                  opacity: currentOpacity, 
-                  scale: currentRadius / ripple.startRadius 
-                }}
-                exit={{ opacity: 0 }}
-                transition={{
-                  duration: ripple.duration / 1000,
-                  ease: [0.45, 0, 0.1, 1]
-                }}
-                aria-hidden="true"
-              />
-            );
-          })}
-        </AnimatePresence>
-
-        {/* Trail Glows - v2.2 */}
-        {!shouldReduceMotion && fpsStable && (
-          <AnimatePresence>
-            {trailGlows.map(trail => {
-              const elapsed = (Date.now() - trail.startTime) / 480;
-              if (elapsed >= 1) return null;
-              
-              // Desaturate and brighten color
-              const trailColor = trail.color.replace(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/, (match, r, g, b) => {
-                const avg = (parseInt(r) + parseInt(g) + parseInt(b)) / 3;
-                const newR = Math.min(255, parseInt(r) * 0.75 + avg * 0.25 + 15);
-                const newG = Math.min(255, parseInt(g) * 0.75 + avg * 0.25 + 15);
-                const newB = Math.min(255, parseInt(b) * 0.75 + avg * 0.25 + 15);
-                return `rgb(${newR}, ${newG}, ${newB})`;
-              });
-              
-              return (
-                <motion.div
-                  key={trail.id}
-                  className="absolute pointer-events-none"
-                  style={{
-                    left: trail.x - 32,
-                    top: trail.y - 4,
-                    width: Math.max(36, 64 * (1 - elapsed)),
-                    height: 8,
-                    background: `linear-gradient(90deg, ${trailColor}00, ${trailColor}${Math.floor((0.08 * (1 - elapsed)) * 255).toString(16).padStart(2, '0')}, ${trailColor}00)`,
-                    filter: 'blur(4px)',
-                    zIndex: 1,
-                    willChange: 'opacity'
-                  }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 0.08 * (1 - elapsed) }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.48, ease: 'easeOut' }}
-                  aria-hidden="true"
-                />
-              );
-            })}
-          </AnimatePresence>
-        )}
-
-        {/* Grid System with Living Motion */}
-        <motion.div 
+        <svg 
+          width={dimensions.width} 
+          height={dimensions.height}
           className="absolute inset-0"
-          animate={{
-            x: parallaxOffset.x,
-            y: parallaxOffset.y
-          }}
-          transition={{
-            type: "spring",
-            stiffness: 100,
-            damping: 20,
-            mass: 0.8,
-            duration: 0.4
-          }}
-          style={{
-            willChange: 'transform',
-            zIndex: 3
-          }}
+          style={{ overflow: 'visible' }}
         >
-          <svg 
-            width={dimensions.width} 
-            height={dimensions.height}
-            className="absolute inset-0"
-            style={{ pointerEvents: 'none' }}
-          >
-            <defs>
-              {/* Enhanced glow filters */}
-              {macroDomains.map((domain) => (
-                <filter key={`glow-${domain.id}`} id={`node-glow-${domain.id}`} x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation="16" result="blur" />
-                  <feFlood floodColor={domain.color} floodOpacity="0.6" />
-                  <feComposite in2="blur" operator="in" result="glow" />
-                  <feMerge>
-                    <feMergeNode in="glow" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              ))}
+          <defs>
+            {/* Glow filters for each domain */}
+            {domains.map((domain) => (
+              <filter key={`glow-${domain.id}`} id={`glow-${domain.id}`} x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="8" result="blur" />
+                <feFlood floodColor={getDomainColor(domain.id)} floodOpacity="0.5" />
+                <feComposite in2="blur" operator="in" result="glow" />
+                <feMerge>
+                  <feMergeNode in="glow" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            ))}
 
-              {/* Nucleus gradient - now state-aware */}
-              <radialGradient id="nucleus-gradient">
-                <stop offset="0%" stopColor={activePosture.coreHue[0]} stopOpacity="0.15" />
-                <stop offset="100%" stopColor={activePosture.coreHue[1]} stopOpacity="0.02" />
-              </radialGradient>
+            {/* Halo line gradients */}
+            {domains.map((domain) => (
+              <linearGradient key={`halo-${domain.id}`} id={`halo-${domain.id}`}>
+                <stop offset="0%" stopColor={getDomainColor(domain.id)} stopOpacity="0.3" />
+                <stop offset="100%" stopColor={getDomainColor(domain.id)} stopOpacity="0.65" />
+              </linearGradient>
+            ))}
+          </defs>
 
-              {/* Connection line gradients */}
-              {correlations.map((corr, i) => {
-                const fromDomain = macroDomains.find(d => d.id === corr.from);
-                const toDomain = macroDomains.find(d => d.id === corr.to);
-                return (
-                  <linearGradient key={`corr-${i}`} id={`corr-gradient-${i}`} x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor={fromDomain.color} stopOpacity="0.4" />
-                    <stop offset="100%" stopColor={toDomain.color} stopOpacity="0.4" />
-                  </linearGradient>
-                );
-              })}
-            </defs>
-
-            {/* Connection Lines */}
-            {correlations.filter(c => c.strength > 0.7).map((corr, i) => {
-              const fromDomain = macroDomains.find(d => d.id === corr.from);
-              const toDomain = macroDomains.find(d => d.id === corr.to);
-              const fromPos = getGridPosition(fromDomain);
-              const toPos = getGridPosition(toDomain);
-              
-              const isHighlighted = hoveredDomain === corr.from || hoveredDomain === corr.to;
-              
-              return (
-                <motion.line
-                  key={`line-${i}`}
-                  x1={fromPos.x}
-                  y1={fromPos.y + getLivingDrift(macroDomains.findIndex(d => d.id === corr.from))}
-                  x2={toPos.x}
-                  y2={toPos.y + getLivingDrift(macroDomains.findIndex(d => d.id === corr.to))}
-                  stroke={`url(#corr-gradient-${i})`}
-                  strokeWidth="2"
-                  initial={{ opacity: 0 }}
-                  animate={{
-                    opacity: isHighlighted ? 0.6 : 0.4
-                  }}
-                  transition={{ duration: 0.35, ease: 'easeOut' }}
-                />
-              );
-            })}
-
-            {/* Center Nucleus with Ripple - state-aware glow */}
-            <g>
-              {/* Ripple wave */}
-              {ripple.opacity > 0 && (
-                <motion.circle
-                  cx={dimensions.width / 2}
-                  cy={dimensions.height / 2}
-                  r={50 * ripple.scale}
-                  fill="none"
-                  stroke={activePosture.coreHue[0]}
-                  strokeWidth="2"
-                  opacity={ripple.opacity}
-                  style={{
-                    filter: 'blur(2px)'
-                  }}
-                />
-              )}
-
-              {/* Outer glow - state-aware */}
-              <motion.circle
-                cx={dimensions.width / 2}
-                cy={dimensions.height / 2}
-                r="50"
-                fill="url(#nucleus-gradient)"
-                animate={shouldReduceMotion ? {} : {
-                  r: [50, 51, 50],
-                  opacity: [glowIntensity.get() * 0.5, glowIntensity.get() * 0.6, glowIntensity.get() * 0.5]
-                }}
-                transition={{
-                  duration: activePosture.pulseInterval,
-                  repeat: Infinity,
-                  ease: 'easeInOut'
-                }}
-                style={{
-                  filter: 'blur(12px)'
-                }}
-              />
-
-              {/* Core nucleus - state-aware color */}
-              <motion.circle
-                cx={dimensions.width / 2}
-                cy={dimensions.height / 2}
-                r="20"
-                fill={activePosture.coreHue[0]}
-                className="cursor-pointer"
-                animate={shouldReduceMotion ? {} : {
-                  scale: [1, 1.02, 1],
-                  opacity: [0.7 * glowIntensity.get(), 0.75 * glowIntensity.get(), 0.7 * glowIntensity.get()]
-                }}
-                transition={{
-                  duration: activePosture.pulseInterval,
-                  repeat: Infinity,
-                  ease: 'easeInOut'
-                }}
-                onMouseEnter={() => {
-                  setIsHoveringCenter(true);
-                  spawnRipple(dimensions.width / 2, dimensions.height / 2, 'nucleus', true);
-                }}
-                onMouseLeave={() => setIsHoveringCenter(false)}
-                style={{
-                  filter: `drop-shadow(0 0 ${22 * glowIntensity.get()}px ${activePosture.coreHue[0]}80)`,
-                  pointerEvents: 'all',
-                  transformOrigin: `${dimensions.width / 2}px ${dimensions.height / 2}px`
-                }}
-              />
-
-              {/* Highlight */}
-              <ellipse
-                cx={dimensions.width / 2 - 5}
-                cy={dimensions.height / 2 - 5}
-                rx="5"
-                ry="6"
-                fill="rgba(255, 255, 255, 0.5)"
-                style={{
-                  filter: 'blur(2px)'
-                }}
-              />
-            </g>
-
-            {/* Living Orbs */}
-            {macroDomains.map((domain, index) => {
-              const pos = getGridPosition(domain);
-              const drift = getLivingDrift(index);
-              const isHovered = hoveredDomain === domain.id;
-              
-              // Cascading wave response (0.6s delay between rings)
-              const waveDelay = index * 0.6;
-              const waveResponse = ripple.opacity > 0 ? 1 + ripple.scale * 0.05 : 1;
-              
-              return (
-                <g key={domain.id}>
-                  {/* Anticipatory pre-glow (50px radius detection) */}
-                  <motion.circle
-                    cx={pos.x}
-                    cy={pos.y + drift}
-                    r={domain.nodeSize + 12}
-                    fill={domain.color}
-                    opacity={0}
-                    animate={{
-                      opacity: isHovered ? domain.opacity * 0.4 : 0
-                    }}
-                    transition={{ duration: 0.2 }}
-                    style={{
-                      filter: 'blur(18px)'
-                    }}
-                  />
-
-                  {/* Node glow with wave response */}
-                  <motion.circle
-                    cx={pos.x}
-                    cy={pos.y + drift}
-                    r={domain.nodeSize + 8}
-                    fill={domain.color}
-                    opacity={domain.opacity * 0.3}
-                    filter={`url(#node-glow-${domain.id})`}
-                    animate={shouldReduceMotion ? {} : {
-                      scale: isHovered ? 1.1 : (hoveredDomain && hoveredDomain !== domain.id ? 1 : waveResponse),
-                      opacity: isHovered ? domain.opacity * 0.5 : (hoveredDomain && hoveredDomain !== domain.id ? domain.opacity * 0.25 : domain.opacity * 0.3)
-                    }}
-                    transition={{
-                      scale: { duration: 0.35, ease: 'easeOut', delay: waveDelay },
-                      opacity: { duration: 0.35 }
-                    }}
-                    style={{
-                      transformOrigin: `${pos.x}px ${pos.y + drift}px`
-                    }}
-                  />
-
-                  {/* Node core with ripple spawn */}
-                  <motion.circle
-                    cx={pos.x}
-                    cy={pos.y + drift}
-                    r={domain.nodeSize}
-                    fill={domain.color}
-                    opacity={domain.opacity}
-                    className="cursor-pointer"
-                    onMouseEnter={() => {
-                      setHoveredDomain(domain.id);
-                      spawnRipple(pos.x, pos.y + drift, domain.id, false);
-                    }}
-                    onMouseLeave={() => setHoveredDomain(null)}
-                    animate={shouldReduceMotion ? {} : {
-                      scale: isHovered ? 1.1 : waveResponse,
-                      opacity: isHovered ? domain.opacity + 0.1 : domain.opacity
-                    }}
-                    transition={{
-                      scale: { duration: 0.35, ease: 'easeOut', delay: waveDelay },
-                      opacity: { duration: 0.35 }
-                    }}
-                    style={{
-                      pointerEvents: 'all',
-                      transformOrigin: `${pos.x}px ${pos.y + drift}px`,
-                      filter: `drop-shadow(0 0 22px ${domain.color}60)`
-                    }}
-                  />
-
-                  {/* Highlight */}
-                  <ellipse
-                    cx={pos.x - 3}
-                    cy={pos.y + drift - 3}
-                    rx="3"
-                    ry="4"
-                    fill="rgba(255, 255, 255, 0.6)"
-                    style={{
-                      filter: 'blur(1px)'
-                    }}
-                  />
-                </g>
-              );
-            })}
-          </svg>
-
-          {/* Always-Visible Captions with Label Lift - v2.2 */}
-          {macroDomains.map((domain, index) => {
-            const pos = getGridPosition(domain);
-            const drift = getLivingDrift(index);
-            const isHovered = hoveredDomain === domain.id;
-            const hasLift = labelLift[domain.id];
+          {/* Dynamic Balance Halo - lines from nucleus to each orb */}
+          {domains.map((domain, index) => {
+            const pos = getDomainPosition(domain.id, index);
+            const centerX = dimensions.width / 2;
+            const centerY = dimensions.height / 2 - 20;
+            const breathing = getBreathingOffset(index);
+            
+            const strokeWidth = 2 + (domain.strength * 4);
             
             return (
-              <motion.div
-                key={`caption-${domain.id}`}
-                className="absolute pointer-events-none"
-                style={{
-                  left: pos.x,
-                  top: pos.y + drift + domain.nodeSize + 18,
-                  transform: 'translateX(-50%)',
-                  fontFamily: 'SF Pro Text, -apple-system, system-ui, sans-serif',
-                  fontSize: '12px',
-                  fontWeight: 500,
-                  letterSpacing: '-0.01em',
-                  color: domain.color,
-                  opacity: 0.8,
-                  textShadow: hasLift 
-                    ? `0 1px 0 rgba(255, 255, 255, 0.25), 0 0 8px ${domain.color}20`
-                    : `0 0 8px ${domain.color}20`,
-                  whiteSpace: 'nowrap',
-                  willChange: 'opacity, text-shadow'
-                }}
-                animate={{
-                  opacity: isHovered ? 1 : 0.8,
-                  color: isStateTransitioning ? activePosture.labelTone : domain.color
+              <motion.line
+                key={`halo-${domain.id}`}
+                x1={centerX}
+                y1={centerY}
+                x2={pos.x}
+                y2={pos.y + breathing.y}
+                stroke={`url(#halo-${domain.id})`}
+                strokeWidth={strokeWidth}
+                strokeLinecap="round"
+                initial={{ opacity: 0, pathLength: 0 }}
+                animate={{ 
+                  opacity: hoveredDomain === domain.id ? 0.8 : 0.65,
+                  pathLength: 1
                 }}
                 transition={{ 
-                  opacity: { duration: 0.2 },
-                  color: { duration: 0.6 },
-                  textShadow: { duration: 0.32 }
+                  opacity: { duration: 0.3 },
+                  pathLength: { duration: 1.2, delay: index * 0.15, ease: [0.22, 1, 0.36, 1] }
                 }}
-              >
-                {domain.name} – {domain.bias}
-              </motion.div>
+                style={{
+                  filter: `drop-shadow(0 0 ${4 + domain.strength * 4}px ${getDomainColor(domain.id)}40)`
+                }}
+              />
             );
           })}
-        </motion.div>
 
-        {/* Center Hover Tooltip - state-aware accent */}
-        <AnimatePresence>
-          {isHoveringCenter && (
+          {/* Center Nucleus */}
+          <motion.circle
+            cx={dimensions.width / 2}
+            cy={dimensions.height / 2 - 20}
+            r="12"
+            fill="rgba(255, 255, 255, 0.15)"
+            animate={shouldReduceMotion ? {} : {
+              scale: [1, 1.08, 1],
+              opacity: [0.15, 0.25, 0.15]
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: 'easeInOut'
+            }}
+            style={{
+              filter: 'drop-shadow(0 0 12px rgba(255, 255, 255, 0.3))'
+            }}
+          />
+
+          {/* Domain Orbs */}
+          {domains.map((domain, index) => {
+            const pos = getDomainPosition(domain.id, index);
+            const breathing = getBreathingOffset(index);
+            const color = getDomainColor(domain.id);
+            const isHovered = hoveredDomain === domain.id;
+            const baseSize = 72;
+            const size = baseSize * (0.9 + domain.strength * 0.2);
+            const radius = size / 2;
+
+            return (
+              <g key={domain.id}>
+                {/* Outer glow */}
+                <motion.circle
+                  cx={pos.x}
+                  cy={pos.y + breathing.y}
+                  r={radius + 10}
+                  fill={color}
+                  opacity={0.2}
+                  filter={`url(#glow-${domain.id})`}
+                  animate={{
+                    opacity: isHovered ? 0.35 : 0.2
+                  }}
+                  transition={{ duration: 0.3 }}
+                />
+
+                {/* Main orb */}
+                <motion.circle
+                  cx={pos.x}
+                  cy={pos.y + breathing.y}
+                  r={radius}
+                  fill={color}
+                  opacity={0.75}
+                  className="cursor-pointer"
+                  style={{
+                    filter: `drop-shadow(0 10px 30px rgba(0,0,0,0.45))`,
+                    transformOrigin: `${pos.x}px ${pos.y}px`,
+                    pointerEvents: 'all'
+                  }}
+                  animate={{
+                    scale: breathing.scale * (isHovered ? 1.08 : 1),
+                    opacity: isHovered ? 0.85 : 0.75
+                  }}
+                  transition={{ duration: 0.3 }}
+                  onMouseEnter={() => setHoveredDomain(domain.id)}
+                  onMouseLeave={() => setHoveredDomain(null)}
+                  onClick={() => setSelectedDomain(domain)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') setSelectedDomain(domain);
+                  }}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`${domain.id} domain: ${domain.posture}, ${domain.confidence_pct}% confidence`}
+                  aria-describedby={`tooltip-${domain.id}`}
+                />
+
+                {/* Inner core */}
+                <circle
+                  cx={pos.x}
+                  cy={pos.y + breathing.y}
+                  r={radius * 0.65}
+                  fill={color}
+                  opacity={0.95}
+                  style={{ pointerEvents: 'none' }}
+                />
+
+                {/* Highlight */}
+                <ellipse
+                  cx={pos.x - radius * 0.3}
+                  cy={pos.y + breathing.y - radius * 0.3}
+                  rx={radius * 0.25}
+                  ry={radius * 0.3}
+                  fill="rgba(255, 255, 255, 0.4)"
+                  style={{
+                    filter: 'blur(3px)',
+                    pointerEvents: 'none'
+                  }}
+                />
+              </g>
+            );
+          })}
+        </svg>
+
+        {/* Domain Labels (always visible) */}
+        {domains.map((domain, index) => {
+          const pos = getDomainPosition(domain.id, index);
+          const breathing = getBreathingOffset(index);
+          const color = getDomainColor(domain.id);
+          
+          return (
             <motion.div
-              className="absolute pointer-events-none z-[200]"
+              key={`label-${domain.id}`}
+              className="absolute pointer-events-none text-center"
               style={{
-                left: dimensions.width / 2,
-                top: dimensions.height / 2 - 70,
-                transform: 'translateX(-50%)'
+                left: pos.x,
+                top: pos.y + breathing.y + 50,
+                transform: 'translateX(-50%)',
+                fontFamily: 'SF Pro Text, -apple-system, system-ui, sans-serif',
+                fontSize: '13px',
+                fontWeight: 600,
+                letterSpacing: '0.01em',
+                color: color,
+                textShadow: `0 0 12px ${color}40`,
               }}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 12 }}
-              transition={{ duration: 0.35, ease: HORIZON_EASE }}
             >
-              <div
-                className="px-4 py-2.5 rounded-xl"
-                style={{
-                  background: 'rgba(255, 255, 255, 0.08)',
-                  backdropFilter: 'blur(18px)',
-                  WebkitBackdropFilter: 'blur(18px)',
-                  border: `1px solid ${getStateAccentColor()}40`,
-                  boxShadow: `0 8px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08)`,
-                  borderRadius: '14px'
-                }}
-              >
-                <div className="text-center">
-                  <span 
-                    className="text-sm font-semibold block mb-1"
-                    style={{ color: 'rgba(255, 255, 255, 0.82)' }}
-                  >
-                    Global Posture
-                  </span>
-                  <span 
-                    className="text-base font-bold block mb-1"
-                    style={{ color: activePosture.coreHue[0] }}
-                  >
-                    {globalPosture.label}
-                  </span>
-                  <span 
-                    className="text-xs block"
-                    style={{ color: 'rgba(255, 255, 255, 0.65)' }}
-                  >
-                    {activePosture.emotionTone} • Dominant: {globalPosture.dominantDriver}
-                  </span>
-                </div>
-              </div>
+              {domain.id.toUpperCase()}
             </motion.div>
-          )}
-        </AnimatePresence>
+          );
+        })}
 
-        {/* Domain Hover Glass Card - state-aware accent */}
+        {/* Hover Card */}
         <AnimatePresence>
           {hoveredDomain && (
             <motion.div
-              className="absolute pointer-events-none z-[200]"
+              id={`tooltip-${hoveredDomain}`}
+              className="absolute pointer-events-none z-50"
               style={{
-                left: cursorPosition.x + 16,
+                left: cursorPosition.x + 20,
                 top: cursorPosition.y - 40,
               }}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 12 }}
-              transition={{ duration: 0.35, ease: HORIZON_EASE }}
+              initial={{ opacity: 0, y: 8, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 8, scale: 0.95 }}
+              transition={{ duration: 0.25, ease: [0.22, 0.61, 0.36, 1] }}
             >
               {(() => {
-                const domain = macroDomains.find(d => d.id === hoveredDomain);
+                const domain = domains.find(d => d.id === hoveredDomain);
                 if (!domain) return null;
                 
                 return (
                   <div
-                    className="px-4 py-3 rounded-xl"
                     style={{
-                      background: 'rgba(255, 255, 255, 0.08)',
-                      backdropFilter: 'blur(18px)',
-                      WebkitBackdropFilter: 'blur(18px)',
-                      border: `1px solid ${domain.color}40`,
-                      boxShadow: `0 8px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08)`,
-                      borderRadius: '14px',
-                      minWidth: '240px'
+                      background: HORIZON.colors.glass,
+                      border: `1px solid ${HORIZON.colors.border}`,
+                      borderRadius: `${HORIZON.radii.glass}px`,
+                      backdropFilter: `blur(${HORIZON.blur.glass}px)`,
+                      WebkitBackdropFilter: `blur(${HORIZON.blur.glass}px)`,
+                      boxShadow: '0 8px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)',
+                      padding: '16px',
+                      minWidth: '280px',
+                      maxWidth: '320px'
                     }}
                   >
                     <div className="flex items-center gap-2 mb-2">
                       <div 
                         className="w-2.5 h-2.5 rounded-full"
                         style={{ 
-                          background: domain.color,
-                          boxShadow: `0 0 8px ${domain.color}80`
+                          background: getDomainColor(domain.id),
+                          boxShadow: `0 0 8px ${getDomainColor(domain.id)}80`
                         }}
                       />
                       <span 
-                        className="text-sm font-semibold"
-                        style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+                        className="font-semibold capitalize"
+                        style={{ 
+                          color: HORIZON.colors.textPrimary,
+                          fontSize: '14px'
+                        }}
                       >
-                        {domain.name}
+                        {domain.id}
                       </span>
-                    </div>
-                    <p 
-                      className="text-xs mb-2"
-                      style={{ 
-                        color: 'rgba(255, 255, 255, 0.75)',
-                        lineHeight: '1.4',
-                        fontFamily: 'SF Pro Text, -apple-system, system-ui, sans-serif',
-                        fontSize: '13px'
-                      }}
-                    >
-                      {domain.trend}
-                    </p>
-                    <div className="flex items-center justify-between text-xs">
-                      <span style={{ color: 'rgba(255, 255, 255, 0.65)' }}>
-                        Confidence: {domain.confidence}%
-                      </span>
-                      <span style={{ color: domain.color, fontWeight: 600 }}>
-                        {domain.bias}
+                      <span 
+                        className="ml-auto text-xs font-bold"
+                        style={{ color: getDomainColor(domain.id) }}
+                      >
+                        {domain.confidence_pct}%
                       </span>
                     </div>
                     
-                    {/* Correlation ripple indicator - state-aware accent */}
-                    <motion.div 
-                      className="mt-2 pt-2 border-t"
-                      style={{ borderColor: 'rgba(255, 255, 255, 0.08)' }}
+                    <p 
+                      style={{
+                        color: HORIZON.colors.textSecondary,
+                        fontSize: '13px',
+                        lineHeight: '1.5',
+                        marginBottom: '12px'
+                      }}
                     >
-                      <div className="flex items-center gap-2">
-                        <motion.div
-                          className="w-1.5 h-1.5 rounded-full"
-                          style={{ background: getStateAccentColor() }}
-                          animate={{
-                            scale: [1, 1.5, 1],
-                            opacity: [0.6, 1, 0.6]
-                          }}
-                          transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            ease: 'easeInOut'
-                          }}
-                        />
-                        <span style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '11px' }}>
-                          Correlation pulse active
-                        </span>
-                      </div>
-                    </motion.div>
+                      {domain.summary.length > 85 ? domain.summary.substring(0, 82) + '...' : domain.summary}
+                    </p>
+                    
+                    <div 
+                      className="flex items-center gap-2 text-xs"
+                      style={{ color: HORIZON.colors.textTertiary }}
+                    >
+                      <ArrowRight className="w-3 h-3" />
+                      <span>Click for details</span>
+                    </div>
                   </div>
                 );
               })()}
@@ -1216,58 +642,383 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
           )}
         </AnimatePresence>
 
-        {/* Legend - Bottom Left */}
-        <div className="absolute bottom-6 left-6">
-          <div 
-            className="flex flex-wrap items-center gap-3 px-4 py-2 rounded-xl border backdrop-blur-xl"
+        {/* Micro-Summary Bar (always visible) */}
+        <motion.div
+          className="absolute bottom-6 left-6 right-6"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+          role="status"
+          aria-live="polite"
+        >
+          <div
             style={{
-              background: 'rgba(0, 0, 0, 0.3)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: '10px'
+              background: HORIZON.colors.glass,
+              border: `1px solid ${HORIZON.colors.border}`,
+              borderRadius: `${HORIZON.radii.chip}px`,
+              backdropFilter: `blur(${HORIZON.blur.glass}px)`,
+              WebkitBackdropFilter: `blur(${HORIZON.blur.glass}px)`,
+              boxShadow: '0 4px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)',
+              padding: '12px 16px'
             }}
           >
-            {macroDomains.map((domain) => (
-              <motion.div 
-                key={domain.id}
-                className="flex items-center gap-2 cursor-pointer"
-                whileHover={{ opacity: 1, scale: 1.05 }}
-                style={{ opacity: 0.7 }}
-                transition={{ duration: 0.2 }}
-                onHoverStart={() => setHoveredDomain(domain.id)}
-                onHoverEnd={() => setHoveredDomain(null)}
-              >
-                <div 
-                  className="w-1.5 h-1.5 rounded-full"
-                  style={{ 
-                    background: domain.color,
-                    boxShadow: `0 0 6px ${domain.color}60`
-                  }}
-                />
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+              <div className="flex items-center gap-2">
                 <span 
-                  className="text-xs font-medium"
+                  className="font-semibold"
                   style={{ 
-                    color: 'rgba(255, 255, 255, 0.82)',
-                    fontSize: '12px'
+                    color: HORIZON.colors.textPrimary,
+                    fontSize: '14.5px',
+                    lineHeight: '20px'
                   }}
                 >
-                  {domain.name}
+                  Global Balance:
                 </span>
-              </motion.div>
-            ))}
+                <span 
+                  style={{ 
+                    color: HORIZON.colors.textSecondary,
+                    fontSize: '14.5px',
+                    lineHeight: '20px'
+                  }}
+                >
+                  {globalSummary}
+                </span>
+              </div>
+              
+              {dominantDriver !== "balanced" && (
+                <>
+                  <div 
+                    className="hidden sm:block w-px h-4"
+                    style={{ background: HORIZON.colors.border }}
+                  />
+                  <div className="flex items-center gap-2">
+                    <span 
+                      style={{ 
+                        color: HORIZON.colors.textTertiary,
+                        fontSize: '13px'
+                      }}
+                    >
+                      Dominant:
+                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span style={{ fontSize: '14px' }}>
+                        {getDomainIcon(dominantDriver)}
+                      </span>
+                      <span 
+                        className="font-semibold capitalize"
+                        style={{ 
+                          color: getDomainColor(dominantDriver),
+                          fontSize: '13px'
+                        }}
+                      >
+                        {dominantDriver}
+                      </span>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
-        </div>
+        </motion.div>
       </motion.div>
+
+      {/* Detailed Drawer (right slide-in) */}
+      <AnimatePresence>
+        {selectedDomain && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedDomain(null)}
+            />
+
+            {/* Drawer Panel */}
+            <motion.div
+              className="fixed top-0 right-0 h-full z-50 overflow-y-auto"
+              style={{
+                width: '520px',
+                maxWidth: '90vw',
+                background: HORIZON.colors.glass,
+                backdropFilter: `blur(${HORIZON.blur.canvas}px)`,
+                WebkitBackdropFilter: `blur(${HORIZON.blur.canvas}px)`,
+                borderLeft: `1px solid ${HORIZON.colors.border}`,
+                boxShadow: '-8px 0 32px rgba(0,0,0,0.5)'
+              }}
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ duration: 0.42, ease: [0.22, 0.61, 0.36, 1] }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Drawer Header */}
+              <div 
+                className="sticky top-0 z-10 p-6 border-b"
+                style={{
+                  background: HORIZON.colors.glass,
+                  borderColor: HORIZON.colors.border,
+                  backdropFilter: `blur(${HORIZON.blur.glass}px)`
+                }}
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div 
+                      className="w-10 h-10 rounded-full flex items-center justify-center"
+                      style={{
+                        background: `${getDomainColor(selectedDomain.id)}20`,
+                        border: `1px solid ${getDomainColor(selectedDomain.id)}40`
+                      }}
+                    >
+                      <span style={{ fontSize: '20px' }}>
+                        {getDomainIcon(selectedDomain.id)}
+                      </span>
+                    </div>
+                    <div>
+                      <h3 
+                        className="font-bold capitalize"
+                        style={{ 
+                          color: HORIZON.colors.textPrimary,
+                          fontSize: '20px'
+                        }}
+                      >
+                        {selectedDomain.id}
+                      </h3>
+                      <div className="flex items-center gap-2 mt-1">
+                        {getPostureIcon(selectedDomain.posture)}
+                        <span 
+                          className="font-semibold capitalize"
+                          style={{ 
+                            color: getDomainColor(selectedDomain.id),
+                            fontSize: '14px'
+                          }}
+                        >
+                          {selectedDomain.posture}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => setSelectedDomain(null)}
+                    className="p-2 rounded-lg transition-colors hover:bg-white/10"
+                    style={{ color: HORIZON.colors.textTertiary }}
+                    aria-label="Close drawer"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* Confidence Ring */}
+                <div className="flex items-center gap-4">
+                  <div className="relative w-16 h-16">
+                    <svg className="transform -rotate-90" width="64" height="64">
+                      <circle
+                        cx="32"
+                        cy="32"
+                        r="28"
+                        fill="none"
+                        stroke="rgba(255,255,255,0.1)"
+                        strokeWidth="4"
+                      />
+                      <motion.circle
+                        cx="32"
+                        cy="32"
+                        r="28"
+                        fill="none"
+                        stroke={getDomainColor(selectedDomain.id)}
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                        strokeDasharray="176"
+                        initial={{ strokeDashoffset: 176 }}
+                        animate={{ 
+                          strokeDashoffset: 176 - (176 * selectedDomain.confidence_pct / 100) 
+                        }}
+                        transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                      />
+                    </svg>
+                    <div 
+                      className="absolute inset-0 flex items-center justify-center font-bold"
+                      style={{ 
+                        color: HORIZON.colors.textPrimary,
+                        fontSize: '16px'
+                      }}
+                    >
+                      {selectedDomain.confidence_pct}%
+                    </div>
+                  </div>
+                  
+                  <div className="flex-1">
+                    <div 
+                      className="text-xs font-medium mb-1"
+                      style={{ color: HORIZON.colors.textTertiary }}
+                    >
+                      CONFIDENCE LEVEL
+                    </div>
+                    <div 
+                      className="text-sm"
+                      style={{ color: HORIZON.colors.textSecondary }}
+                    >
+                      Signal strength: {Math.round(selectedDomain.strength * 100)}%
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Drawer Content */}
+              <div className="p-6 space-y-6">
+                {/* Translation (plain language) */}
+                <div>
+                  <h4 
+                    className="text-xs font-bold uppercase tracking-wide mb-3"
+                    style={{ color: HORIZON.colors.textTertiary }}
+                  >
+                    What This Means
+                  </h4>
+                  <p 
+                    style={{
+                      color: HORIZON.colors.textPrimary,
+                      fontSize: '15px',
+                      lineHeight: '1.6'
+                    }}
+                  >
+                    {selectedDomain.summary}
+                  </p>
+                </div>
+
+                {/* Ripple Impact */}
+                <div>
+                  <h4 
+                    className="text-xs font-bold uppercase tracking-wide mb-3"
+                    style={{ color: HORIZON.colors.textTertiary }}
+                  >
+                    Downstream Effects
+                  </h4>
+                  <div className="space-y-2">
+                    {selectedDomain.ripple.map((effect, i) => (
+                      <motion.div
+                        key={i}
+                        className="flex items-start gap-2 p-3 rounded-lg"
+                        style={{
+                          background: 'rgba(255, 255, 255, 0.03)',
+                          border: `1px solid ${HORIZON.colors.border}`
+                        }}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.4 + i * 0.1 }}
+                      >
+                        <div 
+                          className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0"
+                          style={{ background: getDomainColor(selectedDomain.id) }}
+                        />
+                        <span 
+                          style={{ 
+                            color: HORIZON.colors.textSecondary,
+                            fontSize: '14px',
+                            lineHeight: '1.5'
+                          }}
+                        >
+                          {effect}
+                        </span>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Historical Pulse (48h sparkline) */}
+                <div>
+                  <h4 
+                    className="text-xs font-bold uppercase tracking-wide mb-3"
+                    style={{ color: HORIZON.colors.textTertiary }}
+                  >
+                    48-Hour Trend
+                  </h4>
+                  <div 
+                    className="p-4 rounded-lg"
+                    style={{
+                      background: 'rgba(0, 0, 0, 0.2)',
+                      border: `1px solid ${HORIZON.colors.border}`
+                    }}
+                  >
+                    <svg width="100%" height="60" className="overflow-visible">
+                      <defs>
+                        <linearGradient id={`sparkline-${selectedDomain.id}`} x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor={getDomainColor(selectedDomain.id)} stopOpacity="0.3" />
+                          <stop offset="100%" stopColor={getDomainColor(selectedDomain.id)} stopOpacity="0.05" />
+                        </linearGradient>
+                      </defs>
+                      
+                      {(() => {
+                        const data = selectedDomain.sparkline;
+                        const width = containerRef.current?.offsetWidth - 88 || 400;
+                        const height = 60;
+                        const padding = 4;
+                        
+                        const minValue = Math.min(...data);
+                        const maxValue = Math.max(...data);
+                        const range = maxValue - minValue || 0.1;
+                        
+                        const points = data.map((value, i) => {
+                          const x = (i / (data.length - 1)) * width;
+                          const y = height - padding - ((value - minValue) / range) * (height - padding * 2);
+                          return `${x},${y}`;
+                        }).join(' ');
+                        
+                        const pathD = `M ${points}`;
+                        const areaD = `M ${points} L ${width},${height} L 0,${height} Z`;
+                        
+                        return (
+                          <>
+                            <motion.path
+                              d={areaD}
+                              fill={`url(#sparkline-${selectedDomain.id})`}
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ duration: 0.6, delay: 0.5 }}
+                            />
+                            <motion.path
+                              d={pathD}
+                              fill="none"
+                              stroke={getDomainColor(selectedDomain.id)}
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              initial={{ pathLength: 0 }}
+                              animate={{ pathLength: 1 }}
+                              transition={{ duration: 1.2, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                            />
+                          </>
+                        );
+                      })()}
+                    </svg>
+                  </div>
+                </div>
+
+                {/* Last Updated */}
+                <div 
+                  className="text-xs"
+                  style={{ color: HORIZON.colors.textTertiary }}
+                >
+                  Updated {new Date(selectedDomain.last_updated_iso).toLocaleTimeString([], { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                  })}
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Performance CSS */}
       <style jsx>{`
-        /* GPU acceleration */
         svg, .absolute {
           transform: translateZ(0);
           will-change: transform, opacity;
           backface-visibility: hidden;
         }
 
-        /* Reduced motion support */
         @media (prefers-reduced-motion: reduce) {
           * {
             animation-duration: 0.01ms !important;
@@ -1276,9 +1027,15 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
           }
         }
 
-        /* Smooth rendering */
         svg {
           shape-rendering: geometricPrecision;
+        }
+
+        /* Focus ring styling */
+        circle:focus-visible {
+          outline: none;
+          filter: drop-shadow(0 0 0 2px ${HORIZON.colors.textPrimary}) 
+                  drop-shadow(0 0 8px currentColor) !important;
         }
       `}</style>
     </motion.section>
