@@ -5,8 +5,8 @@ import { Globe } from 'lucide-react';
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// MACRO EQUILIBRIUM GRID V2.1 - DYNAMIC STATE BINDING (OS HORIZON)
-// Real-time visual response to global macro posture
+// MACRO EQUILIBRIUM GRID V2.2 - GLASS ECHOES (OS HORIZON)
+// Parallax reflections + subsurface ripples for macOS Tahoe realism
 // ============================================================================
 
 // Visual state definitions for each macro posture
@@ -63,10 +63,22 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
   const [time, setTime] = useState(0);
   const [isStateTransitioning, setIsStateTransitioning] = useState(false);
-
+  
+  // Glass Echoes v2.2 state
+  const [ripples, setRipples] = useState([]);
+  const [labelLift, setLabelLift] = useState({});
+  const [trailGlows, setTrailGlows] = useState([]);
+  const [fpsStable, setFpsStable] = useState(true);
+  const lastRippleTime = useRef({});
+  const frameTimesRef = useRef([]);
+  
   // Spring-animated values for smooth state transitions
   const glowIntensity = useSpring(1.0, { stiffness: 80, damping: 25 });
   const motionAmplitude = useSpring(1.0, { stiffness: 80, damping: 25 });
+  
+  // Glass reflection parallax spring
+  const glassReflectionX = useSpring(0, { stiffness: 400, damping: 40 });
+  const glassReflectionY = useSpring(0, { stiffness: 400, damping: 40 });
 
   // OS Horizon easing
   const HORIZON_EASE = [0.45, 0, 0.1, 1];
@@ -209,6 +221,34 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
     return () => mediaQuery.removeEventListener('change', handler);
   }, []);
 
+  // FPS monitoring for performance guard
+  useEffect(() => {
+    if (shouldReduceMotion) return;
+    
+    let lastTime = performance.now();
+    let frameId;
+    
+    const checkFPS = () => {
+      const now = performance.now();
+      const frameTime = now - lastTime;
+      lastTime = now;
+      
+      frameTimesRef.current.push(frameTime);
+      if (frameTimesRef.current.length > 5) {
+        frameTimesRef.current.shift();
+      }
+      
+      // Check if consistently over 16.6ms (60 FPS threshold)
+      const avgFrameTime = frameTimesRef.current.reduce((a, b) => a + b, 0) / frameTimesRef.current.length;
+      setFpsStable(avgFrameTime <= 16.6);
+      
+      frameId = requestAnimationFrame(checkFPS);
+    };
+    
+    frameId = requestAnimationFrame(checkFPS);
+    return () => cancelAnimationFrame(frameId);
+  }, [shouldReduceMotion]);
+
   // Update dimensions
   useEffect(() => {
     const updateDimensions = () => {
@@ -246,7 +286,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
     };
   }, [shouldReduceMotion]);
 
-  // Parallax tracking
+  // Glass reflection parallax tracking
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (containerRef.current) {
@@ -256,13 +296,20 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
         
         setCursorPosition({ x, y });
         
-        if (isInteracting) {
+        if (isInteracting && !shouldReduceMotion) {
           const centerX = rect.width / 2;
           const centerY = rect.height / 2;
+          
+          // Parallax for content
           const offsetX = ((x - centerX) / centerX) * 5;
           const offsetY = ((y - centerY) / centerY) * 5;
-          
           setParallaxOffset({ x: offsetX, y: offsetY });
+          
+          // Glass reflection parallax (smaller range, clamped)
+          const glassOffsetX = Math.max(-10, Math.min(10, ((x - centerX) / centerX) * 0.035 * rect.width));
+          const glassOffsetY = Math.max(-10, Math.min(10, ((y - centerY) / centerY) * 0.035 * rect.height));
+          glassReflectionX.set(glassOffsetX);
+          glassReflectionY.set(glassOffsetY);
         }
       }
     };
@@ -271,17 +318,107 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
       containerRef.current.addEventListener('mousemove', handleMouseMove);
       return () => containerRef.current?.removeEventListener('mousemove', handleMouseMove);
     }
-  }, [isInteracting]);
+  }, [isInteracting, shouldReduceMotion, glassReflectionX, glassReflectionY]);
 
   // Reset parallax
   useEffect(() => {
     if (!isInteracting) {
       const timer = setTimeout(() => {
         setParallaxOffset({ x: 0, y: 0 });
+        glassReflectionX.set(0);
+        glassReflectionY.set(0);
       }, 30);
       return () => clearTimeout(timer);
     }
-  }, [isInteracting]);
+  }, [isInteracting, glassReflectionX, glassReflectionY]);
+
+  // Spawn subsurface ripple
+  const spawnRipple = useCallback((x, y, elementId, isNucleus = false) => {
+    if (shouldReduceMotion) return;
+    
+    const now = Date.now();
+    const lastTime = lastRippleTime.current[elementId] || 0;
+    
+    // Throttle: min 700ms between ripples per element
+    if (now - lastTime < 700) return;
+    
+    lastRippleTime.current[elementId] = now;
+    
+    // Cap at 2 concurrent ripples
+    setRipples(prev => {
+      const newRipples = [...prev];
+      if (newRipples.length >= 2) {
+        newRipples.shift(); // Remove oldest
+      }
+      
+      // Ripple params adjusted by posture state
+      const baseRadius = isNucleus ? 14 : 14;
+      const baseMaxRadius = isNucleus ? 180 : 140;
+      const baseDuration = isNucleus ? 1100 : 900;
+      const baseOpacity = 0.10;
+      
+      let radiusMultiplier = 1;
+      let opacityMultiplier = 1;
+      let durationMultiplier = 1;
+      
+      if (activePosture.id === 'RISK_ON') {
+        radiusMultiplier = 1.1;
+        durationMultiplier = 0.9;
+      } else if (activePosture.id === 'RISK_OFF') {
+        radiusMultiplier = 0.9;
+        opacityMultiplier = 0.8;
+        durationMultiplier = 1.1;
+      }
+      
+      const ripple = {
+        id: `${elementId}-${now}`,
+        x,
+        y,
+        startRadius: baseRadius,
+        maxRadius: baseMaxRadius * radiusMultiplier,
+        duration: baseDuration * durationMultiplier,
+        opacity: baseOpacity * opacityMultiplier,
+        startTime: now
+      };
+      
+      newRipples.push(ripple);
+      
+      // Auto-remove after duration
+      setTimeout(() => {
+        setRipples(current => current.filter(r => r.id !== ripple.id));
+      }, ripple.duration);
+      
+      return newRipples;
+    });
+    
+    // Trigger label lift for nearby labels
+    setLabelLift(prev => ({ ...prev, [elementId]: true }));
+    setTimeout(() => {
+      setLabelLift(prev => ({ ...prev, [elementId]: false }));
+    }, 320);
+  }, [shouldReduceMotion, activePosture]);
+
+  // Spawn trail glow during pulse peak
+  const spawnTrailGlow = useCallback((domain, index) => {
+    if (shouldReduceMotion || !fpsStable) return;
+    
+    const pos = getGridPosition(domain);
+    const drift = getLivingDrift(index);
+    
+    const trail = {
+      id: `trail-${domain.id}-${Date.now()}`,
+      x: pos.x,
+      y: pos.y + drift,
+      color: domain.color,
+      startTime: Date.now()
+    };
+    
+    setTrailGlows(prev => [...prev, trail]);
+    
+    setTimeout(() => {
+      setTrailGlows(current => current.filter(t => t.id !== trail.id));
+    }, 480);
+  }, [shouldReduceMotion, fpsStable, dimensions, time, activePosture, motionAmplitude]); // Added missing dependencies to useCallback
 
   // Calculate fixed grid position
   const getGridPosition = useCallback((domain) => {
@@ -326,6 +463,20 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
   const getStateAccentColor = () => {
     return activePosture.accentReflection;
   };
+
+  // Detect pulse peak for trail glow spawning
+  useEffect(() => {
+    if (shouldReduceMotion || !fpsStable) return;
+    
+    const phase = (time / activePosture.pulseInterval) % 1;
+    
+    // Spawn trails at pulse peak (phase ~0.5)
+    if (phase > 0.48 && phase < 0.52) {
+      macroDomains.forEach((domain, index) => {
+        spawnTrailGlow(domain, index);
+      });
+    }
+  }, [time, activePosture, shouldReduceMotion, fpsStable, macroDomains, spawnTrailGlow]);
 
   return (
     <motion.section
@@ -446,6 +597,30 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
           ease: 'easeInOut'
         }}
       >
+        {/* Glass Reflection Pane - v2.2 */}
+        {!shouldReduceMotion && (
+          <motion.div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%, rgba(255,255,255,0.10) 100%)',
+              mixBlendMode: 'overlay',
+              x: glassReflectionX,
+              y: glassReflectionY,
+              willChange: 'transform',
+              zIndex: 5
+            }}
+            animate={shouldReduceMotion ? {} : {
+              opacity: [0.06, 0.10, 0.06]
+            }}
+            transition={{
+              duration: 16,
+              repeat: Infinity,
+              ease: 'easeInOut'
+            }}
+            aria-hidden="true"
+          />
+        )}
+
         {/* Ambient Mist Particles with state-aware speed */}
         {!shouldReduceMotion && (
           <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
@@ -508,6 +683,91 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
           aria-hidden="true"
         />
 
+        {/* Subsurface Ripples - v2.2 */}
+        <AnimatePresence>
+          {ripples.map(ripple => {
+            const elapsed = (Date.now() - ripple.startTime) / ripple.duration;
+            if (elapsed >= 1) return null;
+            
+            const currentRadius = ripple.startRadius + (ripple.maxRadius - ripple.startRadius) * elapsed;
+            const currentOpacity = ripple.opacity * (1 - elapsed);
+            
+            return (
+              <motion.div
+                key={ripple.id}
+                className="absolute pointer-events-none"
+                style={{
+                  left: ripple.x,
+                  top: ripple.y,
+                  width: currentRadius * 2,
+                  height: currentRadius * 2,
+                  marginLeft: -currentRadius,
+                  marginTop: -currentRadius,
+                  borderRadius: '50%',
+                  border: `2px solid rgba(255, 255, 255, ${currentOpacity})`,
+                  boxShadow: `0 0 12px rgba(255, 255, 255, ${currentOpacity * 0.5})`,
+                  filter: 'blur(12px)',
+                  mixBlendMode: 'soft-light',
+                  zIndex: 2,
+                  willChange: 'transform, opacity'
+                }}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ 
+                  opacity: currentOpacity, 
+                  scale: currentRadius / ripple.startRadius 
+                }}
+                exit={{ opacity: 0 }}
+                transition={{
+                  duration: ripple.duration / 1000,
+                  ease: [0.45, 0, 0.1, 1]
+                }}
+                aria-hidden="true"
+              />
+            );
+          })}
+        </AnimatePresence>
+
+        {/* Trail Glows - v2.2 */}
+        {!shouldReduceMotion && fpsStable && (
+          <AnimatePresence>
+            {trailGlows.map(trail => {
+              const elapsed = (Date.now() - trail.startTime) / 480;
+              if (elapsed >= 1) return null;
+              
+              // Desaturate and brighten color
+              const trailColor = trail.color.replace(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/, (match, r, g, b) => {
+                const avg = (parseInt(r) + parseInt(g) + parseInt(b)) / 3;
+                const newR = Math.min(255, parseInt(r) * 0.75 + avg * 0.25 + 15);
+                const newG = Math.min(255, parseInt(g) * 0.75 + avg * 0.25 + 15);
+                const newB = Math.min(255, parseInt(b) * 0.75 + avg * 0.25 + 15);
+                return `rgb(${newR}, ${newG}, ${newB})`;
+              });
+              
+              return (
+                <motion.div
+                  key={trail.id}
+                  className="absolute pointer-events-none"
+                  style={{
+                    left: trail.x - 32,
+                    top: trail.y - 4,
+                    width: Math.max(36, 64 * (1 - elapsed)),
+                    height: 8,
+                    background: `linear-gradient(90deg, ${trailColor}00, ${trailColor}${Math.floor((0.08 * (1 - elapsed)) * 255).toString(16).padStart(2, '0')}, ${trailColor}00)`,
+                    filter: 'blur(4px)',
+                    zIndex: 1,
+                    willChange: 'opacity'
+                  }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 0.08 * (1 - elapsed) }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.48, ease: 'easeOut' }}
+                  aria-hidden="true"
+                />
+              );
+            })}
+          </AnimatePresence>
+        )}
+
         {/* Grid System with Living Motion */}
         <motion.div 
           className="absolute inset-0"
@@ -523,7 +783,8 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
             duration: 0.4
           }}
           style={{
-            willChange: 'transform'
+            willChange: 'transform',
+            zIndex: 3
           }}
         >
           <svg 
@@ -646,7 +907,10 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
                   repeat: Infinity,
                   ease: 'easeInOut'
                 }}
-                onMouseEnter={() => setIsHoveringCenter(true)}
+                onMouseEnter={() => {
+                  setIsHoveringCenter(true);
+                  spawnRipple(dimensions.width / 2, dimensions.height / 2, 'nucleus', true);
+                }}
                 onMouseLeave={() => setIsHoveringCenter(false)}
                 style={{
                   filter: `drop-shadow(0 0 ${22 * glowIntensity.get()}px ${activePosture.coreHue[0]}80)`,
@@ -717,7 +981,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
                     }}
                   />
 
-                  {/* Node core */}
+                  {/* Node core with ripple spawn */}
                   <motion.circle
                     cx={pos.x}
                     cy={pos.y + drift}
@@ -725,7 +989,10 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
                     fill={domain.color}
                     opacity={domain.opacity}
                     className="cursor-pointer"
-                    onMouseEnter={() => setHoveredDomain(domain.id)}
+                    onMouseEnter={() => {
+                      setHoveredDomain(domain.id);
+                      spawnRipple(pos.x, pos.y + drift, domain.id, false);
+                    }}
                     onMouseLeave={() => setHoveredDomain(null)}
                     animate={shouldReduceMotion ? {} : {
                       scale: isHovered ? 1.1 : waveResponse,
@@ -758,11 +1025,12 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
             })}
           </svg>
 
-          {/* Always-Visible Captions - state-aware label tone */}
+          {/* Always-Visible Captions with Label Lift - v2.2 */}
           {macroDomains.map((domain, index) => {
             const pos = getGridPosition(domain);
             const drift = getLivingDrift(index);
             const isHovered = hoveredDomain === domain.id;
+            const hasLift = labelLift[domain.id];
             
             return (
               <motion.div
@@ -778,8 +1046,11 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
                   letterSpacing: '-0.01em',
                   color: domain.color,
                   opacity: 0.8,
-                  textShadow: `0 0 8px ${domain.color}20`,
-                  whiteSpace: 'nowrap'
+                  textShadow: hasLift 
+                    ? `0 1px 0 rgba(255, 255, 255, 0.25), 0 0 8px ${domain.color}20`
+                    : `0 0 8px ${domain.color}20`,
+                  whiteSpace: 'nowrap',
+                  willChange: 'opacity, text-shadow'
                 }}
                 animate={{
                   opacity: isHovered ? 1 : 0.8,
@@ -787,7 +1058,8 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRA
                 }}
                 transition={{ 
                   opacity: { duration: 0.2 },
-                  color: { duration: 0.6 }
+                  color: { duration: 0.6 },
+                  textShadow: { duration: 0.32 }
                 }}
               >
                 {domain.name} – {domain.bias}
