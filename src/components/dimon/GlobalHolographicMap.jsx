@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight } from 'lucide-react';
@@ -18,11 +19,11 @@ const TOKENS = {
     panelShadow: '0 0 60px rgba(255,255,255,0.04)',
     blurPanel: 'blur(30px)',
     blurChip: 'blur(20px)',
-    easing: 'cubic-bezier(0.32,0.72,0,1)',
-    t_hover: '250ms',
-    t_tooltip: '350ms',
-    t_drawer: '600ms',
-    t_pulse: '3000ms',
+    easing: [0.32, 0.72, 0, 1], // Fixed: Array format for framer-motion
+    t_hover: 0.25, // Fixed: Number in seconds
+    t_tooltip: 0.35,
+    t_drawer: 0.6,
+    t_pulse: 3,
     bgCenter: 'rgba(10,12,20,0.85)',
     bgEdge: 'rgba(10,12,20,0.55)'
   },
@@ -207,7 +208,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     setTimeout(() => {
       setSelectedDomain(domain);
       setIsMorphing(false);
-    }, parseInt(TOKENS.HORIZON.t_drawer));
+    }, TOKENS.HORIZON.t_drawer * 1000); // Use number directly, multiply by 1000 for ms
   }, []);
 
   const handleCloseDrawer = useCallback(() => {
@@ -216,7 +217,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
       setSelectedDomain(null);
       setCapsuleBounds(null);
       setIsMorphing(false);
-    }, parseInt(TOKENS.HORIZON.t_drawer));
+    }, TOKENS.HORIZON.t_drawer * 1000); // Use number directly, multiply by 1000 for ms
   }, []);
 
   // Get connections between domains
@@ -351,7 +352,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                   transition={{ 
                     opacity: { duration: 0.25 },
                     strokeDashoffset: { 
-                      duration: 3, 
+                      duration: TOKENS.HORIZON.t_pulse, // Use number directly
                       repeat: Infinity, 
                       ease: "linear" 
                     }
@@ -400,16 +401,21 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 />
 
                 {/* Halo glow */}
-                <circle
+                <motion.circle
                   cx={pos.x}
                   cy={pos.y}
                   r={radius + 60}
                   fill={color}
-                  opacity={isHovered ? "0.12" : "0.08"}
+                  animate={{
+                    opacity: isHovered ? 0.12 : 0.08
+                  }}
+                  transition={{
+                    duration: TOKENS.HORIZON.t_hover,
+                    ease: TOKENS.HORIZON.easing
+                  }}
                   style={{
                     filter: `blur(60px)`,
-                    pointerEvents: 'none',
-                    transition: `opacity ${TOKENS.HORIZON.t_hover} ${TOKENS.HORIZON.easing}`
+                    pointerEvents: 'none'
                   }}
                 />
 
@@ -426,14 +432,12 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                     pointerEvents: 'all'
                   }}
                   animate={shouldReduceMotion ? {} : {
-                    scale: isHovered ? 1.02 : [1, 1.03, 1],
+                    scale: isHovered ? 1.02 : 1, // Only animate scale on hover, pulse handled by CSS
                     y: isHovered ? -2 : 0
                   }}
-                  transition={shouldReduceMotion ? {} : {
-                    scale: isHovered ? 
-                      { duration: 0.25, ease: TOKENS.HORIZON.easing } : 
-                      { duration: 6, repeat: Infinity, ease: "easeInOut" },
-                    y: { duration: 0.25, ease: TOKENS.HORIZON.easing }
+                  transition={{
+                    duration: TOKENS.HORIZON.t_hover, // Use number directly
+                    ease: TOKENS.HORIZON.easing
                   }}
                   onMouseEnter={() => setHoveredDomain(domain.id)}
                   onMouseLeave={() => setHoveredDomain(null)}
@@ -512,13 +516,14 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
               style={{
                 left: getDomainPosition(hoveredDomain).x + 60,
                 top: getDomainPosition(hoveredDomain).y - 40,
-                transformOrigin: 'center left'
+                transformOrigin: 'center left',
+                pointerEvents: 'auto'
               }}
               initial={{ opacity: 0, y: 6, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 6, scale: 0.95 }}
               transition={{ 
-                duration: parseFloat(TOKENS.HORIZON.t_tooltip) / 1000, 
+                duration: TOKENS.HORIZON.t_tooltip, // Use number directly
                 ease: TOKENS.HORIZON.easing 
               }}
             >
@@ -601,7 +606,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ 
-            duration: parseFloat(TOKENS.HORIZON.t_tooltip) / 1000,
+            duration: TOKENS.HORIZON.t_tooltip, // Use number directly
             ease: "easeOut"
           }}
         >
@@ -704,7 +709,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
               borderRadius: '0px'
             }}
             transition={{
-              duration: parseFloat(TOKENS.HORIZON.t_drawer) / 1000,
+              duration: TOKENS.HORIZON.t_drawer, // Use number directly
               ease: TOKENS.HORIZON.easing
             }}
           />
@@ -725,7 +730,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             animate={{ opacity: isMorphing ? 0.1 : 1 }}
             exit={{ opacity: 0 }}
             transition={{ 
-              duration: parseFloat(TOKENS.HORIZON.t_drawer) / 1000,
+              duration: TOKENS.HORIZON.t_drawer, // Use number directly
               ease: TOKENS.HORIZON.easing
             }}
             onClick={handleCloseDrawer}
@@ -752,7 +757,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: '100%', opacity: 0 }}
             transition={{ 
-              duration: parseFloat(TOKENS.HORIZON.t_drawer) / 1000,
+              duration: TOKENS.HORIZON.t_drawer, // Use number directly
               ease: TOKENS.HORIZON.easing
             }}
             onClick={(e) => e.stopPropagation()}
@@ -1050,7 +1055,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
         }
 
         .orb {
-          animation: orb-breathe 6s ease-in-out infinite;
+          animation: orb-breathe ${TOKENS.HORIZON.t_pulse}s ease-in-out infinite;
         }
 
         .orb:hover {
