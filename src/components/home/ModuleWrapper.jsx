@@ -1,5 +1,5 @@
+
 import React, { useState, useRef } from 'react';
-import { useDrag, useDrop } from '@hello-pangea/dnd';
 import DragHandle from './DragHandle';
 
 export default function ModuleWrapper({ 
