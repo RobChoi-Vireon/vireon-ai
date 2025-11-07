@@ -1,13 +1,58 @@
+
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useSpring } from 'framer-motion';
 import { Globe } from 'lucide-react';
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// MACRO EQUILIBRIUM GRID V2.0 - THE LIVING BALANCE (OS HORIZON)
+// MACRO EQUILIBRIUM GRID V2.1 - DYNAMIC STATE BINDING (OS HORIZON)
+// Real-time visual response to global macro posture
 // ============================================================================
 
-const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
+// Visual state definitions for each macro posture
+const POSTURE_STATES = {
+  RISK_ON: {
+    id: 'RISK_ON',
+    label: 'Risk-On',
+    coreHue: ['#D7F2F7', '#A7E9EF'], // Aqua-white gradient
+    nucleusGlowMultiplier: 1.1,
+    motionAmplitudeMultiplier: 1.05,
+    pulseInterval: 6,
+    mistSpeedMultiplier: 1.1,
+    labelTone: 'rgba(255, 255, 255, 0.92)',
+    accentReflection: '#91E7F2',
+    emotionTone: 'buoyant clarity',
+    breathingScale: [1.00, 1.018, 1.00]
+  },
+  NEUTRAL: {
+    id: 'NEUTRAL',
+    label: 'Neutral',
+    coreHue: ['#C7CCD4', '#AEB5BE'], // Slate-silver gradient
+    nucleusGlowMultiplier: 1.0,
+    motionAmplitudeMultiplier: 1.0,
+    pulseInterval: 8,
+    mistSpeedMultiplier: 1.0,
+    labelTone: 'rgba(255, 255, 255, 0.85)',
+    accentReflection: '#DADDE2',
+    emotionTone: 'stable equilibrium',
+    breathingScale: [1.00, 1.015, 1.00]
+  },
+  RISK_OFF: {
+    id: 'RISK_OFF',
+    label: 'Risk-Off',
+    coreHue: ['#F5E6C8', '#EBC69C'], // Amber-white gradient
+    nucleusGlowMultiplier: 0.85,
+    motionAmplitudeMultiplier: 0.8,
+    pulseInterval: 10,
+    mistSpeedMultiplier: 0.9,
+    labelTone: 'rgba(255, 255, 255, 0.78)',
+    accentReflection: '#E6C082',
+    emotionTone: 'measured caution',
+    breathingScale: [1.00, 1.012, 1.00]
+  }
+};
+
+const MacroEquilibriumGrid = ({ onOpenSignalDrawer, globalPostureState = 'NEUTRAL', macroSignalStrength = 1.0 }) => {
   const containerRef = useRef(null);
   const [hoveredDomain, setHoveredDomain] = useState(null);
   const [isHoveringCenter, setIsHoveringCenter] = useState(false);
@@ -17,6 +62,11 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
   const [isInteracting, setIsInteracting] = useState(false);
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
   const [time, setTime] = useState(0);
+  const [isStateTransitioning, setIsStateTransitioning] = useState(false);
+
+  // Spring-animated values for smooth state transitions
+  const glowIntensity = useSpring(1.0, { stiffness: 80, damping: 25 });
+  const motionAmplitude = useSpring(1.0, { stiffness: 80, damping: 25 });
 
   // OS Horizon easing
   const HORIZON_EASE = [0.45, 0, 0.1, 1];
@@ -28,6 +78,38 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     growth: '#A1D0B5',     // Mist Green
     geopolitics: '#E1B97A' // Warm Amber
   };
+
+  // Get active posture state with fallback
+  const activePosture = useMemo(() => {
+    return POSTURE_STATES[globalPostureState] || POSTURE_STATES.NEUTRAL;
+  }, [globalPostureState]);
+
+  // Calculate modulated glow intensity with optional strength parameter
+  const modulatedGlowIntensity = useMemo(() => {
+    const baseMultiplier = activePosture.nucleusGlowMultiplier;
+    const strengthModulation = 0.85 + (0.15 * Math.max(0, Math.min(1, macroSignalStrength)));
+    return baseMultiplier * strengthModulation;
+  }, [activePosture, macroSignalStrength]);
+
+  // Update spring values when state changes
+  useEffect(() => {
+    setIsStateTransitioning(true);
+    
+    // Optional "breath catch" — 200ms pause for human feel
+    const breathCatchTimer = setTimeout(() => {
+      glowIntensity.set(modulatedGlowIntensity);
+      motionAmplitude.set(activePosture.motionAmplitudeMultiplier);
+    }, 200);
+
+    const transitionCompleteTimer = setTimeout(() => {
+      setIsStateTransitioning(false);
+    }, 1100); // 200ms breath + 900ms transition
+
+    return () => {
+      clearTimeout(breathCatchTimer);
+      clearTimeout(transitionCompleteTimer);
+    };
+  }, [activePosture, modulatedGlowIntensity, glowIntensity, motionAmplitude]);
 
   // Macro domains with living properties
   const macroDomains = useMemo(() => {
@@ -90,41 +172,21 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     ];
   }, []);
 
-  // Calculate global posture with light hue
+  // Calculate global posture with light hue (now using activePosture)
   const getGlobalPosture = useCallback(() => {
     const avgStrength = macroDomains.reduce((sum, d) => sum + d.strength, 0) / macroDomains.length;
-    const riskOffWeight = (macroDomains[0].strength + macroDomains[3].strength) / 2;
-    const riskOnWeight = (macroDomains[1].strength + macroDomains[2].strength) / 2;
-    
     const maxStrength = Math.max(...macroDomains.map(d => d.strength));
     const dominantDomain = macroDomains.find(d => d.strength === maxStrength);
     
-    if (riskOffWeight > riskOnWeight + 10) {
-      return { 
-        label: 'Lean Risk-Off', 
-        color: '#E1B97A',
-        lightHue: '#F5E6C8', // Amber White
-        confidence: Math.round(avgStrength),
-        dominantDriver: dominantDomain.name
-      };
-    } else if (riskOnWeight > riskOffWeight + 10) {
-      return { 
-        label: 'Lean Risk-On', 
-        color: '#8CC8E7',
-        lightHue: '#D7F2F7', // Aqua White
-        confidence: Math.round(avgStrength),
-        dominantDriver: dominantDomain.name
-      };
-    } else {
-      return { 
-        label: 'Neutral', 
-        color: '#C7CCD4',
-        lightHue: '#C7CCD4', // Soft Slate
-        confidence: Math.round(avgStrength),
-        dominantDriver: 'Balanced'
-      };
-    }
-  }, [macroDomains]);
+    return { 
+      label: activePosture.label,
+      color: activePosture.coreHue[0],
+      lightHue: activePosture.coreHue[0],
+      confidence: Math.round(avgStrength),
+      dominantDriver: dominantDomain.name,
+      emotionTone: activePosture.emotionTone
+    };
+  }, [macroDomains, activePosture]);
 
   const globalPosture = getGlobalPosture();
 
@@ -237,28 +299,33 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     return positions[domain.gridPosition] || { x: centerX, y: centerY };
   }, [dimensions]);
 
-  // Calculate living drift (vertical ±3px over 6s)
+  // Calculate living drift (vertical ±3px over dynamic interval, respecting state)
   const getLivingDrift = useCallback((index) => {
     if (shouldReduceMotion) return 0;
-    // Synchronized phase across all orbs
-    const phase = (time / 6) * Math.PI * 2;
-    return Math.sin(phase + (index * Math.PI / 4)) * 3;
-  }, [time, shouldReduceMotion]);
+    const currentAmplitude = motionAmplitude.get();
+    const phase = (time / activePosture.pulseInterval) * Math.PI * 2;
+    return Math.sin(phase + (index * Math.PI / 4)) * 3 * currentAmplitude;
+  }, [time, shouldReduceMotion, activePosture, motionAmplitude]);
 
-  // Calculate nucleus ripple (every 8s)
+  // Calculate nucleus ripple (using dynamic pulse interval)
   const getNucleusRipple = useCallback(() => {
     if (shouldReduceMotion) return { scale: 1, opacity: 0 };
-    const ripplePhase = (time % 8) / 8;
+    const ripplePhase = (time % activePosture.pulseInterval) / activePosture.pulseInterval;
     if (ripplePhase < 0.3) {
       return {
         scale: 1 + ripplePhase * 0.5,
-        opacity: (1 - ripplePhase / 0.3) * 0.25
+        opacity: (1 - ripplePhase / 0.3) * 0.25 * glowIntensity.get()
       };
     }
     return { scale: 1, opacity: 0 };
-  }, [time, shouldReduceMotion]);
+  }, [time, shouldReduceMotion, activePosture, glowIntensity]);
 
   const ripple = getNucleusRipple();
+
+  // Get state-aware accent color for info cards
+  const getStateAccentColor = () => {
+    return activePosture.accentReflection;
+  };
 
   return (
     <motion.section
@@ -287,7 +354,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 color: 'rgba(255, 255, 255, 0.68)'
               }}
             >
-              Living balance of global macro forces.
+              Living balance of global macro forces • {activePosture.emotionTone}
             </p>
           </div>
         </div>
@@ -371,15 +438,15 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           }
         }}
         animate={shouldReduceMotion ? {} : {
-          scale: [1.00, 1.015, 1.00],
+          scale: activePosture.breathingScale,
         }}
         transition={shouldReduceMotion ? {} : {
-          duration: 6,
+          duration: activePosture.pulseInterval,
           repeat: Infinity,
           ease: 'easeInOut'
         }}
       >
-        {/* Ambient Mist Particles */}
+        {/* Ambient Mist Particles with state-aware speed */}
         {!shouldReduceMotion && (
           <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
             {[...Array(12)].map((_, i) => (
@@ -389,7 +456,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 style={{
                   width: 2 + Math.random() * 3,
                   height: 2 + Math.random() * 3,
-                  background: 'rgba(255, 255, 255, 0.025)',
+                  background: `${activePosture.coreHue[0]}15`,
                   filter: 'blur(1px)',
                   left: `${Math.random() * 100}%`,
                   top: `${Math.random() * 100}%`,
@@ -400,7 +467,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                   opacity: [0.025, 0.03, 0.025]
                 }}
                 transition={{
-                  duration: 8 + Math.random() * 4,
+                  duration: (8 + Math.random() * 4) / activePosture.mistSpeedMultiplier,
                   repeat: Infinity,
                   ease: 'easeInOut',
                   delay: Math.random() * 2
@@ -410,13 +477,20 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           </div>
         )}
 
-        {/* Dynamic Ambient Light Layer */}
-        <div 
+        {/* Dynamic Ambient Light Layer - crossfades with state */}
+        <motion.div 
           className="absolute inset-0 pointer-events-none transition-colors duration-1000"
           style={{
-            background: `radial-gradient(ellipse at center, ${globalPosture.lightHue}08 0%, transparent 70%)`,
+            background: `radial-gradient(ellipse at center, ${activePosture.coreHue[0]}08 0%, transparent 70%)`,
             mixBlendMode: 'screen',
             opacity: 0.4
+          }}
+          animate={{
+            background: `radial-gradient(ellipse at center, ${activePosture.coreHue[0]}08 0%, transparent 70%)`
+          }}
+          transition={{
+            duration: 0.9,
+            ease: [0.25, 0.1, 0.25, 1]
           }}
           aria-hidden="true"
         />
@@ -472,10 +546,10 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 </filter>
               ))}
 
-              {/* Nucleus gradient */}
+              {/* Nucleus gradient - now state-aware */}
               <radialGradient id="nucleus-gradient">
-                <stop offset="0%" stopColor={globalPosture.color} stopOpacity="0.15" />
-                <stop offset="100%" stopColor={globalPosture.color} stopOpacity="0.02" />
+                <stop offset="0%" stopColor={activePosture.coreHue[0]} stopOpacity="0.15" />
+                <stop offset="100%" stopColor={activePosture.coreHue[1]} stopOpacity="0.02" />
               </radialGradient>
 
               {/* Connection line gradients */}
@@ -518,7 +592,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
               );
             })}
 
-            {/* Center Nucleus with Ripple */}
+            {/* Center Nucleus with Ripple - state-aware glow */}
             <g>
               {/* Ripple wave */}
               {ripple.opacity > 0 && (
@@ -527,7 +601,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                   cy={dimensions.height / 2}
                   r={50 * ripple.scale}
                   fill="none"
-                  stroke={globalPosture.color}
+                  stroke={activePosture.coreHue[0]}
                   strokeWidth="2"
                   opacity={ripple.opacity}
                   style={{
@@ -536,17 +610,18 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 />
               )}
 
-              {/* Outer glow */}
+              {/* Outer glow - state-aware */}
               <motion.circle
                 cx={dimensions.width / 2}
                 cy={dimensions.height / 2}
                 r="50"
                 fill="url(#nucleus-gradient)"
                 animate={shouldReduceMotion ? {} : {
-                  r: [50, 51, 50]
+                  r: [50, 51, 50],
+                  opacity: [glowIntensity.get() * 0.5, glowIntensity.get() * 0.6, glowIntensity.get() * 0.5]
                 }}
                 transition={{
-                  duration: 6,
+                  duration: activePosture.pulseInterval,
                   repeat: Infinity,
                   ease: 'easeInOut'
                 }}
@@ -555,28 +630,28 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 }}
               />
 
-              {/* Core nucleus */}
+              {/* Core nucleus - state-aware color */}
               <motion.circle
                 cx={dimensions.width / 2}
                 cy={dimensions.height / 2}
                 r="20"
-                fill={globalPosture.color}
+                fill={activePosture.coreHue[0]}
                 className="cursor-pointer"
                 animate={shouldReduceMotion ? {} : {
-                  scale: [1, 1.02, 1]
+                  scale: [1, 1.02, 1],
+                  opacity: [0.7 * glowIntensity.get(), 0.75 * glowIntensity.get(), 0.7 * glowIntensity.get()]
                 }}
                 transition={{
-                  duration: 6,
+                  duration: activePosture.pulseInterval,
                   repeat: Infinity,
                   ease: 'easeInOut'
                 }}
                 onMouseEnter={() => setIsHoveringCenter(true)}
                 onMouseLeave={() => setIsHoveringCenter(false)}
                 style={{
-                  filter: `drop-shadow(0 0 22px ${globalPosture.color}80)`,
+                  filter: `drop-shadow(0 0 ${22 * glowIntensity.get()}px ${activePosture.coreHue[0]}80)`,
                   pointerEvents: 'all',
-                  transformOrigin: `${dimensions.width / 2}px ${dimensions.height / 2}px`,
-                  opacity: 0.7
+                  transformOrigin: `${dimensions.width / 2}px ${dimensions.height / 2}px`
                 }}
               />
 
@@ -683,7 +758,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             })}
           </svg>
 
-          {/* Always-Visible Captions */}
+          {/* Always-Visible Captions - state-aware label tone */}
           {macroDomains.map((domain, index) => {
             const pos = getGridPosition(domain);
             const drift = getLivingDrift(index);
@@ -707,9 +782,13 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                   whiteSpace: 'nowrap'
                 }}
                 animate={{
-                  opacity: isHovered ? 1 : 0.8
+                  opacity: isHovered ? 1 : 0.8,
+                  color: isStateTransitioning ? activePosture.labelTone : domain.color
                 }}
-                transition={{ duration: 0.2 }}
+                transition={{ 
+                  opacity: { duration: 0.2 },
+                  color: { duration: 0.6 }
+                }}
               >
                 {domain.name} – {domain.bias}
               </motion.div>
@@ -717,7 +796,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           })}
         </motion.div>
 
-        {/* Center Hover Tooltip */}
+        {/* Center Hover Tooltip - state-aware accent */}
         <AnimatePresence>
           {isHoveringCenter && (
             <motion.div
@@ -738,7 +817,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                   background: 'rgba(255, 255, 255, 0.08)',
                   backdropFilter: 'blur(18px)',
                   WebkitBackdropFilter: 'blur(18px)',
-                  border: `1px solid ${globalPosture.color}40`,
+                  border: `1px solid ${getStateAccentColor()}40`,
                   boxShadow: `0 8px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08)`,
                   borderRadius: '14px'
                 }}
@@ -752,7 +831,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                   </span>
                   <span 
                     className="text-base font-bold block mb-1"
-                    style={{ color: globalPosture.color }}
+                    style={{ color: activePosture.coreHue[0] }}
                   >
                     {globalPosture.label}
                   </span>
@@ -760,7 +839,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                     className="text-xs block"
                     style={{ color: 'rgba(255, 255, 255, 0.65)' }}
                   >
-                    Dominant Driver: {globalPosture.dominantDriver}
+                    {activePosture.emotionTone} • Dominant: {globalPosture.dominantDriver}
                   </span>
                 </div>
               </div>
@@ -768,7 +847,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           )}
         </AnimatePresence>
 
-        {/* Domain Hover Glass Card */}
+        {/* Domain Hover Glass Card - state-aware accent */}
         <AnimatePresence>
           {hoveredDomain && (
             <motion.div
@@ -834,7 +913,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                       </span>
                     </div>
                     
-                    {/* Correlation ripple indicator */}
+                    {/* Correlation ripple indicator - state-aware accent */}
                     <motion.div 
                       className="mt-2 pt-2 border-t"
                       style={{ borderColor: 'rgba(255, 255, 255, 0.08)' }}
@@ -842,7 +921,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                       <div className="flex items-center gap-2">
                         <motion.div
                           className="w-1.5 h-1.5 rounded-full"
-                          style={{ background: domain.color }}
+                          style={{ background: getStateAccentColor() }}
                           animate={{
                             scale: [1, 1.5, 1],
                             opacity: [0.6, 1, 0.6]
