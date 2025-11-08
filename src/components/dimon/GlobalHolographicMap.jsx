@@ -4,8 +4,8 @@ import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight } from 'lucide-re
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// HORIZON CONSTELLATION - FINAL TAHOE DARK LIQUID GLASS
-// Quiet intelligence through balance - Signal, not noise
+// HORIZON CONSTELLATION - FINAL MONOCHROME GLASS
+// Calm depth and balance - Zero hue blending
 // ============================================================================
 
 const TOKENS = {
@@ -16,13 +16,13 @@ const TOKENS = {
       paneInner: 'rgba(255,255,255,0.03)',
       paneBlur: 'blur(30px)',
       shadow: '0 22px 70px rgba(0,0,0,0.45)',
-      vignette: 'radial-gradient(1200px circle at 50% 50%, rgba(255,255,255,0.03), transparent 70%)',
-      gravityWell: 'radial-gradient(circle at center, rgba(255,255,255,0.03) 0%, transparent 80%)'
+      vignette: 'radial-gradient(ellipse 1400px 900px at 50% 50%, rgba(255,255,255,0.03), transparent 70%)',
+      gravityWell: 'radial-gradient(circle at center, rgba(255,255,255,0.02) 0%, transparent 80%)'
     }
   },
   MOTION: {
     CALM: {
-      ease_sine: [0.37, 0, 0.63, 1],  // Pure sine-curve feel
+      ease_sine: [0.37, 0, 0.63, 1],
       t_breathe_min: 6200,
       t_breathe_max: 9000,
       t_thread: 5200,
@@ -38,42 +38,42 @@ const TOKENS = {
   },
   MACRO: {
     rates: {
-      core: '#A6A7FF',      // Lavender blue
+      core: '#A6A7FF',
       halo: 'rgba(166,167,255,0.85)',
       text: '#C5C6FF',
       dotColor: '#C5C6FF'
     },
     fx: {
-      core: '#7BE0FF',      // Aqua
+      core: '#7BE0FF',
       halo: 'rgba(123,224,255,0.85)',
       text: '#B8EDFF',
       dotColor: '#B8EDFF'
     },
     growth: {
-      core: '#8FF7C9',      // Mint green
+      core: '#8FF7C9',
       halo: 'rgba(143,247,201,0.85)',
       text: '#C8FBE6',
       dotColor: '#C8FBE6'
     },
     geopolitics: {
-      core: '#FFD599',      // Soft amber
+      core: '#FFD599',
       halo: 'rgba(255,213,153,0.85)',
       text: '#FFE8C5',
       dotColor: '#FFE8C5'
     }
   },
   DEPTH: {
-    near: { zGlow: 1.00, zBlur: 20 },
-    mid: { zGlow: 0.88, zBlur: 22 },
-    far: { zGlow: 0.76, zBlur: 24 }
+    near: { zGlow: 1.00, zBlur: 20, haloRadius: 42 },
+    mid: { zGlow: 0.88, zBlur: 22, haloRadius: 38 },
+    far: { zGlow: 0.76, zBlur: 24, haloRadius: 35 }
   },
   colors: {
-    textPrimary: "#E8EAED",      // 100%
-    textSecondary: "#A1A6AF",    // 70%
+    textPrimary: "#E8EAED",
+    textSecondary: "#A1A6AF",
     textTertiary: "rgba(255,255,255,0.60)",
     labelDefault: "rgba(255,255,255,0.85)",
     labelDominant: "rgba(255,255,255,0.95)",
-    equilibriumText: "#E6E6E6"   // 80%
+    equilibriumText: "#E6E6E6"
   }
 };
 
@@ -98,7 +98,6 @@ const DEPTH_MAP = {
   geopolitics: 'far'
 };
 
-// Stable phase offsets for desync (spread across 0-1 range)
 const PHASE_MAP = {
   nucleus: 0.11,
   rates: 0.32,
@@ -162,7 +161,6 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     return ANGLES[dominantDriver] || 0;
   }, [dominantDriver]);
 
-  // Micro-parallax tracking
   useEffect(() => {
     if (shouldReduceMotion || !containerRef.current) return;
     
@@ -338,7 +336,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
         </div>
       </div>
 
-      {/* Clean monochrome shell */}
+      {/* Pure monochrome shell - zero color contamination */}
       <div 
         ref={containerRef} 
         className="grid-wrapper relative w-full overflow-hidden"
@@ -348,7 +346,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           minHeight: '600px'
         }}
       >
-        {/* Tahoe liquid glass pane */}
+        {/* Liquid glass pane - completely neutral */}
         <div className="glass-pane" style={{
           position: 'relative',
           margin: '24px',
@@ -360,13 +358,14 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           border: `1px solid ${TOKENS.TAHOE.DARK.paneBorder}`,
           boxShadow: TOKENS.TAHOE.DARK.shadow
         }}>
-          {/* Inner vignette for depth */}
+          {/* Monochrome inner vignette only - zero hue */}
           <div style={{
             position: 'absolute',
             inset: 0,
             pointerEvents: 'none',
             background: TOKENS.TAHOE.DARK.vignette,
-            mixBlendMode: 'screen'
+            mixBlendMode: 'screen',
+            opacity: 1
           }} />
           
           {/* Inner glow */}
@@ -392,17 +391,17 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             }}
             transition={{ duration: 0.8, ease: TOKENS.MOTION.CALM.ease_sine }}
           >
-            {/* Gravity well beneath cluster */}
+            {/* Monochrome gravity well - zero color bleed */}
             <div style={{
               position: 'absolute',
               left: `${cx}px`,
               top: `${cy}px`,
-              width: `${orbitBaseRadius * 3}px`,
-              height: `${orbitBaseRadius * 3}px`,
+              width: `${orbitBaseRadius * 2.8}px`,
+              height: `${orbitBaseRadius * 2.8}px`,
               transform: 'translate(-50%, -50%)',
               background: TOKENS.TAHOE.DARK.gravityWell,
               pointerEvents: 'none',
-              opacity: 0.6,
+              opacity: 1,
               zIndex: 1
             }} />
 
@@ -437,7 +436,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
               }}
               transition={{ duration: 0.5, ease: TOKENS.MOTION.ease }}
             >
-              {/* Breathing Nucleus with sine easing */}
+              {/* Breathing Nucleus */}
               <motion.div 
                 className="nucleus" 
                 data-phase={PHASE_MAP.nucleus}
@@ -524,6 +523,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             {/* SVG Layer */}
             <svg width={dimensions.width - 48} height={dimensions.height - 100} className="absolute" style={{ left: '24px', top: '36px', overflow: 'visible', zIndex: 2 }}>
               <defs>
+                {/* Isolated orb gradients - color contained within orb only */}
                 {domains.map((domain) => (
                   <radialGradient key={`nucleus-${domain.id}`} id={`nucleus-${domain.id}`}>
                     <stop offset="0%" stopColor="rgba(255,255,255,0.95)" />
@@ -539,7 +539,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 ))}
               </defs>
 
-              {/* Thin luminescent threads (1px, 55% opacity) */}
+              {/* Thin luminescent threads */}
               <g style={{ zIndex: 2 }}>
                 {connections.map((conn, i) => {
                   const fromDomain = domains.find(d => d.id === conn.from);
@@ -582,7 +582,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 })}
               </g>
 
-              {/* Orbs with independent breathing cycles */}
+              {/* Orbs with isolated halos - no overlap blending */}
               <g style={{ zIndex: 3 }}>
                 {domains.map((domain) => {
                   const pos = getOrbPosition(domain.id, domain.strength);
@@ -590,26 +590,28 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                   const isHovered = hoveredDomain === domain.id;
                   const confidence = domain.confidence_pct / 100;
                   const depth = getDepthParams(domain.id);
-                  const glowRadius = (90 * depth.zGlow) + (60 * confidence);
                   const phase = PHASE_MAP[domain.id];
-                  // Desync breathing with ±1s variation
                   const breathDuration = (TOKENS.MOTION.CALM.t_breathe_min + (phase * (TOKENS.MOTION.CALM.t_breathe_max - TOKENS.MOTION.CALM.t_breathe_min))) / 1000;
+                  
+                  // Isolated halo - size restricted to prevent overlap
+                  const haloRadius = depth.haloRadius + (confidence * 8);
 
                   return (
                     <g key={domain.id}>
-                      {/* Subtle halo (blur 20-24px, opacity 0.85) with gentle glow */}
+                      {/* Contained halo - isolated color emission */}
                       <motion.circle 
                         cx={pos.x - 24} 
                         cy={pos.y - 36} 
-                        r={pos.radius + 60} 
+                        r={haloRadius} 
                         fill={color}
                         style={{ 
                           filter: `blur(${depth.zBlur}px)`, 
-                          pointerEvents: 'none'
+                          pointerEvents: 'none',
+                          opacity: 0.85
                         }} 
-                        animate={shouldReduceMotion ? { opacity: 0.85 } : {
+                        animate={shouldReduceMotion ? {} : {
                           opacity: [0.78, 0.92, 0.78],
-                          r: [pos.radius + glowRadius - 2, pos.radius + glowRadius + 2, pos.radius + glowRadius - 2]
+                          r: [haloRadius - 2, haloRadius + 2, haloRadius - 2]
                         }}
                         transition={shouldReduceMotion ? {} : {
                           duration: TOKENS.MOTION.CALM.t_halo / 1000,
@@ -619,7 +621,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                         }}
                       />
                       
-                      {/* Orb with sine-curve breathing */}
+                      {/* Orb core */}
                       <motion.circle 
                         cx={pos.x - 24} 
                         cy={pos.y - 36} 
@@ -630,8 +632,8 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                         data-phase={phase}
                         style={{ 
                           filter: isHovered 
-                            ? `drop-shadow(0 8px 28px rgba(0,0,0,0.35)) drop-shadow(0 0 ${glowRadius * 1.5}px ${color})`
-                            : `drop-shadow(0 8px 28px rgba(0,0,0,0.35)) drop-shadow(0 0 ${glowRadius}px ${color})`,
+                            ? `drop-shadow(0 8px 28px rgba(0,0,0,0.35)) drop-shadow(0 0 ${haloRadius * 1.2}px ${color})`
+                            : `drop-shadow(0 8px 28px rgba(0,0,0,0.35)) drop-shadow(0 0 ${haloRadius}px ${color})`,
                           transformOrigin: `${pos.x - 24}px ${pos.y - 36}px`, 
                           pointerEvents: 'all', 
                           color: color
@@ -677,7 +679,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
               </g>
             </svg>
 
-            {/* Labels with SF Pro Display style */}
+            {/* Labels */}
             {domains.map((domain) => {
               const orbPos = getOrbPosition(domain.id, domain.strength);
               const labelPos = getLabelPosition(orbPos.x, orbPos.y, orbPos.radius);
@@ -719,7 +721,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             })}
           </motion.div>
 
-          {/* Balance Footer (mini-glass chip) */}
+          {/* Balance Footer */}
           <div ref={footerRef} className="balance-footer" style={{
             margin: '14px 24px 24px',
             borderRadius: '16px',
