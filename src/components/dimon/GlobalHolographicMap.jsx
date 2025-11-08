@@ -4,8 +4,8 @@ import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight } from 'lucide-re
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// HORIZON CONSTELLATION - LIVING MACRO FIELD V5.0
-// Living motion + balance vector with seamless continuity
+// HORIZON CONSTELLATION - LIVING MACRO FIELD V6.a
+// Calm field + depth offset with Apple-grade restraint
 // ============================================================================
 
 const TOKENS = {
@@ -23,7 +23,14 @@ const TOKENS = {
     t_pulse: 4,
     t_breathe: 6,
     bgCenter: 'rgba(10,12,20,0.88)',
-    bgEdge: 'rgba(10,12,20,0.56)'
+    bgEdge: 'rgba(10,12,20,0.56)',
+    AMBIENT: {
+      centerFog: 'rgba(255,255,255,0.04)',
+      sceneGlowRates: 'rgba(142,162,255,0.06)',
+      sceneGlowGrowth: 'rgba(143,242,201,0.06)',
+      sceneGlowFX: 'rgba(143,232,255,0.06)',
+      sceneGlowGeopolitics: 'rgba(255,201,139,0.06)'
+    }
   },
   MOTION: {
     ease: 'cubic-bezier(0.32,0.72,0,1)',
@@ -45,35 +52,46 @@ const TOKENS = {
       core: '#8EA2FF',
       halo: 'rgba(142,162,255,0.45)',
       text: '#BFC9FF',
-      sceneGlow: 'rgba(142,162,255,0.08)'
+      sceneGlow: 'rgba(142,162,255,0.06)',
+      dotColor: '#BFC9FF'
     },
     fx: {
       core: '#8FE8FF',
       halo: 'rgba(143,232,255,0.45)',
       text: '#C5F2FF',
-      sceneGlow: 'rgba(143,232,255,0.08)'
+      sceneGlow: 'rgba(143,232,255,0.06)',
+      dotColor: '#C5F2FF'
     },
     growth: {
       core: '#8FF2C9',
       halo: 'rgba(143,242,201,0.45)',
       text: '#C8F7E6',
-      sceneGlow: 'rgba(143,242,201,0.08)'
+      sceneGlow: 'rgba(143,242,201,0.06)',
+      dotColor: '#C8F7E6'
     },
     geopolitics: {
       core: '#FFC98B',
       halo: 'rgba(255,201,139,0.45)',
       text: '#FFE2BF',
-      sceneGlow: 'rgba(255,201,139,0.08)'
+      sceneGlow: 'rgba(255,201,139,0.06)',
+      dotColor: '#FFE2BF'
     }
+  },
+  DEPTH: {
+    near: { zGlow: 1.00, zBlur: 18 },
+    mid: { zGlow: 0.88, zBlur: 20 },
+    far: { zGlow: 0.76, zBlur: 22 }
   },
   colors: {
     textPrimary: "rgba(255,255,255,0.92)",
     textSecondary: "rgba(255,255,255,0.72)",
-    textTertiary: "rgba(255,255,255,0.60)"
+    textTertiary: "rgba(255,255,255,0.60)",
+    labelDefault: "rgba(255,255,255,0.85)",
+    labelDominant: "rgba(255,255,255,0.92)"
   }
 };
 
-// Golden-angle distribution (137.5° spacing)
+// Golden-angle distribution
 const ANGLES = {
   rates: 22.5,
   fx: 160.0,
@@ -81,12 +99,20 @@ const ANGLES = {
   geopolitics: 75.0
 };
 
-// Refined orbit radius factors
+// Expanded orbit radii (~12-15% increase for breathing room)
 const BASE_RADII = {
-  rates: 0.32,
-  fx: 0.36,
-  growth: 0.34,
-  geopolitics: 0.30
+  rates: 0.36,        // was 0.32
+  fx: 0.40,           // was 0.36
+  growth: 0.38,       // was 0.34
+  geopolitics: 0.34   // was 0.30
+};
+
+// Z-depth assignments
+const DEPTH_MAP = {
+  growth: 'near',       // feels closer
+  rates: 'mid',
+  fx: 'mid',
+  geopolitics: 'far'    // slightly farther
 };
 
 const MOCK_DOMAINS = [
@@ -113,7 +139,6 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
 
   const domains = MOCK_DOMAINS;
 
-  // Safe area constants
   const headerSafe = 64;
   const footerH = 84;
   const footerBleed = 24;
@@ -194,7 +219,6 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     return { cx: centerX, cy: centerY, orbitBaseRadius: radius };
   }, [dimensions, safeBottom, headerSafe, orbitScale]);
 
-  // Nucleus offset with increased magnitude (14px vs 12px)
   const nucleusOffset = useMemo(() => {
     const angleRad = (balanceAngle * Math.PI) / 180;
     const offsetMagnitude = balanceBias * 14;
@@ -204,7 +228,6 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     };
   }, [balanceAngle, balanceBias]);
 
-  // Balance vector dimensions
   const balanceVectorWidth = useMemo(() => {
     return `${30 + (balanceBias * 8)}%`;
   }, [balanceBias]);
@@ -216,7 +239,6 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     const diameter = baseSize + (strength * sizeRange);
     const radius = diameter / 2;
     
-    // Refined: 0.95 + strength*0.15 (pulls stronger forces slightly outward)
     const baseRadiusFactor = BASE_RADII[domainId];
     const strengthFactor = 0.95 + (strength * 0.15);
     const adjustedRadius = orbitBaseRadius * baseRadiusFactor * strengthFactor;
@@ -281,6 +303,12 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
   const getDomainColor = (domainId) => TOKENS.MACRO[domainId]?.core || TOKENS.MACRO.rates.core;
   const getDomainHalo = (domainId) => TOKENS.MACRO[domainId]?.halo || TOKENS.MACRO.rates.halo;
   const getDomainText = (domainId) => TOKENS.MACRO[domainId]?.text || TOKENS.MACRO.rates.text;
+  const getDomainDotColor = (domainId) => TOKENS.MACRO[domainId]?.dotColor || TOKENS.MACRO.rates.dotColor;
+
+  const getDepthParams = (domainId) => {
+    const depthLevel = DEPTH_MAP[domainId] || 'mid';
+    return TOKENS.DEPTH[depthLevel];
+  };
 
   const getDomainIcon = (domainId) => {
     const iconMap = { rates: "📊", fx: "💱", growth: "📈", geopolitics: "🌍" };
@@ -358,7 +386,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
         data-dominant={dominantDriver}
         style={{
           height: '600px',
-          background: `radial-gradient(900px circle at 50% 46%, ${TOKENS.HORIZON.bgCenter}, ${TOKENS.HORIZON.bgEdge})`,
+          background: `radial-gradient(900px circle at 50% 48%, ${TOKENS.HORIZON.AMBIENT.centerFog}, transparent 72%), linear-gradient(to bottom, rgba(255,255,255,0.02), transparent)`,
           border: '1px solid rgba(255,255,255,0.04)',
           borderRadius: '24px',
           paddingTop: `${headerSafe}px`,
@@ -368,7 +396,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
         }}
       >
         
-        {/* Scene Ambient - 72% transparency cutoff */}
+        {/* Unified calm ambient glow */}
         <motion.div 
           className="scene-ambient"
           style={{
@@ -380,10 +408,24 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           }}
           animate={{
             background: dominantDriver === 'balanced' 
-              ? 'radial-gradient(900px circle at 50% 46%, rgba(255,255,255,0.02), transparent 72%)'
-              : `radial-gradient(900px circle at 50% 46%, ${TOKENS.MACRO[dominantDriver].sceneGlow}, transparent 72%)`
+              ? 'radial-gradient(1100px circle at 50% 46%, rgba(255,255,255,0.00), transparent 74%)'
+              : `radial-gradient(1100px circle at 50% 46%, ${TOKENS.MACRO[dominantDriver].sceneGlow}, transparent 74%)`
           }}
           transition={{ duration: 0.5, ease: TOKENS.HORIZON.easing }}
+        />
+
+        {/* Ultra-subtle grain (calm, no banding) */}
+        <div 
+          className="grain-overlay"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            pointerEvents: 'none',
+            backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.03"/></svg>')`,
+            mixBlendMode: 'soft-light',
+            opacity: 0.08,
+            filter: 'blur(64px)'
+          }}
         />
         
         <div ref={constellationRef} className="constellation-layer" style={{ 
@@ -411,7 +453,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             willChange: 'width, height'
           }} aria-hidden="true" />
 
-          {/* Nucleus Carrier with offset */}
+          {/* Nucleus Carrier */}
           <motion.div 
             className="nucleus-carrier" 
             style={{
@@ -426,7 +468,6 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             }}
             transition={{ duration: 0.5, ease: TOKENS.HORIZON.easing }}
           >
-            {/* Breathing Nucleus */}
             <motion.div className="nucleus" style={{
               position: 'absolute',
               left: 0,
@@ -451,7 +492,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             }}
             aria-hidden="true" />
 
-            {/* Balance Vector - directional ray */}
+            {/* Balance Vector */}
             {dominantDriver !== "balanced" && (
               <motion.div
                 className="balance-vector"
@@ -528,7 +569,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
               </linearGradient>
             </defs>
 
-            {/* Energy threads with refined pulse */}
+            {/* Connections with depth falloff */}
             <g style={{ zIndex: 2 }}>
               {connections.map((conn, i) => {
                 const fromDomain = domains.find(d => d.id === conn.from);
@@ -538,6 +579,11 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 const isAdjacent = hoveredDomain === conn.from || hoveredDomain === conn.to;
                 const strokeWidth = 1.5 + (conn.relationship * 1.5);
                 const pathD = `M ${fromPos.x},${fromPos.y} Q ${cx},${cy} ${toPos.x},${toPos.y}`;
+                
+                // Depth-based opacity adjustment
+                let baseOpacity = 0.65;
+                if (conn.from === 'geopolitics') baseOpacity = 0.6;
+                if (conn.from === 'growth') baseOpacity = 0.7;
                 
                 return (
                   <motion.path 
@@ -549,7 +595,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                     fill="none"
                     className={`connection ${isAdjacent ? 'adjacent' : 'other'}`}
                     animate={{ 
-                      opacity: isAdjacent ? 1 : (hoveredDomain ? 0.35 : 0.65),
+                      opacity: isAdjacent ? 1 : (hoveredDomain ? 0.35 : baseOpacity),
                       strokeDashoffset: shouldReduceMotion ? 0 : [140, -320]
                     }}
                     transition={{ 
@@ -569,7 +615,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
               })}
             </g>
 
-            {/* Orbs with pulse */}
+            {/* Orbs with depth layering */}
             <g style={{ zIndex: 3 }}>
               {domains.map((domain) => {
                 const pos = getOrbPosition(domain.id, domain.strength);
@@ -577,7 +623,8 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 const isHovered = hoveredDomain === domain.id;
                 const isGrowth = domain.id === 'growth';
                 const confidence = domain.confidence_pct / 100;
-                const glowRadius = 90 + (60 * confidence);
+                const depth = getDepthParams(domain.id);
+                const glowRadius = (90 * depth.zGlow) + (60 * confidence);
 
                 return (
                   <g key={domain.id}>
@@ -593,7 +640,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                       }}
                       transition={{ duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }}
                       style={{ 
-                        filter: 'blur(70px)', 
+                        filter: `blur(${depth.zBlur}px)`, 
                         pointerEvents: 'none',
                         mask: isGrowth ? 'url(#growth-halo-mask)' : 'none',
                         WebkitMask: isGrowth ? 'url(#growth-halo-mask)' : 'none'
@@ -609,7 +656,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                       data-key={domain.id}
                       style={{ 
                         filter: isHovered 
-                          ? `drop-shadow(0 8px 28px rgba(0,0,0,0.35)) drop-shadow(0 0 140px ${color})`
+                          ? `drop-shadow(0 8px 28px rgba(0,0,0,0.35)) drop-shadow(0 0 ${glowRadius * 1.5}px ${color})`
                           : `drop-shadow(0 8px 28px rgba(0,0,0,0.35)) drop-shadow(0 0 ${glowRadius}px ${color})`,
                         transformOrigin: `${pos.x}px ${pos.y}px`, 
                         pointerEvents: 'all', 
@@ -650,16 +697,18 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             </g>
           </svg>
 
-          {/* Labels */}
+          {/* Labels with hierarchy */}
           {domains.map((domain) => {
             const orbPos = getOrbPosition(domain.id, domain.strength);
             const labelPos = getLabelPosition(orbPos.x, orbPos.y, orbPos.radius);
             const isHovered = hoveredDomain === domain.id;
+            const isDominant = domain.id === dominantDriver;
             
             return (
               <motion.div 
                 key={`label-${domain.id}`} 
                 className="orb-label" 
+                data-key={domain.id}
                 style={{
                   position: 'absolute',
                   left: `${labelPos.x}px`,
@@ -674,13 +723,13 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                   fontWeight: 600,
                   fontSize: '12px',
                   letterSpacing: '0.02em',
-                  color: isHovered ? 'rgba(255,255,255,0.92)' : getDomainText(domain.id),
+                  color: isHovered ? TOKENS.colors.labelDominant : (isDominant ? TOKENS.colors.labelDominant : TOKENS.colors.labelDefault),
                   textShadow: '0 1px 1px rgba(0,0,0,0.35)',
                   pointerEvents: 'none',
                   zIndex: 3
                 }}
                 animate={{
-                  color: isHovered ? 'rgba(255,255,255,0.92)' : getDomainText(domain.id)
+                  color: isHovered ? TOKENS.colors.labelDominant : (isDominant ? TOKENS.colors.labelDominant : TOKENS.colors.labelDefault)
                 }}
                 transition={{ duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }}
               >
@@ -748,7 +797,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           )}
         </AnimatePresence>
 
-        {/* Balance Footer with live indicator */}
+        {/* Balance Footer */}
         <div ref={footerRef} className="balance-footer" style={{
           position: 'absolute',
           left: '32px',
@@ -779,14 +828,15 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
               }}>
                 <motion.div 
                   className="balance-dot"
+                  data-dominant={dominantDriver}
                   style={{
                     position: 'absolute',
                     top: '50%',
                     width: '12px',
                     height: '12px',
                     borderRadius: '999px',
-                    background: dominantDriver === 'balanced' ? 'rgba(255,255,255,0.6)' : getDomainColor(dominantDriver),
-                    boxShadow: `0 0 24px ${dominantDriver === 'balanced' ? 'rgba(255,255,255,0.4)' : getDomainColor(dominantDriver)}`,
+                    background: dominantDriver === 'balanced' ? 'rgba(255,255,255,0.6)' : getDomainDotColor(dominantDriver),
+                    boxShadow: `0 0 24px ${dominantDriver === 'balanced' ? 'rgba(255,255,255,0.4)' : getDomainDotColor(dominantDriver)}`,
                     transform: 'translate(-50%, -50%)'
                   }}
                   animate={{
