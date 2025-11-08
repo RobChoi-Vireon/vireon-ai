@@ -4,8 +4,8 @@ import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight } from 'lucide-re
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// HORIZON CONSTELLATION - MACRO EQUILIBRIUM GRID V3.2
-// Fixed: Growth orb collision, halo bleed, label docking, footer pressure
+// HORIZON CONSTELLATION - MACRO EQUILIBRIUM GRID V3.3
+// Optimal positioning & spacing with radial layout algorithm
 // ============================================================================
 
 const TOKENS = {
@@ -35,6 +35,14 @@ const TOKENS = {
   }
 };
 
+// Optimal angle distribution (degrees)
+const ANGLES = {
+  rates: -18,
+  fx: 38,
+  growth: 118,
+  geopolitics: 198
+};
+
 const MOCK_DOMAINS = [
   { id: "rates", posture: "hawkish", confidence_pct: 78, strength: 0.82, summary: "Fed holding firm; terminal rate expectations drift higher on sticky services inflation.", ripple: ["Credit spreads widen", "Tech multiples compress", "EM funding costs rise"], last_updated_iso: new Date().toISOString(), sparkline: [0.72, 0.74, 0.76, 0.75, 0.78, 0.80, 0.79, 0.81, 0.82] },
   { id: "fx", posture: "stable", confidence_pct: 65, strength: 0.58, summary: "Dollar range-bound as yield differentials narrow; carry trades unwind slowly.", ripple: ["EM currencies stabilize", "Energy imports neutral"], last_updated_iso: new Date().toISOString(), sparkline: [0.60, 0.59, 0.58, 0.57, 0.58, 0.59, 0.58, 0.57, 0.58] },
@@ -49,16 +57,23 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
   const constellationRef = useRef(null);
   const [hoveredDomain, setHoveredDomain] = useState(null);
   const [selectedDomain, setSelectedDomain] = useState(null);
-  const [dimensions, setDimensions] = useState({ width: 800, height: 500 });
+  const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
   const [capsuleBounds, setCapsuleBounds] = useState(null);
   const [isMorphing, setIsMorphing] = useState(false);
   const [isLowPower, setIsLowPower] = useState(false);
-  const [isCompactHeight, setIsCompactHeight] = useState(false);
   const [constellationShift, setConstellationShift] = useState(0);
   const [orbitScale, setOrbitScale] = useState(1.0);
 
   const domains = MOCK_DOMAINS;
+
+  // Safe area constants
+  const headerSafe = 64;
+  const footerH = 84;
+  const footerBleed = 24;
+  const haloBleed = 18;
+  const minClear = 24;
+  const safeBottom = footerH + footerBleed + haloBleed + minClear;
 
   const dominantDriver = useMemo(() => {
     const maxStrength = Math.max(...domains.map(d => d.strength));
@@ -79,7 +94,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
 
   const balanceAngle = useMemo(() => {
     if (dominantDriver === "balanced") return 0;
-    const angleMap = { rates: -90, fx: 0, growth: 90, geopolitics: 180 };
+    const angleMap = { rates: -18, fx: 38, growth: 118, geopolitics: 198 };
     return angleMap[dominantDriver] || 0;
   }, [dominantDriver]);
 
@@ -101,8 +116,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     const updateDimensions = () => {
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
-        setDimensions({ width: rect.width, height: 500 });
-        setIsCompactHeight(window.innerHeight <= 780);
+        setDimensions({ width: rect.width, height: 600 });
       }
     };
     updateDimensions();
@@ -110,39 +124,69 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
-  // Safe area calculations with halo bleed
-  const footerH = isCompactHeight ? 68 : 84;
-  const footerBleed = isCompactHeight ? 18 : 24;
-  const haloBleed = 18;
-  const minClear = 24;
-  const safeBottom = footerH + footerBleed + haloBleed + minClear;
+  // Compute safe frame and constellation center
+  const { cx, cy, orbitRadius } = useMemo(() => {
+    const safeW = dimensions.width;
+    const safeH = dimensions.height - safeBottom - headerSafe;
+    const centerX = dimensions.width / 2;
+    const centerY = headerSafe + safeH / 2 - safeH * 0.025; // 2.5% optical lift
+    
+    const baseRadius = Math.min(safeW, safeH) * 0.34;
+    const shortH = window.innerHeight <= 820;
+    const radius = baseRadius * (shortH ? 0.92 : 1.00) * orbitScale;
+    
+    return { cx: centerX, cy: centerY, orbitRadius: radius };
+  }, [dimensions, safeBottom, headerSafe, orbitScale]);
 
-  // Collision detection and constellation adjustment
+  // Radial positioning for orbs
+  const getOrbPosition = useCallback((domainId, strength) => {
+    const angle = ANGLES[domainId] * (Math.PI / 180);
+    const radius = Math.max(44, Math.min(64, 40 + strength * 16)) / 2; // Convert diameter to radius
+    
+    const orbX = cx + orbitRadius * Math.cos(angle);
+    const orbY = cy + orbitRadius * Math.sin(angle);
+    
+    return { x: orbX, y: orbY, radius };
+  }, [cx, cy, orbitRadius]);
+
+  // Radial label positioning (outside ring along normal)
+  const getLabelPosition = useCallback((orbX, orbY, orbRadius) => {
+    const vx = orbX - cx;
+    const vy = orbY - cy;
+    const norm = Math.hypot(vx, vy) || 1;
+    const nx = vx / norm;
+    const ny = vy / norm;
+    const offset = orbRadius + 14; // 14px standoff
+    
+    return {
+      x: orbX + nx * offset,
+      y: orbY + ny * offset
+    };
+  }, [cx, cy]);
+
+  // Collision detection and adjustment
   useEffect(() => {
-    if (!containerRef.current || !footerRef.current || !constellationRef.current) return;
+    if (!footerRef.current || !constellationRef.current) return;
 
     const checkCollision = () => {
       const footerRect = footerRef.current.getBoundingClientRect();
       const footerTop = footerRect.top;
       
-      // Get Growth orb position
-      const growthPos = getDomainPosition('growth');
       const growthDomain = domains.find(d => d.id === 'growth');
-      const growthRadius = 22 + (growthDomain.strength * 8);
-      const growthBottom = growthPos.y + growthRadius + haloBleed;
+      const growthPos = getOrbPosition('growth', growthDomain.strength);
+      const growthBottom = growthPos.y + growthPos.radius + haloBleed;
       
-      const containerRect = containerRef.current.getBoundingClientRect();
+      const containerRect = containerRef.current?.getBoundingClientRect();
+      if (!containerRect) return;
+      
       const absoluteGrowthBottom = containerRect.top + growthBottom;
-      
       const gap = footerTop - absoluteGrowthBottom;
       
       if (gap < minClear) {
-        // Shift constellation upward
-        const shiftNeeded = minClear - gap;
-        setConstellationShift(-shiftNeeded);
+        const dy = minClear - gap;
+        setConstellationShift(-dy);
         
-        // If still not enough room, scale orbit ring
-        if (shiftNeeded > 16) {
+        if (dy > 16 || window.innerHeight <= 820) {
           setOrbitScale(0.96);
         } else {
           setOrbitScale(1.0);
@@ -156,28 +200,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     checkCollision();
     window.addEventListener('resize', checkCollision);
     return () => window.removeEventListener('resize', checkCollision);
-  }, [dimensions, footerH, domains]);
-
-  const getDomainPosition = useCallback((domainId) => {
-    const centerX = dimensions.width / 2;
-    const centerY = (dimensions.height / 2) + constellationShift;
-    
-    const maxOrbRadius = 22 + (1.0 * 8);
-    const maxRadius = Math.min(
-      (dimensions.height - safeBottom) / 2 - maxOrbRadius - 12,
-      dimensions.width * 0.36
-    );
-    
-    const adjustedRadius = maxRadius * orbitScale;
-    
-    const positions = {
-      rates: { x: centerX, y: centerY - adjustedRadius },
-      fx: { x: centerX + adjustedRadius, y: centerY },
-      growth: { x: centerX, y: centerY + adjustedRadius },
-      geopolitics: { x: centerX - adjustedRadius, y: centerY }
-    };
-    return positions[domainId] || { x: centerX, y: centerY };
-  }, [dimensions, safeBottom, orbitScale, constellationShift]);
+  }, [dimensions, getOrbPosition, domains]);
 
   const getDomainColor = (domainId) => {
     const colorMap = { rates: TOKENS.colors.rates, fx: TOKENS.colors.fx, growth: TOKENS.colors.growth, geopolitics: TOKENS.colors.geo };
@@ -255,36 +278,44 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
       </div>
 
       <div ref={containerRef} className="grid-wrapper relative w-full overflow-hidden" style={{
-        height: '500px',
+        height: '600px',
         background: `radial-gradient(900px circle at 50% 46%, ${TOKENS.HORIZON.bgCenter}, ${TOKENS.HORIZON.bgEdge})`,
         border: '1px solid rgba(255,255,255,0.04)',
         borderRadius: '24px',
+        paddingTop: `${headerSafe}px`,
         paddingBottom: `${safeBottom}px`
       }}>
         
-        <div ref={constellationRef} className="constellation-layer" style={{ position: 'absolute', inset: 0, transform: `translateY(${constellationShift}px)`, transition: 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)' }}>
+        <div ref={constellationRef} className="constellation-layer" style={{ 
+          position: 'absolute', 
+          inset: 0, 
+          transform: `translateY(${constellationShift}px)`, 
+          transition: shouldReduceMotion ? 'none' : 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)',
+          willChange: 'transform'
+        }}>
           {/* Orbit Ring - z-index: 2 */}
           <div className="orbit-ring" style={{
             position: 'absolute',
-            left: '50%',
-            top: '50%',
-            transform: `translate(-50%, -50%) scale(${orbitScale})`,
-            width: '72%',
-            height: '72%',
+            left: `${cx}px`,
+            top: `${cy}px`,
+            width: `${orbitRadius * 2}px`,
+            height: `${orbitRadius * 2}px`,
+            transform: 'translate(-50%, -50%)',
             borderRadius: '999px',
             boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.06)',
             opacity: 0.35,
             filter: 'blur(0.2px)',
             pointerEvents: 'none',
             zIndex: 2,
-            transition: 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)'
+            transition: shouldReduceMotion ? 'none' : 'all 0.4s cubic-bezier(0.32, 0.72, 0, 1)',
+            willChange: 'width, height'
           }} aria-hidden="true" />
 
           {/* Nucleus - z-index: 2 */}
           <div className="nucleus" style={{
             position: 'absolute',
-            left: '50%',
-            top: '50%',
+            left: `${cx}px`,
+            top: `${cy}px`,
             transform: 'translate(-50%, -50%)',
             width: '22px',
             height: '22px',
@@ -301,8 +332,8 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           {dominantDriver !== "balanced" && (
             <motion.div className="balance-vector" style={{
               position: 'absolute',
-              left: '50%',
-              top: '50%',
+              left: `${cx}px`,
+              top: `${cy}px`,
               transform: 'translate(-50%, -50%)',
               width: '34%',
               height: '2px',
@@ -343,13 +374,13 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             {/* Curved Energy Threads - z-index: 2 */}
             <g style={{ zIndex: 2 }}>
               {connections.map((conn, i) => {
-                const fromPos = getDomainPosition(conn.from);
-                const toPos = getDomainPosition(conn.to);
-                const centerX = dimensions.width / 2;
-                const centerY = (dimensions.height / 2) + constellationShift;
+                const fromDomain = domains.find(d => d.id === conn.from);
+                const toDomain = domains.find(d => d.id === conn.to);
+                const fromPos = getOrbPosition(conn.from, fromDomain.strength);
+                const toPos = getOrbPosition(conn.to, toDomain.strength);
                 const isAdjacent = hoveredDomain === conn.from || hoveredDomain === conn.to;
                 const strokeWidth = 1.5 + (conn.relationship * 1.5);
-                const pathD = `M ${fromPos.x},${fromPos.y} Q ${centerX},${centerY} ${toPos.x},${toPos.y}`;
+                const pathD = `M ${fromPos.x},${fromPos.y} Q ${cx},${cy} ${toPos.x},${toPos.y}`;
                 
                 return (
                   <motion.path key={`connection-${i}`} d={pathD} stroke={`url(#conn-grad-${i})`} strokeWidth={strokeWidth} strokeLinecap="round" fill="none"
@@ -364,15 +395,15 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             {/* Orbs Layer - z-index: 3 */}
             <g style={{ zIndex: 3 }}>
               {domains.map((domain) => {
-                const pos = getDomainPosition(domain.id);
+                const pos = getOrbPosition(domain.id, domain.strength);
                 const color = getDomainColor(domain.id);
                 const isHovered = hoveredDomain === domain.id;
-                const radius = 22 + (domain.strength * 8);
                 const isGrowth = domain.id === 'growth';
+                const diameter = pos.radius * 2;
 
                 return (
                   <g key={domain.id}>
-                    <motion.circle cx={pos.x} cy={pos.y} r={radius + 60} fill={color}
+                    <motion.circle cx={pos.x} cy={pos.y} r={pos.radius + 60} fill={color}
                       opacity={isGrowth ? "0.06" : "0.08"}
                       animate={{ opacity: isHovered ? (isGrowth ? 0.09 : 0.12) : (isGrowth ? 0.06 : 0.08) }}
                       transition={{ duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }}
@@ -383,7 +414,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                         WebkitMask: isGrowth ? 'url(#growth-halo-mask)' : 'none'
                       }} />
                     
-                    <motion.circle cx={pos.x} cy={pos.y} r={radius} fill={`url(#nucleus-${domain.id})`}
+                    <motion.circle cx={pos.x} cy={pos.y} r={pos.radius} fill={`url(#nucleus-${domain.id})`}
                       className="orb cursor-pointer" data-key={domain.id}
                       style={{ 
                         filter: 'drop-shadow(0 8px 28px rgba(0,0,0,0.35))', 
@@ -401,7 +432,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                       onClick={() => handleOpenDrawer(domain)} onKeyDown={(e) => { if (e.key === 'Enter') handleOpenDrawer(domain); }}
                       tabIndex={0} role="button" aria-label={`${domain.id} domain: ${domain.posture}, ${domain.confidence_pct}% confidence`} aria-describedby={`capsule-${domain.id}`} />
                     
-                    <circle cx={pos.x} cy={pos.y} r={radius} fill="none" stroke={color} strokeWidth="1" opacity="0.25" style={{ pointerEvents: 'none' }} />
+                    <circle cx={pos.x} cy={pos.y} r={pos.radius} fill="none" stroke={color} strokeWidth="1" opacity="0.25" style={{ pointerEvents: 'none' }} />
                   </g>
                 );
               })}
@@ -410,16 +441,15 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
 
           {/* Glass Tag Labels - z-index: 3 */}
           {domains.map((domain) => {
-            const pos = getDomainPosition(domain.id);
-            const radius = 22 + (domain.strength * 8);
-            const isGrowth = domain.id === 'growth';
+            const orbPos = getOrbPosition(domain.id, domain.strength);
+            const labelPos = getLabelPosition(orbPos.x, orbPos.y, orbPos.radius);
             
             return (
               <div key={`label-${domain.id}`} className="orb-label" style={{
                 position: 'absolute',
-                left: pos.x,
-                top: pos.y + radius + (isGrowth ? 12 : 16),
-                transform: 'translateX(-50%)',
+                left: `${labelPos.x}px`,
+                top: `${labelPos.y}px`,
+                transform: 'translate(-50%, -50%)',
                 backdropFilter: 'blur(16px)',
                 WebkitBackdropFilter: 'blur(16px)',
                 background: 'rgba(20,22,30,0.45)',
@@ -442,8 +472,16 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
         <AnimatePresence>
           {hoveredDomain && !selectedDomain && !isMorphing && (
             <motion.div ref={capsuleRef} id={`capsule-${hoveredDomain}`} className="absolute z-50" style={{ 
-              left: getDomainPosition(hoveredDomain).x + 70, 
-              top: getDomainPosition(hoveredDomain).y - 50, 
+              left: (() => {
+                const domain = domains.find(d => d.id === hoveredDomain);
+                const pos = getOrbPosition(hoveredDomain, domain.strength);
+                return pos.x + 70;
+              })(),
+              top: (() => {
+                const domain = domains.find(d => d.id === hoveredDomain);
+                const pos = getOrbPosition(hoveredDomain, domain.strength);
+                return pos.y - 50;
+              })(),
               transformOrigin: 'center left', 
               pointerEvents: 'auto' 
             }}
@@ -481,7 +519,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           position: 'absolute',
           left: '32px',
           right: '32px',
-          bottom: isCompactHeight ? '18px' : '22px',
+          bottom: '22px',
           height: `${footerH}px`,
           borderRadius: '18px',
           padding: '14px 16px 16px 16px',
