@@ -4,8 +4,8 @@ import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight } from 'lucide-re
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// HORIZON CONSTELLATION - LIVING MACRO FIELD V4.0
-// Emotion integration: breathing nucleus, dynamic orbs, living connections
+// HORIZON CONSTELLATION - LIVING MACRO FIELD V4.1
+// Golden-angle layout + Horizon color tokens (calm, Apple-grade)
 // ============================================================================
 
 const TOKENS = {
@@ -33,29 +33,53 @@ const TOKENS = {
     t_pulse: '4000ms',
     t_breathe: '6000ms'
   },
+  MACRO: {
+    rates: {
+      core: '#8EA2FF',
+      halo: 'rgba(142,162,255,0.45)',
+      text: '#BFC9FF',
+      sceneGlow: 'rgba(142,162,255,0.08)'
+    },
+    fx: {
+      core: '#8FE8FF',
+      halo: 'rgba(143,232,255,0.45)',
+      text: '#C5F2FF',
+      sceneGlow: 'rgba(143,232,255,0.08)'
+    },
+    growth: {
+      core: '#8FF2C9',
+      halo: 'rgba(143,242,201,0.45)',
+      text: '#C8F7E6',
+      sceneGlow: 'rgba(143,242,201,0.08)'
+    },
+    geopolitics: {
+      core: '#FFC98B',
+      halo: 'rgba(255,201,139,0.45)',
+      text: '#FFE2BF',
+      sceneGlow: 'rgba(255,201,139,0.08)'
+    }
+  },
   colors: {
-    rates: "#7E77FF",
-    fx: "#6ECBE0",
-    growth: "#7AD8B3",
-    geo: "#D8AE6C",
     textPrimary: "rgba(255,255,255,0.92)",
     textSecondary: "rgba(255,255,255,0.72)",
     textTertiary: "rgba(255,255,255,0.60)"
-  },
-  sceneGlows: {
-    rates: "rgba(126,119,255,0.08)",
-    fx: "rgba(110,203,224,0.08)",
-    growth: "rgba(122,216,179,0.08)",
-    geopolitics: "rgba(216,174,108,0.08)"
   }
 };
 
-// Optimal angle distribution (degrees)
+// Golden-angle distribution (137.5° spacing)
 const ANGLES = {
-  rates: -18,
-  fx: 38,
-  growth: 118,
-  geopolitics: 198
+  rates: 22.5,        // Base angle
+  fx: 160.0,          // 22.5° + 137.5°
+  growth: 297.5,      // 160° + 137.5°
+  geopolitics: 75.0   // 297.5° + 137.5° (wrapped)
+};
+
+// Organic radius variation (as % of orbit base)
+const RADII = {
+  rates: 0.31,
+  fx: 0.35,
+  growth: 0.33,
+  geopolitics: 0.29  // Closer - feels like heavier mass
 };
 
 const MOCK_DOMAINS = [
@@ -149,8 +173,8 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
-  // Compute safe frame and constellation center
-  const { cx, cy, orbitRadius } = useMemo(() => {
+  // Compute safe frame and base orbit radius
+  const { cx, cy, orbitBaseRadius } = useMemo(() => {
     const safeW = dimensions.width;
     const safeH = dimensions.height - safeBottom - headerSafe;
     const centerX = dimensions.width / 2;
@@ -160,7 +184,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     const shortH = window.innerHeight <= 820;
     const radius = baseRadius * (shortH ? 0.92 : 1.00) * orbitScale;
     
-    return { cx: centerX, cy: centerY, orbitRadius: radius };
+    return { cx: centerX, cy: centerY, orbitBaseRadius: radius };
   }, [dimensions, safeBottom, headerSafe, orbitScale]);
 
   // Nucleus offset based on balance
@@ -173,7 +197,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     };
   }, [balanceAngle, balanceBias]);
 
-  // Radial positioning for orbs
+  // Golden-angle positioning with organic radius variation
   const getOrbPosition = useCallback((domainId, strength) => {
     const angle = ANGLES[domainId] * (Math.PI / 180);
     const baseSize = 40;
@@ -181,16 +205,16 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     const diameter = baseSize + (strength * sizeRange);
     const radius = diameter / 2;
     
-    // Distance varies with strength (stronger = slightly farther)
-    const radiusBase = orbitRadius;
-    const radiusVariation = orbitRadius * 0.06;
-    const distance = radiusBase + ((1 - strength) * radiusVariation);
+    // Organic radius with optional strength adjustment
+    const baseRadiusFactor = RADII[domainId];
+    const strengthFactor = 0.9 + (strength * 0.2); // 0.9 to 1.1 range
+    const adjustedRadius = orbitBaseRadius * baseRadiusFactor * strengthFactor;
     
-    const orbX = cx + distance * Math.cos(angle);
-    const orbY = cy + distance * Math.sin(angle);
+    const orbX = cx + adjustedRadius * Math.cos(angle);
+    const orbY = cy + adjustedRadius * Math.sin(angle);
     
     return { x: orbX, y: orbY, radius, diameter };
-  }, [cx, cy, orbitRadius]);
+  }, [cx, cy, orbitBaseRadius]);
 
   // Radial label positioning (outside ring along normal)
   const getLabelPosition = useCallback((orbX, orbY, orbRadius) => {
@@ -245,10 +269,9 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     return () => window.removeEventListener('resize', checkCollision);
   }, [dimensions, getOrbPosition, domains]);
 
-  const getDomainColor = (domainId) => {
-    const colorMap = { rates: TOKENS.colors.rates, fx: TOKENS.colors.fx, growth: TOKENS.colors.growth, geopolitics: TOKENS.colors.geo };
-    return colorMap[domainId] || TOKENS.colors.rates;
-  };
+  const getDomainColor = (domainId) => TOKENS.MACRO[domainId]?.core || TOKENS.MACRO.rates.core;
+  const getDomainHalo = (domainId) => TOKENS.MACRO[domainId]?.halo || TOKENS.MACRO.rates.halo;
+  const getDomainText = (domainId) => TOKENS.MACRO[domainId]?.text || TOKENS.MACRO.rates.text;
 
   const getDomainIcon = (domainId) => {
     const iconMap = { rates: "📊", fx: "💱", growth: "📈", geopolitics: "🌍" };
@@ -346,7 +369,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           animate={{
             background: dominantDriver === 'balanced' 
               ? 'radial-gradient(900px circle at 50% 46%, rgba(255,255,255,0.02), transparent 70%)'
-              : `radial-gradient(900px circle at 50% 46%, ${TOKENS.sceneGlows[dominantDriver]}, transparent 70%)`
+              : `radial-gradient(900px circle at 50% 46%, ${TOKENS.MACRO[dominantDriver].sceneGlow}, transparent 70%)`
           }}
           transition={{ duration: 0.5, ease: TOKENS.HORIZON.easing }}
         />
@@ -363,8 +386,8 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             position: 'absolute',
             left: `${cx}px`,
             top: `${cy}px`,
-            width: `${orbitRadius * 2}px`,
-            height: `${orbitRadius * 2}px`,
+            width: `${orbitBaseRadius * 2}px`,
+            height: `${orbitBaseRadius * 2}px`,
             transform: 'translate(-50%, -50%)',
             borderRadius: '999px',
             boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.06)',
@@ -416,7 +439,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             aria-hidden="true" />
 
             {/* Nucleus rays pointing toward orbs */}
-            {domains.map((domain, idx) => {
+            {domains.map((domain) => {
               const angle = ANGLES[domain.id];
               const isDominant = domain.id === dominantDriver;
               const rayAlpha = isDominant ? 0.55 : 0.2;
@@ -458,8 +481,8 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
               ))}
               {connections.map((conn, i) => (
                 <linearGradient key={`conn-grad-${i}`} id={`conn-grad-${i}`} x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor={getDomainColor(conn.from)} stopOpacity="0.65" />
-                  <stop offset="100%" stopColor={getDomainColor(conn.to)} stopOpacity="0.65" />
+                  <stop offset="0%" stopColor={getDomainHalo(conn.from)} />
+                  <stop offset="100%" stopColor={getDomainHalo(conn.to)} />
                 </linearGradient>
               ))}
               <linearGradient id="growth-halo-mask" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -551,7 +574,9 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                       className="orb cursor-pointer" 
                       data-key={domain.id}
                       style={{ 
-                        filter: `drop-shadow(0 8px 28px rgba(0,0,0,0.35)) drop-shadow(0 0 ${glowRadius}px ${color})`,
+                        filter: isHovered 
+                          ? `drop-shadow(0 8px 28px rgba(0,0,0,0.35)) drop-shadow(0 0 140px ${color})`
+                          : `drop-shadow(0 8px 28px rgba(0,0,0,0.35)) drop-shadow(0 0 ${glowRadius}px ${color})`,
                         transformOrigin: `${pos.x}px ${pos.y}px`, 
                         pointerEvents: 'all', 
                         color: color,
@@ -592,31 +617,42 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             </g>
           </svg>
 
-          {/* Glass Tag Labels - z-index: 3 */}
+          {/* Glass Tag Labels with improved contrast - z-index: 3 */}
           {domains.map((domain) => {
             const orbPos = getOrbPosition(domain.id, domain.strength);
             const labelPos = getLabelPosition(orbPos.x, orbPos.y, orbPos.radius);
+            const isHovered = hoveredDomain === domain.id;
             
             return (
-              <div key={`label-${domain.id}`} className="orb-label" style={{
-                position: 'absolute',
-                left: `${labelPos.x}px`,
-                top: `${labelPos.y}px`,
-                transform: 'translate(-50%, -50%)',
-                backdropFilter: 'blur(16px)',
-                WebkitBackdropFilter: 'blur(16px)',
-                background: 'rgba(20,22,30,0.45)',
-                border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
-                borderRadius: '12px',
-                padding: '6px 10px',
-                fontWeight: 600,
-                fontSize: '12px',
-                letterSpacing: '0.02em',
-                color: getDomainColor(domain.id),
-                textShadow: '0 1px 1px rgba(0,0,0,0.35)',
-                pointerEvents: 'none',
-                zIndex: 3
-              }}>{domain.id.toUpperCase()}</div>
+              <motion.div 
+                key={`label-${domain.id}`} 
+                className="orb-label" 
+                style={{
+                  position: 'absolute',
+                  left: `${labelPos.x}px`,
+                  top: `${labelPos.y}px`,
+                  transform: 'translate(-50%, -50%)',
+                  backdropFilter: 'blur(16px)',
+                  WebkitBackdropFilter: 'blur(16px)',
+                  background: 'rgba(20,22,30,0.45)',
+                  border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
+                  borderRadius: '12px',
+                  padding: '6px 10px',
+                  fontWeight: 600,
+                  fontSize: '12px',
+                  letterSpacing: '0.02em',
+                  color: isHovered ? 'rgba(255,255,255,0.92)' : getDomainText(domain.id),
+                  textShadow: '0 1px 1px rgba(0,0,0,0.35)',
+                  pointerEvents: 'none',
+                  zIndex: 3
+                }}
+                animate={{
+                  color: isHovered ? 'rgba(255,255,255,0.92)' : getDomainText(domain.id)
+                }}
+                transition={{ duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }}
+              >
+                {domain.id.toUpperCase()}
+              </motion.div>
             );
           })}
         </div>
@@ -664,7 +700,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                     <div className="flex items-center gap-2 mb-3">
                       <div className="w-2.5 h-2.5 rounded-full" style={{ background: getDomainColor(domain.id), boxShadow: `0 0 8px ${getDomainColor(domain.id)}80` }} />
                       <span className="font-semibold capitalize" style={{ color: TOKENS.colors.textPrimary, fontSize: '14px', textShadow: '0 1px 1px rgba(0,0,0,0.35)' }}>{domain.id}</span>
-                      <span className="ml-auto text-xs font-bold" style={{ color: getDomainColor(domain.id), textShadow: '0 1px 1px rgba(0,0,0,0.35)' }}>{domain.confidence_pct}%</span>
+                      <span className="ml-auto text-xs font-bold" style={{ color: getDomainText(domain.id), textShadow: '0 1px 1px rgba(0,0,0,0.35)' }}>{domain.confidence_pct}%</span>
                     </div>
                     <p className="text-on-glass" style={{ color: TOKENS.colors.textSecondary, fontSize: '13px', lineHeight: '1.5', marginBottom: '12px', textShadow: '0 1px 1px rgba(0,0,0,0.35)' }}>
                       {domain.summary.length > 85 ? domain.summary.substring(0, 82) + '...' : domain.summary}
@@ -813,7 +849,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                     <h3 className="font-bold capitalize" style={{ color: TOKENS.colors.textPrimary, fontSize: '20px', textShadow: '0 1px 1px rgba(0,0,0,0.35)' }}>{selectedDomain.id}</h3>
                     <div className="flex items-center gap-2 mt-1">
                       {getPostureIcon(selectedDomain.posture)}
-                      <span className="font-semibold capitalize" style={{ color: getDomainColor(selectedDomain.id), fontSize: '14px', textShadow: '0 1px 1px rgba(0,0,0,0.35)' }}>{selectedDomain.posture}</span>
+                      <span className="font-semibold capitalize" style={{ color: getDomainText(selectedDomain.id), fontSize: '14px', textShadow: '0 1px 1px rgba(0,0,0,0.35)' }}>{selectedDomain.posture}</span>
                     </div>
                   </div>
                 </div>
