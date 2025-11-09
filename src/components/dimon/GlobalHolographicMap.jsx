@@ -5,82 +5,78 @@ import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info } from 'luc
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// MACRO EQUILIBRIUM GRID — OS HORIZON V1.9
-// Liquid Silk / Halo Motion aesthetic with living depth & serenity
+// MACRO EQUILIBRIUM GRID — OS HORIZON V2.1 (LIQUID GLASS UNIVERSE)
+// Inspired by macOS Tahoe, Liquid Glass / Halo Motion, Apple emotional design
 // ============================================================================
 
 const TOKENS = {
   HORIZON: {
-    glassBg: 'rgba(10,12,20,0.70)',
-    glassBorder: 'rgba(255,255,255,0.08)',
+    // Liquid Glass Tahoe palette
+    glassBg: 'rgba(10,14,20,0.70)',
+    glassBorder: 'rgba(160,191,255,0.10)',
+    glassEdgeLight: 'rgba(160,191,255,0.10)',
     glassInner: 'rgba(255,255,255,0.04)',
-    panelShadow: '0 0 80px rgba(0,0,0,0.4), 0 0 40px rgba(255,255,255,0.06)',
+    panelShadow: '0 0 80px rgba(0,0,0,0.4), 0 0 40px rgba(160,191,255,0.08)',
     blurPanel: 'blur(20px)',
     blurChip: 'blur(16px)',
-    // Apple motion timing (in seconds for framer-motion)
-    easing: [0.32, 0.72, 0, 1],
+    // Apple motion timing (in seconds)
+    easing: [0.4, 0, 0.2, 1], // cubic-bezier
     overshoot: [0.34, 1.56, 0.64, 1],
-    t_hover: 0.12,
-    t_bloom: 0.25, // NEW - taken from former TOKENS.MOTION.t_bloom
-    t_tooltip: 0.25, // Replaces former TOKENS.MOTION.t_capsule
-    t_drawer: 0.45,
-    t_pulse: 4,
-    t_breathe: 6,
-    t_drift: 8,
-    bgCenter: 'rgba(10,12,20,0.92)',
-    bgEdge: 'rgba(10,12,20,0.68)'
+    t_hover: 0.12, // 120ms
+    t_drawer: 0.22, // 220ms
+    t_halo: 0.45, // 450ms halo burst
+    t_breathe: 4.5, // 4.5s breathing
+    t_pulse: 3, // 3s line pulse
+    t_drift: 20, // 20s gradient drift
+    t_orbit: 10, // 10s orbital drift
+    bgBase: '#06080D',
+    bgEnd: '#0A0E14',
+    bloomCenter: '#1A2732',
+    bloomEdge: '#090B10'
   },
-  // OS Horizon Spectral Glow Logic
+  // OS Horizon Spectral Glow (updated for Liquid Glass)
   MACRO: {
     fx: {
-      core: '#7AD7F0',
-      halo: 'rgba(122,215,240,0.40)',
-      text: '#B8EEFF',
-      sceneGlow: 'rgba(122,215,240,0.08)',
-      bloom: 'rgba(122,215,240,0.15)',
-      zDepth: 1.0
-    },
-    growth: {
-      core: '#B4F7C0',
-      halo: 'rgba(180,247,192,0.40)',
-      text: '#D4FFDE',
-      sceneGlow: 'rgba(180,247,192,0.08)',
-      bloom: 'rgba(180,247,192,0.15)',
-      zDepth: 0.8
-    },
-    geopolitics: {
-      core: '#FFD37A',
-      halo: 'rgba(255,211,122,0.40)',
-      text: '#FFE8B8',
-      sceneGlow: 'rgba(255,211,122,0.08)',
-      bloom: 'rgba(255,211,122,0.15)',
-      zDepth: 1.2
+      core: '#6AC7F7', // Blue
+      halo: 'rgba(106,199,247,0.40)',
+      text: '#B8E7FF',
+      sceneGlow: 'rgba(106,199,247,0.12)',
+      bloom: 'rgba(106,199,247,0.20)',
+      zDepth: -10 // Spatial depth
     },
     rates: {
-      core: '#C0A6FF',
+      core: '#C0A6FF', // Violet
       halo: 'rgba(192,166,255,0.40)',
       text: '#DECFFF',
-      sceneGlow: 'rgba(192,166,255,0.08)',
-      bloom: 'rgba(192,166,255,0.15)',
-      zDepth: 0.9
+      sceneGlow: 'rgba(192,166,255,0.12)',
+      bloom: 'rgba(192,166,255,0.20)',
+      zDepth: -5
     },
-    liquidity: {
-      core: '#89CFFF',
-      halo: 'rgba(137,207,255,0.40)',
-      text: '#B8E2FF',
-      sceneGlow: 'rgba(137,207,255,0.08)',
-      bloom: 'rgba(137,207,255,0.15)',
-      zDepth: 1.1
+    growth: {
+      core: '#B4F7C0', // Mint
+      halo: 'rgba(180,247,192,0.40)',
+      text: '#D4FFDE',
+      sceneGlow: 'rgba(180,247,192,0.12)',
+      bloom: 'rgba(180,247,192,0.20)',
+      zDepth: 5
+    },
+    geopolitics: {
+      core: '#FFD37A', // Amber
+      halo: 'rgba(255,211,122,0.40)',
+      text: '#FFE8B8',
+      sceneGlow: 'rgba(255,211,122,0.12)',
+      bloom: 'rgba(255,211,122,0.20)',
+      zDepth: 10
     }
   },
   colors: {
-    textPrimary: "rgba(255,255,255,0.95)",
-    textSecondary: "rgba(255,255,255,0.80)",
-    textTertiary: "rgba(255,255,255,0.60)"
+    textPrimary: "rgba(255,255,255,0.95)", // SF Pro Display 18pt
+    textSecondary: "rgba(255,255,255,0.80)", // SF Pro Text 14pt
+    textTertiary: "rgba(255,255,255,0.65)" // SF Pro Text 12pt letter-spacing 0.25
   }
 };
 
-// Golden-angle distribution (137.5° spacing)
+// Golden-angle distribution with 30% more spacing
 const ANGLES = {
   rates: 22.5,
   fx: 160.0,
@@ -88,12 +84,12 @@ const ANGLES = {
   geopolitics: 75.0
 };
 
-// Organic radius variation with Z-depth parallax
+// Organic radius variation (increased spacing)
 const RADII = {
-  rates: 0.31,
-  fx: 0.35,
-  growth: 0.33,
-  geopolitics: 0.29
+  rates: 0.40, // +30% from 0.31
+  fx: 0.46, // +30% from 0.35
+  growth: 0.43, // +30% from 0.33
+  geopolitics: 0.38 // +30% from 0.29
 };
 
 const MOCK_DOMAINS = [
@@ -119,9 +115,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
   const [orbitScale, setOrbitScale] = useState(1.0);
   const [showEquilibriumTip, setShowEquilibriumTip] = useState(false);
   const [haloAnimating, setHaloAnimating] = useState(false);
-
-  // Living Equilibrium Field - hue shift animation
-  const [fieldHue, setFieldHue] = useState(220);
+  const [gradientDrift, setGradientDrift] = useState(0);
 
   const domains = MOCK_DOMAINS;
 
@@ -166,17 +160,13 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     return ANGLES[dominantDriver] || 0;
   }, [dominantDriver]);
 
-  // Living Equilibrium Field - subtle hue shift (1-2°/s)
+  // Ultra-slow gradient drift (1px/sec)
   useEffect(() => {
     if (shouldReduceMotion) return;
     
     const interval = setInterval(() => {
-      setFieldHue(prev => {
-        const next = prev + 0.5;
-        if (next > 260) return 220;
-        return next;
-      });
-    }, 500);
+      setGradientDrift(prev => (prev + 1) % 1000);
+    }, 1000); // 1px per second
     
     return () => clearInterval(interval);
   }, [shouldReduceMotion]);
@@ -229,7 +219,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     };
   }, [balanceAngle, balanceBias]);
 
-  // Multi-depth constellation with Z-parallax and micro-drift
+  // Orbital drift (6-8px radius, 10s loop) + Z-depth
   const getOrbPosition = useCallback((domainId, strength, time = 0) => {
     const angle = ANGLES[domainId] * (Math.PI / 180);
     const baseSize = 40;
@@ -239,16 +229,21 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     
     const baseRadiusFactor = RADII[domainId];
     const strengthFactor = 0.9 + (strength * 0.2);
-    const zDepth = TOKENS.MACRO[domainId]?.zDepth || 1.0;
-    const adjustedRadius = orbitBaseRadius * baseRadiusFactor * strengthFactor * zDepth;
+    const adjustedRadius = orbitBaseRadius * baseRadiusFactor * strengthFactor;
     
-    // Micro-drift motion (≤2px)
+    // Orbital drift (6-8px radius, 10s loop)
     const driftPhase = (ANGLES[domainId] / 360) * Math.PI * 2;
-    const driftX = Math.sin(time + driftPhase) * 2;
-    const driftY = Math.cos(time + driftPhase * 1.3) * 2;
+    const driftRadius = 6 + (Math.abs(Math.sin(driftPhase)) * 2); // 6-8px
+    const orbitAngle = (time * 2 * Math.PI) / TOKENS.HORIZON.t_orbit; // 10s loop
+    const driftX = Math.cos(orbitAngle + driftPhase) * driftRadius;
+    const driftY = Math.sin(orbitAngle + driftPhase) * driftRadius;
     
-    const orbX = cx + adjustedRadius * Math.cos(angle) + driftX;
-    const orbY = cy + adjustedRadius * Math.sin(angle) + driftY;
+    // Z-depth scaling
+    const zDepth = TOKENS.MACRO[domainId]?.zDepth || 0;
+    const zScale = 1 + (zDepth * 0.003); // Subtle depth scaling
+    
+    const orbX = cx + adjustedRadius * Math.cos(angle) * zScale + driftX;
+    const orbY = cy + adjustedRadius * Math.sin(angle) * zScale + driftY;
     
     return { x: orbX, y: orbY, radius, diameter, zDepth };
   }, [cx, cy, orbitBaseRadius]);
@@ -259,7 +254,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     const norm = Math.hypot(vx, vy) || 1;
     const nx = vx / norm;
     const ny = vy / norm;
-    const offset = orbRadius + 14;
+    const offset = orbRadius + 16; // Slightly more offset for breathing room
     
     return {
       x: orbX + nx * offset,
@@ -330,7 +325,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
       setSelectedDomain(domain);
       setHaloAnimating(false);
       setIsMorphing(false);
-    }, TOKENS.HORIZON.t_drawer * 1000);
+    }, TOKENS.HORIZON.t_halo * 1000);
   }, []);
 
   const handleCloseDrawer = useCallback(() => {
@@ -339,7 +334,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
       setSelectedDomain(null);
       setCapsuleBounds(null);
       setIsMorphing(false);
-    }, TOKENS.HORIZON.t_drawer * 1000);
+    }, (TOKENS.HORIZON.t_drawer + 0.06) * 1000); // 60ms lag for fade trail
   }, []);
 
   useEffect(() => {
@@ -362,8 +357,8 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     return type === 'panel' ? TOKENS.HORIZON.blurPanel : TOKENS.HORIZON.blurChip;
   }, [isLowPower]);
 
-  // Micro-drift animation time
-  const [driftTime, setDriftTime] = useState(0);
+  // Orbital drift time
+  const [orbitTime, setOrbitTime] = useState(0);
   useEffect(() => {
     if (shouldReduceMotion) return;
     
@@ -375,7 +370,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
       const delta = (now - lastTime) / 1000;
       lastTime = now;
       
-      setDriftTime(prev => prev + delta * 0.5);
+      setOrbitTime(prev => prev + delta);
       rafId = requestAnimationFrame(animate);
     };
     
@@ -387,15 +382,35 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     <motion.section variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} aria-label="Horizon Constellation">
       <div className="flex items-center justify-between mb-6 pl-2">
         <div className="flex items-center space-x-3">
-          <Globe className="w-6 h-6 text-blue-300" />
+          <Globe className="w-6 h-6" style={{ color: '#6AC7F7' }} />
           <div>
-            <h2 className="font-bold" style={{ fontSize: '18px', lineHeight: '24px', letterSpacing: '-0.01em', fontWeight: 600, color: TOKENS.colors.textPrimary }}>Macro Equilibrium Grid</h2>
-            <p style={{ fontSize: '13px', color: TOKENS.colors.textTertiary, letterSpacing: '0.01em' }}>Living constellation of macro forces.</p>
+            <h2 style={{ 
+              fontSize: '18px', 
+              lineHeight: '24px', 
+              fontWeight: 600, 
+              color: TOKENS.colors.textPrimary,
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
+            }}>Macro Equilibrium Grid</h2>
+            <p style={{ 
+              fontSize: '13px', 
+              color: TOKENS.colors.textTertiary,
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+            }}>Celestial equilibrium suspended beneath glass.</p>
           </div>
         </div>
         <div className="powered-by-lyra cursor-pointer" style={{ opacity: 0.6 }}>
-          <div className="flex items-center space-x-2 px-4 py-2" style={{ background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.06)', boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.06)', borderRadius: '12px' }}>
-            <span className="text-xs font-medium" style={{ color: TOKENS.colors.textTertiary, letterSpacing: '0.25px' }}>Powered by</span>
+          <div className="flex items-center space-x-2 px-4 py-2" style={{ 
+            background: 'rgba(255, 255, 255, 0.05)', 
+            backdropFilter: 'blur(14px)', 
+            WebkitBackdropFilter: 'blur(14px)', 
+            border: '1px solid rgba(160,191,255,0.08)', 
+            borderRadius: '12px' 
+          }}>
+            <span className="text-xs font-medium" style={{ 
+              color: TOKENS.colors.textTertiary, 
+              letterSpacing: '0.25px',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+            }}>Powered by</span>
             <LyraLogo className="w-5 h-5" />
             <span className="text-sm font-bold" style={{ color: TOKENS.colors.textPrimary }}>Lyra</span>
           </div>
@@ -408,18 +423,44 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
         data-dominant={dominantDriver}
         style={{
           height: '600px',
-          background: `linear-gradient(180deg, 
-            hsl(${fieldHue}, 25%, 8%) 0%, 
-            hsl(${fieldHue + 10}, 22%, 10%) 50%, 
-            hsl(${fieldHue + 20}, 18%, 9%) 100%)`,
-          border: '1px solid rgba(255,255,255,0.06)',
+          background: `linear-gradient(180deg, ${TOKENS.HORIZON.bgBase} 0%, ${TOKENS.HORIZON.bgEnd} 100%)`,
+          border: '1px solid rgba(160,191,255,0.08)',
           borderRadius: '24px',
           paddingTop: `${headerSafe}px`,
           paddingBottom: `${safeBottom}px`,
-          transition: shouldReduceMotion ? 'none' : 'background 2s ease-in-out'
+          position: 'relative'
         }}>
         
-        {/* Scene Ambient with additive diffusion */}
+        {/* Subsurface blur + grain texture */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E")`,
+          borderRadius: '24px',
+          pointerEvents: 'none',
+          zIndex: 1
+        }} />
+        
+        {/* Ambient bloom center with ultra-slow drift */}
+        <motion.div 
+          style={{
+            position: 'absolute',
+            inset: 0,
+            pointerEvents: 'none',
+            borderRadius: '24px',
+            overflow: 'hidden',
+            zIndex: 1
+          }}
+          animate={{
+            background: `radial-gradient(900px circle at ${50 + Math.sin(gradientDrift * 0.001) * 2}% ${46 + Math.cos(gradientDrift * 0.001) * 2}%, ${TOKENS.HORIZON.bloomCenter} 0%, ${TOKENS.HORIZON.bloomEdge} 70%)`,
+            opacity: 0.3
+          }}
+          transition={{ duration: 1, ease: 'linear' }}
+        />
+        
+        {/* Scene Ambient */}
         <motion.div 
           className="scene-ambient"
           style={{
@@ -429,7 +470,8 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             borderRadius: '24px',
             overflow: 'hidden',
             mixBlendMode: 'screen',
-            opacity: 0.4
+            opacity: 0.5,
+            zIndex: 2
           }}
           animate={{
             background: dominantDriver === 'balanced' 
@@ -443,8 +485,9 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           position: 'absolute', 
           inset: 0, 
           transform: `translateY(${constellationShift}px)`, 
-          transition: shouldReduceMotion ? 'none' : 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)',
-          willChange: 'transform'
+          transition: shouldReduceMotion ? 'none' : 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+          willChange: 'transform',
+          zIndex: 3
         }}>
           {/* Orbit Ring */}
           <div className="orbit-ring" style={{
@@ -455,16 +498,16 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             height: `${orbitBaseRadius * 2}px`,
             transform: 'translate(-50%, -50%)',
             borderRadius: '999px',
-            boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.06)',
-            opacity: 0.25,
+            boxShadow: 'inset 0 0 0 1px rgba(160,191,255,0.06)',
+            opacity: 0.2,
             filter: 'blur(0.5px)',
             pointerEvents: 'none',
             zIndex: 2,
-            transition: shouldReduceMotion ? 'none' : 'all 0.4s cubic-bezier(0.32, 0.72, 0, 1)',
+            transition: shouldReduceMotion ? 'none' : 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
             willChange: 'width, height'
           }} aria-hidden="true" />
 
-          {/* Breathing Nucleus with tilt */}
+          {/* Breathing Nucleus */}
           <motion.div 
             className="nucleus-container" 
             style={{
@@ -489,8 +532,8 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
               borderRadius: '999px',
               backdropFilter: 'blur(24px)',
               WebkitBackdropFilter: 'blur(24px)',
-              background: 'rgba(210,225,255,0.12)',
-              boxShadow: '0 0 80px rgba(160,180,255,0.15), inset 0 0 0 1px rgba(255,255,255,0.08)',
+              background: 'rgba(160,191,255,0.12)',
+              boxShadow: '0 0 80px rgba(160,191,255,0.15), inset 0 0 0 1px rgba(255,255,255,0.08)',
               pointerEvents: 'none'
             }}
             animate={shouldReduceMotion ? {} : {
@@ -544,33 +587,40 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                     <stop offset="45%" stopColor={getDomainColor(domain.id)} stopOpacity="0.85" />
                     <stop offset="70%" stopColor="rgba(255,255,255,0)" stopOpacity="0" />
                   </radialGradient>
-                  <filter id={`bloom-${domain.id}`} x="-50%" y="-50%" width="200%" height="200%">
+                  {/* Gaussian glow with subsurface scatter */}
+                  <filter id={`bloom-${domain.id}`} x="-100%" y="-100%" width="300%" height="300%">
                     <feGaussianBlur in="SourceGraphic" stdDeviation="24" result="blur" />
-                    <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.4 0" result="bloom" />
+                    <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.40 0" result="bloom" />
                     <feMerge>
                       <feMergeNode in="bloom" />
                       <feMergeNode in="SourceGraphic" />
                     </feMerge>
                   </filter>
+                  {/* Subsurface scatter ring */}
+                  <filter id={`scatter-${domain.id}`}>
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="2" />
+                    <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.05 0" />
+                  </filter>
                 </React.Fragment>
               ))}
+              {/* Connecting lines gradient: blue→mint→amber */}
               {connections.map((conn, i) => (
                 <linearGradient key={`conn-grad-${i}`} id={`conn-grad-${i}`} x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor={getDomainHalo(conn.from)} />
-                  <stop offset="100%" stopColor={getDomainHalo(conn.to)} />
+                  <stop offset="0%" stopColor="#6AC7F7" stopOpacity="0.20" />
+                  <stop offset="50%" stopColor="#B4F7C0" stopOpacity="0.20" />
+                  <stop offset="100%" stopColor="#FFD37A" stopOpacity="0.20" />
                 </linearGradient>
               ))}
             </defs>
 
-            {/* Energy Threads */}
+            {/* 1px Filament Connecting Lines with pulse */}
             <g style={{ zIndex: 2 }}>
               {connections.map((conn, i) => {
                 const fromDomain = domains.find(d => d.id === conn.from);
                 const toDomain = domains.find(d => d.id === conn.to);
-                const fromPos = getOrbPosition(conn.from, fromDomain.strength, driftTime);
-                const toPos = getOrbPosition(conn.to, toDomain.strength, driftTime);
+                const fromPos = getOrbPosition(conn.from, fromDomain.strength, orbitTime);
+                const toPos = getOrbPosition(conn.to, toDomain.strength, orbitTime);
                 const isAdjacent = hoveredDomain === conn.from || hoveredDomain === conn.to;
-                const strokeWidth = 1.5 + (conn.relationship * 1.5);
                 const pathD = `M ${fromPos.x},${fromPos.y} Q ${cx},${cy} ${toPos.x},${toPos.y}`;
                 
                 return (
@@ -578,41 +628,47 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                     key={`connection-${i}`} 
                     d={pathD} 
                     stroke={`url(#conn-grad-${i})`} 
-                    strokeWidth={strokeWidth} 
+                    strokeWidth="1" 
                     strokeLinecap="round" 
                     fill="none"
                     animate={{ 
-                      opacity: isAdjacent ? 0.85 : (hoveredDomain ? 0.25 : 0.55),
-                      strokeDashoffset: shouldReduceMotion ? 0 : [120, -300]
+                      opacity: isAdjacent 
+                        ? [0.20, 0.45, 0.20] // +25% on hover
+                        : shouldReduceMotion 
+                          ? 0.20 
+                          : [0.16, 0.24, 0.16] // ±20% pulse
                     }}
-                    transition={{ 
-                      opacity: { duration: TOKENS.HORIZON.t_bloom, ease: TOKENS.HORIZON.easing },
-                      strokeDashoffset: { 
-                        duration: TOKENS.HORIZON.t_pulse, 
-                        repeat: Infinity, 
-                        ease: "linear" 
-                      }
-                    }}
+                    transition={
+                      isAdjacent
+                        ? { duration: 0.3, ease: TOKENS.HORIZON.easing }
+                        : { 
+                            duration: TOKENS.HORIZON.t_pulse, 
+                            repeat: Infinity, 
+                            ease: "easeInOut" 
+                          }
+                    }
                     style={{ 
-                      filter: 'drop-shadow(0 2px 12px rgba(0,0,0,0.4))',
-                      strokeDasharray: '120 300'
+                      filter: 'drop-shadow(0 2px 12px rgba(0,0,0,0.4))'
                     }} 
                   />
                 );
               })}
             </g>
 
-            {/* Orbs with subsurface diffusion */}
+            {/* Orbs with breathing motion (scale ±3%, opacity ±2%) */}
             <g style={{ zIndex: 3 }}>
-              {domains.map((domain) => {
-                const pos = getOrbPosition(domain.id, domain.strength, driftTime);
+              {domains.map((domain, idx) => {
+                const pos = getOrbPosition(domain.id, domain.strength, orbitTime);
                 const color = getDomainColor(domain.id);
                 const bloom = getDomainBloom(domain.id);
                 const isHovered = hoveredDomain === domain.id;
 
+                // Randomize breathing phase
+                const breathPhase = idx * 1.2;
+
                 return (
                   <g key={domain.id}>
-                    {/* Subsurface light diffusion */}
+                    {/* Gaussian glow (24px radius, 40% opacity) */}
                     <motion.circle 
                       cx={pos.x} 
                       cy={pos.y} 
@@ -622,11 +678,34 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                         filter: 'blur(24px)', 
                         pointerEvents: 'none'
                       }}
-                      animate={{
-                        opacity: 0.4,
-                        scale: isHovered ? 1.05 : 1
+                      animate={shouldReduceMotion ? {} : {
+                        opacity: isHovered ? 0.55 : [0.38, 0.42, 0.38], // ±2% breathing + 15% hover boost
+                        scale: isHovered ? 1.05 : [0.97, 1.03, 0.97] // ±3% breathing
                       }}
-                      transition={{ duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }}
+                      transition={
+                        isHovered
+                          ? { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }
+                          : { 
+                              duration: TOKENS.HORIZON.t_breathe, 
+                              repeat: Infinity, 
+                              ease: "easeInOut",
+                              delay: breathPhase
+                            }
+                      }
+                    />
+                    
+                    {/* Subsurface scatter ring */}
+                    <circle 
+                      cx={pos.x} 
+                      cy={pos.y} 
+                      r={pos.radius + 2} 
+                      fill="none"
+                      stroke="rgba(255,255,255,0.05)"
+                      strokeWidth="2"
+                      style={{ 
+                        filter: `url(#scatter-${domain.id})`,
+                        pointerEvents: 'none'
+                      }}
                     />
                     
                     {/* Hover bloom expansion */}
@@ -640,7 +719,10 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                           initial={{ opacity: 0, scale: 0.95 }}
                           animate={{ opacity: 0.6, scale: 1 }}
                           exit={{ opacity: 0, scale: 0.95 }}
-                          transition={{ duration: TOKENS.HORIZON.t_hover, delay: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }}
+                          transition={{ 
+                            duration: TOKENS.HORIZON.t_hover, 
+                            ease: TOKENS.HORIZON.easing 
+                          }}
                           style={{ 
                             filter: 'blur(16px)', 
                             pointerEvents: 'none'
@@ -664,13 +746,19 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                         color: color
                       }}
                       animate={shouldReduceMotion ? {} : { 
-                        scale: isHovered ? 1.04 : [1, 1.03, 1]
+                        scale: isHovered ? 1.05 : [0.97, 1.03, 0.97], // ±3% breathing + hover 1.05x
+                        opacity: isHovered ? 1 : [0.98, 1, 0.98] // ±2% breathing
                       }}
-                      transition={shouldReduceMotion ? {} : {
-                        scale: isHovered 
-                          ? { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.overshoot } 
-                          : { duration: TOKENS.HORIZON.t_breathe, repeat: Infinity, ease: "easeInOut" }
-                      }}
+                      transition={
+                        isHovered 
+                          ? { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing } 
+                          : { 
+                              duration: TOKENS.HORIZON.t_breathe, 
+                              repeat: Infinity, 
+                              ease: "easeInOut",
+                              delay: breathPhase
+                            }
+                      }
                       onMouseEnter={() => setHoveredDomain(domain.id)} 
                       onMouseLeave={() => setHoveredDomain(null)}
                       onClick={() => handleOpenDrawer(domain)} 
@@ -700,7 +788,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
 
           {/* Glass Tag Labels */}
           {domains.map((domain) => {
-            const orbPos = getOrbPosition(domain.id, domain.strength, driftTime);
+            const orbPos = getOrbPosition(domain.id, domain.strength, orbitTime);
             const labelPos = getLabelPosition(orbPos.x, orbPos.y, orbPos.radius);
             const isHovered = hoveredDomain === domain.id;
             
@@ -715,7 +803,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                   transform: 'translate(-50%, -50%)',
                   backdropFilter: 'blur(12px)',
                   WebkitBackdropFilter: 'blur(12px)',
-                  background: 'rgba(20,22,30,0.50)',
+                  background: 'rgba(10,14,20,0.50)',
                   border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
                   borderRadius: '10px',
                   padding: '5px 9px',
@@ -727,7 +815,8 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                   textShadow: '0 1px 2px rgba(0,0,0,0.4)',
                   pointerEvents: 'none',
                   zIndex: 3,
-                  boxShadow: isHovered ? '0 0 16px rgba(255,255,255,0.1)' : 'none'
+                  boxShadow: isHovered ? '0 0 16px rgba(160,191,255,0.15)' : 'none',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                 }}
                 animate={{
                   color: isHovered ? TOKENS.colors.textPrimary : getDomainText(domain.id),
@@ -751,12 +840,12 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
               style={{ 
                 left: (() => {
                   const domain = domains.find(d => d.id === hoveredDomain);
-                  const pos = getOrbPosition(hoveredDomain, domain.strength, driftTime);
+                  const pos = getOrbPosition(hoveredDomain, domain.strength, orbitTime);
                   return pos.x + 70;
                 })(),
                 top: (() => {
                   const domain = domains.find(d => d.id === hoveredDomain);
-                  const pos = getOrbPosition(hoveredDomain, domain.strength, driftTime);
+                  const pos = getOrbPosition(hoveredDomain, domain.strength, orbitTime);
                   return pos.y - 50;
                 })(),
                 transformOrigin: 'center left', 
@@ -765,7 +854,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
               initial={{ opacity: 0, y: 6, filter: 'blur(4px)' }} 
               animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} 
               exit={{ opacity: 0, y: 6, filter: 'blur(4px)' }}
-              transition={{ duration: TOKENS.HORIZON.t_tooltip, ease: TOKENS.HORIZON.easing }}>
+              transition={{ duration: 0.25, ease: TOKENS.HORIZON.easing }}>
               {(() => {
                 const domain = domains.find(d => d.id === hoveredDomain);
                 if (!domain) return null;
@@ -789,11 +878,13 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                       <span className="font-semibold capitalize" style={{ 
                         color: TOKENS.colors.textPrimary, 
                         fontSize: '15px', 
-                        textShadow: '0 1px 2px rgba(0,0,0,0.4)' 
+                        textShadow: '0 1px 2px rgba(0,0,0,0.4)',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
                       }}>{domain.id}</span>
                       <span className="ml-auto text-xs font-bold" style={{ 
                         color: getDomainText(domain.id), 
-                        textShadow: '0 1px 2px rgba(0,0,0,0.4)' 
+                        textShadow: '0 1px 2px rgba(0,0,0,0.4)',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                       }}>{domain.confidence_pct}%</span>
                     </div>
                     <p className="text-on-glass" style={{ 
@@ -801,7 +892,8 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                       fontSize: '14px', 
                       lineHeight: '1.6', 
                       marginBottom: '14px', 
-                      textShadow: '0 1px 2px rgba(0,0,0,0.4)' 
+                      textShadow: '0 1px 2px rgba(0,0,0,0.4)',
+                      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                     }}>
                       {domain.summary.length > 90 ? domain.summary.substring(0, 87) + '...' : domain.summary}
                     </p>
@@ -811,7 +903,10 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                       alignItems: 'center' 
                     }}>
                       <ArrowRight className="w-3.5 h-3.5" />
-                      <span className="font-medium" style={{ letterSpacing: '0.25px' }}>Click for details</span>
+                      <span className="font-medium" style={{ 
+                        letterSpacing: '0.25px',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                      }}>Click for details</span>
                     </div>
                   </div>
                 );
@@ -820,7 +915,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           )}
         </AnimatePresence>
 
-        {/* Dynamic Equilibrium Bar */}
+        {/* Equilibrium Bar with animated light pulse (12s cycle) */}
         <div ref={footerRef} className="balance-footer" style={{
           position: 'absolute',
           left: '32px',
@@ -836,12 +931,12 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           WebkitBackdropFilter: getBlur('chip'),
           background: TOKENS.HORIZON.glassBg,
           border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
-          boxShadow: `${TOKENS.HORIZON.panelShadow}, inset 0 0 0 1px ${TOKENS.HORIZON.glassInner}`,
+          boxShadow: `${TOKENS.HORIZON.panelShadow}, inset 0 0 0 1px ${TOKENS.HORIZON.glassEdgeLight}`,
           zIndex: 1,
           pointerEvents: 'none'
         }}>
           <div className="footer-content" style={{ display: 'contents', pointerEvents: 'auto' }}>
-            {/* Light-reactive bar */}
+            {/* 2px beam gradient with pulse */}
             <div className="balance-indicator-container" style={{ width: '160px', position: 'relative' }}>
               <div className="balance-indicator-track" style={{
                 height: '2px',
@@ -850,25 +945,35 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 overflow: 'hidden',
                 background: 'transparent'
               }}>
-                {/* Flowing gradient beam */}
+                {/* Animated gradient beam */}
                 <motion.div 
                   style={{
                     position: 'absolute',
                     inset: 0,
-                    background: 'linear-gradient(90deg, rgba(122,215,240,0.6), rgba(180,247,192,0.6), rgba(255,211,122,0.6), rgba(192,166,255,0.6), rgba(122,215,240,0.6))',
-                    backgroundSize: '200% 100%',
-                    filter: 'blur(0.5px)',
-                    boxShadow: '0 0 8px rgba(255,255,255,0.2)'
+                    background: 'linear-gradient(90deg, #6AC7F7, #B4F7C0, #FFD37A, #6AC7F7)',
+                    backgroundSize: '200% 100%'
                   }}
                   animate={shouldReduceMotion ? {} : {
-                    backgroundPosition: ['0% 0%', '100% 0%']
+                    backgroundPosition: ['0% 0%', '200% 0%']
                   }}
                   transition={shouldReduceMotion ? {} : {
-                    duration: 8,
+                    duration: 12, // 12s cycle
                     repeat: Infinity,
                     ease: 'linear'
                   }}
                 />
+                
+                {/* Under-reflection blur */}
+                <div style={{
+                  position: 'absolute',
+                  bottom: '-8px',
+                  left: 0,
+                  right: 0,
+                  height: '8px',
+                  background: 'linear-gradient(90deg, rgba(106,199,247,0.15), rgba(180,247,192,0.15), rgba(255,211,122,0.15))',
+                  filter: 'blur(8px)',
+                  opacity: 0.15
+                }} />
                 
                 {/* Orb marker */}
                 <motion.div 
@@ -902,7 +1007,8 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 fontSize: '14px', 
                 lineHeight: '20px', 
                 textShadow: '0 1px 2px rgba(0,0,0,0.4)',
-                fontWeight: 400
+                fontWeight: 400,
+                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
               }}>
                 {globalSummary}
               </span>
@@ -941,7 +1047,8 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                         fontSize: '12px',
                         lineHeight: '1.5',
                         color: TOKENS.colors.textSecondary,
-                        letterSpacing: '0.25px'
+                        letterSpacing: '0.25px',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                       }}>
                         Real-time equilibrium state showing the balance and lean of macro forces. Dot position reflects dominant driver strength.
                       </p>
@@ -954,7 +1061,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
         </div>
       </div>
 
-      {/* Halo pulse animation */}
+      {/* Halo burst animation (450ms) */}
       <AnimatePresence>
         {haloAnimating && hoveredDomain && (
           <motion.div
@@ -962,12 +1069,12 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             style={{
               left: (() => {
                 const domain = domains.find(d => d.id === hoveredDomain);
-                const pos = getOrbPosition(hoveredDomain, domain.strength, driftTime);
+                const pos = getOrbPosition(hoveredDomain, domain.strength, orbitTime);
                 return containerRef.current ? containerRef.current.getBoundingClientRect().left + pos.x : 0;
               })(),
               top: (() => {
                 const domain = domains.find(d => d.id === hoveredDomain);
-                const pos = getOrbPosition(hoveredDomain, domain.strength, driftTime);
+                const pos = getOrbPosition(hoveredDomain, domain.strength, orbitTime);
                 return containerRef.current ? containerRef.current.getBoundingClientRect().top + pos.y : 0;
               })(),
               width: '100px',
@@ -980,7 +1087,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             initial={{ scale: 0.5, opacity: 0.8 }}
             animate={{ scale: 8, opacity: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: TOKENS.HORIZON.t_drawer, ease: TOKENS.HORIZON.easing }}
+            transition={{ duration: TOKENS.HORIZON.t_halo, ease: TOKENS.HORIZON.easing }}
           />
         )}
       </AnimatePresence>
@@ -1008,7 +1115,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             height: '100vh', 
             borderRadius: '0px' 
           }}
-          transition={{ duration: TOKENS.HORIZON.t_drawer, ease: TOKENS.HORIZON.overshoot }} />
+          transition={{ duration: TOKENS.HORIZON.t_halo, ease: TOKENS.HORIZON.overshoot }} />
         )}
       </AnimatePresence>
 
@@ -1018,20 +1125,20 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           <motion.div 
             className="fixed inset-0 z-40" 
             style={{ 
-              background: 'rgba(10, 12, 20, 0.60)', 
+              background: 'rgba(6,8,13,0.70)', 
               backdropFilter: 'blur(20px)', 
               WebkitBackdropFilter: 'blur(20px)' 
             }}
             initial={{ opacity: 0 }} 
             animate={{ opacity: isMorphing ? 0.7 : 1 }} 
             exit={{ opacity: 0 }}
-            transition={{ duration: TOKENS.HORIZON.t_drawer, ease: TOKENS.HORIZON.easing }} 
+            transition={{ duration: TOKENS.HORIZON.t_halo, ease: TOKENS.HORIZON.easing }} 
             onClick={handleCloseDrawer} 
           />
         )}
       </AnimatePresence>
 
-      {/* Floating Glass Drawer Panel */}
+      {/* Floating Glass Drawer Panel (70% opacity, 20px blur) */}
       <AnimatePresence>
         {selectedDomain && !isMorphing && (
           <motion.div className="fixed top-0 right-0 h-full z-50 overflow-y-auto" style={{
@@ -1041,16 +1148,15 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             WebkitBackdropFilter: getBlur('panel'),
             background: TOKENS.HORIZON.glassBg, 
             border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
-            boxShadow: TOKENS.HORIZON.panelShadow, 
+            boxShadow: `${TOKENS.HORIZON.panelShadow}, inset 0 0 0 1px ${TOKENS.HORIZON.glassEdgeLight}`, 
             borderRadius: '24px 0 0 24px'
           }}
-          initial={{ x: '100%', opacity: 0 }} 
-          animate={{ x: 0, opacity: 1 }} 
-          exit={{ x: '100%', opacity: 0, y: 8 }}
+          initial={{ x: '100%', y: -8, opacity: 0 }} 
+          animate={{ x: 0, y: 0, opacity: 1 }} 
+          exit={{ x: '100%', y: -8, opacity: 0 }}
           transition={{ 
-            duration: 0.22, 
-            ease: TOKENS.HORIZON.easing,
-            exit: { duration: 0.22, ease: 'easeInOut' }
+            duration: TOKENS.HORIZON.t_drawer, 
+            ease: 'easeInOut'
           }} 
           onClick={(e) => e.stopPropagation()}>
             
@@ -1073,14 +1179,16 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                       color: TOKENS.colors.textPrimary, 
                       fontSize: '18px', 
                       textShadow: '0 1px 2px rgba(0,0,0,0.4)',
-                      fontWeight: 600
+                      fontWeight: 600,
+                      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
                     }}>{selectedDomain.id}</h3>
                     <div className="flex items-center gap-2 mt-1">
                       {getPostureIcon(selectedDomain.posture)}
                       <span className="font-medium capitalize" style={{ 
                         color: getDomainText(selectedDomain.id), 
                         fontSize: '14px', 
-                        textShadow: '0 1px 2px rgba(0,0,0,0.4)' 
+                        textShadow: '0 1px 2px rgba(0,0,0,0.4)',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                       }}>{selectedDomain.posture}</span>
                     </div>
                   </div>
@@ -1133,17 +1241,20 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center font-bold" style={{ 
                     color: TOKENS.colors.textPrimary, 
-                    fontSize: '16px' 
+                    fontSize: '16px',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
                   }}>{selectedDomain.confidence_pct}%</div>
                 </div>
                 <div className="flex-1">
                   <div className="text-xs font-medium mb-1" style={{ 
                     color: TOKENS.colors.textTertiary, 
-                    letterSpacing: '0.25px' 
+                    letterSpacing: '0.25px',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                   }}>CONFIDENCE LEVEL</div>
                   <div className="text-sm" style={{ 
                     color: TOKENS.colors.textSecondary, 
-                    fontWeight: 400 
+                    fontWeight: 400,
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                   }}>Signal strength: {Math.round(selectedDomain.strength * 100)}%</div>
                 </div>
               </div>
@@ -1153,21 +1264,24 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
               <div>
                 <h4 className="text-xs font-bold uppercase tracking-wide mb-3" style={{ 
                   color: TOKENS.colors.textTertiary, 
-                  letterSpacing: '0.25px' 
+                  letterSpacing: '0.25px',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                 }}>What This Means</h4>
                 <p className="text-on-glass" style={{ 
                   color: TOKENS.colors.textPrimary, 
                   fontSize: '15px', 
                   lineHeight: '1.6', 
                   textShadow: '0 1px 2px rgba(0,0,0,0.4)',
-                  fontWeight: 400
+                  fontWeight: 400,
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                 }}>{selectedDomain.summary}</p>
               </div>
               
               <div>
                 <h4 className="text-xs font-bold uppercase tracking-wide mb-3" style={{ 
                   color: TOKENS.colors.textTertiary, 
-                  letterSpacing: '0.25px' 
+                  letterSpacing: '0.25px',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                 }}>Downstream Effects</h4>
                 <div className="space-y-2">
                   {selectedDomain.ripple.map((effect, i) => (
@@ -1177,7 +1291,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                       style={{
                         backdropFilter: getBlur('chip'), 
                         WebkitBackdropFilter: getBlur('chip'), 
-                        background: 'rgba(25,27,36,0.50)',
+                        background: 'rgba(10,14,20,0.50)',
                         border: `1px solid ${TOKENS.HORIZON.glassBorder}`, 
                         boxShadow: `inset 0 0 0 1px ${TOKENS.HORIZON.glassInner}`,
                         borderRadius: '14px', 
@@ -1202,7 +1316,8 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                         fontSize: '14px', 
                         lineHeight: '1.6', 
                         textShadow: '0 1px 2px rgba(0,0,0,0.4)',
-                        fontWeight: 400
+                        fontWeight: 400,
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                       }}>{effect}</span>
                     </motion.div>
                   ))}
@@ -1212,7 +1327,8 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
               <div>
                 <h4 className="text-xs font-bold uppercase tracking-wide mb-3" style={{ 
                   color: TOKENS.colors.textTertiary, 
-                  letterSpacing: '0.25px' 
+                  letterSpacing: '0.25px',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                 }}>48-Hour Trend</h4>
                 <div className="p-4 rounded-lg" style={{ 
                   background: 'rgba(0, 0, 0, 0.25)', 
@@ -1273,7 +1389,8 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
               <div className="text-xs" style={{ 
                 color: TOKENS.colors.textTertiary, 
                 textShadow: '0 1px 2px rgba(0,0,0,0.4)',
-                letterSpacing: '0.25px'
+                letterSpacing: '0.25px',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
               }}>
                 Updated {new Date(selectedDomain.last_updated_iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </div>
@@ -1304,7 +1421,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
         }
         
         * {
-          font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif;
+          font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
         }
       `}</style>
     </motion.section>
