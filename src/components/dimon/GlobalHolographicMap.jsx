@@ -92,19 +92,16 @@ const MOTION_SPEC = {
 
 const TOKENS = {
   HORIZON: {
-    // Liquid Glass Tahoe palette
     glassBg: 'rgba(10,14,20,0.70)',
     glassBorder: 'rgba(160,191,255,0.10)',
     glassEdgeLight: 'rgba(160,191,255,0.10)',
     glassInner: 'rgba(255,255,255,0.04)',
     panelShadow: '0 0 80px rgba(0,0,0,0.4), 0 0 40px rgba(160,191,255,0.08)',
-    // The previous blurPanel and blurChip tokens will be dynamically calculated
-    ...MOTION_SPEC // Merging MOTION_SPEC directly into HORIZON
+    ...MOTION_SPEC
   },
-  // OS Horizon Spectral Glow (updated for Liquid Glass)
   MACRO: {
     fx: {
-      core: '#6AC7F7', // Blue
+      core: '#6AC7F7',
       halo: 'rgba(106,199,247,0.40)',
       text: '#B8E7FF',
       sceneGlow: 'rgba(106,199,247,0.12)',
@@ -112,7 +109,7 @@ const TOKENS = {
       zDepth: -10
     },
     rates: {
-      core: '#C0A6FF', // Violet
+      core: '#C0A6FF',
       halo: 'rgba(192,166,255,0.40)',
       text: '#DECFFF',
       sceneGlow: 'rgba(192,166,255,0.12)',
@@ -120,7 +117,7 @@ const TOKENS = {
       zDepth: -5
     },
     growth: {
-      core: '#B4F7C0', // Mint
+      core: '#B4F7C0',
       halo: 'rgba(180,247,192,0.40)',
       text: '#D4FFDE',
       sceneGlow: 'rgba(180,247,192,0.12)',
@@ -128,7 +125,7 @@ const TOKENS = {
       zDepth: 5
     },
     geopolitics: {
-      core: '#FFD37A', // Amber
+      core: '#FFD37A',
       halo: 'rgba(255,211,122,0.40)',
       text: '#FFE8B8',
       sceneGlow: 'rgba(255,211,122,0.12)',
@@ -143,7 +140,6 @@ const TOKENS = {
   }
 };
 
-// Golden-angle distribution with 30% more spacing
 const ANGLES = {
   rates: 22.5,
   fx: 160.0,
@@ -151,12 +147,11 @@ const ANGLES = {
   geopolitics: 75.0
 };
 
-// Organic radius variation (increased spacing)
 const RADII = {
-  rates: 0.40, // +30% from 0.31
-  fx: 0.46, // +30% from 0.35
-  growth: 0.43, // +30% from 0.33
-  geopolitics: 0.38 // +30% from 0.29
+  rates: 0.40,
+  fx: 0.46,
+  growth: 0.43,
+  geopolitics: 0.38
 };
 
 const MOCK_DOMAINS = [
@@ -165,6 +160,14 @@ const MOCK_DOMAINS = [
   { id: "growth", posture: "softening", confidence_pct: 71, strength: 0.68, summary: "China slowdown weighs on global demand; US consumer resilient but moderating.", ripple: ["Commodity prices soften", "Defensive rotation begins", "Services hold up"], last_updated_iso: new Date().toISOString(), sparkline: [0.75, 0.74, 0.72, 0.70, 0.69, 0.68, 0.67, 0.68, 0.68] },
   { id: "geopolitics", posture: "tightening", confidence_pct: 58, strength: 0.72, summary: "Energy security concerns persist; trade fragmentation continues to reshape supply chains.", ripple: ["Energy premium elevated", "Onshoring accelerates"], last_updated_iso: new Date().toISOString(), sparkline: [0.65, 0.66, 0.68, 0.70, 0.71, 0.72, 0.71, 0.72, 0.72] }
 ];
+
+// Helper to convert hex to rgba
+const hexToRgba = (hex, alpha) => {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
 
 const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
   const containerRef = useRef(null);
@@ -505,7 +508,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
       const delta = (now - lastTime) / 1000;
       lastTime = now;
       
-      setOrbitTime(prev => (prev + delta) % MOTION_SPEC.durations.orbitalDriftLoop);
+      setOrbitTime(prev => prev + delta);
       rafId = requestAnimationFrame(animate);
     };
     
@@ -516,6 +519,11 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
   // Cursor parallax values
   const cursorX = useTransform(mouseX, [-1, 1], [-1, 1]);
   const cursorY = useTransform(mouseY, [-1, 1], [-1, 1]);
+
+  // Under-reflection gradient for status beam
+  const reflectionGradient = useMemo(() => {
+    return `linear-gradient(90deg, ${MOTION_SPEC.filaments.gradient.map(c => hexToRgba(c, MOTION_SPEC.status_beam.reflection_opacity)).join(', ')})`;
+  }, []);
 
   return (
     <motion.section variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} aria-label="Horizon Constellation">
@@ -1139,7 +1147,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                   left: 0,
                   right: 0,
                   height: `${MOTION_SPEC.status_beam.reflection_blur_px}px`,
-                  background: `linear-gradient(90deg, ${MOTION_SPEC.filaments.gradient.map(c => c.replace(')', `, ${MOTION_SPEC.status_beam.reflection_opacity})`).replace('#', 'rgba(').join(', ')})`,
+                  background: reflectionGradient,
                   filter: `blur(${MOTION_SPEC.status_beam.reflection_blur_px}px)`,
                   opacity: MOTION_SPEC.status_beam.reflection_opacity
                 }} />
