@@ -212,6 +212,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const [viewportSize, setViewportSize] = useState('lg');
   const [drawerOrigin, setDrawerOrigin] = useState(null); // New state: stores {x, y, screenX, screenY} of the orb
   const [showBeam, setShowBeam] = useState(false); // New state: controls visibility of the filament beam
+  const [swayTime, setSwayTime] = useState(0);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -526,7 +527,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return type === 'panel' ? TOKENS.HORIZON.blurPanel : TOKENS.HORIZON.blurChip;
   }, [isLowPower]);
 
-  const [swayTime, setSwayTime] = useState(0);
   useEffect(() => {
     if (shouldReduceMotion) return;
     
