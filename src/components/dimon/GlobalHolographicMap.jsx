@@ -5,10 +5,10 @@ import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLef
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// MACRO CONSTELLATION — OS HORIZON V5.5 UNITY PATCH
+// MACRO CONSTELLATION — OS HORIZON V1.6 APPLE SERENITY CALIBRATION
 // Real-time balance of global macro forces.
-// Glass diffused celestial intelligence — breathing, balanced, quiet.
-// v5.5: Unity Patch — Center-anchored bloom overlay, spatial coherence
+// Glass diffused celestial intelligence — breathing, balanced, serene.
+// v1.6: Apple Serenity — Center bloom, Tahoe depth, micro-parallax, orb life pulse
 // ============================================================================
 
 const TOKENS = {
@@ -27,9 +27,10 @@ const TOKENS = {
     panelShadow: '0 0 80px rgba(0,0,0,0.4), 0 0 40px rgba(160,191,255,0.08)',
     drawerGlass: 'rgba(10,15,22,0.72)',
     drawerTint: 'rgba(10,15,22,0.45)',
-    drawerBlur: 'blur(20px)',
+    drawerBlur: 'blur(22px)',  // Serenity: 22px blur for calm
     drawerEdgeBloom: 'rgba(160,191,255,0.10)',
     drawerDivider: 'rgba(255,255,255,0.06)',
+    drawerShadow: '0 15px 60px rgba(0,0,0,0.30)',  // Serenity: hover 24px above
     backdropBlur: 'blur(10px)',
     backdropOpacity: 0.30,
     blurPanel: 'blur(20px)',
@@ -50,7 +51,7 @@ const TOKENS = {
     easingElastic: [0.22, 1, 0.36, 1],
     easingSine: [0.61, 1, 0.88, 1],
     easingCubic: [0.33, 1, 0.68, 1],
-    easingInOutCubic: [0.65, 0, 0.35, 1],
+    easingInOutCubic: [0.65, 0, 0.35, 1],  // Serenity: center bloom easing
     easingOutQuad: [0.25, 0.46, 0.45, 0.94],
     overshoot: [0.34, 1.56, 0.64, 1],
     t_hover: 0.12,
@@ -65,9 +66,9 @@ const TOKENS = {
     t_orbBreathIn: 0.14,
     t_orbBreathOut: 0.14,
     t_beamLink: 0.14,
-    t_drawerOpen: 0.25,  // Unity Patch: aligned with Priority Signals
+    t_drawerOpen: 0.25,  // Serenity: matched to Priority Signals
     t_drawerOpenBurst: 0.11,
-    t_drawerClose: 0.20,  // Unity Patch: aligned with Priority Signals
+    t_drawerClose: 0.20,  // Serenity: matched to Priority Signals
     t_drawerCloseBurst: 0.10,
     t_contentStagger: 0.06,
     t_contentStaggerBurst: 0,
@@ -76,7 +77,7 @@ const TOKENS = {
     t_drawerSwitch: 0.10,
     t_prefetch: 0.12,
     t_breathe: 4.5,
-    t_orbLifePulse: 4.0, // Unity Patch: active orb ambient breathe
+    t_orbLifePulse: 4.0, // Serenity: active orb ambient breathe
     t_pulse: 3,
     t_drift: 20,
     t_orbit: 10,
@@ -88,6 +89,8 @@ const TOKENS = {
     t_parallaxOut: 0.16,
     parallaxOffset: 6,
     parallaxResponse: 0.4,
+    microParallaxMax: 4,  // Serenity: 4px micro-parallax
+    microParallaxDamping: 0.85,  // Serenity: 0.85 damping
     translateSnap: 48,
     t_staggerSection: [0.06, 0.12, 0.18, 0.24],
     bgBase: '#06080D',
@@ -95,7 +98,12 @@ const TOKENS = {
     bgSubsurfaceCenter: '#121823',
     bgSubsurfaceEdge: '#0B1016',
     bloomCenter: '#1A2732',
-    bloomEdge: '#090B10'
+    bloomEdge: '#090B10',
+    // Serenity: Kelvin 6200K neutral white lighting
+    lightTemp: 'rgba(255, 255, 255, 0.03)',  // Top gradient
+    lightTempBottom: 'rgba(255, 255, 255, 0.00)',  // Bottom gradient
+    sectionPadding: 4,  // Serenity: +4px breathing space
+    lineHeight: 22  // Serenity: 22px line-height
   },
   MACRO: {
     fx: {
@@ -210,6 +218,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const capsuleRef = useRef(null);
   const footerRef = useRef(null);
   const constellationRef = useRef(null);
+  const drawerRef = useRef(null); // Added drawerRef
   const [hoveredDomain, setHoveredDomain] = useState(null);
   const [selectedDomain, setSelectedDomain] = useState(null);
   const [previousDomain, setPreviousDomain] = useState(null);
@@ -235,6 +244,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const [isBurstMode, setIsBurstMode] = useState(false);
   const [prefetchedDomain, setPrefetchedDomain] = useState(null);
   const prefetchTimerRef = useRef(null);
+  
+  // Serenity: Micro-parallax springs for glass layer elements
+  const glassParallaxX = useSpring(0, { damping: 30, stiffness: 90 });
+  const glassParallaxY = useSpring(0, { damping: 30, stiffness: 90 });
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -244,9 +257,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const bgParallaxX = useSpring(mouseX, { damping: 25, stiffness: 80 });
   const bgParallaxY = useSpring(mouseY, { damping: 25, stiffness: 80 });
   
-  const drawerParallaxX = useSpring(mouseX, { damping: 30, stiffness: 70 });
-  const drawerParallaxY = useSpring(mouseY, { damping: 30, stiffness: 70 });
-
   const domains = MOCK_DOMAINS;
 
   const headerSafe = 64;
@@ -336,6 +346,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return () => clearInterval(interval);
   }, [shouldReduceMotion]);
 
+  // Serenity: Micro-parallax effect for glass layer
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (!containerRef.current || shouldReduceMotion) return;
@@ -347,13 +358,26 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       const normX = ((e.clientX - centerX) / (rect.width / 2));
       const normY = ((e.clientY - centerY) / (rect.height / 2));
       
+      // Update main parallax for constellation
       mouseX.set(normX * 14);
       mouseY.set(normY * 14);
+
+      // Micro-parallax for drawer's internal elements (only when drawer is open)
+      if (selectedDomain) {
+        const parallaxX_val = -normX * TOKENS.HORIZON.microParallaxMax * TOKENS.HORIZON.microParallaxDamping;
+        const parallaxY_val = -normY * TOKENS.HORIZON.microParallaxMax * TOKENS.HORIZON.microParallaxDamping;
+        glassParallaxX.set(parallaxX_val);
+        glassParallaxY.set(parallaxY_val);
+      } else {
+        // Reset micro-parallax when drawer is closed or not active
+        glassParallaxX.set(0);
+        glassParallaxY.set(0);
+      }
     };
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [shouldReduceMotion, mouseX, mouseY]);
+  }, [shouldReduceMotion, selectedDomain, mouseX, mouseY, glassParallaxX, glassParallaxY]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -522,16 +546,16 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     
     setOpenHistory(prev => [...prev, Date.now()]);
 
-    // Capture the orb's position for the drawer origin animation
-    const domainPos = getOrbPosition(domain.id, domain.strength, swayTime, 0, 0); // Pass 0,0 for parallax as drawer itself has its own
+    // Serenity: Capture the orb's position for center bloom
+    const domainPos = getOrbPosition(domain.id, domain.strength, swayTime, 0, 0); 
     const containerRect = containerRef.current?.getBoundingClientRect();
     
     if (containerRect) {
       setDrawerOrigin({
-        x: domainPos.x, // relative to containerRef
-        y: domainPos.y, // relative to containerRef
-        screenX: containerRect.left + domainPos.x, // absolute screen X
-        screenY: containerRect.top + domainPos.y    // absolute screen Y
+        x: domainPos.x, 
+        y: domainPos.y, 
+        screenX: containerRect.left + domainPos.x, 
+        screenY: containerRect.top + domainPos.y    
       });
     }
 
@@ -544,30 +568,30 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       
       setTimeout(() => {
         setSelectedDomain(domain);
-        setShowBeam(true); // Show beam after switching is complete
+        setShowBeam(true); 
         setIsSwitchingNode(false);
         setPreviousDomain(null);
       }, TOKENS.HORIZON.t_drawerSwitch * 1000);
     } else {
-      setOrbPulseActive(true); // Start orb pulse before halo animation
+      setOrbPulseActive(true); 
       setTimeout(() => {
-        setOrbPulseActive(false); // End orb pulse as halo fades
-        setShowBeam(true); // Show beam after orb pulse finishes
+        setOrbPulseActive(false); 
+        setShowBeam(true); 
       }, TOKENS.HORIZON.t_orbBreathIn * 1000);
       
       setTimeout(() => {
-        setSelectedDomain(domain); // Select domain after beam has formed
+        setSelectedDomain(domain); 
       }, (TOKENS.HORIZON.t_orbBreathIn + TOKENS.HORIZON.t_beamLink) * 1000);
     }
   }, [selectedDomain, getOrbPosition, swayTime]);
 
   const handleCloseDrawer = useCallback(() => {
-    setShowBeam(false); // Hide beam immediately to start its exit animation
-    setOrbPulseActive(true); // Start orb pulse for exit
+    setShowBeam(false); 
+    setOrbPulseActive(true); 
     
     setTimeout(() => {
-      setOrbPulseActive(false); // End orb pulse as drawer collapses
-    }, TOKENS.HORIZON.t_orbBreathOut * 1000); // Using a separate token for orb exit breathe
+      setOrbPulseActive(false); 
+    }, TOKENS.HORIZON.t_orbBreathOut * 1000); 
     
     const closeDuration = shouldReduceMotion 
       ? 0.09 
@@ -579,8 +603,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       setSelectedDomain(null);
       setPreviousDomain(null);
       setIsSwitchingNode(false);
-      setDrawerOrigin(null); // Reset drawer origin
-    }, closeDuration * 1000); // Delay state reset to allow drawer exit animation
+      setDrawerOrigin(null); 
+    }, closeDuration * 1000); 
   }, [shouldReduceMotion, isBurstMode]);
 
   const handleNextDomain = useCallback(() => {
@@ -617,7 +641,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         e.preventDefault();
         handleNextDomain();
       } else if (e.key === 'Enter' && selectedDomain) {
-        // Trigger implications action (or view details button click)
         const viewDetailsButton = document.querySelector('.drawer-view-details-button');
         if (viewDetailsButton) viewDetailsButton.click();
       } else if (['1', '2', '3', '4'].includes(e.key)) {
@@ -649,11 +672,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
   const getBlur = useCallback((type) => {
     if (isLowPower) return type === 'panel' ? 'blur(16px)' : 'blur(12px)';
-    // Cap blur at 24px for efficiency on lower-GPU devices
     return type === 'panel' ? 'blur(20px)' : 'blur(16px)';
   }, [isLowPower]);
 
-  // Get actionable signal based on domain
   const getActionableSignal = useCallback((domain) => {
     const signals = {
       rates: "Position for rate-sensitive defensive rotation; monitor tech multiples.",
@@ -664,15 +685,40 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return signals[domain.id] || "Monitor for emerging cross-domain shifts.";
   }, []);
 
+  // Serenity: "So What" interpretive layer content
+  const getSoWhatInterpretation = useCallback((domain) => {
+    const interpretations = {
+      rates: "If long growth, consider de-risking exposure; rotation into defensives favored.",
+      fx: "Dollar strength may pressure EM assets; favor domestic US exposure near-term.",
+      growth: "Softening demand signals potential margin compression; watch cyclicals.",
+      geopolitics: "Supply chain disruption risk elevated; prioritize domestic resilience themes."
+    };
+    return interpretations[domain.id] || "Monitor for shifts in macro equilibrium dynamics.";
+  }, []);
+
+  // Calculate the drawer width once
+  const drawerCalculatedWidth = useMemo(() => {
+    if (typeof window === 'undefined') return 420;
+    return Math.max(420, Math.min(window.innerWidth * 0.32, 500));
+  }, [window.innerWidth]);
+
   // Calculate the fixed screen position of the drawer's top-left corner
   const drawerFinalPosition = useMemo(() => {
     if (typeof window === 'undefined') return { x: 0, y: 0 };
-    const calculatedDrawerWidth = Math.max(420, Math.min(window.innerWidth * 0.32, 500));
     return {
-      x: window.innerWidth - calculatedDrawerWidth,
-      y: 0
+      x: window.innerWidth - drawerCalculatedWidth,
+      y: 72 // drawer starts at 72px from top
     };
-  }, []);
+  }, [drawerCalculatedWidth, window.innerWidth]);
+
+  // Serenity: Calculate drawer visual center for bloom effect
+  const drawerVisualCenter = useMemo(() => {
+    if (typeof window === 'undefined' || !selectedDomain) return { x: 0, y: 0 };
+    return {
+      x: drawerFinalPosition.x + (drawerCalculatedWidth / 2),
+      y: drawerFinalPosition.y + ((window.innerHeight - drawerFinalPosition.y) / 2)
+    };
+  }, [selectedDomain, drawerFinalPosition, drawerCalculatedWidth, window.innerHeight]);
 
   const getTimings = useCallback(() => {
     if (shouldReduceMotion) {
@@ -876,8 +922,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             zIndex: 4
           }}
           animate={{
-            x: shouldReduceMotion ? 0 : drawerParallaxX.get() * TOKENS.HORIZON.parallaxOffset * 0.15,
-            y: shouldReduceMotion ? 0 : drawerParallaxY.get() * TOKENS.HORIZON.parallaxOffset * 0.15
+            x: shouldReduceMotion ? 0 : parallaxX.get() * TOKENS.HORIZON.parallaxOffset * 0.15,
+            y: shouldReduceMotion ? 0 : parallaxY.get() * TOKENS.HORIZON.parallaxOffset * 0.15
           }}
           transition={{
             duration: TOKENS.HORIZON.t_parallax,
@@ -1100,7 +1146,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 const bloom = getDomainBloom(domain.id);
                 const isHovered = hoveredDomain === domain.id;
                 const isSelected = selectedDomain?.id === domain.id;
-                const isPulsing = orbPulseActive && (isHovered || isSelected || selectedDomain === null && hoveredDomain === domain.id); // Active for both open/close state on relevant orb
+                const isPulsing = orbPulseActive && (isHovered || isSelected || selectedDomain === null && hoveredDomain === domain.id); 
                 const isSurrounding = (hoveredDomain || selectedDomain) && hoveredDomain !== domain.id && selectedDomain?.id !== domain.id;
                 const breathPhase = idx * 1.2;
 
@@ -1654,7 +1700,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       <AnimatePresence>
         {selectedDomain && showBeam && drawerOrigin && (
           <motion.svg
-            className="fixed inset-0 z-[45] pointer-events-none" // z-index between backdrop (z-40) and drawer (z-50)
+            className="fixed inset-0 z-[45] pointer-events-none" 
             style={{ width: '100vw', height: '100vh' }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -1678,9 +1724,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             <motion.line
               x1={drawerOrigin.screenX}
               y1={drawerOrigin.screenY}
-              // Target slightly to the right of the drawer's top-left to simulate aiming for the icon
-              x2={drawerFinalPosition.x + 60} // Center of the drawer icon is approx 60px from left
-              y2={window.innerHeight / 2} // Target vertical center or slightly above, not just top
+              x2={drawerFinalPosition.x + 60} 
+              y2={window.innerHeight / 2} 
               stroke="url(#beam-gradient)"
               strokeWidth="2"
               strokeLinecap="round"
@@ -1707,35 +1752,38 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       <AnimatePresence>
         {selectedDomain && !isSwitchingNode && drawerOrigin && (
           <motion.div 
+            ref={drawerRef}
             className="fixed right-0 h-[calc(100vh-72px)] z-50 overflow-y-auto focus-trap" 
             style={{
               top: '72px',
-              width: '32vw',
-              minWidth: '420px',
-              maxWidth: '500px',
+              width: drawerCalculatedWidth,
               backdropFilter: TOKENS.HORIZON.drawerBlur,
               WebkitBackdropFilter: TOKENS.HORIZON.drawerBlur,
               background: TOKENS.HORIZON.drawerGlass,
               border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
-              boxShadow: `${TOKENS.HORIZON.panelShadow}, 0 0 12px ${TOKENS.HORIZON.drawerEdgeBloom}, inset 0 0 0 1px rgba(255,255,255,0.10)`,
+              boxShadow: `${TOKENS.HORIZON.drawerShadow}, ${TOKENS.HORIZON.panelShadow}, 0 0 12px ${TOKENS.HORIZON.drawerEdgeBloom}, inset 0 0 0 1px rgba(255,255,255,0.10)`,
               borderRadius: '18px 0 0 18px',
               willChange: 'transform, opacity, backdrop-filter'
             }}
             initial={{ 
-              x: TOKENS.HORIZON.translateSnap,
+              x: drawerCalculatedWidth,
               scale: 0.985,
-              opacity: 0
+              opacity: 0,
+              y: 0
             }} 
             animate={{ 
-              x: 0, // No parallax when drawer is open - keeps content stable for reading
-              y: 0, // No parallax when drawer is open - keeps content stable for reading
+              x: 0, 
+              y: 0, 
               scale: 1,
-              opacity: 1
+              opacity: 1,
+              boxShadow: `${TOKENS.HORIZON.drawerShadow}, ${TOKENS.HORIZON.panelShadow}, 0 0 12px ${TOKENS.HORIZON.drawerEdgeBloom}, inset 0 0 0 1px rgba(255,255,255,0.10)`
             }} 
             exit={{ 
-              x: TOKENS.HORIZON.translateSnap,
+              x: drawerCalculatedWidth,
               scale: 0.985,
-              opacity: 0
+              opacity: 0,
+              y: 0,
+              boxShadow: 'none'
             }}
             transition={{ 
               x: shouldReduceMotion 
@@ -1744,10 +1792,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     duration: timings.open, 
                     ease: TOKENS.HORIZON.easingExpress 
                   },
-              y: { 
-                duration: timings.open, 
-                ease: TOKENS.HORIZON.easingExpress 
-              },
+              y: shouldReduceMotion ? { duration: 0 } : { duration: timings.open, ease: TOKENS.HORIZON.easingExpress },
               scale: { 
                 duration: timings.open, 
                 ease: TOKENS.HORIZON.easingExpress 
@@ -1755,13 +1800,69 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               opacity: { 
                 duration: timings.open * 0.7, 
                 ease: TOKENS.HORIZON.easingOutQuad 
+              },
+              boxShadow: {
+                duration: timings.open,
+                ease: TOKENS.HORIZON.easingExpress
               }
             }} 
             onClick={(e) => e.stopPropagation()}
             tabIndex={-1}
           >
             
-            <div style={{
+            {/* Serenity: Center bloom overlay for drawer */}
+            {selectedDomain && (
+              <motion.div
+                className="center-bloom-drawer"
+                style={{
+                  position: 'absolute',
+                  left: drawerVisualCenter.x,
+                  top: drawerVisualCenter.y,
+                  transform: 'translate3d(-50%, -50%, 0)', // Serenity: Added translate3d for hardware acceleration
+                  width: '100%',
+                  height: '100%',
+                  background: `radial-gradient(circle at center, ${getDomainBloom(selectedDomain.id)} 0%, transparent 60%)`,
+                  opacity: 0.08, // Subtle bloom
+                  filter: 'blur(32px)', // Serenity: Tahoe depth
+                  pointerEvents: 'none',
+                  mixBlendMode: 'screen',
+                  zIndex: 0 // Behind content
+                }}
+                initial={{ opacity: 0 }}
+                animate={{ 
+                  opacity: 0.08,
+                  x: glassParallaxX, // Apply micro-parallax to bloom
+                  y: glassParallaxY // Apply micro-parallax to bloom
+                }}
+                exit={{ opacity: 0 }}
+                transition={{ 
+                  opacity: { duration: 0.5, ease: 'easeInOut' },
+                  x: { damping: 30, stiffness: 90 }, // Match glassParallax springs
+                  y: { damping: 30, stiffness: 90 }
+                }}
+              />
+            )}
+
+            {/* Serenity: Top Light Gradient */}
+            <motion.div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '100px', // Height for the gradient
+                background: `linear-gradient(to bottom, ${TOKENS.HORIZON.lightTemp} 0%, ${TOKENS.HORIZON.lightTempBottom} 100%)`,
+                pointerEvents: 'none',
+                borderRadius: '18px 0 0 0', // Match top border radius
+                zIndex: 1
+              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+            />
+            
+            <div style={{ // This was implicitly a background layer, moving to a div as it has no motion.
               position: 'absolute',
               top: 0,
               left: 0,
@@ -1769,7 +1870,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               height: '100%',
               background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%)',
               pointerEvents: 'none',
-              borderRadius: '18px 0 0 18px'
+              borderRadius: '18px 0 0 18px',
+              zIndex: 1 // Ensure it's behind content but above bloom
             }} />
             
             <motion.div 
@@ -1953,27 +2055,31 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               </div>
             </motion.div>
 
+            {/* Main content area wrapped in motion.div for overall stagger. */}
             <motion.div 
-              key={`content-${selectedDomain.id}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              key={`content-sections-${selectedDomain.id}`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
               transition={{ 
+                delay: timings.stagger * 0.5, // Delay for overall content block
                 duration: timings.open * 0.8,
                 ease: TOKENS.HORIZON.easing 
               }}
               className="p-6 space-y-6"
               style={{ paddingTop: '24px' }}
             >
+              {/* Section 1: What This Means */}
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
                 transition={{ 
-                  delay: timings.stagger,
+                  delay: timings.stagger * 1, // Staggered delay for this section
                   duration: timings.open * 0.7,
                   ease: TOKENS.HORIZON.easingSine
                 }}
+                className="drawer-section"
               >
                 <h4 className="font-medium mb-3" style={{ 
                   color: 'rgba(255,255,255,0.9)',
@@ -1985,7 +2091,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 <p className="text-on-glass" style={{ 
                   color: TOKENS.colors.textSecondary, 
                   fontSize: '14px', 
-                  lineHeight: '1.5',
+                  lineHeight: `${TOKENS.HORIZON.lineHeight}px`,
                   fontWeight: 400,
                   fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                 }}>{selectedDomain.summary}</p>
@@ -1993,7 +2099,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   <p className="text-on-glass" style={{ 
                     color: TOKENS.colors.textSecondary, 
                     fontSize: '13px', 
-                    lineHeight: '1.5',
+                    lineHeight: `${TOKENS.HORIZON.lineHeight}px`,
                     fontWeight: 400,
                     opacity: 0.9,
                     fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
@@ -2002,15 +2108,17 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 )}
               </motion.div>
               
+              {/* Section 2: Downstream Effects */}
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
                 transition={{ 
-                  delay: timings.stagger * 2,
+                  delay: timings.stagger * 2, // Staggered delay for this section
                   duration: timings.open * 0.7,
                   ease: TOKENS.HORIZON.easingSine
                 }}
+                className="drawer-section"
               >
                 <h4 className="font-medium mb-3" style={{ 
                   color: 'rgba(255,255,255,0.9)',
@@ -2089,15 +2197,45 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 </motion.div>
               </motion.div>
               
+              {/* Serenity: "So What" Interpretive Layer */}
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
                 transition={{ 
-                  delay: timings.stagger * 3,
+                  delay: timings.stagger * 3, // Staggered delay for this section
                   duration: timings.open * 0.7,
                   ease: TOKENS.HORIZON.easingSine
                 }}
+                className="drawer-section"
+              >
+                <h4 className="font-medium mb-3" style={{ 
+                  color: 'rgba(255,255,255,0.9)',
+                  letterSpacing: '0.01em',
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                }}>So What? (Interpretive Layer)</h4>
+                <p className="text-on-glass" style={{ 
+                  color: TOKENS.colors.textSecondary, 
+                  fontSize: '14px', 
+                  lineHeight: `${TOKENS.HORIZON.lineHeight}px`,
+                  fontWeight: 400,
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                }}>{getSoWhatInterpretation(selectedDomain)}</p>
+              </motion.div>
+
+              {/* Section 3: 48-Hour Trend */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ 
+                  delay: timings.stagger * 4,
+                  duration: timings.open * 0.7,
+                  ease: TOKENS.HORIZON.easingSine
+                }}
+                className="drawer-section"
                 style={{ marginTop: '14px' }}
               >
                 <h4 className="font-medium mb-3" style={{ 
@@ -2162,16 +2300,17 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 </div>
               </motion.div>
               
+              {/* Section 4: Call to Action and Footer */}
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
                 transition={{ 
-                  delay: timings.stagger * 4,
+                  delay: timings.stagger * 5,
                   duration: timings.open * 0.7,
                   ease: TOKENS.HORIZON.easingSine
                 }}
-                className="pt-4 border-t space-y-3" 
+                className="drawer-section pt-4 border-t space-y-3" 
                 style={{ borderColor: TOKENS.HORIZON.drawerDivider, marginTop: '8px' }}
               >
                 <div className="flex gap-2">
@@ -2235,6 +2374,17 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         
         * {
           font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
+        }
+
+        /* Serenity: Typography breathing space */
+        .drawer-section {
+          padding-top: ${TOKENS.HORIZON.sectionPadding}px;
+          padding-bottom: ${TOKENS.HORIZON.sectionPadding}px;
+        }
+        
+        .drawer-section p,
+        .drawer-section .text-on-glass { /* Apply to specific text elements within sections */
+          line-height: ${TOKENS.HORIZON.lineHeight}px;
         }
       `}</style>
     </motion.section>
