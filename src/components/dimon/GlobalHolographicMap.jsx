@@ -1,33 +1,30 @@
-
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info } from 'lucide-react';
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// MACRO CONSTELLATION — OS HORIZON V3.5.1
+// MACRO CONSTELLATION — OS HORIZON V3.5.3
 // Real-time balance of global macro forces.
 // Glass diffused celestial intelligence — breathing, balanced, quiet.
 // v3.5.1: Staggered tooltip reveal + refined hover physics
+// v3.5.3: Micro-polish (tighter line height, halo decay, node expansion, attribution)
 // ============================================================================
 
 const TOKENS = {
   HORIZON: {
-    // Spatial expansion constants
-    globalScale: 1.45, // +45% visual size
-    globalScaleMd: 1.3, // Medium screens
-    globalScaleSm: 1.1, // Small screens
-    clusterOffsetY: -4, // Lowered toward golden ratio
-    orbitRadiusScale: 1.25, // Wider spacing
-    labelDistanceScale: 1.10, // Labels sit farther out
-    interactionRadiusScale: 1.2, // Improved hover feel
-    // Liquid Glass Tahoe palette
+    globalScale: 1.45,
+    globalScaleMd: 1.3,
+    globalScaleSm: 1.1,
+    clusterOffsetY: -4,
+    orbitRadiusScale: 1.25,
+    labelDistanceScale: 1.10,
+    interactionRadiusScale: 1.2,
     glassBg: 'rgba(10,14,20,0.70)',
     glassBorder: 'rgba(160,191,255,0.10)',
     glassEdgeLight: 'rgba(160,191,255,0.10)',
     glassInner: 'rgba(255,255,255,0.04)',
     panelShadow: '0 0 80px rgba(0,0,0,0.4), 0 0 40px rgba(160,191,255,0.08)',
-    // Drawer-specific
     drawerGlass: 'rgba(10,15,22,0.72)',
     drawerTint: 'rgba(10,15,22,0.45)',
     drawerBlur: 'blur(20px)',
@@ -37,26 +34,27 @@ const TOKENS = {
     backdropOpacity: 0.35,
     blurPanel: 'blur(20px)',
     blurChip: 'blur(16px)',
-    // v3.5 Pure Glass (no sheen)
     vignetteColor: '#070A0F',
-    vignetteOpacity: 0.28, // Reduced from 0.35 to avoid split tones
+    vignetteOpacity: 0.28,
     vignetteBlur: 24,
     vignetteSpread: 10,
     localBloomIntensity: 0.18,
     localBloomRadius: [220, 280],
-    sheenEnabled: false, // Disabled in v3.3
-    // Apple motion timing (in seconds) — v3.5.1 updates
+    sheenEnabled: false,
     easing: [0.4, 0, 0.2, 1],
     easingApple: [0.32, 0.72, 0, 1],
     easingExit: [0.4, 0, 1, 1],
     easingElastic: [0.22, 1, 0.36, 1],
+    easingSine: [0.61, 1, 0.88, 1],
     overshoot: [0.34, 1.56, 0.64, 1],
     t_hover: 0.12,
-    t_hoverOut: 0.95, // v3.5.1: Increased from 0.16 for smoother hover exit inertia
+    t_hoverOut: 0.95,
+    t_haloDecay: 0.18,
+    t_haloDecayOpacity: 0.18,
     t_labelLag: 0.08,
     t_tooltipOpen: 0.16,
-    t_tooltipTextStagger: 0.08, // v3.5.1: Text reveals after card
-    t_tooltipTextDuration: 0.14, // v3.5.1: Text fade duration
+    t_tooltipTextStagger: 0.08,
+    t_tooltipTextDuration: 0.14,
     t_tooltipClose: 0.12,
     t_drawerOpen: 0.22,
     t_drawerClose: 0.18,
@@ -72,7 +70,7 @@ const TOKENS = {
     t_tooltipPulse: 0.9,
     t_ringFill: 0.3,
     t_parallax: 0.12,
-    t_parallaxOut: 0.16, // Updated for scaled motion
+    t_parallaxOut: 0.16,
     bgBase: '#06080D',
     bgEnd: '#0A0E14',
     bgSubsurfaceCenter: '#121823',
@@ -87,7 +85,7 @@ const TOKENS = {
       text: '#B8E7FF',
       sceneGlow: 'rgba(106,199,247,0.12)',
       bloom: 'rgba(106,199,247,0.18)',
-      zDepth: -14 // Scaled from -10
+      zDepth: -14
     },
     rates: {
       core: '#C0A6FF',
@@ -95,7 +93,7 @@ const TOKENS = {
       text: '#DECFFF',
       sceneGlow: 'rgba(192,166,255,0.12)',
       bloom: 'rgba(192,166,255,0.18)',
-      zDepth: -6 // Scaled from -4
+      zDepth: -6
     },
     growth: {
       core: '#B4F7C0',
@@ -103,7 +101,7 @@ const TOKENS = {
       text: '#D4FFDE',
       sceneGlow: 'rgba(180,247,192,0.12)',
       bloom: 'rgba(180,247,192,0.18)',
-      zDepth: 8 // Scaled from 6
+      zDepth: 8
     },
     geopolitics: {
       core: '#FFD37A',
@@ -111,7 +109,7 @@ const TOKENS = {
       text: '#FFE8B8',
       sceneGlow: 'rgba(255,211,122,0.12)',
       bloom: 'rgba(255,211,122,0.18)',
-      zDepth: 12 // Scaled from 10
+      zDepth: 12
     }
   },
   colors: {
@@ -167,7 +165,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const [isSwitchingNode, setIsSwitchingNode] = useState(false);
   const [viewportSize, setViewportSize] = useState('lg');
 
-  // Cursor-based parallax (scaled to 14px for expanded grid)
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const parallaxX = useSpring(mouseX, { damping: 20, stiffness: 100 });
@@ -183,12 +180,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
   const headerSafe = 64;
   const footerH = 84;
-  const footerBleed = 28; // Adjusted for spacing
+  const footerBleed = 28;
   const haloBleed = 18;
   const minClear = 24;
   const safeBottom = footerH + footerBleed + haloBleed + minClear;
 
-  // Responsive global scale
   const getGlobalScale = useCallback(() => {
     if (viewportSize === 'sm') return TOKENS.HORIZON.globalScaleSm;
     if (viewportSize === 'md') return TOKENS.HORIZON.globalScaleMd;
@@ -228,7 +224,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return ANGLES[dominantDriver] || 0;
   }, [dominantDriver]);
 
-  // Drift animations
   useEffect(() => {
     if (shouldReduceMotion) return;
     
@@ -239,7 +234,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return () => clearInterval(interval);
   }, [shouldReduceMotion]);
 
-  // Mouse tracking with scaled parallax (14px)
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (!containerRef.current || shouldReduceMotion) return;
@@ -251,7 +245,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       const normX = ((e.clientX - centerX) / (rect.width / 2));
       const normY = ((e.clientY - centerY) / (rect.height / 2));
       
-      // Scaled parallax: ±14px
       mouseX.set(normX * 14);
       mouseY.set(normY * 14);
     };
@@ -274,7 +267,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     }
   }, []);
 
-  // Viewport size detection
   useEffect(() => {
     const updateViewport = () => {
       const width = window.innerWidth;
@@ -291,7 +283,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     const updateDimensions = () => {
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
-        setDimensions({ width: rect.width, height: 700 }); // Increased height for expansion
+        setDimensions({ width: rect.width, height: 700 });
       }
     };
     updateDimensions();
@@ -334,9 +326,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     const strengthFactor = 0.9 + (strength * 0.2);
     const adjustedRadius = orbitBaseRadius * baseRadiusFactor * strengthFactor;
     
-    // Scaled orbital sway (8-10px)
     const swayPhase = (ANGLES[domainId] / 360) * Math.PI * 2;
-    const swayRadius = 8 + (Math.abs(Math.sin(swayPhase)) * 2); // 8-10px
+    const swayRadius = 8 + (Math.abs(Math.sin(swayPhase)) * 2);
     const swayAngle = (time * 2 * Math.PI) / TOKENS.HORIZON.t_orbit;
     const swayX = Math.cos(swayAngle + swayPhase) * swayRadius;
     const swayY = Math.sin(swayAngle + swayPhase) * swayRadius;
@@ -357,7 +348,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     const norm = Math.hypot(vx, vy) || 1;
     const nx = vx / norm;
     const ny = vy / norm;
-    const offset = orbRadius + (16 * TOKENS.HORIZON.labelDistanceScale); // Scaled label distance
+    const offset = orbRadius + (16 * TOKENS.HORIZON.labelDistanceScale);
     
     return {
       x: orbX + nx * offset,
@@ -492,7 +483,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     <motion.section 
       variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} 
       aria-label="Macro Constellation"
-      style={{ maxWidth: '84vw', margin: '0 auto' }} // Expand horizontally
+      style={{ maxWidth: '84vw', margin: '0 auto' }}
     >
       <div className="flex items-center justify-between mb-6 pl-2">
         <div className="flex items-center space-x-3">
@@ -537,7 +528,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         className="grid-wrapper relative w-full overflow-hidden" 
         data-dominant={dominantDriver}
         style={{
-          height: '700px', // Increased from 600px
+          height: '700px',
           background: `linear-gradient(184deg, ${TOKENS.HORIZON.bgBase} 0%, ${TOKENS.HORIZON.bgEnd} 100%)`,
           border: '1px solid rgba(160,191,255,0.08)',
           borderRadius: '24px',
@@ -546,7 +537,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           position: 'relative'
         }}>
         
-        {/* Clear glass background layers */}
         <motion.div 
           style={{
             position: 'absolute',
@@ -584,7 +574,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           transition={{ duration: 1, ease: 'linear' }}
         />
         
-        {/* Edge vignette */}
         <div 
           style={{
             position: 'absolute',
@@ -598,7 +587,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           }}
         />
         
-        {/* Localized bloom fields */}
         {domains.map((domain) => {
           const pos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
           const bloomRadius = Math.min(...TOKENS.HORIZON.localBloomRadius) + (domain.strength * (Math.max(...TOKENS.HORIZON.localBloomRadius) - Math.min(...TOKENS.HORIZON.localBloomRadius)));
@@ -624,7 +612,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           );
         })}
         
-        {/* Constellation layer */}
         <motion.div 
           ref={constellationRef} 
           className="constellation-layer" 
@@ -646,7 +633,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             y: shouldReduceMotion ? { duration: 0 } : { duration: TOKENS.HORIZON.t_parallaxOut, ease: TOKENS.HORIZON.easingApple }
           }}
         >
-          {/* Orbit ring */}
           <div className="orbit-ring" style={{
             position: 'absolute',
             left: `${cx}px`,
@@ -664,7 +650,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             willChange: 'width, height'
           }} aria-hidden="true" />
 
-          {/* Breathing nucleus */}
           <motion.div 
             className="nucleus-container" 
             style={{
@@ -694,7 +679,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               pointerEvents: 'none'
             }}
             animate={shouldReduceMotion ? {} : {
-              scale: [0.985, 1.025, 0.985], // Scaled breathing
+              scale: [0.985, 1.025, 0.985],
               opacity: [0.985, 1, 0.985]
             }}
             transition={{
@@ -704,7 +689,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             }}
             aria-hidden="true" />
 
-            {/* Nucleus rays */}
             {domains.map((domain) => {
               const angle = ANGLES[domain.id];
               const isDominant = domain.id === dominantDriver;
@@ -735,7 +719,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             })}
           </motion.div>
 
-          {/* SVG layer */}
           <svg width={dimensions.width} height={dimensions.height} className="absolute inset-0" style={{ overflow: 'visible', zIndex: 2 }}>
             <defs>
               {domains.map((domain) => (
@@ -768,7 +751,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               ))}
             </defs>
 
-            {/* Connecting lines */}
             <g style={{ zIndex: 2, mixBlendMode: 'screen' }}>
               {connections.map((conn, i) => {
                 const fromDomain = domains.find(d => d.id === conn.from);
@@ -815,7 +797,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               })}
             </g>
 
-            {/* Orbs */}
             <g style={{ zIndex: 3, mixBlendMode: 'screen' }}>
               {domains.map((domain, idx) => {
                 const pos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
@@ -828,7 +809,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
                 return (
                   <g key={domain.id}>
-                    {/* Soft additive halo */}
                     <motion.circle 
                       cx={pos.x} 
                       cy={pos.y} 
@@ -848,7 +828,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                           ? 1.05 
                           : isSurrounding
                             ? 1
-                            : [0.985, 1.025, 0.985] // Scaled breathing
+                            : [0.985, 1.025, 0.985]
                       }}
                       transition={
                         isHovered || isSelected || isSurrounding
@@ -865,7 +845,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       }
                     />
                     
-                    {/* Subsurface ring */}
                     <circle 
                       cx={pos.x} 
                       cy={pos.y} 
@@ -879,20 +858,19 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       }}
                     />
                     
-                    {/* Hover bloom */}
                     <AnimatePresence>
                       {(isHovered || isSelected) && (
                         <motion.circle 
                           cx={pos.x} 
                           cy={pos.y} 
-                          r={pos.radius + 5} 
+                          r={pos.radius + 11} 
                           fill={bloom}
                           initial={{ opacity: 0, scale: 0.95 }}
                           animate={{ opacity: 0.6, scale: 1 }}
                           exit={{ opacity: 0, scale: 0.95 }}
                           transition={{ 
-                            duration: TOKENS.HORIZON.t_hover, 
-                            ease: TOKENS.HORIZON.easingApple 
+                            opacity: { duration: TOKENS.HORIZON.t_haloDecay, ease: TOKENS.HORIZON.easingSine },
+                            scale: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easingApple }
                           }}
                           style={{ 
                             filter: 'blur(16px)', 
@@ -902,7 +880,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       )}
                     </AnimatePresence>
                     
-                    {/* Main orb */}
                     <motion.circle 
                       cx={pos.x} 
                       cy={pos.y} 
@@ -919,7 +896,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       animate={shouldReduceMotion ? {} : { 
                         scale: isHovered || isSelected
                           ? 1.05
-                          : [0.985, 1.025, 0.985], // Scaled breathing
+                          : [0.985, 1.025, 0.985],
                         opacity: isHovered || isSelected
                           ? 1 
                           : isSurrounding
@@ -949,7 +926,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       aria-describedby={`capsule-${domain.id}`} 
                     />
                     
-                    {/* Stroke ring */}
                     <circle 
                       cx={pos.x} 
                       cy={pos.y} 
@@ -966,7 +942,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </g>
           </svg>
 
-          {/* Labels with scaled distance */}
           {domains.map((domain) => {
             const orbPos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
             const labelPos = getLabelPosition(orbPos.x, orbPos.y, orbPos.radius);
@@ -1017,7 +992,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           })}
         </motion.div>
 
-        {/* v3.5.1: Enhanced tooltip with staggered content reveal */}
         <AnimatePresence>
           {hoveredDomain && !selectedDomain && !isMorphing && (
             <motion.div 
@@ -1063,7 +1037,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     minWidth: '300px', 
                     maxWidth: '340px'
                   }}>
-                    {/* v3.5.1: Staggered text content */}
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -1093,7 +1066,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       <p className="text-on-glass" style={{ 
                         color: TOKENS.colors.textSecondary, 
                         fontSize: '14px', 
-                        lineHeight: '1.6', 
+                        lineHeight: '1.4', 
                         marginBottom: '12px',
                         textShadow: '0 1px 2px rgba(0,0,0,0.4)',
                         fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
@@ -1101,7 +1074,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         {domain.summary.length > 90 ? domain.summary.substring(0, 87) + '...' : domain.summary}
                       </p>
                       
-                      {/* v3.5.1: Downstream effect line */}
                       {domain.ripple && domain.ripple.length > 0 && (
                         <div className="flex items-start gap-2 mb-4" style={{ marginTop: '8px' }}>
                           <span style={{ 
@@ -1113,7 +1085,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                           <p style={{ 
                             color: TOKENS.colors.textTertiary, 
                             fontSize: '13px', 
-                            lineHeight: '1.5',
+                            lineHeight: '1.35',
                             opacity: 0.85,
                             fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                           }}>
@@ -1122,7 +1094,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         </div>
                       )}
                       
-                      {/* v3.5.1: Updated CTA text */}
                       <div className="flex items-center gap-2 text-xs" style={{ 
                         color: TOKENS.colors.textTertiary, 
                         minHeight: '44px', 
@@ -1142,7 +1113,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           )}
         </AnimatePresence>
 
-        {/* Equilibrium bar with adjusted position and width */}
         <div 
           ref={footerRef} 
           className="balance-footer" 
@@ -1150,9 +1120,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           onMouseLeave={() => setIsStatusBarHovered(false)}
           style={{
             position: 'absolute',
-            left: '14%', // Centered with 72% width
+            left: '14%',
             right: '14%',
-            bottom: '32px', // Adjusted margin
+            bottom: '32px',
             height: `${footerH}px`,
             borderRadius: '20px',
             padding: '16px 18px',
@@ -1292,7 +1262,19 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         </div>
       </div>
 
-      {/* Halo burst */}
+      <div className="flex justify-center" style={{ marginTop: '10px' }}>
+        <p style={{
+          fontSize: '9px',
+          fontWeight: 400,
+          color: TOKENS.colors.textTertiary,
+          opacity: 0.55,
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
+          letterSpacing: '0.3px'
+        }}>
+          Data via Lyra models
+        </p>
+      </div>
+
       <AnimatePresence>
         {haloAnimating && hoveredDomain && !selectedDomain && (
           <motion.div
@@ -1315,15 +1297,17 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               background: `radial-gradient(circle, ${getDomainBloom(hoveredDomain)}, transparent 70%)`,
               pointerEvents: 'none'
             }}
-            initial={{ scale: 0.85, opacity: 0.20 }}
+            initial={{ scale: 0.85, opacity: 0.18 }}
             animate={{ scale: 1.10, opacity: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: TOKENS.HORIZON.t_haloBurst, ease: TOKENS.HORIZON.easingElastic }}
+            transition={{ 
+              duration: TOKENS.HORIZON.t_haloDecay, 
+              ease: TOKENS.HORIZON.easingSine 
+            }}
           />
         )}
       </AnimatePresence>
 
-      {/* Backdrop glass */}
       <AnimatePresence>
         {selectedDomain && (
           <motion.div 
@@ -1342,7 +1326,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         )}
       </AnimatePresence>
 
-      {/* Drawer panel */}
       <AnimatePresence>
         {selectedDomain && !isSwitchingNode && (
           <motion.div 
@@ -1491,7 +1474,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 <p className="text-on-glass" style={{ 
                   color: TOKENS.colors.textSecondary, 
                   fontSize: '14px', 
-                  lineHeight: '1.6',
+                  lineHeight: '1.4',
                   fontWeight: 400,
                   fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                 }}>{selectedDomain.summary}</p>
@@ -1526,7 +1509,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       <span className="text-on-glass" style={{ 
                         color: TOKENS.colors.textChip, 
                         fontSize: '12px', 
-                        lineHeight: '1.5',
+                        lineHeight: '1.35',
                         fontWeight: 400,
                         fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                       }}>{effect}</span>
