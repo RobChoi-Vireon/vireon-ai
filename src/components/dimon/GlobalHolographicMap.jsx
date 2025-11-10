@@ -9,6 +9,7 @@ import LyraLogo from '../core/LyraLogo';
 // Real-time balance of global macro forces.
 // Glass diffused celestial intelligence — breathing, balanced, serene.
 // v1.6: Apple Serenity — Center bloom, Tahoe depth, micro-parallax, orb life pulse
+// v1.6.1: QA Fix — Eliminated extra scroll space
 // ============================================================================
 
 const TOKENS = {
@@ -700,7 +701,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const drawerCalculatedWidth = useMemo(() => {
     if (typeof window === 'undefined') return 420;
     return Math.max(420, Math.min(window.innerWidth * 0.32, 500));
-  }, [window.innerWidth]);
+  }, []);
 
   // Calculate the fixed screen position of the drawer's top-left corner
   const drawerFinalPosition = useMemo(() => {
@@ -709,7 +710,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       x: window.innerWidth - drawerCalculatedWidth,
       y: 72 // drawer starts at 72px from top
     };
-  }, [drawerCalculatedWidth, window.innerWidth]);
+  }, [drawerCalculatedWidth]);
 
   // Serenity: Calculate drawer visual center for bloom effect
   const drawerVisualCenter = useMemo(() => {
@@ -718,7 +719,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       x: drawerFinalPosition.x + (drawerCalculatedWidth / 2),
       y: drawerFinalPosition.y + ((window.innerHeight - drawerFinalPosition.y) / 2)
     };
-  }, [selectedDomain, drawerFinalPosition, drawerCalculatedWidth, window.innerHeight]);
+  }, [selectedDomain, drawerFinalPosition, drawerCalculatedWidth]);
 
   const getTimings = useCallback(() => {
     if (shouldReduceMotion) {
@@ -1753,9 +1754,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         {selectedDomain && !isSwitchingNode && drawerOrigin && (
           <motion.div 
             ref={drawerRef}
-            className="fixed right-0 h-[calc(100vh-72px)] z-50 overflow-y-auto focus-trap" 
+            className="fixed right-0 z-50 focus-trap flex flex-col" 
             style={{
               top: '72px',
+              bottom: 0,
               width: drawerCalculatedWidth,
               backdropFilter: TOKENS.HORIZON.drawerBlur,
               WebkitBackdropFilter: TOKENS.HORIZON.drawerBlur,
@@ -1763,27 +1765,23 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
               boxShadow: `${TOKENS.HORIZON.drawerShadow}, ${TOKENS.HORIZON.panelShadow}, 0 0 12px ${TOKENS.HORIZON.drawerEdgeBloom}, inset 0 0 0 1px rgba(255,255,255,0.10)`,
               borderRadius: '18px 0 0 18px',
-              willChange: 'transform, opacity, backdrop-filter'
+              willChange: 'transform, opacity, backdrop-filter',
+              overflow: 'hidden'
             }}
             initial={{ 
               x: drawerCalculatedWidth,
               scale: 0.985,
-              opacity: 0,
-              y: 0
+              opacity: 0
             }} 
             animate={{ 
               x: 0, 
-              y: 0, 
               scale: 1,
-              opacity: 1,
-              boxShadow: `${TOKENS.HORIZON.drawerShadow}, ${TOKENS.HORIZON.panelShadow}, 0 0 12px ${TOKENS.HORIZON.drawerEdgeBloom}, inset 0 0 0 1px rgba(255,255,255,0.10)`
+              opacity: 1
             }} 
             exit={{ 
               x: drawerCalculatedWidth,
               scale: 0.985,
-              opacity: 0,
-              y: 0,
-              boxShadow: 'none'
+              opacity: 0
             }}
             transition={{ 
               x: shouldReduceMotion 
@@ -1792,7 +1790,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     duration: timings.open, 
                     ease: TOKENS.HORIZON.easingExpress 
                   },
-              y: shouldReduceMotion ? { duration: 0 } : { duration: timings.open, ease: TOKENS.HORIZON.easingExpress },
               scale: { 
                 duration: timings.open, 
                 ease: TOKENS.HORIZON.easingExpress 
@@ -1800,10 +1797,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               opacity: { 
                 duration: timings.open * 0.7, 
                 ease: TOKENS.HORIZON.easingOutQuad 
-              },
-              boxShadow: {
-                duration: timings.open,
-                ease: TOKENS.HORIZON.easingExpress
               }
             }} 
             onClick={(e) => e.stopPropagation()}
@@ -1816,11 +1809,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 className="center-bloom-drawer"
                 style={{
                   position: 'absolute',
-                  left: drawerVisualCenter.x,
-                  top: drawerVisualCenter.y,
+                  left: '50%',
+                  top: '50%',
                   transform: 'translate3d(-50%, -50%, 0)', // Serenity: Added translate3d for hardware acceleration
-                  width: '100%',
-                  height: '100%',
+                  width: '120%', // Expanded for smoother visual overflow
+                  height: '120%', // Expanded for smoother visual overflow
                   background: `radial-gradient(circle at center, ${getDomainBloom(selectedDomain.id)} 0%, transparent 60%)`,
                   opacity: 0.08, // Subtle bloom
                   filter: 'blur(32px)', // Serenity: Tahoe depth
@@ -1836,9 +1829,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 }}
                 exit={{ opacity: 0 }}
                 transition={{ 
-                  opacity: { duration: 0.5, ease: 'easeInOut' },
-                  x: { damping: 30, stiffness: 90 }, // Match glassParallax springs
-                  y: { damping: 30, stiffness: 90 }
+                  opacity: { duration: 0.5, ease: 'easeInOut' }
                 }}
               />
             )}
@@ -1850,7 +1841,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 top: 0,
                 left: 0,
                 right: 0,
-                height: '100px', // Height for the gradient
+                height: '80px', // Height for the gradient
                 background: `linear-gradient(to bottom, ${TOKENS.HORIZON.lightTemp} 0%, ${TOKENS.HORIZON.lightTempBottom} 100%)`,
                 pointerEvents: 'none',
                 borderRadius: '18px 0 0 0', // Match top border radius
@@ -1875,11 +1866,13 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             }} />
             
             <motion.div 
-              className="sticky top-0 z-10 p-5 border-b" 
+              className="flex-shrink-0 p-5 border-b" 
               style={{ 
                 background: TOKENS.HORIZON.drawerTint,
                 borderColor: TOKENS.HORIZON.drawerDivider,
-                backdropFilter: getBlur('chip')
+                backdropFilter: getBlur('chip'),
+                position: 'relative',
+                zIndex: 10
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -2055,289 +2048,290 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               </div>
             </motion.div>
 
-            {/* Main content area wrapped in motion.div for overall stagger. */}
-            <motion.div 
-              key={`content-sections-${selectedDomain.id}`}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ 
-                delay: timings.stagger * 0.5, // Delay for overall content block
-                duration: timings.open * 0.8,
-                ease: TOKENS.HORIZON.easing 
+            {/* Main content area wrapped in a scrollable div */}
+            <div 
+              className="flex-1 overflow-y-auto"
+              style={{
+                position: 'relative',
+                zIndex: 2
               }}
-              className="p-6 space-y-6"
-              style={{ paddingTop: '24px' }}
             >
-              {/* Section 1: What This Means */}
-              <motion.div
+              <motion.div 
+                key={`content-sections-${selectedDomain.id}`}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
                 transition={{ 
-                  delay: timings.stagger * 1, // Staggered delay for this section
-                  duration: timings.open * 0.7,
-                  ease: TOKENS.HORIZON.easingSine
+                  delay: timings.stagger * 0.5, // Delay for overall content block
+                  duration: timings.open * 0.8,
+                  ease: TOKENS.HORIZON.easing 
                 }}
-                className="drawer-section"
+                className="p-6"
+                style={{ paddingTop: '16px', paddingBottom: '16px' }}
               >
-                <h4 className="font-medium mb-3" style={{ 
-                  color: 'rgba(255,255,255,0.9)',
-                  letterSpacing: '0.01em',
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-                }}>What This Means</h4>
-                <p className="text-on-glass" style={{ 
-                  color: TOKENS.colors.textSecondary, 
-                  fontSize: '14px', 
-                  lineHeight: `${TOKENS.HORIZON.lineHeight}px`,
-                  fontWeight: 400,
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-                }}>{selectedDomain.summary}</p>
-                {selectedDomain.addendum && (
-                  <p className="text-on-glass" style={{ 
-                    color: TOKENS.colors.textSecondary, 
-                    fontSize: '13px', 
-                    lineHeight: `${TOKENS.HORIZON.lineHeight}px`,
-                    fontWeight: 400,
-                    opacity: 0.9,
-                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
-                    marginTop: '12px'
-                  }}>{selectedDomain.addendum}</p>
-                )}
-              </motion.div>
-              
-              {/* Section 2: Downstream Effects */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                transition={{ 
-                  delay: timings.stagger * 2, // Staggered delay for this section
-                  duration: timings.open * 0.7,
-                  ease: TOKENS.HORIZON.easingSine
-                }}
-                className="drawer-section"
-              >
-                <h4 className="font-medium mb-3" style={{ 
-                  color: 'rgba(255,255,255,0.9)',
-                  letterSpacing: '0.01em',
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-                }}>Downstream Effects</h4>
-                <div className="space-y-2.5">
-                  {selectedDomain.ripple.slice(0, 3).map((effect, i) => (
-                    <div 
-                      key={i} 
-                      className="effect-chip" 
-                      style={{
-                        backdropFilter: getBlur('chip'), 
-                        WebkitBackdropFilter: getBlur('chip'), 
-                        background: 'rgba(255,255,255,0.06)',
-                        border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
-                        borderRadius: '12px', 
-                        padding: '11px 13px', 
-                        display: 'flex', 
-                        alignItems: 'start', 
-                        gap: '9px'
-                      }}>
-                      <div className="w-1 h-1 rounded-full mt-2 flex-shrink-0" style={{ 
-                        background: getDomainColor(selectedDomain.id),
-                        boxShadow: `0 0 6px ${getDomainBloom(selectedDomain.id)}`
-                      }} />
-                      <span className="text-on-glass" style={{ 
-                        color: TOKENS.colors.textChip, 
-                        fontSize: '12px', 
-                        lineHeight: '1.45',
-                        fontWeight: 400,
-                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-                      }}>{effect}</span>
-                    </div>
-                  ))}
-                </div>
-                
-                {/* Actionable Signal */}
+                {/* Section 1: What This Means */}
                 <motion.div
-                  initial={{ opacity: 0, y: -4 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
                   transition={{ 
-                    delay: timings.stagger * 2.5,
-                    duration: 0.3,
+                    delay: timings.stagger * 1, // Staggered delay for this section
+                    duration: timings.open * 0.7,
                     ease: TOKENS.HORIZON.easingSine
                   }}
-                  className="mt-4 p-3 rounded-lg"
-                  style={{
-                    background: 'rgba(66,135,245,0.08)',
-                    border: '1px solid rgba(66,135,245,0.3)',
-                    backdropFilter: 'blur(10px)',
-                    WebkitBackdropFilter: 'blur(10px)'
-                  }}
+                  style={{ marginBottom: '16px' }}
                 >
-                  <div className="flex items-start gap-2">
-                    <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ 
-                      background: '#4287f5',
-                      boxShadow: '0 0 8px rgba(66,135,245,0.6)'
-                    }} />
+                  <h4 className="font-medium mb-2" style={{ 
+                    color: 'rgba(255,255,255,0.9)',
+                    letterSpacing: '0.01em',
+                    fontSize: '13px',
+                    fontWeight: 500,
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                  }}>What This Means</h4>
+                  <p className="text-on-glass" style={{ 
+                    color: TOKENS.colors.textSecondary, 
+                    fontSize: '14px', 
+                    lineHeight: `${TOKENS.HORIZON.lineHeight}px`,
+                    fontWeight: 400,
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                  }}>{selectedDomain.summary}</p>
+                  {selectedDomain.addendum && (
+                    <p className="text-on-glass" style={{ 
+                      color: TOKENS.colors.textSecondary, 
+                      fontSize: '13px', 
+                      lineHeight: `${TOKENS.HORIZON.lineHeight}px`,
+                      fontWeight: 400,
+                      opacity: 0.9,
+                      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
+                      marginTop: '8px'
+                    }}>{selectedDomain.addendum}</p>
+                  )}
+                </motion.div>
+                
+                {/* Section 2: Downstream Effects */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ 
+                    delay: timings.stagger * 2, // Staggered delay for this section
+                    duration: timings.open * 0.7,
+                    ease: TOKENS.HORIZON.easingSine
+                  }}
+                  style={{ marginBottom: '16px' }}
+                >
+                  <h4 className="font-medium mb-2" style={{ 
+                    color: 'rgba(255,255,255,0.9)',
+                    letterSpacing: '0.01em',
+                    fontSize: '13px',
+                    fontWeight: 500,
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                  }}>Downstream Effects</h4>
+                  <div className="space-y-2">
+                    {selectedDomain.ripple.slice(0, 3).map((effect, i) => (
+                      <div 
+                        key={i} 
+                        className="effect-chip" 
+                        style={{
+                          backdropFilter: getBlur('chip'), 
+                          WebkitBackdropFilter: getBlur('chip'), 
+                          background: 'rgba(255,255,255,0.06)',
+                          border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
+                          borderRadius: '12px', 
+                          padding: '10px 12px', 
+                          display: 'flex', 
+                          alignItems: 'start', 
+                          gap: '8px'
+                        }}>
+                        <div className="w-1 h-1 rounded-full mt-2 flex-shrink-0" style={{ 
+                          background: getDomainColor(selectedDomain.id),
+                          boxShadow: `0 0 6px ${getDomainBloom(selectedDomain.id)}`
+                        }} />
+                        <span className="text-on-glass" style={{ 
+                          color: TOKENS.colors.textChip, 
+                          fontSize: '12px', 
+                          lineHeight: '1.4',
+                          fontWeight: 400,
+                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                        }}>{effect}</span>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Actionable Signal with nested "So What" interpretive layer */}
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ 
+                      delay: timings.stagger * 2.5,
+                      duration: 0.3,
+                      ease: TOKENS.HORIZON.easingSine
+                    }}
+                    className="mt-3 p-3 rounded-lg"
+                    style={{
+                      background: 'rgba(66,135,245,0.08)',
+                      border: '1px solid rgba(66,135,245,0.25)',
+                      backdropFilter: 'blur(10px)',
+                      WebkitBackdropFilter: 'blur(10px)'
+                    }}
+                  >
+                    <div className="flex items-start gap-2">
+                      <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ 
+                        background: '#4287f5',
+                        boxShadow: '0 0 8px rgba(66,135,245,0.6)'
+                      }} />
+                      <div>
+                        <p className="text-xs font-semibold mb-1" style={{ 
+                          color: 'rgba(66,135,245,0.9)',
+                          letterSpacing: '0.15em',
+                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                        }}>ACTIONABLE SIGNAL</p>
+                        <p className="text-xs leading-relaxed" style={{ 
+                          color: 'rgba(180,200,230,0.95)',
+                          fontSize: '11.5px',
+                          lineHeight: '1.5',
+                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                        }}>{getActionableSignal(selectedDomain)}</p>
+                        
+                        {/* Serenity: "So What" Interpretive Layer - now nested here */}
+                        <motion.p
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ 
+                            delay: 0.1,
+                            duration: 0.2,
+                            ease: 'easeOut'
+                          }}
+                          className="text-xs mt-2" 
+                          style={{ 
+                            color: 'rgba(255,255,255,0.60)',
+                            fontSize: '11px',
+                            lineHeight: '1.45',
+                            fontWeight: 300,
+                            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                          }}
+                        >
+                          {getSoWhatInterpretation(selectedDomain)}
+                        </motion.p>
+                      </div>
+                    </div>
+                  </motion.div>
+                </motion.div>
+
+                {/* The standalone "So What" section has been removed as per the outline */}
+
+                {/* Section 3: 48-Hour Trend */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ 
+                    delay: timings.stagger * 3, // Adjusted delay due to removal of a section
+                    duration: timings.open * 0.7,
+                    ease: TOKENS.HORIZON.easingSine
+                  }}
+                  style={{ marginBottom: '16px' }}
+                >
+                  <h4 className="font-medium mb-2" style={{ 
+                    color: 'rgba(255,255,255,0.9)',
+                    letterSpacing: '0.01em',
+                    fontSize: '13px',
+                    fontWeight: 500,
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                  }}>48-Hour Trend</h4>
+                  <div className="p-3 rounded-lg relative" style={{ 
+                    background: 'rgba(0, 0, 0, 0.25)', 
+                    border: `1px solid ${TOKENS.HORIZON.glassBorder}`
+                  }}>
+                    <svg width="100%" height="56" className="overflow-visible">
+                      <defs>
+                        <linearGradient id={`sparkline-drawer-${selectedDomain.id}`} x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor={getDomainColor(selectedDomain.id)} stopOpacity="0.7" />
+                          <stop offset="100%" stopColor="rgba(255,255,255,0)" stopOpacity="0" />
+                        </linearGradient>
+                      </defs>
+                      {(() => {
+                        const data = selectedDomain.sparkline;
+                        const width = 360;
+                        const height = 56;
+                        const padding = 4;
+                        const minValue = Math.min(...data);
+                        const maxValue = Math.max(...data);
+                        const range = maxValue - minValue || 0.1;
+                        const points = data.map((value, i) => {
+                          const x = (i / (data.length - 1)) * width;
+                          const y = height - padding - ((value - minValue) / range) * (height - padding * 2);
+                          return `${x},${y}`;
+                        }).join(' ');
+                        const pathD = `M ${points}`;
+                        const areaD = `M ${points} L ${width},${height} L 0,${height} Z`;
+                        return (<>
+                          <path 
+                            d={areaD} 
+                            fill={`url(#sparkline-drawer-${selectedDomain.id})`} 
+                            className="trend-area"
+                          />
+                          <path 
+                            d={pathD} 
+                            fill="none" 
+                            stroke={getDomainColor(selectedDomain.id)} 
+                            strokeWidth="2.5" 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round"
+                          />
+                        </>);
+                      })()}
+                    </svg>
+                    <div className="absolute top-2 right-2 px-2 py-1 rounded-md text-xs font-bold" style={{
+                      background: 'rgba(0,0,0,0.4)',
+                      color: getDomainColor(selectedDomain.id),
+                      opacity: 0.85,
+                      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                    }}>
+                      {(selectedDomain.sparkline[selectedDomain.sparkline.length - 1] * 100).toFixed(1)}%
+                    </div>
+                  </div>
+                </motion.div>
+                
+                {/* Section 4: Call to Action and Footer */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ 
+                    delay: timings.stagger * 4, // Adjusted delay
+                    duration: timings.open * 0.7,
+                    ease: TOKENS.HORIZON.easingSine
+                  }}
+                  className="pt-3 border-t"
+                  style={{ borderColor: TOKENS.HORIZON.drawerDivider }}
+                >
+                  <div className="flex gap-2 mb-3">
+                    <button className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-colors drawer-view-details-button" style={{
+                      background: 'rgba(66,135,245,0.15)',
+                      color: '#4287f5',
+                      border: '1px solid rgba(66,135,245,0.3)',
+                      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                    }} onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(66,135,245,0.25)'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(66,135,245,0.15)'}>
+                      <span>View market implications</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-between text-xs" style={{ 
+                    color: TOKENS.colors.textTertiary,
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                  }}>
                     <div>
-                      <p className="text-xs font-semibold mb-1" style={{ 
-                        color: 'rgba(66,135,245,0.9)',
-                        letterSpacing: '0.15em',
-                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-                      }}>ACTIONABLE SIGNAL</p>
-                      <p className="text-xs leading-relaxed" style={{ 
-                        color: 'rgba(180,200,230,0.95)',
-                        fontSize: '11.5px',
-                        lineHeight: '1.5',
-                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-                      }}>{getActionableSignal(selectedDomain)}</p>
+                      Updated {new Date(selectedDomain.last_updated_iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </div>
+                    <div className="flex items-center gap-2 opacity-60">
+                      <span>1-4 • Arrow Keys • ESC</span>
                     </div>
                   </div>
                 </motion.div>
               </motion.div>
-              
-              {/* Serenity: "So What" Interpretive Layer */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                transition={{ 
-                  delay: timings.stagger * 3, // Staggered delay for this section
-                  duration: timings.open * 0.7,
-                  ease: TOKENS.HORIZON.easingSine
-                }}
-                className="drawer-section"
-              >
-                <h4 className="font-medium mb-3" style={{ 
-                  color: 'rgba(255,255,255,0.9)',
-                  letterSpacing: '0.01em',
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-                }}>So What? (Interpretive Layer)</h4>
-                <p className="text-on-glass" style={{ 
-                  color: TOKENS.colors.textSecondary, 
-                  fontSize: '14px', 
-                  lineHeight: `${TOKENS.HORIZON.lineHeight}px`,
-                  fontWeight: 400,
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-                }}>{getSoWhatInterpretation(selectedDomain)}</p>
-              </motion.div>
-
-              {/* Section 3: 48-Hour Trend */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                transition={{ 
-                  delay: timings.stagger * 4,
-                  duration: timings.open * 0.7,
-                  ease: TOKENS.HORIZON.easingSine
-                }}
-                className="drawer-section"
-                style={{ marginTop: '14px' }}
-              >
-                <h4 className="font-medium mb-3" style={{ 
-                  color: 'rgba(255,255,255,0.9)',
-                  letterSpacing: '0.01em',
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-                }}>48-Hour Trend</h4>
-                <div className="p-4 rounded-lg relative" style={{ 
-                  background: 'rgba(0, 0, 0, 0.25)', 
-                  border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
-                  marginTop: '6px'
-                }}>
-                  <svg width="100%" height="56" className="overflow-visible">
-                    <defs>
-                      <linearGradient id={`sparkline-drawer-${selectedDomain.id}`} x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor={getDomainColor(selectedDomain.id)} stopOpacity="0.7" />
-                        <stop offset="100%" stopColor="rgba(255,255,255,0)" stopOpacity="0" />
-                      </linearGradient>
-                    </defs>
-                    {(() => {
-                      const data = selectedDomain.sparkline;
-                      const width = 360;
-                      const height = 56;
-                      const padding = 4;
-                      const minValue = Math.min(...data);
-                      const maxValue = Math.max(...data);
-                      const range = maxValue - minValue || 0.1;
-                      const points = data.map((value, i) => {
-                        const x = (i / (data.length - 1)) * width;
-                        const y = height - padding - ((value - minValue) / range) * (height - padding * 2);
-                        return `${x},${y}`;
-                      }).join(' ');
-                      const pathD = `M ${points}`;
-                      const areaD = `M ${points} L ${width},${height} L 0,${height} Z`;
-                      return (<>
-                        <path 
-                          d={areaD} 
-                          fill={`url(#sparkline-drawer-${selectedDomain.id})`} 
-                          className="trend-area"
-                        />
-                        <path 
-                          d={pathD} 
-                          fill="none" 
-                          stroke={getDomainColor(selectedDomain.id)} 
-                          strokeWidth="2.5" 
-                          strokeLinecap="round" 
-                          strokeLinejoin="round"
-                        />
-                      </>);
-                    })()}
-                  </svg>
-                  <div className="absolute top-2 right-2 px-2 py-1 rounded-md text-xs font-bold" style={{
-                    background: 'rgba(0,0,0,0.4)',
-                    color: getDomainColor(selectedDomain.id),
-                    opacity: 0.85,
-                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-                  }}>
-                    {(selectedDomain.sparkline[selectedDomain.sparkline.length - 1] * 100).toFixed(1)}%
-                  </div>
-                </div>
-              </motion.div>
-              
-              {/* Section 4: Call to Action and Footer */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                transition={{ 
-                  delay: timings.stagger * 5,
-                  duration: timings.open * 0.7,
-                  ease: TOKENS.HORIZON.easingSine
-                }}
-                className="drawer-section pt-4 border-t space-y-3" 
-                style={{ borderColor: TOKENS.HORIZON.drawerDivider, marginTop: '8px' }}
-              >
-                <div className="flex gap-2">
-                  <button className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-colors drawer-view-details-button" style={{
-                    background: 'rgba(66,135,245,0.15)',
-                    color: '#4287f5',
-                    border: '1px solid rgba(66,135,245,0.3)',
-                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-                  }} onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(66,135,245,0.25)'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(66,135,245,0.15)'}>
-                    <span>View market implications</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-                <div className="flex items-center justify-between text-xs" style={{ 
-                  color: TOKENS.colors.textTertiary,
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-                }}>
-                  <div>
-                    Updated {new Date(selectedDomain.last_updated_iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </div>
-                  <div className="flex items-center gap-2 opacity-60">
-                    <span>1-4 • Arrow Keys • ESC</span>
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
