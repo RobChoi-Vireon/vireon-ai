@@ -1,14 +1,16 @@
+
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info } from 'lucide-react';
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// MACRO CONSTELLATION — OS HORIZON V3.5.3
+// MACRO CONSTELLATION — OS HORIZON V4.3
 // Real-time balance of global macro forces.
 // Glass diffused celestial intelligence — breathing, balanced, quiet.
 // v3.5.1: Staggered tooltip reveal + refined hover physics
-// v3.5.3: Micro-polish (tighter line height, halo decay, node expansion, attribution)
+// v3.5.3: Micro-polish (typography density, halo decay, node expansion, attribution)
+// v4.3: Drawer refinement (copy clarity, spacing harmony, staggered load)
 // ============================================================================
 
 const TOKENS = {
@@ -30,7 +32,7 @@ const TOKENS = {
     drawerBlur: 'blur(20px)',
     drawerEdgeBloom: 'rgba(160,191,255,0.10)',
     drawerDivider: 'rgba(255,255,255,0.06)',
-    backdropBlur: 'blur(8px)',
+    backdropBlur: 'blur(14px)',
     backdropOpacity: 0.35,
     blurPanel: 'blur(20px)',
     blurChip: 'blur(16px)',
@@ -71,6 +73,7 @@ const TOKENS = {
     t_ringFill: 0.3,
     t_parallax: 0.12,
     t_parallaxOut: 0.16,
+    t_staggerSection: [0.1, 0.2, 0.3, 0.4],
     bgBase: '#06080D',
     bgEnd: '#0A0E14',
     bgSubsurfaceCenter: '#121823',
@@ -136,10 +139,50 @@ const RADII = {
 };
 
 const MOCK_DOMAINS = [
-  { id: "rates", posture: "hawkish", confidence_pct: 78, strength: 0.82, summary: "Fed holding firm; terminal rate expectations drift higher on sticky services inflation.", ripple: ["Credit spreads widen", "Tech multiples compress", "EM funding costs rise"], last_updated_iso: new Date().toISOString(), sparkline: [0.72, 0.74, 0.76, 0.75, 0.78, 0.80, 0.79, 0.81, 0.82] },
-  { id: "fx", posture: "stable", confidence_pct: 65, strength: 0.58, summary: "Dollar range-bound as yield differentials narrow; carry trades unwind slowly.", ripple: ["EM currencies stabilize", "Energy imports neutral"], last_updated_iso: new Date().toISOString(), sparkline: [0.60, 0.59, 0.58, 0.57, 0.58, 0.59, 0.58, 0.57, 0.58] },
-  { id: "growth", posture: "softening", confidence_pct: 71, strength: 0.68, summary: "China slowdown weighs on global demand; US consumer resilient but moderating.", ripple: ["Commodity prices soften", "Defensive rotation begins", "Services hold up"], last_updated_iso: new Date().toISOString(), sparkline: [0.75, 0.74, 0.72, 0.70, 0.69, 0.68, 0.67, 0.68, 0.68] },
-  { id: "geopolitics", posture: "tightening", confidence_pct: 58, strength: 0.72, summary: "Energy security concerns persist; trade fragmentation continues to reshape supply chains.", ripple: ["Energy premium elevated", "Onshoring accelerates"], last_updated_iso: new Date().toISOString(), sparkline: [0.65, 0.66, 0.68, 0.70, 0.71, 0.72, 0.71, 0.72, 0.72] }
+  { 
+    id: "rates", 
+    posture: "hawkish", 
+    confidence_pct: 78, 
+    strength: 0.82, 
+    summary: "Fed holding firm; terminal rate expectations drift higher on sticky services inflation.", 
+    ripple: ["Credit spreads widen", "Tech multiples compress", "EM funding costs rise"], 
+    addendum: null,
+    last_updated_iso: new Date().toISOString(), 
+    sparkline: [0.72, 0.74, 0.76, 0.75, 0.78, 0.80, 0.79, 0.81, 0.82] 
+  },
+  { 
+    id: "fx", 
+    posture: "stable", 
+    confidence_pct: 65, 
+    strength: 0.58, 
+    summary: "Dollar steady as interest-rate gaps shrink; investors slowly unwind risk trades.", 
+    ripple: ["EM currencies stabilize", "Energy imports neutral", "Bond yields remain contained, supporting moderate equity valuations."],
+    addendum: "Overall, the FX landscape remains stable, favoring steady risk positions over new carry trades.",
+    last_updated_iso: new Date().toISOString(), 
+    sparkline: [0.60, 0.59, 0.58, 0.57, 0.58, 0.59, 0.58, 0.57, 0.58] 
+  },
+  { 
+    id: "growth", 
+    posture: "softening", 
+    confidence_pct: 71, 
+    strength: 0.68, 
+    summary: "China slowdown weighs on global demand; US consumer resilient but moderating.", 
+    ripple: ["Commodity prices soften", "Defensive rotation begins", "Services hold up"],
+    addendum: null,
+    last_updated_iso: new Date().toISOString(), 
+    sparkline: [0.75, 0.74, 0.72, 0.70, 0.69, 0.68, 0.67, 0.68, 0.68] 
+  },
+  { 
+    id: "geopolitics", 
+    posture: "tightening", 
+    confidence_pct: 58, 
+    strength: 0.72, 
+    summary: "Energy security concerns persist; trade fragmentation continues to reshape supply chains.", 
+    ripple: ["Energy premium elevated", "Onshoring accelerates"],
+    addendum: null,
+    last_updated_iso: new Date().toISOString(), 
+    sparkline: [0.65, 0.66, 0.68, 0.70, 0.71, 0.72, 0.71, 0.72, 0.72] 
+  }
 ];
 
 const MacroConstellation = ({ onOpenSignalDrawer }) => {
@@ -1352,6 +1395,17 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             }} 
             onClick={(e) => e.stopPropagation()}>
             
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: '100%',
+              background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%)',
+              pointerEvents: 'none',
+              borderRadius: '18px 0 0 18px'
+            }} />
+            
             <div className="sticky top-0 z-10 p-5 border-b" style={{ 
               background: TOKENS.HORIZON.drawerTint,
               borderColor: TOKENS.HORIZON.drawerDivider,
@@ -1460,15 +1514,28 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
             <motion.div 
               key={`content-${selectedDomain.id}`}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: TOKENS.HORIZON.t_drawerLift, ease: TOKENS.HORIZON.easing }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ 
+                duration: shouldReduceMotion ? 0.15 : TOKENS.HORIZON.t_drawerLift, 
+                ease: TOKENS.HORIZON.easing 
+              }}
               className="p-6 space-y-6"
             >
-              <div>
-                <h4 className="text-xs font-bold uppercase tracking-wide mb-3" style={{ 
-                  color: TOKENS.colors.textLabel,
-                  letterSpacing: '0.2em',
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  delay: shouldReduceMotion ? 0 : TOKENS.HORIZON.t_staggerSection[0],
+                  duration: 0.2,
+                  ease: TOKENS.HORIZON.easingSine
+                }}
+              >
+                <h4 className="font-medium mb-4" style={{ 
+                  color: 'rgba(255,255,255,0.9)',
+                  letterSpacing: '0.01em',
+                  fontSize: '13px',
+                  fontWeight: 500,
                   fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                 }}>What This Means</h4>
                 <p className="text-on-glass" style={{ 
@@ -1478,12 +1545,32 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   fontWeight: 400,
                   fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                 }}>{selectedDomain.summary}</p>
-              </div>
+                {selectedDomain.addendum && (
+                  <p className="text-on-glass mt-3" style={{ 
+                    color: TOKENS.colors.textSecondary, 
+                    fontSize: '13px', 
+                    lineHeight: '1.4',
+                    fontWeight: 400,
+                    opacity: 0.85,
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                  }}>{selectedDomain.addendum}</p>
+                )}
+              </motion.div>
               
-              <div>
-                <h4 className="text-xs font-bold uppercase tracking-wide mb-3" style={{ 
-                  color: TOKENS.colors.textLabel,
-                  letterSpacing: '0.2em',
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  delay: shouldReduceMotion ? 0 : TOKENS.HORIZON.t_staggerSection[1],
+                  duration: 0.2,
+                  ease: TOKENS.HORIZON.easingSine
+                }}
+              >
+                <h4 className="font-medium mb-4" style={{ 
+                  color: 'rgba(255,255,255,0.9)',
+                  letterSpacing: '0.01em',
+                  fontSize: '13px',
+                  fontWeight: 500,
                   fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                 }}>Downstream Effects</h4>
                 <div className="space-y-2">
@@ -1516,12 +1603,23 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     </div>
                   ))}
                 </div>
-              </div>
+              </motion.div>
               
-              <div>
-                <h4 className="text-xs font-bold uppercase tracking-wide mb-3" style={{ 
-                  color: TOKENS.colors.textLabel,
-                  letterSpacing: '0.2em',
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  delay: shouldReduceMotion ? 0 : TOKENS.HORIZON.t_staggerSection[2],
+                  duration: 0.2,
+                  ease: TOKENS.HORIZON.easingSine
+                }}
+                style={{ marginTop: '32px' }}
+              >
+                <h4 className="font-medium mb-4" style={{ 
+                  color: 'rgba(255,255,255,0.9)',
+                  letterSpacing: '0.01em',
+                  fontSize: '13px',
+                  fontWeight: 500,
                   fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                 }}>48-Hour Trend</h4>
                 <div className="p-4 rounded-lg" style={{ 
@@ -1573,9 +1671,19 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     })()}
                   </svg>
                 </div>
-              </div>
+              </motion.div>
               
-              <div className="pt-4 border-t" style={{ borderColor: TOKENS.HORIZON.drawerDivider }}>
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  delay: shouldReduceMotion ? 0 : TOKENS.HORIZON.t_staggerSection[3],
+                  duration: 0.2,
+                  ease: TOKENS.HORIZON.easingSine
+                }}
+                className="pt-4 border-t" 
+                style={{ borderColor: TOKENS.HORIZON.drawerDivider }}
+              >
                 <div className="flex items-center justify-between">
                   <div className="text-xs" style={{ 
                     color: TOKENS.colors.textTertiary,
@@ -1590,11 +1698,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     fontWeight: 500,
                     fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                   }}>
-                    <span>Open details</span>
+                    <span>Open Details</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
           </motion.div>
         )}
