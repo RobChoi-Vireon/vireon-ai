@@ -653,8 +653,20 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
   const getBlur = useCallback((type) => {
     if (isLowPower) return type === 'panel' ? 'blur(16px)' : 'blur(12px)';
-    return type === 'panel' ? TOKENS.HORIZON.blurPanel : TOKENS.HORIZON.blurChip;
+    // Cap blur at 24px for efficiency on lower-GPU devices
+    return type === 'panel' ? 'blur(20px)' : 'blur(16px)';
   }, [isLowPower]);
+
+  // Get actionable signal based on domain
+  const getActionableSignal = useCallback((domain) => {
+    const signals = {
+      rates: "Position for rate-sensitive defensive rotation; monitor tech multiples.",
+      fx: "FX risk limited near-term; watch for yield curve divergence catalysts.",
+      growth: "Defensive-equity rotation likely next 48h; monitor commodities for continued softening.",
+      geopolitics: "Regional supply-chain hedges warranted; energy exposure elevated."
+    };
+    return signals[domain.id] || "Monitor for emerging cross-domain shifts.";
+  }, []);
 
   // Calculate the fixed screen position of the drawer's top-left corner
   const drawerFinalPosition = useMemo(() => {
@@ -1892,7 +1904,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   fontWeight: 500,
                   fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                 }}>Downstream Effects</h4>
-                <div className="space-y-2">
+                <div className="space-y-2.5">
                   {selectedDomain.ripple.slice(0, 3).map((effect, i) => (
                     <div 
                       key={i} 
@@ -1903,10 +1915,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         background: 'rgba(255,255,255,0.06)',
                         border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
                         borderRadius: '12px', 
-                        padding: '10px 12px', 
+                        padding: '11px 13px', 
                         display: 'flex', 
                         alignItems: 'start', 
-                        gap: '8px'
+                        gap: '9px'
                       }}>
                       <div className="w-1 h-1 rounded-full mt-2 flex-shrink-0" style={{ 
                         background: getDomainColor(selectedDomain.id),
@@ -1915,13 +1927,51 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       <span className="text-on-glass" style={{ 
                         color: TOKENS.colors.textChip, 
                         fontSize: '12px', 
-                        lineHeight: '1.35',
+                        lineHeight: '1.45',
                         fontWeight: 400,
                         fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                       }}>{effect}</span>
                     </div>
                   ))}
                 </div>
+                
+                {/* Actionable Signal */}
+                <motion.div
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ 
+                    delay: timings.stagger * 2.5,
+                    duration: 0.3,
+                    ease: TOKENS.HORIZON.easingSine
+                  }}
+                  className="mt-4 p-3 rounded-lg"
+                  style={{
+                    background: 'rgba(66,135,245,0.08)',
+                    border: '1px solid rgba(66,135,245,0.15)',
+                    backdropFilter: 'blur(10px)',
+                    WebkitBackdropFilter: 'blur(10px)'
+                  }}
+                >
+                  <div className="flex items-start gap-2">
+                    <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ 
+                      background: '#4287f5',
+                      boxShadow: '0 0 8px rgba(66,135,245,0.6)'
+                    }} />
+                    <div>
+                      <p className="text-xs font-semibold mb-1" style={{ 
+                        color: 'rgba(66,135,245,0.9)',
+                        letterSpacing: '0.15em',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                      }}>ACTIONABLE SIGNAL</p>
+                      <p className="text-xs leading-relaxed" style={{ 
+                        color: 'rgba(180,200,230,0.95)',
+                        fontSize: '11.5px',
+                        lineHeight: '1.5',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                      }}>{getActionableSignal(selectedDomain)}</p>
+                    </div>
+                  </div>
+                </motion.div>
               </motion.div>
               
               <motion.div
@@ -1933,7 +1983,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   duration: timings.open * 0.7,
                   ease: TOKENS.HORIZON.easingSine
                 }}
-                style={{ marginTop: '8px' }}
+                style={{ marginTop: '14px' }}
               >
                 <h4 className="font-medium mb-3" style={{ 
                   color: 'rgba(255,255,255,0.9)',
@@ -1944,7 +1994,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 }}>48-Hour Trend</h4>
                 <div className="p-4 rounded-lg relative" style={{ 
                   background: 'rgba(0, 0, 0, 0.25)', 
-                  border: `1px solid ${TOKENS.HORIZON.glassBorder}` 
+                  border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
+                  marginTop: '6px'
                 }}>
                   <svg width="100%" height="56" className="overflow-visible">
                     <defs>
@@ -1968,7 +2019,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       }).join(' ');
                       const pathD = `M ${points}`;
                       const areaD = `M ${points} L ${width},${height} L 0,${height} Z`;
-                      const lastValue = data[data.length - 1];
                       return (<>
                         <path 
                           d={areaD} 
