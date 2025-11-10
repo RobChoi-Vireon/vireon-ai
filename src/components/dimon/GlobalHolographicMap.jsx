@@ -5,12 +5,13 @@ import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info } from 'luc
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// MACRO CONSTELLATION — OS HORIZON V4.3
+// MACRO CONSTELLATION — OS HORIZON V5.1
 // Real-time balance of global macro forces.
 // Glass diffused celestial intelligence — breathing, balanced, quiet.
 // v3.5.1: Staggered tooltip reveal + refined hover physics
 // v3.5.3: Micro-polish (typography density, halo decay, node expansion, attribution)
 // v4.3: Drawer refinement (copy clarity, spacing harmony, staggered load)
+// v5.1: Spatial flow — drawer emerges from orb, filament beam link
 // ============================================================================
 
 const TOKENS = {
@@ -48,6 +49,7 @@ const TOKENS = {
     easingExit: [0.4, 0, 1, 1],
     easingElastic: [0.22, 1, 0.36, 1],
     easingSine: [0.61, 1, 0.88, 1],
+    easingCubic: [0.33, 1, 0.68, 1], // New easing
     overshoot: [0.34, 1.56, 0.64, 1],
     t_hover: 0.12,
     t_hoverOut: 0.95,
@@ -58,11 +60,12 @@ const TOKENS = {
     t_tooltipTextStagger: 0.08,
     t_tooltipTextDuration: 0.14,
     t_tooltipClose: 0.12,
-    t_drawerOpen: 0.22,
-    t_drawerClose: 0.18,
+    t_drawerOpen: 0.38, // Updated duration
+    t_drawerClose: 0.28, // Updated duration
     t_drawerSwitch: 0.14,
     t_drawerLift: 0.16,
     t_haloBurst: 0.45,
+    t_beamLink: 0.22, // New token
     t_breathe: 4.5,
     t_pulse: 3,
     t_drift: 20,
@@ -207,6 +210,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const [filamentFlash, setFilamentFlash] = useState(null);
   const [isSwitchingNode, setIsSwitchingNode] = useState(false);
   const [viewportSize, setViewportSize] = useState('lg');
+  const [drawerOrigin, setDrawerOrigin] = useState(null); // New state: stores {x, y, screenX, screenY} of the orb
+  const [showBeam, setShowBeam] = useState(false); // New state: controls visibility of the filament beam
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -434,7 +439,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     checkCollision();
     window.addEventListener('resize', checkCollision);
     return () => window.removeEventListener('resize', checkCollision);
-  }, [dimensions, getOrbPosition, domains]);
+  }, [dimensions, getOrbPosition, domains, haloBleed, minClear]);
 
   const getDomainColor = (domainId) => TOKENS.MACRO[domainId]?.core || TOKENS.MACRO.rates.core;
   const getDomainHalo = (domainId) => TOKENS.MACRO[domainId]?.halo || TOKENS.MACRO.rates.halo;
@@ -455,6 +460,19 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const handleOpenDrawer = useCallback((domain) => {
     if (selectedDomain?.id === domain.id) return;
     
+    // Capture the orb's position for the drawer origin animation
+    const domainPos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
+    const containerRect = containerRef.current?.getBoundingClientRect();
+    
+    if (containerRect) {
+      setDrawerOrigin({
+        x: domainPos.x, // relative to containerRef
+        y: domainPos.y, // relative to containerRef
+        screenX: containerRect.left + domainPos.x, // absolute screen X
+        screenY: containerRect.top + domainPos.y    // absolute screen Y
+      });
+    }
+
     if (selectedDomain) {
       setIsSwitchingNode(true);
       setPreviousDomain(selectedDomain);
@@ -464,6 +482,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       
       setTimeout(() => {
         setSelectedDomain(domain);
+        setShowBeam(true); // Show beam after switching is complete
         setIsSwitchingNode(false);
         setPreviousDomain(null);
       }, TOKENS.HORIZON.t_drawerSwitch * 1000);
@@ -471,15 +490,20 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       setHaloAnimating(true);
       setTimeout(() => {
         setSelectedDomain(domain);
+        setShowBeam(true); // Show beam after halo animation
         setHaloAnimating(false);
       }, TOKENS.HORIZON.t_haloBurst * 1000);
     }
-  }, [selectedDomain]);
+  }, [selectedDomain, getOrbPosition, swayTime, parallaxX, parallaxY]);
 
   const handleCloseDrawer = useCallback(() => {
-    setSelectedDomain(null);
-    setPreviousDomain(null);
-    setIsSwitchingNode(false);
+    setShowBeam(false); // Hide beam immediately to start its exit animation
+    setTimeout(() => {
+      setSelectedDomain(null);
+      setPreviousDomain(null);
+      setIsSwitchingNode(false);
+      setDrawerOrigin(null); // Reset drawer origin
+    }, TOKENS.HORIZON.t_drawerClose * 1000); // Delay state reset to allow drawer exit animation
   }, []);
 
   useEffect(() => {
@@ -521,6 +545,17 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     rafId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafId);
   }, [shouldReduceMotion]);
+
+  // Calculate the fixed screen position of the drawer's top-left corner
+  const drawerFinalPosition = useMemo(() => {
+    if (typeof window === 'undefined') return { screenX: 0, screenY: 0 };
+    // Drawer width is '32vw', minWidth: '380px', maxWidth: '420px'
+    const calculatedDrawerWidth = Math.max(380, Math.min(window.innerWidth * 0.32, 420));
+    return {
+      screenX: window.innerWidth - calculatedDrawerWidth, // Left edge of the drawer on screen
+      screenY: 0 // Top edge of the drawer on screen (fixed to top)
+    };
+  }, []);
 
   return (
     <motion.section 
@@ -1368,14 +1403,63 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           />
         )}
       </AnimatePresence>
-
+      
+      {/* Filament Beam */}
       <AnimatePresence>
-        {selectedDomain && !isSwitchingNode && (
+        {selectedDomain && showBeam && drawerOrigin && (
+          <motion.svg
+            className="fixed inset-0 z-[45] pointer-events-none" // z-index between backdrop (z-40) and drawer (z-50)
+            style={{ width: '100vw', height: '100vh' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ 
+              duration: TOKENS.HORIZON.t_beamLink,
+              ease: TOKENS.HORIZON.easingSine
+            }}
+          >
+            <defs>
+              <linearGradient id="beam-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor={getDomainColor(selectedDomain.id)} stopOpacity="0.35" />
+                <stop offset="50%" stopColor="rgba(140,180,255,0.35)" />
+                <stop offset="100%" stopColor="rgba(160,191,255,0.15)" />
+              </linearGradient>
+              <filter id="beam-glow">
+                <feGaussianBlur stdDeviation="8" result="blur" />
+                <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.5 0" />
+              </filter>
+            </defs>
+            <motion.line
+              x1={drawerOrigin.screenX}
+              y1={drawerOrigin.screenY}
+              // Target center of the icon in the drawer's header
+              x2={drawerFinalPosition.screenX + 5 + 24} // 5px padding + half of 48px icon container width
+              y2={drawerFinalPosition.screenY + 5 + 24} // 5px padding + half of 48px icon container height
+              stroke="url(#beam-gradient)"
+              strokeWidth="2"
+              strokeLinecap="round"
+              filter="url(#beam-glow)"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ pathLength: 1, opacity: 1 }}
+              exit={{ pathLength: 0, opacity: 0 }}
+              transition={{
+                pathLength: { duration: TOKENS.HORIZON.t_beamLink, ease: TOKENS.HORIZON.easingCubic },
+                opacity: { duration: TOKENS.HORIZON.t_beamLink * 0.6, ease: TOKENS.HORIZON.easingSine }
+              }}
+            />
+          </motion.svg>
+        )}
+      </AnimatePresence>
+
+      {/* Drawer */}
+      <AnimatePresence>
+        {selectedDomain && !isSwitchingNode && drawerOrigin && (
           <motion.div 
             className="fixed top-0 right-0 h-full z-50 overflow-y-auto" 
             style={{
-              width: '420px',
-              maxWidth: '90vw',
+              width: '32vw', // Use 32vw as base width
+              minWidth: '380px', // Minimum width
+              maxWidth: '420px', // Maximum width
               backdropFilter: TOKENS.HORIZON.drawerBlur,
               WebkitBackdropFilter: TOKENS.HORIZON.drawerBlur,
               background: TOKENS.HORIZON.drawerGlass,
@@ -1383,15 +1467,28 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               boxShadow: `${TOKENS.HORIZON.panelShadow}, 0 0 12px ${TOKENS.HORIZON.drawerEdgeBloom}, inset 0 0 0 1px rgba(255,255,255,0.10)`,
               borderRadius: '18px 0 0 18px'
             }}
-            initial={{ x: 36, opacity: 0 }} 
-            animate={{ 
-              x: shouldReduceMotion ? 0 : drawerParallaxX.get() * 0.4,
-              opacity: 1 
+            initial={{ 
+              x: drawerOrigin.screenX - drawerFinalPosition.screenX, // X offset from final drawer position
+              y: drawerOrigin.screenY - drawerFinalPosition.screenY, // Y offset from final drawer position
+              scale: 0.3,
+              opacity: 0
             }} 
-            exit={{ x: 28, opacity: 0 }}
+            animate={{ 
+              x: 0, // Animate to its final fixed position
+              y: 0,
+              scale: 1,
+              opacity: 1
+            }} 
+            exit={{ 
+              x: drawerOrigin.screenX - drawerFinalPosition.screenX, // Exit back towards the orb's position
+              y: drawerOrigin.screenY - drawerFinalPosition.screenY,
+              scale: 0.3,
+              opacity: 0
+            }}
             transition={{ 
-              x: { duration: TOKENS.HORIZON.t_drawerOpen, ease: TOKENS.HORIZON.easing },
-              opacity: { duration: TOKENS.HORIZON.t_drawerOpen, ease: TOKENS.HORIZON.easing }
+              duration: shouldReduceMotion ? 0.15 : TOKENS.HORIZON.t_drawerOpen,
+              ease: TOKENS.HORIZON.easingCubic, // Use new cubic easing
+              delay: shouldReduceMotion ? 0 : 0.08 // Small delay to allow beam to start
             }} 
             onClick={(e) => e.stopPropagation()}>
             
