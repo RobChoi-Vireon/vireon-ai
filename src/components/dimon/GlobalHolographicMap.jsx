@@ -5,8 +5,9 @@ import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info } from 'luc
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// MACRO EQUILIBRIUM GRID — OS HORIZON V3.3 (PURE GLASS)
-// Light diffused through glass — breathing, balanced, quiet. Now pure, uniform tone.
+// MACRO CONSTELLATION — OS HORIZON V3.5
+// Real-time balance of global macro forces.
+// Glass diffused celestial intelligence — breathing, balanced, quiet.
 // ============================================================================
 
 const TOKENS = {
@@ -35,7 +36,7 @@ const TOKENS = {
     backdropOpacity: 0.35,
     blurPanel: 'blur(20px)',
     blurChip: 'blur(16px)',
-    // v3.3 Pure Glass (no sheen)
+    // v3.5 Pure Glass (no sheen)
     vignetteColor: '#070A0F',
     vignetteOpacity: 0.28, // Reduced from 0.35 to avoid split tones
     vignetteBlur: 24,
@@ -140,7 +141,7 @@ const MOCK_DOMAINS = [
   { id: "geopolitics", posture: "tightening", confidence_pct: 58, strength: 0.72, summary: "Energy security concerns persist; trade fragmentation continues to reshape supply chains.", ripple: ["Energy premium elevated", "Onshoring accelerates"], last_updated_iso: new Date().toISOString(), sparkline: [0.65, 0.66, 0.68, 0.70, 0.71, 0.72, 0.71, 0.72, 0.72] }
 ];
 
-const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
+const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const containerRef = useRef(null);
   const capsuleRef = useRef(null);
   const footerRef = useRef(null);
@@ -487,7 +488,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
   return (
     <motion.section 
       variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} 
-      aria-label="Horizon Constellation"
+      aria-label="Macro Constellation"
       style={{ maxWidth: '84vw', margin: '0 auto' }} // Expand horizontally
     >
       <div className="flex items-center justify-between mb-6 pl-2">
@@ -500,13 +501,13 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
               fontWeight: 600, 
               color: TOKENS.colors.textPrimary,
               fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
-            }}>Macro Equilibrium Grid</h2>
+            }}>Macro Constellation</h2>
             <p style={{ 
               fontSize: '13px', 
               color: TOKENS.colors.textTertiary,
               letterSpacing: '0.2em',
               fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-            }}>Light diffused through glass — breathing, balanced, quiet.</p>
+            }}>Real-time balance of global macro forces.</p>
           </div>
         </div>
         <div className="powered-by-lyra cursor-pointer" style={{ opacity: 0.6 }}>
@@ -567,7 +568,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           style={{
             position: 'absolute',
             inset: 0,
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E")`,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3Cfilter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E")`,
             backgroundSize: '200px 200px',
             opacity: 0.15,
             borderRadius: '24px',
@@ -1613,4 +1614,4 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
   );
 };
 
-export default MacroEquilibriumGrid;
+export default MacroConstellation;
