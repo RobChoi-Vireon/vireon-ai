@@ -1685,8 +1685,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               opacity: 0
             }} 
             animate={{ 
-              x: shouldReduceMotion ? 0 : drawerParallaxX.get() * TOKENS.HORIZON.parallaxResponse,
-              y: shouldReduceMotion ? 0 : drawerParallaxY.get() * TOKENS.HORIZON.parallaxResponse,
+              x: 0, // No parallax when drawer is open - keeps content stable for reading
+              y: 0, // No parallax when drawer is open - keeps content stable for reading
               scale: 1,
               opacity: 1
             }} 
