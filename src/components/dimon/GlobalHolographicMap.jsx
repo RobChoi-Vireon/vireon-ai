@@ -816,25 +816,59 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         {domains.map((domain) => {
           const pos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
           const bloomRadius = Math.min(...TOKENS.HORIZON.localBloomRadius) + (domain.strength * (Math.max(...TOKENS.HORIZON.localBloomRadius) - Math.min(...TOKENS.HORIZON.localBloomRadius)));
+          const isActiveOrb = selectedDomain?.id === domain.id;
           
           return (
-            <motion.div
-              key={`bloom-field-${domain.id}`}
-              style={{
-                position: 'absolute',
-                left: pos.x,
-                top: pos.y,
-                width: bloomRadius * 2,
-                height: bloomRadius * 2,
-                transform: 'translate(-50%, -50%)',
-                background: `radial-gradient(circle, ${getDomainBloom(domain.id)}, transparent 72%)`,
-                opacity: selectedDomain ? 0.12 : TOKENS.HORIZON.localBloomIntensity,
-                mixBlendMode: 'screen',
-                pointerEvents: 'none',
-                zIndex: 2,
-                transition: 'opacity 0.3s ease'
-              }}
-            />
+            <React.Fragment key={`bloom-field-${domain.id}`}>
+              {/* Standard bloom field */}
+              <motion.div
+                style={{
+                  position: 'absolute',
+                  left: pos.x,
+                  top: pos.y,
+                  width: bloomRadius * 2,
+                  height: bloomRadius * 2,
+                  transform: 'translate(-50%, -50%)',
+                  background: `radial-gradient(circle, ${getDomainBloom(domain.id)}, transparent 72%)`,
+                  opacity: selectedDomain ? 0.12 : TOKENS.HORIZON.localBloomIntensity,
+                  mixBlendMode: 'screen',
+                  pointerEvents: 'none',
+                  zIndex: 2,
+                  transition: 'opacity 0.3s ease'
+                }}
+              />
+              
+              {/* Subsurface diffusion for active orb */}
+              {isActiveOrb && (
+                <AnimatePresence>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ 
+                    opacity: [0.15, 0.22, 0.15],
+                    scale: [1, 1.12, 1]
+                  }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{
+                    opacity: { duration: 4, repeat: Infinity, ease: 'easeInOut' },
+                    scale: { duration: 4, repeat: Infinity, ease: 'easeInOut' }
+                  }}
+                  style={{
+                    position: 'absolute',
+                    left: pos.x,
+                    top: pos.y,
+                    width: (bloomRadius * 2.3),
+                    height: (bloomRadius * 2.3),
+                    transform: 'translate(-50%, -50%)',
+                    background: `radial-gradient(circle, ${getDomainBloom(domain.id)}, transparent 65%)`,
+                    filter: 'blur(28px)',
+                    mixBlendMode: 'screen',
+                    pointerEvents: 'none',
+                    zIndex: 1
+                  }}
+                />
+                </AnimatePresence>
+              )}
+            </React.Fragment>
           );
         })}
         
@@ -1779,7 +1813,17 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               </div>
               
               <div className="flex items-center gap-4">
-                <div className="relative w-9 h-9">
+                <motion.div 
+                  className="relative w-9 h-9"
+                  animate={{
+                    scale: [1, 1.02, 1]
+                  }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: 'easeInOut'
+                  }}
+                >
                   <svg className="transform -rotate-90" width="36" height="36">
                     <circle cx="18" cy="18" r="16" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="3" />
                     <motion.circle 
@@ -1803,26 +1847,55 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                           ease: TOKENS.HORIZON.easingElastic
                         },
                         opacity: {
-                          duration: 2,
+                          duration: 4,
                           repeat: Infinity,
                           ease: 'easeInOut'
                         }
                       }} 
                     />
                   </svg>
-                  <div className="absolute inset-0 flex items-center justify-center font-bold" style={{ 
-                    color: TOKENS.colors.textPrimary, 
-                    fontSize: '12px',
-                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
-                  }}>
+                  <motion.div 
+                    className="absolute inset-0 flex items-center justify-center font-bold" 
+                    style={{ 
+                      color: TOKENS.colors.textPrimary, 
+                      fontSize: '12px',
+                      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
+                    }}
+                    animate={{
+                      opacity: [0.9, 1, 0.9]
+                    }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: 'easeInOut'
+                    }}
+                  >
                     {selectedDomain.confidence_pct}%
                     {selectedDomain.confidenceDelta !== undefined && (
                       <span className={`absolute -right-2 -top-1 text-[8px] ${selectedDomain.confidenceDelta > 0 ? 'text-green-400' : 'text-red-400'}`}>
                         {selectedDomain.confidenceDelta > 0 ? '↑' : '↓'}
                       </span>
                     )}
-                  </div>
-                </div>
+                  </motion.div>
+                  
+                  {/* Halo breathe effect */}
+                  <motion.div
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      background: `radial-gradient(circle, ${getDomainBloom(selectedDomain.id)}, transparent 70%)`,
+                      pointerEvents: 'none'
+                    }}
+                    animate={{
+                      opacity: [0, 0.3, 0],
+                      scale: [0.8, 1.3, 0.8]
+                    }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: 'easeInOut'
+                    }}
+                  />
+                </motion.div>
                 <div className="flex-1">
                   <div className="text-xs font-medium mb-1" style={{ 
                     color: TOKENS.colors.textLabel,
