@@ -299,6 +299,13 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return ANGLES[dominantDriver] || 0;
   }, [dominantDriver]);
 
+  const connections = useMemo(() => [
+    { from: "rates", to: "growth", relationship: 0.7 },
+    { from: "fx", to: "geopolitics", relationship: 0.6 },
+    { from: "rates", to: "fx", relationship: 0.8 },
+    { from: "growth", to: "geopolitics", relationship: 0.5 }
+  ], []);
+
   // Burst mode detection
   useEffect(() => {
     const now = Date.now();
