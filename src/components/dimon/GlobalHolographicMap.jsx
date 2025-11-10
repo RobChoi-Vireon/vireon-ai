@@ -5,8 +5,8 @@ import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info } from 'luc
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// MACRO EQUILIBRIUM GRID — OS HORIZON V3.4 (HOVER INTELLIGENCE PATCH)
-// Magnetic lift, additive glow, glass ripple, neighbor dampening, afterglow.
+// MACRO EQUILIBRIUM GRID — OS HORIZON V3.3 (PURE GLASS)
+// Light diffused through glass — breathing, balanced, quiet. Now pure, uniform tone.
 // ============================================================================
 
 const TOKENS = {
@@ -19,21 +19,6 @@ const TOKENS = {
     orbitRadiusScale: 1.25, // Wider spacing
     labelDistanceScale: 1.10, // Labels sit farther out
     interactionRadiusScale: 1.2, // Improved hover feel
-    // v3.4 Hover Intelligence
-    hoverLatency: 120, // Milliseconds before hover state fully applies
-    hoverExitInertia: 800, // Milliseconds for afterglow effect to fade
-    hoverDepthLift: 4, // Pixels orb lifts on hover
-    hoverBrightnessDelta: 15, // Percentage increase in bloom brightness on hover
-    hoverHaloBlurDelta: 4, // Pixels increase in halo blur on hover
-    hoverHaloOpacityDelta: 0.05, // Opacity increase in halo on hover
-    hoverGlowDuration: 180, // Milliseconds for main glow transition
-    hoverRippleRadius: 120, // Max radius of the glass ripple
-    hoverRippleOpacity: 0.025, // Max opacity of the glass ripple
-    hoverRippleDuration: 700, // Milliseconds for glass ripple animation
-    hoverNeighborDimPct: 10, // Percentage reduction in opacity for non-hovered neighbors
-    hoverNeighborBloomPct: 25, // Percentage reduction in bloom for non-hovered neighbors
-    hoverNeighborDesatPct: 10, // Percentage desaturation for non-hovered neighbors
-    tooltipDelayMs: 100, // Delay for tooltip appearance
     // Liquid Glass Tahoe palette
     glassBg: 'rgba(10,14,20,0.70)',
     glassBorder: 'rgba(160,191,255,0.10)',
@@ -64,7 +49,7 @@ const TOKENS = {
     easingExit: [0.4, 0, 1, 1],
     easingElastic: [0.22, 1, 0.36, 1],
     overshoot: [0.34, 1.56, 0.64, 1],
-    t_hover: 0.14, // Updated for v3.4
+    t_hover: 0.12,
     t_hoverOut: 0.16,
     t_labelLag: 0.08,
     t_tooltipOpen: 0.16,
@@ -161,10 +146,6 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
   const footerRef = useRef(null);
   const constellationRef = useRef(null);
   const [hoveredDomain, setHoveredDomain] = useState(null);
-  const [hoverTimestamp, setHoverTimestamp] = useState(null); // v3.4: For hover latency
-  const [afterglowDomain, setAfterglowDomain] = useState(null); // v3.4: For afterglow effect
-  const [ripples, setRipples] = useState([]); // v3.4: For glass ripple effects
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 }); // v3.4: For ripple origin
   const [selectedDomain, setSelectedDomain] = useState(null);
   const [previousDomain, setPreviousDomain] = useState(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
@@ -242,67 +223,6 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     if (dominantDriver === "balanced") return 0;
     return ANGLES[dominantDriver] || 0;
   }, [dominantDriver]);
-
-  // v3.4 Hover intelligence: throttled ripple creation
-  const createRipple = useCallback((x, y, domainId) => {
-    if (shouldReduceMotion) return;
-    
-    const rippleId = Date.now();
-    setRipples(prev => [...prev, { id: rippleId, x, y, domainId }]);
-    
-    setTimeout(() => {
-      setRipples(prev => prev.filter(r => r.id !== rippleId));
-    }, TOKENS.HORIZON.hoverRippleDuration);
-  }, [shouldReduceMotion]);
-
-  // v3.4 Hover intelligence: enhanced hover handler with latency
-  const handleOrbHover = useCallback((domainId, event) => {
-    const now = Date.now();
-    
-    // Update cursor position for ripple
-    if (containerRef.current && event) {
-      const rect = containerRef.current.getBoundingClientRect();
-      setCursorPos({ 
-        x: event.clientX - rect.left, 
-        y: event.clientY - rect.top 
-      });
-    }
-    
-    // Clear afterglow if present
-    if (afterglowDomain) {
-      setAfterglowDomain(null);
-    }
-    
-    // Apply hover latency
-    setTimeout(() => {
-      setHoveredDomain(domainId);
-      setHoverTimestamp(now);
-      
-      // Create ripple effect
-      if (event && !shouldReduceMotion) {
-        const domain = domains.find(d => d.id === domainId);
-        const pos = getOrbPosition(domainId, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
-        createRipple(pos.x, pos.y, domainId);
-      }
-    }, TOKENS.HORIZON.hoverLatency);
-  }, [afterglowDomain, shouldReduceMotion, createRipple, domains, getOrbPosition, swayTime, parallaxX, parallaxY]);
-
-  // v3.4 Hover intelligence: afterglow on exit
-  const handleOrbLeave = useCallback(() => {
-    const exitedDomain = hoveredDomain;
-    setHoveredDomain(null);
-    setHoverTimestamp(null);
-    
-    // Initiate afterglow
-    if (exitedDomain) {
-      setAfterglowDomain(exitedDomain);
-      
-      // Clear afterglow after inertia period
-      setTimeout(() => {
-        setAfterglowDomain(null);
-      }, TOKENS.HORIZON.hoverExitInertia);
-    }
-  }, [hoveredDomain]);
 
   // Drift animations
   useEffect(() => {
@@ -674,19 +594,10 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           }}
         />
         
-        {/* Localized bloom fields with hover enhancement */}
+        {/* Localized bloom fields */}
         {domains.map((domain) => {
           const pos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
-          const isHovered = hoveredDomain === domain.id;
-          const isAfterglow = afterglowDomain === domain.id;
           const bloomRadius = Math.min(...TOKENS.HORIZON.localBloomRadius) + (domain.strength * (Math.max(...TOKENS.HORIZON.localBloomRadius) - Math.min(...TOKENS.HORIZON.localBloomRadius)));
-          
-          // v3.4: Enhanced bloom on hover
-          const hoverBloomIntensity = isHovered 
-            ? TOKENS.HORIZON.localBloomIntensity * (1 + TOKENS.HORIZON.hoverBrightnessDelta / 100)
-            : isAfterglow
-              ? TOKENS.HORIZON.localBloomIntensity * 1.08
-              : TOKENS.HORIZON.localBloomIntensity;
           
           return (
             <motion.div
@@ -699,55 +610,11 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 height: bloomRadius * 2,
                 transform: 'translate(-50%, -50%)',
                 background: `radial-gradient(circle, ${getDomainBloom(domain.id)}, transparent 72%)`,
-                opacity: selectedDomain ? 0.12 : hoverBloomIntensity,
+                opacity: selectedDomain ? 0.12 : TOKENS.HORIZON.localBloomIntensity,
                 mixBlendMode: 'screen',
                 pointerEvents: 'none',
-                zIndex: 2
-              }}
-              animate={{
-                opacity: selectedDomain ? 0.12 : hoverBloomIntensity,
-                scale: isHovered ? 1.05 : isAfterglow ? 1.02 : 1
-              }}
-              transition={{
-                opacity: { 
-                  duration: isHovered ? TOKENS.HORIZON.hoverGlowDuration / 1000 : TOKENS.HORIZON.hoverExitInertia / 1000,
-                  ease: isAfterglow ? [0.19, 1, 0.22, 1] : "easeInOut" // easeOutExpo approximation
-                },
-                scale: { 
-                  duration: TOKENS.HORIZON.t_hover, 
-                  ease: TOKENS.HORIZON.easing 
-                }
-              }}
-            />
-          );
-        })}
-
-        {/* v3.4: Glass ripple effects */}
-        {!shouldReduceMotion && ripples.map(ripple => {
-          const domain = domains.find(d => d.id === ripple.domainId);
-          const bloom = getDomainBloom(ripple.domainId);
-          
-          return (
-            <motion.div
-              key={ripple.id}
-              style={{
-                position: 'absolute',
-                left: ripple.x,
-                top: ripple.y,
-                width: TOKENS.HORIZON.hoverRippleRadius * 2,
-                height: TOKENS.HORIZON.hoverRippleRadius * 2,
-                transform: 'translate(-50%, -50%)',
-                borderRadius: '999px',
-                border: `1px solid ${bloom}`,
-                mixBlendMode: 'screen',
-                pointerEvents: 'none',
-                zIndex: 3
-              }}
-              initial={{ scale: 0.5, opacity: TOKENS.HORIZON.hoverRippleOpacity }}
-              animate={{ scale: 1.5, opacity: 0 }}
-              transition={{ 
-                duration: TOKENS.HORIZON.hoverRippleDuration / 1000, 
-                ease: "easeOut" 
+                zIndex: 2,
+                transition: 'opacity 0.3s ease'
               }}
             />
           );
@@ -882,15 +749,6 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                       <feMergeNode in="SourceGraphic" />
                     </feMerge>
                   </filter>
-                  {/* v3.4: Enhanced bloom filter for hover */}
-                  <filter id={`bloom-hover-${domain.id}`} x="-100%" y="-100%" width="300%" height="300%">
-                    <feGaussianBlur in="SourceGraphic" stdDeviation={20 + TOKENS.HORIZON.hoverHaloBlurDelta} result="blur" />
-                    <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.43 0" result="bloom" />
-                    <feMerge>
-                      <feMergeNode in="bloom" />
-                      <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                  </filter>
                   <filter id={`scatter-${domain.id}`}>
                     <feGaussianBlur in="SourceGraphic" stdDeviation="6" />
                     <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.05 0" />
@@ -953,7 +811,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
               })}
             </g>
 
-            {/* v3.4: Orbs with magnetic lift and glow enhancement */}
+            {/* Orbs */}
             <g style={{ zIndex: 3, mixBlendMode: 'screen' }}>
               {domains.map((domain, idx) => {
                 const pos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
@@ -961,70 +819,45 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 const bloom = getDomainBloom(domain.id);
                 const isHovered = hoveredDomain === domain.id;
                 const isSelected = selectedDomain?.id === domain.id;
-                const isAfterglow = afterglowDomain === domain.id;
-                const isSurrounding = (hoveredDomain || selectedDomain || afterglowDomain) && 
-                                     hoveredDomain !== domain.id && 
-                                     selectedDomain?.id !== domain.id && 
-                                     afterglowDomain !== domain.id;
+                const isSurrounding = (hoveredDomain || selectedDomain) && hoveredDomain !== domain.id && selectedDomain?.id !== domain.id;
                 const breathPhase = idx * 1.2;
-
-                // v3.4: Calculate hover enhancements
-                const hoverBrightnessFactor = isHovered ? (1 + TOKENS.HORIZON.hoverBrightnessDelta / 100) : isAfterglow ? 1.08 : 1;
-                const neighborDimFactor = isSurrounding ? (1 - (TOKENS.HORIZON.hoverNeighborDimPct / 100)) : 1;
-                const neighborBloomFactor = isSurrounding ? (1 - (TOKENS.HORIZON.hoverNeighborBloomPct / 100)) : 1;
 
                 return (
                   <g key={domain.id}>
-                    {/* Additive halo with hover expansion */}
+                    {/* Soft additive halo */}
                     <motion.circle 
                       cx={pos.x} 
                       cy={pos.y} 
                       r={pos.radius + 40} 
                       fill={bloom}
                       style={{ 
-                        filter: isHovered 
-                          ? `blur(${20 + TOKENS.HORIZON.hoverHaloBlurDelta}px)` 
-                          : 'blur(20px)', 
+                        filter: 'blur(20px)', 
                         pointerEvents: 'none'
                       }}
                       animate={shouldReduceMotion ? {} : {
-                        opacity: (isHovered || isSelected
-                          ? 0.55 * hoverBrightnessFactor
-                          : isAfterglow
-                            ? 0.40
-                            : isSurrounding 
-                              ? 0.36 * neighborBloomFactor
-                              : [0.38, 0.42, 0.38]) * neighborDimFactor,
+                        opacity: isHovered || isSelected
+                          ? 0.55
+                          : isSurrounding 
+                            ? 0.36
+                            : [0.38, 0.42, 0.38],
                         scale: isHovered || isSelected
                           ? 1.05 
-                          : isAfterglow
-                            ? 1.02
-                            : isSurrounding
-                              ? 1
-                              : [0.985, 1.025, 0.985] // Scaled breathing
+                          : isSurrounding
+                            ? 1
+                            : [0.985, 1.025, 0.985] // Scaled breathing
                       }}
                       transition={
-                        isHovered
+                        isHovered || isSelected || isSurrounding
                           ? { 
-                              duration: TOKENS.HORIZON.hoverGlowDuration / 1000, 
-                              ease: "easeInOut" 
+                              duration: isHovered || isSelected ? TOKENS.HORIZON.t_hover : TOKENS.HORIZON.t_hoverOut, 
+                              ease: TOKENS.HORIZON.easingApple 
                             }
-                          : isAfterglow
-                            ? {
-                                duration: TOKENS.HORIZON.hoverExitInertia / 1000,
-                                ease: [0.19, 1, 0.22, 1] // easeOutExpo approximation
-                              }
-                            : isSelected || isSurrounding
-                              ? { 
-                                  duration: isSelected ? TOKENS.HORIZON.t_hover : TOKENS.HORIZON.t_hoverOut, 
-                                  ease: TOKENS.HORIZON.easingApple 
-                                }
-                              : { 
-                                  duration: TOKENS.HORIZON.t_breathe, 
-                                  repeat: Infinity, 
-                                  ease: "easeInOut",
-                                  delay: breathPhase
-                                }
+                          : { 
+                              duration: TOKENS.HORIZON.t_breathe, 
+                              repeat: Infinity, 
+                              ease: "easeInOut",
+                              delay: breathPhase
+                            }
                       }
                     />
                     
@@ -1051,7 +884,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                           r={pos.radius + 5} 
                           fill={bloom}
                           initial={{ opacity: 0, scale: 0.95 }}
-                          animate={{ opacity: 0.6 * hoverBrightnessFactor, scale: 1 }}
+                          animate={{ opacity: 0.6, scale: 1 }}
                           exit={{ opacity: 0, scale: 0.95 }}
                           transition={{ 
                             duration: TOKENS.HORIZON.t_hover, 
@@ -1065,7 +898,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                       )}
                     </AnimatePresence>
                     
-                    {/* Main orb with v3.4 magnetic lift */}
+                    {/* Main orb */}
                     <motion.circle 
                       cx={pos.x} 
                       cy={pos.y} 
@@ -1074,51 +907,36 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                       className="orb cursor-pointer" 
                       data-key={domain.id}
                       style={{ 
-                        filter: isHovered ? `url(#bloom-hover-${domain.id})` : `url(#bloom-${domain.id})`,
+                        filter: `url(#bloom-${domain.id})`,
                         transformOrigin: `${pos.x}px ${pos.y}px`, 
                         pointerEvents: 'all', 
-                        color: color,
-                        willChange: 'transform'
+                        color: color
                       }}
                       animate={shouldReduceMotion ? {} : { 
                         scale: isHovered || isSelected
                           ? 1.05
-                          : [0.985, 1.025, 0.985],
-                        opacity: (isHovered || isSelected
+                          : [0.985, 1.025, 0.985], // Scaled breathing
+                        opacity: isHovered || isSelected
                           ? 1 
-                          : isAfterglow
-                            ? 0.95
-                            : isSurrounding
-                              ? 0.88 * neighborDimFactor
-                              : [0.985, 1, 0.985]) * hoverBrightnessFactor * neighborDimFactor,
-                        // v3.4: Magnetic lift via translateY (simulating Z-depth)
-                        y: !shouldReduceMotion && isHovered ? -TOKENS.HORIZON.hoverDepthLift : 0
+                          : isSurrounding
+                            ? 0.88
+                            : [0.985, 1, 0.985]
                       }}
                       transition={
-                        isHovered
+                        isHovered || isSelected || isSurrounding
                           ? { 
-                              duration: TOKENS.HORIZON.t_hover, 
+                              duration: isHovered || isSelected ? TOKENS.HORIZON.t_hover : TOKENS.HORIZON.t_hoverOut, 
                               ease: TOKENS.HORIZON.easingApple 
                             }
-                          : isAfterglow
-                            ? {
-                                duration: TOKENS.HORIZON.hoverExitInertia / 1000,
-                                ease: [0.19, 1, 0.22, 1]
-                              }
-                            : isSelected || isSurrounding
-                              ? { 
-                                  duration: isSelected ? TOKENS.HORIZON.t_hover : TOKENS.HORIZON.t_hoverOut, 
-                                  ease: TOKENS.HORIZON.easingApple 
-                                }
-                              : { 
-                                  duration: TOKENS.HORIZON.t_breathe, 
-                                  repeat: Infinity, 
-                                  ease: "easeInOut",
-                                  delay: breathPhase
-                                }
+                          : { 
+                              duration: TOKENS.HORIZON.t_breathe, 
+                              repeat: Infinity, 
+                              ease: "easeInOut",
+                              delay: breathPhase
+                            }
                       }
-                      onMouseEnter={(e) => handleOrbHover(domain.id, e)} 
-                      onMouseLeave={handleOrbLeave}
+                      onMouseEnter={() => setHoveredDomain(domain.id)} 
+                      onMouseLeave={() => setHoveredDomain(null)}
                       onClick={() => handleOpenDrawer(domain)} 
                       onKeyDown={(e) => { if (e.key === 'Enter') handleOpenDrawer(domain); }}
                       tabIndex={0} 
@@ -1150,7 +968,6 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
             const labelPos = getLabelPosition(orbPos.x, orbPos.y, orbPos.radius);
             const isHovered = hoveredDomain === domain.id;
             const isSelected = selectedDomain?.id === domain.id;
-            const isAfterglow = afterglowDomain === domain.id;
             
             return (
               <motion.div 
@@ -1178,15 +995,15 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                   top: `${labelPos.y}px`,
                   x: '-50%',
                   y: '-50%',
-                  color: isHovered || isSelected || isAfterglow ? TOKENS.colors.textLabel : getDomainText(domain.id),
-                  scale: isHovered || isSelected ? 1.05 : isAfterglow ? 1.02 : 1,
+                  color: isHovered || isSelected ? TOKENS.colors.textLabel : getDomainText(domain.id),
+                  scale: isHovered || isSelected ? 1.05 : 1,
                   boxShadow: isHovered || isSelected ? '0 0 16px rgba(160,191,255,0.15)' : 'none'
                 }}
                 transition={{ 
                   left: { duration: TOKENS.HORIZON.t_labelLag, ease: TOKENS.HORIZON.easingApple },
                   top: { duration: TOKENS.HORIZON.t_labelLag, ease: TOKENS.HORIZON.easingApple },
-                  color: { duration: isAfterglow ? TOKENS.HORIZON.hoverExitInertia / 1000 : TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing },
-                  scale: { duration: isAfterglow ? TOKENS.HORIZON.hoverExitInertia / 1000 : TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing },
+                  color: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing },
+                  scale: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing },
                   boxShadow: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }
                 }}
               >
@@ -1196,7 +1013,7 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           })}
         </motion.div>
 
-        {/* v3.4: Hover tooltip with delayed appearance */}
+        {/* Hover tooltip */}
         <AnimatePresence>
           {hoveredDomain && !selectedDomain && !isMorphing && (
             <motion.div 
@@ -1225,24 +1042,12 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
               exit={{ opacity: 0, y: -4 }}
               transition={{ 
                 opacity: shouldReduceMotion 
-                  ? { 
-                      duration: TOKENS.HORIZON.t_tooltipOpen, 
-                      ease: TOKENS.HORIZON.easingApple,
-                      delay: TOKENS.HORIZON.tooltipDelayMs / 1000
-                    }
+                  ? { duration: TOKENS.HORIZON.t_tooltipOpen, ease: TOKENS.HORIZON.easingApple }
                   : [
-                      { 
-                        duration: TOKENS.HORIZON.t_tooltipOpen, 
-                        ease: TOKENS.HORIZON.easingApple,
-                        delay: TOKENS.HORIZON.tooltipDelayMs / 1000
-                      },
+                      { duration: TOKENS.HORIZON.t_tooltipOpen, ease: TOKENS.HORIZON.easingApple },
                       { duration: TOKENS.HORIZON.t_tooltipPulse, repeat: Infinity, ease: "easeInOut" }
                     ],
-                y: { 
-                  duration: TOKENS.HORIZON.t_tooltipOpen, 
-                  ease: TOKENS.HORIZON.easingApple,
-                  delay: TOKENS.HORIZON.tooltipDelayMs / 1000
-                }
+                y: { duration: TOKENS.HORIZON.t_tooltipOpen, ease: TOKENS.HORIZON.easingApple }
               }}>
               {(() => {
                 const domain = domains.find(d => d.id === hoveredDomain);
