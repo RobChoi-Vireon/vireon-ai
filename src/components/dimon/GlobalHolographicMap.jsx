@@ -1828,7 +1828,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 ease: TOKENS.HORIZON.easing 
               }}
               className="p-6 space-y-6"
-              style={{ paddingTop: '6px' }}
+              style={{ paddingTop: '24px' }}
             >
               <motion.div
                 initial={{ opacity: 0 }}
@@ -1850,19 +1850,19 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 <p className="text-on-glass" style={{ 
                   color: TOKENS.colors.textSecondary, 
                   fontSize: '14px', 
-                  lineHeight: '1.4',
+                  lineHeight: '1.5',
                   fontWeight: 400,
                   fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                 }}>{selectedDomain.summary}</p>
                 {selectedDomain.addendum && (
-                  <p className="text-on-glass mt-2" style={{ 
+                  <p className="text-on-glass" style={{ 
                     color: TOKENS.colors.textSecondary, 
                     fontSize: '13px', 
-                    lineHeight: '1.4',
+                    lineHeight: '1.5',
                     fontWeight: 400,
                     opacity: 0.9,
                     fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
-                    marginTop: '8px'
+                    marginTop: '12px'
                   }}>{selectedDomain.addendum}</p>
                 )}
               </motion.div>
