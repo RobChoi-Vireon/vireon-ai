@@ -1167,23 +1167,19 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                           ? [0.38, 0.55, 0.38]
                           : isHovered || isSelected
                             ? 0.55
-                            : isSurrounding 
-                              ? 0.36
-                              : [0.38, 0.42, 0.38],
+                            : [0.38, 0.42, 0.38],
                         scale: isPulsing
                           ? [1, 1.08, 1]
                           : isHovered || isSelected
                             ? 1.05 
-                            : isSurrounding
-                              ? 1
-                              : [0.985, 1.025, 0.985]
+                            : [0.985, 1.025, 0.985]
                       }}
                       transition={
                         isPulsing
                           ? { duration: TOKENS.HORIZON.t_orbBreathIn, ease: TOKENS.HORIZON.easingSine }
-                          : isHovered || isSelected || isSurrounding
+                          : isHovered || isSelected
                             ? { 
-                                duration: isHovered || isSelected ? TOKENS.HORIZON.t_hover : TOKENS.HORIZON.t_hoverOut, 
+                                duration: TOKENS.HORIZON.t_hover, 
                                 ease: TOKENS.HORIZON.easingApple 
                               }
                             : { 
@@ -1250,25 +1246,21 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                             ? [1, 1.025, 1] // Unity Patch: Active orb life pulse
                             : isHovered
                               ? 1.05 
-                              : isSurrounding
-                                ? 0.88
-                                : [0.985, 1.025, 0.985],
+                              : [0.985, 1.025, 0.985],
                         opacity: isPulsing
                           ? [0.985, 1, 0.985]
                           : isHovered || isSelected
                             ? 1 
-                            : isSurrounding
-                              ? 0.88
-                              : [0.985, 1, 0.985]
+                            : [0.985, 1, 0.985]
                       }}
                       transition={
                         isPulsing
                           ? { duration: TOKENS.HORIZON.t_orbBreathIn, ease: TOKENS.HORIZON.easingSine }
                           : isSelected
                             ? { duration: TOKENS.HORIZON.t_orbLifePulse, repeat: Infinity, ease: "easeInOut" } // Unity Patch
-                            : isHovered || isSurrounding
+                            : isHovered
                               ? { 
-                                  duration: isHovered ? TOKENS.HORIZON.t_hover : TOKENS.HORIZON.t_hoverOut, 
+                                  duration: TOKENS.HORIZON.t_hover, 
                                   ease: TOKENS.HORIZON.easingApple 
                                 }
                               : { 
@@ -1302,7 +1294,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 );
               })}
             </g>
-          </svg>
 
           {domains.map((domain) => {
             const orbPos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
@@ -1972,6 +1963,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       stroke={getDomainColor(selectedDomain.id)} 
                       strokeWidth="3" 
                       strokeLinecap="round" 
+                      strokeLinejoin="round"
                       strokeDasharray="100"
                       initial={{ strokeDashoffset: 100 }} 
                       animate={{ 
@@ -2304,7 +2296,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     ease: TOKENS.HORIZON.easingSine
                   }}
                   className="pt-3 border-t"
-                  style={{ borderColor: TOKENS.HORIZON.drawerDivider }}
+                  style={{ borderColor: TOKENS.HORON.drawerDivider }}
                 >
                   <div className="flex gap-2 mb-3">
                     <button className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-colors drawer-view-details-button" style={{
