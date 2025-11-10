@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLeft, ChevronRight, BarChart3, DollarSign, Activity } from 'lucide-react';
@@ -417,18 +418,33 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return () => cancelAnimationFrame(rafId);
   }, [shouldReduceMotion]);
 
-  // Center-bloom drawer position calculation
+  // Center-bloom drawer position calculation with header-safe offset
   const drawerCenterPosition = useMemo(() => {
     if (!selectedDomain || !drawerOrigin) return { x: 0, y: 0 };
     
+    const headerHeight = 72; // OS Horizon sticky header
+    const safeTopPadding = 8;
+    const safeTop = headerHeight + safeTopPadding;
+    
     const drawerWidth = 520;
-    const drawerHeight = Math.min(window.innerHeight - 144, 700);
+    const maxDrawerHeight = Math.min(window.innerHeight - headerHeight - 72, 700);
+    const drawerHeight = maxDrawerHeight;
+    
+    // Offset bloom origin by +10px on Y for visual centering below header
+    const bloomOriginY = drawerOrigin.screenY + 10;
+    
+    // Calculate centered position but constrain top to safe zone
+    let targetTop = bloomOriginY - (drawerHeight / 2);
+    targetTop = Math.max(targetTop, safeTop);
+    
+    // Adjust for small viewports
+    const viewportAdjustment = window.innerHeight < 720 ? 24 : 0;
     
     return {
       left: drawerOrigin.screenX - (drawerWidth / 2),
-      top: drawerOrigin.screenY - (drawerHeight / 2),
+      top: targetTop,
       width: drawerWidth,
-      height: drawerHeight
+      height: drawerHeight - viewportAdjustment
     };
   }, [selectedDomain, drawerOrigin]);
 
@@ -455,7 +471,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         
         <motion.div style={{ position: 'absolute', inset: 0, background: `radial-gradient(900px circle at 52% 48%, ${TOKENS.HORIZON.bgSubsurfaceCenter} 0%, ${TOKENS.HORIZON.bgSubsurfaceEdge} 70%)`, opacity: 0.35, borderRadius: '24px', pointerEvents: 'none', zIndex: 1 }} animate={{ x: shouldReduceMotion ? 0 : bgParallaxX.get() * TOKENS.HORIZON.parallaxOffset * 0.6, y: shouldReduceMotion ? 0 : bgParallaxY.get() * TOKENS.HORIZON.parallaxOffset * 0.6 }} transition={{ duration: TOKENS.HORIZON.t_parallax, ease: TOKENS.HORIZON.easingApple }} />
         
-        <motion.div style={{ position: 'absolute', inset: 0, backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E")`, backgroundSize: '200px 200px', opacity: 0.15, borderRadius: '24px', pointerEvents: 'none', zIndex: 2 }} animate={{ backgroundPosition: [`${noiseDrift}px 0px`, `${noiseDrift + 0.3}px 0px`] }} transition={{ duration: 1, ease: 'linear' }} />
+        <motion.div style={{ position: 'absolute', inset: 0, backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3Csvg%3E")`, backgroundSize: '200px 200px', opacity: 0.15, borderRadius: '24px', pointerEvents: 'none', zIndex: 2 }} animate={{ backgroundPosition: [`${noiseDrift}px 0px`, `${noiseDrift + 0.3}px 0px`] }} transition={{ duration: 1, ease: 'linear' }} />
         
         <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(ellipse at center, transparent 60%, ${TOKENS.HORIZON.vignetteColor} 100%)`, opacity: TOKENS.HORIZON.vignetteOpacity, filter: `blur(${TOKENS.HORIZON.vignetteBlur}px)`, borderRadius: '24px', pointerEvents: 'none', zIndex: 2 }} />
         
@@ -631,12 +647,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         )}
       </AnimatePresence>
 
-      {/* Center-Bloom Drawer */}
+      {/* Center-Bloom Drawer with Header Safety */}
       <AnimatePresence>
         {selectedDomain && !isSwitchingNode && drawerOrigin && (
           <motion.div 
             ref={drawerRef}
-            className="fixed z-50 flex flex-col" 
+            className="fixed z-50 flex flex-col drawer-with-header-safe" 
             style={{
               left: drawerCenterPosition.left,
               top: drawerCenterPosition.top,
@@ -653,7 +669,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             }}
             initial={{ 
               left: drawerOrigin.screenX,
-              top: drawerOrigin.screenY,
+              top: drawerOrigin.screenY + 10,
               width: 0,
               height: 0,
               scale: 0.96,
@@ -669,7 +685,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             }} 
             exit={{ 
               left: drawerOrigin.screenX,
-              top: drawerOrigin.screenY,
+              top: drawerOrigin.screenY + 10,
               width: 0,
               height: 0,
               scale: 0.96,
@@ -678,6 +694,24 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             transition={{ duration: TOKENS.HORIZON.t_drawerOpen, ease: TOKENS.HORIZON.easingCubic }} 
             onClick={(e) => e.stopPropagation()}
           >
+            
+            {/* Glass blur extension above visible edge */}
+            <div 
+              className="drawer-header-blur-extension"
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                top: '-16px',
+                height: '16px',
+                backdropFilter: TOKENS.HORIZON.drawerBlur,
+                WebkitBackdropFilter: TOKENS.HORIZON.drawerBlur,
+                background: 'linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0))',
+                pointerEvents: 'none',
+                zIndex: 0
+              }}
+              aria-hidden="true"
+            />
             
             <motion.div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate3d(-50%, -50%, 0)', width: '120%', height: '120%', background: `radial-gradient(circle at center, ${getDomainBloom(selectedDomain.id)} 0%, transparent 60%)`, opacity: 0.08, filter: 'blur(32px)', pointerEvents: 'none', mixBlendMode: 'screen', zIndex: 0 }} initial={{ opacity: 0 }} animate={{ opacity: 0.08, x: glassParallaxX, y: glassParallaxY }} exit={{ opacity: 0 }} transition={{ opacity: { duration: 0.5, ease: 'easeInOut' } }} />
             <motion.div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '80px', background: `linear-gradient(to bottom, ${TOKENS.HORIZON.lightTemp} 0%, ${TOKENS.HORIZON.lightTempBottom} 100%)`, pointerEvents: 'none', borderRadius: '24px 24px 0 0', zIndex: 1 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3, ease: 'easeOut' }} />
@@ -908,9 +942,31 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       </AnimatePresence>
 
       <style jsx>{`
-        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+        @media (prefers-reduced-motion: reduce) { 
+          *, *::before, *::after { animation: none !important; transition: none !important; } 
+        }
+        
         .orb { min-width: 44px; min-height: 44px; }
-        .orb:focus-visible { outline: 2px solid rgba(122,215,240,0.9); outline-offset: 3px; }
+        
+        .orb:focus-visible { 
+          outline: 2px solid rgba(122,215,240,0.9);
+          outline-offset: 3px;
+          z-index: 251; /* Above header (z-250) */
+        }
+        
+        .drawer-with-header-safe:focus-within {
+          outline: 2px solid rgba(66,135,245,0.6);
+          outline-offset: -2px;
+          z-index: 251;
+        }
+        
+        /* Safari/Edge backdrop-filter fallback */
+        @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+          .drawer-header-blur-extension {
+            background: rgba(10,15,22,0.85) !important;
+          }
+        }
+        
         * { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif; }
       `}</style>
     </motion.section>
