@@ -5,13 +5,14 @@ import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info } from 'luc
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// MACRO CONSTELLATION — OS HORIZON V5.1
+// MACRO CONSTELLATION — OS HORIZON V5.3
 // Real-time balance of global macro forces.
 // Glass diffused celestial intelligence — breathing, balanced, quiet.
 // v3.5.1: Staggered tooltip reveal + refined hover physics
 // v3.5.3: Micro-polish (typography density, halo decay, node expansion, attribution)
 // v4.3: Drawer refinement (copy clarity, spacing harmony, staggered load)
 // v5.1: Spatial flow — drawer emerges from orb, filament beam link
+// v5.3: Cinematic motion — Apple-grade timing, easing, depth sequencing
 // ============================================================================
 
 const TOKENS = {
@@ -46,10 +47,13 @@ const TOKENS = {
     sheenEnabled: false,
     easing: [0.4, 0, 0.2, 1],
     easingApple: [0.32, 0.72, 0, 1],
+    easingAppleCinematic: [0.28, 0.11, 0.32, 1],
     easingExit: [0.4, 0, 1, 1],
     easingElastic: [0.22, 1, 0.36, 1],
     easingSine: [0.61, 1, 0.88, 1],
-    easingCubic: [0.33, 1, 0.68, 1], // New easing
+    easingCubic: [0.33, 1, 0.68, 1],
+    easingInOutCubic: [0.65, 0, 0.35, 1],
+    easingOutQuad: [0.25, 0.46, 0.45, 0.94],
     overshoot: [0.34, 1.56, 0.64, 1],
     t_hover: 0.12,
     t_hoverOut: 0.95,
@@ -60,12 +64,20 @@ const TOKENS = {
     t_tooltipTextStagger: 0.08,
     t_tooltipTextDuration: 0.14,
     t_tooltipClose: 0.12,
-    t_drawerOpen: 0.38, // Updated duration
+    t_orbBreathIn: 0.18,
+    t_orbBreathOut: 0.18,
+    t_beamLink: 0.25,
+    t_drawerBloom: 0.40,
+    t_drawerCollapse: 0.28,
+    t_contentCascadeOpen: 0.10,
+    t_contentCascadeClose: 0.07,
+    t_backgroundDepthFade: 0.30,
+    t_backgroundDepthClear: 0.30,
+    t_drawerOpen: 0.40, // Updated duration
     t_drawerClose: 0.28, // Updated duration
     t_drawerSwitch: 0.14,
     t_drawerLift: 0.16,
     t_haloBurst: 0.45,
-    t_beamLink: 0.22, // New token
     t_breathe: 4.5,
     t_pulse: 3,
     t_drift: 20,
@@ -76,6 +88,8 @@ const TOKENS = {
     t_ringFill: 0.3,
     t_parallax: 0.12,
     t_parallaxOut: 0.16,
+    parallaxOffset: 6,
+    parallaxResponse: 0.4,
     t_staggerSection: [0.1, 0.2, 0.3, 0.4],
     bgBase: '#06080D',
     bgEnd: '#0A0E14',
@@ -213,6 +227,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const [drawerOrigin, setDrawerOrigin] = useState(null); // New state: stores {x, y, screenX, screenY} of the orb
   const [showBeam, setShowBeam] = useState(false); // New state: controls visibility of the filament beam
   const [swayTime, setSwayTime] = useState(0);
+  const [orbPulseActive, setOrbPulseActive] = useState(false);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -488,17 +503,26 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         setPreviousDomain(null);
       }, TOKENS.HORIZON.t_drawerSwitch * 1000);
     } else {
-      setHaloAnimating(true);
+      setOrbPulseActive(true); // Start orb pulse before halo animation
       setTimeout(() => {
-        setSelectedDomain(domain);
-        setShowBeam(true); // Show beam after halo animation
-        setHaloAnimating(false);
-      }, TOKENS.HORIZON.t_haloBurst * 1000);
+        setOrbPulseActive(false); // End orb pulse as halo fades
+        setShowBeam(true); // Show beam after orb pulse finishes
+      }, TOKENS.HORIZON.t_orbBreathIn * 1000);
+      
+      setTimeout(() => {
+        setSelectedDomain(domain); // Select domain after beam has formed
+      }, (TOKENS.HORIZON.t_orbBreathIn + TOKENS.HORIZON.t_beamLink) * 1000);
     }
   }, [selectedDomain, getOrbPosition, swayTime, parallaxX, parallaxY]);
 
   const handleCloseDrawer = useCallback(() => {
     setShowBeam(false); // Hide beam immediately to start its exit animation
+    setOrbPulseActive(true); // Start orb pulse for exit
+    
+    setTimeout(() => {
+      setOrbPulseActive(false); // End orb pulse as drawer collapses
+    }, TOKENS.HORIZON.t_orbBreathOut * 1000); // Using a separate token for orb exit breathe
+    
     setTimeout(() => {
       setSelectedDomain(null);
       setPreviousDomain(null);
@@ -548,12 +572,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
   // Calculate the fixed screen position of the drawer's top-left corner
   const drawerFinalPosition = useMemo(() => {
-    if (typeof window === 'undefined') return { screenX: 0, screenY: 0 };
+    if (typeof window === 'undefined') return { x: 0, y: 0 }; // Renamed from screenX/screenY to x/y
     // Drawer width is '32vw', minWidth: '380px', maxWidth: '420px'
     const calculatedDrawerWidth = Math.max(380, Math.min(window.innerWidth * 0.32, 420));
     return {
-      screenX: window.innerWidth - calculatedDrawerWidth, // Left edge of the drawer on screen
-      screenY: 0 // Top edge of the drawer on screen (fixed to top)
+      x: window.innerWidth - calculatedDrawerWidth, // Left edge of the drawer on screen
+      y: 0 // Top edge of the drawer on screen (fixed to top)
     };
   }, []);
 
@@ -702,8 +726,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           }}
           animate={{
             y: constellationShift,
-            x: parallaxX,
-            y: parallaxY
+            x: shouldReduceMotion ? 0 : parallaxX.get() * TOKENS.HORIZON.parallaxResponse,
+            y: shouldReduceMotion ? 0 : parallaxY.get() * TOKENS.HORIZON.parallaxResponse
           }}
           transition={{ 
             y: shouldReduceMotion ? { duration: 0 } : { duration: 0.4, ease: TOKENS.HORIZON.easing },
@@ -882,6 +906,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 const bloom = getDomainBloom(domain.id);
                 const isHovered = hoveredDomain === domain.id;
                 const isSelected = selectedDomain?.id === domain.id;
+                const isPulsing = orbPulseActive && (isHovered || isSelected || selectedDomain === null && hoveredDomain === domain.id); // Active for both open/close state on relevant orb
                 const isSurrounding = (hoveredDomain || selectedDomain) && hoveredDomain !== domain.id && selectedDomain?.id !== domain.id;
                 const breathPhase = idx * 1.2;
 
@@ -897,29 +922,35 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         pointerEvents: 'none'
                       }}
                       animate={shouldReduceMotion ? {} : {
-                        opacity: isHovered || isSelected
-                          ? 0.55
-                          : isSurrounding 
-                            ? 0.36
-                            : [0.38, 0.42, 0.38],
-                        scale: isHovered || isSelected
-                          ? 1.05 
-                          : isSurrounding
-                            ? 1
-                            : [0.985, 1.025, 0.985]
+                        opacity: isPulsing
+                          ? [0.38, 0.55, 0.38]
+                          : isHovered || isSelected
+                            ? 0.55
+                            : isSurrounding 
+                              ? 0.36
+                              : [0.38, 0.42, 0.38],
+                        scale: isPulsing
+                          ? [1, 1.08, 1]
+                          : isHovered || isSelected
+                            ? 1.05 
+                            : isSurrounding
+                              ? 1
+                              : [0.985, 1.025, 0.985]
                       }}
                       transition={
-                        isHovered || isSelected || isSurrounding
-                          ? { 
-                              duration: isHovered || isSelected ? TOKENS.HORIZON.t_hover : TOKENS.HORIZON.t_hoverOut, 
-                              ease: TOKENS.HORIZON.easingApple 
-                            }
-                          : { 
-                              duration: TOKENS.HORIZON.t_breathe, 
-                              repeat: Infinity, 
-                              ease: "easeInOut",
-                              delay: breathPhase
-                            }
+                        isPulsing
+                          ? { duration: TOKENS.HORIZON.t_orbBreathIn, ease: TOKENS.HORIZON.easingSine }
+                          : isHovered || isSelected || isSurrounding
+                            ? { 
+                                duration: isHovered || isSelected ? TOKENS.HORIZON.t_hover : TOKENS.HORIZON.t_hoverOut, 
+                                ease: TOKENS.HORIZON.easingApple 
+                              }
+                            : { 
+                                duration: TOKENS.HORIZON.t_breathe, 
+                                repeat: Infinity, 
+                                ease: "easeInOut",
+                                delay: breathPhase
+                              }
                       }
                     />
                     
@@ -972,27 +1003,33 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         color: color
                       }}
                       animate={shouldReduceMotion ? {} : { 
-                        scale: isHovered || isSelected
-                          ? 1.05
-                          : [0.985, 1.025, 0.985],
-                        opacity: isHovered || isSelected
-                          ? 1 
-                          : isSurrounding
-                            ? 0.88
-                            : [0.985, 1, 0.985]
+                        scale: isPulsing
+                          ? [1, 1.05, 1]
+                          : isHovered || isSelected
+                            ? 1.05
+                            : [0.985, 1.025, 0.985],
+                        opacity: isPulsing
+                          ? [0.985, 1, 0.985]
+                          : isHovered || isSelected
+                            ? 1 
+                            : isSurrounding
+                              ? 0.88
+                              : [0.985, 1, 0.985]
                       }}
                       transition={
-                        isHovered || isSelected || isSurrounding
-                          ? { 
-                              duration: isHovered || isSelected ? TOKENS.HORIZON.t_hover : TOKENS.HORIZON.t_hoverOut, 
-                              ease: TOKENS.HORIZON.easingApple 
-                            }
-                          : { 
-                              duration: TOKENS.HORIZON.t_breathe, 
-                              repeat: Infinity, 
-                              ease: "easeInOut",
-                              delay: breathPhase
-                            }
+                        isPulsing
+                          ? { duration: TOKENS.HORIZON.t_orbBreathIn, ease: TOKENS.HORIZON.easingSine }
+                          : isHovered || isSelected || isSurrounding
+                            ? { 
+                                duration: isHovered || isSelected ? TOKENS.HORIZON.t_hover : TOKENS.HORIZON.t_hoverOut, 
+                                ease: TOKENS.HORIZON.easingApple 
+                              }
+                            : { 
+                                duration: TOKENS.HORIZON.t_breathe, 
+                                repeat: Infinity, 
+                                ease: "easeInOut",
+                                delay: breathPhase
+                              }
                       }
                       onMouseEnter={() => setHoveredDomain(domain.id)} 
                       onMouseLeave={() => setHoveredDomain(null)}
@@ -1395,10 +1432,25 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               backdropFilter: TOKENS.HORIZON.backdropBlur,
               WebkitBackdropFilter: TOKENS.HORIZON.backdropBlur
             }}
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: TOKENS.HORIZON.backdropOpacity }} 
-            exit={{ opacity: 0 }}
-            transition={{ duration: TOKENS.HORIZON.t_drawerOpen, ease: TOKENS.HORIZON.easing }} 
+            initial={{ opacity: 0, backdropFilter: 'blur(0px)' }} 
+            animate={{ 
+              opacity: TOKENS.HORIZON.backdropOpacity,
+              backdropFilter: TOKENS.HORIZON.backdropBlur
+            }} 
+            exit={{ 
+              opacity: 0,
+              backdropFilter: 'blur(0px)'
+            }}
+            transition={{ 
+              opacity: { 
+                duration: TOKENS.HORIZON.t_backgroundDepthFade, 
+                ease: TOKENS.HORIZON.easingOutQuad 
+              },
+              backdropFilter: { 
+                duration: TOKENS.HORIZON.t_backgroundDepthFade, 
+                ease: TOKENS.HORIZON.easingOutQuad 
+              }
+            }} 
             onClick={handleCloseDrawer} 
           />
         )}
@@ -1432,9 +1484,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             <motion.line
               x1={drawerOrigin.screenX}
               y1={drawerOrigin.screenY}
-              // Target center of the icon in the drawer's header
-              x2={drawerFinalPosition.screenX + 5 + 24} // 5px padding + half of 48px icon container width
-              y2={drawerFinalPosition.screenY + 5 + 24} // 5px padding + half of 48px icon container height
+              // Target slightly to the right of the drawer's top-left to simulate aiming for the icon
+              x2={drawerFinalPosition.x + 60} // Center of the drawer icon is approx 60px from left
+              y2={window.innerHeight / 2 - 10} // Target vertical center or slightly above, not just top
               stroke="url(#beam-gradient)"
               strokeWidth="2"
               strokeLinecap="round"
@@ -1443,8 +1495,14 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               animate={{ pathLength: 1, opacity: 1 }}
               exit={{ pathLength: 0, opacity: 0 }}
               transition={{
-                pathLength: { duration: TOKENS.HORIZON.t_beamLink, ease: TOKENS.HORIZON.easingCubic },
-                opacity: { duration: TOKENS.HORIZON.t_beamLink * 0.6, ease: TOKENS.HORIZON.easingSine }
+                pathLength: { 
+                  duration: TOKENS.HORIZON.t_beamLink, 
+                  ease: TOKENS.HORIZON.easingSine 
+                },
+                opacity: { 
+                  duration: TOKENS.HORIZON.t_beamLink * 0.6, 
+                  ease: TOKENS.HORIZON.easingSine 
+                }
               }}
             />
           </motion.svg>
@@ -1468,27 +1526,42 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               borderRadius: '18px 0 0 18px'
             }}
             initial={{ 
-              x: drawerOrigin.screenX - drawerFinalPosition.screenX, // X offset from final drawer position
-              y: drawerOrigin.screenY - drawerFinalPosition.screenY, // Y offset from final drawer position
+              x: drawerOrigin.screenX - drawerFinalPosition.x + TOKENS.HORIZON.parallaxOffset, // X offset from final drawer position + parallax offset
+              y: drawerOrigin.screenY - drawerFinalPosition.y + TOKENS.HORIZON.parallaxOffset, // Y offset from final drawer position + parallax offset
               scale: 0.3,
               opacity: 0
             }} 
             animate={{ 
-              x: 0, // Animate to its final fixed position
-              y: 0,
+              x: shouldReduceMotion ? 0 : drawerParallaxX.get() * TOKENS.HORIZON.parallaxResponse,
+              y: shouldReduceMotion ? 0 : drawerParallaxY.get() * TOKENS.HORIZON.parallaxResponse,
               scale: 1,
               opacity: 1
             }} 
             exit={{ 
-              x: drawerOrigin.screenX - drawerFinalPosition.screenX, // Exit back towards the orb's position
-              y: drawerOrigin.screenY - drawerFinalPosition.screenY,
+              x: drawerOrigin.screenX - drawerFinalPosition.x + TOKENS.HORIZON.parallaxOffset,
+              y: drawerOrigin.screenY - drawerFinalPosition.y + TOKENS.HORIZON.parallaxOffset,
               scale: 0.3,
               opacity: 0
             }}
             transition={{ 
-              duration: shouldReduceMotion ? 0.15 : TOKENS.HORIZON.t_drawerOpen,
-              ease: TOKENS.HORIZON.easingCubic, // Use new cubic easing
-              delay: shouldReduceMotion ? 0 : 0.08 // Small delay to allow beam to start
+              x: shouldReduceMotion 
+                ? { duration: 0 }
+                : { 
+                    duration: TOKENS.HORIZON.t_drawerBloom, 
+                    ease: TOKENS.HORIZON.easingAppleCinematic 
+                  },
+              y: { 
+                duration: TOKENS.HORIZON.t_drawerBloom, 
+                ease: TOKENS.HORIZON.easingAppleCinematic 
+              },
+              scale: { 
+                duration: TOKENS.HORIZON.t_drawerBloom, 
+                ease: TOKENS.HORIZON.easingAppleCinematic 
+              },
+              opacity: { 
+                duration: TOKENS.HORIZON.t_drawerBloom * 0.7, 
+                ease: TOKENS.HORIZON.easingOutQuad 
+              }
             }} 
             onClick={(e) => e.stopPropagation()}>
             
@@ -1503,11 +1576,21 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               borderRadius: '18px 0 0 18px'
             }} />
             
-            <div className="sticky top-0 z-10 p-5 border-b" style={{ 
-              background: TOKENS.HORIZON.drawerTint,
-              borderColor: TOKENS.HORIZON.drawerDivider,
-              backdropFilter: getBlur('chip')
-            }}>
+            <motion.div 
+              className="sticky top-0 z-10 p-5 border-b" 
+              style={{ 
+                background: TOKENS.HORIZON.drawerTint,
+                borderColor: TOKENS.HORIZON.drawerDivider,
+                backdropFilter: getBlur('chip')
+              }}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{
+                duration: TOKENS.HORIZON.t_contentCascadeOpen,
+                ease: TOKENS.HORIZON.easingOutQuad
+              }}
+            >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ 
@@ -1607,12 +1690,13 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   }}>Signal strength: {Math.round(selectedDomain.strength * 100)}%</div>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             <motion.div 
               key={`content-${selectedDomain.id}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ 
                 duration: shouldReduceMotion ? 0.15 : TOKENS.HORIZON.t_drawerLift, 
                 ease: TOKENS.HORIZON.easing 
@@ -1622,8 +1706,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               <motion.div
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 6 }}
                 transition={{ 
-                  delay: shouldReduceMotion ? 0 : TOKENS.HORIZON.t_staggerSection[0],
+                  delay: shouldReduceMotion ? 0 : TOKENS.HORIZON.t_contentCascadeOpen,
                   duration: 0.2,
                   ease: TOKENS.HORIZON.easingSine
                 }}
@@ -1657,8 +1742,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               <motion.div
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 6 }}
                 transition={{ 
-                  delay: shouldReduceMotion ? 0 : TOKENS.HORIZON.t_staggerSection[1],
+                  delay: shouldReduceMotion ? 0 : TOKENS.HORIZON.t_contentCascadeOpen * 2,
                   duration: 0.2,
                   ease: TOKENS.HORIZON.easingSine
                 }}
@@ -1705,8 +1791,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               <motion.div
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 6 }}
                 transition={{ 
-                  delay: shouldReduceMotion ? 0 : TOKENS.HORIZON.t_staggerSection[2],
+                  delay: shouldReduceMotion ? 0 : TOKENS.HORIZON.t_contentCascadeOpen * 3,
                   duration: 0.2,
                   ease: TOKENS.HORIZON.easingSine
                 }}
@@ -1773,8 +1860,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               <motion.div
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 6 }}
                 transition={{ 
-                  delay: shouldReduceMotion ? 0 : TOKENS.HORIZON.t_staggerSection[3],
+                  delay: shouldReduceMotion ? 0 : TOKENS.HORIZON.t_contentCascadeOpen * 4,
                   duration: 0.2,
                   ease: TOKENS.HORIZON.easingSine
                 }}
