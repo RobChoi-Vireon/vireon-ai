@@ -1,7 +1,7 @@
 
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
-import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
+import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLeft, ChevronRight, ExternalLink, BarChart3, DollarSign, Activity, Map } from 'lucide-react';
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
@@ -505,8 +505,14 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const getDomainBloom = (domainId) => TOKENS.MACRO[domainId]?.bloom || TOKENS.MACRO.rates.bloom;
 
   const getDomainIcon = (domainId) => {
-    const iconMap = { rates: "📊", fx: "💱", growth: "📈", geopolitics: "🌍" };
-    return iconMap[domainId] || "•";
+    const iconProps = { className: "w-6 h-6", strokeWidth: 2 };
+    const iconMap = { 
+      rates: <BarChart3 {...iconProps} />, 
+      fx: <DollarSign {...iconProps} />, 
+      growth: <Activity {...iconProps} />, 
+      geopolitics: <Globe {...iconProps} /> 
+    };
+    return iconMap[domainId] || <Activity {...iconProps} />;
   };
 
   const getPostureIcon = (posture) => {
@@ -1698,9 +1704,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ 
                     background: `${getDomainColor(selectedDomain.id)}15`, 
                     border: `1px solid ${getDomainColor(selectedDomain.id)}30`, 
-                    boxShadow: `0 0 20px ${getDomainBloom(selectedDomain.id)}` 
+                    boxShadow: `0 0 20px ${getDomainBloom(selectedDomain.id)}`,
+                    color: getDomainColor(selectedDomain.id)
                   }}>
-                    <span style={{ fontSize: '22px' }}>{getDomainIcon(selectedDomain.id)}</span>
+                    {getDomainIcon(selectedDomain.id)}
                   </div>
                   <div>
                     <motion.h3 
