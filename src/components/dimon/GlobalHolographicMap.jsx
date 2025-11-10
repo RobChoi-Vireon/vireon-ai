@@ -5,9 +5,10 @@ import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info } from 'luc
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// MACRO CONSTELLATION — OS HORIZON V3.5
+// MACRO CONSTELLATION — OS HORIZON V3.5.1
 // Real-time balance of global macro forces.
 // Glass diffused celestial intelligence — breathing, balanced, quiet.
+// v3.5.1: Staggered tooltip reveal + refined hover physics
 // ============================================================================
 
 const TOKENS = {
@@ -44,16 +45,18 @@ const TOKENS = {
     localBloomIntensity: 0.18,
     localBloomRadius: [220, 280],
     sheenEnabled: false, // Disabled in v3.3
-    // Apple motion timing (in seconds)
+    // Apple motion timing (in seconds) — v3.5.1 updates
     easing: [0.4, 0, 0.2, 1],
     easingApple: [0.32, 0.72, 0, 1],
     easingExit: [0.4, 0, 1, 1],
     easingElastic: [0.22, 1, 0.36, 1],
     overshoot: [0.34, 1.56, 0.64, 1],
     t_hover: 0.12,
-    t_hoverOut: 0.16,
+    t_hoverOut: 0.95, // v3.5.1: Increased from 0.16 for smoother hover exit inertia
     t_labelLag: 0.08,
     t_tooltipOpen: 0.16,
+    t_tooltipTextStagger: 0.08, // v3.5.1: Text reveals after card
+    t_tooltipTextDuration: 0.14, // v3.5.1: Text fade duration
     t_tooltipClose: 0.12,
     t_drawerOpen: 0.22,
     t_drawerClose: 0.18,
@@ -1014,7 +1017,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           })}
         </motion.div>
 
-        {/* Hover tooltip */}
+        {/* v3.5.1: Enhanced tooltip with staggered content reveal */}
         <AnimatePresence>
           {hoveredDomain && !selectedDomain && !isMorphing && (
             <motion.div 
@@ -1025,7 +1028,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 left: (() => {
                   const domain = domains.find(d => d.id === hoveredDomain);
                   const pos = getOrbPosition(hoveredDomain, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
-                  return pos.x + (70 * getGlobalScale()); // Scaled offset
+                  return pos.x + (70 * getGlobalScale());
                 })(),
                 top: (() => {
                   const domain = domains.find(d => d.id === hoveredDomain);
@@ -1037,17 +1040,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               }}
               initial={{ opacity: 0, y: -6 }} 
               animate={{ 
-                opacity: shouldReduceMotion ? 1 : [1, 0.95, 1],
+                opacity: 1,
                 y: 0 
               }} 
               exit={{ opacity: 0, y: -4 }}
               transition={{ 
-                opacity: shouldReduceMotion 
-                  ? { duration: TOKENS.HORIZON.t_tooltipOpen, ease: TOKENS.HORIZON.easingApple }
-                  : [
-                      { duration: TOKENS.HORIZON.t_tooltipOpen, ease: TOKENS.HORIZON.easingApple },
-                      { duration: TOKENS.HORIZON.t_tooltipPulse, repeat: Infinity, ease: "easeInOut" }
-                    ],
+                opacity: { duration: TOKENS.HORIZON.t_tooltipOpen, ease: TOKENS.HORIZON.easingApple },
                 y: { duration: TOKENS.HORIZON.t_tooltipOpen, ease: TOKENS.HORIZON.easingApple }
               }}>
               {(() => {
@@ -1065,44 +1063,78 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     minWidth: '300px', 
                     maxWidth: '340px'
                   }}>
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="w-2.5 h-2.5 rounded-full" style={{ 
-                        background: getDomainColor(domain.id), 
-                        boxShadow: `0 0 12px ${getDomainBloom(domain.id)}` 
-                      }} />
-                      <span className="font-semibold capitalize" style={{ 
-                        color: TOKENS.colors.textPrimary, 
-                        fontSize: '15px', 
-                        textShadow: '0 1px 2px rgba(0,0,0,0.4)',
-                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
-                      }}>{domain.id}</span>
-                      <span className="ml-auto text-xs font-bold" style={{ 
-                        color: getDomainText(domain.id), 
+                    {/* v3.5.1: Staggered text content */}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ 
+                        delay: TOKENS.HORIZON.t_tooltipTextStagger,
+                        duration: TOKENS.HORIZON.t_tooltipTextDuration,
+                        ease: "easeOut"
+                      }}
+                    >
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-2.5 h-2.5 rounded-full" style={{ 
+                          background: getDomainColor(domain.id), 
+                          boxShadow: `0 0 12px ${getDomainBloom(domain.id)}` 
+                        }} />
+                        <span className="font-semibold capitalize" style={{ 
+                          color: TOKENS.colors.textPrimary, 
+                          fontSize: '15px', 
+                          textShadow: '0 1px 2px rgba(0,0,0,0.4)',
+                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
+                        }}>{domain.id}</span>
+                        <span className="ml-auto text-xs font-bold" style={{ 
+                          color: getDomainText(domain.id), 
+                          textShadow: '0 1px 2px rgba(0,0,0,0.4)',
+                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                        }}>{domain.confidence_pct}%</span>
+                      </div>
+                      <p className="text-on-glass" style={{ 
+                        color: TOKENS.colors.textSecondary, 
+                        fontSize: '14px', 
+                        lineHeight: '1.6', 
+                        marginBottom: '12px',
                         textShadow: '0 1px 2px rgba(0,0,0,0.4)',
                         fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-                      }}>{domain.confidence_pct}%</span>
-                    </div>
-                    <p className="text-on-glass" style={{ 
-                      color: TOKENS.colors.textSecondary, 
-                      fontSize: '14px', 
-                      lineHeight: '1.6', 
-                      marginBottom: '18px',
-                      textShadow: '0 1px 2px rgba(0,0,0,0.4)',
-                      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-                    }}>
-                      {domain.summary.length > 90 ? domain.summary.substring(0, 87) + '...' : domain.summary}
-                    </p>
-                    <div className="flex items-center gap-2 text-xs" style={{ 
-                      color: TOKENS.colors.textTertiary, 
-                      minHeight: '44px', 
-                      alignItems: 'center' 
-                    }}>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                      <span className="font-medium" style={{ 
-                        letterSpacing: '0.25px',
-                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-                      }}>Click for details</span>
-                    </div>
+                      }}>
+                        {domain.summary.length > 90 ? domain.summary.substring(0, 87) + '...' : domain.summary}
+                      </p>
+                      
+                      {/* v3.5.1: Downstream effect line */}
+                      {domain.ripple && domain.ripple.length > 0 && (
+                        <div className="flex items-start gap-2 mb-4" style={{ marginTop: '8px' }}>
+                          <span style={{ 
+                            color: TOKENS.colors.textTertiary, 
+                            fontSize: '13px',
+                            opacity: 0.85,
+                            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                          }}>•</span>
+                          <p style={{ 
+                            color: TOKENS.colors.textTertiary, 
+                            fontSize: '13px', 
+                            lineHeight: '1.5',
+                            opacity: 0.85,
+                            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                          }}>
+                            Downstream: {domain.ripple[0]}
+                          </p>
+                        </div>
+                      )}
+                      
+                      {/* v3.5.1: Updated CTA text */}
+                      <div className="flex items-center gap-2 text-xs" style={{ 
+                        color: TOKENS.colors.textTertiary, 
+                        minHeight: '44px', 
+                        alignItems: 'center' 
+                      }}>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                        <span className="font-medium" style={{ 
+                          letterSpacing: '0.25px',
+                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                        }}>View market implications</span>
+                      </div>
+                    </motion.div>
                   </div>
                 );
               })()}
