@@ -1,11 +1,12 @@
+
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info } from 'lucide-react';
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// MACRO EQUILIBRIUM GRID — OS HORIZON V3.2 (SPATIAL EXPANSION PATCH)
-// Light diffused through glass — breathing, balanced, quiet. Now spatially expanded.
+// MACRO EQUILIBRIUM GRID — OS HORIZON V3.3 (PURE GLASS)
+// Light diffused through glass — breathing, balanced, quiet. Now pure, uniform tone.
 // ============================================================================
 
 const TOKENS = {
@@ -34,13 +35,14 @@ const TOKENS = {
     backdropOpacity: 0.35,
     blurPanel: 'blur(20px)',
     blurChip: 'blur(16px)',
-    // v3.1 Clear Glass
+    // v3.3 Pure Glass (no sheen)
     vignetteColor: '#070A0F',
-    vignetteOpacity: 0.35,
+    vignetteOpacity: 0.28, // Reduced from 0.35 to avoid split tones
     vignetteBlur: 24,
     vignetteSpread: 10,
     localBloomIntensity: 0.18,
     localBloomRadius: [220, 280],
+    sheenEnabled: false, // Disabled in v3.3
     // Apple motion timing (in seconds)
     easing: [0.4, 0, 0.2, 1],
     easingApple: [0.32, 0.72, 0, 1],
@@ -156,7 +158,6 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
   const [showEquilibriumTip, setShowEquilibriumTip] = useState(false);
   const [haloAnimating, setHaloAnimating] = useState(false);
   const [noiseDrift, setNoiseDrift] = useState(0);
-  const [sheenDrift, setSheenDrift] = useState(0);
   const [isStatusBarHovered, setIsStatusBarHovered] = useState(false);
   const [filamentFlash, setFilamentFlash] = useState(null);
   const [isSwitchingNode, setIsSwitchingNode] = useState(false);
@@ -229,7 +230,6 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
     
     const interval = setInterval(() => {
       setNoiseDrift(prev => (prev + 0.3) % 1000);
-      setSheenDrift(prev => (prev + 0.6) % 1000);
     }, 1000);
     
     return () => clearInterval(interval);
@@ -594,29 +594,6 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
           }}
         />
         
-        {/* Polished sheen */}
-        {!shouldReduceMotion && (
-          <motion.div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'linear-gradient(18deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0) 100%)',
-              backgroundSize: '300% 100%',
-              borderRadius: '24px',
-              pointerEvents: 'none',
-              zIndex: 2
-            }}
-            animate={{
-              backgroundPosition: [`${sheenDrift}% 0%`, `${sheenDrift + 32}% 0%`]
-            }}
-            transition={{
-              duration: TOKENS.HORIZON.t_sheen,
-              repeat: Infinity,
-              ease: 'linear'
-            }}
-          />
-        )}
-        
         {/* Localized bloom fields */}
         {domains.map((domain) => {
           const pos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
@@ -844,7 +821,6 @@ const MacroEquilibriumGrid = ({ onOpenSignalDrawer }) => {
                 const isSelected = selectedDomain?.id === domain.id;
                 const isSurrounding = (hoveredDomain || selectedDomain) && hoveredDomain !== domain.id && selectedDomain?.id !== domain.id;
                 const breathPhase = idx * 1.2;
-                const hoverRadius = pos.radius * TOKENS.HORIZON.interactionRadiusScale; // Scaled interaction
 
                 return (
                   <g key={domain.id}>
