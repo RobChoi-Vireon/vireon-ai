@@ -5,15 +5,10 @@ import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLef
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// MACRO CONSTELLATION — OS HORIZON V5.4 EXPRESS
+// MACRO CONSTELLATION — OS HORIZON V5.5 UNITY PATCH
 // Real-time balance of global macro forces.
 // Glass diffused celestial intelligence — breathing, balanced, quiet.
-// v3.5.1: Staggered tooltip reveal + refined hover physics
-// v3.5.3: Micro-polish (typography density, halo decay, node expansion, attribution)
-// v4.3: Drawer refinement (copy clarity, spacing harmony, staggered load)
-// v5.1: Spatial flow — drawer emerges from orb, filament beam link
-// v5.3: Cinematic motion — Apple-grade timing, easing, depth sequencing
-// v5.4: Express mode — instantaneous, value-driven, keyboard flow
+// v5.5: Unity Patch — Center-anchored bloom overlay, spatial coherence
 // ============================================================================
 
 const TOKENS = {
@@ -70,9 +65,9 @@ const TOKENS = {
     t_orbBreathIn: 0.14,
     t_orbBreathOut: 0.14,
     t_beamLink: 0.14,
-    t_drawerOpen: 0.14,
+    t_drawerOpen: 0.25,  // Unity Patch: aligned with Priority Signals
     t_drawerOpenBurst: 0.11,
-    t_drawerClose: 0.12,
+    t_drawerClose: 0.20,  // Unity Patch: aligned with Priority Signals
     t_drawerCloseBurst: 0.10,
     t_contentStagger: 0.06,
     t_contentStaggerBurst: 0,
@@ -81,6 +76,7 @@ const TOKENS = {
     t_drawerSwitch: 0.10,
     t_prefetch: 0.12,
     t_breathe: 4.5,
+    t_orbLifePulse: 4.0, // Unity Patch: active orb ambient breathe
     t_pulse: 3,
     t_drift: 20,
     t_orbit: 10,
@@ -873,6 +869,46 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         })}
         
         <motion.div 
+          style={{
+            position: 'absolute',
+            inset: 0,
+            pointerEvents: 'none',
+            zIndex: 4
+          }}
+          animate={{
+            x: shouldReduceMotion ? 0 : drawerParallaxX.get() * TOKENS.HORIZON.parallaxOffset * 0.15,
+            y: shouldReduceMotion ? 0 : drawerParallaxY.get() * TOKENS.HORIZON.parallaxOffset * 0.15
+          }}
+          transition={{
+            duration: TOKENS.HORIZON.t_parallax,
+            ease: TOKENS.HORIZON.easingApple
+          }}
+        >
+          {selectedDomain && (
+            <motion.div
+              className="center-bloom-overlay"
+              style={{
+                position: 'absolute',
+                left: '50%',
+                top: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: '100%',
+                height: '100%',
+                background: `radial-gradient(circle at center, ${getDomainBloom(selectedDomain.id)} 0%, transparent 60%)`,
+                opacity: 0.1,
+                filter: 'blur(80px)',
+                pointerEvents: 'none',
+                mixBlendMode: 'screen'
+              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5, ease: 'easeInOut' }}
+            />
+          )}
+        </motion.div>
+
+        <motion.div 
           ref={constellationRef} 
           className="constellation-layer" 
           style={{ 
@@ -1059,7 +1095,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
             <g style={{ zIndex: 3, mixBlendMode: 'screen' }}>
               {domains.map((domain, idx) => {
-                const pos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
+                const orbPos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
                 const color = getDomainColor(domain.id);
                 const bloom = getDomainBloom(domain.id);
                 const isHovered = hoveredDomain === domain.id;
@@ -1071,9 +1107,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 return (
                   <g key={domain.id}>
                     <motion.circle 
-                      cx={pos.x} 
-                      cy={pos.y} 
-                      r={pos.radius + 40} 
+                      cx={orbPos.x} 
+                      cy={orbPos.y} 
+                      r={orbPos.radius + 40} 
                       fill={bloom}
                       style={{ 
                         filter: 'blur(20px)', 
@@ -1113,9 +1149,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     />
                     
                     <circle 
-                      cx={pos.x} 
-                      cy={pos.y} 
-                      r={pos.radius + 2} 
+                      cx={orbPos.x} 
+                      cy={orbPos.y} 
+                      r={orbPos.radius + 2} 
                       fill="none"
                       stroke="rgba(255,255,255,0.05)"
                       strokeWidth="2"
@@ -1128,9 +1164,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     <AnimatePresence>
                       {(isHovered || isSelected) && (
                         <motion.circle 
-                          cx={pos.x} 
-                          cy={pos.y} 
-                          r={pos.radius + 11} 
+                          cx={orbPos.x} 
+                          cy={orbPos.y} 
+                          r={orbPos.radius + 11} 
                           fill={bloom}
                           initial={{ opacity: 0, scale: 0.95 }}
                           animate={{ opacity: 0.6, scale: 1 }}
@@ -1148,24 +1184,28 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     </AnimatePresence>
                     
                     <motion.circle 
-                      cx={pos.x} 
-                      cy={pos.y} 
-                      r={pos.radius} 
+                      cx={orbPos.x} 
+                      cy={orbPos.y} 
+                      r={orbPos.radius} 
                       fill={`url(#nucleus-${domain.id})`}
                       className="orb cursor-pointer" 
                       data-key={domain.id}
                       style={{ 
                         filter: `url(#bloom-${domain.id})`,
-                        transformOrigin: `${pos.x}px ${pos.y}px`, 
+                        transformOrigin: `${orbPos.x}px ${orbPos.y}px`, 
                         pointerEvents: 'all', 
                         color: color
                       }}
                       animate={shouldReduceMotion ? {} : { 
                         scale: isPulsing
                           ? [1, 1.05, 1]
-                          : isHovered || isSelected
-                            ? 1.05
-                            : [0.985, 1.025, 0.985],
+                          : isSelected
+                            ? [1, 1.025, 1] // Unity Patch: Active orb life pulse
+                            : isHovered
+                              ? 1.05 
+                              : isSurrounding
+                                ? 0.88
+                                : [0.985, 1.025, 0.985],
                         opacity: isPulsing
                           ? [0.985, 1, 0.985]
                           : isHovered || isSelected
@@ -1177,17 +1217,19 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       transition={
                         isPulsing
                           ? { duration: TOKENS.HORIZON.t_orbBreathIn, ease: TOKENS.HORIZON.easingSine }
-                          : isHovered || isSelected || isSurrounding
-                            ? { 
-                                duration: isHovered || isSelected ? TOKENS.HORIZON.t_hover : TOKENS.HORIZON.t_hoverOut, 
-                                ease: TOKENS.HORIZON.easingApple 
-                              }
-                            : { 
-                                duration: TOKENS.HORIZON.t_breathe, 
-                                repeat: Infinity, 
-                                ease: "easeInOut",
-                                delay: breathPhase
-                              }
+                          : isSelected
+                            ? { duration: TOKENS.HORIZON.t_orbLifePulse, repeat: Infinity, ease: "easeInOut" } // Unity Patch
+                            : isHovered || isSurrounding
+                              ? { 
+                                  duration: isHovered ? TOKENS.HORIZON.t_hover : TOKENS.HORIZON.t_hoverOut, 
+                                  ease: TOKENS.HORIZON.easingApple 
+                                }
+                              : { 
+                                  duration: TOKENS.HORIZON.t_breathe, 
+                                  repeat: Infinity, 
+                                  ease: "easeInOut",
+                                  delay: breathPhase
+                                }
                       }
                       onMouseEnter={() => handleDomainHover(domain)} 
                       onMouseLeave={() => handleDomainHover(null)}
@@ -1200,9 +1242,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     />
                     
                     <circle 
-                      cx={pos.x} 
-                      cy={pos.y} 
-                      r={pos.radius} 
+                      cx={orbPos.x} 
+                      cy={orbPos.y} 
+                      r={orbPos.radius} 
                       fill="none" 
                       stroke={color} 
                       strokeWidth="1" 
@@ -2020,7 +2062,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   className="mt-4 p-3 rounded-lg"
                   style={{
                     background: 'rgba(66,135,245,0.08)',
-                    border: '1px solid rgba(66,135,245,0.15)',
+                    border: '1px solid rgba(66,135,245,0.3)',
                     backdropFilter: 'blur(10px)',
                     WebkitBackdropFilter: 'blur(10px)'
                   }}
