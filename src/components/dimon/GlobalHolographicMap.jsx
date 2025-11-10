@@ -1613,11 +1613,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       <AnimatePresence>
         {selectedDomain && !isSwitchingNode && drawerOrigin && (
           <motion.div 
-            className="fixed top-0 right-0 h-full z-50 overflow-y-auto focus-trap" 
+            className="fixed right-0 h-[calc(100vh-72px)] z-50 overflow-y-auto focus-trap" 
             style={{
-              width: '32vw', // Use 32vw as base width
-              minWidth: '420px', // Minimum width
-              maxWidth: '500px', // Maximum width
+              top: '72px',
+              width: '32vw',
+              minWidth: '420px',
+              maxWidth: '500px',
               backdropFilter: TOKENS.HORIZON.drawerBlur,
               WebkitBackdropFilter: TOKENS.HORIZON.drawerBlur,
               background: TOKENS.HORIZON.drawerGlass,
