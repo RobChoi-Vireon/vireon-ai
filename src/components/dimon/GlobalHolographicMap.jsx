@@ -90,8 +90,8 @@ const TOKENS = {
     t_ringFill: 0.3,
     t_parallax: 0.12,
     t_parallaxOut: 0.16,
-    parallaxOffset: 0,
-    parallaxResponse: 0,
+    parallaxOffset: 6,
+    parallaxResponse: 0.4,
     translateSnap: 48,
     t_staggerSection: [0.06, 0.12, 0.18, 0.24],
     bgBase: '#06080D',
@@ -351,8 +351,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       const normX = ((e.clientX - centerX) / (rect.width / 2));
       const normY = ((e.clientY - centerY) / (rect.height / 2));
       
-      mouseX.set(normX * TOKENS.HORIZON.parallaxOffset);
-      mouseY.set(normY * TOKENS.HORIZON.parallaxOffset);
+      mouseX.set(normX * 14);
+      mouseY.set(normY * 14);
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -756,8 +756,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             zIndex: 1
           }}
           animate={{
-            x: shouldReduceMotion ? 0 : bgParallaxX.get() * 0.6,
-            y: shouldReduceMotion ? 0 : bgParallaxY.get() * 0.6
+            x: shouldReduceMotion ? 0 : bgParallaxX.get() * TOKENS.HORIZON.parallaxOffset * 0.6,
+            y: shouldReduceMotion ? 0 : bgParallaxY.get() * TOKENS.HORIZON.parallaxOffset * 0.6
           }}
           transition={{
             duration: TOKENS.HORIZON.t_parallax,
