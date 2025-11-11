@@ -68,6 +68,7 @@ const MOCK_DOMAINS = [
   { id: "rates", posture: "hawkish", confidence_pct: 78, strength: 0.82,
     summary: "Fed holding firm; terminal rate expectations drift higher on sticky services inflation.",
     ripple: ["Credit spreads widen", "Tech multiples compress", "EM funding costs rise"], addendum: null,
+    last_updated_iso: new Date().toISOString(),
     sparkline: [0.72, 0.74, 0.76, 0.75, 0.78, 0.80, 0.79, 0.81, 0.82],
     confidenceDelta: 2 },
   { id: "fx", posture: "stable", confidence_pct: 65, strength: 0.58,
@@ -78,7 +79,7 @@ const MOCK_DOMAINS = [
     sparkline: [0.60, 0.59, 0.58, 0.57, 0.58, 0.59, 0.58, 0.57, 0.58],
     confidenceDelta: -3 },
   { id: "growth", posture: "softening", confidence_pct: 71, strength: 0.68,
-    summary: "China slowdown weighs on global demand; US consumer resilient but moderating.",
+    summary: "China's slowdown is cooling global demand while the US consumer remains resilient.",
     ripple: ["Commodity prices soften", "Defensive rotation begins", "Services hold up"], addendum: null,
     last_updated_iso: new Date().toISOString(),
     sparkline: [0.75, 0.74, 0.72, 0.70, 0.69, 0.68, 0.67, 0.68, 0.68],
@@ -286,7 +287,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
   // Insight lines for cognitive clarity (v2.2 - Final OS Horizon Polish)
   const getInsightLine = useCallback((domainId) => ({
-    growth: "Insight: Markets balancing — defensive rotation underway.",
+    growth: "Insight: Rotation toward defensive assets underway as markets rebalance.",
     rates: "Insight: Yields steady — credit markets adjusting to new baseline.",
     fx: "Insight: Capital flows stabilizing; global risk appetite cooling.",
     geopolitics: "Insight: Policy tensions rising — volatility expanding in select regions."
@@ -296,8 +297,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const getConcisenSummary = useCallback((domain) => {
     const summaries = {
       rates: "Fed holding firm; terminal rate expectations drift higher on sticky services inflation.",
-      fx: "Dollar steady as interest-rate gaps shrink; risk trades unwind slowly.",
-      growth: "China slowdown weighs on global demand; US consumer resilient but moderating.",
+      fx: "Rates aligning globally, risk trades unwinding gradually.",
+      growth: "China's slowdown is cooling global demand while the US consumer remains resilient.",
       geopolitics: "Energy security concerns persist; trade fragmentation continues to reshape supply chains."
     };
     return summaries[domain.id] || domain.summary;
