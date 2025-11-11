@@ -1,20 +1,18 @@
-
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLeft, ChevronRight, BarChart3, DollarSign, Activity } from 'lucide-react';
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// MACRO CONSTELLATION — OS HORIZON V1.7.4 "ORB SPATIAL SERENITY & HOVER ALIGNMENT PATCH"
-// v1.1.2: Typography Optimization for translucent glass readability
-// Enhanced orb spacing (+44% total) • Detached hover cards • Tahoe-grade composure • Anti-flicker
+// MACRO CONSTELLATION — OS HORIZON V1.7.5 "DRAWER RESTORATION & SPACING FIX"
+// Enhanced orb spacing (+80% orbit) • Full drawer functionality • Orb labels restored
 // ============================================================================
 
 const TOKENS = {
   HORIZON: {
     globalScale: 1.45, globalScaleMd: 1.3, globalScaleSm: 1.1, clusterOffsetY: -4, 
     loadInDamping: 0.92,
-    orbitRadiusScale: 1.80,
+    orbitRadiusScale: 2.10,
     labelDistanceScale: 1.18,
     hoverExpansion: 14,
     hoverCardOffset: 32,
@@ -73,10 +71,10 @@ const TOKENS = {
 const ANGLES = { rates: 22.5, fx: 160.0, growth: 297.5, geopolitics: 75.0 };
 
 const RADII = { 
-  rates: 0.35 * 1.03,
-  fx: 0.39 * 1.04,
-  growth: 0.37 * 1.05,
-  geopolitics: 0.32 * 1.04
+  rates: 0.40,
+  fx: 0.46,
+  growth: 0.43,
+  geopolitics: 0.38
 };
 
 const MOCK_DOMAINS = [
@@ -732,8 +730,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 );
               })}
             </g>
+          </svg>
 
-            <AnimatePresence mode="wait">
+          <AnimatePresence mode="wait">
             {hoveredDomain && !selectedDomain && (() => {
               const domain = domains.find(d => d.id === hoveredDomain);
               if (!domain) return null;
@@ -945,7 +944,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                           color: TOKENS.colors.textLabel, 
                           letterSpacing: '0.12em', 
                           textTransform: 'uppercase',
-                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
+                          marginBottom: '3px'
                         }}>
                           CONFIDENCE
                         </div>
@@ -992,7 +992,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       }}>
                         Click to view details
                       </span>
-                      <ArrowRight className="w-3.5 h-3.5" style={{ color: TOKENS.colors.textTertiary }} />
+                      <ArrowRight className="w-3 h-3" style={{ color: TOKENS.colors.textTertiary }} />
                     </motion.div>
                   </motion.div>
                 </React.Fragment>
