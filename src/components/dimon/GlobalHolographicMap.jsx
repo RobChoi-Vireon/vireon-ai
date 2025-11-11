@@ -645,7 +645,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </g>
           </svg>
 
-          {/* Hover Tooltip Window — MOVED OUTSIDE SVG */}
+          {/* Hover Tooltip Window — CLEAR ORB SEPARATION */}
           <AnimatePresence>
             {hoveredDomain && !selectedDomain && (() => {
               const domain = domains.find(d => d.id === hoveredDomain);
@@ -653,7 +653,13 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               
               const orbPos = getOrbPosition(hoveredDomain, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
               const isLeft = orbPos.x < cx;
-              const tooltipX = isLeft ? orbPos.x + orbPos.radius + 20 : orbPos.x - orbPos.radius - 20;
+              
+              // Enhanced spacing: tooltip positioned 50px away from orb edge + additional clearance
+              const tooltipWidth = 260;
+              const clearanceGap = 50; // Minimum gap between orb edge and tooltip edge
+              const tooltipX = isLeft 
+                ? orbPos.x + orbPos.radius + clearanceGap 
+                : orbPos.x - orbPos.radius - clearanceGap;
               const tooltipY = orbPos.y;
               
               return (
@@ -675,7 +681,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     left: `${tooltipX}px`,
                     top: `${tooltipY}px`,
                     transform: `translate(${isLeft ? '0' : '-100%'}, -50%)`,
-                    width: '260px',
+                    width: `${tooltipWidth}px`,
                     padding: '14px 16px',
                     borderRadius: '16px',
                     backdropFilter: getBlur('panel'),
@@ -837,6 +843,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     <ArrowRight className="w-3 h-3" style={{ color: TOKENS.colors.textTertiary }} />
                   </motion.div>
                   
+                  {/* Pointer arrow with adjusted position */}
                   <div 
                     style={{
                       position: 'absolute',
