@@ -5,8 +5,8 @@ import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLef
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// MACRO CONSTELLATION — OS HORIZON V1.7 "FINAL UNITY"
-// Center-bloom anchor • Trend micro-data • So What cognition • Living pulse
+// MACRO CONSTELLATION — OS HORIZON V1.7.1 "HOVER SERENITY PATCH"
+// Apple-grade hover card polish • Tahoe glass realism • Liquid Silk motion
 // ============================================================================
 
 const TOKENS = {
@@ -14,6 +14,8 @@ const TOKENS = {
     globalScale: 1.45, globalScaleMd: 1.3, globalScaleSm: 1.1, clusterOffsetY: -4, orbitRadiusScale: 1.25,
     labelDistanceScale: 1.10, glassBg: 'rgba(10,14,20,0.70)', glassBorder: 'rgba(160,191,255,0.10)',
     panelShadow: '0 0 80px rgba(0,0,0,0.4), 0 0 40px rgba(160,191,255,0.08)',
+    // Enhanced shadow for hover card realism (Patch v1.1)
+    hoverCardShadow: '0 4px 28px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.08)',
     drawerGlass: 'rgba(10,15,22,0.72)', drawerTint: 'rgba(10,15,22,0.45)', drawerBlur: 'blur(22px)',
     drawerEdgeBloom: 'rgba(160,191,255,0.10)', drawerDivider: 'rgba(255,255,255,0.06)',
     drawerShadow: '0 15px 60px rgba(0,0,0,0.30)', backdropBlur: 'blur(10px)', backdropOpacity: 0.30,
@@ -24,10 +26,11 @@ const TOKENS = {
     overshoot: [0.34, 1.56, 0.64, 1], 
     t_drawerOpen: 0.25, t_drawerClose: 0.20,
     t_hover: 0.12, t_haloDecay: 0.18, t_labelLag: 0.08,
-    t_tooltipOpen: 0.16, t_tooltipTextStagger: 0.08, t_tooltipTextDuration: 0.14,
+    t_tooltipOpen: 0.20, t_tooltipClose: 0.15, t_tooltipTextStagger: 0.08, t_tooltipTextDuration: 0.14,
+    t_tooltipAutoFade: 0.80, // Auto-fade timeout (Patch v1.1)
     t_orbBreathIn: 0.14, t_orbBreathOut: 0.14, t_beamLink: 0.14,
     t_contentStagger: 0.06, t_soWhatDelay: 0.10,
-    t_breathe: 4.5, t_orbLifePulse: 4.0,
+    t_breathe: 4.5, t_orbLifePulse: 4.0, t_haloPulse: 2.0, // Halo pulse duration (Patch v1.1)
     t_pulse: 3, t_orbit: 10, t_sweep: 12, t_parallax: 0.12,
     parallaxOffset: 6, parallaxResponse: 0.4, microParallaxMax: 4, microParallaxDamping: 0.85,
     bgBase: '#06080D', bgEnd: '#0A0E14', bgSubsurfaceCenter: '#121823', bgSubsurfaceEdge: '#0B1016',
@@ -42,7 +45,9 @@ const TOKENS = {
   },
   colors: {
     textPrimary: "rgba(232,235,239,1)", textSecondary: "rgba(232,235,239,0.80)",
-    textLabel: "rgba(191,199,212,1)", textChip: "rgba(232,235,239,0.85)", textTertiary: "rgba(255,255,255,0.65)"
+    textLabel: "rgba(191,199,212,1)", textChip: "rgba(232,235,239,0.85)", textTertiary: "rgba(255,255,255,0.65)",
+    // Confidence delta colors (Patch v1.1)
+    deltaUp: '#6EF3A5', deltaDown: '#F38B82'
   }
 };
 
@@ -103,6 +108,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const [orbPulseActive, setOrbPulseActive] = useState(false);
   const [hoveredChartPoint, setHoveredChartPoint] = useState(null);
   const [drawerLuminance, setDrawerLuminance] = useState(1.0);
+  const [tooltipFadeTimer, setTooltipFadeTimer] = useState(null);
   
   const glassParallaxX = useSpring(0, { damping: 30, stiffness: 90 });
   const glassParallaxY = useSpring(0, { damping: 30, stiffness: 90 });
@@ -274,9 +280,37 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return () => cancelAnimationFrame(rafId);
   }, [shouldReduceMotion, selectedDomain]);
 
+  // Auto-fade timeout for hover card (Patch v1.1)
+  useEffect(() => {
+    if (!hoveredDomain) {
+      if (tooltipFadeTimer) {
+        clearTimeout(tooltipFadeTimer);
+        setTooltipFadeTimer(null);
+      }
+      return;
+    }
+
+    // Set timer to auto-fade tooltip after 0.8s
+    const timer = setTimeout(() => {
+      setHoveredDomain(null);
+      setTooltipFadeTimer(null);
+    }, TOKENS.HORIZON.t_tooltipAutoFade * 1000);
+
+    setTooltipFadeTimer(timer);
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [hoveredDomain]);
+
   const handleDomainHover = useCallback((domain) => {
     setHoveredDomain(domain?.id || null);
-  }, []);
+    // Cancel auto-fade timer when hovering
+    if (tooltipFadeTimer) {
+      clearTimeout(tooltipFadeTimer);
+      setTooltipFadeTimer(null);
+    }
+  }, [tooltipFadeTimer]);
 
   const handleOpenDrawer = useCallback((domain) => {
     if (selectedDomain?.id === domain.id) return;
@@ -594,7 +628,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </g>
           </svg>
 
-          {/* Hover Tooltip Window */}
+          {/* Hover Tooltip Window — SERENITY PATCH v1.1 */}
           <AnimatePresence>
             {hoveredDomain && !selectedDomain && (() => {
               const domain = domains.find(d => d.id === hoveredDomain);
@@ -602,16 +636,23 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               
               const orbPos = getOrbPosition(hoveredDomain, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
               const isLeft = orbPos.x < cx;
-              const tooltipX = isLeft ? orbPos.x + orbPos.radius + 20 : orbPos.x - orbPos.radius - 20;
+              const tooltipX = isLeft ? orbPos.x + orbPos.radius + 22 : orbPos.x - orbPos.radius - 22;
               const tooltipY = orbPos.y;
               
               return (
                 <motion.div
                   key={`tooltip-${hoveredDomain}`}
-                  initial={{ opacity: 0, scale: 0.92, x: isLeft ? -8 : 8 }}
-                  animate={{ opacity: 1, scale: 1, x: 0 }}
-                  exit={{ opacity: 0, scale: 0.92, transition: { duration: TOKENS.HORIZON.t_tooltipOpen * 0.6 } }}
-                  transition={{ duration: TOKENS.HORIZON.t_tooltipOpen, ease: TOKENS.HORIZON.easingApple }}
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ 
+                    opacity: 1, 
+                    scale: 1.00
+                  }}
+                  exit={{ 
+                    opacity: 0, 
+                    scale: 0.98, 
+                    transition: { duration: TOKENS.HORIZON.t_tooltipClose, ease: TOKENS.HORIZON.easingCubic } 
+                  }}
+                  transition={{ duration: TOKENS.HORIZON.t_tooltipOpen, ease: TOKENS.HORIZON.easingCubic }}
                   style={{
                     position: 'absolute',
                     left: `${tooltipX}px`,
@@ -624,11 +665,27 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     WebkitBackdropFilter: getBlur('panel'),
                     background: TOKENS.HORIZON.glassBg,
                     border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
-                    boxShadow: `${TOKENS.HORIZON.panelShadow}, inset 0 0 0 1px rgba(255,255,255,0.08)`,
+                    boxShadow: TOKENS.HORIZON.hoverCardShadow,
                     pointerEvents: 'none',
                     zIndex: 5
                   }}
+                  onMouseEnter={() => handleDomainHover(domain)}
                 >
+                  {/* Optional Halo Pulse (Patch v1.1) */}
+                  {!shouldReduceMotion && (
+                    <motion.div
+                      className="absolute inset-0 rounded-[16px]"
+                      style={{
+                        background: `radial-gradient(circle at center, ${getDomainBloom(domain.id)}, transparent 70%)`,
+                        mixBlendMode: 'screen',
+                        pointerEvents: 'none',
+                        zIndex: -1
+                      }}
+                      animate={{ opacity: [0.95, 1.00, 0.95] }}
+                      transition={{ duration: TOKENS.HORIZON.t_haloPulse, repeat: Infinity, ease: 'easeInOut' }}
+                    />
+                  )}
+                  
                   {/* Top rim highlight */}
                   <div style={{ 
                     position: 'absolute', 
@@ -685,7 +742,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     </div>
                   </div>
                   
-                  {/* Confidence Badge */}
+                  {/* Confidence Badge with Delta Indicator (Patch v1.1) */}
                   <motion.div 
                     initial={{ opacity: 0, y: 3 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -713,6 +770,20 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         style={{ color: TOKENS.colors.textPrimary, fontSize: '9px' }}
                       >
                         {domain.confidence_pct}
+                        {/* Delta Indicator (Patch v1.1) */}
+                        {domain.confidenceDelta !== undefined && domain.confidenceDelta !== 0 && (
+                          <motion.span 
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.15, duration: 0.15 }}
+                            className="absolute -right-1 -top-0.5 text-[7px]"
+                            style={{ 
+                              color: domain.confidenceDelta > 0 ? TOKENS.colors.deltaUp : TOKENS.colors.deltaDown
+                            }}
+                          >
+                            {domain.confidenceDelta > 0 ? '▲' : '▼'}
+                          </motion.span>
+                        )}
                       </div>
                     </div>
                     <div className="flex-1">
@@ -725,7 +796,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     </div>
                   </motion.div>
                   
-                  {/* Summary */}
+                  {/* Summary with Typography Breath (Patch v1.1) */}
                   <motion.p
                     initial={{ opacity: 0, y: 3 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -733,7 +804,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     style={{ 
                       color: TOKENS.colors.textSecondary, 
                       fontSize: '11px', 
-                      lineHeight: '1.5',
+                      lineHeight: `${TOKENS.HORIZON.lineHeight}px`,
+                      paddingTop: '2px',
                       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                     }}
                   >
