@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLeft, ChevronRight, BarChart3, DollarSign, Activity } from 'lucide-react';
@@ -12,6 +13,7 @@ import LyraLogo from '../core/LyraLogo';
 const TOKENS = {
   HORIZON: {
     globalScale: 1.45, globalScaleMd: 1.3, globalScaleSm: 1.1, clusterOffsetY: -4, 
+    loadInDamping: 0.92,
     orbitRadiusScale: 1.80,
     labelDistanceScale: 1.18,
     hoverExpansion: 14,
@@ -730,9 +732,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 );
               })}
             </g>
-          </svg>
 
-          <AnimatePresence mode="wait">
+            <AnimatePresence mode="wait">
             {hoveredDomain && !selectedDomain && (() => {
               const domain = domains.find(d => d.id === hoveredDomain);
               if (!domain) return null;
@@ -944,8 +945,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                           color: TOKENS.colors.textLabel, 
                           letterSpacing: '0.12em', 
                           textTransform: 'uppercase',
-                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
-                          marginBottom: '3px'
+                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                         }}>
                           CONFIDENCE
                         </div>
@@ -992,7 +992,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       }}>
                         Click to view details
                       </span>
-                      <ArrowRight className="w-3 h-3" style={{ color: TOKENS.colors.textTertiary }} />
+                      <ArrowRight className="w-3.5 h-3.5" style={{ color: TOKENS.colors.textTertiary }} />
                     </motion.div>
                   </motion.div>
                 </React.Fragment>
