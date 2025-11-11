@@ -292,16 +292,15 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       clearTimeout(hoverExitTimerRef.current);
       hoverExitTimerRef.current = null;
     }
-
+    
     // Clear any pending enter
     if (hoverEnterTimerRef.current) {
       clearTimeout(hoverEnterTimerRef.current);
     }
-
+    
     // Debounced enter
     hoverEnterTimerRef.current = setTimeout(() => {
       setHoveredDomain(domain.id);
-      // console.log('[HOVER] enter', { orbid: domain.id, ts: Date.now() }); // Debug log
     }, TOKENS.HORIZON.hoverEnterDelay);
   }, []);
 
@@ -312,47 +311,31 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       clearTimeout(hoverEnterTimerRef.current);
       hoverEnterTimerRef.current = null;
     }
-
+    
     // Clear any pending exit
     if (hoverExitTimerRef.current) {
       clearTimeout(hoverExitTimerRef.current);
     }
-
+    
     // Fast exit
     hoverExitTimerRef.current = setTimeout(() => {
-      // console.log('[HOVER] leave', { orbid: hoveredDomain, ts: Date.now() }); // Debug log
       setHoveredDomain(null);
     }, TOKENS.HORIZON.hoverExitDelay);
-  }, [hoveredDomain]);
+  }, []);
 
-  // Card click handler (v1.9.7)
-  const handleCardClick = useCallback((domain) => {
-    // Clear hover timers to prevent immediate re-hover
-    if (hoverEnterTimerRef.current) {
-      clearTimeout(hoverEnterTimerRef.current);
-      hoverEnterTimerRef.current = null;
-    }
-    if (hoverExitTimerRef.current) {
-      clearTimeout(hoverExitTimerRef.current);
-      hoverExitTimerRef.current = null;
-    }
-
-    setHoveredDomain(null); // Ensure no hover state persists when drawer opens
-    handleOpenDrawer(domain);
-  }, [handleOpenDrawer]);
-
+  // Drawer open handler - MUST come before handleCardClick
   const handleOpenDrawer = useCallback((domain) => {
     if (selectedDomain?.id === domain.id) return;
-
-    const domainPos = getOrbPosition(domain.id, domain.strength, swayTime, 0, 0);
+    
+    const domainPos = getOrbPosition(domain.id, domain.strength, swayTime, 0, 0); 
     const containerRect = containerRef.current?.getBoundingClientRect();
-
+    
     if (containerRect) {
-      setDrawerOrigin({
-        x: domainPos.x,
-        y: domainPos.y,
-        screenX: containerRect.left + domainPos.x,
-        screenY: containerRect.top + domainPos.y
+      setDrawerOrigin({ 
+        x: domainPos.x, 
+        y: domainPos.y, 
+        screenX: containerRect.left + domainPos.x, 
+        screenY: containerRect.top + domainPos.y 
       });
     }
 
@@ -362,30 +345,46 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       setTimeout(() => setFilamentFlash(null), 200);
       setTimeout(() => {
         setSelectedDomain(domain);
-        setShowBeam(true);
+        setShowBeam(true); 
         setIsSwitchingNode(false);
       }, 100);
     } else {
-      setOrbPulseActive(true);
+      setOrbPulseActive(true); 
       setTimeout(() => { setOrbPulseActive(false); setShowBeam(true); }, TOKENS.HORIZON.t_orbBreathIn * 1000);
       setTimeout(() => setSelectedDomain(domain), (TOKENS.HORIZON.t_orbBreathIn + TOKENS.HORIZON.t_beamLink) * 1000);
     }
   }, [selectedDomain, getOrbPosition, swayTime]);
 
-  const handleCloseDrawer = useCallback(() => {
-    setShowBeam(false);
-    setOrbPulseActive(true);
-    setTimeout(() => setOrbPulseActive(false), TOKENS.HORIZON.t_orbBreathOut * 1000);
-    setTimeout(() => {
-      setSelectedDomain(null);
-      setIsSwitchingNode(false);
-      setDrawerOrigin(null);
+  // Card click handler (v1.9.7) - NOW COMES AFTER handleOpenDrawer
+  const handleCardClick = useCallback((domain) => {
+    // Clear hover timers
+    if (hoverEnterTimerRef.current) {
+      clearTimeout(hoverEnterTimerRef.current);
+      hoverEnterTimerRef.current = null;
+    }
+    if (hoverExitTimerRef.current) {
+      clearTimeout(hoverExitTimerRef.current);
+      hoverExitTimerRef.current = null;
+    }
+    
+    setHoveredDomain(null);
+    handleOpenDrawer(domain);
+  }, [handleOpenDrawer]);
 
+  const handleCloseDrawer = useCallback(() => {
+    setShowBeam(false); 
+    setOrbPulseActive(true); 
+    setTimeout(() => setOrbPulseActive(false), TOKENS.HORIZON.t_orbBreathOut * 1000); 
+    setTimeout(() => { 
+      setSelectedDomain(null); 
+      setIsSwitchingNode(false); 
+      setDrawerOrigin(null); 
+      
       if (containerRef.current) {
         const orbElement = containerRef.current.querySelector('.orb[data-focused="true"]');
         if (orbElement) orbElement.focus();
       }
-    }, TOKENS.HORIZON.t_drawerClose * 1000);
+    }, TOKENS.HORIZON.t_drawerClose * 1000); 
   }, []);
 
   const handleNextDomain = useCallback(() => {
@@ -823,16 +822,17 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     />
                   )}
 
-                  <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: '12px',
-                    right: '12px',
-                    height: '1px',
-                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
-                    borderRadius: '999px',
-                    pointerEvents: 'none'
-                  }} />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: '12px',
+                      right: '12px',
+                      height: '1px',
+                      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
+                      borderRadius: '999px',
+                      pointerEvents: 'none'
+                    }} />
 
                   <div className="flex items-center gap-2.5 mb-3">
                     <div
