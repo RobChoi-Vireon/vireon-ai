@@ -285,13 +285,24 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     geopolitics: "So what: Supply chain fragmentation accelerating; prioritize domestic resilience and energy hedges."
   }[domain.id] || "Monitor for shifts in macro equilibrium dynamics."), []);
 
-  // Translation lines for cognitive clarity (v2.0)
-  const getTranslationLine = useCallback((domainId) => ({
-    growth: "TRANSLATION: Expansion slowing — markets rotating toward defensives.",
-    rates: "TRANSLATION: Bond yields firming — credit costs steady.",
-    fx: "TRANSLATION: Global risk appetite cooling — markets shifting toward stability.",
-    geopolitics: "TRANSLATION: Policy tensions rising — volatility pockets expanding."
-  }[domainId] || "TRANSLATION: Market balance shifting; monitor core indicators for clarity."), []);
+  // Insight lines for cognitive clarity (v2.1 - OS Horizon Refinement)
+  const getInsightLine = useCallback((domainId) => ({
+    growth: "Insight: Markets balancing — defensive rotation underway.",
+    rates: "Insight: Yields steady — credit markets adjusting to new baseline.",
+    fx: "Insight: Capital flows normalizing — risk appetite cooling globally.",
+    geopolitics: "Insight: Policy tensions rising — volatility expanding in select regions."
+  }[domainId] || "Insight: Market dynamics shifting — monitor key indicators."), []);
+
+  // Concise signal summaries (v2.1 - Apple-style brevity)
+  const getConcisenSummary = useCallback((domain) => {
+    const summaries = {
+      rates: "Fed holding firm; terminal rate expectations drift higher on sticky services inflation.",
+      fx: "Dollar steady as interest-rate gaps shrink; risk trades unwind slowly.",
+      growth: "China slowdown weighs on global demand; US consumer resilient but moderating.",
+      geopolitics: "Energy security concerns persist; trade fragmentation continues to reshape supply chains."
+    };
+    return summaries[domain.id] || domain.summary;
+  }, []);
 
   // Simplified tight hover with debouncing (v1.9.7 - FIXED)
   const handleDomainHoverEnter = useCallback((domain) => {
@@ -745,7 +756,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </g>
           </svg>
 
-          {/* Hover Card - COGNITIVE CLARITY v2.0 */}
+          {/* Hover Card - OS HORIZON REFINEMENT v2.1 */}
           <AnimatePresence>
             {hoveredDomain && !selectedDomain && (() => {
               const domain = domains.find(d => d.id === hoveredDomain);
@@ -757,30 +768,31 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               const tooltipY = orbPos.y;
 
               const opacityAdjust = getTextOpacityAdjustment(domain.id);
-              const translationText = getTranslationLine(hoveredDomain);
+              const insightText = getInsightLine(hoveredDomain);
+              const summaryText = getConcisenSummary(domain);
 
               return (
                 <motion.div
                   key={`tooltip-${hoveredDomain}`}
-                  initial={{ opacity: 0, scale: 0.98 }}
+                  initial={{ opacity: 0, scale: 0.96 }}
                   animate={{
                     opacity: 1,
                     scale: 1.00
                   }}
                   exit={{
                     opacity: 0,
-                    scale: 0.98,
-                    transition: { duration: TOKENS.HORIZON.t_tooltipClose, ease: TOKENS.HORIZON.easingCubic }
+                    scale: 0.96,
+                    transition: { duration: 0.22, ease: [0.4, 0, 0.2, 1] }
                   }}
-                  transition={{ duration: TOKENS.HORIZON.t_tooltipOpen, ease: TOKENS.HORIZON.easingCubic }}
+                  transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
                   style={{
                     position: 'absolute',
                     left: `${tooltipX}px`,
                     top: `${tooltipY}px`,
                     transform: `translate(${isLeft ? '0' : '-100%'}, -50%)`,
-                    width: '260px',
-                    padding: '14px 16px',
-                    borderRadius: '16px',
+                    width: '270px',
+                    padding: '16px 18px',
+                    borderRadius: '18px',
                     backdropFilter: 'blur(22px) saturate(165%) brightness(1.05)',
                     WebkitBackdropFilter: 'blur(22px) saturate(165%) brightness(1.05)',
                     background: 'rgba(24, 28, 33, 0.45)',
@@ -792,14 +804,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   }}
                   onClick={() => handleCardClick(domain)}
                   onMouseEnter={() => {
-                    // Keep hover alive when on card
                     if (hoverExitTimerRef.current) {
                       clearTimeout(hoverExitTimerRef.current);
                       hoverExitTimerRef.current = null;
                     }
                   }}
                   onMouseLeave={() => {
-                    // Fast exit when leaving card
                     if (hoverEnterTimerRef.current) {
                       clearTimeout(hoverEnterTimerRef.current);
                       hoverEnterTimerRef.current = null;
@@ -813,27 +823,27 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   }}
                   role="button"
                   tabIndex={0}
-                  aria-label={`Open ${domain.id} drawer: ${domain.posture}, ${domain.confidence_pct}% confidence. ${translationText}`}
+                  aria-label={`Open ${domain.id} drawer: ${domain.posture}, ${domain.confidence_pct}% confidence. ${insightText}`}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCardClick(domain); } }}
                 >
-                  {/* Reflected halo - clamped at 0.45 max */}
+                  {/* Reflected halo - clamped + edge glow on hover */}
                   {!shouldReduceMotion && (
                     <motion.div
-                      className="absolute inset-0 rounded-[16px]"
+                      className="absolute inset-0 rounded-[18px]"
                       style={{
                         background: `radial-gradient(circle at center, ${getDomainBloom(domain.id)}, transparent 70%)`,
                         mixBlendMode: 'screen',
                         pointerEvents: 'none',
                         zIndex: -1
                       }}
-                      animate={{ opacity: [0.08, 0.10, 0.08] }}
+                      animate={{ opacity: [0.08, 0.12, 0.08] }}
                       transition={{ duration: TOKENS.HORIZON.t_haloPulse, repeat: Infinity, ease: 'easeInOut' }}
                     />
                   )}
                   
-                  {/* Vignette mask for glare clamp - subtle side gradient */}
+                  {/* Vignette mask for glare clamp */}
                   <div 
-                    className="absolute inset-0 rounded-[16px]"
+                    className="absolute inset-0 rounded-[18px]"
                     style={{
                       background: `radial-gradient(circle at ${isLeft ? '85%' : '15%'} 15%, rgba(0,0,0,0.22), rgba(0,0,0,0) 140px)`,
                       pointerEvents: 'none',
@@ -846,8 +856,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   <div style={{
                     position: 'absolute',
                     top: 0,
-                    left: '12px',
-                    right: '12px',
+                    left: '14px',
+                    right: '14px',
                     height: '1px',
                     background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
                     borderRadius: '999px',
@@ -857,17 +867,17 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   {/* Content wrapper */}
                   <div style={{ position: 'relative', zIndex: 1 }}>
                     {/* Header: Icon + Title + Posture */}
-                    <div className="flex items-center gap-2.5 mb-3">
+                    <div className="flex items-center gap-3 mb-4">
                       <div
-                        className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                        className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
                         style={{
                           background: `${getDomainColor(domain.id)}15`,
                           border: `1px solid ${getDomainColor(domain.id)}30`,
-                          boxShadow: `0 0 12px ${getDomainBloom(domain.id)}`,
+                          boxShadow: `0 0 14px ${getDomainBloom(domain.id)}`,
                           color: getDomainColor(domain.id)
                         }}
                       >
-                        {React.cloneElement(getDomainIcon(domain.id), { className: "w-4 h-4", strokeWidth: 2 })}
+                        {React.cloneElement(getDomainIcon(domain.id), { className: "w-4 h-4", strokeWidth: 2.5 })}
                       </div>
                       <div className="flex-1 min-w-0">
                         <motion.h4
@@ -877,12 +887,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                             y: 0
                           }}
                           transition={{
-                            delay: TOKENS.HORIZON.t_tooltipTextStagger,
-                            duration: TOKENS.HORIZON.t_tooltipTextDuration
+                            delay: 0.05,
+                            duration: 0.18
                           }}
                           style={{
                             color: TOKENS.colors.textPrimary,
-                            fontSize: '19px',
+                            fontSize: '18px',
                             fontWeight: 600,
                             letterSpacing: '-0.02em',
                             textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
@@ -894,31 +904,39 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         <motion.div
                           initial={{ opacity: 0, y: -3 }}
                           animate={{
-                            opacity: 0.80 + opacityAdjust,
+                            opacity: 0.82 + opacityAdjust,
                             y: 0
                           }}
                           transition={{
-                            delay: TOKENS.HORIZON.t_tooltipTextStagger * 1.5,
-                            duration: TOKENS.HORIZON.t_tooltipTextDuration
+                            delay: 0.08,
+                            duration: 0.18
                           }}
                           className="flex items-center gap-1.5"
                         >
-                          {React.cloneElement(getPostureIcon(domain.posture), { className: "w-3 h-3" })}
+                          {React.cloneElement(getPostureIcon(domain.posture), { className: "w-3.5 h-3.5" })}
                           <span style={{
                             color: getDomainText(domain.id),
-                            fontSize: '14px',
+                            fontSize: '13px',
                             letterSpacing: '0.2px',
                             textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
                             fontWeight: 500,
                             fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                           }}>
-                            {domain.posture.charAt(0).toUpperCase() + domain.posture.slice(1)}
+                            {domain.posture.charAt(0).toUpperCase() + domain.posture.slice(1)} Momentum
                           </span>
                         </motion.div>
                       </div>
                     </div>
 
-                    {/* Confidence Section */}
+                    {/* Subtle section divider */}
+                    <div style={{
+                      height: '1px',
+                      background: `linear-gradient(90deg, transparent, ${TOKENS.HORIZON.drawerDivider}, transparent)`,
+                      margin: '0 0 12px 0',
+                      opacity: 0.5
+                    }} />
+
+                    {/* Confidence Section with Enhanced Ring */}
                     <motion.div
                       initial={{ opacity: 0, y: 3 }}
                       animate={{
@@ -926,32 +944,34 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         y: 0
                       }}
                       transition={{
-                        delay: TOKENS.HORIZON.t_tooltipTextStagger * 2,
-                        duration: TOKENS.HORIZON.t_tooltipTextDuration
+                        delay: 0.12,
+                        duration: 0.18
                       }}
-                      className="flex items-center gap-3 mb-3 pb-3"
-                      style={{ borderBottom: `1px solid ${TOKENS.HORIZON.drawerDivider}` }}
+                      className="flex items-center gap-3 mb-3"
                     >
-                      <div className="relative w-7 h-7 flex-shrink-0">
-                        <svg className="transform -rotate-90" width="28" height="28">
-                          <circle cx="14" cy="14" r="12" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2.5" />
+                      <div className="relative w-8 h-8 flex-shrink-0">
+                        <svg className="transform -rotate-90" width="32" height="32">
+                          <circle cx="16" cy="16" r="14" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2.5" />
                           <circle
-                            cx="14"
-                            cy="14"
-                            r="12"
+                            cx="16"
+                            cy="16"
+                            r="14"
                             fill="none"
                             stroke={getDomainColor(domain.id)}
                             strokeWidth="2.5"
                             strokeLinecap="round"
-                            strokeDasharray="75.4"
-                            strokeDashoffset={75.4 - (75.4 * domain.confidence_pct / 100)}
+                            strokeDasharray="87.9"
+                            strokeDashoffset={87.9 - (87.9 * domain.confidence_pct / 100)}
+                            style={{
+                              filter: `drop-shadow(0 0 4px ${getDomainBloom(domain.id)})`
+                            }}
                           />
                         </svg>
                         <div
                           className="absolute inset-0 flex items-center justify-center font-bold"
                           style={{
                             color: TOKENS.colors.textPrimary,
-                            fontSize: '9px',
+                            fontSize: '10px',
                             textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)'
                           }}
                         >
@@ -960,7 +980,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                             <motion.span
                               initial={{ opacity: 0, scale: 0.8 }}
                               animate={{ opacity: 1, scale: 1 }}
-                              transition={{ delay: 0.15, duration: 0.15 }}
+                              transition={{ delay: 0.18, duration: 0.15 }}
                               className="absolute -right-1 -top-0.5 text-[7px]"
                               style={{
                                 color: domain.confidenceDelta > 0 ? TOKENS.colors.deltaUp : TOKENS.colors.deltaDown
@@ -973,88 +993,104 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       </div>
                       <div className="flex-1">
                         <div style={{
-                          fontSize: '14px',
-                          color: 'rgba(255, 255, 255, 0.85)',
+                          fontSize: '13px',
+                          color: 'rgba(255, 255, 255, 0.88)',
                           letterSpacing: '0.15em',
-                          fontWeight: 500,
-                          textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)'
+                          fontWeight: 600,
+                          textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
+                          marginBottom: '2px'
                         }}>
                           CONFIDENCE
                         </div>
                         <div style={{
-                          fontSize: '12px',
+                          fontSize: '14px',
                           color: TOKENS.colors.textSecondary,
-                          marginTop: '6px',
-                          textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)'
+                          textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
+                          fontWeight: 400
                         }}>
-                          Strength: {Math.round(domain.strength * 100)}%
+                          Strength {Math.round(domain.strength * 100)}%
                         </div>
                       </div>
                     </motion.div>
 
-                    {/* Summary Body */}
+                    {/* Subtle section divider */}
+                    <div style={{
+                      height: '1px',
+                      background: `linear-gradient(90deg, transparent, ${TOKENS.HORIZON.drawerDivider}, transparent)`,
+                      margin: '12px 0',
+                      opacity: 0.5
+                    }} />
+
+                    {/* Signal Summary - Concise */}
                     <motion.p
                       initial={{ opacity: 0, y: 3 }}
                       animate={{
-                        opacity: 0.88 + opacityAdjust,
+                        opacity: 0.90 + opacityAdjust,
                         y: 0
                       }}
                       transition={{
-                        delay: TOKENS.HORIZON.t_tooltipTextStagger * 3,
-                        duration: TOKENS.HORIZON.t_tooltipTextDuration
+                        delay: 0.16,
+                        duration: 0.18
                       }}
                       style={{
-                        color: 'rgba(255, 255, 255, 0.88)',
-                        fontSize: '15px',
-                        lineHeight: `${TOKENS.HORIZON.lineHeight}px`,
-                        paddingTop: '8px',
-                        marginBottom: '4px',
+                        color: 'rgba(255, 255, 255, 0.90)',
+                        fontSize: '16.5px',
+                        lineHeight: '24px',
+                        marginBottom: '8px',
                         textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
-                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
+                        fontWeight: 400
                       }}
                     >
-                      {domain.summary.length > 120 ? domain.summary.substring(0, 120) + '...' : domain.summary}
+                      {summaryText.length > 100 ? summaryText.substring(0, 100) + '...' : summaryText}
                     </motion.p>
 
-                    {/* Translation Line - Cognitive Clarity v2.0 */}
+                    {/* Insight Line - OS Horizon Refinement */}
                     <motion.div
-                      className="translation-line"
+                      className="insight-line"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{
-                        delay: TOKENS.HORIZON.t_tooltipTextStagger * 3.5,
+                        delay: 0.20,
                         duration: 0.2
                       }}
                       style={{
                         fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-                        fontSize: '14px',
+                        fontSize: '14.5px',
                         lineHeight: '22px',
-                        color: 'rgba(255, 255, 255, 0.75)',
-                        letterSpacing: '0.2px',
-                        marginTop: '4px',
-                        marginBottom: '4px',
+                        color: 'rgba(255, 255, 255, 0.78)',
+                        letterSpacing: '0.15px',
+                        marginTop: '6px',
+                        marginBottom: '6px',
                         pointerEvents: 'none'
                       }}
-                      aria-label={translationText}
+                      aria-label={insightText}
                     >
                       <span style={{
-                        textTransform: 'uppercase',
                         fontWeight: 500,
-                        opacity: 0.7,
+                        opacity: 0.75,
                         marginRight: '4px',
-                        letterSpacing: '0.4px'
+                        letterSpacing: '0.3px'
                       }}>
-                        {translationText.split(':')[0]}:
+                        {insightText.split(':')[0]}:
                       </span>
                       <span style={{
                         fontWeight: 400,
-                        opacity: 0.8
+                        opacity: 0.85
                       }}>
-                        {translationText.split(':')[1]}
+                        {insightText.split(':')[1]}
                       </span>
                     </motion.div>
 
-                    {/* CTA Section - Redesigned v2.0 */}
+                    {/* Subtle section divider */}
+                    <div style={{
+                      height: '1px',
+                      background: `linear-gradient(90deg, transparent, ${TOKENS.HORIZON.drawerDivider}, transparent)`,
+                      margin: '12px 0 10px 0',
+                      opacity: 0.5
+                    }} />
+
+                    {/* CTA Section - Refined v2.1 */}
                     <motion.div
                       className="cta-section"
                       initial={{ opacity: 0 }}
@@ -1062,13 +1098,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         opacity: 1
                       }}
                       transition={{
-                        delay: TOKENS.HORIZON.t_tooltipTextStagger * 4,
+                        delay: 0.24,
                         duration: 0.15
                       }}
                       style={{
-                        marginTop: '8px',
-                        paddingTop: '8px',
-                        borderTop: `1px solid ${TOKENS.HORIZON.drawerDivider}`,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center'
@@ -1077,27 +1110,34 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       <motion.span
                         className="cta-text"
                         whileHover={{
-                          x: 4,
-                          letterSpacing: '0.5px',
-                          transition: { duration: 0.24, ease: 'easeInOut' }
+                          x: 3,
+                          letterSpacing: '0.4px',
+                          transition: { duration: 0.24, ease: [0.4, 0, 0.2, 1] }
                         }}
                         style={{
                           fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
                           fontSize: '14px',
                           fontWeight: 500,
-                          letterSpacing: '0.3px',
+                          letterSpacing: '0.25px',
                           color: 'rgba(90, 160, 255, 0.95)',
                           display: 'inline-flex',
                           alignItems: 'center',
-                          gap: '4px',
+                          gap: '5px',
                           transition: 'all 240ms ease-in-out',
                           cursor: 'pointer',
                           textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)'
                         }}
-                        aria-label="View full signal, button"
+                        aria-label="Expand signal, button"
                       >
-                        <span>View full signal</span>
-                        <ArrowRight className="w-3.5 h-3.5" style={{ color: 'rgba(90, 160, 255, 0.95)' }} />
+                        <span>Expand signal</span>
+                        <motion.div
+                          whileHover={{
+                            x: 2,
+                            transition: { duration: 0.24, ease: [0.4, 0, 0.2, 1] }
+                          }}
+                        >
+                          <ArrowRight className="w-3.5 h-3.5" style={{ color: 'rgba(90, 160, 255, 0.95)' }} />
+                        </motion.div>
                       </motion.span>
                     </motion.div>
                   </div>
@@ -1154,7 +1194,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           <div style={{ width: '160px', position: 'relative' }}>
             <div style={{ height: '2px', borderRadius: '999px', position: 'relative', overflow: 'hidden', background: 'linear-gradient(90deg, rgba(106,199,247,0.3), rgba(180,247,192,0.3), rgba(255,211,122,0.3))' }}>
               {!shouldReduceMotion && <motion.div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%)', width: '100%' }} animate={{ x: ['-100%', '100%'] }} transition={{ duration: TOKENS.HORIZON.t_sweep, repeat: Infinity, ease: 'linear' }} />}
-              <div style={{ position: 'absolute', bottom: '-8px', left: 0, right: 0, height: '8px', background: 'linear-gradient(90deg, rgba(106,199,247,0.15), rgba(180,247,192,0.15), rgba(255,211,122,0.15))', filter: 'blur(8px)', opacity: 0.15 }} />
+              <div style={{ position: 'absolute', bottom: '-8px', left: 0, right: 0, height: '8px', background: 'linear-gradient(90deg, rgba(106,199,247,0.15), rgba(180,247,192,0.15), rgba(255,255,255,0.15))', filter: 'blur(8px)', opacity: 0.15 }} />
               <motion.div style={{ position: 'absolute', top: '50%', width: '10px', height: '10px', borderRadius: '999px', background: dominantDriver === 'balanced' ? 'rgba(255,255,255,0.7)' : getDomainColor(dominantDriver), boxShadow: `0 0 20px ${dominantDriver === 'balanced' ? 'rgba(255,255,255,0.5)' : getDomainBloom(dominantDriver)}, 0 0 8px rgba(255,255,255,0.3)`, transform: 'translate(-50%, -50%)', border: '1px solid rgba(255,255,255,0.3)' }} animate={{ left: `calc(10% + ${balanceBias * 80}%)` }} transition={{ duration: 0.8, ease: TOKENS.HORIZON.overshoot }} />
             </div>
           </div>
