@@ -393,6 +393,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   }, []);
 
   const handleOpenDrawer = useCallback((domain) => {
+    console.log('Opening drawer for domain:', domain.id);
     if (selectedDomain?.id === domain.id) return;
     
     const domainPos = getOrbPosition(domain.id, domain.strength, swayTime, 0, 0); 
@@ -407,27 +408,19 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       });
     }
 
-    if (selectedDomain) {
-      setIsSwitchingNode(true);
-      setFilamentFlash(domain.id);
-      setTimeout(() => setFilamentFlash(null), 200);
-      setTimeout(() => {
-        setSelectedDomain(domain);
-        setShowBeam(true); 
-        setIsSwitchingNode(false);
-      }, 100);
-    } else {
-      setOrbPulseActive(true); 
-      setTimeout(() => { setOrbPulseActive(false); setShowBeam(true); }, TOKENS.HORIZON.t_orbBreathIn * 1000);
-      setTimeout(() => setSelectedDomain(domain), (TOKENS.HORIZON.t_orbBreathIn + TOKENS.HORIZON.t_beamLink) * 1000);
-    }
+    // Simplified immediate drawer opening
+    setSelectedDomain(domain);
+    setShowBeam(true);
   }, [selectedDomain, getOrbPosition, swayTime]);
 
   const handleCloseDrawer = useCallback(() => {
-    setShowBeam(false); 
-    setOrbPulseActive(true); 
-    setTimeout(() => setOrbPulseActive(false), TOKENS.HORIZON.t_orbBreathOut * 1000); 
-    setTimeout(() => { setSelectedDomain(null); setIsSwitchingNode(false); setDrawerOrigin(null); }, TOKENS.HORIZON.t_drawerClose * 1000); 
+    console.log('Closing drawer');
+    setShowBeam(false);
+    setTimeout(() => { 
+      setSelectedDomain(null); 
+      setIsSwitchingNode(false); 
+      setDrawerOrigin(null); 
+    }, TOKENS.HORIZON.t_drawerClose * 1000); 
   }, []);
 
   const handleNextDomain = useCallback(() => {
@@ -463,8 +456,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       const rect = containerRef.current.getBoundingClientRect();
       const normX = ((e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2));
       const normY = ((e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2));
-      mouseX.set(normX * 14);
-      mouseY.set(normY * 14);
+      mouseX.set(normX * 22);
+      mouseY.set(normY * 22);
       if (selectedDomain) {
         glassParallaxX.set(-normX * TOKENS.HORIZON.microParallaxMax * TOKENS.HORIZON.microParallaxDamping);
         glassParallaxY.set(-normY * TOKENS.HORIZON.microParallaxMax * TOKENS.HORIZON.microParallaxDamping);
@@ -611,7 +604,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           {selectedDomain && <motion.div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', width: '100%', height: '100%', background: `radial-gradient(circle at center, ${getDomainBloom(selectedDomain.id)} 0%, transparent 60%)`, opacity: 0.1, filter: 'blur(80px)', pointerEvents: 'none', mixBlendMode: 'screen' }} initial={{ opacity: 0 }} animate={{ opacity: 0.1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5, ease: 'easeInOut' }} />}
         </motion.div>
 
-        <motion.div ref={constellationRef} style={{ position: 'absolute', inset: 0, willChange: 'transform', zIndex: 3, opacity: selectedDomain ? 0.9 : 1 }} animate={{ y: constellationShift, x: shouldReduceMotion ? 0 : parallaxX.get() * TOKENS.HORIZON.parallaxResponse }} transition={{ y: { duration: shouldReduceMotion ? 0 : 0.4, ease: TOKENS.HORIZON.easing }, x: { duration: shouldReduceMotion ? 0 : TOKENS.HORIZON.t_parallax, ease: TOKENS.HORIZON.easingApple } }}>
+        <motion.div ref={constellationRef} style={{ position: 'absolute', inset: 0, willChange: 'transform', zIndex: 3, opacity: selectedDomain ? 0.9 : 1 }} animate={{ y: constellationShift, x: shouldReduceMotion ? 0 : parallaxX.get() * TOKENS.HORIZON.parallaxResponse * 1.4 }} transition={{ y: { duration: shouldReduceMotion ? 0 : 0.4, ease: TOKENS.HORIZON.easing }, x: { duration: shouldReduceMotion ? 0 : TOKENS.HORIZON.t_parallax, ease: TOKENS.HORIZON.easingApple } }}>
           <div style={{ position: 'absolute', left: `${cx}px`, top: `${cy}px`, width: `${orbitBaseRadius * 2}px`, height: `${orbitBaseRadius * 2}px`, transform: 'translate(-50%, -50%)', borderRadius: '999px', boxShadow: 'inset 0 0 0 1px rgba(160,191,255,0.06)', opacity: 0.2, filter: 'blur(0.5px)', pointerEvents: 'none', zIndex: 2, transition: shouldReduceMotion ? 'none' : 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)' }} aria-hidden="true" />
 
           <motion.div style={{ position: 'absolute', left: `${cx}px`, top: `${cy}px`, zIndex: 2 }} animate={{ x: nucleusOffset.x, y: nucleusOffset.y }} transition={{ duration: 0.8, ease: TOKENS.HORIZON.easing }}>
@@ -665,7 +658,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 const isFlashing = filamentFlash === conn.from || filamentFlash === conn.to;
                 
                 return (
-                  <motion.path key={`conn-${i}`} d={`M ${fromPos.x},${fromPos.y} C ${cp1x},${cp1y} ${cp2x},${cp2y} ${toPos.x},${toPos.y}`} stroke={`url(#conn-grad-${i})`} strokeWidth="1" strokeLinecap="round" fill="none" animate={{ opacity: isFlashing ? [0.20, 0.60, 0.20] : isAdjacent ? (selectedDomain ? 0.15 : [0.20, 0.45, 0.20]) : shouldReduceMotion ? (selectedDomain ? 0.10 : 0.20) : (selectedDomain ? [0.10, 0.14, 0.10] : [0.16, 0.24, 0.16]) }} transition={isFlashing ? { duration: 0.2, ease: TOKENS.HORIZON.easing } : isAdjacent ? { duration: 0.3, ease: TOKENS.HORIZON.easing } : { duration: TOKENS.HORIZON.t_pulse, repeat: Infinity, ease: "easeInOut" }} style={{ filter: 'drop-shadow(0 2px 12px rgba(0,0,0,0.4))' }} />
+                  <motion.path key={`conn-${i}`} d={`M ${fromPos.x},${fromPos.y} Q ${cp1x},${cp1y} ${cp2x},${cp2y} ${toPos.x},${toPos.y}`} stroke={`url(#conn-grad-${i})`} strokeWidth="1" strokeLinecap="round" fill="none" animate={{ opacity: isFlashing ? [0.20, 0.60, 0.20] : isAdjacent ? (selectedDomain ? 0.15 : [0.20, 0.45, 0.20]) : shouldReduceMotion ? (selectedDomain ? 0.10 : 0.20) : (selectedDomain ? [0.10, 0.14, 0.10] : [0.16, 0.24, 0.16]) }} transition={isFlashing ? { duration: 0.2, ease: TOKENS.HORIZON.easing } : isAdjacent ? { duration: 0.3, ease: TOKENS.HORIZON.easing } : { duration: TOKENS.HORIZON.t_pulse, repeat: Infinity, ease: "easeInOut" }} style={{ filter: 'drop-shadow(0 2px 12px rgba(0,0,0,0.4))' }} />
                 );
               })}
             </g>
@@ -945,8 +938,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                           color: TOKENS.colors.textLabel, 
                           letterSpacing: '0.12em', 
                           textTransform: 'uppercase',
-                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
-                          marginBottom: '3px'
+                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                         }}>
                           CONFIDENCE
                         </div>
@@ -1054,7 +1046,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       </AnimatePresence>
 
       <AnimatePresence>
-        {selectedDomain && !isSwitchingNode && drawerOrigin && (
+        {selectedDomain && drawerOrigin && (
           <motion.div 
             ref={drawerRef}
             className="fixed z-50 flex flex-col drawer-with-header-safe" 
@@ -1070,7 +1062,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               boxShadow: `${TOKENS.HORIZON.drawerShadow}, ${TOKENS.HORIZON.panelShadow}, 0 0 12px ${TOKENS.HORIZON.drawerEdgeBloom}, inset 0 0 0 1px rgba(255,255,255,0.10)`,
               borderRadius: '24px',
               overflow: 'hidden',
-              filter: `brightness(${drawerLuminance})`
+              filter: `brightness(${drawerLuminance})`,
+              pointerEvents: 'auto'
             }}
             initial={{ 
               left: drawerOrigin.screenX,
@@ -1121,7 +1114,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             <motion.div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '80px', background: `linear-gradient(to bottom, ${TOKENS.HORIZON.lightTemp} 0%, ${TOKENS.HORIZON.lightTempBottom} 100%)`, pointerEvents: 'none', borderRadius: '24px 24px 0 0', zIndex: 1 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3, ease: 'easeOut' }} />
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '100%', background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%)', pointerEvents: 'none', borderRadius: '24px', zIndex: 1 }} />
             
-            <motion.div className="flex-shrink-0 p-5 border-b" style={{ background: TOKENS.HORIZON.drawerTint, borderColor: TOKENS.HORIZON.drawerDivider, backdropFilter: getBlur('chip'), position: 'relative', zIndex: 10 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: TOKENS.HORIZON.t_contentStagger, ease: TOKENS.HORIZON.easingOutQuad }}>
+            <motion.div className="flex-shrink-0 p-5 border-b" style={{ background: TOKENS.HORIZON.drawerTint, borderColor: TOKENS.HORIZON.drawerDivider, backdropFilter: getBlur('chip'), position: 'relative', zIndex: 10 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ delay: 0.05, duration: TOKENS.HORIZON.t_contentStagger, ease: TOKENS.HORIZON.easingOutQuad }}>
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: `${getDomainColor(selectedDomain.id)}15`, border: `1px solid ${getDomainColor(selectedDomain.id)}30`, boxShadow: `0 0 20px ${getDomainBloom(selectedDomain.id)}`, color: getDomainColor(selectedDomain.id) }}>
