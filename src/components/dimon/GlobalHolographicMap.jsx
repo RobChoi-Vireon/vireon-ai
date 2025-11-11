@@ -6,6 +6,7 @@ import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
 // MACRO CONSTELLATION — OS HORIZON V1.7.4 "ORB SPATIAL SERENITY & HOVER ALIGNMENT PATCH"
+// v1.1.2: Typography Optimization for translucent glass readability
 // Enhanced orb spacing (+44% total) • Detached hover cards • Tahoe-grade composure
 // ============================================================================
 
@@ -40,8 +41,8 @@ const TOKENS = {
     parallaxOffset: 6, parallaxResponse: 0.4, microParallaxMax: 4, microParallaxDamping: 0.85,
     bgBase: '#06080D', bgEnd: '#0A0E14', bgSubsurfaceCenter: '#121823', bgSubsurfaceEdge: '#0B1016',
     lightTemp: 'rgba(255, 255, 255, 0.03)', lightTempBottom: 'rgba(255, 255, 255, 0.00)',
-    lineHeight: 22,
-    loadInDamping: 0.95,
+    lineHeight: 24, // ENHANCED: 22 → 24px for improved readability
+    blockSpacing: 16, // NEW: Standard block spacing
     connectingLineOpacity: 0.08 // NEW: Optional orb-to-card connector
   },
   MACRO: {
@@ -51,9 +52,20 @@ const TOKENS = {
     geopolitics: { core: '#FFD37A', halo: 'rgba(255,211,122,0.38)', text: '#FFE8B8', bloom: 'rgba(255,211,122,0.18)', zDepth: 12 }
   },
   colors: {
-    textPrimary: "rgba(232,235,239,1)", textSecondary: "rgba(232,235,239,0.80)",
-    textLabel: "rgba(191,199,212,1)", textChip: "rgba(232,235,239,0.85)", textTertiary: "rgba(255,255,255,0.65)",
+    textPrimary: "rgba(255,255,255,0.88)", // ENHANCED: increased from 0.92 → 0.88 for glass surfaces
+    textSecondary: "rgba(255,255,255,0.78)", // ENHANCED: increased from 0.80 → 0.78
+    textLabel: "rgba(255,255,255,0.72)", // ENHANCED: increased from rgba(191,199,212,1) for consistency
+    textChip: "rgba(232,235,239,0.85)",
+    textTertiary: "rgba(255,255,255,0.65)",
     deltaUp: '#6EF3A5', deltaDown: '#F38B82'
+  },
+  // NEW: Typography scales for responsive behavior
+  type: {
+    headline: { base: 18, min: 16, max: 18, weight: 600 }, // "Rates", "FX", etc.
+    confidence: { base: 14, min: 12, max: 14, weight: 500 }, // "CONFIDENCE" label
+    body: { base: 16, min: 14, max: 16, weight: 400 }, // Main insight text
+    subtext: { base: 13, min: 12, max: 13, weight: 400 }, // Strength, metadata
+    cta: { base: 14, min: 13, max: 14, weight: 500 } // "Click to view details"
   }
 };
 
@@ -152,6 +164,16 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       TOKENS.HORIZON.globalScale;
     return isInitialLoad ? baseScale * TOKENS.HORIZON.loadInDamping : baseScale;
   }, [viewportSize, isInitialLoad]);
+
+  // NEW: Responsive font size helper with clamp
+  const getResponsiveFont = useCallback((typeKey) => {
+    const scale = TOKENS.type[typeKey];
+    if (!scale) return '16px';
+    
+    // Use clamp() for fluid scaling between min and max
+    // The 1.1vw provides a relative scaling based on viewport width
+    return `clamp(${scale.min}px, ${(scale.base / 16) * 1.1}vw, ${scale.max}px)`;
+  }, []);
 
   const dominantDriver = useMemo(() => {
     const maxStrength = Math.max(...domains.map(d => d.strength));
@@ -760,7 +782,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </g>
           </svg>
 
-          {/* FIXED: Detached Hover Tooltip with Anti-Flicker Logic */}
+          {/* ENHANCED: Detached Hover Tooltip with Optimized Typography */}
           <AnimatePresence mode="wait">
             {hoveredDomain && !selectedDomain && (() => {
               const domain = domains.find(d => d.id === hoveredDomain);
@@ -771,7 +793,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
               // Calculate precise bounding box for the invisible bridge area
               const cardWidth = 260; // As defined in getHoverCardPosition
-              const cardHeight = 280; // As defined in getHoverCardPosition
+              const cardHeight = 280; // Approximate height for tooltip content
               
               const bridgeMinX = Math.min(orbPos.x - orbPos.radius * TOKENS.HORIZON.hoverTriggerRadius, cardPos.left);
               const bridgeMaxX = Math.max(orbPos.x + orbPos.radius * TOKENS.HORIZON.hoverTriggerRadius, cardPos.left + cardWidth);
@@ -825,7 +847,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     />
                   </svg>
                   
-                  {/* Hover Card */}
+                  {/* ENHANCED: Hover Card with Typography v1.1.2 */}
                   <motion.div
                     key={`tooltip-${hoveredDomain}`}
                     initial={{ opacity: 0, scale: 0.98, y: 8 }}
@@ -850,7 +872,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       left: `${cardPos.left}px`,
                       top: `${cardPos.top}px`,
                       width: '260px',
-                      padding: '14px 16px',
+                      padding: '16px 18px', // ENHANCED: 14px → 16px for better breathing room
                       borderRadius: '16px',
                       backdropFilter: getBlur('panel'),
                       WebkitBackdropFilter: getBlur('panel'),
@@ -887,7 +909,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       borderRadius: '999px'
                     }} />
                     
-                    <div className="flex items-center gap-2.5 mb-3">
+                    {/* ENHANCED: Header with optimized typography */}
+                    <div className="flex items-center gap-3 mb-4" style={{ paddingTop: '2px' }}>
                       <div 
                         className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" 
                         style={{ 
@@ -906,9 +929,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                           transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
                           style={{ 
                             color: TOKENS.colors.textPrimary, 
-                            fontSize: '14px', 
-                            fontWeight: 600,
-                            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
+                            fontSize: getResponsiveFont('headline'),
+                            fontWeight: TOKENS.type.headline.weight,
+                            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                            letterSpacing: '-0.015em',
+                            lineHeight: 1.2
                           }}
                         >
                           {domain.id.charAt(0).toUpperCase() + domain.id.slice(1)}
@@ -918,11 +943,13 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 1.5, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
                           className="flex items-center gap-1.5"
+                          style={{ marginTop: '2px' }}
                         >
-                          {React.cloneElement(getPostureIcon(domain.posture), { className: "w-3 h-3" })}
+                          {React.cloneElement(getPostureIcon(domain.posture), { className: "w-3.5 h-3.5" })}
                           <span style={{ 
                             color: getDomainText(domain.id), 
-                            fontSize: '12px',
+                            fontSize: getResponsiveFont('subtext'),
+                            fontWeight: TOKENS.type.subtext.weight,
                             fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                           }}>
                             {domain.posture.charAt(0).toUpperCase() + domain.posture.slice(1)}
@@ -931,11 +958,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       </div>
                     </div>
                     
+                    {/* ENHANCED: Confidence section with improved spacing */}
                     <motion.div 
                       initial={{ opacity: 0, y: 3 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 2, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
-                      className="flex items-center gap-3 mb-3 pb-3"
+                      className="flex items-center gap-3 mb-4 pb-4" // Increased mb-3 to mb-4, pb-3 to pb-4
                       style={{ borderBottom: `1px solid ${TOKENS.HORIZON.drawerDivider}` }}
                     >
                       <div className="relative w-7 h-7 flex-shrink-0">
@@ -955,7 +983,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         </svg>
                         <div 
                           className="absolute inset-0 flex items-center justify-center font-bold" 
-                          style={{ color: TOKENS.colors.textPrimary, fontSize: '9px' }}
+                          style={{ 
+                            color: TOKENS.colors.textPrimary, 
+                            fontSize: '9px',
+                            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
+                          }}
                         >
                           {domain.confidence_pct}
                           {domain.confidenceDelta !== undefined && domain.confidenceDelta !== 0 && (
@@ -974,38 +1006,60 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         </div>
                       </div>
                       <div className="flex-1">
-                        <div style={{ fontSize: '10px', color: TOKENS.colors.textLabel, letterSpacing: '0.15em', fontWeight: 500 }}>
+                        <div style={{ 
+                          fontSize: getResponsiveFont('confidence'),
+                          fontWeight: TOKENS.type.confidence.weight,
+                          color: TOKENS.colors.textLabel, 
+                          letterSpacing: '0.12em', 
+                          textTransform: 'uppercase',
+                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
+                          marginBottom: '3px' // Added for better spacing
+                        }}>
                           CONFIDENCE
                         </div>
-                        <div style={{ fontSize: '11px', color: TOKENS.colors.textSecondary, marginTop: '2px' }}>
+                        <div style={{ 
+                          fontSize: getResponsiveFont('subtext'),
+                          fontWeight: TOKENS.type.subtext.weight,
+                          color: TOKENS.colors.textSecondary,
+                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                        }}>
                           Strength: {Math.round(domain.strength * 100)}%
                         </div>
                       </div>
                     </motion.div>
                     
+                    {/* ENHANCED: Body text with optimal line-height and contrast */}
                     <motion.p
                       initial={{ opacity: 0, y: 3 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 3, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
                       style={{ 
                         color: TOKENS.colors.textSecondary, 
-                        fontSize: '11px', 
+                        fontSize: getResponsiveFont('body'),
+                        fontWeight: TOKENS.type.body.weight,
                         lineHeight: `${TOKENS.HORIZON.lineHeight}px`,
-                        paddingTop: '2px',
-                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
+                        letterSpacing: '-0.01em'
                       }}
                     >
                       {domain.summary.length > 120 ? domain.summary.substring(0, 120) + '...' : domain.summary}
                     </motion.p>
                     
+                    {/* ENHANCED: CTA with improved spacing and typography */}
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 4, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
-                      className="mt-3 pt-3 flex items-center justify-center gap-1.5"
+                      className="mt-4 pt-4 flex items-center justify-center gap-1.5" // Increased mt-3 to mt-4, pt-3 to pt-4
                       style={{ borderTop: `1px solid ${TOKENS.HORIZON.drawerDivider}` }}
                     >
-                      <span style={{ fontSize: '10px', color: TOKENS.colors.textTertiary, letterSpacing: '0.02em' }}>
+                      <span style={{ 
+                        fontSize: getResponsiveFont('cta'),
+                        fontWeight: TOKENS.type.cta.weight,
+                        color: TOKENS.colors.textTertiary, 
+                        letterSpacing: '0.01em',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                      }}>
                         Click to view details
                       </span>
                       <ArrowRight className="w-3 h-3" style={{ color: TOKENS.colors.textTertiary }} />
@@ -1183,13 +1237,13 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </motion.div>
 
             <div className="flex-1 overflow-y-auto p-6" style={{ position: 'relative', zIndex: 2 }}>
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: TOKENS.HORIZON.t_contentStagger, duration: 0.2 }} style={{ marginBottom: '16px' }}>
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: TOKENS.HORIZON.t_contentStagger, duration: 0.2 }} style={{ marginBottom: `${TOKENS.HORIZON.blockSpacing}px` }}>
                 <h4 style={{ color: 'rgba(255,255,255,0.9)', fontSize: '13px', fontWeight: 500, marginBottom: '8px' }}>What This Means</h4>
                 <p style={{ color: TOKENS.colors.textSecondary, fontSize: '14px', lineHeight: '22px' }}>{selectedDomain.summary}</p>
                 {selectedDomain.addendum && <p style={{ color: TOKENS.colors.textSecondary, fontSize: '13px', marginTop: '8px', opacity: 0.9 }}>{selectedDomain.addendum}</p>}
               </motion.div>
               
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: TOKENS.HORIZON.t_contentStagger * 2, duration: 0.2 }} style={{ marginBottom: '16px' }}>
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: TOKENS.HORIZON.t_contentStagger * 2, duration: 0.2 }} style={{ marginBottom: `${TOKENS.HORIZON.blockSpacing}px` }}>
                 <h4 style={{ color: 'rgba(255,255,255,0.9)', fontSize: '13px', fontWeight: 500, marginBottom: '8px' }}>48-Hour Trend</h4>
                 <div className="relative p-3 rounded-lg" style={{ background: 'rgba(0, 0, 0, 0.25)', border: `1px solid ${TOKENS.HORIZON.glassBorder}` }}>
                   <svg 
@@ -1315,7 +1369,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 </div>
               </motion.div>
               
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: TOKENS.HORIZON.t_contentStagger * 3, duration: 0.2 }} style={{ marginBottom: '16px' }}>
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: TOKENS.HORIZON.t_contentStagger * 3, duration: 0.2 }} style={{ marginBottom: `${TOKENS.HORIZON.blockSpacing}px` }}>
                 <h4 style={{ color: 'rgba(255,255,255,0.9)', fontSize: '13px', fontWeight: 500, marginBottom: '8px' }}>Downstream Effects</h4>
                 <div className="space-y-2">
                   {selectedDomain.ripple.slice(0, 3).map((effect, i) => (
@@ -1388,7 +1442,26 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           }
         }
         
-        * { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif; }
+        /* ENHANCED: Typography with fluid scaling and improved contrast */
+        * { 
+          font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Responsive typography minimum sizes */
+        @media (max-width: 1280px) {
+          h4, .headline { font-size: ${TOKENS.type.headline.min}px !important; }
+          .body-text { font-size: ${TOKENS.type.body.min}px !important; }
+          .sub-text { font-size: ${TOKENS.type.subtext.min}px !important; }
+        }
+        
+        /* Ensure minimum contrast on glass surfaces */
+        @media (prefers-contrast: more) {
+          * {
+            color: rgba(255,255,255,0.95) !important;
+          }
+        }
       `}</style>
     </motion.section>
   );
