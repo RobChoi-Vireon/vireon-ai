@@ -285,6 +285,14 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     geopolitics: "So what: Supply chain fragmentation accelerating; prioritize domestic resilience and energy hedges."
   }[domain.id] || "Monitor for shifts in macro equilibrium dynamics."), []);
 
+  // Translation lines for cognitive clarity (v2.0)
+  const getTranslationLine = useCallback((domainId) => ({
+    growth: "TRANSLATION: Expansion slowing — markets rotating toward defensives.",
+    rates: "TRANSLATION: Bond yields firming — credit costs steady.",
+    fx: "TRANSLATION: Global risk appetite cooling — markets shifting toward stability.",
+    geopolitics: "TRANSLATION: Policy tensions rising — volatility pockets expanding."
+  }[domainId] || "TRANSLATION: Market balance shifting; monitor core indicators for clarity."), []);
+
   // Simplified tight hover with debouncing (v1.9.7 - FIXED)
   const handleDomainHoverEnter = useCallback((domain) => {
     // Clear any pending exit
@@ -737,7 +745,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </g>
           </svg>
 
-          {/* Hover Card - PRODUCTION SEAL v1.9.8 */}
+          {/* Hover Card - COGNITIVE CLARITY v2.0 */}
           <AnimatePresence>
             {hoveredDomain && !selectedDomain && (() => {
               const domain = domains.find(d => d.id === hoveredDomain);
@@ -749,6 +757,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               const tooltipY = orbPos.y;
 
               const opacityAdjust = getTextOpacityAdjustment(domain.id);
+              const translationText = getTranslationLine(hoveredDomain);
 
               return (
                 <motion.div
@@ -804,7 +813,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   }}
                   role="button"
                   tabIndex={0}
-                  aria-label={`Open ${domain.id} drawer: ${domain.posture}, ${domain.confidence_pct}% confidence`}
+                  aria-label={`Open ${domain.id} drawer: ${domain.posture}, ${domain.confidence_pct}% confidence. ${translationText}`}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCardClick(domain); } }}
                 >
                   {/* Reflected halo - clamped at 0.45 max */}
@@ -845,7 +854,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     pointerEvents: 'none'
                   }} />
 
-                  {/* Content wrapper with proper z-index */}
+                  {/* Content wrapper */}
                   <div style={{ position: 'relative', zIndex: 1 }}>
                     {/* Header: Icon + Title + Posture */}
                     <div className="flex items-center gap-2.5 mb-3">
@@ -963,7 +972,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         </div>
                       </div>
                       <div className="flex-1">
-                        {/* PRODUCTION v1.9.8: Updated label color to 0.85 */}
                         <div style={{
                           fontSize: '14px',
                           color: 'rgba(255, 255, 255, 0.85)',
@@ -973,7 +981,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         }}>
                           CONFIDENCE
                         </div>
-                        {/* PRODUCTION v1.9.8: Added 6px spacing */}
                         <div style={{
                           fontSize: '12px',
                           color: TOKENS.colors.textSecondary,
@@ -1001,7 +1008,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         fontSize: '15px',
                         lineHeight: `${TOKENS.HORIZON.lineHeight}px`,
                         paddingTop: '8px',
-                        marginBottom: '6px',
+                        marginBottom: '4px',
                         textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
                         fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                       }}
@@ -1009,34 +1016,89 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       {domain.summary.length > 120 ? domain.summary.substring(0, 120) + '...' : domain.summary}
                     </motion.p>
 
-                    {/* CTA Section */}
-                    {/* PRODUCTION v1.9.8: Added 8px spacing above */}
+                    {/* Translation Line - Cognitive Clarity v2.0 */}
                     <motion.div
+                      className="translation-line"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{
+                        delay: TOKENS.HORIZON.t_tooltipTextStagger * 3.5,
+                        duration: 0.2
+                      }}
+                      style={{
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                        fontSize: '14px',
+                        lineHeight: '22px',
+                        color: 'rgba(255, 255, 255, 0.75)',
+                        letterSpacing: '0.2px',
+                        marginTop: '4px',
+                        marginBottom: '4px',
+                        pointerEvents: 'none'
+                      }}
+                      aria-label={translationText}
+                    >
+                      <span style={{
+                        textTransform: 'uppercase',
+                        fontWeight: 500,
+                        opacity: 0.7,
+                        marginRight: '4px',
+                        letterSpacing: '0.4px'
+                      }}>
+                        {translationText.split(':')[0]}:
+                      </span>
+                      <span style={{
+                        fontWeight: 400,
+                        opacity: 0.8
+                      }}>
+                        {translationText.split(':')[1]}
+                      </span>
+                    </motion.div>
+
+                    {/* CTA Section - Redesigned v2.0 */}
+                    <motion.div
+                      className="cta-section"
                       initial={{ opacity: 0 }}
                       animate={{
                         opacity: 1
                       }}
                       transition={{
                         delay: TOKENS.HORIZON.t_tooltipTextStagger * 4,
-                        duration: TOKENS.HORIZON.t_tooltipTextDuration
+                        duration: 0.15
                       }}
-                      className="mt-3 pt-3 flex items-center justify-center gap-1.5"
                       style={{
+                        marginTop: '8px',
+                        paddingTop: '8px',
                         borderTop: `1px solid ${TOKENS.HORIZON.drawerDivider}`,
-                        paddingTop: '8px'
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
                       }}
                     >
-                      <span style={{
-                        fontSize: '14px',
-                        color: TOKENS.colors.textCTA,
-                        letterSpacing: '0.02em',
-                        fontWeight: 500,
-                        textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
-                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-                      }}>
-                        Click to view details
-                      </span>
-                      <ArrowRight className="w-3.5 h-3.5" style={{ color: TOKENS.colors.textCTA }} />
+                      <motion.span
+                        className="cta-text"
+                        whileHover={{
+                          x: 4,
+                          letterSpacing: '0.5px',
+                          transition: { duration: 0.24, ease: 'easeInOut' }
+                        }}
+                        style={{
+                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                          fontSize: '14px',
+                          fontWeight: 500,
+                          letterSpacing: '0.3px',
+                          color: 'rgba(90, 160, 255, 0.95)',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          transition: 'all 240ms ease-in-out',
+                          cursor: 'pointer',
+                          textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)'
+                        }}
+                        aria-label="View full signal, button"
+                      >
+                        <span>View full signal</span>
+                        <ArrowRight className="w-3.5 h-3.5" style={{ color: 'rgba(90, 160, 255, 0.95)' }} />
+                      </motion.span>
                     </motion.div>
                   </div>
 
