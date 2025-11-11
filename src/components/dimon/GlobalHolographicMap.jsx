@@ -1027,7 +1027,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       </div>
                     </motion.div>
 
-                    {/* Faint horizontal gradient divider (5-10% white blur) */}
+                    {/* Faint horizontal gradient divider */}
                     <div style={{
                       height: '2px',
                       background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
@@ -1060,24 +1060,42 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       {summaryText.length > 100 ? summaryText.substring(0, 100) + '...' : summaryText}
                     </motion.p>
 
-                    {/* Insight Line - Enhanced line-height */}
+                    {/* Insight Pane - FROSTED GLASS ENHANCEMENT v2.3 */}
                     <motion.div
-                      className="insight-line"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
+                      className="insight-pane"
+                      initial={{ opacity: 0, y: 2 }}
+                      animate={{ 
+                        opacity: 1, 
+                        y: 0
+                      }}
                       transition={{
                         delay: 0.20,
-                        duration: 0.2
+                        duration: 0.2,
+                        ease: 'easeInOut'
+                      }}
+                      whileHover={{ 
+                        filter: 'brightness(1.05)',
+                        transition: { duration: 0.15 }
                       }}
                       style={{
+                        position: 'relative',
+                        width: '100%',
+                        padding: '7px 12px',
+                        borderRadius: '12px',
+                        marginTop: '8px',
+                        marginBottom: '10px',
+                        background: 'rgba(255, 255, 255, 0.10)',
+                        backdropFilter: 'blur(16px)',
+                        WebkitBackdropFilter: 'blur(16px)',
+                        border: '1px solid rgba(255, 255, 255, 0.20)',
+                        boxShadow: 'inset 0 0 0 1px rgba(255, 255, 255, 0.08)',
+                        transform: 'translateZ(2px)', // Parallax depth
                         fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
                         fontSize: '14.5px',
-                        lineHeight: '23px',
-                        color: 'rgba(255, 255, 255, 0.78)',
-                        letterSpacing: '0.15px',
-                        marginTop: '6px',
-                        marginBottom: '6px',
-                        pointerEvents: 'none'
+                        lineHeight: '1.6',
+                        color: 'rgba(255, 255, 255, 0.92)', // +10% brightness vs body
+                        pointerEvents: 'none',
+                        cursor: 'default'
                       }}
                       aria-label={insightText}
                     >
@@ -1091,7 +1109,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       </span>
                       <span style={{
                         fontWeight: 400,
-                        opacity: 0.85
+                        opacity: 0.90
                       }}>
                         {insightText.split(':')[1]}
                       </span>
@@ -1613,7 +1631,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         cursor: 'default',
                         transition: 'transform 0.2s ease-out' // 0.2s hover ripple
                       }}
-                      onHoverStart={() => {
+                      onHoverStart={(e) => {
                         const ripple = document.createElement('div');
                         ripple.style.cssText = `
                           position: absolute;
@@ -1623,7 +1641,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                           animation: ripple 0.3s ease-out;
                           pointer-events: none;
                         `;
-                        const target = document.currentTarget;
+                        const target = e.currentTarget;
                         if (target) {
                           target.appendChild(ripple);
                           setTimeout(() => ripple.remove(), 300);
