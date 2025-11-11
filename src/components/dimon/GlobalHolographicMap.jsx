@@ -90,6 +90,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const prefetchTimerRef = useRef(null);
   
   const [hoveredDomain, setHoveredDomain] = useState(null);
+  const [isTooltipHovered, setIsTooltipHovered] = useState(false);
+  const [isOrbHovered, setIsOrbHovered] = useState(false);
+  const tooltipFadeTimerRef = useRef(null);
+  
   const [selectedDomain, setSelectedDomain] = useState(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
@@ -108,7 +112,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const [orbPulseActive, setOrbPulseActive] = useState(false);
   const [hoveredChartPoint, setHoveredChartPoint] = useState(null);
   const [drawerLuminance, setDrawerLuminance] = useState(1.0);
-  const [tooltipFadeTimer, setTooltipFadeTimer] = useState(null);
   
   const glassParallaxX = useSpring(0, { damping: 30, stiffness: 90 });
   const glassParallaxY = useSpring(0, { damping: 30, stiffness: 90 });
@@ -280,37 +283,48 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return () => cancelAnimationFrame(rafId);
   }, [shouldReduceMotion, selectedDomain]);
 
-  // Auto-fade timeout for hover card (Patch v1.1)
+  // Proper auto-fade with tooltip interaction support
   useEffect(() => {
-    if (!hoveredDomain) {
-      if (tooltipFadeTimer) {
-        clearTimeout(tooltipFadeTimer);
-        setTooltipFadeTimer(null);
-      }
-      return;
+    // Clear any existing timer
+    if (tooltipFadeTimerRef.current) {
+      clearTimeout(tooltipFadeTimerRef.current);
+      tooltipFadeTimerRef.current = null;
     }
 
-    // Set timer to auto-fade tooltip after 0.8s
-    const timer = setTimeout(() => {
-      setHoveredDomain(null);
-      setTooltipFadeTimer(null);
-    }, TOKENS.HORIZON.t_tooltipAutoFade * 1000);
-
-    setTooltipFadeTimer(timer);
+    // Only start fade timer if hoveredDomain is set AND neither orb nor tooltip is actively hovered
+    if (hoveredDomain && !isOrbHovered && !isTooltipHovered) {
+      tooltipFadeTimerRef.current = setTimeout(() => {
+        setHoveredDomain(null);
+        setIsOrbHovered(false); // Ensure orb state is reset
+        setIsTooltipHovered(false); // Ensure tooltip state is reset
+      }, TOKENS.HORIZON.t_tooltipAutoFade * 1000);
+    }
 
     return () => {
-      if (timer) clearTimeout(timer);
+      // Clear timer on component unmount or when dependencies change before a new timer is set
+      if (tooltipFadeTimerRef.current) {
+        clearTimeout(tooltipFadeTimerRef.current);
+        tooltipFadeTimerRef.current = null;
+      }
     };
-  }, [hoveredDomain]);
+  }, [hoveredDomain, isOrbHovered, isTooltipHovered]);
 
-  const handleDomainHover = useCallback((domain) => {
-    setHoveredDomain(domain?.id || null);
-    // Cancel auto-fade timer when hovering
-    if (tooltipFadeTimer) {
-      clearTimeout(tooltipFadeTimer);
-      setTooltipFadeTimer(null);
-    }
-  }, [tooltipFadeTimer]);
+  const handleDomainHoverEnter = useCallback((domain) => {
+    setHoveredDomain(domain.id);
+    setIsOrbHovered(true);
+  }, []);
+
+  const handleDomainHoverLeave = useCallback(() => {
+    setIsOrbHovered(false);
+  }, []);
+
+  const handleTooltipHoverEnter = useCallback(() => {
+    setIsTooltipHovered(true);
+  }, []);
+
+  const handleTooltipHoverLeave = useCallback(() => {
+    setIsTooltipHovered(false);
+  }, []);
 
   const handleOpenDrawer = useCallback((domain) => {
     if (selectedDomain?.id === domain.id) return;
@@ -620,7 +634,23 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       />
                     )}
                     
-                    <motion.circle cx={orbPos.x} cy={orbPos.y} r={orbPos.radius} fill={`url(#nucleus-${domain.id})`} className="orb cursor-pointer" style={{ filter: `url(#bloom-${domain.id})`, transformOrigin: `${orbPos.x}px ${orbPos.y}px`, pointerEvents: 'all', color }} animate={shouldReduceMotion ? {} : { scale: isPulsing ? [1, 1.05, 1] : isSelected ? [1, 1.025, 1] : isHovered ? 1.05 : [0.985, 1.025, 0.985], opacity: isPulsing ? [0.985, 1, 0.985] : isHovered || isSelected ? 1 : [0.985, 1, 0.985] }} transition={isPulsing ? { duration: TOKENS.HORIZON.t_orbBreathIn, ease: TOKENS.HORIZON.easingSine } : isSelected ? { duration: TOKENS.HORIZON.t_orbLifePulse, repeat: Infinity, ease: "easeInOut" } : isHovered ? { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easingApple } : { duration: TOKENS.HORIZON.t_breathe, repeat: Infinity, ease: "easeInOut", delay: idx * 1.2 }} onMouseEnter={() => handleDomainHover(domain)} onMouseLeave={() => handleDomainHover(null)} onClick={() => handleOpenDrawer(domain)} onKeyDown={(e) => { if (e.key === 'Enter') handleOpenDrawer(domain); }} tabIndex={0} role="button" aria-label={`${domain.id} domain: ${domain.posture}, ${domain.confidence_pct}% confidence`} />
+                    <motion.circle 
+                      cx={orbPos.x} 
+                      cy={orbPos.y} 
+                      r={orbPos.radius} 
+                      fill={`url(#nucleus-${domain.id})`} 
+                      className="orb cursor-pointer" 
+                      style={{ filter: `url(#bloom-${domain.id})`, transformOrigin: `${orbPos.x}px ${orbPos.y}px`, pointerEvents: 'all', color }} 
+                      animate={shouldReduceMotion ? {} : { scale: isPulsing ? [1, 1.05, 1] : isSelected ? [1, 1.025, 1] : isHovered ? 1.05 : [0.985, 1.025, 0.985], opacity: isPulsing ? [0.985, 1, 0.985] : isHovered || isSelected ? 1 : [0.985, 1, 0.985] }} 
+                      transition={isPulsing ? { duration: TOKENS.HORIZON.t_orbBreathIn, ease: TOKENS.HORIZON.easingSine } : isSelected ? { duration: TOKENS.HORIZON.t_orbLifePulse, repeat: Infinity, ease: "easeInOut" } : isHovered ? { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easingApple } : { duration: TOKENS.HORIZON.t_breathe, repeat: Infinity, ease: "easeInOut", delay: idx * 1.2 }} 
+                      onMouseEnter={() => handleDomainHoverEnter(domain)} 
+                      onMouseLeave={handleDomainHoverLeave} 
+                      onClick={() => handleOpenDrawer(domain)} 
+                      onKeyDown={(e) => { if (e.key === 'Enter') handleOpenDrawer(domain); }} 
+                      tabIndex={0} 
+                      role="button" 
+                      aria-label={`${domain.id} domain: ${domain.posture}, ${domain.confidence_pct}% confidence`} 
+                    />
                     <circle cx={orbPos.x} cy={orbPos.y} r={orbPos.radius} fill="none" stroke={color} strokeWidth="1" opacity="0.25" style={{ pointerEvents: 'none' }} />
                   </g>
                 );
@@ -628,7 +658,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </g>
           </svg>
 
-          {/* Hover Tooltip Window — SERENITY PATCH v1.1 */}
+          {/* Hover Tooltip Window — FIXED AUTO-FADE */}
           <AnimatePresence>
             {hoveredDomain && !selectedDomain && (() => {
               const domain = domains.find(d => d.id === hoveredDomain);
@@ -666,10 +696,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     background: TOKENS.HORIZON.glassBg,
                     border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
                     boxShadow: TOKENS.HORIZON.hoverCardShadow,
-                    pointerEvents: 'none',
+                    pointerEvents: 'auto', // Changed from 'none' to 'auto'
                     zIndex: 5
                   }}
-                  onMouseEnter={() => handleDomainHover(domain)}
+                  onMouseEnter={handleTooltipHoverEnter}
+                  onMouseLeave={handleTooltipHoverLeave}
                 >
                   {/* Optional Halo Pulse (Patch v1.1) */}
                   {!shouldReduceMotion && (
