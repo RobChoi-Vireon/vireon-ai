@@ -68,11 +68,10 @@ const MOCK_DOMAINS = [
   { id: "rates", posture: "hawkish", confidence_pct: 78, strength: 0.82,
     summary: "Fed holding firm; terminal rate expectations drift higher on sticky services inflation.",
     ripple: ["Credit spreads widen", "Tech multiples compress", "EM funding costs rise"], addendum: null,
-    last_updated_iso: new Date().toISOString(),
     sparkline: [0.72, 0.74, 0.76, 0.75, 0.78, 0.80, 0.79, 0.81, 0.82],
     confidenceDelta: 2 },
   { id: "fx", posture: "stable", confidence_pct: 65, strength: 0.58,
-    summary: "Dollar steady as interest-rate gaps shrink; risk trades unwind slowly.",
+    summary: "Rates aligning globally, risk trades unwinding gradually.",
     ripple: ["EM currencies stabilize", "Energy imports neutral", "Bond yields remain contained."],
     addendum: "Next 48h: FX likely stable; carry re-risk limited unless yields diverge.",
     last_updated_iso: new Date().toISOString(),
@@ -285,11 +284,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     geopolitics: "So what: Supply chain fragmentation accelerating; prioritize domestic resilience and energy hedges."
   }[domain.id] || "Monitor for shifts in macro equilibrium dynamics."), []);
 
-  // Insight lines for cognitive clarity (v2.1 - OS Horizon Refinement)
+  // Insight lines for cognitive clarity (v2.2 - Final OS Horizon Polish)
   const getInsightLine = useCallback((domainId) => ({
     growth: "Insight: Markets balancing — defensive rotation underway.",
     rates: "Insight: Yields steady — credit markets adjusting to new baseline.",
-    fx: "Insight: Capital flows normalizing — risk appetite cooling globally.",
+    fx: "Insight: Capital flows stabilizing; global risk appetite cooling.",
     geopolitics: "Insight: Policy tensions rising — volatility expanding in select regions."
   }[domainId] || "Insight: Market dynamics shifting — monitor key indicators."), []);
 
@@ -756,7 +755,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </g>
           </svg>
 
-          {/* Hover Card - OS HORIZON REFINEMENT v2.1 */}
+          {/* Hover Card - FINAL OS HORIZON POLISH v2.2 */}
           <AnimatePresence>
             {hoveredDomain && !selectedDomain && (() => {
               const domain = domains.find(d => d.id === hoveredDomain);
@@ -777,7 +776,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   initial={{ opacity: 0, scale: 0.96 }}
                   animate={{
                     opacity: 1,
-                    scale: 1.00
+                    scale: 1.01
                   }}
                   exit={{
                     opacity: 0,
@@ -785,6 +784,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     transition: { duration: 0.22, ease: [0.4, 0, 0.2, 1] }
                   }}
                   transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+                  whileHover={{
+                    scale: 1.01
+                  }}
                   style={{
                     position: 'absolute',
                     left: `${tooltipX}px`,
@@ -826,7 +828,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   aria-label={`Open ${domain.id} drawer: ${domain.posture}, ${domain.confidence_pct}% confidence. ${insightText}`}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCardClick(domain); } }}
                 >
-                  {/* Reflected halo - clamped + edge glow on hover */}
+                  {/* Reflected halo - alive calmness pulse */}
                   {!shouldReduceMotion && (
                     <motion.div
                       className="absolute inset-0 rounded-[18px]"
@@ -836,8 +838,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         pointerEvents: 'none',
                         zIndex: -1
                       }}
-                      animate={{ opacity: [0.08, 0.12, 0.08] }}
-                      transition={{ duration: TOKENS.HORIZON.t_haloPulse, repeat: Infinity, ease: 'easeInOut' }}
+                      animate={{ opacity: [0.10, 0.14, 0.10] }}
+                      transition={{ duration: 0.3, repeat: Infinity, ease: 'easeInOut' }}
                     />
                   )}
                   
@@ -899,7 +901,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                             fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
                           }}
                         >
-                          {domain.id.charAt(0).toUpperCase() + domain.id.slice(1)}
+                          {domain.id.charAt(0).toUpperCase() + domain.id.slice(1)} Markets
                         </motion.h4>
                         <motion.div
                           initial={{ opacity: 0, y: -3 }}
@@ -936,7 +938,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       opacity: 0.5
                     }} />
 
-                    {/* Confidence Section with Enhanced Ring */}
+                    {/* Confidence Section with Brightened Ring */}
                     <motion.div
                       initial={{ opacity: 0, y: 3 }}
                       animate={{
@@ -963,7 +965,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                             strokeDasharray="87.9"
                             strokeDashoffset={87.9 - (87.9 * domain.confidence_pct / 100)}
                             style={{
-                              filter: `drop-shadow(0 0 4px ${getDomainBloom(domain.id)})`
+                              filter: `drop-shadow(0 0 5px ${getDomainBloom(domain.id)})`,
+                              opacity: 1.0
                             }}
                           />
                         </svg>
@@ -1008,20 +1011,21 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                           textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
                           fontWeight: 400
                         }}>
-                          Strength {Math.round(domain.strength * 100)}%
+                          {domain.confidence_pct}% — {summaryText.substring(0, 65)}...
                         </div>
                       </div>
                     </motion.div>
 
-                    {/* Subtle section divider */}
+                    {/* Faint horizontal gradient divider (5-10% white blur) */}
                     <div style={{
-                      height: '1px',
-                      background: `linear-gradient(90deg, transparent, ${TOKENS.HORIZON.drawerDivider}, transparent)`,
+                      height: '2px',
+                      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
+                      filter: 'blur(1px)',
                       margin: '12px 0',
-                      opacity: 0.5
+                      opacity: 0.6
                     }} />
 
-                    {/* Signal Summary - Concise */}
+                    {/* Signal Summary - Enhanced line-height for breathing room */}
                     <motion.p
                       initial={{ opacity: 0, y: 3 }}
                       animate={{
@@ -1035,7 +1039,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       style={{
                         color: 'rgba(255, 255, 255, 0.90)',
                         fontSize: '16.5px',
-                        lineHeight: '24px',
+                        lineHeight: '25px',
                         marginBottom: '8px',
                         textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
                         fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
@@ -1045,7 +1049,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       {summaryText.length > 100 ? summaryText.substring(0, 100) + '...' : summaryText}
                     </motion.p>
 
-                    {/* Insight Line - OS Horizon Refinement */}
+                    {/* Insight Line - Enhanced line-height */}
                     <motion.div
                       className="insight-line"
                       initial={{ opacity: 0 }}
@@ -1057,7 +1061,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       style={{
                         fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
                         fontSize: '14.5px',
-                        lineHeight: '22px',
+                        lineHeight: '23px',
                         color: 'rgba(255, 255, 255, 0.78)',
                         letterSpacing: '0.15px',
                         marginTop: '6px',
@@ -1090,7 +1094,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       opacity: 0.5
                     }} />
 
-                    {/* CTA Section - Refined v2.1 */}
+                    {/* CTA Section - Smooth hover fade */}
                     <motion.div
                       className="cta-section"
                       initial={{ opacity: 0 }}
@@ -1112,7 +1116,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         whileHover={{
                           x: 3,
                           letterSpacing: '0.4px',
-                          transition: { duration: 0.24, ease: [0.4, 0, 0.2, 1] }
+                          transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] }
                         }}
                         style={{
                           fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
@@ -1123,7 +1127,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                           display: 'inline-flex',
                           alignItems: 'center',
                           gap: '5px',
-                          transition: 'all 240ms ease-in-out',
+                          transition: 'all 250ms ease-in-out',
                           cursor: 'pointer',
                           textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)'
                         }}
@@ -1133,7 +1137,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         <motion.div
                           whileHover={{
                             x: 2,
-                            transition: { duration: 0.24, ease: [0.4, 0, 0.2, 1] }
+                            transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] }
                           }}
                         >
                           <ArrowRight className="w-3.5 h-3.5" style={{ color: 'rgba(90, 160, 255, 0.95)' }} />
