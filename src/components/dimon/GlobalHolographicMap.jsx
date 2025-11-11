@@ -688,7 +688,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </g>
           </svg>
 
-          {/* Hover Tooltip Window — TEXT READABILITY PATCH v1.2.3 */}
+          {/* Hover Tooltip Window — TEXT READABILITY PATCH v1.2.3 FIXED */}
           <AnimatePresence>
             {hoveredDomain && !selectedDomain && (() => {
               const domain = domains.find(d => d.id === hoveredDomain);
@@ -700,7 +700,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               const tooltipY = orbPos.y;
 
               const opacityAdjust = getTextOpacityAdjustment(domain.id);
-              const [isTooltipHoveredLocal, setIsTooltipHoveredLocal] = useState(false);
+              // Use existing component-level state instead of local useState
 
               return (
                 <motion.div
@@ -732,14 +732,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     pointerEvents: 'auto',
                     zIndex: 5
                   }}
-                  onMouseEnter={() => {
-                    handleTooltipHoverEnter();
-                    setIsTooltipHoveredLocal(true);
-                  }}
-                  onMouseLeave={() => {
-                    handleTooltipHoverLeave();
-                    setIsTooltipHoveredLocal(false);
-                  }}
+                  onMouseEnter={handleTooltipHoverEnter}
+                  onMouseLeave={handleTooltipHoverLeave}
                 >
                   {/* Optional Halo Pulse */}
                   {!shouldReduceMotion && (
@@ -784,7 +778,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       <motion.h4
                         initial={{ opacity: 0, y: -3 }}
                         animate={{
-                          opacity: Math.min(0.95 + opacityAdjust + (isTooltipHoveredLocal ? 0.05 : 0), 1),
+                          opacity: Math.min(0.95 + opacityAdjust + (isTooltipHovered ? 0.05 : 0), 1),
                           y: 0
                         }}
                         transition={{
@@ -794,7 +788,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         }}
                         style={{
                           color: TOKENS.colors.textPrimary,
-                          fontSize: '19px', // Increased from 14px
+                          fontSize: '19px',
                           fontWeight: 600,
                           letterSpacing: '-0.02em',
                           textShadow: '0 1px 3px rgba(0, 0, 0, 0.35)',
@@ -806,7 +800,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       <motion.div
                         initial={{ opacity: 0, y: -3 }}
                         animate={{
-                          opacity: Math.min(0.80 + opacityAdjust + (isTooltipHoveredLocal ? 0.05 : 0), 1),
+                          opacity: Math.min(0.80 + opacityAdjust + (isTooltipHovered ? 0.05 : 0), 1),
                           y: 0
                         }}
                         transition={{
@@ -819,7 +813,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         {React.cloneElement(getPostureIcon(domain.posture), { className: "w-3 h-3" })}
                         <span style={{
                           color: getDomainText(domain.id),
-                          fontSize: '14px', // Increased from 12px
+                          fontSize: '14px',
                           letterSpacing: '0.2px',
                           textShadow: '0 1px 3px rgba(0, 0, 0, 0.35)',
                           fontWeight: 500,
@@ -835,7 +829,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   <motion.div
                     initial={{ opacity: 0, y: 3 }}
                     animate={{
-                      opacity: Math.min(1 + (isTooltipHoveredLocal ? 0.05 : 0), 1),
+                      opacity: Math.min(1 + (isTooltipHovered ? 0.05 : 0), 1),
                       y: 0
                     }}
                     transition={{
@@ -887,7 +881,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     </div>
                     <div className="flex-1">
                       <div style={{
-                        fontSize: '14px', // Increased from 10px
+                        fontSize: '14px',
                         color: TOKENS.colors.textLabel,
                         letterSpacing: '0.15em',
                         fontWeight: 500,
@@ -910,7 +904,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   <motion.p
                     initial={{ opacity: 0, y: 3 }}
                     animate={{
-                      opacity: Math.min(0.88 + opacityAdjust + (isTooltipHoveredLocal ? 0.05 : 0), 1),
+                      opacity: Math.min(0.88 + opacityAdjust + (isTooltipHovered ? 0.05 : 0), 1),
                       y: 0
                     }}
                     transition={{
@@ -919,11 +913,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       opacity: { duration: 0.15 }
                     }}
                     style={{
-                      color: TOKENS.colors.textBody, // Changed from textSecondary
-                      fontSize: '15px', // Increased from 11px
+                      color: TOKENS.colors.textBody,
+                      fontSize: '15px',
                       lineHeight: `${TOKENS.HORIZON.lineHeight}px`,
-                      paddingTop: '8px', // Increased from 2px (spacing optimization)
-                      marginBottom: '6px', // Added for spacing between confidence and body
+                      paddingTop: '8px',
+                      marginBottom: '6px',
                       textShadow: '0 1px 3px rgba(0, 0, 0, 0.35)',
                       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                     }}
@@ -935,7 +929,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{
-                      opacity: Math.min(1 + (isTooltipHoveredLocal ? 0.05 : 0), 1)
+                      opacity: Math.min(1 + (isTooltipHovered ? 0.05 : 0), 1)
                     }}
                     transition={{
                       delay: TOKENS.HORIZON.t_tooltipTextStagger * 4,
@@ -945,12 +939,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     className="mt-3 pt-3 flex items-center justify-center gap-1.5"
                     style={{
                       borderTop: `1px solid ${TOKENS.HORIZON.drawerDivider}`,
-                      paddingTop: '8px' // Added for spacing above CTA
+                      paddingTop: '8px'
                     }}
                   >
                     <span style={{
-                      fontSize: '14px', // Increased from 10px
-                      color: TOKENS.colors.textCTA, // Changed from textTertiary
+                      fontSize: '14px',
+                      color: TOKENS.colors.textCTA,
                       letterSpacing: '0.02em',
                       fontWeight: 500,
                       textShadow: '0 1px 3px rgba(0, 0, 0, 0.35)',
