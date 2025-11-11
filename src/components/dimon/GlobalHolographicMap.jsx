@@ -101,6 +101,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const drawerRef = useRef(null);
   const prefetchTimerRef = useRef(null);
   const hoverTimeoutRef = useRef(null);
+  const pendingHoverRef = useRef(null); // NEW: Track pending hover changes
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   
   const [hoveredDomain, setHoveredDomain] = useState(null);
@@ -385,18 +386,30 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return () => cancelAnimationFrame(rafId);
   }, [shouldReduceMotion, selectedDomain]);
 
+  // FIXED: Robust hover state management with debouncing
   const handleDomainHover = useCallback((domain) => {
+    // Clear all pending timeouts
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
       hoverTimeoutRef.current = null;
     }
+    if (pendingHoverRef.current) {
+      clearTimeout(pendingHoverRef.current);
+      pendingHoverRef.current = null;
+    }
 
     if (domain?.id) {
-      setHoveredDomain(domain.id);
+      // Debounce setting hoveredDomain to allow quick mouse movements without flicker
+      pendingHoverRef.current = setTimeout(() => {
+        setHoveredDomain(domain.id);
+        pendingHoverRef.current = null;
+      }, 10); // Very short delay to batch rapid hover changes
     } else {
+      // Longer delay when hiding to allow transition to card
       hoverTimeoutRef.current = setTimeout(() => {
         setHoveredDomain(null);
-      }, 100);
+        hoverTimeoutRef.current = null;
+      }, 200); // Increased from 100ms to 200ms for more forgiving transitions
     }
   }, []);
 
@@ -544,6 +557,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return () => {
       if (hoverTimeoutRef.current) {
         clearTimeout(hoverTimeoutRef.current);
+      }
+      if (pendingHoverRef.current) { // Added cleanup for pendingHoverRef
+        clearTimeout(pendingHoverRef.current);
       }
     };
   }, []);
@@ -744,14 +760,29 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </g>
           </svg>
 
-          {/* ENHANCED: Detached Hover Tooltip with Directional Positioning & Connecting Line */}
-          <AnimatePresence>
+          {/* FIXED: Detached Hover Tooltip with Anti-Flicker Logic */}
+          <AnimatePresence mode="wait">
             {hoveredDomain && !selectedDomain && (() => {
               const domain = domains.find(d => d.id === hoveredDomain);
               if (!domain) return null;
               
               const orbPos = getOrbPosition(hoveredDomain, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
               const cardPos = getHoverCardPosition(orbPos.x, orbPos.y, orbPos.radius);
+
+              // Calculate precise bounding box for the invisible bridge area
+              const cardWidth = 260; // As defined in getHoverCardPosition
+              const cardHeight = 280; // As defined in getHoverCardPosition
+              
+              const bridgeMinX = Math.min(orbPos.x - orbPos.radius * TOKENS.HORIZON.hoverTriggerRadius, cardPos.left);
+              const bridgeMaxX = Math.max(orbPos.x + orbPos.radius * TOKENS.HORIZON.hoverTriggerRadius, cardPos.left + cardWidth);
+              const bridgeMinY = Math.min(orbPos.y - orbPos.radius * TOKENS.HORIZON.hoverTriggerRadius, cardPos.top);
+              const bridgeMaxY = Math.max(orbPos.y + orbPos.radius * TOKENS.HORIZON.hoverTriggerRadius, cardPos.top + cardHeight);
+
+              const bridgePadding = 20; // Extra padding around the bridge area
+              const bridgeLeft = bridgeMinX - bridgePadding;
+              const bridgeTop = bridgeMinY - bridgePadding;
+              const bridgeWidth = (bridgeMaxX - bridgeMinX) + (2 * bridgePadding);
+              const bridgeHeight = (bridgeMaxY - bridgeMinY) + (2 * bridgePadding);
               
               // Calculate control point for quadratic bezier for connecting line
               const vecX = (cardPos.left + cardPos.cardAnchorX) - orbPos.x;
@@ -763,6 +794,23 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               
               return (
                 <React.Fragment key={`tooltip-group-${hoveredDomain}`}>
+                  {/* Invisible Bridge Area - Prevents hover exit between orb and card */}
+                  <motion.div
+                    style={{
+                      position: 'absolute',
+                      left: `${bridgeLeft}px`,
+                      top: `${bridgeTop}px`,
+                      width: `${bridgeWidth}px`,
+                      height: `${bridgeHeight}px`,
+                      // background: 'rgba(255,0,0,0.1)', // For debugging
+                      pointerEvents: 'auto',
+                      zIndex: 4 // Below the tooltip card, but above the constellation elements
+                    }}
+                    onMouseEnter={() => handleDomainHover(domain)}
+                    onMouseLeave={() => handleDomainHover(null)}
+                    aria-hidden="true"
+                  />
+                  
                   {/* Optional Connecting Line */}
                   <svg width={dimensions.width} height={dimensions.height} style={{ position: 'absolute', inset: 0, overflow: 'visible', pointerEvents: 'none', zIndex: 4 }}>
                     <motion.path
@@ -810,7 +858,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
                       boxShadow: TOKENS.HORIZON.hoverCardShadow,
                       pointerEvents: 'auto',
-                      zIndex: 5
+                      zIndex: 6 // Increased z-index to ensure it's above the bridge
                     }}
                     onMouseEnter={() => handleDomainHover(domain)}
                     onMouseLeave={() => handleDomainHover(null)}
