@@ -5,16 +5,18 @@ import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLef
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// MACRO CONSTELLATION — OS HORIZON V1.7.3 "ORB SPACING & EQUILIBRIUM BALANCE PATCH"
-// Increased orb spacing by 20% • Enhanced breathing room • Tahoe-grade serenity
+// MACRO CONSTELLATION — OS HORIZON V1.7.4 "ORB SPATIAL SERENITY & HOVER ALIGNMENT PATCH"
+// Enhanced orb spacing (+44% total) • Detached hover cards • Tahoe-grade composure
 // ============================================================================
 
 const TOKENS = {
   HORIZON: {
     globalScale: 1.45, globalScaleMd: 1.3, globalScaleSm: 1.1, clusterOffsetY: -4, 
-    orbitRadiusScale: 1.50, // INCREASED from 1.25 → 1.50 (+20% spacing)
-    labelDistanceScale: 1.18, // INCREASED from 1.10 → 1.18 for better label clearance
-    hoverExpansion: 14, // INCREASED from 12px → 14px to prevent overlap
+    orbitRadiusScale: 1.80, // INCREASED from 1.50 → 1.80 (+20% additional = +44% total from baseline)
+    labelDistanceScale: 1.18,
+    hoverExpansion: 14,
+    hoverCardOffset: 32, // NEW: Detachment offset from orb edge
+    hoverTriggerRadius: 1.10, // NEW: Expanded trigger area (+10%)
     glassBg: 'rgba(10,14,20,0.70)', glassBorder: 'rgba(160,191,255,0.10)',
     panelShadow: '0 0 80px rgba(0,0,0,0.4), 0 0 40px rgba(160,191,255,0.08)',
     hoverCardShadow: '0 4px 28px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.08)',
@@ -29,6 +31,7 @@ const TOKENS = {
     t_drawerOpen: 0.25, t_drawerClose: 0.20,
     t_hover: 0.12, t_haloDecay: 0.18, t_labelLag: 0.08,
     t_tooltipOpen: 0.20, t_tooltipClose: 0.15, t_tooltipTextStagger: 0.08, t_tooltipTextDuration: 0.14,
+    t_tooltipSlide: 0.20, // NEW: Micro-slide animation duration
     t_tooltipAutoFade: 0.80,
     t_orbBreathIn: 0.14, t_orbBreathOut: 0.14, t_beamLink: 0.14,
     t_contentStagger: 0.06, t_soWhatDelay: 0.10,
@@ -38,7 +41,8 @@ const TOKENS = {
     bgBase: '#06080D', bgEnd: '#0A0E14', bgSubsurfaceCenter: '#121823', bgSubsurfaceEdge: '#0B1016',
     lightTemp: 'rgba(255, 255, 255, 0.03)', lightTempBottom: 'rgba(255, 255, 255, 0.00)',
     lineHeight: 22,
-    loadInDamping: 0.95 // Global scale damping for smooth load-in
+    loadInDamping: 0.95,
+    connectingLineOpacity: 0.08 // NEW: Optional orb-to-card connector
   },
   MACRO: {
     fx: { core: '#6AC7F7', halo: 'rgba(106,199,247,0.38)', text: '#B8E7FF', bloom: 'rgba(106,199,247,0.18)', zDepth: -14 },
@@ -55,12 +59,11 @@ const TOKENS = {
 
 const ANGLES = { rates: 22.5, fx: 160.0, growth: 297.5, geopolitics: 75.0 };
 
-// UPDATED: Slightly adjusted radii with subtle curve tension (3-5%) for organic paths
 const RADII = { 
-  rates: 0.35 * 1.03,      // +3% curvature
-  fx: 0.39 * 1.04,         // +4% curvature
-  growth: 0.37 * 1.05,     // +5% curvature
-  geopolitics: 0.32 * 1.04 // +4% curvature
+  rates: 0.35 * 1.03,
+  fx: 0.39 * 1.04,
+  growth: 0.37 * 1.05,
+  geopolitics: 0.32 * 1.04
 };
 
 const MOCK_DOMAINS = [
@@ -98,7 +101,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const drawerRef = useRef(null);
   const prefetchTimerRef = useRef(null);
   const hoverTimeoutRef = useRef(null);
-  const [isInitialLoad, setIsInitialLoad] = useState(true); // Track initial load
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   
   const [hoveredDomain, setHoveredDomain] = useState(null);
   const [selectedDomain, setSelectedDomain] = useState(null);
@@ -137,7 +140,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const minClear = 24;
   const safeBottom = footerH + footerBleed + haloBleed + minClear;
 
-  // Apply load-in damping for smooth initial expansion
   useEffect(() => {
     const timer = setTimeout(() => setIsInitialLoad(false), 800);
     return () => clearTimeout(timer);
@@ -147,7 +149,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     const baseScale = viewportSize === 'sm' ? TOKENS.HORIZON.globalScaleSm : 
                       viewportSize === 'md' ? TOKENS.HORIZON.globalScaleMd : 
                       TOKENS.HORIZON.globalScale;
-    // Apply damping on initial load
     return isInitialLoad ? baseScale * TOKENS.HORIZON.loadInDamping : baseScale;
   }, [viewportSize, isInitialLoad]);
 
@@ -181,7 +182,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
   const balanceAngle = useMemo(() => dominantDriver === "balanced" ? 0 : ANGLES[dominantDriver] || 0, [dominantDriver]);
 
-  // ENHANCED: Connection paths with slight curvature (tension = 0.8, damping = 0.9)
   const connections = useMemo(() => [
     { from: "rates", to: "growth", relationship: 0.7, tension: 0.8 },
     { from: "fx", to: "geopolitics", relationship: 0.6, tension: 0.8 },
@@ -195,14 +195,17 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     const safeH = dimensions.height - safeBottom - headerSafe;
     const centerX = dimensions.width / 2;
     
-    // ADJUSTED: Re-center vertically with +10px offset compensation for growth orb expansion
-    const centerY = headerSafe + (safeH / 2) + (safeH * TOKENS.HORIZON.clusterOffsetY / 100) + 10;
+    // Re-centered with +16px offset for enhanced balance (increased from +10px)
+    const centerY = headerSafe + (safeH / 2) + (safeH * TOKENS.HORIZON.clusterOffsetY / 100) + 16;
     
-    const baseRadius = Math.min(safeW, safeH) * 0.34 * TOKENS.HORIZON.orbitRadiusScale * globalScale;
+    // Responsive spacing: reduce to 1.10× on narrow viewports
+    const responsiveScale = viewportSize === 'sm' ? 1.10 : 1.20;
+    const baseRadius = Math.min(safeW, safeH) * 0.34 * TOKENS.HORIZON.orbitRadiusScale * globalScale * (viewportSize === 'lg' ? 1.0 : responsiveScale / 1.20);
     const shortH = window.innerHeight <= 820;
     
-    // Apply responsive fallback for small viewports
-    const radius = viewportSize === 'sm' ? baseRadius * 0.85 : baseRadius * (shortH ? 0.92 : 1.00) * orbitScale;
+    // Original: const radius = viewportSize === 'sm' ? baseRadius * 0.85 : baseRadius * (shortH ? 0.92 : 1.00) * orbitScale;
+    // Updated: removed the viewportSize === 'sm' specific scaling here, now handled by baseRadius multiplier
+    const radius = baseRadius * (shortH ? 0.92 : 1.00) * orbitScale;
     
     return { cx: centerX, cy: centerY, orbitBaseRadius: radius };
   }, [dimensions, safeBottom, headerSafe, orbitScale, getGlobalScale, viewportSize]);
@@ -250,6 +253,85 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return { x: orbX + (vx / norm) * offset, y: orbY + (vy / norm) * offset };
   }, [cx, cy]);
 
+  // NEW: Calculate hover card position with directional logic
+  const getHoverCardPosition = useCallback((orbX, orbY, orbRadius) => {
+    const offsetDistance = orbRadius + TOKENS.HORIZON.hoverCardOffset;
+    const cardWidth = 260;
+    const cardHeight = 280; // Approximate height for tooltip content
+    
+    // Determine position relative to center of constellation
+    const isUpperHalf = orbY < cy;
+    const isLeftHalf = orbX < cx;
+    const verticalDistance = Math.abs(orbY - cy);
+    const horizontalDistance = Math.abs(orbX - cx);
+    
+    let position = {};
+    let anchorX = 0; // Relative to card's left edge (0 to cardWidth)
+    let anchorY = 0; // Relative to card's top edge (0 to cardHeight)
+    
+    // Prioritize horizontal positioning if orb is far left/right, else vertical
+    if (horizontalDistance > verticalDistance * 0.8) { // If more horizontal than vertical
+      // Horizontal positioning
+      if (isLeftHalf) {
+        position = {
+          left: orbX + offsetDistance,
+          top: orbY - (cardHeight / 2),
+        };
+        anchorX = 0; // Orb connects to left side of card
+        anchorY = cardHeight / 2;
+      } else {
+        position = {
+          left: orbX - offsetDistance - cardWidth,
+          top: orbY - (cardHeight / 2),
+        };
+        anchorX = cardWidth; // Orb connects to right side of card
+        anchorY = cardHeight / 2;
+      }
+    } else {
+      // Vertical positioning
+      if (isUpperHalf) { // Orb is in upper half, card goes below
+        position = {
+          left: orbX - (cardWidth / 2),
+          top: orbY + offsetDistance,
+        };
+        anchorX = cardWidth / 2;
+        anchorY = 0; // Orb connects to top side of card
+      } else { // Orb is in lower half, card goes above
+        position = {
+          left: orbX - (cardWidth / 2),
+          top: orbY - offsetDistance - cardHeight,
+        };
+        anchorX = cardWidth / 2;
+        anchorY = cardHeight; // Orb connects to bottom side of card
+      }
+    }
+    
+    // Ensure card stays within container bounds, especially for top/bottom
+    const containerRect = containerRef.current?.getBoundingClientRect();
+    if (containerRect) {
+      // Adjust top if it goes too high (consider headerSafe and other top paddings)
+      const headerSafeSpace = headerSafe + 20; // Extra padding for visual comfort
+      if (position.top < headerSafeSpace) {
+        position.top = headerSafeSpace;
+      }
+      // Adjust bottom if it goes too low (consider footer and other bottom paddings)
+      const bottomSafeSpace = containerRect.height - safeBottom - 20; // Extra padding
+      if (position.top + cardHeight > bottomSafeSpace) {
+        position.top = bottomSafeSpace - cardHeight;
+      }
+
+      // Adjust left/right to ensure it doesn't go off-screen
+      if (position.left < 10) { // 10px margin from left
+        position.left = 10;
+      }
+      if (position.left + cardWidth > containerRect.width - 10) { // 10px margin from right
+        position.left = containerRect.width - cardWidth - 10;
+      }
+    }
+    
+    return { ...position, orbX, orbY, orbRadius, cardAnchorX: anchorX, cardAnchorY: anchorY };
+  }, [cx, cy, headerSafe, safeBottom]);
+
   const getDomainColor = (id) => TOKENS.MACRO[id]?.core || TOKENS.MACRO.rates.core;
   const getDomainText = (id) => TOKENS.MACRO[id]?.text || TOKENS.MACRO.rates.text;
   const getDomainBloom = (id) => TOKENS.MACRO[id]?.bloom || TOKENS.MACRO.rates.bloom;
@@ -281,7 +363,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     geopolitics: "So what: Supply chain fragmentation accelerating; prioritize domestic resilience and energy hedges."
   }[domain.id] || "Monitor for shifts in macro equilibrium dynamics."), []);
 
-  // Orb Life Pulse Effect
   useEffect(() => {
     if (shouldReduceMotion || !selectedDomain) {
       setDrawerLuminance(1.0);
@@ -467,11 +548,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     };
   }, []);
 
-  // Center-bloom drawer position calculation with header-safe offset
   const drawerCenterPosition = useMemo(() => {
     if (!selectedDomain || !drawerOrigin) return { x: 0, y: 0 };
     
-    const headerHeight = 72; // OS Horizon sticky header
+    const headerHeight = 72;
     const safeTopPadding = 8;
     const safeTop = headerHeight + safeTopPadding;
     
@@ -479,14 +559,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     const maxDrawerHeight = Math.min(window.innerHeight - headerHeight - 72, 700);
     const drawerHeight = maxDrawerHeight;
     
-    // Offset bloom origin by +10px on Y for visual centering below header
     const bloomOriginY = drawerOrigin.screenY + 10;
     
-    // Calculate centered position but constrain top to safe zone
     let targetTop = bloomOriginY - (drawerHeight / 2);
     targetTop = Math.max(targetTop, safeTop);
     
-    // Adjust for small viewports
     const viewportAdjustment = window.innerHeight < 720 ? 24 : 0;
     
     return {
@@ -642,7 +719,24 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       />
                     )}
                     
-                    <motion.circle cx={orbPos.x} cy={orbPos.y} r={orbPos.radius} fill={`url(#nucleus-${domain.id})`} className="orb cursor-pointer" style={{ filter: `url(#bloom-${domain.id})`, transformOrigin: `${orbPos.x}px ${orbPos.y}px`, pointerEvents: 'all', color }} animate={shouldReduceMotion ? {} : { scale: isPulsing ? [1, 1.05, 1] : isSelected ? [1, 1.025, 1] : isHovered ? 1.05 : [0.985, 1.025, 0.985], opacity: isPulsing ? [0.985, 1, 0.985] : isHovered || isSelected ? 1 : [0.985, 1, 0.985] }} transition={isPulsing ? { duration: TOKENS.HORIZON.t_orbBreathIn, ease: TOKENS.HORIZON.easingSine } : isSelected ? { duration: TOKENS.HORIZON.t_orbLifePulse, repeat: Infinity, ease: "easeInOut" } : isHovered ? { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easingApple } : { duration: TOKENS.HORIZON.t_breathe, repeat: Infinity, ease: "easeInOut", delay: idx * 1.2 }} onMouseEnter={() => handleDomainHover(domain)} onMouseLeave={() => handleDomainHover(null)} onClick={() => handleOpenDrawer(domain)} onKeyDown={(e) => { if (e.key === 'Enter') handleOpenDrawer(domain); }} tabIndex={0} role="button" aria-label={`${domain.id} domain: ${domain.posture}, ${domain.confidence_pct}% confidence`} />
+                    {/* ENHANCED: Expanded hover trigger area (+10%) */}
+                    <motion.circle 
+                      cx={orbPos.x} 
+                      cy={orbPos.y} 
+                      r={orbPos.radius * TOKENS.HORIZON.hoverTriggerRadius} 
+                      fill={`url(#nucleus-${domain.id})`} 
+                      className="orb cursor-pointer" 
+                      style={{ filter: `url(#bloom-${domain.id})`, transformOrigin: `${orbPos.x}px ${orbPos.y}px`, pointerEvents: 'all', color }} 
+                      animate={shouldReduceMotion ? {} : { scale: isPulsing ? [1, 1.05, 1] : isSelected ? [1, 1.025, 1] : isHovered ? 1.05 : [0.985, 1.025, 0.985], opacity: isPulsing ? [0.985, 1, 0.985] : isHovered || isSelected ? 1 : [0.985, 1, 0.985] }} 
+                      transition={isPulsing ? { duration: TOKENS.HORIZON.t_orbBreathIn, ease: TOKENS.HORIZON.easingSine } : isSelected ? { duration: TOKENS.HORIZON.t_orbLifePulse, repeat: Infinity, ease: "easeInOut" } : isHovered ? { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easingApple } : { duration: TOKENS.HORIZON.t_breathe, repeat: Infinity, ease: "easeInOut", delay: idx * 1.2 }} 
+                      onMouseEnter={() => handleDomainHover(domain)} 
+                      onMouseLeave={() => handleDomainHover(null)} 
+                      onClick={() => handleOpenDrawer(domain)} 
+                      onKeyDown={(e) => { if (e.key === 'Enter') handleOpenDrawer(domain); }} 
+                      tabIndex={0} 
+                      role="button" 
+                      aria-label={`${domain.id} domain: ${domain.posture}, ${domain.confidence_pct}% confidence`} 
+                    />
                     <circle cx={orbPos.x} cy={orbPos.y} r={orbPos.radius} fill="none" stroke={color} strokeWidth="1" opacity="0.25" style={{ pointerEvents: 'none' }} />
                   </g>
                 );
@@ -650,225 +744,226 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </g>
           </svg>
 
-          {/* Hover Tooltip Window — MOVED OUTSIDE SVG */}
+          {/* ENHANCED: Detached Hover Tooltip with Directional Positioning & Connecting Line */}
           <AnimatePresence>
             {hoveredDomain && !selectedDomain && (() => {
               const domain = domains.find(d => d.id === hoveredDomain);
               if (!domain) return null;
               
               const orbPos = getOrbPosition(hoveredDomain, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
-              const isLeft = orbPos.x < cx;
-              const tooltipX = isLeft ? orbPos.x + orbPos.radius + 20 : orbPos.x - orbPos.radius - 20;
-              const tooltipY = orbPos.y;
+              const cardPos = getHoverCardPosition(orbPos.x, orbPos.y, orbPos.radius);
+              
+              // Calculate control point for quadratic bezier for connecting line
+              const vecX = (cardPos.left + cardPos.cardAnchorX) - orbPos.x;
+              const vecY = (cardPos.top + cardPos.cardAnchorY) - orbPos.y;
+              const midX = orbPos.x + vecX * 0.5;
+              const midY = orbPos.y + vecY * 0.5;
+              const controlX = midX + vecY * 0.1; 
+              const controlY = midY - vecX * 0.1;
               
               return (
-                <motion.div
-                  key={`tooltip-${hoveredDomain}`}
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ 
-                    opacity: 1, 
-                    scale: 1.00
-                  }}
-                  exit={{ 
-                    opacity: 0, 
-                    scale: 0.98, 
-                    transition: { duration: TOKENS.HORIZON.t_tooltipClose, ease: TOKENS.HORIZON.easingCubic } 
-                  }}
-                  transition={{ duration: TOKENS.HORIZON.t_tooltipOpen, ease: TOKENS.HORIZON.easingCubic }}
-                  style={{
-                    position: 'absolute',
-                    left: `${tooltipX}px`,
-                    top: `${tooltipY}px`,
-                    transform: `translate(${isLeft ? '0' : '-100%'}, -50%)`,
-                    width: '260px',
-                    padding: '14px 16px',
-                    borderRadius: '16px',
-                    backdropFilter: getBlur('panel'),
-                    WebkitBackdropFilter: getBlur('panel'),
-                    background: TOKENS.HORIZON.glassBg,
-                    border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
-                    boxShadow: TOKENS.HORIZON.hoverCardShadow,
-                    pointerEvents: 'auto',
-                    zIndex: 5
-                  }}
-                  onMouseEnter={() => handleDomainHover(domain)}
-                  onMouseLeave={() => handleDomainHover(null)}
-                >
-                  {!shouldReduceMotion && (
-                    <motion.div
-                      className="absolute inset-0 rounded-[16px]"
-                      style={{
-                        background: `radial-gradient(circle at center, ${getDomainBloom(domain.id)}, transparent 70%)`,
-                        mixBlendMode: 'screen',
-                        pointerEvents: 'none',
-                        zIndex: -1
-                      }}
-                      animate={{ opacity: [0.95, 1.00, 0.95] }}
-                      transition={{ duration: TOKENS.HORIZON.t_haloPulse, repeat: Infinity, ease: 'easeInOut' }}
+                <React.Fragment key={`tooltip-group-${hoveredDomain}`}>
+                  {/* Optional Connecting Line */}
+                  <svg width={dimensions.width} height={dimensions.height} style={{ position: 'absolute', inset: 0, overflow: 'visible', pointerEvents: 'none', zIndex: 4 }}>
+                    <motion.path
+                      d={`M ${orbPos.x},${orbPos.y} Q ${controlX},${controlY} ${cardPos.left + cardPos.cardAnchorX},${cardPos.top + cardPos.cardAnchorY}`}
+                      stroke="rgba(255,255,255,0.08)"
+                      strokeWidth="1"
+                      fill="none"
+                      initial={{ opacity: 0, pathLength: 0 }}
+                      animate={{ opacity: TOKENS.HORIZON.connectingLineOpacity, pathLength: 1 }}
+                      exit={{ opacity: 0, pathLength: 0 }}
+                      transition={{ duration: TOKENS.HORIZON.t_tooltipOpen, ease: TOKENS.HORIZON.easingCubic }}
                     />
-                  )}
+                  </svg>
                   
-                  <div style={{ 
-                    position: 'absolute', 
-                    top: 0, 
-                    left: '12px', 
-                    right: '12px', 
-                    height: '1px', 
-                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
-                    borderRadius: '999px'
-                  }} />
-                  
-                  <div className="flex items-center gap-2.5 mb-3">
-                    <div 
-                      className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" 
-                      style={{ 
-                        background: `${getDomainColor(domain.id)}15`, 
-                        border: `1px solid ${getDomainColor(domain.id)}30`,
-                        boxShadow: `0 0 12px ${getDomainBloom(domain.id)}`,
-                        color: getDomainColor(domain.id)
-                      }}
-                    >
-                      {React.cloneElement(getDomainIcon(domain.id), { className: "w-4 h-4", strokeWidth: 2 })}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <motion.h4 
-                        initial={{ opacity: 0, y: -3 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
+                  {/* Hover Card */}
+                  <motion.div
+                    key={`tooltip-${hoveredDomain}`}
+                    initial={{ opacity: 0, scale: 0.98, y: 8 }}
+                    animate={{ 
+                      opacity: 1, 
+                      scale: 1.00,
+                      y: 0
+                    }}
+                    exit={{ 
+                      opacity: 0, 
+                      scale: 0.98,
+                      y: 8,
+                      transition: { duration: TOKENS.HORIZON.t_tooltipClose, ease: TOKENS.HORIZON.easingCubic } 
+                    }}
+                    transition={{ 
+                      opacity: { duration: TOKENS.HORIZON.t_tooltipOpen, ease: TOKENS.HORIZON.easingCubic },
+                      scale: { duration: TOKENS.HORIZON.t_tooltipOpen, ease: TOKENS.HORIZON.easingCubic },
+                      y: { duration: TOKENS.HORIZON.t_tooltipSlide, ease: TOKENS.HORIZON.easingCubic }
+                    }}
+                    style={{
+                      position: 'absolute',
+                      left: `${cardPos.left}px`,
+                      top: `${cardPos.top}px`,
+                      width: '260px',
+                      padding: '14px 16px',
+                      borderRadius: '16px',
+                      backdropFilter: getBlur('panel'),
+                      WebkitBackdropFilter: getBlur('panel'),
+                      background: TOKENS.HORIZON.glassBg,
+                      border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
+                      boxShadow: TOKENS.HORIZON.hoverCardShadow,
+                      pointerEvents: 'auto',
+                      zIndex: 5
+                    }}
+                    onMouseEnter={() => handleDomainHover(domain)}
+                    onMouseLeave={() => handleDomainHover(null)}
+                  >
+                    {!shouldReduceMotion && (
+                      <motion.div
+                        className="absolute inset-0 rounded-[16px]"
+                        style={{
+                          background: `radial-gradient(circle at center, ${getDomainBloom(domain.id)}, transparent 70%)`,
+                          mixBlendMode: 'screen',
+                          pointerEvents: 'none',
+                          zIndex: -1
+                        }}
+                        animate={{ opacity: [0.95, 1.00, 0.95] }}
+                        transition={{ duration: TOKENS.HORIZON.t_haloPulse, repeat: Infinity, ease: 'easeInOut' }}
+                      />
+                    )}
+                    
+                    <div style={{ 
+                      position: 'absolute', 
+                      top: 0, 
+                      left: '12px', 
+                      right: '12px', 
+                      height: '1px', 
+                      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
+                      borderRadius: '999px'
+                    }} />
+                    
+                    <div className="flex items-center gap-2.5 mb-3">
+                      <div 
+                        className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" 
                         style={{ 
-                          color: TOKENS.colors.textPrimary, 
-                          fontSize: '14px', 
-                          fontWeight: 600,
-                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
+                          background: `${getDomainColor(domain.id)}15`, 
+                          border: `1px solid ${getDomainColor(domain.id)}30`,
+                          boxShadow: `0 0 12px ${getDomainBloom(domain.id)}`,
+                          color: getDomainColor(domain.id)
                         }}
                       >
-                        {domain.id.charAt(0).toUpperCase() + domain.id.slice(1)}
-                      </motion.h4>
-                      <motion.div 
-                        initial={{ opacity: 0, y: -3 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 1.5, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
-                        className="flex items-center gap-1.5"
-                      >
-                        {React.cloneElement(getPostureIcon(domain.posture), { className: "w-3 h-3" })}
-                        <span style={{ 
-                          color: getDomainText(domain.id), 
-                          fontSize: '12px',
-                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-                        }}>
-                          {domain.posture.charAt(0).toUpperCase() + domain.posture.slice(1)}
-                        </span>
-                      </motion.div>
-                    </div>
-                  </div>
-                  
-                  <motion.div 
-                    initial={{ opacity: 0, y: 3 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 2, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
-                    className="flex items-center gap-3 mb-3 pb-3"
-                    style={{ borderBottom: `1px solid ${TOKENS.HORIZON.drawerDivider}` }}
-                  >
-                    <div className="relative w-7 h-7 flex-shrink-0">
-                      <svg className="transform -rotate-90" width="28" height="28">
-                        <circle cx="14" cy="14" r="12" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2.5" />
-                        <circle 
-                          cx="14" 
-                          cy="14" 
-                          r="12" 
-                          fill="none" 
-                          stroke={getDomainColor(domain.id)} 
-                          strokeWidth="2.5" 
-                          strokeLinecap="round" 
-                          strokeDasharray="75.4"
-                          strokeDashoffset={75.4 - (75.4 * domain.confidence_pct / 100)}
-                        />
-                      </svg>
-                      <div 
-                        className="absolute inset-0 flex items-center justify-center font-bold" 
-                        style={{ color: TOKENS.colors.textPrimary, fontSize: '9px' }}
-                      >
-                        {domain.confidence_pct}
-                        {domain.confidenceDelta !== undefined && domain.confidenceDelta !== 0 && (
-                          <motion.span 
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: 0.15, duration: 0.15 }}
-                            className="absolute -right-1 -top-0.5 text-[7px]"
-                            style={{ 
-                              color: domain.confidenceDelta > 0 ? TOKENS.colors.deltaUp : TOKENS.colors.deltaDown
-                            }}
-                          >
-                            {domain.confidenceDelta > 0 ? '▲' : '▼'}
-                          </motion.span>
-                        )}
+                        {React.cloneElement(getDomainIcon(domain.id), { className: "w-4 h-4", strokeWidth: 2 })}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <motion.h4 
+                          initial={{ opacity: 0, y: -3 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
+                          style={{ 
+                            color: TOKENS.colors.textPrimary, 
+                            fontSize: '14px', 
+                            fontWeight: 600,
+                            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
+                          }}
+                        >
+                          {domain.id.charAt(0).toUpperCase() + domain.id.slice(1)}
+                        </motion.h4>
+                        <motion.div 
+                          initial={{ opacity: 0, y: -3 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 1.5, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
+                          className="flex items-center gap-1.5"
+                        >
+                          {React.cloneElement(getPostureIcon(domain.posture), { className: "w-3 h-3" })}
+                          <span style={{ 
+                            color: getDomainText(domain.id), 
+                            fontSize: '12px',
+                            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                          }}>
+                            {domain.posture.charAt(0).toUpperCase() + domain.posture.slice(1)}
+                          </span>
+                        </motion.div>
                       </div>
                     </div>
-                    <div className="flex-1">
-                      <div style={{ fontSize: '10px', color: TOKENS.colors.textLabel, letterSpacing: '0.15em', fontWeight: 500 }}>
-                        CONFIDENCE
+                    
+                    <motion.div 
+                      initial={{ opacity: 0, y: 3 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 2, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
+                      className="flex items-center gap-3 mb-3 pb-3"
+                      style={{ borderBottom: `1px solid ${TOKENS.HORIZON.drawerDivider}` }}
+                    >
+                      <div className="relative w-7 h-7 flex-shrink-0">
+                        <svg className="transform -rotate-90" width="28" height="28">
+                          <circle cx="14" cy="14" r="12" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2.5" />
+                          <circle 
+                            cx="14" 
+                            cy="14" 
+                            r="12" 
+                            fill="none" 
+                            stroke={getDomainColor(domain.id)} 
+                            strokeWidth="2.5" 
+                            strokeLinecap="round" 
+                            strokeDasharray="75.4"
+                            strokeDashoffset={75.4 - (75.4 * domain.confidence_pct / 100)}
+                          />
+                        </svg>
+                        <div 
+                          className="absolute inset-0 flex items-center justify-center font-bold" 
+                          style={{ color: TOKENS.colors.textPrimary, fontSize: '9px' }}
+                        >
+                          {domain.confidence_pct}
+                          {domain.confidenceDelta !== undefined && domain.confidenceDelta !== 0 && (
+                            <motion.span 
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: 0.15, duration: 0.15 }}
+                              className="absolute -right-1 -top-0.5 text-[7px]"
+                              style={{ 
+                                color: domain.confidenceDelta > 0 ? TOKENS.colors.deltaUp : TOKENS.colors.deltaDown
+                              }}
+                            >
+                              {domain.confidenceDelta > 0 ? '▲' : '▼'}
+                            </motion.span>
+                          )}
+                        </div>
                       </div>
-                      <div style={{ fontSize: '11px', color: TOKENS.colors.textSecondary, marginTop: '2px' }}>
-                        Strength: {Math.round(domain.strength * 100)}%
+                      <div className="flex-1">
+                        <div style={{ fontSize: '10px', color: TOKENS.colors.textLabel, letterSpacing: '0.15em', fontWeight: 500 }}>
+                          CONFIDENCE
+                        </div>
+                        <div style={{ fontSize: '11px', color: TOKENS.colors.textSecondary, marginTop: '2px' }}>
+                          Strength: {Math.round(domain.strength * 100)}%
+                        </div>
                       </div>
-                    </div>
+                    </motion.div>
+                    
+                    <motion.p
+                      initial={{ opacity: 0, y: 3 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 3, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
+                      style={{ 
+                        color: TOKENS.colors.textSecondary, 
+                        fontSize: '11px', 
+                        lineHeight: `${TOKENS.HORIZON.lineHeight}px`,
+                        paddingTop: '2px',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                      }}
+                    >
+                      {domain.summary.length > 120 ? domain.summary.substring(0, 120) + '...' : domain.summary}
+                    </motion.p>
+                    
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 4, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
+                      className="mt-3 pt-3 flex items-center justify-center gap-1.5"
+                      style={{ borderTop: `1px solid ${TOKENS.HORIZON.drawerDivider}` }}
+                    >
+                      <span style={{ fontSize: '10px', color: TOKENS.colors.textTertiary, letterSpacing: '0.02em' }}>
+                        Click to view details
+                      </span>
+                      <ArrowRight className="w-3 h-3" style={{ color: TOKENS.colors.textTertiary }} />
+                    </motion.div>
                   </motion.div>
-                  
-                  <motion.p
-                    initial={{ opacity: 0, y: 3 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 3, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
-                    style={{ 
-                      color: TOKENS.colors.textSecondary, 
-                      fontSize: '11px', 
-                      lineHeight: `${TOKENS.HORIZON.lineHeight}px`,
-                      paddingTop: '2px',
-                      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-                    }}
-                  >
-                    {domain.summary.length > 120 ? domain.summary.substring(0, 120) + '...' : domain.summary}
-                  </motion.p>
-                  
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 4, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
-                    className="mt-3 pt-3 flex items-center justify-center gap-1.5"
-                    style={{ borderTop: `1px solid ${TOKENS.HORIZON.drawerDivider}` }}
-                  >
-                    <span style={{ fontSize: '10px', color: TOKENS.colors.textTertiary, letterSpacing: '0.02em' }}>
-                      Click to view details
-                    </span>
-                    <ArrowRight className="w-3 h-3" style={{ color: TOKENS.colors.textTertiary }} />
-                  </motion.div>
-                  
-                  <div 
-                    style={{
-                      position: 'absolute',
-                      [isLeft ? 'left' : 'right']: '-6px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      width: 0,
-                      height: 0,
-                      borderTop: '8px solid transparent',
-                      borderBottom: '8px solid transparent',
-                      [isLeft ? 'borderRight' : 'borderLeft']: `8px solid ${TOKENS.HORIZON.glassBorder}`,
-                    }}
-                  />
-                  <div 
-                    style={{
-                      position: 'absolute',
-                      [isLeft ? 'left' : 'right']: '-5px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      width: 0,
-                      height: 0,
-                      borderTop: '7px solid transparent',
-                      borderBottom: '7px solid transparent',
-                      [isLeft ? 'borderRight' : 'borderLeft']: `7px solid ${TOKENS.HORIZON.glassBg}`,
-                    }}
-                  />
-                </motion.div>
+                </React.Fragment>
               );
             })()}
           </AnimatePresence>
