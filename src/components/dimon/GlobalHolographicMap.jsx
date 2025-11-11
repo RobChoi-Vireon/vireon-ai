@@ -11,7 +11,7 @@ import LyraLogo from '../core/LyraLogo';
 
 const TOKENS = {
   HORIZON: {
-    globalScale: 1.45, globalScaleMd: 1.3, globalScaleSm: 1.1, clusterOffsetY: -4, orbitRadiusScale: 1.25,
+    globalScale: 1.45, globalScaleMd: 1.3, globalScaleSm: 1.1, clusterOffsetY: -4, orbitRadiusScale: 1.35,
     labelDistanceScale: 1.10, glassBg: 'rgba(10,14,20,0.70)', glassBorder: 'rgba(160,191,255,0.10)',
     panelShadow: '0 0 80px rgba(0,0,0,0.4), 0 0 40px rgba(160,191,255,0.08)',
     // Enhanced shadow for hover card realism (Patch v1.1)
@@ -52,7 +52,7 @@ const TOKENS = {
 };
 
 const ANGLES = { rates: 22.5, fx: 160.0, growth: 297.5, geopolitics: 75.0 };
-const RADII = { rates: 0.35, fx: 0.39, growth: 0.37, geopolitics: 0.32 };
+const RADII = { rates: 0.42, fx: 0.50, growth: 0.46, geopolitics: 0.39 };
 
 const MOCK_DOMAINS = [
   { id: "rates", posture: "hawkish", confidence_pct: 78, strength: 0.82, 
