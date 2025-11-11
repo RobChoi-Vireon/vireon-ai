@@ -1,19 +1,17 @@
-
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLeft, ChevronRight, BarChart3, DollarSign, Activity } from 'lucide-react';
 import LyraLogo from '../core/LyraLogo';
 
 // ============================================================================
-// MACRO CONSTELLATION — OS HORIZON V1.9.6 "READABILITY + WARM DEPTH + TIGHT HOVER"
-// Typography perfection • Glass warmth • Intent corridor • Apple precision
+// MACRO CONSTELLATION — OS HORIZON V1.9.7 "NO-STICK HOVER"
+// Tight hover bounds • Intent corridor • Velocity exit • Apple precision
 // ============================================================================
 
 const TOKENS = {
   HORIZON: {
     globalScale: 1.45, globalScaleMd: 1.3, globalScaleSm: 1.1, clusterOffsetY: -4, orbitRadiusScale: 1.25,
     labelDistanceScale: 1.10,
-    // Enhanced warm glass (v1.9.6)
     glassBg: 'rgba(24, 28, 33, 0.45)',
     glassBorder: 'rgba(160,191,255,0.10)',
     panelShadow: '0 0 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08)',
@@ -22,25 +20,21 @@ const TOKENS = {
     drawerEdgeBloom: 'rgba(160,191,255,0.10)', drawerDivider: 'rgba(255,255,255,0.06)',
     drawerShadow: '0 15px 60px rgba(0,0,0,0.30)', 
     backdropBlur: 'blur(10px)', backdropOpacity: 0.30,
-    // Enhanced warm blur (v1.9.6)
     blurPanel: 'blur(22px) saturate(165%) brightness(1.05)',
     blurChip: 'blur(16px)', vignetteColor: '#070A0F', vignetteOpacity: 0.28,
     vignetteBlur: 24, localBloomIntensity: 0.18, localBloomRadius: [220, 280],
-    // Tight hover zone parameters (v1.9.6)
-    hoverHitboxExtra: 6, hoverExitBuffer: 8, hoverEnterDelay: 120, hoverExitDelay: 180,
-    corridorWidth: 24, corridorTimeout: 300,
+    // Tight hover zone (v1.9.7)
+    hoverEnterRadius: 6, hoverExitRadius: 10, hoverEnterDelay: 100, hoverExitDelay: 90,
+    corridorWidth: 16, corridorTTL: 250, velocityThreshold: 600,
     easing: [0.4, 0, 0.2, 1], easingApple: [0.32, 0.72, 0, 1], easingCubic: [0.65, 0, 0.35, 1],
     easingElastic: [0.22, 1, 0.36, 1], easingSine: [0.61, 1, 0.88, 1], easingOutQuad: [0.25, 0.46, 0.45, 0.94],
     overshoot: [0.34, 1.56, 0.64, 1], 
     t_drawerOpen: 0.25, t_drawerClose: 0.20,
     t_hover: 0.12, t_haloDecay: 0.18, t_labelLag: 0.08,
     t_tooltipOpen: 0.20, t_tooltipClose: 0.15, t_tooltipTextStagger: 0.08, t_tooltipTextDuration: 0.14,
-    t_tooltipAutoFade: 0.80,
     t_orbBreathIn: 0.14, t_orbBreathOut: 0.14, t_beamLink: 0.14,
     t_contentStagger: 0.06, t_soWhatDelay: 0.10,
-    t_breathe: 4.5, t_orbLifePulse: 4.0, 
-    // Subtle halo pulse (v1.9.6)
-    t_haloPulse: 1.5,
+    t_breathe: 4.5, t_orbLifePulse: 4.0, t_haloPulse: 1.5,
     t_pulse: 3, t_orbit: 10, t_sweep: 12, t_parallax: 0.12,
     parallaxOffset: 6, parallaxResponse: 0.4, microParallaxMax: 4, microParallaxDamping: 0.85,
     bgBase: '#06080D', bgEnd: '#0A0E14', bgSubsurfaceCenter: '#121823', bgSubsurfaceEdge: '#0B1016',
@@ -57,7 +51,7 @@ const TOKENS = {
     textPrimary: "rgba(255, 255, 255, 0.95)",
     textSecondary: "rgba(255, 255, 255, 0.80)",
     textBody: "rgba(255, 255, 255, 0.88)",
-    textLabel: "rgba(255, 255, 255, 0.85)", // Enhanced from 0.78 (v1.9.6)
+    textLabel: "rgba(255, 255, 255, 0.85)",
     textChip: "rgba(232,235,239,0.85)",
     textTertiary: "rgba(255,255,255,0.65)",
     textCTA: "rgba(145, 181, 255, 0.95)",
@@ -102,16 +96,13 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const footerRef = useRef(null);
   const constellationRef = useRef(null);
   const drawerRef = useRef(null);
-  const prefetchTimerRef = useRef(null);
   
   const [hoveredDomain, setHoveredDomain] = useState(null);
-  const [isTooltipHovered, setIsTooltipHovered] = useState(false);
-  const [isOrbHovered, setIsOrbHovered] = useState(false);
-  const tooltipFadeTimerRef = useRef(null);
+  const [hoverState, setHoverState] = useState('idle'); // 'idle' | 'hovering' | 'in-corridor'
   const hoverEnterTimerRef = useRef(null);
   const hoverExitTimerRef = useRef(null);
-  const inCorridorRef = useRef(false);
-  const corridorTimerRef = useRef(null);
+  const corridorOpenTimeRef = useRef(null);
+  const lastMousePosRef = useRef({ x: 0, y: 0, t: 0 });
   
   const [selectedDomain, setSelectedDomain] = useState(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
@@ -296,143 +287,133 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     geopolitics: "So what: Supply chain fragmentation accelerating; prioritize domestic resilience and energy hedges."
   }[domain.id] || "Monitor for shifts in macro equilibrium dynamics."), []);
 
-  // Check if point is inside corridor from orb to card
-  const isPointInCorridor = useCallback((mousePos, orbPos, cardCenterPos) => {
-    const dx = cardCenterPos.x - orbPos.x;
-    const dy = cardCenterPos.y - orbPos.y;
+  // Intent corridor check (v1.9.7)
+  const isPointInCorridor = useCallback((mousePos, orbPos, cardPos) => {
+    const dx = cardPos.x - orbPos.x;
+    const dy = cardPos.y - orbPos.y;
     const length = Math.sqrt(dx * dx + dy * dy);
     if (length === 0) return false;
     
-    // Normalize direction vector
     const dirX = dx / length;
     const dirY = dy / length;
-    
-    // Vector from orb to mouse
     const toMouseX = mousePos.x - orbPos.x;
     const toMouseY = mousePos.y - orbPos.y;
-    
-    // Project onto corridor direction
     const projection = toMouseX * dirX + toMouseY * dirY;
     
-    // Check if projection is within corridor bounds. Add some buffer to start and end.
-    if (projection < -TOKENS.HORIZON.hoverHitboxExtra || projection > length + TOKENS.HORIZON.hoverExitBuffer) return false;
+    if (projection < 0 || projection > length) return false;
     
-    // Check perpendicular distance
     const perpDist = Math.abs(toMouseX * dirY - toMouseY * dirX);
     return perpDist <= TOKENS.HORIZON.corridorWidth / 2;
-  }, [TOKENS.HORIZON.corridorWidth, TOKENS.HORIZON.hoverHitboxExtra, TOKENS.HORIZON.hoverExitBuffer]);
+  }, []);
 
-  // Tight hover zone with intent corridor (v1.9.6)
-  const handleDomainHoverEnter = useCallback((domain, event) => {
-    // Clear any pending exit
+  // Close hover cleanly (v1.9.7)
+  const closeHover = useCallback(() => {
+    if (hoverState === 'idle') return;
+    
+    // Clean up all timers
+    if (hoverEnterTimerRef.current) {
+      clearTimeout(hoverEnterTimerRef.current);
+      hoverEnterTimerRef.current = null;
+    }
     if (hoverExitTimerRef.current) {
       clearTimeout(hoverExitTimerRef.current);
       hoverExitTimerRef.current = null;
     }
     
-    // Debounced enter
+    setHoverState('idle');
+    setHoveredDomain(null);
+    corridorOpenTimeRef.current = null;
+    
+    // Debug log (remove after QA)
+    console.log('[HOVER] closeHover', { ts: Date.now() });
+  }, [hoverState]);
+
+  // Velocity-aware exit (v1.9.7)
+  const checkVelocityExit = useCallback((currentPos) => {
+    const lastPos = lastMousePosRef.current;
+    const dt = currentPos.t - lastPos.t;
+    
+    if (dt === 0 || !hoveredDomain) return false;
+    
+    const dx = currentPos.x - lastPos.x;
+    const dy = currentPos.y - lastPos.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    const velocity = distance / (dt / 1000); // px/s
+    
+    if (velocity < TOKENS.HORIZON.velocityThreshold) return false;
+    
+    // Check if moving away from hovered orb
+    const domain = domains.find(d => d.id === hoveredDomain);
+    if (!domain) return false;
+    
+    const orbPos = getOrbPosition(hoveredDomain, domain.strength, swayTime, 0, 0);
+    const toOrbX = orbPos.x - currentPos.x;
+    const toOrbY = orbPos.y - currentPos.y;
+    
+    // Dot product with velocity vector
+    const dotProduct = dx * toOrbX + dy * toOrbY;
+    
+    // If negative, moving away from orb
+    if (dotProduct < 0) {
+      console.log('[HOVER] velocity-exit', { velocity, orbid: hoveredDomain });
+      return true;
+    }
+    
+    return false;
+  }, [hoveredDomain, domains, getOrbPosition, swayTime]);
+
+  // Tight hover enter (v1.9.7)
+  const handleDomainHoverEnter = useCallback((domain) => {
+    if (hoverExitTimerRef.current) {
+      clearTimeout(hoverExitTimerRef.current);
+      hoverExitTimerRef.current = null;
+    }
+    
     if (hoverEnterTimerRef.current) {
       clearTimeout(hoverEnterTimerRef.current);
     }
     
     hoverEnterTimerRef.current = setTimeout(() => {
       setHoveredDomain(domain.id);
-      setIsOrbHovered(true);
+      setHoverState('hovering');
+      corridorOpenTimeRef.current = Date.now();
       
-      // Start corridor timer
-      corridorTimerRef.current = setTimeout(() => {
-        inCorridorRef.current = false;
-      }, TOKENS.HORIZON.corridorTimeout);
+      console.log('[HOVER] enter', { orbid: domain.id, ts: Date.now() });
     }, TOKENS.HORIZON.hoverEnterDelay);
   }, []);
 
-  const handleDomainHoverLeave = useCallback((event) => {
-    // Clear enter timer if still pending
+  // Fast hover exit (v1.9.7)
+  const handleDomainHoverLeave = useCallback(() => {
     if (hoverEnterTimerRef.current) {
       clearTimeout(hoverEnterTimerRef.current);
       hoverEnterTimerRef.current = null;
     }
     
-    // Debounced exit
     if (hoverExitTimerRef.current) {
       clearTimeout(hoverExitTimerRef.current);
     }
     
-    hoverExitTimerRef.current = setTimeout(() => {
-      if (!isTooltipHovered && !inCorridorRef.current) {
-        setIsOrbHovered(false);
-        setHoveredDomain(null);
-      }
-    }, TOKENS.HORIZON.hoverExitDelay);
-  }, [isTooltipHovered]);
-
-  const handleTooltipHoverEnter = useCallback(() => {
-    // Clear corridor timer since user reached the card
-    if (corridorTimerRef.current) {
-      clearTimeout(corridorTimerRef.current);
-      corridorTimerRef.current = null;
-    }
-    inCorridorRef.current = false;
-    setIsTooltipHovered(true);
-  }, []);
-
-  const handleTooltipHoverLeave = useCallback(() => {
-    setIsTooltipHovered(false);
-    // Trigger fast exit since user left the card
-    if (hoverExitTimerRef.current) {
-      clearTimeout(hoverExitTimerRef.current);
-    }
-    hoverExitTimerRef.current = setTimeout(() => {
-      setIsOrbHovered(false);
-      setHoveredDomain(null);
-    }, TOKENS.HORIZON.hoverExitDelay);
-  }, []);
-
-  // Orb Life Pulse Effect
-  useEffect(() => {
-    if (shouldReduceMotion || !selectedDomain) {
-      setDrawerLuminance(1.0);
+    // Don't close if in corridor within TTL
+    const inCorridorGrace = hoverState === 'in-corridor' && 
+                           corridorOpenTimeRef.current && 
+                           (Date.now() - corridorOpenTimeRef.current) < TOKENS.HORIZON.corridorTTL;
+    
+    if (inCorridorGrace) {
+      console.log('[HOVER] exit-deferred (in-corridor)', { orbid: hoveredDomain });
       return;
     }
     
-    let rafId;
-    let startTime = Date.now();
-    
-    const animate = () => {
-      const elapsed = (Date.now() - startTime) / 1000;
-      const pulsePhase = (elapsed % TOKENS.HORIZON.t_orbLifePulse) / TOKENS.HORIZON.t_orbLifePulse;
-      const sineWave = Math.sin(pulsePhase * Math.PI * 2);
-      const luminance = 1.0 + (sineWave * 0.03);
-      setDrawerLuminance(luminance);
-      rafId = requestAnimationFrame(animate);
-    };
-    
-    rafId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafId);
-  }, [shouldReduceMotion, selectedDomain]);
+    hoverExitTimerRef.current = setTimeout(() => {
+      console.log('[HOVER] leave', { orbid: hoveredDomain, state: hoverState, ts: Date.now() });
+      closeHover();
+    }, TOKENS.HORIZON.hoverExitDelay);
+  }, [hoveredDomain, hoverState, closeHover]);
 
-  // Auto-fade with corridor support
-  useEffect(() => {
-    if (tooltipFadeTimerRef.current) {
-      clearTimeout(tooltipFadeTimerRef.current);
-      tooltipFadeTimerRef.current = null;
-    }
-
-    if (hoveredDomain && !isOrbHovered && !isTooltipHovered && !inCorridorRef.current) {
-      tooltipFadeTimerRef.current = setTimeout(() => {
-        setHoveredDomain(null);
-        setIsOrbHovered(false);
-        setIsTooltipHovered(false);
-      }, TOKENS.HORIZON.t_tooltipAutoFade * 1000);
-    }
-
-    return () => {
-      if (tooltipFadeTimerRef.current) {
-        clearTimeout(tooltipFadeTimerRef.current);
-        tooltipFadeTimerRef.current = null;
-      }
-    };
-  }, [hoveredDomain, isOrbHovered, isTooltipHovered]);
+  // Card interaction (v1.9.7) - does NOT pin orb hover
+  const handleCardClick = useCallback((domain) => {
+    closeHover();
+    handleOpenDrawer(domain);
+  }, [closeHover]);
 
   const handleOpenDrawer = useCallback((domain) => {
     if (selectedDomain?.id === domain.id) return;
@@ -474,7 +455,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       setIsSwitchingNode(false); 
       setDrawerOrigin(null); 
       
-      // Restore focus to orb if available
       if (containerRef.current) {
         const orbElement = containerRef.current.querySelector('.orb[data-focused="true"]');
         if (orbElement) orbElement.focus();
@@ -494,6 +474,30 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     handleOpenDrawer(domains[(idx - 1 + domains.length) % domains.length]);
   }, [selectedDomain, domains, handleOpenDrawer]);
 
+  // Orb Life Pulse
+  useEffect(() => {
+    if (shouldReduceMotion || !selectedDomain) {
+      setDrawerLuminance(1.0);
+      return;
+    }
+    
+    let rafId;
+    let startTime = Date.now();
+    
+    const animate = () => {
+      const elapsed = (Date.now() - startTime) / 1000;
+      const pulsePhase = (elapsed % TOKENS.HORIZON.t_orbLifePulse) / TOKENS.HORIZON.t_orbLifePulse;
+      const sineWave = Math.sin(pulsePhase * Math.PI * 2);
+      const luminance = 1.0 + (sineWave * 0.03);
+      setDrawerLuminance(luminance);
+      rafId = requestAnimationFrame(animate);
+    };
+    
+    rafId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(rafId);
+  }, [shouldReduceMotion, selectedDomain]);
+
+  // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && selectedDomain) handleCloseDrawer();
@@ -509,14 +513,19 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedDomain, handleCloseDrawer, handlePrevDomain, handleNextDomain, domains, handleOpenDrawer]);
 
+  // Mouse move with velocity tracking and corridor detection (v1.9.7)
   useEffect(() => {
+    let rafId;
+    
     const handleMouseMove = (e) => {
       if (!containerRef.current || shouldReduceMotion) return;
+      
       const rect = containerRef.current.getBoundingClientRect();
       const normX = ((e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2));
       const normY = ((e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2));
       mouseX.set(normX * 14);
       mouseY.set(normY * 14);
+      
       if (selectedDomain) {
         glassParallaxX.set(-normX * TOKENS.HORIZON.microParallaxMax * TOKENS.HORIZON.microParallaxDamping);
         glassParallaxY.set(-normY * TOKENS.HORIZON.microParallaxMax * TOKENS.HORIZON.microParallaxDamping);
@@ -525,36 +534,51 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         glassParallaxY.set(0);
       }
       
-      // Check corridor if hover card is visible
-      if (hoveredDomain && !isTooltipHovered && !selectedDomain) { // Only check corridor if no domain is selected
+      const currentPos = { x: e.clientX - rect.left, y: e.clientY - rect.top, t: Date.now() };
+      
+      // Velocity exit check
+      if (hoveredDomain && checkVelocityExit(currentPos)) {
+        closeHover();
+      }
+      
+      // Corridor detection
+      if (hoveredDomain && hoverState === 'hovering') {
         const domain = domains.find(d => d.id === hoveredDomain);
-        if (domain) {
-          const orbPos = getOrbPosition(hoveredDomain, domain.strength, swayTime, 0, 0);
-          const isLeft = orbPos.x < cx;
+        if (domain && corridorOpenTimeRef.current) {
+          const timeSinceOpen = Date.now() - corridorOpenTimeRef.current;
           
-          // Tooltip position calculation (relative to container)
-          const tooltipWidth = 260;
-          const tooltipX = isLeft ? orbPos.x + orbPos.radius + 22 : orbPos.x - orbPos.radius - 22;
-          const tooltipY = orbPos.y;
-          
-          // Calculate approximate center of the tooltip for corridor calculation
-          const cardCenterX = isLeft ? tooltipX + tooltipWidth / 2 : tooltipX - tooltipWidth / 2;
-          const cardCenterY = tooltipY; // Tooltip is centered vertically around orbPos.y
-
-          const mousePos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
-          if (isPointInCorridor(mousePos, { x: orbPos.x, y: orbPos.y }, { x: cardCenterX, y: cardCenterY })) {
-            inCorridorRef.current = true;
-            if (corridorTimerRef.current) {
-              clearTimeout(corridorTimerRef.current);
-              corridorTimerRef.current = null;
+          if (timeSinceOpen < TOKENS.HORIZON.corridorTTL) {
+            const orbPos = getOrbPosition(hoveredDomain, domain.strength, swayTime, 0, 0);
+            const isLeft = orbPos.x < cx;
+            const cardX = isLeft ? orbPos.x + orbPos.radius + 22 + 130 : orbPos.x - orbPos.radius - 22 - 130;
+            const cardY = orbPos.y;
+            
+            if (isPointInCorridor(currentPos, { x: orbPos.x, y: orbPos.y }, { x: cardX, y: cardY })) {
+              setHoverState('in-corridor');
+              console.log('[HOVER] in-corridor', { orbid: hoveredDomain, timeSinceOpen });
             }
           }
         }
       }
+      
+      lastMousePosRef.current = currentPos;
     };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [shouldReduceMotion, selectedDomain, mouseX, mouseY, glassParallaxX, glassParallaxY, hoveredDomain, isTooltipHovered, domains, getOrbPosition, swayTime, cx, isPointInCorridor]);
+    
+    // Throttle with RAF
+    const throttledMouseMove = (e) => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        handleMouseMove(e);
+        rafId = null;
+      });
+    };
+    
+    window.addEventListener('mousemove', throttledMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', throttledMouseMove);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [shouldReduceMotion, selectedDomain, mouseX, mouseY, glassParallaxX, glassParallaxY, hoveredDomain, hoverState, domains, getOrbPosition, swayTime, cx, isPointInCorridor, checkVelocityExit, closeHover]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -617,7 +641,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     const headerHeight = 72;
     const safeTopPadding = 8;
     const safeTop = headerHeight + safeTopPadding;
-    const bottomMargin = 16; // v1.9.6: minimum safe margin
+    const bottomMargin = 16;
     
     const drawerWidth = 520;
     const maxDrawerHeight = Math.min(window.innerHeight - headerHeight - 72 - bottomMargin, 700);
@@ -658,7 +682,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         </div>
       </div>
 
-      <div ref={containerRef} className="grid-wrapper relative w-full overflow-hidden constellation-overlay" data-dominant={dominantDriver} style={{ height: '700px', background: `linear-gradient(184deg, ${TOKENS.HORIZON.bgBase} 0%, ${TOKENS.HORIZON.bgEnd} 100%)`, border: '1px solid rgba(160,191,255,0.08)', borderRadius: '24px', paddingTop: '4vh', paddingBottom: '5vh', position: 'relative', pointerEvents: 'none' }}>
+      <div ref={containerRef} className="grid-wrapper relative w-full overflow-hidden" data-dominant={dominantDriver} style={{ height: '700px', background: `linear-gradient(184deg, ${TOKENS.HORIZON.bgBase} 0%, ${TOKENS.HORIZON.bgEnd} 100%)`, border: '1px solid rgba(160,191,255,0.08)', borderRadius: '24px', paddingTop: '4vh', paddingBottom: '5vh', position: 'relative', pointerEvents: 'none' }}>
         
         <motion.div style={{ position: 'absolute', inset: 0, background: `radial-gradient(900px circle at 52% 48%, ${TOKENS.HORIZON.bgSubsurfaceCenter} 0%, ${TOKENS.HORIZON.bgSubsurfaceEdge} 70%)`, opacity: 0.35, borderRadius: '24px', pointerEvents: 'none', zIndex: 1 }} animate={{ x: shouldReduceMotion ? 0 : bgParallaxX.get() * TOKENS.HORIZON.parallaxOffset * 0.6, y: shouldReduceMotion ? 0 : bgParallaxY.get() * TOKENS.HORIZON.parallaxOffset * 0.6 }} transition={{ duration: TOKENS.HORIZON.t_parallax, ease: TOKENS.HORIZON.easingApple }} />
         
@@ -674,8 +698,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           
           return (
             <React.Fragment key={`bloom-${domain.id}`}>
-              {/* Clamped bloom with mask gradient (v1.9.6) */}
               <motion.div 
+                className="orb-halo"
                 style={{ 
                   position: 'absolute', 
                   left: pos.x, 
@@ -692,13 +716,18 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 }} 
               />
               {isActiveOrb && (
-                <motion.div animate={{ opacity: [0.15, 0.22, 0.15], scale: [1, 1.12, 1] }} transition={{ opacity: { duration: 4, repeat: Infinity, ease: 'easeInOut' }, scale: { duration: 4, repeat: Infinity, ease: 'easeInOut' } }} style={{ position: 'absolute', left: pos.x, top: pos.y, width: bloomRadius * 2.3, height: bloomRadius * 2.3, transform: 'translate(-50%, -50%)', background: `radial-gradient(circle, ${getDomainBloom(domain.id)}, transparent 65%)`, filter: 'blur(28px)', mixBlendMode: 'screen', pointerEvents: 'none', zIndex: 1 }} />
+                <motion.div 
+                  className="orb-halo"
+                  animate={{ opacity: [0.15, 0.22, 0.15], scale: [1, 1.12, 1] }} 
+                  transition={{ opacity: { duration: 4, repeat: Infinity, ease: 'easeInOut' }, scale: { duration: 4, repeat: Infinity, ease: 'easeInOut' } }} 
+                  style={{ position: 'absolute', left: pos.x, top: pos.y, width: bloomRadius * 2.3, height: bloomRadius * 2.3, transform: 'translate(-50%, -50%)', background: `radial-gradient(circle, ${getDomainBloom(domain.id)}, transparent 65%)`, filter: 'blur(28px)', mixBlendMode: 'screen', pointerEvents: 'none', zIndex: 1 }} 
+                />
               )}
             </React.Fragment>
           );
         })}
         
-        <motion.div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 4 }} animate={{ x: shouldReduceMotion ? 0 : parallaxX.get() * TOKENS.HORIZON.parallaxOffset * 0.15, y: shouldReduceMotion ? 0 : parallaxY.get() * TOKENS.HORIZON.parallaxOffset * 0.15 }} transition={{ duration: TOKENS.HORIZON.t_parallax, ease: TOKENS.HORIZON.easingApple }}>
+        <motion.div className="glow-overlay" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 4 }} animate={{ x: shouldReduceMotion ? 0 : parallaxX.get() * TOKENS.HORIZON.parallaxOffset * 0.15, y: shouldReduceMotion ? 0 : parallaxY.get() * TOKENS.HORIZON.parallaxOffset * 0.15 }} transition={{ duration: TOKENS.HORIZON.t_parallax, ease: TOKENS.HORIZON.easingApple }}>
           {selectedDomain && <motion.div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', width: '100%', height: '100%', background: `radial-gradient(circle at center, ${getDomainBloom(selectedDomain.id)} 0%, transparent 60%)`, opacity: 0.1, filter: 'blur(80px)', pointerEvents: 'none', mixBlendMode: 'screen' }} initial={{ opacity: 0 }} animate={{ opacity: 0.1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5, ease: 'easeInOut' }} />}
         </motion.div>
 
@@ -739,7 +768,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               ))}
             </defs>
 
-            <g style={{ mixBlendMode: 'screen', pointerEvents: 'none' }}>
+            <g className="link-path" style={{ mixBlendMode: 'screen', pointerEvents: 'none' }}>
               {connections.map((conn, i) => {
                 const from = domains.find(d => d.id === conn.from);
                 const to = domains.find(d => d.id === conn.to);
@@ -765,11 +794,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
                 return (
                   <g key={domain.id}>
-                    {/* Halo layers - pointer-events:none (v1.9.6) */}
-                    <motion.circle cx={orbPos.x} cy={orbPos.y} r={orbPos.radius + 40} fill={bloom} style={{ filter: 'blur(20px)', pointerEvents: 'none' }} animate={shouldReduceMotion ? {} : { opacity: isPulsing ? [0.38, 0.55, 0.38] : isHovered || isSelected ? 0.55 : [0.38, 0.42, 0.38], scale: isPulsing ? [1, 1.08, 1] : isHovered || isSelected ? 1.05 : [0.985, 1.025, 0.985] }} transition={isPulsing ? { duration: TOKENS.HORIZON.t_orbBreathIn, ease: TOKENS.HORIZON.easingSine } : isHovered || isSelected ? { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easingApple } : { duration: TOKENS.HORIZON.t_breathe, repeat: Infinity, ease: "easeInOut", delay: idx * 1.2 }} />
+                    <motion.circle className="orb-halo" cx={orbPos.x} cy={orbPos.y} r={orbPos.radius + 40} fill={bloom} style={{ filter: 'blur(20px)', pointerEvents: 'none' }} animate={shouldReduceMotion ? {} : { opacity: isPulsing ? [0.38, 0.55, 0.38] : isHovered || isSelected ? 0.55 : [0.38, 0.42, 0.38], scale: isPulsing ? [1, 1.08, 1] : isHovered || isSelected ? 1.05 : [0.985, 1.025, 0.985] }} transition={isPulsing ? { duration: TOKENS.HORIZON.t_orbBreathIn, ease: TOKENS.HORIZON.easingSine } : isHovered || isSelected ? { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easingApple } : { duration: TOKENS.HORIZON.t_breathe, repeat: Infinity, ease: "easeInOut", delay: idx * 1.2 }} />
                     <circle cx={orbPos.x} cy={orbPos.y} r={orbPos.radius + 2} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="2" style={{ filter: `url(#scatter-${domain.id})`, pointerEvents: 'none' }} />
                     <AnimatePresence>
-                      {(isHovered || isSelected) && <motion.circle cx={orbPos.x} cy={orbPos.y} r={orbPos.radius + 11} fill={bloom} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 0.6, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ opacity: { duration: TOKENS.HORIZON.t_haloDecay, ease: TOKENS.HORIZON.easingSine }, scale: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easingApple } }} style={{ filter: 'blur(16px)', pointerEvents: 'none' }} />}
+                      {(isHovered || isSelected) && <motion.circle className="orb-halo" cx={orbPos.x} cy={orbPos.y} r={orbPos.radius + 11} fill={bloom} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 0.6, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ opacity: { duration: TOKENS.HORIZON.t_haloDecay, ease: TOKENS.HORIZON.easingSine }, scale: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easingApple } }} style={{ filter: 'blur(16px)', pointerEvents: 'none' }} />}
                     </AnimatePresence>
                     
                     {isSelected && !shouldReduceMotion && (
@@ -794,13 +822,13 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       />
                     )}
                     
-                    {/* Tight hitbox orb (v1.9.6) */}
+                    {/* Tight hitbox orb nucleus (v1.9.7) */}
                     <motion.circle 
                       cx={orbPos.x} 
                       cy={orbPos.y} 
-                      r={orbPos.radius + TOKENS.HORIZON.hoverHitboxExtra}
+                      r={orbPos.radius + TOKENS.HORIZON.hoverEnterRadius}
                       fill={`url(#nucleus-${domain.id})`} 
-                      className="orb cursor-pointer" 
+                      className="orb-nucleus cursor-pointer" 
                       data-domain-id={domain.id}
                       data-focused={isSelected ? "true" : "false"}
                       style={{ 
@@ -814,7 +842,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         opacity: isPulsing ? [0.985, 1, 0.985] : isHovered || isSelected ? 1 : [0.985, 1, 0.985] 
                       }} 
                       transition={isPulsing ? { duration: TOKENS.HORIZON.t_orbBreathIn, ease: TOKENS.HORIZON.easingSine } : isSelected ? { duration: TOKENS.HORIZON.t_orbLifePulse, repeat: Infinity, ease: "easeInOut" } : isHovered ? { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easingApple } : { duration: TOKENS.HORIZON.t_breathe, repeat: Infinity, ease: "easeInOut", delay: idx * 1.2 }} 
-                      onMouseEnter={(e) => handleDomainHoverEnter(domain, e)} 
+                      onMouseEnter={() => handleDomainHoverEnter(domain)} 
                       onMouseLeave={handleDomainHoverLeave} 
                       onClick={() => handleOpenDrawer(domain)} 
                       onKeyDown={(e) => { if (e.key === 'Enter') handleOpenDrawer(domain); }} 
@@ -829,7 +857,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </g>
           </svg>
 
-          {/* Hover Card with subtle halo pulse (v1.9.6) */}
+          {/* Hover Card - clickable, does NOT pin orb hover (v1.9.7) */}
           <AnimatePresence>
             {hoveredDomain && !selectedDomain && (() => {
               const domain = domains.find(d => d.id === hoveredDomain);
@@ -873,15 +901,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     zIndex: 101,
                     cursor: 'pointer'
                   }}
-                  onClick={() => handleOpenDrawer(domain)}
-                  onMouseEnter={handleTooltipHoverEnter}
-                  onMouseLeave={handleTooltipHoverLeave}
+                  onClick={() => handleCardClick(domain)}
                   role="button"
                   tabIndex={0}
                   aria-label={`Open ${domain.id} drawer`}
-                  onKeyDown={(e) => { if (e.key === 'Enter') handleOpenDrawer(domain); }}
+                  onKeyDown={(e) => { if (e.key === 'Enter') handleCardClick(domain); }}
                 >
-                  {/* Subtle halo pulse (v1.9.6) */}
                   {!shouldReduceMotion && (
                     <motion.div
                       className="absolute inset-0 rounded-[16px]"
@@ -903,7 +928,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     right: '12px', 
                     height: '1px', 
                     background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
-                    borderRadius: '999px'
+                    borderRadius: '999px',
+                    pointerEvents: 'none'
                   }} />
                   
                   <div className="flex items-center gap-2.5 mb-3">
@@ -922,13 +948,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       <motion.h4 
                         initial={{ opacity: 0, y: -3 }}
                         animate={{ 
-                          opacity: Math.min(0.95 + opacityAdjust + (isTooltipHovered ? 0.05 : 0), 1), 
+                          opacity: 0.95 + opacityAdjust,
                           y: 0 
                         }}
                         transition={{ 
                           delay: TOKENS.HORIZON.t_tooltipTextStagger, 
-                          duration: TOKENS.HORIZON.t_tooltipTextDuration,
-                          opacity: { duration: 0.12 }
+                          duration: TOKENS.HORIZON.t_tooltipTextDuration
                         }}
                         style={{ 
                           color: TOKENS.colors.textPrimary, 
@@ -944,13 +969,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       <motion.div 
                         initial={{ opacity: 0, y: -3 }}
                         animate={{ 
-                          opacity: Math.min(0.80 + opacityAdjust + (isTooltipHovered ? 0.05 : 0), 1), 
+                          opacity: 0.80 + opacityAdjust,
                           y: 0 
                         }}
                         transition={{ 
                           delay: TOKENS.HORIZON.t_tooltipTextStagger * 1.5, 
-                          duration: TOKENS.HORIZON.t_tooltipTextDuration,
-                          opacity: { duration: 0.12 }
+                          duration: TOKENS.HORIZON.t_tooltipTextDuration
                         }}
                         className="flex items-center gap-1.5"
                       >
@@ -972,13 +996,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   <motion.div 
                     initial={{ opacity: 0, y: 3 }}
                     animate={{ 
-                      opacity: Math.min(1 + (isTooltipHovered ? 0.05 : 0), 1), 
+                      opacity: 1,
                       y: 0 
                     }}
                     transition={{ 
                       delay: TOKENS.HORIZON.t_tooltipTextStagger * 2, 
-                      duration: TOKENS.HORIZON.t_tooltipTextDuration,
-                      opacity: { duration: 0.12 }
+                      duration: TOKENS.HORIZON.t_tooltipTextDuration
                     }}
                     className="flex items-center gap-3 mb-3 pb-3"
                     style={{ borderBottom: `1px solid ${TOKENS.HORIZON.drawerDivider}` }}
@@ -1046,13 +1069,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   <motion.p
                     initial={{ opacity: 0, y: 3 }}
                     animate={{ 
-                      opacity: Math.min(0.88 + opacityAdjust + (isTooltipHovered ? 0.05 : 0), 1), 
+                      opacity: 0.88 + opacityAdjust,
                       y: 0 
                     }}
                     transition={{ 
                       delay: TOKENS.HORIZON.t_tooltipTextStagger * 3, 
-                      duration: TOKENS.HORIZON.t_tooltipTextDuration,
-                      opacity: { duration: 0.12 }
+                      duration: TOKENS.HORIZON.t_tooltipTextDuration
                     }}
                     style={{ 
                       color: TOKENS.colors.textBody,
@@ -1070,12 +1092,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ 
-                      opacity: Math.min(1 + (isTooltipHovered ? 0.05 : 0), 1)
+                      opacity: 1
                     }}
                     transition={{ 
                       delay: TOKENS.HORIZON.t_tooltipTextStagger * 4, 
-                      duration: TOKENS.HORIZON.t_tooltipTextDuration,
-                      opacity: { duration: 0.12 }
+                      duration: TOKENS.HORIZON.t_tooltipTextDuration
                     }}
                     className="mt-3 pt-3 flex items-center justify-center gap-1.5"
                     style={{ 
@@ -1107,6 +1128,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       borderTop: '8px solid transparent',
                       borderBottom: '8px solid transparent',
                       [isLeft ? 'borderRight' : 'borderLeft']: `8px solid ${TOKENS.HORIZON.glassBorder}`,
+                      pointerEvents: 'none'
                     }}
                   />
                   <div 
@@ -1120,6 +1142,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       borderTop: '7px solid transparent',
                       borderBottom: '7px solid transparent',
                       [isLeft ? 'borderRight' : 'borderLeft']: `7px solid ${TOKENS.HORIZON.glassBg}`,
+                      pointerEvents: 'none'
                     }}
                   />
                 </motion.div>
@@ -1145,7 +1168,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           <div style={{ width: '160px', position: 'relative' }}>
             <div style={{ height: '2px', borderRadius: '999px', position: 'relative', overflow: 'hidden', background: 'linear-gradient(90deg, rgba(106,199,247,0.3), rgba(180,247,192,0.3), rgba(255,211,122,0.3))' }}>
               {!shouldReduceMotion && <motion.div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%)', width: '100%' }} animate={{ x: ['-100%', '100%'] }} transition={{ duration: TOKENS.HORIZON.t_sweep, repeat: Infinity, ease: 'linear' }} />}
-              <div style={{ position: 'absolute', bottom: '-8px', left: 0, right: 0, height: '8px', background: 'linear-gradient(90deg, rgba(106,199,247,0.15), rgba(180,247,192,0.15), rgba(255,255,211,122,0.15))', filter: 'blur(8px)', opacity: 0.15 }} />
+              <div style={{ position: 'absolute', bottom: '-8px', left: 0, right: 0, height: '8px', background: 'linear-gradient(90deg, rgba(106,199,247,0.15), rgba(180,247,192,0.15), rgba(255,211,122,0.15))', filter: 'blur(8px)', opacity: 0.15 }} />
               <motion.div style={{ position: 'absolute', top: '50%', width: '10px', height: '10px', borderRadius: '999px', background: dominantDriver === 'balanced' ? 'rgba(255,255,255,0.7)' : getDomainColor(dominantDriver), boxShadow: `0 0 20px ${dominantDriver === 'balanced' ? 'rgba(255,255,255,0.5)' : getDomainBloom(dominantDriver)}, 0 0 8px rgba(255,255,255,0.3)`, transform: 'translate(-50%, -50%)', border: '1px solid rgba(255,255,255,0.3)' }} animate={{ left: `calc(10% + ${balanceBias * 80}%)` }} transition={{ duration: 0.8, ease: TOKENS.HORIZON.overshoot }} />
             </div>
           </div>
@@ -1168,8 +1191,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       <AnimatePresence>
         {selectedDomain && (
           <motion.div 
-            className="fixed inset-0 z-40" 
-            style={{ background: 'rgba(6,8,13,0.70)', backdropFilter: TOKENS.HORIZON.backdropBlur, WebkitBackdropFilter: TOKENS.HORIZON.backdropBlur }}
+            className="fixed inset-0 z-40 drawer-overlay" 
+            style={{ background: 'rgba(6,8,13,0.70)', backdropFilter: TOKENS.HORIZON.backdropBlur, WebkitBackdropFilter: TOKENS.HORIZON.backdropBlur, pointerEvents: 'none' }}
             initial={{ opacity: 0 }} 
             animate={{ opacity: TOKENS.HORIZON.backdropOpacity }} 
             exit={{ opacity: 0 }}
@@ -1228,6 +1251,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             transition={{ duration: TOKENS.HORIZON.t_drawerOpen, ease: TOKENS.HORIZON.easingCubic }} 
             onClick={(e) => e.stopPropagation()}
           >
+            
             <div 
               className="drawer-header-blur-extension"
               style={{
@@ -1247,7 +1271,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             
             <motion.div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate3d(-50%, -50%, 0)', width: '120%', height: '120%', background: `radial-gradient(circle at center, ${getDomainBloom(selectedDomain.id)} 0%, transparent 60%)`, opacity: 0.08, filter: 'blur(32px)', pointerEvents: 'none', mixBlendMode: 'screen', zIndex: 0 }} initial={{ opacity: 0 }} animate={{ opacity: 0.08, x: glassParallaxX, y: glassParallaxY }} exit={{ opacity: 0 }} transition={{ opacity: { duration: 0.5, ease: 'easeInOut' } }} />
             <motion.div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '80px', background: `linear-gradient(to bottom, ${TOKENS.HORIZON.lightTemp} 0%, ${TOKENS.HORIZON.lightTempBottom} 100%)`, pointerEvents: 'none', borderRadius: '24px 24px 0 0', zIndex: 1 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3, ease: 'easeOut' }} />
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '100%', background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%)', pointerEvents: 'none', borderRadius: '24px', zIndex: 1 }} />
+            <div className="panel-glass" style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '100%', background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%)', pointerEvents: 'none', borderRadius: '24px', zIndex: 1 }} />
             
             <motion.div className="flex-shrink-0 p-5 border-b" style={{ background: TOKENS.HORIZON.drawerTint, borderColor: TOKENS.HORIZON.drawerDivider, backdropFilter: getBlur('chip'), position: 'relative', zIndex: 10 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: TOKENS.HORIZON.t_contentStagger, ease: TOKENS.HORIZON.easingOutQuad }}>
               <div className="flex items-start justify-between mb-4">
@@ -1300,13 +1324,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               </motion.div>
               
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: TOKENS.HORIZON.t_contentStagger * 2, duration: 0.2 }} style={{ marginBottom: '16px' }}>
-                <h4 style={{ color: 'rgba(255,255,255,0.9)', fontSize: '13px', fontWeight: 500, marginBottom: '8px' }}>48-Hour Trend</h4>
-                <div className="text-center py-4 text-gray-400 text-sm">
-                  Sparkline chart placeholder
-                </div>
-              </motion.div>
-              
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: TOKENS.HORIZON.t_contentStagger * 3, duration: 0.2 }} style={{ marginBottom: '16px' }}>
                 <h4 style={{ color: 'rgba(255,255,255,0.9)', fontSize: '13px', fontWeight: 500, marginBottom: '8px' }}>Downstream Effects</h4>
                 <div className="space-y-2">
                   {selectedDomain.ripple.slice(0, 3).map((effect, i) => (
@@ -1320,7 +1337,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 <motion.div
                   initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: TOKENS.HORIZON.t_contentStagger * 4, duration: 0.2 }}
+                  transition={{ delay: TOKENS.HORIZON.t_contentStagger * 3, duration: 0.2 }}
                   className="mt-3 p-3 rounded-lg"
                   style={{ background: 'rgba(66,135,245,0.08)', border: '1px solid rgba(66,135,245,0.25)' }}
                 >
@@ -1330,7 +1347,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   <motion.p
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ delay: TOKENS.HORIZON.t_contentStagger * 4 + TOKENS.HORIZON.t_soWhatDelay, duration: 0.1 }}
+                    transition={{ delay: TOKENS.HORIZON.t_contentStagger * 3 + TOKENS.HORIZON.t_soWhatDelay, duration: 0.1 }}
                     style={{ color: 'rgba(255,255,255,0.60)', fontSize: '10.5px', lineHeight: '1.45', fontWeight: 400, marginTop: '8px', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}
                   >
                     {getSoWhatInterpretation(selectedDomain)}
@@ -1338,7 +1355,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 </motion.div>
               </motion.div>
 
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: TOKENS.HORIZON.t_contentStagger * 5, duration: 0.2 }} className="pt-3 border-t" style={{ borderColor: TOKENS.HORIZON.drawerDivider }}>
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: TOKENS.HORIZON.t_contentStagger * 4, duration: 0.2 }} className="pt-3 border-t" style={{ borderColor: TOKENS.HORIZON.drawerDivider }}>
                 <button className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-colors hover:brightness-110" style={{ background: 'rgba(66,135,245,0.15)', color: '#4287f5', border: '1px solid rgba(66,135,245,0.3)' }} aria-label="View detailed market implications">
                   <span>View market implications</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -1358,22 +1375,33 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           *, *::before, *::after { animation: none !important; transition: none !important; } 
         }
         
-        .orb { min-width: 44px; min-height: 44px; }
+        .orb-nucleus { 
+          min-width: 44px; 
+          min-height: 44px; 
+        }
         
-        .orb:focus-visible { 
+        .orb-nucleus::after {
+          content: "";
+          position: absolute;
+          inset: -6px;
+          border-radius: 50%;
+          pointer-events: auto;
+        }
+        
+        .orb-nucleus:focus-visible { 
           outline: 2px solid rgba(122,215,240,0.9);
           outline-offset: 3px;
-          z-index: 251;
+          z-index: 102;
         }
         
         .drawer-with-header-safe:focus-within {
           outline: 2px solid rgba(66,135,245,0.6);
           outline-offset: -2px;
-          z-index: 251;
+          z-index: 102;
         }
         
-        .constellation-overlay {
-          pointer-events: none;
+        .orb-halo, .link-path, .glow-overlay, .panel-glass, .drawer-overlay {
+          pointer-events: none !important;
         }
         
         @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
