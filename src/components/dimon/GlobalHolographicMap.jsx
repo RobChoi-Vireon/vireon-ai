@@ -783,7 +783,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     scale: 0.96,
                     transition: { duration: 0.22, ease: [0.4, 0, 0.2, 1] }
                   }}
-                  transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
                   whileHover={{
                     scale: 1.01
                   }}
@@ -1218,20 +1217,48 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         <p style={{ fontSize: '9px', fontWeight: 400, color: TOKENS.colors.textTertiary, opacity: 0.55, fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Data via Lyra models</p>
       </div>
 
+      {/* OS HORIZON BACKDROP - INHALE/EXHALE BREATHING */}
       <AnimatePresence>
         {selectedDomain && (
           <motion.div
             className="fixed inset-0 z-40 drawer-overlay"
-            style={{ background: 'rgba(6,8,13,0.70)', backdropFilter: TOKENS.HORIZON.backdropBlur, WebkitBackdropFilter: TOKENS.HORIZON.backdropBlur, pointerEvents: 'none' }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: TOKENS.HORIZON.backdropOpacity }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: TOKENS.HORIZON.t_drawerOpen, ease: TOKENS.HORIZON.easingCubic }}
+            style={{ 
+              background: 'rgba(6,8,13,0.25)', // Reduced from 0.70 - maintain visible context
+              backdropFilter: 'blur(0px) brightness(1)', // Start state
+              WebkitBackdropFilter: 'blur(0px) brightness(1)',
+              pointerEvents: 'none' 
+            }}
+            initial={{ 
+              opacity: 0,
+              backdropFilter: 'blur(0px) brightness(1)',
+              WebkitBackdropFilter: 'blur(0px) brightness(1)'
+            }}
+            animate={{ 
+              opacity: 1,
+              backdropFilter: 'blur(12px) brightness(0.97)', // +8% blur, -3% brightness
+              WebkitBackdropFilter: 'blur(12px) brightness(0.97)',
+              transition: {
+                opacity: { duration: 0.1, ease: 'easeOut' }, // Pre-stage 100ms
+                backdropFilter: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] },
+                WebkitBackdropFilter: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }
+              }
+            }}
+            exit={{ 
+              opacity: 0,
+              backdropFilter: 'blur(0px) brightness(1)', // Restore
+              WebkitBackdropFilter: 'blur(0px) brightness(1)',
+              transition: {
+                opacity: { duration: 0.25, ease: 'easeInOut' }, // Fade-back 250ms
+                backdropFilter: { duration: 0.15, delay: 0.25, ease: 'easeOut' }, // Background restore 150ms after fade
+                WebkitBackdropFilter: { duration: 0.15, delay: 0.25, ease: 'easeOut' }
+              }
+            }}
             onClick={handleCloseDrawer}
           />
         )}
       </AnimatePresence>
 
+      {/* OS HORIZON DRAWER - INHALE/EXHALE MOTION */}
       <AnimatePresence>
         {selectedDomain && !isSwitchingNode && drawerOrigin && (
           <motion.div
@@ -1249,36 +1276,45 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               WebkitBackdropFilter: TOKENS.HORIZON.drawerBlur,
               background: TOKENS.HORIZON.drawerGlass,
               border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
-              boxShadow: `${TOKENS.HORIZON.drawerShadow}, ${TOKENS.HORIZON.panelShadow}, 0 0 12px ${TOKENS.HORIZON.drawerEdgeBloom}, inset 0 0 0 1px rgba(255,255,255,0.10)`,
+              boxShadow: `0 0 60px rgba(0, 0, 0, 0.15), ${TOKENS.HORIZON.panelShadow}, 0 0 12px ${TOKENS.HORIZON.drawerEdgeBloom}, inset 0 0 0 1px rgba(255,255,255,0.10)`,
               borderRadius: '24px',
               overflow: 'hidden',
               filter: `brightness(${drawerLuminance})`
             }}
             initial={{
-              left: drawerOrigin.screenX,
-              top: drawerOrigin.screenY + 10,
-              width: 0,
-              height: 0,
-              scale: 0.96,
-              opacity: 0
-            }}
-            animate={{
               left: drawerCenterPosition.left,
               top: drawerCenterPosition.top,
               width: drawerCenterPosition.width,
               height: drawerCenterPosition.height,
-              scale: 1,
-              opacity: 1
+              scale: 0.985, // Start slightly smaller for depth
+              opacity: 0,
+              y: 0
+            }}
+            animate={{
+              scale: [0.985, 1.015, 1.005], // Lift 1.5%, settle with -0.5% bounce
+              opacity: [0, 1, 1],
+              y: [0, 0, 0],
+              transition: {
+                scale: {
+                  duration: 0.5,
+                  times: [0, 0.5, 1], // Pre-stage (0-100ms implicit), Lift (100-350ms), Settle (350-500ms)
+                  ease: [0.25, 0.1, 0.25, 1] // Cubic ease-in-out for smooth lift
+                },
+                opacity: {
+                  duration: 0.25,
+                  delay: 0.1, // After pre-stage
+                  ease: 'easeInOut'
+                }
+              }
             }}
             exit={{
-              left: drawerOrigin.screenX,
-              top: drawerOrigin.screenY + 10,
-              width: 0,
-              height: 0,
-              scale: 0.96,
-              opacity: 0
+              scale: 0.99, // Scale down 1%
+              opacity: 0,
+              transition: {
+                scale: { duration: 0.25, ease: 'easeInOut' }, // Fade-back 250ms
+                opacity: { duration: 0.25, ease: 'easeInOut' }
+              }
             }}
-            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
             onClick={(e) => e.stopPropagation()}
           >
 
@@ -1299,12 +1335,83 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               aria-hidden="true"
             />
 
-            <motion.div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate3d(-50%, -50%, 0)', width: '120%', height: '120%', background: `radial-gradient(circle at center, ${getDomainBloom(selectedDomain.id)} 0%, transparent 60%)`, opacity: 0.08, filter: 'blur(32px)', pointerEvents: 'none', mixBlendMode: 'screen', zIndex: 0 }} initial={{ opacity: 0 }} animate={{ opacity: 0.08, x: glassParallaxX, y: glassParallaxY }} exit={{ opacity: 0 }} transition={{ opacity: { duration: 0.5, ease: 'easeInOut' } }} />
-            <motion.div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '80px', background: `linear-gradient(to bottom, ${TOKENS.HORIZON.lightTemp} 0%, ${TOKENS.HORIZON.lightTempBottom} 100%)`, pointerEvents: 'none', borderRadius: '24px 24px 0 0', zIndex: 1 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3, ease: 'easeOut' }} />
+            <motion.div 
+              style={{ 
+                position: 'absolute', 
+                left: '50%', 
+                top: '50%', 
+                transform: 'translate3d(-50%, -50%, 0)', 
+                width: '120%', 
+                height: '120%', 
+                background: `radial-gradient(circle at center, ${getDomainBloom(selectedDomain.id)} 0%, transparent 60%)`, 
+                opacity: 0.08, 
+                filter: 'blur(32px)', 
+                pointerEvents: 'none', 
+                mixBlendMode: 'screen', 
+                zIndex: 0 
+              }} 
+              initial={{ opacity: 0 }} 
+              animate={{ 
+                opacity: 0.08, 
+                x: glassParallaxX, 
+                y: glassParallaxY,
+                transition: {
+                  opacity: { duration: 0.5, ease: 'easeOut' }
+                }
+              }} 
+              exit={{ 
+                opacity: 0,
+                transition: { duration: 0.25 }
+              }} 
+            />
+            
+            <motion.div 
+              style={{ 
+                position: 'absolute', 
+                top: 0, 
+                left: 0, 
+                right: 0, 
+                height: '80px', 
+                background: `linear-gradient(to bottom, ${TOKENS.HORIZON.lightTemp} 0%, ${TOKENS.HORIZON.lightTempBottom} 100%)`, 
+                pointerEvents: 'none', 
+                borderRadius: '24px 24px 0 0', 
+                zIndex: 1 
+              }} 
+              initial={{ opacity: 0 }} 
+              animate={{ 
+                opacity: 1,
+                transition: { duration: 0.35, delay: 0.15, ease: 'easeOut' }
+              }} 
+              exit={{ 
+                opacity: 0,
+                transition: { duration: 0.2 }
+              }} 
+            />
+            
             <div className="panel-glass" style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '100%', background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%)', pointerEvents: 'none', borderRadius: '24px', zIndex: 1 }} />
 
             {/* OS HORIZON REFINED HEADER v2.2 */}
-            <motion.div className="flex-shrink-0 p-5 border-b" style={{ background: TOKENS.HORIZON.drawerTint, borderColor: TOKENS.HORIZON.drawerDivider, backdropFilter: getBlur('chip'), position: 'relative', zIndex: 10 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.03, ease: 'easeOut' }}>
+            <motion.div 
+              className="flex-shrink-0 p-5 border-b" 
+              style={{ 
+                background: TOKENS.HORIZON.drawerTint, 
+                borderColor: TOKENS.HORIZON.drawerDivider, 
+                backdropFilter: getBlur('chip'), 
+                position: 'relative', 
+                zIndex: 10 
+              }} 
+              initial={{ opacity: 0, y: -10 }} 
+              animate={{ 
+                opacity: 1, 
+                y: 0,
+                transition: { duration: 0.3, delay: 0.2, ease: 'easeOut' }
+              }} 
+              exit={{ 
+                opacity: 0, 
+                y: -5,
+                transition: { duration: 0.15 }
+              }}
+            >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-4">
                   {/* Icon with breathing glow */}
@@ -1385,9 +1492,21 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </motion.div>
 
             {/* OS HORIZON REFINED BODY v2.2 */}
-            <div className="flex-1 overflow-y-auto p-6" style={{ position: 'relative', zIndex: 2 }}>
+            <motion.div 
+              className="flex-1 overflow-y-auto p-6" 
+              style={{ position: 'relative', zIndex: 2 }}
+              initial={{ opacity: 0 }}
+              animate={{ 
+                opacity: 1,
+                transition: { duration: 0.3, delay: 0.25, ease: 'easeOut' }
+              }}
+              exit={{ 
+                opacity: 0,
+                transition: { duration: 0.15 }
+              }}
+            >
               {/* What It Means */}
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0, duration: 0.2 }} style={{ marginBottom: '16px' }}>
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.2 }} style={{ marginBottom: '16px' }}>
                 <h4 style={{ color: 'rgba(255,255,255,0.9)', fontSize: '15px', fontWeight: 500, marginBottom: '8px', lineHeight: '22.5px' }}>What It Means</h4>
                 <p style={{ color: TOKENS.colors.textSecondary, fontSize: '14.5px', lineHeight: '23.9px', fontWeight: 400 }}>
                   {selectedDomain.id === 'fx' 
@@ -1403,7 +1522,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 )}
               </motion.div>
 
-              {/* Faint gradient divider */}
               <div style={{
                 height: '2px',
                 background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
@@ -1412,8 +1530,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 opacity: 0.6
               }} />
 
-              {/* Downstream Effects */}
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.03, duration: 0.2 }} style={{ marginBottom: '16px' }}>
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.33, duration: 0.2 }} style={{ marginBottom: '16px' }}>
                 <h4 style={{ color: 'rgba(255,255,255,0.9)', fontSize: '15px', fontWeight: 500, marginBottom: '8px', lineHeight: '22.5px' }}>Downstream Effects</h4>
                 <div className="space-y-2">
                   {selectedDomain.ripple.slice(0, 3).map((effect, i) => (
@@ -1455,7 +1572,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 </div>
               </motion.div>
 
-              {/* Faint gradient divider */}
               <div style={{
                 height: '2px',
                 background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
@@ -1464,11 +1580,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 opacity: 0.6
               }} />
 
-              {/* Actionable Signal Box with shimmer */}
               <motion.div
                 initial={{ opacity: 0, y: -4 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.06, duration: 0.2 }}
+                transition={{ delay: 0.36, duration: 0.2 }}
                 className="mt-3 p-4 rounded-lg relative overflow-hidden"
                 style={{ 
                   background: 'rgba(66,135,245,0.072)', 
@@ -1477,7 +1592,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   boxShadow: 'inset 1px 0 0 rgba(255,255,255,0.1)'
                 }}
               >
-                {/* Shimmer gradient */}
                 {!shouldReduceMotion && (
                   <motion.div
                     style={{
@@ -1506,7 +1620,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: 0.16, duration: 0.1 }}
+                  transition={{ delay: 0.46, duration: 0.1 }}
                   style={{ color: 'rgba(255,255,255,0.60)', fontSize: '13.5px', lineHeight: '22.3px', fontWeight: 400, marginTop: '10px', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}
                 >
                   {selectedDomain.id === 'fx'
@@ -1515,7 +1629,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 </motion.p>
               </motion.div>
 
-              {/* Faint gradient divider */}
               <div style={{
                 height: '2px',
                 background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
@@ -1524,8 +1637,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 opacity: 0.6
               }} />
 
-              {/* CTA Button */}
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.09, duration: 0.2 }} className="pt-3">
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.39, duration: 0.2 }} className="pt-3">
                 <motion.button 
                   className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg font-medium text-sm transition-colors hover:brightness-110" 
                   style={{ background: 'rgba(66,135,245,0.15)', color: '#4287f5', border: '1px solid rgba(66,135,245,0.3)', fontSize: '15.5px', paddingLeft: '24px', paddingRight: '24px' }} 
@@ -1550,7 +1662,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   <span className="opacity-60">1-4 • ← → • ESC</span>
                 </div>
               </motion.div>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
