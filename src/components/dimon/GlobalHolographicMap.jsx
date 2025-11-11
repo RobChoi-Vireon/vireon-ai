@@ -88,6 +88,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const constellationRef = useRef(null);
   const drawerRef = useRef(null);
   const prefetchTimerRef = useRef(null);
+  const hoverTimeoutRef = useRef(null); // Added: Ref to manage hover delay
   
   const [hoveredDomain, setHoveredDomain] = useState(null);
   const [selectedDomain, setSelectedDomain] = useState(null);
@@ -108,7 +109,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const [orbPulseActive, setOrbPulseActive] = useState(false);
   const [hoveredChartPoint, setHoveredChartPoint] = useState(null);
   const [drawerLuminance, setDrawerLuminance] = useState(1.0);
-  const [tooltipFadeTimer, setTooltipFadeTimer] = useState(null);
+  // Removed: const [tooltipFadeTimer, setTooltipFadeTimer] = useState(null);
   
   const glassParallaxX = useSpring(0, { damping: 30, stiffness: 90 });
   const glassParallaxY = useSpring(0, { damping: 30, stiffness: 90 });
@@ -280,37 +281,45 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return () => cancelAnimationFrame(rafId);
   }, [shouldReduceMotion, selectedDomain]);
 
-  // Auto-fade timeout for hover card (Patch v1.1)
-  useEffect(() => {
-    if (!hoveredDomain) {
-      if (tooltipFadeTimer) {
-        clearTimeout(tooltipFadeTimer);
-        setTooltipFadeTimer(null);
-      }
-      return;
-    }
+  // Removed: Auto-fade timeout for hover card (Patch v1.1) - Replaced by hoverTimeoutRef logic
+  // useEffect(() => {
+  //   if (!hoveredDomain) {
+  //     if (tooltipFadeTimer) {
+  //       clearTimeout(tooltipFadeTimer);
+  //       setTooltipFadeTimer(null);
+  //     }
+  //     return;
+  //   }
+  //
+  //   const timer = setTimeout(() => {
+  //     setHoveredDomain(null);
+  //     setTooltipFadeTimer(null);
+  //   }, TOKENS.HORIZON.t_tooltipAutoFade * 1000);
+  //
+  //   setTooltipFadeTimer(timer);
+  //
+  //   return () => {
+  //     if (timer) clearTimeout(timer);
+  //   };
+  // }, [hoveredDomain]);
 
-    // Set timer to auto-fade tooltip after 0.8s
-    const timer = setTimeout(() => {
-      setHoveredDomain(null);
-      setTooltipFadeTimer(null);
-    }, TOKENS.HORIZON.t_tooltipAutoFade * 1000);
-
-    setTooltipFadeTimer(timer);
-
-    return () => {
-      if (timer) clearTimeout(timer);
-    };
-  }, [hoveredDomain]);
-
+  // Modified: handleDomainHover to use hoverTimeoutRef
   const handleDomainHover = useCallback((domain) => {
-    setHoveredDomain(domain?.id || null);
-    // Cancel auto-fade timer when hovering
-    if (tooltipFadeTimer) {
-      clearTimeout(tooltipFadeTimer);
-      setTooltipFadeTimer(null);
+    // Clear any pending timeout
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
     }
-  }, [tooltipFadeTimer]);
+
+    if (domain?.id) {
+      setHoveredDomain(domain.id);
+    } else {
+      // Delay hiding to allow smooth transitions
+      hoverTimeoutRef.current = setTimeout(() => {
+        setHoveredDomain(null);
+      }, 100);
+    }
+  }, []); // Removed tooltipFadeTimer from dependencies
 
   const handleOpenDrawer = useCallback((domain) => {
     if (selectedDomain?.id === domain.id) return;
@@ -451,6 +460,15 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     rafId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafId);
   }, [shouldReduceMotion]);
+  
+  // Added: Clean up hoverTimeoutRef on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Center-bloom drawer position calculation with header-safe offset
   const drawerCenterPosition = useMemo(() => {
@@ -626,237 +644,237 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 );
               })}
             </g>
-          </svg>
 
-          {/* Hover Tooltip Window — SERENITY PATCH v1.1 */}
-          <AnimatePresence>
-            {hoveredDomain && !selectedDomain && (() => {
-              const domain = domains.find(d => d.id === hoveredDomain);
-              if (!domain) return null;
-              
-              const orbPos = getOrbPosition(hoveredDomain, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
-              const isLeft = orbPos.x < cx;
-              const tooltipX = isLeft ? orbPos.x + orbPos.radius + 22 : orbPos.x - orbPos.radius - 22;
-              const tooltipY = orbPos.y;
-              
-              return (
-                <motion.div
-                  key={`tooltip-${hoveredDomain}`}
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ 
-                    opacity: 1, 
-                    scale: 1.00
-                  }}
-                  exit={{ 
-                    opacity: 0, 
-                    scale: 0.98, 
-                    transition: { duration: TOKENS.HORIZON.t_tooltipClose, ease: TOKENS.HORIZON.easingCubic } 
-                  }}
-                  transition={{ duration: TOKENS.HORIZON.t_tooltipOpen, ease: TOKENS.HORIZON.easingCubic }}
-                  style={{
-                    position: 'absolute',
-                    left: `${tooltipX}px`,
-                    top: `${tooltipY}px`,
-                    transform: `translate(${isLeft ? '0' : '-100%'}, -50%)`,
-                    width: '260px',
-                    padding: '14px 16px',
-                    borderRadius: '16px',
-                    backdropFilter: getBlur('panel'),
-                    WebkitBackdropFilter: getBlur('panel'),
-                    background: TOKENS.HORIZON.glassBg,
-                    border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
-                    boxShadow: TOKENS.HORIZON.hoverCardShadow,
-                    pointerEvents: 'none',
-                    zIndex: 5
-                  }}
-                  onMouseEnter={() => handleDomainHover(domain)}
-                >
-                  {/* Optional Halo Pulse (Patch v1.1) */}
-                  {!shouldReduceMotion && (
-                    <motion.div
-                      className="absolute inset-0 rounded-[16px]"
-                      style={{
-                        background: `radial-gradient(circle at center, ${getDomainBloom(domain.id)}, transparent 70%)`,
-                        mixBlendMode: 'screen',
-                        pointerEvents: 'none',
-                        zIndex: -1
-                      }}
-                      animate={{ opacity: [0.95, 1.00, 0.95] }}
-                      transition={{ duration: TOKENS.HORIZON.t_haloPulse, repeat: Infinity, ease: 'easeInOut' }}
-                    />
-                  )}
-                  
-                  {/* Top rim highlight */}
-                  <div style={{ 
-                    position: 'absolute', 
-                    top: 0, 
-                    left: '12px', 
-                    right: '12px', 
-                    height: '1px', 
-                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
-                    borderRadius: '999px'
-                  }} />
-                  
-                  {/* Header */}
-                  <div className="flex items-center gap-2.5 mb-3">
-                    <div 
-                      className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" 
-                      style={{ 
-                        background: `${getDomainColor(domain.id)}15`, 
-                        border: `1px solid ${getDomainColor(domain.id)}30`,
-                        boxShadow: `0 0 12px ${getDomainBloom(domain.id)}`,
-                        color: getDomainColor(domain.id)
-                      }}
-                    >
-                      {React.cloneElement(getDomainIcon(domain.id), { className: "w-4 h-4", strokeWidth: 2 })}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <motion.h4 
-                        initial={{ opacity: 0, y: -3 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
+            {/* Hover Tooltip Window — FIXED HOVER BEHAVIOR */}
+            <AnimatePresence>
+              {hoveredDomain && !selectedDomain && (() => {
+                const domain = domains.find(d => d.id === hoveredDomain);
+                if (!domain) return null;
+                
+                const orbPos = getOrbPosition(hoveredDomain, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
+                const isLeft = orbPos.x < cx;
+                const tooltipX = isLeft ? orbPos.x + orbPos.radius + 20 : orbPos.x - orbPos.radius - 20; // Changed 22 to 20
+                const tooltipY = orbPos.y;
+                
+                return (
+                  <motion.div
+                    key={`tooltip-${hoveredDomain}`}
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ 
+                      opacity: 1, 
+                      scale: 1.00
+                    }}
+                    exit={{ 
+                      opacity: 0, 
+                      scale: 0.98, 
+                      transition: { duration: TOKENS.HORIZON.t_tooltipClose, ease: TOKENS.HORIZON.easingCubic } 
+                    }}
+                    transition={{ duration: TOKENS.HORIZON.t_tooltipOpen, ease: TOKENS.HORIZON.easingCubic }}
+                    style={{
+                      position: 'absolute',
+                      left: `${tooltipX}px`,
+                      top: `${tooltipY}px`,
+                      transform: `translate(${isLeft ? '0' : '-100%'}, -50%)`,
+                      width: '260px',
+                      padding: '14px 16px',
+                      borderRadius: '16px',
+                      backdropFilter: getBlur('panel'),
+                      WebkitBackdropFilter: getBlur('panel'),
+                      background: TOKENS.HORIZON.glassBg,
+                      border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
+                      boxShadow: TOKENS.HORIZON.hoverCardShadow,
+                      pointerEvents: 'auto', // Changed from 'none' to 'auto'
+                      zIndex: 5
+                    }}
+                    onMouseEnter={() => handleDomainHover(domain)}
+                    onMouseLeave={() => handleDomainHover(null)}
+                  >
+                    {/* Optional Halo Pulse */}
+                    {!shouldReduceMotion && (
+                      <motion.div
+                        className="absolute inset-0 rounded-[16px]"
+                        style={{
+                          background: `radial-gradient(circle at center, ${getDomainBloom(domain.id)}, transparent 70%)`,
+                          mixBlendMode: 'screen',
+                          pointerEvents: 'none',
+                          zIndex: -1
+                        }}
+                        animate={{ opacity: [0.95, 1.00, 0.95] }}
+                        transition={{ duration: TOKENS.HORIZON.t_haloPulse, repeat: Infinity, ease: 'easeInOut' }}
+                      />
+                    )}
+                    
+                    {/* Top rim highlight */}
+                    <div style={{ 
+                      position: 'absolute', 
+                      top: 0, 
+                      left: '12px', 
+                      right: '12px', 
+                      height: '1px', 
+                      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
+                      borderRadius: '999px'
+                    }} />
+                    
+                    {/* Header */}
+                    <div className="flex items-center gap-2.5 mb-3">
+                      <div 
+                        className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" 
                         style={{ 
-                          color: TOKENS.colors.textPrimary, 
-                          fontSize: '14px', 
-                          fontWeight: 600,
-                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
+                          background: `${getDomainColor(domain.id)}15`, 
+                          border: `1px solid ${getDomainColor(domain.id)}30`,
+                          boxShadow: `0 0 12px ${getDomainBloom(domain.id)}`,
+                          color: getDomainColor(domain.id)
                         }}
                       >
-                        {domain.id.charAt(0).toUpperCase() + domain.id.slice(1)}
-                      </motion.h4>
-                      <motion.div 
-                        initial={{ opacity: 0, y: -3 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 1.5, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
-                        className="flex items-center gap-1.5"
-                      >
-                        {React.cloneElement(getPostureIcon(domain.posture), { className: "w-3 h-3" })}
-                        <span style={{ 
-                          color: getDomainText(domain.id), 
-                          fontSize: '12px',
-                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-                        }}>
-                          {domain.posture.charAt(0).toUpperCase() + domain.posture.slice(1)}
-                        </span>
-                      </motion.div>
-                    </div>
-                  </div>
-                  
-                  {/* Confidence Badge with Delta Indicator (Patch v1.1) */}
-                  <motion.div 
-                    initial={{ opacity: 0, y: 3 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 2, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
-                    className="flex items-center gap-3 mb-3 pb-3"
-                    style={{ borderBottom: `1px solid ${TOKENS.HORIZON.drawerDivider}` }}
-                  >
-                    <div className="relative w-7 h-7 flex-shrink-0">
-                      <svg className="transform -rotate-90" width="28" height="28">
-                        <circle cx="14" cy="14" r="12" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2.5" />
-                        <circle 
-                          cx="14" 
-                          cy="14" 
-                          r="12" 
-                          fill="none" 
-                          stroke={getDomainColor(domain.id)} 
-                          strokeWidth="2.5" 
-                          strokeLinecap="round" 
-                          strokeDasharray="75.4"
-                          strokeDashoffset={75.4 - (75.4 * domain.confidence_pct / 100)}
-                        />
-                      </svg>
-                      <div 
-                        className="absolute inset-0 flex items-center justify-center font-bold" 
-                        style={{ color: TOKENS.colors.textPrimary, fontSize: '9px' }}
-                      >
-                        {domain.confidence_pct}
-                        {/* Delta Indicator (Patch v1.1) */}
-                        {domain.confidenceDelta !== undefined && domain.confidenceDelta !== 0 && (
-                          <motion.span 
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: 0.15, duration: 0.15 }}
-                            className="absolute -right-1 -top-0.5 text-[7px]"
-                            style={{ 
-                              color: domain.confidenceDelta > 0 ? TOKENS.colors.deltaUp : TOKENS.colors.deltaDown
-                            }}
-                          >
-                            {domain.confidenceDelta > 0 ? '▲' : '▼'}
-                          </motion.span>
-                        )}
+                        {React.cloneElement(getDomainIcon(domain.id), { className: "w-4 h-4", strokeWidth: 2 })}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <motion.h4 
+                          initial={{ opacity: 0, y: -3 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
+                          style={{ 
+                            color: TOKENS.colors.textPrimary, 
+                            fontSize: '14px', 
+                            fontWeight: 600,
+                            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
+                          }}
+                        >
+                          {domain.id.charAt(0).toUpperCase() + domain.id.slice(1)}
+                        </motion.h4>
+                        <motion.div 
+                          initial={{ opacity: 0, y: -3 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 1.5, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
+                          className="flex items-center gap-1.5"
+                        >
+                          {React.cloneElement(getPostureIcon(domain.posture), { className: "w-3 h-3" })}
+                          <span style={{ 
+                            color: getDomainText(domain.id), 
+                            fontSize: '12px',
+                            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                          }}>
+                            {domain.posture.charAt(0).toUpperCase() + domain.posture.slice(1)}
+                          </span>
+                        </motion.div>
                       </div>
                     </div>
-                    <div className="flex-1">
-                      <div style={{ fontSize: '10px', color: TOKENS.colors.textLabel, letterSpacing: '0.15em', fontWeight: 500 }}>
-                        CONFIDENCE
+                    
+                    {/* Confidence Badge with Delta Indicator (Patch v1.1) */}
+                    <motion.div 
+                      initial={{ opacity: 0, y: 3 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 2, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
+                      className="flex items-center gap-3 mb-3 pb-3"
+                      style={{ borderBottom: `1px solid ${TOKENS.HORIZON.drawerDivider}` }}
+                    >
+                      <div className="relative w-7 h-7 flex-shrink-0">
+                        <svg className="transform -rotate-90" width="28" height="28">
+                          <circle cx="14" cy="14" r="12" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2.5" />
+                          <circle 
+                            cx="14" 
+                            cy="14" 
+                            r="12" 
+                            fill="none" 
+                            stroke={getDomainColor(domain.id)} 
+                            strokeWidth="2.5" 
+                            strokeLinecap="round" 
+                            strokeDasharray="75.4"
+                            strokeDashoffset={75.4 - (75.4 * domain.confidence_pct / 100)}
+                          />
+                        </svg>
+                        <div 
+                          className="absolute inset-0 flex items-center justify-center font-bold" 
+                          style={{ color: TOKENS.colors.textPrimary, fontSize: '9px' }}
+                        >
+                          {domain.confidence_pct}
+                          {/* Delta Indicator (Patch v1.1) */}
+                          {domain.confidenceDelta !== undefined && domain.confidenceDelta !== 0 && (
+                            <motion.span 
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: 0.15, duration: 0.15 }}
+                              className="absolute -right-1 -top-0.5 text-[7px]"
+                              style={{ 
+                                color: domain.confidenceDelta > 0 ? TOKENS.colors.deltaUp : TOKENS.colors.deltaDown
+                              }}
+                            >
+                              {domain.confidenceDelta > 0 ? '▲' : '▼'}
+                            </motion.span>
+                          )}
+                        </div>
                       </div>
-                      <div style={{ fontSize: '11px', color: TOKENS.colors.textSecondary, marginTop: '2px' }}>
-                        Strength: {Math.round(domain.strength * 100)}%
+                      <div className="flex-1">
+                        <div style={{ fontSize: '10px', color: TOKENS.colors.textLabel, letterSpacing: '0.15em', fontWeight: 500 }}>
+                          CONFIDENCE
+                        </div>
+                        <div style={{ fontSize: '11px', color: TOKENS.colors.textSecondary, marginTop: '2px' }}>
+                          Strength: {Math.round(domain.strength * 100)}%
+                        </div>
                       </div>
-                    </div>
+                    </motion.div>
+                    
+                    {/* Summary with Typography Breath (Patch v1.1) */}
+                    <motion.p
+                      initial={{ opacity: 0, y: 3 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 3, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
+                      style={{ 
+                        color: TOKENS.colors.textSecondary, 
+                        fontSize: '11px', 
+                        lineHeight: `${TOKENS.HORIZON.lineHeight}px`,
+                        paddingTop: '2px',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                      }}
+                    >
+                      {domain.summary.length > 120 ? domain.summary.substring(0, 120) + '...' : domain.summary}
+                    </motion.p>
+                    
+                    {/* Click hint */}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 4, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
+                      className="mt-3 pt-3 flex items-center justify-center gap-1.5"
+                      style={{ borderTop: `1px solid ${TOKENS.HORIZON.drawerDivider}` }}
+                    >
+                      <span style={{ fontSize: '10px', color: TOKENS.colors.textTertiary, letterSpacing: '0.02em' }}>
+                        Click to view details
+                      </span>
+                      <ArrowRight className="w-3 h-3" style={{ color: TOKENS.colors.textTertiary }} />
+                    </motion.div>
+                    
+                    {/* Pointer arrow */}
+                    <div 
+                      style={{
+                        position: 'absolute',
+                        [isLeft ? 'left' : 'right']: '-6px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        width: 0,
+                        height: 0,
+                        borderTop: '8px solid transparent',
+                        borderBottom: '8px solid transparent',
+                        [isLeft ? 'borderRight' : 'borderLeft']: `8px solid ${TOKENS.HORIZON.glassBorder}`,
+                      }}
+                    />
+                    <div 
+                      style={{
+                        position: 'absolute',
+                        [isLeft ? 'left' : 'right']: '-5px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        width: 0,
+                        height: 0,
+                        borderTop: '7px solid transparent',
+                        borderBottom: '7px solid transparent',
+                        [isLeft ? 'borderRight' : 'borderLeft']: `7px solid ${TOKENS.HORIZON.glassBg}`,
+                      }}
+                    />
                   </motion.div>
-                  
-                  {/* Summary with Typography Breath (Patch v1.1) */}
-                  <motion.p
-                    initial={{ opacity: 0, y: 3 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 3, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
-                    style={{ 
-                      color: TOKENS.colors.textSecondary, 
-                      fontSize: '11px', 
-                      lineHeight: `${TOKENS.HORIZON.lineHeight}px`,
-                      paddingTop: '2px',
-                      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-                    }}
-                  >
-                    {domain.summary.length > 120 ? domain.summary.substring(0, 120) + '...' : domain.summary}
-                  </motion.p>
-                  
-                  {/* Click hint */}
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 4, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
-                    className="mt-3 pt-3 flex items-center justify-center gap-1.5"
-                    style={{ borderTop: `1px solid ${TOKENS.HORIZON.drawerDivider}` }}
-                  >
-                    <span style={{ fontSize: '10px', color: TOKENS.colors.textTertiary, letterSpacing: '0.02em' }}>
-                      Click to view details
-                    </span>
-                    <ArrowRight className="w-3 h-3" style={{ color: TOKENS.colors.textTertiary }} />
-                  </motion.div>
-                  
-                  {/* Pointer arrow */}
-                  <div 
-                    style={{
-                      position: 'absolute',
-                      [isLeft ? 'left' : 'right']: '-6px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      width: 0,
-                      height: 0,
-                      borderTop: '8px solid transparent',
-                      borderBottom: '8px solid transparent',
-                      [isLeft ? 'borderRight' : 'borderLeft']: `8px solid ${TOKENS.HORIZON.glassBorder}`,
-                    }}
-                  />
-                  <div 
-                    style={{
-                      position: 'absolute',
-                      [isLeft ? 'left' : 'right']: '-5px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      width: 0,
-                      height: 0,
-                      borderTop: '7px solid transparent',
-                      borderBottom: '7px solid transparent',
-                      [isLeft ? 'borderRight' : 'borderLeft']: `7px solid ${TOKENS.HORIZON.glassBg}`,
-                    }}
-                  />
-                </motion.div>
-              );
-            })()}
-          </AnimatePresence>
+                );
+              })()}
+            </AnimatePresence>
 
           {domains.map((domain) => {
             const orbPos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
@@ -1065,8 +1083,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       const lastPoint = points[points.length - 1];
                       const startValue = data[0];
                       const endValue = data[data.length - 1];
-                      const delta48h = ((endValue - startValue) / startValue) * 100;
-                      
+                      // const delta48h = ((endValue - startValue) / startValue) * 100; // Not used
+
                       return (
                         <>
                           <path d={areaD} fill={`url(#sparkline-drawer-${selectedDomain.id})`} />
