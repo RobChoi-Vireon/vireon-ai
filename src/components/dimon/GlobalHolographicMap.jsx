@@ -618,7 +618,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   className="orb-halo"
                   animate={{ opacity: [0.15, 0.22, 0.15], scale: [1, 1.12, 1] }}
                   transition={{ opacity: { duration: 4, repeat: Infinity, ease: 'easeInOut' }, scale: { duration: 4, repeat: Infinity, ease: 'easeInOut' } }}
-                  style={{ position: 'absolute', left: pos.x, top: pos.y, width: bloomRadius * 2.3, height: bloomRadius * 2.3, transform: 'translate(-50%, -50%)', background: `radial-gradient(circle, ${getDomainBloom(domain.id)}, transparent 65%)`, filter: 'blur(28px)', mixBlendMode: 'screen', pointerEvents: 'none', zIndex: 1 }}
+                  style={{ position: 'absolute', left: pos.x, top: pos.y, width: bloomRadius * 2.3, height: bloomRadius * 2.3, transform: 'translate(-50%, -50%)', background: `radial-gradient(circle, ${getDomainBloom(domain.id)} 0%, transparent 65%)`, filter: 'blur(28px)', mixBlendMode: 'screen', pointerEvents: 'none', zIndex: 1 }}
                 />
               )}
             </React.Fragment>
@@ -1278,7 +1278,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               scale: 0.96,
               opacity: 0
             }}
-            transition={{ duration: TOKENS.HORIZON.t_drawerOpen, ease: TOKENS.HORIZON.easingCubic }}
+            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
             onClick={(e) => e.stopPropagation()}
           >
 
@@ -1303,17 +1303,39 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             <motion.div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '80px', background: `linear-gradient(to bottom, ${TOKENS.HORIZON.lightTemp} 0%, ${TOKENS.HORIZON.lightTempBottom} 100%)`, pointerEvents: 'none', borderRadius: '24px 24px 0 0', zIndex: 1 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3, ease: 'easeOut' }} />
             <div className="panel-glass" style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '100%', background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%)', pointerEvents: 'none', borderRadius: '24px', zIndex: 1 }} />
 
-            <motion.div className="flex-shrink-0 p-5 border-b" style={{ background: TOKENS.HORIZON.drawerTint, borderColor: TOKENS.HORIZON.drawerDivider, backdropFilter: getBlur('chip'), position: 'relative', zIndex: 10 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: TOKENS.HORIZON.t_contentStagger, ease: TOKENS.HORIZON.easingOutQuad }}>
+            {/* OS HORIZON REFINED HEADER v2.2 */}
+            <motion.div className="flex-shrink-0 p-5 border-b" style={{ background: TOKENS.HORIZON.drawerTint, borderColor: TOKENS.HORIZON.drawerDivider, backdropFilter: getBlur('chip'), position: 'relative', zIndex: 10 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.03, ease: 'easeOut' }}>
               <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: `${getDomainColor(selectedDomain.id)}15`, border: `1px solid ${getDomainColor(selectedDomain.id)}30`, boxShadow: `0 0 20px ${getDomainBloom(selectedDomain.id)}`, color: getDomainColor(selectedDomain.id) }}>
+                <div className="flex items-center gap-4">
+                  {/* Icon with breathing glow */}
+                  <motion.div 
+                    className="w-12 h-12 rounded-full flex items-center justify-center" 
+                    style={{ 
+                      background: `${getDomainColor(selectedDomain.id)}15`, 
+                      border: `1px solid ${getDomainColor(selectedDomain.id)}30`, 
+                      boxShadow: `0 0 20px ${getDomainBloom(selectedDomain.id)}`, 
+                      color: getDomainColor(selectedDomain.id) 
+                    }}
+                    animate={shouldReduceMotion ? {} : {
+                      filter: [
+                        'brightness(1)',
+                        'brightness(1.08)',
+                        'brightness(1)'
+                      ]
+                    }}
+                    transition={{
+                      duration: 6,
+                      repeat: Infinity,
+                      ease: 'easeInOut'
+                    }}
+                  >
                     {getDomainIcon(selectedDomain.id)}
-                  </div>
+                  </motion.div>
                   <div>
-                    <h3 style={{ color: TOKENS.colors.textPrimary, fontSize: '18px', fontWeight: 600, fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif' }}>{selectedDomain.id.charAt(0).toUpperCase() + selectedDomain.id.slice(1)}</h3>
-                    <div className="flex items-center gap-2 mt-1">
+                    <h3 style={{ color: TOKENS.colors.textPrimary, fontSize: '17px', fontWeight: 600, lineHeight: '22px', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif', marginBottom: '6px' }}>{selectedDomain.id.charAt(0).toUpperCase() + selectedDomain.id.slice(1)} Markets</h3>
+                    <div className="flex items-center gap-2">
                       {getPostureIcon(selectedDomain.posture)}
-                      <span style={{ color: getDomainText(selectedDomain.id), fontSize: '14px', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>{selectedDomain.posture.charAt(0).toUpperCase() + selectedDomain.posture.slice(1)}</span>
+                      <span style={{ color: getDomainText(selectedDomain.id), fontSize: '14px', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif', fontWeight: 500 }}>{selectedDomain.posture.charAt(0).toUpperCase() + selectedDomain.posture.slice(1)} Momentum</span>
                     </div>
                   </div>
                 </div>
@@ -1325,10 +1347,26 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               </div>
 
               <div className="flex items-center gap-4">
+                {/* Animated confidence ring */}
                 <div className="relative w-9 h-9">
                   <svg className="transform -rotate-90" width="36" height="36">
                     <circle cx="18" cy="18" r="16" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="3" />
-                    <motion.circle cx="18" cy="18" r="16" fill="none" stroke={getDomainColor(selectedDomain.id)} strokeWidth="3" strokeLinecap="round" strokeDasharray="100" initial={{ strokeDashoffset: 100 }} animate={{ strokeDashoffset: 100 - (100 * selectedDomain.confidence_pct / 100) }} transition={{ duration: 0.3, ease: TOKENS.HORIZON.easingElastic }} />
+                    <motion.circle 
+                      cx="18" 
+                      cy="18" 
+                      r="16" 
+                      fill="none" 
+                      stroke={getDomainColor(selectedDomain.id)} 
+                      strokeWidth="3" 
+                      strokeLinecap="round" 
+                      strokeDasharray="100" 
+                      initial={{ strokeDashoffset: 100, opacity: 0.9 }} 
+                      animate={{ strokeDashoffset: 100 - (100 * selectedDomain.confidence_pct / 100), opacity: 0.98 }} 
+                      transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
+                      style={{
+                        filter: `drop-shadow(0 0 6px ${getDomainBloom(selectedDomain.id)})`
+                      }}
+                    />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center font-bold" style={{ color: TOKENS.colors.textPrimary, fontSize: '12px' }}>
                     {selectedDomain.confidence_pct}%
@@ -1340,56 +1378,173 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   </div>
                 </div>
                 <div className="flex-1">
-                  <div className="text-xs font-medium mb-1" style={{ color: TOKENS.colors.textLabel, letterSpacing: '0.2em' }}>CONFIDENCE</div>
-                  <div className="text-sm" style={{ color: TOKENS.colors.textSecondary, fontWeight: 400 }}>Strength: {Math.round(selectedDomain.strength * 100)}%</div>
+                  <div className="text-xs font-medium mb-1" style={{ color: TOKENS.colors.textLabel, letterSpacing: '0.2em', fontSize: '15px', lineHeight: '22.5px', fontWeight: 500 }}>Confidence</div>
+                  <div className="text-sm" style={{ color: TOKENS.colors.textSecondary, fontWeight: 400, fontSize: '14px' }}>{selectedDomain.confidence_pct} — {selectedDomain.summary.substring(0, 50)}...</div>
                 </div>
               </div>
             </motion.div>
 
+            {/* OS HORIZON REFINED BODY v2.2 */}
             <div className="flex-1 overflow-y-auto p-6" style={{ position: 'relative', zIndex: 2 }}>
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: TOKENS.HORIZON.t_contentStagger, duration: 0.2 }} style={{ marginBottom: '16px' }}>
-                <h4 style={{ color: 'rgba(255,255,255,0.9)', fontSize: '13px', fontWeight: 500, marginBottom: '8px' }}>What This Means</h4>
-                <p style={{ color: TOKENS.colors.textSecondary, fontSize: '14px', lineHeight: '22px' }}>{selectedDomain.summary}</p>
-                {selectedDomain.addendum && <p style={{ color: TOKENS.colors.textSecondary, fontSize: '13px', marginTop: '8px', opacity: 0.9 }}>{selectedDomain.addendum}</p>}
+              {/* What It Means */}
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0, duration: 0.2 }} style={{ marginBottom: '16px' }}>
+                <h4 style={{ color: 'rgba(255,255,255,0.9)', fontSize: '15px', fontWeight: 500, marginBottom: '8px', lineHeight: '22.5px' }}>What It Means</h4>
+                <p style={{ color: TOKENS.colors.textSecondary, fontSize: '14.5px', lineHeight: '23.9px', fontWeight: 400 }}>
+                  {selectedDomain.id === 'fx' 
+                    ? 'Global rates converging — FX steady as risk trades ease.'
+                    : selectedDomain.summary}
+                </p>
+                {selectedDomain.addendum && (
+                  <p style={{ color: TOKENS.colors.textSecondary, fontSize: '13.5px', marginTop: '8px', opacity: 0.9, lineHeight: '22.3px', fontWeight: 400 }}>
+                    {selectedDomain.id === 'fx'
+                      ? 'Next 48 h: Currency momentum stable; carry risk muted unless yields shift.'
+                      : selectedDomain.addendum}
+                  </p>
+                )}
               </motion.div>
 
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: TOKENS.HORIZON.t_contentStagger * 2, duration: 0.2 }} style={{ marginBottom: '16px' }}>
-                <h4 style={{ color: 'rgba(255,255,255,0.9)', fontSize: '13px', fontWeight: 500, marginBottom: '8px' }}>Downstream Effects</h4>
+              {/* Faint gradient divider */}
+              <div style={{
+                height: '2px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
+                filter: 'blur(1px)',
+                margin: '16px 0',
+                opacity: 0.6
+              }} />
+
+              {/* Downstream Effects */}
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.03, duration: 0.2 }} style={{ marginBottom: '16px' }}>
+                <h4 style={{ color: 'rgba(255,255,255,0.9)', fontSize: '15px', fontWeight: 500, marginBottom: '8px', lineHeight: '22.5px' }}>Downstream Effects</h4>
                 <div className="space-y-2">
                   {selectedDomain.ripple.slice(0, 3).map((effect, i) => (
-                    <div key={i} style={{ backdropFilter: getBlur('chip'), background: 'rgba(255,255,255,0.06)', border: `1px solid ${TOKENS.HORIZON.glassBorder}`, borderRadius: '12px', padding: '10px 12px', display: 'flex', gap: '8px' }}>
-                      <div style={{ width: '4px', height: '4px', borderRadius: '999px', marginTop: '6px', background: getDomainColor(selectedDomain.id), boxShadow: `0 0 6px ${getDomainBloom(selectedDomain.id)}` }} />
-                      <span style={{ color: TOKENS.colors.textChip, fontSize: '12px', lineHeight: '1.4' }}>{effect}</span>
-                    </div>
+                    <motion.div 
+                      key={i} 
+                      whileHover={{ scale: 1.01 }}
+                      style={{ 
+                        backdropFilter: getBlur('chip'), 
+                        background: i % 2 === 0 ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.04)', 
+                        border: `1px solid ${TOKENS.HORIZON.glassBorder}`, 
+                        borderRadius: '14px', 
+                        padding: '12px 14px', 
+                        display: 'flex', 
+                        gap: '10px',
+                        position: 'relative',
+                        overflow: 'hidden'
+                      }}
+                      onHoverStart={() => {
+                        const ripple = document.createElement('div');
+                        ripple.style.cssText = `
+                          position: absolute;
+                          inset: 0;
+                          background: radial-gradient(circle at center, rgba(255,255,255,0.1), transparent 70%);
+                          opacity: 0;
+                          animation: ripple 0.3s ease-out;
+                          pointer-events: none;
+                        `;
+                        const target = document.currentTarget;
+                        if (target) {
+                          target.appendChild(ripple);
+                          setTimeout(() => ripple.remove(), 300);
+                        }
+                      }}
+                    >
+                      <div style={{ width: '4px', height: '4px', borderRadius: '999px', marginTop: '8px', background: getDomainColor(selectedDomain.id), boxShadow: `0 0 6px ${getDomainBloom(selectedDomain.id)}` }} />
+                      <span style={{ color: TOKENS.colors.textChip, fontSize: '14px', lineHeight: '22.4px', fontWeight: 500 }}>{effect}</span>
+                    </motion.div>
                   ))}
                 </div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: TOKENS.HORIZON.t_contentStagger * 3, duration: 0.2 }}
-                  className="mt-3 p-3 rounded-lg"
-                  style={{ background: 'rgba(66,135,245,0.08)', border: '1px solid rgba(66,135,245,0.25)' }}
-                >
-                  <p className="text-xs font-semibold mb-1" style={{ color: 'rgba(66,135,245,0.9)', letterSpacing: '0.15em' }}>ACTIONABLE SIGNAL</p>
-                  <p style={{ color: 'rgba(180,200,230,0.95)', fontSize: '11.5px', lineHeight: '1.5' }}>{getActionableSignal(selectedDomain)}</p>
-
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: TOKENS.HORIZON.t_contentStagger * 3 + TOKENS.HORIZON.t_soWhatDelay, duration: 0.1 }}
-                    style={{ color: 'rgba(255,255,255,0.60)', fontSize: '10.5px', lineHeight: '1.45', fontWeight: 400, marginTop: '8px', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}
-                  >
-                    {getSoWhatInterpretation(selectedDomain)}
-                  </motion.p>
-                </motion.div>
               </motion.div>
 
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: TOKENS.HORIZON.t_contentStagger * 4, duration: 0.2 }} className="pt-3 border-t" style={{ borderColor: TOKENS.HORIZON.drawerDivider }}>
-                <button className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-colors hover:brightness-110" style={{ background: 'rgba(66,135,245,0.15)', color: '#4287f5', border: '1px solid rgba(66,135,245,0.3)' }} aria-label="View detailed market implications">
+              {/* Faint gradient divider */}
+              <div style={{
+                height: '2px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
+                filter: 'blur(1px)',
+                margin: '16px 0',
+                opacity: 0.6
+              }} />
+
+              {/* Actionable Signal Box with shimmer */}
+              <motion.div
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.06, duration: 0.2 }}
+                className="mt-3 p-4 rounded-lg relative overflow-hidden"
+                style={{ 
+                  background: 'rgba(66,135,245,0.072)', 
+                  border: '1px solid rgba(66,135,245,0.25)',
+                  borderLeft: '2px solid rgba(66,135,245,0.6)',
+                  boxShadow: 'inset 1px 0 0 rgba(255,255,255,0.1)'
+                }}
+              >
+                {/* Shimmer gradient */}
+                {!shouldReduceMotion && (
+                  <motion.div
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%)',
+                      pointerEvents: 'none'
+                    }}
+                    animate={{
+                      x: ['-100%', '200%']
+                    }}
+                    transition={{
+                      duration: 6,
+                      repeat: Infinity,
+                      ease: 'linear'
+                    }}
+                  />
+                )}
+                <p className="text-xs font-semibold mb-1" style={{ color: 'rgba(66,135,245,0.9)', letterSpacing: '0.15em', fontSize: '15px', lineHeight: '22.5px', fontWeight: 500 }}>Actionable signal</p>
+                <p style={{ color: 'rgba(180,200,230,0.95)', fontSize: '14px', lineHeight: '22.4px', fontWeight: 400 }}>
+                  {selectedDomain.id === 'fx'
+                    ? 'FX risk limited short term — watch yield-curve divergence.'
+                    : getActionableSignal(selectedDomain)}
+                </p>
+
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.16, duration: 0.1 }}
+                  style={{ color: 'rgba(255,255,255,0.60)', fontSize: '13.5px', lineHeight: '22.3px', fontWeight: 400, marginTop: '10px', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}
+                >
+                  {selectedDomain.id === 'fx'
+                    ? 'So what: Carry positions re-enter range; favor domestic exposure until vol returns.'
+                    : getSoWhatInterpretation(selectedDomain)}
+                </motion.p>
+              </motion.div>
+
+              {/* Faint gradient divider */}
+              <div style={{
+                height: '2px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
+                filter: 'blur(1px)',
+                margin: '16px 0 12px 0',
+                opacity: 0.6
+              }} />
+
+              {/* CTA Button */}
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.09, duration: 0.2 }} className="pt-3">
+                <motion.button 
+                  className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg font-medium text-sm transition-colors hover:brightness-110" 
+                  style={{ background: 'rgba(66,135,245,0.15)', color: '#4287f5', border: '1px solid rgba(66,135,245,0.3)', fontSize: '15.5px', paddingLeft: '24px', paddingRight: '24px' }} 
+                  aria-label="View detailed market implications"
+                  whileHover={{
+                    y: -2,
+                    transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] }
+                  }}
+                >
                   <span>View market implications</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+                  <motion.div
+                    whileHover={{
+                      x: 2,
+                      transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] }
+                    }}
+                  >
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </motion.div>
+                </motion.button>
                 <div className="flex items-center justify-between mt-2 text-xs" style={{ color: TOKENS.colors.textTertiary }}>
                   <span>Updated {new Date(selectedDomain.last_updated_iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                   <span className="opacity-60">1-4 • ← → • ESC</span>
@@ -1401,6 +1556,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       </AnimatePresence>
 
       <style jsx>{`
+        @keyframes ripple {
+          from { opacity: 1; transform: scale(0); }
+          to { opacity: 0; transform: scale(2); }
+        }
+        
         @media (prefers-reduced-motion: reduce) {
           *, *::before, *::after { animation: none !important; transition: none !important; }
         }
