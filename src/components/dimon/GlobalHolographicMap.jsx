@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLeft, ChevronRight, BarChart3, DollarSign, Activity } from 'lucide-react';
@@ -12,7 +13,7 @@ const TOKENS = {
   HORIZON: {
     globalScale: 1.45, globalScaleMd: 1.3, globalScaleSm: 1.1, clusterOffsetY: -4, 
     loadInDamping: 0.92,
-    orbitRadiusScale: 2.10,
+    orbitRadiusScale: 1.65,
     labelDistanceScale: 1.18,
     hoverExpansion: 14,
     hoverCardOffset: 32,
@@ -71,10 +72,10 @@ const TOKENS = {
 const ANGLES = { rates: 22.5, fx: 160.0, growth: 297.5, geopolitics: 75.0 };
 
 const RADII = { 
-  rates: 0.40,
-  fx: 0.46,
-  growth: 0.43,
-  geopolitics: 0.38
+  rates: 0.36,
+  fx: 0.40,
+  growth: 0.38,
+  geopolitics: 0.34
 };
 
 const MOCK_DOMAINS = [
