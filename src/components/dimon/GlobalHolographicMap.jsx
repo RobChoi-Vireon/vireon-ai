@@ -476,7 +476,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(ellipse at center, transparent 60%, ${TOKENS.HORIZON.vignetteColor} 100%)`, opacity: TOKENS.HORIZON.vignetteOpacity, filter: `blur(${TOKENS.HORIZON.vignetteBlur}px)`, borderRadius: '24px', pointerEvents: 'none', zIndex: 2 }} />
         
         {domains.map((domain) => {
-          const pos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
+          const pos = getOrbPosition(domain.id, domain.strength, swayTime, 0, 0);
           const bloomRadius = Math.min(...TOKENS.HORIZON.localBloomRadius) + (domain.strength * (Math.max(...TOKENS.HORIZON.localBloomRadius) - Math.min(...TOKENS.HORIZON.localBloomRadius)));
           const isActiveOrb = selectedDomain?.id === domain.id;
           
@@ -593,6 +593,198 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               })}
             </g>
           </svg>
+
+          {/* Hover Tooltip Window */}
+          <AnimatePresence>
+            {hoveredDomain && !selectedDomain && (() => {
+              const domain = domains.find(d => d.id === hoveredDomain);
+              if (!domain) return null;
+              
+              const orbPos = getOrbPosition(hoveredDomain, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
+              const isLeft = orbPos.x < cx;
+              const tooltipX = isLeft ? orbPos.x + orbPos.radius + 20 : orbPos.x - orbPos.radius - 20;
+              const tooltipY = orbPos.y;
+              
+              return (
+                <motion.div
+                  key={`tooltip-${hoveredDomain}`}
+                  initial={{ opacity: 0, scale: 0.92, x: isLeft ? -8 : 8 }}
+                  animate={{ opacity: 1, scale: 1, x: 0 }}
+                  exit={{ opacity: 0, scale: 0.92, transition: { duration: TOKENS.HORIZON.t_tooltipOpen * 0.6 } }}
+                  transition={{ duration: TOKENS.HORIZON.t_tooltipOpen, ease: TOKENS.HORIZON.easingApple }}
+                  style={{
+                    position: 'absolute',
+                    left: `${tooltipX}px`,
+                    top: `${tooltipY}px`,
+                    transform: `translate(${isLeft ? '0' : '-100%'}, -50%)`,
+                    width: '260px',
+                    padding: '14px 16px',
+                    borderRadius: '16px',
+                    backdropFilter: getBlur('panel'),
+                    WebkitBackdropFilter: getBlur('panel'),
+                    background: TOKENS.HORIZON.glassBg,
+                    border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
+                    boxShadow: `${TOKENS.HORIZON.panelShadow}, inset 0 0 0 1px rgba(255,255,255,0.08)`,
+                    pointerEvents: 'none',
+                    zIndex: 5
+                  }}
+                >
+                  {/* Top rim highlight */}
+                  <div style={{ 
+                    position: 'absolute', 
+                    top: 0, 
+                    left: '12px', 
+                    right: '12px', 
+                    height: '1px', 
+                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
+                    borderRadius: '999px'
+                  }} />
+                  
+                  {/* Header */}
+                  <div className="flex items-center gap-2.5 mb-3">
+                    <div 
+                      className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" 
+                      style={{ 
+                        background: `${getDomainColor(domain.id)}15`, 
+                        border: `1px solid ${getDomainColor(domain.id)}30`,
+                        boxShadow: `0 0 12px ${getDomainBloom(domain.id)}`,
+                        color: getDomainColor(domain.id)
+                      }}
+                    >
+                      {React.cloneElement(getDomainIcon(domain.id), { className: "w-4 h-4", strokeWidth: 2 })}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <motion.h4 
+                        initial={{ opacity: 0, y: -3 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
+                        style={{ 
+                          color: TOKENS.colors.textPrimary, 
+                          fontSize: '14px', 
+                          fontWeight: 600,
+                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
+                        }}
+                      >
+                        {domain.id.charAt(0).toUpperCase() + domain.id.slice(1)}
+                      </motion.h4>
+                      <motion.div 
+                        initial={{ opacity: 0, y: -3 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 1.5, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
+                        className="flex items-center gap-1.5"
+                      >
+                        {React.cloneElement(getPostureIcon(domain.posture), { className: "w-3 h-3" })}
+                        <span style={{ 
+                          color: getDomainText(domain.id), 
+                          fontSize: '12px',
+                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                        }}>
+                          {domain.posture.charAt(0).toUpperCase() + domain.posture.slice(1)}
+                        </span>
+                      </motion.div>
+                    </div>
+                  </div>
+                  
+                  {/* Confidence Badge */}
+                  <motion.div 
+                    initial={{ opacity: 0, y: 3 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 2, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
+                    className="flex items-center gap-3 mb-3 pb-3"
+                    style={{ borderBottom: `1px solid ${TOKENS.HORIZON.drawerDivider}` }}
+                  >
+                    <div className="relative w-7 h-7 flex-shrink-0">
+                      <svg className="transform -rotate-90" width="28" height="28">
+                        <circle cx="14" cy="14" r="12" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2.5" />
+                        <circle 
+                          cx="14" 
+                          cy="14" 
+                          r="12" 
+                          fill="none" 
+                          stroke={getDomainColor(domain.id)} 
+                          strokeWidth="2.5" 
+                          strokeLinecap="round" 
+                          strokeDasharray="75.4"
+                          strokeDashoffset={75.4 - (75.4 * domain.confidence_pct / 100)}
+                        />
+                      </svg>
+                      <div 
+                        className="absolute inset-0 flex items-center justify-center font-bold" 
+                        style={{ color: TOKENS.colors.textPrimary, fontSize: '9px' }}
+                      >
+                        {domain.confidence_pct}
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <div style={{ fontSize: '10px', color: TOKENS.colors.textLabel, letterSpacing: '0.15em', fontWeight: 500 }}>
+                        CONFIDENCE
+                      </div>
+                      <div style={{ fontSize: '11px', color: TOKENS.colors.textSecondary, marginTop: '2px' }}>
+                        Strength: {Math.round(domain.strength * 100)}%
+                      </div>
+                    </div>
+                  </motion.div>
+                  
+                  {/* Summary */}
+                  <motion.p
+                    initial={{ opacity: 0, y: 3 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 3, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
+                    style={{ 
+                      color: TOKENS.colors.textSecondary, 
+                      fontSize: '11px', 
+                      lineHeight: '1.5',
+                      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                    }}
+                  >
+                    {domain.summary.length > 120 ? domain.summary.substring(0, 120) + '...' : domain.summary}
+                  </motion.p>
+                  
+                  {/* Click hint */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: TOKENS.HORIZON.t_tooltipTextStagger * 4, duration: TOKENS.HORIZON.t_tooltipTextDuration }}
+                    className="mt-3 pt-3 flex items-center justify-center gap-1.5"
+                    style={{ borderTop: `1px solid ${TOKENS.HORIZON.drawerDivider}` }}
+                  >
+                    <span style={{ fontSize: '10px', color: TOKENS.colors.textTertiary, letterSpacing: '0.02em' }}>
+                      Click to view details
+                    </span>
+                    <ArrowRight className="w-3 h-3" style={{ color: TOKENS.colors.textTertiary }} />
+                  </motion.div>
+                  
+                  {/* Pointer arrow */}
+                  <div 
+                    style={{
+                      position: 'absolute',
+                      [isLeft ? 'left' : 'right']: '-6px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      width: 0,
+                      height: 0,
+                      borderTop: '8px solid transparent',
+                      borderBottom: '8px solid transparent',
+                      [isLeft ? 'borderRight' : 'borderLeft']: `8px solid ${TOKENS.HORIZON.glassBorder}`,
+                    }}
+                  />
+                  <div 
+                    style={{
+                      position: 'absolute',
+                      [isLeft ? 'left' : 'right']: '-5px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      width: 0,
+                      height: 0,
+                      borderTop: '7px solid transparent',
+                      borderBottom: '7px solid transparent',
+                      [isLeft ? 'borderRight' : 'borderLeft']: `7px solid ${TOKENS.HORIZON.glassBg}`,
+                    }}
+                  />
+                </motion.div>
+              );
+            })()}
+          </AnimatePresence>
 
           {domains.map((domain) => {
             const orbPos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
