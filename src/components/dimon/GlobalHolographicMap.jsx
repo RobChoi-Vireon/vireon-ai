@@ -3,10 +3,11 @@ import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react'
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLeft, ChevronRight, BarChart3, DollarSign, Activity } from 'lucide-react';
 import LyraLogo from '../core/LyraLogo';
+import { createPortal } from 'react-dom';
 
 // ============================================================================
-// MACRO CONSTELLATION — OS HORIZON V1.9.7 "NO-STICK HOVER"
-// Tight hover bounds • Intent corridor • Velocity exit • Apple precision
+// MACRO CONSTELLATION — OS HORIZON V2.5 "PORTAL + SMART PLACEMENT"
+// Portal overlay + collision-aware positioning + graceful edge handling
 // ============================================================================
 
 const TOKENS = {
@@ -24,7 +25,6 @@ const TOKENS = {
     blurPanel: 'blur(22px) saturate(165%) brightness(1.05)',
     blurChip: 'blur(16px)', vignetteColor: '#070A0F', vignetteOpacity: 0.28,
     vignetteBlur: 24, localBloomIntensity: 0.18, localBloomRadius: [220, 280],
-    // Tight hover zone (v1.9.7)
     hoverEnterRadius: 6, hoverExitRadius: 10, hoverEnterDelay: 100, hoverExitDelay: 90,
     corridorWidth: 16, corridorTTL: 250, velocityThreshold: 600,
     easing: [0.4, 0, 0.2, 1], easingApple: [0.32, 0.72, 0, 1], easingCubic: [0.65, 0, 0.35, 1],
@@ -95,6 +95,521 @@ const MOCK_DOMAINS = [
     confidenceDelta: 4 }
 ];
 
+// ============================================================================
+// PORTAL OVERLAY ROOT MANAGER
+// ============================================================================
+const usePortalRoot = () => {
+  const [portalRoot, setPortalRoot] = useState(null);
+
+  useEffect(() => {
+    let root = document.getElementById('equilibrium-overlay-root');
+    
+    if (!root) {
+      root = document.createElement('div');
+      root.id = 'equilibrium-overlay-root';
+      root.setAttribute('aria-hidden', 'true');
+      root.style.cssText = `
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 9999;
+        overflow: hidden;
+      `;
+      document.body.appendChild(root);
+    }
+    
+    setPortalRoot(root);
+
+    return () => {
+      // Cleanup: remove root if no other instances
+      if (root && root.childNodes.length === 0) {
+        root.remove();
+      }
+    };
+  }, []);
+
+  return portalRoot;
+};
+
+// ============================================================================
+// SMART PLACEMENT CALCULATOR (COLLISION-AWARE)
+// ============================================================================
+const calculateSmartPlacement = (nodeRect, cardWidth = 270, cardHeight = 380) => {
+  const SAFE_MARGIN = 32;
+  const GAP_FROM_NODE = 14;
+  
+  const viewport = {
+    width: window.innerWidth,
+    height: window.innerHeight
+  };
+
+  // Footer bar detection (assume 84px height at bottom)
+  const footerHeight = 84;
+  const footerTop = viewport.height - footerHeight;
+
+  // Default: bottom-start placement
+  let placement = 'bottom';
+  let x = nodeRect.left;
+  let y = nodeRect.bottom + GAP_FROM_NODE;
+  let maxHeight = null;
+
+  // FLIP VERTICALLY if would collide with bottom or footer
+  if (y + cardHeight > footerTop - SAFE_MARGIN) {
+    placement = 'top';
+    y = nodeRect.top - GAP_FROM_NODE - cardHeight;
+    
+    // If still doesn't fit, cap height
+    if (y < SAFE_MARGIN) {
+      y = SAFE_MARGIN;
+      maxHeight = nodeRect.top - GAP_FROM_NODE - SAFE_MARGIN;
+      placement = 'top-capped';
+    }
+  }
+
+  // SHIFT HORIZONTALLY if would overflow right
+  if (x + cardWidth > viewport.width - SAFE_MARGIN) {
+    x = viewport.width - SAFE_MARGIN - cardWidth;
+  }
+
+  // SHIFT HORIZONTALLY if would overflow left
+  if (x < SAFE_MARGIN) {
+    x = SAFE_MARGIN;
+  }
+
+  // Calculate arrow position (points to node center)
+  const arrowX = nodeRect.left + (nodeRect.width / 2) - x;
+  const arrowY = placement.includes('top') 
+    ? cardHeight 
+    : -8;
+
+  return {
+    x,
+    y,
+    maxHeight,
+    placement,
+    arrow: {
+      x: arrowX,
+      y: arrowY,
+      direction: placement.includes('top') ? 'down' : 'up'
+    },
+    transformOrigin: placement.includes('top') ? 'bottom left' : 'top left'
+  };
+};
+
+// ============================================================================
+// HOVER CARD PORTAL COMPONENT
+// ============================================================================
+const HoverCardPortal = ({ 
+  domain, 
+  nodeRect, 
+  onClose, 
+  getDomainColor, 
+  getDomainBloom, 
+  getDomainIcon, 
+  getDomainText,
+  getPostureIcon,
+  getTextOpacityAdjustment,
+  getInsightLine,
+  getConcisenSummary,
+  shouldReduceMotion
+}) => {
+  const portalRoot = usePortalRoot();
+  const cardRef = useRef(null);
+  const [position, setPosition] = useState(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const rafRef = useRef(null);
+
+  // Calculate initial position
+  useEffect(() => {
+    if (nodeRect) {
+      const pos = calculateSmartPlacement(nodeRect);
+      setPosition(pos);
+      
+      // Delay visibility for smooth entrance
+      const timer = setTimeout(() => setIsVisible(true), 16);
+      return () => clearTimeout(timer);
+    }
+  }, [nodeRect]);
+
+  // Recalculate on scroll/resize (throttled with rAF)
+  useEffect(() => {
+    if (!nodeRect) return;
+
+    const updatePosition = () => {
+      const pos = calculateSmartPlacement(nodeRect);
+      setPosition(pos);
+    };
+
+    const handleUpdate = () => {
+      if (rafRef.current) return;
+      rafRef.current = requestAnimationFrame(() => {
+        updatePosition();
+        rafRef.current = null;
+      });
+    };
+
+    window.addEventListener('scroll', handleUpdate, { passive: true });
+    window.addEventListener('resize', handleUpdate);
+
+    return () => {
+      window.removeEventListener('scroll', handleUpdate);
+      window.removeEventListener('resize', handleUpdate);
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
+  }, [nodeRect]);
+
+  if (!portalRoot || !position || !domain) return null;
+
+  const opacityAdjust = getTextOpacityAdjustment(domain.id);
+  const insightText = getInsightLine(domain.id);
+  const summaryText = getConcisenSummary(domain);
+
+  const cardContent = (
+    <motion.div
+      ref={cardRef}
+      initial={{ opacity: 0, y: 6, scale: 0.96 }}
+      animate={{
+        opacity: isVisible ? 1 : 0,
+        y: isVisible ? 0 : 6,
+        scale: isVisible ? 1 : 0.96
+      }}
+      exit={{
+        opacity: 0,
+        y: 4,
+        scale: 0.96,
+        transition: { duration: 0.15, ease: 'easeOut' }
+      }}
+      transition={{
+        duration: 0.2,
+        ease: [0.25, 0.1, 0.25, 1]
+      }}
+      style={{
+        position: 'absolute',
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+        width: '270px',
+        maxHeight: position.maxHeight ? `${position.maxHeight}px` : 'none',
+        overflowY: position.maxHeight ? 'auto' : 'visible',
+        padding: '16px 18px',
+        borderRadius: '18px',
+        backdropFilter: 'blur(22px) saturate(165%) brightness(1.05)',
+        WebkitBackdropFilter: 'blur(22px) saturate(165%) brightness(1.05)',
+        background: 'rgba(24, 28, 33, 0.45)',
+        border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
+        boxShadow: TOKENS.HORIZON.hoverCardShadow,
+        pointerEvents: 'auto',
+        cursor: 'pointer',
+        transformOrigin: position.transformOrigin,
+        willChange: 'transform, opacity'
+      }}
+      onClick={onClose}
+      role="button"
+      tabIndex={0}
+      aria-label={`${domain.id} signal details. Click to expand or press Escape to close.`}
+    >
+      {/* Scroll fade mask for capped height */}
+      {position.maxHeight && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: '32px',
+            background: 'linear-gradient(to top, rgba(24, 28, 33, 0.95), transparent)',
+            pointerEvents: 'none',
+            zIndex: 10
+          }}
+        />
+      )}
+
+      {/* Reflected halo - alive calmness pulse */}
+      {!shouldReduceMotion && (
+        <motion.div
+          className="absolute inset-0 rounded-[18px]"
+          style={{
+            background: `radial-gradient(circle at center, ${getDomainBloom(domain.id)}, transparent 70%)`,
+            mixBlendMode: 'screen',
+            pointerEvents: 'none',
+            zIndex: -1
+          }}
+          animate={{ opacity: [0.10, 0.14, 0.10] }}
+          transition={{ duration: 0.3, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      )}
+
+      {/* Top rim highlight */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '14px',
+        right: '14px',
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
+        borderRadius: '999px',
+        pointerEvents: 'none'
+      }} />
+
+      {/* Content wrapper */}
+      <div style={{ position: 'relative', zIndex: 1 }}>
+        {/* Header: Icon + Title + Posture */}
+        <div className="flex items-center gap-3 mb-4">
+          <div
+            className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
+            style={{
+              background: `${getDomainColor(domain.id)}15`,
+              border: `1px solid ${getDomainColor(domain.id)}30`,
+              boxShadow: `0 0 14px ${getDomainBloom(domain.id)}`,
+              color: getDomainColor(domain.id)
+            }}
+          >
+            {React.cloneElement(getDomainIcon(domain.id), { className: "w-4 h-4", strokeWidth: 2.5 })}
+          </div>
+          <div className="flex-1 min-w-0">
+            <motion.h4
+              initial={{ opacity: 0, y: -3 }}
+              animate={{
+                opacity: 0.95 + opacityAdjust,
+                y: 0
+              }}
+              transition={{
+                delay: 0.05,
+                duration: 0.18
+              }}
+              style={{
+                color: TOKENS.colors.textPrimary,
+                fontSize: '18px',
+                fontWeight: 600,
+                letterSpacing: '-0.02em',
+                textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
+                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
+              }}
+            >
+              {domain.id.charAt(0).toUpperCase() + domain.id.slice(1)} Markets
+            </motion.h4>
+            <motion.div
+              initial={{ opacity: 0, y: -3 }}
+              animate={{
+                opacity: 0.82 + opacityAdjust,
+                y: 0
+              }}
+              transition={{
+                delay: 0.08,
+                duration: 0.18
+              }}
+              className="flex items-center gap-1.5"
+            >
+              {React.cloneElement(getPostureIcon(domain.posture), { className: "w-3.5 h-3.5" })}
+              <span style={{
+                color: getDomainText(domain.id),
+                fontSize: '13px',
+                letterSpacing: '0.2px',
+                textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
+                fontWeight: 500,
+                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+              }}>
+                {domain.posture.charAt(0).toUpperCase() + domain.posture.slice(1)} Momentum
+              </span>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Subtle section divider */}
+        <div style={{
+          height: '1px',
+          background: `linear-gradient(90deg, transparent, ${TOKENS.HORIZON.drawerDivider}, transparent)`,
+          margin: '0 0 12px 0',
+          opacity: 0.5
+        }} />
+
+        {/* Confidence Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 3 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.12, duration: 0.18 }}
+          className="flex items-center gap-3 mb-3"
+        >
+          <div className="relative w-8 h-8 flex-shrink-0">
+            <svg className="transform -rotate-90" width="32" height="32">
+              <circle cx="16" cy="16" r="14" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2.5" />
+              <circle
+                cx="16"
+                cy="16"
+                r="14"
+                fill="none"
+                stroke={getDomainColor(domain.id)}
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeDasharray="87.9"
+                strokeDashoffset={87.9 - (87.9 * domain.confidence_pct / 100)}
+                style={{
+                  filter: `drop-shadow(0 0 5px ${getDomainBloom(domain.id)})`,
+                  opacity: 1.0
+                }}
+              />
+            </svg>
+            <div
+              className="absolute inset-0 flex items-center justify-center font-bold"
+              style={{
+                color: TOKENS.colors.textPrimary,
+                fontSize: '10px',
+                textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)'
+              }}
+            >
+              {domain.confidence_pct}
+            </div>
+          </div>
+          <div className="flex-1">
+            <div style={{
+              fontSize: '13px',
+              color: 'rgba(255, 255, 255, 0.88)',
+              letterSpacing: '0.15em',
+              fontWeight: 600,
+              textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
+              marginBottom: '2px'
+            }}>
+              CONFIDENCE
+            </div>
+            <div style={{
+              fontSize: '14px',
+              color: TOKENS.colors.textSecondary,
+              textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
+              fontWeight: 400
+            }}>
+              {domain.confidence_pct}% — {summaryText.substring(0, 65)}...
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Divider */}
+        <div style={{
+          height: '2px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
+          filter: 'blur(1px)',
+          margin: '12px 0',
+          opacity: 0.6
+        }} />
+
+        {/* Signal Summary */}
+        <motion.p
+          initial={{ opacity: 0, y: 3 }}
+          animate={{ opacity: 0.90 + opacityAdjust, y: 0 }}
+          transition={{ delay: 0.16, duration: 0.18 }}
+          style={{
+            color: 'rgba(255, 255, 255, 0.90)',
+            fontSize: '16.5px',
+            lineHeight: '25px',
+            marginBottom: '8px',
+            textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
+            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
+            fontWeight: 400
+          }}
+        >
+          {summaryText.length > 100 ? summaryText.substring(0, 100) + '...' : summaryText}
+        </motion.p>
+
+        {/* Insight Pane */}
+        <motion.div
+          initial={{ opacity: 0, y: 2 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.20, duration: 0.2, ease: 'easeInOut' }}
+          whileHover={{ filter: 'brightness(1.05)', transition: { duration: 0.15 } }}
+          style={{
+            position: 'relative',
+            width: '100%',
+            padding: '7px 12px',
+            borderRadius: '12px',
+            marginTop: '8px',
+            marginBottom: '10px',
+            background: 'rgba(255, 255, 255, 0.10)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+            border: '1px solid rgba(255, 255, 255, 0.20)',
+            boxShadow: 'inset 0 0 0 1px rgba(255, 255, 255, 0.08)',
+            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+            fontSize: '14.5px',
+            lineHeight: '1.6',
+            color: 'rgba(255, 255, 255, 0.92)',
+            pointerEvents: 'none'
+          }}
+        >
+          <span style={{ fontWeight: 500, opacity: 0.75, marginRight: '4px', letterSpacing: '0.3px' }}>
+            {insightText.split(':')[0]}:
+          </span>
+          <span style={{ fontWeight: 400, opacity: 0.90 }}>
+            {insightText.split(':')[1]}
+          </span>
+        </motion.div>
+
+        {/* Divider */}
+        <div style={{
+          height: '1px',
+          background: `linear-gradient(90deg, transparent, ${TOKENS.HORIZON.drawerDivider}, transparent)`,
+          margin: '12px 0 10px 0',
+          opacity: 0.5
+        }} />
+
+        {/* CTA */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.24, duration: 0.15 }}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          <span style={{
+            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+            fontSize: '14px',
+            fontWeight: 500,
+            letterSpacing: '0.25px',
+            color: 'rgba(90, 160, 255, 0.95)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '5px',
+            cursor: 'pointer'
+          }}>
+            <span>Expand signal</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </span>
+        </motion.div>
+      </div>
+
+      {/* Arrow pointer (if not capped) */}
+      {!position.maxHeight && (
+        <>
+          <div style={{
+            position: 'absolute',
+            left: `${position.arrow.x}px`,
+            [position.arrow.direction === 'down' ? 'bottom' : 'top']: '-6px',
+            transform: 'translateX(-50%)',
+            width: 0,
+            height: 0,
+            borderLeft: '8px solid transparent',
+            borderRight: '8px solid transparent',
+            [position.arrow.direction === 'down' ? 'borderTop' : 'borderBottom']: `8px solid ${TOKENS.HORIZON.glassBorder}`,
+            pointerEvents: 'none'
+          }} />
+          <div style={{
+            position: 'absolute',
+            left: `${position.arrow.x}px`,
+            [position.arrow.direction === 'down' ? 'bottom' : 'top']: '-5px',
+            transform: 'translateX(-50%)',
+            width: 0,
+            height: 0,
+            borderLeft: '7px solid transparent',
+            borderRight: '7px solid transparent',
+            [position.arrow.direction === 'down' ? 'borderTop' : 'borderBottom']: '7px solid rgba(24, 28, 33, 0.45)',
+            pointerEvents: 'none'
+          }} />
+        </>
+      )}
+    </motion.div>
+  );
+
+  return createPortal(cardContent, portalRoot);
+};
+
 const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const containerRef = useRef(null);
   const footerRef = useRef(null);
@@ -102,6 +617,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const drawerRef = useRef(null);
 
   const [hoveredDomain, setHoveredDomain] = useState(null);
+  const [hoveredNodeRect, setHoveredNodeRect] = useState(null);
   const hoverEnterTimerRef = useRef(null);
   const hoverExitTimerRef = useRef(null);
 
@@ -288,7 +804,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     geopolitics: "So what: Prioritize domestic resilience and energy hedges for portfolio stability."
   }[domain.id] || "Monitor for shifts in macro equilibrium dynamics."), []);
 
-  // Insight lines for cognitive clarity (v2.3 - Final OS Horizon Audit)
   const getInsightLine = useCallback((domainId) => ({
     growth: "Insight: Rotation toward defensive assets underway as markets rebalance.",
     rates: "Insight: Yields steady — credit markets adjusting to new baseline.",
@@ -296,7 +811,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     geopolitics: "Insight: Policy tensions rising — volatility expanding in select regions."
   }[domainId] || "Insight: Market dynamics shifting — monitor key indicators."), []);
 
-  // Concise signal summaries (v2.3 - Apple-style brevity + Audit)
   const getConcisenSummary = useCallback((domain) => {
     const summaries = {
       rates: "Fed holds firm; terminal rate expectations drift higher on sticky services inflation.",
@@ -307,7 +821,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return summaries[domain.id] || domain.summary;
   }, []);
 
-  // Confidence qualitative descriptors (v2.3 - Audit)
   const getConfidenceDescriptor = useCallback((confidence_pct) => {
     if (confidence_pct >= 75) return "High certainty";
     if (confidence_pct >= 65) return "Moderate confidence";
@@ -315,48 +828,49 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return "Emerging signal";
   }, []);
 
-  // Simplified tight hover with debouncing (v1.9.7 - FIXED)
-  const handleDomainHoverEnter = useCallback((domain) => {
-    // Clear any pending exit
+  const handleDomainHoverEnter = useCallback((domain, event) => {
     if (hoverExitTimerRef.current) {
       clearTimeout(hoverExitTimerRef.current);
       hoverExitTimerRef.current = null;
     }
     
-    // Clear any pending enter
     if (hoverEnterTimerRef.current) {
       clearTimeout(hoverEnterTimerRef.current);
     }
     
-    // Debounced enter
     hoverEnterTimerRef.current = setTimeout(() => {
+      const target = event.currentTarget;
+      const rect = target.getBoundingClientRect();
+      setHoveredNodeRect(rect);
       setHoveredDomain(domain.id);
-    }, TOKENS.HORIZON.hoverEnterDelay);
+    }, TOKENS.HORIZON.hoverEnterDelay + 50); // Add 50ms delay for intent
   }, []);
 
-  // Fast hover exit (v1.9.7 - FIXED)
   const handleDomainHoverLeave = useCallback(() => {
-    // Clear enter timer if still pending
     if (hoverEnterTimerRef.current) {
       clearTimeout(hoverEnterTimerRef.current);
       hoverEnterTimerRef.current = null;
     }
     
-    // Clear any pending exit
     if (hoverExitTimerRef.current) {
       clearTimeout(hoverExitTimerRef.current);
     }
     
-    // Fast exit
     hoverExitTimerRef.current = setTimeout(() => {
       setHoveredDomain(null);
-    }, TOKENS.HORIZON.hoverExitDelay);
+      setHoveredNodeRect(null);
+    }, TOKENS.HORIZON.hoverExitDelay + 150); // Add 150ms grace period
   }, []);
 
-  // Drawer open handler - MUST come before handleCardClick
   const handleOpenDrawer = useCallback((domain) => {
     if (selectedDomain?.id === domain.id) return;
     
+    // Clear hover state and rect immediately when opening drawer
+    setHoveredDomain(null);
+    setHoveredNodeRect(null);
+    if (hoverEnterTimerRef.current) clearTimeout(hoverEnterTimerRef.current);
+    if (hoverExitTimerRef.current) clearTimeout(hoverExitTimerRef.current);
+
     const domainPos = getOrbPosition(domain.id, domain.strength, swayTime, 0, 0); 
     const containerRect = containerRef.current?.getBoundingClientRect();
     
@@ -385,19 +899,13 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     }
   }, [selectedDomain, getOrbPosition, swayTime]);
 
-  // Card click handler (v1.9.7) - NOW COMES AFTER handleOpenDrawer
   const handleCardClick = useCallback((domain) => {
-    // Clear hover timers
-    if (hoverEnterTimerRef.current) {
-      clearTimeout(hoverEnterTimerRef.current);
-      hoverEnterTimerRef.current = null;
-    }
-    if (hoverExitTimerRef.current) {
-      clearTimeout(hoverExitTimerRef.current);
-      hoverExitTimerRef.current = null;
-    }
-    
+    // This function is now primarily called from the portal's onClick to open the drawer
+    // The portal itself doesn't need to manage timers.
     setHoveredDomain(null);
+    setHoveredNodeRect(null);
+    if (hoverEnterTimerRef.current) clearTimeout(hoverEnterTimerRef.current);
+    if (hoverExitTimerRef.current) clearTimeout(hoverExitTimerRef.current);
     handleOpenDrawer(domain);
   }, [handleOpenDrawer]);
 
@@ -429,7 +937,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     handleOpenDrawer(domains[(idx - 1 + domains.length) % domains.length]);
   }, [selectedDomain, domains, handleOpenDrawer]);
 
-  // Orb Life Pulse
   useEffect(() => {
     if (shouldReduceMotion || !selectedDomain) {
       setDrawerLuminance(1.0);
@@ -452,7 +959,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return () => cancelAnimationFrame(rafId);
   }, [shouldReduceMotion, selectedDomain]);
 
-  // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && selectedDomain) handleCloseDrawer();
@@ -468,7 +974,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedDomain, handleCloseDrawer, handlePrevDomain, handleNextDomain, domains, handleOpenDrawer]);
 
-  // Simplified mouse move - parallax only (v1.9.7 - FIXED)
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (!containerRef.current || shouldReduceMotion) return;
@@ -573,87 +1078,19 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     };
   }, [selectedDomain, drawerOrigin]);
 
-  // Dynamic hover card positioning with edge detection (OS Horizon v2.4)
-  const getOptimalCardPosition = useCallback((orbPos, cardWidth = 270, cardHeight = 400) => {
-    const safeMargin = 32;
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    
-    // Determine horizontal position
-    const isLeft = orbPos.x < cx;
-    let tooltipX = isLeft ? orbPos.x + orbPos.radius + 22 : orbPos.x - orbPos.radius - 22;
-    let anchorSide = isLeft ? 'left' : 'right';
-    let xTransform = isLeft ? '0' : '-100%';
-    
-    // Check right edge overflow
-    if (isLeft && tooltipX + cardWidth > viewportWidth - safeMargin) {
-      // Switch to left side
-      tooltipX = orbPos.x - orbPos.radius - 22;
-      anchorSide = 'right';
-      xTransform = '-100%';
-    }
-    
-    // Check left edge overflow
-    if (!isLeft && tooltipX - cardWidth < safeMargin) {
-      // Switch to right side
-      tooltipX = orbPos.x + orbPos.radius + 22;
-      anchorSide = 'left';
-      xTransform = '0';
-    }
-    
-    // Final left edge safety check
-    if (anchorSide === 'right' && tooltipX - cardWidth < safeMargin) {
-      tooltipX = safeMargin + cardWidth;
-    }
-    
-    // Determine vertical position
-    let tooltipY = orbPos.y;
-    let yTransform = '-50%'; // Default center alignment
-    let verticalAnchor = 'center';
-    
-    // Check bottom edge overflow
-    if (tooltipY + (cardHeight / 2) > viewportHeight - safeMargin) {
-      // Align to bottom
-      tooltipY = viewportHeight - safeMargin - cardHeight;
-      yTransform = '0';
-      verticalAnchor = 'bottom';
-    }
-    
-    // Check top edge overflow
-    if (tooltipY - (cardHeight / 2) < headerSafe + safeMargin) {
-      // Align to top
-      tooltipY = headerSafe + safeMargin;
-      yTransform = '0';
-      verticalAnchor = 'top';
-    }
-    
-    return {
-      x: tooltipX,
-      y: tooltipY,
-      xTransform,
-      yTransform,
-      anchorSide,
-      verticalAnchor,
-      arrowPosition: {
-        x: orbPos.x,
-        y: orbPos.y
-      }
-    };
-  }, [cx, headerSafe]);
-
   return (
     <motion.section variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} aria-label="Macro Constellation" style={{ maxWidth: '84vw', margin: '0 auto' }}>
       <div className="flex items-center justify-between mb-6 pl-2">
         <div className="flex items-center space-x-3">
           <Globe className="w-6 h-6" style={{ color: '#6AC7F7' }} />
           <div>
-            <h2 style={{ fontSize: '18px', lineHeight: '24px', fontWeight: 600, color: TOKENS.colors.textPrimary, fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif' }}>Macro Constellation</h2>
-            <p style={{ fontSize: '13px', color: TOKENS.colors.textTertiary, letterSpacing: '0.2em', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Real-time balance of global macro forces.</p>
+            <h2 style={{ fontSize: '18px', lineHeight: '24px', fontWeight: 600, color: TOKENS.colors.textPrimary, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif' }}>Macro Constellation</h2>
+            <p style={{ fontSize: '13px', color: TOKENS.colors.textTertiary, letterSpacing: '0.2em', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Real-time balance of global macro forces.</p>
           </div>
         </div>
         <div className="powered-by-lyra cursor-pointer" style={{ opacity: 0.6 }}>
           <div className="flex items-center space-x-2 px-4 py-2" style={{ background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', border: '1px solid rgba(160,191,255,0.08)', borderRadius: '12px' }}>
-            <span className="text-xs font-medium" style={{ color: TOKENS.colors.textTertiary, letterSpacing: '0.25px', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Powered by</span>
+            <span className="text-xs font-medium" style={{ color: TOKENS.colors.textTertiary, letterSpacing: '0.25px', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Powered by</span>
             <LyraLogo className="w-5 h-5" />
             <span className="text-sm font-bold" style={{ color: TOKENS.colors.textPrimary }}>Lyra</span>
           </div>
@@ -664,7 +1101,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
         <motion.div style={{ position: 'absolute', inset: 0, background: `radial-gradient(900px circle at 52% 48%, ${TOKENS.HORIZON.bgSubsurfaceCenter} 0%, ${TOKENS.HORIZON.bgSubsurfaceEdge} 70%)`, opacity: 0.35, borderRadius: '24px', pointerEvents: 'none', zIndex: 1 }} animate={{ x: shouldReduceMotion ? 0 : bgParallaxX.get() * TOKENS.HORIZON.parallaxOffset * 0.6, y: shouldReduceMotion ? 0 : bgParallaxY.get() * TOKENS.HORIZON.parallaxOffset * 0.6 }} transition={{ duration: TOKENS.HORIZON.t_parallax, ease: TOKENS.HORIZON.easingApple }} />
 
-        <motion.div style={{ position: 'absolute', inset: 0, backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3Csvg%3E")`, backgroundSize: '200px 200px', opacity: 0.15, borderRadius: '24px', pointerEvents: 'none', zIndex: 2 }} animate={{ backgroundPosition: [`${noiseDrift}px 0px`, `${noiseDrift + 0.3}px 0px`] }} transition={{ duration: 1, ease: 'linear' }} />
+        <motion.div style={{ position: 'absolute', inset: 0, backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3Cfilter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3Csvg%3E")`, backgroundSize: '200px 200px', opacity: 0.15, borderRadius: '24px', pointerEvents: 'none', zIndex: 2 }} animate={{ backgroundPosition: [`${noiseDrift}px 0px`, `${noiseDrift + 0.3}px 0px`] }} transition={{ duration: 1, ease: 'linear' }} />
 
         <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(ellipse at center, transparent 60%, ${TOKENS.HORIZON.vignetteColor} 100%)`, opacity: TOKENS.HORIZON.vignetteOpacity, filter: `blur(${TOKENS.HORIZON.vignetteBlur}px)`, borderRadius: '24px', pointerEvents: 'none', zIndex: 2 }} />
 
@@ -800,7 +1237,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       />
                     )}
 
-                    {/* Tight hitbox orb nucleus (v1.9.7) */}
                     <motion.circle
                       cx={orbPos.x}
                       cy={orbPos.y}
@@ -820,7 +1256,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         opacity: isPulsing ? [0.985, 1, 0.985] : isHovered || isSelected ? 1 : [0.985, 1, 0.985]
                       }}
                       transition={isPulsing ? { duration: TOKENS.HORIZON.t_orbBreathIn, ease: TOKENS.HORIZON.easingSine } : isSelected ? { duration: TOKENS.HORIZON.t_orbLifePulse, repeat: Infinity, ease: "easeInOut" } : isHovered ? { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easingApple } : { duration: TOKENS.HORIZON.t_breathe, repeat: Infinity, ease: "easeInOut", delay: idx * 1.2 }}
-                      onMouseEnter={() => handleDomainHoverEnter(domain)}
+                      onMouseEnter={(e) => handleDomainHoverEnter(domain, e)}
                       onMouseLeave={handleDomainHoverLeave}
                       onClick={() => handleOpenDrawer(domain)}
                       onKeyDown={(e) => { if (e.key === 'Enter') handleOpenDrawer(domain); }}
@@ -835,460 +1271,28 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </g>
           </svg>
 
-          {/* Hover Card - OS HORIZON v2.4 - DYNAMIC POSITIONING */}
+          {/* Hover Card - Now Rendered via Portal */}
           <AnimatePresence>
-            {hoveredDomain && !selectedDomain && (() => {
+            {hoveredDomain && !selectedDomain && hoveredNodeRect && (() => {
               const domain = domains.find(d => d.id === hoveredDomain);
               if (!domain) return null;
 
-              const orbPos = getOrbPosition(hoveredDomain, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
-              const cardDimensions = { width: 270, height: 380 }; // Estimated card height
-              const position = getOptimalCardPosition(orbPos, cardDimensions.width, cardDimensions.height);
-
-              const opacityAdjust = getTextOpacityAdjustment(domain.id);
-              const insightText = getInsightLine(hoveredDomain);
-              const summaryText = getConcisenSummary(domain);
-
-              // Calculate arrow position relative to card
-              const isArrowOnLeft = position.anchorSide === 'left';
-              const arrowY = position.verticalAnchor === 'center' 
-                ? '50%' 
-                : position.verticalAnchor === 'top'
-                  ? Math.max(40, position.arrowPosition.y - position.y)
-                  : Math.min(cardDimensions.height - 40, position.arrowPosition.y - position.y);
-
               return (
-                <motion.div
+                <HoverCardPortal
                   key={`tooltip-${hoveredDomain}`}
-                  initial={{ opacity: 0, scale: 0.96 }}
-                  animate={{
-                    opacity: 1,
-                    scale: 1.01
-                  }}
-                  exit={{
-                    opacity: 0,
-                    scale: 0.96,
-                    transition: { duration: 0.22, ease: [0.4, 0, 0.2, 1] }
-                  }}
-                  whileHover={{
-                    scale: 1.01
-                  }}
-                  style={{
-                    position: 'absolute',
-                    left: `${position.x}px`,
-                    top: `${position.y}px`,
-                    transform: `translate(${position.xTransform}, ${position.yTransform})`,
-                    width: `${cardDimensions.width}px`,
-                    padding: '16px 18px',
-                    borderRadius: '18px',
-                    backdropFilter: 'blur(22px) saturate(165%) brightness(1.05)',
-                    WebkitBackdropFilter: 'blur(22px) saturate(165%) brightness(1.05)',
-                    background: 'rgba(24, 28, 33, 0.45)',
-                    border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
-                    boxShadow: TOKENS.HORIZON.hoverCardShadow,
-                    pointerEvents: 'auto',
-                    zIndex: 120, // Highest layer in Equilibrium canvas
-                    cursor: 'pointer',
-                    transition: 'left 0.2s cubic-bezier(0.25, 0.1, 0.25, 1), top 0.2s cubic-bezier(0.25, 0.1, 0.25, 1)'
-                  }}
-                  onClick={() => handleCardClick(domain)}
-                  onMouseEnter={() => {
-                    if (hoverExitTimerRef.current) {
-                      clearTimeout(hoverExitTimerRef.current);
-                      hoverExitTimerRef.current = null;
-                    }
-                  }}
-                  onMouseLeave={() => {
-                    if (hoverEnterTimerRef.current) {
-                      clearTimeout(hoverEnterTimerRef.current);
-                      hoverEnterTimerRef.current = null;
-                    }
-                    if (hoverExitTimerRef.current) {
-                      clearTimeout(hoverExitTimerRef.current);
-                    }
-                    hoverExitTimerRef.current = setTimeout(() => {
-                      setHoveredDomain(null);
-                    }, TOKENS.HORIZON.hoverExitDelay);
-                  }}
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`Open ${domain.id} drawer: ${domain.posture}, ${domain.confidence_pct}% confidence. ${insightText}`}
-                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCardClick(domain); } }}
-                >
-                  {/* Reflected halo - alive calmness pulse */}
-                  {!shouldReduceMotion && (
-                    <motion.div
-                      className="absolute inset-0 rounded-[18px]"
-                      style={{
-                        background: `radial-gradient(circle at center, ${getDomainBloom(domain.id)}, transparent 70%)`,
-                        mixBlendMode: 'screen',
-                        pointerEvents: 'none',
-                        zIndex: -1
-                      }}
-                      animate={{ opacity: [0.10, 0.14, 0.10] }}
-                      transition={{ duration: 0.3, repeat: Infinity, ease: 'easeInOut' }}
-                    />
-                  )}
-                  
-                  {/* Vignette mask for glare clamp - adjusted for dynamic positioning */}
-                  <div 
-                    className="absolute inset-0 rounded-[18px]"
-                    style={{
-                      background: `radial-gradient(circle at ${isArrowOnLeft ? '85%' : '15%'} ${position.verticalAnchor === 'center' ? '50%' : position.verticalAnchor === 'top' ? '20%' : '80%'}, rgba(0,0,0,0.22), rgba(0,0,0,0) 140px)`,
-                      pointerEvents: 'none',
-                      zIndex: 0
-                    }}
-                    aria-hidden="true"
-                  />
-
-                  {/* Top rim highlight */}
-                  <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: '14px',
-                    right: '14px',
-                    height: '1px',
-                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
-                    borderRadius: '999px',
-                    pointerEvents: 'none'
-                  }} />
-
-                  {/* Content wrapper */}
-                  <div style={{ position: 'relative', zIndex: 1 }}>
-                    {/* Header: Icon + Title + Posture */}
-                    <div className="flex items-center gap-3 mb-4">
-                      <div
-                        className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
-                        style={{
-                          background: `${getDomainColor(domain.id)}15`,
-                          border: `1px solid ${getDomainColor(domain.id)}30`,
-                          boxShadow: `0 0 14px ${getDomainBloom(domain.id)}`,
-                          color: getDomainColor(domain.id)
-                        }}
-                      >
-                        {React.cloneElement(getDomainIcon(domain.id), { className: "w-4 h-4", strokeWidth: 2.5 })}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <motion.h4
-                          initial={{ opacity: 0, y: -3 }}
-                          animate={{
-                            opacity: 0.95 + opacityAdjust,
-                            y: 0
-                          }}
-                          transition={{
-                            delay: 0.05,
-                            duration: 0.18
-                          }}
-                          style={{
-                            color: TOKENS.colors.textPrimary,
-                            fontSize: '18px',
-                            fontWeight: 600,
-                            letterSpacing: '-0.02em',
-                            textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
-                            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
-                          }}
-                        >
-                          {domain.id.charAt(0).toUpperCase() + domain.id.slice(1)} Markets
-                        </motion.h4>
-                        <motion.div
-                          initial={{ opacity: 0, y: -3 }}
-                          animate={{
-                            opacity: 0.82 + opacityAdjust,
-                            y: 0
-                          }}
-                          transition={{
-                            delay: 0.08,
-                            duration: 0.18
-                          }}
-                          className="flex items-center gap-1.5"
-                        >
-                          {React.cloneElement(getPostureIcon(domain.posture), { className: "w-3.5 h-3.5" })}
-                          <span style={{
-                            color: getDomainText(domain.id),
-                            fontSize: '13px',
-                            letterSpacing: '0.2px',
-                            textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
-                            fontWeight: 500,
-                            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-                          }}>
-                            {domain.posture.charAt(0).toUpperCase() + domain.posture.slice(1)} Momentum
-                          </span>
-                        </motion.div>
-                      </div>
-                    </div>
-
-                    {/* Subtle section divider */}
-                    <div style={{
-                      height: '1px',
-                      background: `linear-gradient(90deg, transparent, ${TOKENS.HORIZON.drawerDivider}, transparent)`,
-                      margin: '0 0 12px 0',
-                      opacity: 0.5
-                    }} />
-
-                    {/* Confidence Section with Brightened Ring */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 3 }}
-                      animate={{
-                        opacity: 1,
-                        y: 0
-                      }}
-                      transition={{
-                        delay: 0.12,
-                        duration: 0.18
-                      }}
-                      className="flex items-center gap-3 mb-3"
-                    >
-                      <div className="relative w-8 h-8 flex-shrink-0">
-                        <svg className="transform -rotate-90" width="32" height="32">
-                          <circle cx="16" cy="16" r="14" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2.5" />
-                          <circle
-                            cx="16"
-                            cy="16"
-                            r="14"
-                            fill="none"
-                            stroke={getDomainColor(domain.id)}
-                            strokeWidth="2.5"
-                            strokeLinecap="round"
-                            strokeDasharray="87.9"
-                            strokeDashoffset={87.9 - (87.9 * domain.confidence_pct / 100)}
-                            style={{
-                              filter: `drop-shadow(0 0 5px ${getDomainBloom(domain.id)})`,
-                              opacity: 1.0
-                            }}
-                          />
-                        </svg>
-                        <div
-                          className="absolute inset-0 flex items-center justify-center font-bold"
-                          style={{
-                            color: TOKENS.colors.textPrimary,
-                            fontSize: '10px',
-                            textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)'
-                          }}
-                        >
-                          {domain.confidence_pct}
-                          {domain.confidenceDelta !== undefined && domain.confidenceDelta !== 0 && (
-                            <motion.span
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              transition={{ delay: 0.18, duration: 0.15 }}
-                              className="absolute -right-1 -top-0.5 text-[7px]"
-                              style={{
-                                color: domain.confidenceDelta > 0 ? TOKENS.colors.deltaUp : TOKENS.colors.deltaDown
-                              }}
-                            >
-                              {domain.confidenceDelta > 0 ? '▲' : '▼'}
-                            </motion.span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex-1">
-                        <div style={{
-                          fontSize: '13px',
-                          color: 'rgba(255, 255, 255, 0.88)',
-                          letterSpacing: '0.15em',
-                          fontWeight: 600,
-                          textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
-                          marginBottom: '2px'
-                        }}>
-                          CONFIDENCE
-                        </div>
-                        <div style={{
-                          fontSize: '14px',
-                          color: TOKENS.colors.textSecondary,
-                          textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
-                          fontWeight: 400
-                        }}>
-                          {domain.confidence_pct}% — {summaryText.substring(0, 65)}...
-                        </div>
-                      </div>
-                    </motion.div>
-
-                    {/* Faint horizontal gradient divider */}
-                    <div style={{
-                      height: '2px',
-                      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
-                      filter: 'blur(1px)',
-                      margin: '12px 0',
-                      opacity: 0.6
-                    }} />
-
-                    {/* Signal Summary - Enhanced line-height for breathing room */}
-                    <motion.p
-                      initial={{ opacity: 0, y: 3 }}
-                      animate={{
-                        opacity: 0.90 + opacityAdjust,
-                        y: 0
-                      }}
-                      transition={{
-                        delay: 0.16,
-                        duration: 0.18
-                      }}
-                      style={{
-                        color: 'rgba(255, 255, 255, 0.90)',
-                        fontSize: '16.5px',
-                        lineHeight: '25px',
-                        marginBottom: '8px',
-                        textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
-                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
-                        fontWeight: 400
-                      }}
-                    >
-                      {summaryText.length > 100 ? summaryText.substring(0, 100) + '...' : summaryText}
-                    </motion.p>
-
-                    {/* Insight Pane - FROSTED GLASS ENHANCEMENT v2.3 */}
-                    <motion.div
-                      className="insight-pane"
-                      initial={{ opacity: 0, y: 2 }}
-                      animate={{ 
-                        opacity: 1, 
-                        y: 0
-                      }}
-                      transition={{
-                        delay: 0.20,
-                        duration: 0.2,
-                        ease: 'easeInOut'
-                      }}
-                      whileHover={{ 
-                        filter: 'brightness(1.05)',
-                        transition: { duration: 0.15 }
-                      }}
-                      style={{
-                        position: 'relative',
-                        width: '100%',
-                        padding: '7px 12px',
-                        borderRadius: '12px',
-                        marginTop: '8px',
-                        marginBottom: '10px',
-                        background: 'rgba(255, 255, 255, 0.10)',
-                        backdropFilter: 'blur(16px)',
-                        WebkitBackdropFilter: 'blur(16px)',
-                        border: '1px solid rgba(255, 255, 255, 0.20)',
-                        boxShadow: 'inset 0 0 0 1px rgba(255, 255, 255, 0.08)',
-                        transform: 'translateZ(2px)', // Parallax depth
-                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-                        fontSize: '14.5px',
-                        lineHeight: '1.6',
-                        color: 'rgba(255, 255, 255, 0.92)', // +10% brightness vs body
-                        pointerEvents: 'none',
-                        cursor: 'default'
-                      }}
-                      aria-label={insightText}
-                    >
-                      <span style={{
-                        fontWeight: 500,
-                        opacity: 0.75,
-                        marginRight: '4px',
-                        letterSpacing: '0.3px'
-                      }}>
-                        {insightText.split(':')[0]}:
-                      </span>
-                      <span style={{
-                        fontWeight: 400,
-                        opacity: 0.90
-                      }}>
-                        {insightText.split(':')[1]}
-                      </span>
-                    </motion.div>
-
-                    {/* Subtle section divider */}
-                    <div style={{
-                      height: '1px',
-                      background: `linear-gradient(90deg, transparent, ${TOKENS.HORIZON.drawerDivider}, transparent)`,
-                      margin: '12px 0 10px 0',
-                      opacity: 0.5
-                    }} />
-
-                    {/* CTA Section - Smooth hover fade */}
-                    <motion.div
-                      className="cta-section"
-                      initial={{ opacity: 0 }}
-                      animate={{
-                        opacity: 1
-                      }}
-                      transition={{
-                        delay: 0.24,
-                        duration: 0.15
-                      }}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                      }}
-                    >
-                      <motion.span
-                        className="cta-text"
-                        whileHover={{
-                          x: 3,
-                          letterSpacing: '0.4px',
-                          transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] }
-                        }}
-                        style={{
-                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-                          fontSize: '14px',
-                          fontWeight: 500,
-                          letterSpacing: '0.25px',
-                          color: 'rgba(90, 160, 255, 0.95)',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '5px',
-                          transition: 'all 250ms ease-in-out',
-                          cursor: 'pointer',
-                          textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)'
-                        }}
-                        aria-label="Expand signal, button"
-                      >
-                        <span>Expand signal</span>
-                        <motion.div
-                          whileHover={{
-                            x: 2,
-                            transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] }
-                          }}
-                        >
-                          <ArrowRight className="w-3.5 h-3.5" style={{ color: 'rgba(90, 160, 255, 0.95)' }} />
-                        </motion.div>
-                      </motion.span>
-                    </motion.div>
-                  </div>
-
-                  {/* Pointer triangles - DYNAMICALLY POSITIONED */}
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.1, duration: 0.15 }}
-                    style={{
-                      position: 'absolute',
-                      [isArrowOnLeft ? 'left' : 'right']: isArrowOnLeft ? '-6px' : '-6px',
-                      top: position.verticalAnchor === 'center' ? arrowY : `${arrowY}px`,
-                      transform: position.verticalAnchor === 'center' ? 'translateY(-50%)' : 'none',
-                      width: 0,
-                      height: 0,
-                      borderTop: '8px solid transparent',
-                      borderBottom: '8px solid transparent',
-                      [isArrowOnLeft ? 'borderRight' : 'borderLeft']: `8px solid ${TOKENS.HORIZON.glassBorder}`,
-                      pointerEvents: 'none',
-                      transition: 'top 0.2s cubic-bezier(0.25, 0.1, 0.25, 1)'
-                    }}
-                  />
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.1, duration: 0.15 }}
-                    style={{
-                      position: 'absolute',
-                      [isArrowOnLeft ? 'left' : 'right']: isArrowOnLeft ? '-5px' : '-5px',
-                      top: position.verticalAnchor === 'center' ? arrowY : `${arrowY}px`,
-                      transform: position.verticalAnchor === 'center' ? 'translateY(-50%)' : 'none',
-                      width: 0,
-                      height: 0,
-                      borderTop: '7px solid transparent',
-                      borderBottom: '7px solid transparent',
-                      [isArrowOnLeft ? 'borderRight' : 'borderLeft']: '7px solid rgba(24, 28, 33, 0.45)',
-                      pointerEvents: 'none',
-                      transition: 'top 0.2s cubic-bezier(0.25, 0.1, 0.25, 1)'
-                    }}
-                  />
-                </motion.div>
+                  domain={domain}
+                  nodeRect={hoveredNodeRect}
+                  onClose={() => handleCardClick(domain)} // Maps to handleCardClick which opens drawer
+                  getDomainColor={getDomainColor}
+                  getDomainBloom={getDomainBloom}
+                  getDomainIcon={getDomainIcon}
+                  getDomainText={getDomainText}
+                  getPostureIcon={getPostureIcon}
+                  getTextOpacityAdjustment={getTextOpacityAdjustment}
+                  getInsightLine={getInsightLine}
+                  getConcisenSummary={getConcisenSummary}
+                  shouldReduceMotion={shouldReduceMotion}
+                />
               );
             })()}
           </AnimatePresence>
@@ -1300,7 +1304,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             const isSelected = selectedDomain?.id === domain.id;
 
             return (
-              <motion.div key={`label-${domain.id}`} style={{ position: 'absolute', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', background: 'rgba(10,14,20,0.50)', border: `1px solid ${TOKENS.HORIZON.glassBorder}`, borderRadius: '10px', padding: '5px 9px', fontWeight: 600, fontSize: '11px', letterSpacing: '0.03em', textTransform: 'lowercase', textShadow: '0 1px 2px rgba(0,0,0,0.4)', pointerEvents: 'none', zIndex: 3, fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }} animate={{ left: `${labelPos.x}px`, top: `${labelPos.y}px`, x: '-50%', y: '-50%', color: isHovered || isSelected ? TOKENS.colors.textLabel : getDomainText(domain.id), scale: isHovered || isSelected ? 1.05 : 1, boxShadow: isHovered || isSelected ? '0 0 16px rgba(160,191,255,0.15)' : 'none' }} transition={{ left: { duration: TOKENS.HORIZON.t_labelLag, ease: TOKENS.HORIZON.easingApple }, top: { duration: TOKENS.HORIZON.t_labelLag, ease: TOKENS.HORIZON.easingApple }, color: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }, scale: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }, boxShadow: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing } }}>
+              <motion.div key={`label-${domain.id}`} style={{ position: 'absolute', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', background: 'rgba(10,14,20,0.50)', border: `1px solid ${TOKENS.HORIZON.glassBorder}`, borderRadius: '10px', padding: '5px 9px', fontWeight: 600, fontSize: '11px', letterSpacing: '0.03em', textTransform: 'lowercase', textShadow: '0 1px 2px rgba(0,0,0,0.4)', pointerEvents: 'none', zIndex: 3, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }} animate={{ left: `${labelPos.x}px`, top: `${labelPos.y}px`, x: '-50%', y: '-50%', color: isHovered || isSelected ? TOKENS.colors.textLabel : getDomainText(domain.id), scale: isHovered || isSelected ? 1.05 : 1, boxShadow: isHovered || isSelected ? '0 0 16px rgba(160,191,255,0.15)' : 'none' }} transition={{ left: { duration: TOKENS.HORIZON.t_labelLag, ease: TOKENS.HORIZON.easingApple }, top: { duration: TOKENS.HORIZON.t_labelLag, ease: TOKENS.HORIZON.easingApple }, color: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }, scale: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }, boxShadow: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing } }}>
                 {domain.id}
               </motion.div>
             );
@@ -1316,11 +1320,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </div>
           </div>
           <div className="flex-1 flex items-center gap-3">
-            <span style={{ color: TOKENS.colors.textSecondary, fontSize: '14px', lineHeight: '20px', textShadow: '0 1px 2px rgba(0,0,0,0.4)', fontWeight: 400, fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>{globalSummary}</span>
+            <span style={{ color: TOKENS.colors.textSecondary, fontSize: '14px', lineHeight: '20px', textShadow: '0 1px 2px rgba(0,0,0,0.4)', fontWeight: 400, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>{globalSummary}</span>
             <div className="relative">
               <button onMouseEnter={() => setShowEquilibriumTip(true)} onMouseLeave={() => setShowEquilibriumTip(false)} className="p-1.5 rounded-lg hover:bg-white/10 transition-colors" style={{ minWidth: '32px', minHeight: '32px' }} aria-label="Equilibrium info"><Info className="w-4 h-4" style={{ color: TOKENS.colors.textTertiary }} /></button>
               <AnimatePresence>
-                {showEquilibriumTip && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 0.80 }} exit={{ opacity: 0 }} transition={{ duration: 0.18, ease: TOKENS.HORIZON.easingApple }} className="absolute bottom-full right-0 mb-2 p-3 rounded-lg" style={{ background: TOKENS.HORIZON.glassBg, backdropFilter: getBlur('chip'), WebkitBackdropFilter: getBlur('chip'), border: `1px solid ${TOKENS.HORIZON.glassBorder}`, boxShadow: TOKENS.HORIZON.panelShadow, width: '240px', pointerEvents: 'none' }}><p style={{ fontSize: '12px', lineHeight: '1.5', color: TOKENS.colors.textSecondary, fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Real-time equilibrium state showing the balance and lean of macro forces.</p></motion.div>}
+                {showEquilibriumTip && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 0.80 }} exit={{ opacity: 0 }} transition={{ duration: 0.18, ease: TOKENS.HORIZON.easingApple }} className="absolute bottom-full right-0 mb-2 p-3 rounded-lg" style={{ background: TOKENS.HORIZON.glassBg, backdropFilter: getBlur('chip'), WebkitBackdropFilter: getBlur('chip'), border: `1px solid ${TOKENS.HORIZON.glassBorder}`, boxShadow: TOKENS.HORIZON.panelShadow, width: '240px', pointerEvents: 'none' }}><p style={{ fontSize: '12px', lineHeight: '1.5', color: TOKENS.colors.textSecondary, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Real-time equilibrium state showing the balance and lean of macro forces.</p></motion.div>}
               </AnimatePresence>
             </div>
           </div>
@@ -1328,17 +1332,16 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       </div>
 
       <div className="flex justify-center" style={{ marginTop: '10px' }}>
-        <p style={{ fontSize: '9px', fontWeight: 400, color: TOKENS.colors.textTertiary, opacity: 0.55, fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Data via Lyra models</p>
+        <p style={{ fontSize: '9px', fontWeight: 400, color: TOKENS.colors.textTertiary, opacity: 0.55, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Data via Lyra models</p>
       </div>
 
-      {/* OS HORIZON BACKDROP - INHALE/EXHALE BREATHING */}
       <AnimatePresence>
         {selectedDomain && (
           <motion.div
             className="fixed inset-0 z-40 drawer-overlay"
             style={{ 
-              background: 'rgba(6,8,13,0.25)', // Reduced from 0.70 - maintain visible context
-              backdropFilter: 'blur(0px) brightness(1)', // Start state
+              background: 'rgba(6,8,13,0.25)',
+              backdropFilter: 'blur(0px) brightness(1)',
               WebkitBackdropFilter: 'blur(0px) brightness(1)',
               pointerEvents: 'none' 
             }}
@@ -1349,21 +1352,21 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             }}
             animate={{ 
               opacity: 1,
-              backdropFilter: 'blur(12px) brightness(0.97)', // +8% blur, -3% brightness
+              backdropFilter: 'blur(12px) brightness(0.97)',
               WebkitBackdropFilter: 'blur(12px) brightness(0.97)',
               transition: {
-                opacity: { duration: 0.1, ease: 'easeOut' }, // Pre-stage 100ms
+                opacity: { duration: 0.1, ease: 'easeOut' },
                 backdropFilter: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] },
                 WebkitBackdropFilter: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }
               }
             }}
             exit={{ 
               opacity: 0,
-              backdropFilter: 'blur(0px) brightness(1)', // Restore
+              backdropFilter: 'blur(0px) brightness(1)',
               WebkitBackdropFilter: 'blur(0px) brightness(1)',
               transition: {
-                opacity: { duration: 0.25, ease: 'easeInOut' }, // Fade-back 250ms
-                backdropFilter: { duration: 0.15, delay: 0.25, ease: 'easeOut' }, // Background restore 150ms after fade
+                opacity: { duration: 0.25, ease: 'easeInOut' },
+                backdropFilter: { duration: 0.15, delay: 0.25, ease: 'easeOut' },
                 WebkitBackdropFilter: { duration: 0.15, delay: 0.25, ease: 'easeOut' }
               }
             }}
@@ -1372,7 +1375,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         )}
       </AnimatePresence>
 
-      {/* OS HORIZON DRAWER - INHALE/EXHALE MOTION */}
       <AnimatePresence>
         {selectedDomain && !isSwitchingNode && drawerOrigin && (
           <motion.div
@@ -1558,14 +1560,14 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       fontSize: '17px', 
                       fontWeight: 600, 
                       lineHeight: '1.3', 
-                      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif', 
+                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif', 
                       marginBottom: '8px' 
                     }}>
                       {selectedDomain.id.charAt(0).toUpperCase() + selectedDomain.id.slice(1)} Markets
                     </h3>
                     <div className="flex items-center gap-2">
                       {getPostureIcon(selectedDomain.posture)}
-                      <span style={{ color: getDomainText(selectedDomain.id), fontSize: '14px', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif', fontWeight: 500 }}>
+                      <span style={{ color: getDomainText(selectedDomain.id), fontSize: '14px', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif', fontWeight: 500 }}>
                         {selectedDomain.posture.charAt(0).toUpperCase() + selectedDomain.posture.slice(1)} Momentum
                       </span>
                     </div>
@@ -1820,7 +1822,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     lineHeight: '1.6', 
                     fontWeight: 400, 
                     marginTop: '10px', 
-                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' 
+                    fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' 
                   }}
                 >
                   {getSoWhatInterpretation(selectedDomain)}
@@ -1882,8 +1884,136 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           to { opacity: 0; transform: scale(2); }
         }
         
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        
+        :root {
+          --z-app: 10;
+          --z-popover: 40;
+          --z-tooltip: 45;
+          --z-modal: 50;
+          --z-toast: 60;
+          --z-devtools: 70;
+          --header-h: 72px;
+          --bg: #0B0E13;
+          --card: rgba(18, 20, 28, 0.65);
+          --border: #2C2F36;
+          --shadow: rgba(0, 0, 0, 0.45);
+          --text-primary: #F3F5F7;
+          --text-secondary: #B6BDCB;
+          --text-tertiary: #7E8798;
+          --muted: #5B6170;
+          --accent: #4DA3FF;
+          --bull: #58E3A4;
+          --bear: #FF6A7A;
+          --neutral: #A8B3C7;
+          --chart-bg: #0F1115;
+          --chart-grid: #242833;
+          --chart-text: #B6BDCB;
+          --scrim: rgba(0, 0, 0, 0.55);
+        }
+        
+        html:not(.transitions-enabled) * {
+          transition: none !important;
+        }
+        
+        html.transitions-enabled * {
+          transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, opacity 200ms ease, transform 200ms ease, box-shadow 200ms ease !important;
+        }
+        
+        html { background-color: #0B0E13; }
+        
+        #equilibrium-overlay-root { /* Targeting the portal root div */
+          position: fixed;
+          inset: 0;
+          pointer-events: none; /* Allow clicks to pass through by default */
+          z-index: 9999; /* High z-index */
+          overflow: hidden;
+        }
+        
+        #equilibrium-overlay-root > div { /* Targeting the actual motion.div of HoverCardPortal */
+          pointer-events: auto; /* Re-enable pointer events for the card itself */
+        }
+
+        .vireon-portal-container {
+          position: relative;
+          z-index: var(--z-modal);
+        }
+        
+        .drawer-overlay {
+          position: fixed;
+          inset: 0;
+          z-index: var(--z-modal);
+          background: rgba(0, 0, 0, 0.5);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+        }
+        
+        .drawer-panel {
+          position: fixed;
+          z-index: calc(var(--z-modal) + 1);
+          background: rgba(18, 20, 25, 0.95);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+          overscroll-behavior: contain;
+        }
+        
+        body.drawer-open {
+          overflow: hidden;
+          position: fixed;
+          width: 100%;
+        }
+        
+        * {
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+
         @media (prefers-reduced-motion: reduce) {
-          *, *::before, *::after { animation: none !important; transition: none !important; }
+          *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            transform: none !important;
+          }
+        }
+
+        *:focus-visible {
+          outline: 2px solid var(--accent);
+          outline-offset: 2px;
+          z-index: calc(var(--z-modal) + 2);
+        }
+
+        @media (prefers-contrast: high) {
+          * {
+            border-color: currentColor !important;
+          }
+        }
+
+        ::-webkit-scrollbar { 
+          width: 6px; 
+        }
+        ::-webkit-scrollbar-track { 
+          background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb {
+          background: var(--muted);
+          border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background: var(--text-tertiary);
+        }
+
+        @supports (padding: max(0px)) {
+          .drawer-panel-bottom {
+            padding-bottom: max(env(safe-area-inset-bottom), 16px);
+          }
+          
+          .drawer-panel-top {
+            top: max(var(--header-h), env(safe-area-inset-top));
+          }
         }
 
         .orb-nucleus {
@@ -1914,14 +2044,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         .orb-halo, .link-path, .glow-overlay, .panel-glass, .drawer-overlay {
           pointer-events: none !important;
         }
-
-        @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-          .drawer-header-blur-extension {
-            background: rgba(10,15,22,0.85) !important;
-          }
+        .grid-wrapper { /* Ensure grid-wrapper itself doesn't block portal events */
+          pointer-events: all;
         }
-
-        * { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif; }
+        /* Orb nucleus already has pointer-events: auto in its style attr, which is good. */
       `}</style>
     </motion.section>
   );
