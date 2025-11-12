@@ -1,7 +1,7 @@
 
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
-import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLeft, ChevronRight, BarChart3, DollarSign, Activity } from 'lucide-react';
+import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLeft, ChevronRight, BarChart3, DollarSign, Activity, Sparkles } from 'lucide-react';
 import LyraLogo from '../core/LyraLogo';
 import { createPortal } from 'react-dom';
 
@@ -938,10 +938,20 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   }, [domains]);
 
   const balanceBias = useMemo(() => {
-    if (dominantDriver === "balanced") return 0;
+    if (dominantDriver === "balanced") return 0.5; // Centered for balanced
     const dominant = domains.find(d => d.id === dominantDriver);
-    return dominant ? Math.min(dominant.strength * 1.2, 1) : 0;
+    // Scale balanceBias from 0.0 to 1.0 based on strength relative to 0.5-1.0 range
+    // If dominant strength is 0.65, bias is 0. If strength is 1.0, bias is 1.
+    // If it's a rates or fx, it leans left (0-0.5), if growth or geopolitics, it leans right (0.5-1)
+    const normalizedStrength = Math.min(Math.max((dominant.strength - 0.5) / (1.0 - 0.5), 0), 1); // 0 to 1
+    
+    if (dominant.id === "rates" || dominant.id === "fx") {
+      return 0.5 - (normalizedStrength * 0.5); // 0.5 down to 0
+    } else { // growth, geopolitics
+      return 0.5 + (normalizedStrength * 0.5); // 0.5 up to 1
+    }
   }, [dominantDriver, domains]);
+
 
   const globalSummary = useMemo(() => {
     const rates = domains.find(d => d.id === "rates");
@@ -950,10 +960,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     const geo = domains.find(d => d.id === "geopolitics");
 
     if (dominantDriver === "balanced") {
-      return `Equilibrium Balanced — Rates ${rates.posture}; FX ${fx.posture}; Growth ${growth.posture}; Geopolitics ${geo.posture}.`;
+      return `Market forces in near-perfect balance; tactical opportunities across sectors.`;
     }
 
-    return `Equilibrium leaning toward ${dominantDriver.charAt(0).toUpperCase() + dominantDriver.slice(1)}.`;
+    const dominant = domains.find(d => d.id === dominantDriver);
+    return `${dominantDriver.charAt(0).toUpperCase() + dominantDriver.slice(1)} dynamics are pulling the market with ${Math.round(dominant.strength * 100)}% conviction.`;
   }, [domains, dominantDriver]);
 
   const balanceAngle = useMemo(() => dominantDriver === "balanced" ? 0 : ANGLES[dominantDriver] || 0, [dominantDriver]);
@@ -980,7 +991,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
   const nucleusOffset = useMemo(() => {
     const angleRad = (balanceAngle * Math.PI) / 180;
-    const offsetMagnitude = balanceBias * 12;
+    const offsetMagnitude = (balanceBias - 0.5) * 2 * 12; // Adjusted for new bias range 0-1
     return { x: Math.sin(angleRad) * offsetMagnitude, y: -Math.cos(angleRad) * offsetMagnitude };
   }, [balanceAngle, balanceBias]);
 
@@ -1413,7 +1424,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     };
   }, [selectedDomain, drawerOrigin]);
 
-  const balanceIndicatorLeft = 10 + (balanceBias * 80);
+  const balanceIndicatorLeft = balanceBias * 100;
   const balanceIndicatorColor = dominantDriver === 'balanced' ? 'rgba(255,255,255,0.7)' : getDomainColor(dominantDriver);
   const balanceIndicatorShadow = dominantDriver === 'balanced' ? 'rgba(255,255,255,0.5)' : getDomainBloom(dominantDriver);
 
@@ -1652,38 +1663,322 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           })}
         </motion.div>
 
-        <div ref={footerRef} onMouseEnter={() => setIsStatusBarHovered(true)} onMouseLeave={() => setIsStatusBarHovered(false)} style={{ position: 'absolute', left: '14%', right: '14%', bottom: '32px', height: `${footerH}px`, borderRadius: '20px', padding: '16px 18px', display: 'flex', alignItems: 'center', gap: '14px', backdropFilter: getBlur('chip'), WebkitBackdropFilter: getBlur('chip'), background: TOKENS.HORIZON.glassBg, border: `1px solid ${TOKENS.HORIZON.glassBorder}`, boxShadow: `${TOKENS.HORIZON.panelShadow}, inset 0 0 2px rgba(106,199,247,0.12)`, zIndex: 1, cursor: 'pointer', transition: 'filter 200ms cubic-bezier(0.4,0,0.2,1)', filter: isStatusBarHovered ? 'brightness(1.08)' : 'brightness(1)', pointerEvents: 'auto' }}>
-          <div style={{ width: '160px', position: 'relative' }}>
-            <div style={{ height: '2px', borderRadius: '999px', position: 'relative', overflow: 'hidden', background: 'linear-gradient(90deg, rgba(106,199,247,0.3), rgba(180,247,192,0.3), rgba(255,211,122,0.3))' }}>
-              {!shouldReduceMotion && <motion.div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%)', width: '100%' }} animate={{ x: ['-100%', '100%'] }} transition={{ duration: TOKENS.HORIZON.t_sweep, repeat: Infinity, ease: 'linear' }} />}
-              <div style={{ position: 'absolute', bottom: '-8px', left: 0, right: 0, height: '8px', background: 'linear-gradient(90deg, rgba(106,199,247,0.15), rgba(180,247,192,0.15), rgba(255,255,255,0.15))', filter: 'blur(8px)', opacity: 0.15 }} />
-              <motion.div 
-                style={{ 
-                  position: 'absolute', 
-                  top: '50%', 
-                  width: '10px', 
-                  height: '10px', 
-                  borderRadius: '999px', 
-                  background: balanceIndicatorColor,
-                  boxShadow: `0 0 20px ${balanceIndicatorShadow}, 0 0 8px rgba(255,255,255,0.3)`, 
-                  transform: 'translate(-50%, -50%)', 
-                  border: '1px solid rgba(255,255,255,0.3)' 
-                }} 
-                animate={{ left: `${balanceIndicatorLeft}%` }} 
-                transition={{ duration: 0.8, ease: TOKENS.HORIZON.overshoot }} 
-              />
-            </div>
-          </div>
-          <div className="flex-1 flex items-center gap-3">
-            <span style={{ color: TOKENS.colors.textSecondary, fontSize: '14px', lineHeight: '20px', textShadow: '0 1px 2px rgba(0,0,0,0.4)', fontWeight: 400, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>{globalSummary}</span>
-            <div className="relative">
-              <button onMouseEnter={() => setShowEquilibriumTip(true)} onMouseLeave={() => setShowEquilibriumTip(false)} className="p-1.5 rounded-lg hover:bg-white/10 transition-colors" style={{ minWidth: '32px', minHeight: '32px' }} aria-label="Equilibrium info"><Info className="w-4 h-4" style={{ color: TOKENS.colors.textTertiary }} /></button>
-              <AnimatePresence>
-                {showEquilibriumTip && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 0.80 }} exit={{ opacity: 0 }} transition={{ duration: 0.18, ease: TOKENS.HORIZON.easingApple }} className="absolute bottom-full right-0 mb-2 p-3 rounded-lg" style={{ background: TOKENS.HORIZON.glassBg, backdropFilter: getBlur('chip'), WebkitBackdropFilter: getBlur('chip'), border: `1px solid ${TOKENS.HORIZON.glassBorder}`, boxShadow: TOKENS.HORIZON.panelShadow, width: '240px', pointerEvents: 'none' }}><p style={{ fontSize: '12px', lineHeight: '1.5', color: TOKENS.colors.textSecondary, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Real-time equilibrium state showing the balance and lean of macro forces.</p></motion.div>}
+        {/* EQUILIBRIUM PULSE BAR — OS HORIZON UPGRADE */}
+        <motion.div 
+          ref={footerRef} 
+          onMouseEnter={() => setIsStatusBarHovered(true)} 
+          onMouseLeave={() => setIsStatusBarHovered(false)}
+          className="equilibrium-pulse-bar group"
+          style={{ 
+            position: 'absolute', 
+            left: '14%', 
+            right: '14%', 
+            bottom: '32px', 
+            height: `${footerH}px`, 
+            borderRadius: '16px', 
+            padding: '16px 20px', 
+            display: 'flex', 
+            flexDirection: 'column',
+            gap: '12px',
+            backdropFilter: 'blur(24px) saturate(165%)',
+            WebkitBackdropFilter: 'blur(24px) saturate(165%)',
+            background: 'rgba(20, 24, 29, 0.35)', 
+            border: `1px solid rgba(255,255,255,0.08)`, 
+            boxShadow: `inset 0 2px 12px rgba(0, 0, 0, 0.45), 0 8px 32px rgba(0, 0, 0, 0.25)`,
+            zIndex: 1, 
+            cursor: 'pointer', 
+            pointerEvents: 'auto',
+            willChange: 'filter, transform'
+          }}
+          whileHover={{
+            filter: 'brightness(1.04)',
+            transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }
+          }}
+          whileTap={{
+            scale: 0.995,
+            transition: { duration: 0.1, ease: 'easeOut' }
+          }}
+        >
+          {/* Top rim highlight */}
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: '20px',
+            right: '20px',
+            height: '1px',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+            borderRadius: '999px',
+            pointerEvents: 'none'
+          }} />
+
+          {/* Header: Title + Info Icon */}
+          <div className="flex items-center justify-between">
+            <motion.h4 
+              style={{
+                fontSize: '14px',
+                fontWeight: 600,
+                letterSpacing: '-0.01em',
+                color: TOKENS.colors.textPrimary,
+                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
+              }}
+              animate={{
+                color: dominantDriver === 'balanced' 
+                  ? TOKENS.colors.textPrimary 
+                  : getDomainText(dominantDriver)
+              }}
+              transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+            >
+              Global Equilibrium: <span style={{ opacity: 0.85 }}>
+                {dominantDriver === 'balanced' ? 'Balanced' : 
+                  `${dominantDriver.charAt(0).toUpperCase() + dominantDriver.slice(1)} Bias`}
+              </span>
+            </motion.h4>
+
+            {/* Info Icon with Hover Transform */}
+            <motion.div
+              className="flex items-center gap-2 overflow-hidden"
+              style={{ height: '20px' }}
+            >
+              <AnimatePresence mode="wait">
+                {!isStatusBarHovered ? (
+                  <motion.div
+                    key="info-icon"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 10 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    <Info className="w-4 h-4" style={{ color: TOKENS.colors.textTertiary }} />
+                  </motion.div>
+                ) : (
+                  <motion.span
+                    key="info-text"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 10 }}
+                    transition={{ duration: 0.15 }}
+                    style={{
+                      fontSize: '13px',
+                      fontWeight: 500,
+                      color: 'rgba(90, 160, 255, 0.95)',
+                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
+                      whiteSpace: 'nowrap',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                  >
+                    View Lyra Insight
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </motion.span>
+                )}
               </AnimatePresence>
-            </div>
+            </motion.div>
           </div>
-        </div>
+
+          {/* Equilibrium Line Visualization */}
+          <div style={{ 
+            width: '88%', 
+            margin: '0 auto',
+            position: 'relative',
+            height: '3px'
+          }}>
+            {/* Gradient base line */}
+            <motion.div 
+              style={{ 
+                height: '3px', 
+                borderRadius: '999px',
+                position: 'relative',
+                overflow: 'hidden',
+                background: 'linear-gradient(90deg, #3CA9FF 0%, #C9B46B 45%, #FFBF4D 100%)',
+                boxShadow: '0 2px 8px rgba(60, 169, 255, 0.15)'
+              }}
+              animate={{
+                scaleX: [1, 1.02, 1],
+                opacity: [0.9, 1, 0.9]
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: [0.4, 0, 0.2, 1]
+              }}
+            >
+              {/* Traveling shimmer */}
+              {!shouldReduceMotion && (
+                <motion.div 
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)',
+                    width: '100%'
+                  }}
+                  animate={{
+                    x: ['-100%', '200%']
+                  }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: 'linear',
+                    repeatDelay: 1
+                  }}
+                />
+              )}
+            </motion.div>
+
+            {/* Glow beneath line */}
+            <div style={{
+              position: 'absolute',
+              bottom: '-6px',
+              left: 0,
+              right: 0,
+              height: '6px',
+              background: 'linear-gradient(90deg, rgba(60,169,255,0.15), rgba(255,191,77,0.15))',
+              filter: 'blur(6px)',
+              opacity: 0.6
+            }} />
+
+            {/* Balance indicator marker */}
+            <motion.div 
+              style={{ 
+                position: 'absolute', 
+                top: '50%', 
+                width: '10px', 
+                height: '10px', 
+                borderRadius: '999px', 
+                background: dominantDriver === 'balanced' 
+                  ? 'rgba(60, 169, 255, 0.95)' 
+                  : balanceBias > 0.6 
+                    ? 'rgba(255, 191, 77, 0.95)'
+                    : 'rgba(201, 180, 107, 0.95)',
+                boxShadow: dominantDriver === 'balanced'
+                  ? '0 0 16px rgba(60, 169, 255, 0.6), 0 0 4px rgba(255,255,255,0.4)'
+                  : '0 0 16px rgba(255, 191, 77, 0.6), 0 0 4px rgba(255,255,255,0.4)', 
+                transform: 'translate(-50%, -50%)', 
+                border: '1.5px solid rgba(255,255,255,0.4)',
+                zIndex: 2
+              }} 
+              animate={{ 
+                left: `${balanceIndicatorLeft}%`,
+                scale: isStatusBarHovered ? [1, 1.15, 1] : 1
+              }} 
+              transition={{ 
+                left: { duration: 0.8, ease: TOKENS.HORIZON.overshoot },
+                scale: { duration: 0.4, ease: 'easeInOut' }
+              }} 
+            />
+          </div>
+
+          {/* Subtitle: Directional Summary */}
+          <motion.p
+            style={{
+              fontSize: '13px',
+              lineHeight: '1.5',
+              color: TOKENS.colors.textSecondary,
+              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
+              fontWeight: 400,
+              textAlign: 'center',
+              opacity: 0.88
+            }}
+            animate={{
+              opacity: isStatusBarHovered ? 1 : 0.88
+            }}
+            transition={{ duration: 0.2 }}
+          >
+            {globalSummary}
+          </motion.p>
+
+          {/* Hover Tooltip */}
+          <AnimatePresence>
+            {isStatusBarHovered && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 5, scale: 0.97 }}
+                transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+                style={{
+                  position: 'absolute',
+                  bottom: 'calc(100% + 12px)',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  maxWidth: '420px',
+                  padding: '12px 16px',
+                  borderRadius: '14px',
+                  backdropFilter: 'blur(20px) saturate(180%)',
+                  WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                  background: 'rgba(15, 18, 23, 0.92)',
+                  border: '1px solid rgba(255,255,255,0.10)',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.08)',
+                  pointerEvents: 'none',
+                  zIndex: 10
+                }}
+              >
+                <div className="flex items-start gap-3">
+                  <div 
+                    className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{
+                      background: 'rgba(106, 199, 247, 0.15)',
+                      border: '1px solid rgba(106, 199, 247, 0.3)'
+                    }}
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+                  </div>
+                  <div className="flex-1">
+                    <p style={{
+                      fontSize: '12px',
+                      lineHeight: '1.6',
+                      color: 'rgba(180, 200, 230, 0.95)',
+                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
+                      fontWeight: 400,
+                      marginBottom: '6px'
+                    }}>
+                      <span style={{ fontWeight: 600, color: 'rgba(255, 255, 255, 0.95)' }}>
+                        Lyra Insight:
+                      </span>
+                      {' '}
+                      {dominantDriver === 'balanced' 
+                        ? "Market forces are in near-perfect balance—no single macro theme dominating. This creates tactical opportunities across sectors."
+                        : `${dominantDriver.charAt(0).toUpperCase() + dominantDriver.slice(1)} dynamics are pulling the market with ${Math.round(domains.find(d => d.id === dominantDriver).strength * 100)}% conviction. Watch for cross-asset spillovers and positioning shifts.`
+                      }
+                    </p>
+                    <div style={{
+                      fontSize: '11px',
+                      color: 'rgba(106, 199, 247, 0.75)',
+                      fontWeight: 500,
+                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                    }}>
+                      Click for detailed node analysis →
+                    </div>
+                  </div>
+                </div>
+
+                {/* Tooltip arrow */}
+                <div style={{
+                  position: 'absolute',
+                  bottom: '-6px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: 0,
+                  height: 0,
+                  borderLeft: '8px solid transparent',
+                  borderRight: '8px solid transparent',
+                  borderTop: '8px solid rgba(255,255,255,0.10)'
+                }} />
+                <div style={{
+                  position: 'absolute',
+                  bottom: '-5px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: 0,
+                  height: 0,
+                  borderLeft: '7px solid transparent',
+                  borderRight: '7px solid transparent',
+                  borderTop: '7px solid rgba(15, 18, 23, 0.92)'
+                }} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+
       </div>
 
       <div className="flex justify-center" style={{ marginTop: '10px' }}>
