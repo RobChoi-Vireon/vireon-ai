@@ -89,56 +89,133 @@ const RADII = { rates: 0.35, fx: 0.39, growth: 0.37, geopolitics: 0.32 };
 
 const MOCK_DOMAINS = [
   { 
-    id: "rates", 
-    posture: "hawkish", 
-    confidence_pct: 78, 
+    id: "rates",
+    title: "Rates Markets",
+    posture: "hawkish",
+    trend: "Hawkish Momentum",
+    confidence_pct: 78,
     strength: 0.82,
-    summary: "Fed holds firm amid sticky services inflation; terminal rate expectations drift higher.",
+    confidence_label: "High certainty",
+    summary: "Policy tone remains hawkish as sticky services inflation persists; terminal-rate expectations drift higher.",
     insight: "Yields steady — credit markets adjusting to new baseline.",
-    ripple: ["Credit spreads widen", "Tech multiples compress", "EM funding costs rise"], 
-    addendum: null,
+    downstream_effects: [
+      { title: "Credit spreads widen", tags: ["Credit", "HY", "IG"], link: "/credit" },
+      { title: "Tech multiples compress", tags: ["Tech", "Large-cap growth"], link: "/equities/tech" },
+      { title: "EM funding costs rise", tags: ["EM debt", "FX funding"], link: "/em" }
+    ],
+    actionable: {
+      horizon: "1–3 months",
+      conviction: "High",
+      directives: [
+        "Tilt: shorten duration; keep rate-sensitive equity underweight.",
+        "Hedge: add payer swaptions; receive USD carry vs EM FX."
+      ]
+    },
+    footer: {
+      primary_cta: { label: "View market implications", route: "/implications/rates" },
+      secondary_link: { label: "Open timeline", route: "/timeline/rates" },
+      timestamp: new Date().toISOString()
+    },
     last_updated_iso: new Date().toISOString(),
     sparkline: [0.72, 0.74, 0.76, 0.75, 0.78, 0.80, 0.79, 0.81, 0.82],
-    confidenceDelta: 2 
+    confidenceDelta: 2
   },
   { 
-    id: "fx", 
-    posture: "stable", 
-    confidence_pct: 65, 
+    id: "fx",
+    title: "FX Markets",
+    posture: "stable",
+    trend: "Stable Momentum",
+    confidence_pct: 65,
     strength: 0.58,
-    summary: "Carry trades unwind as global rates converge and risk appetite cools.",
+    confidence_label: "Moderate confidence",
+    summary: "Carry trades unwind as global rates converge; capital flows stabilize with cooling risk appetite.",
     insight: "Capital flows stabilizing; global risk appetite cooling.",
-    ripple: ["EM currencies stabilize", "Energy imports neutral", "Bond yields compressed"],
+    downstream_effects: [
+      { title: "EM currencies stabilize", tags: ["FX", "EM", "Volatility"], link: "/fx/em" },
+      { title: "Energy imports neutral", tags: ["Commodities", "Trade"], link: "/commodities" },
+      { title: "Bond yields compressed", tags: ["Fixed Income", "Rates"], link: "/bonds" }
+    ],
+    actionable: {
+      horizon: "2–4 weeks",
+      conviction: "Medium",
+      directives: [
+        "Monitor: yield-curve divergence for carry trade shifts.",
+        "Position: favor domestic exposure until volatility returns."
+      ]
+    },
+    footer: {
+      primary_cta: { label: "View FX analytics", route: "/fx/dashboard" },
+      secondary_link: { label: "Currency tracker", route: "/fx/tracker" },
+      timestamp: new Date().toISOString()
+    },
     addendum: "Next 48h: FX likely stable; carry re-risk limited unless yields diverge.",
     last_updated_iso: new Date().toISOString(),
     sparkline: [0.60, 0.59, 0.58, 0.57, 0.58, 0.59, 0.58, 0.57, 0.58],
-    confidenceDelta: -3 
+    confidenceDelta: -3
   },
   { 
-    id: "growth", 
-    posture: "softening", 
-    confidence_pct: 71, 
+    id: "growth",
+    title: "Growth Markets",
+    posture: "softening",
+    trend: "Softening Momentum",
+    confidence_pct: 71,
     strength: 0.68,
-    summary: "China deceleration dampens global demand; US resilience persists but moderates.",
+    confidence_label: "Moderate confidence",
+    summary: "China deceleration dampens global demand; US resilience persists but moderates across sectors.",
     insight: "Rotation toward defensive assets underway as markets rebalance.",
-    ripple: ["Commodity prices soften", "Defensive rotation starts", "Services remain steady"], 
-    addendum: null,
+    downstream_effects: [
+      { title: "Commodity prices soften", tags: ["Commodities", "Energy", "Materials"], link: "/commodities" },
+      { title: "Defensive rotation starts", tags: ["Equities", "Defensive", "Utilities"], link: "/equities/defensive" },
+      { title: "Services remain steady", tags: ["Services", "Labor", "Domestic"], link: "/sectors/services" }
+    ],
+    actionable: {
+      horizon: "1–2 weeks",
+      conviction: "High",
+      directives: [
+        "Rotate: favor defensive and pricing-power names.",
+        "Monitor: commodities for further softening signals."
+      ]
+    },
+    footer: {
+      primary_cta: { label: "Growth outlook", route: "/growth/outlook" },
+      secondary_link: { label: "Sector rotation", route: "/sectors" },
+      timestamp: new Date().toISOString()
+    },
     last_updated_iso: new Date().toISOString(),
     sparkline: [0.75, 0.74, 0.72, 0.70, 0.69, 0.68, 0.67, 0.68, 0.68],
-    confidenceDelta: -1 
+    confidenceDelta: -1
   },
   { 
-    id: "geopolitics", 
-    posture: "tightening", 
-    confidence_pct: 58, 
+    id: "geopolitics",
+    title: "Geopolitics Markets",
+    posture: "tightening",
+    trend: "Tightening Momentum",
+    confidence_pct: 58,
     strength: 0.72,
-    summary: "Trade fragmentation reshapes supply chains; energy security concerns elevate.",
+    confidence_label: "Cautious read",
+    summary: "Trade fragmentation reshapes supply chains; energy security concerns elevate regional tensions.",
     insight: "Policy tensions rising — volatility expanding in select regions.",
-    ripple: ["Energy premium elevated", "Onshoring accelerates", "Regional blocs solidify"], 
-    addendum: null,
+    downstream_effects: [
+      { title: "Energy premium elevated", tags: ["Energy", "Oil", "Gas"], link: "/energy" },
+      { title: "Onshoring accelerates", tags: ["Industrials", "Supply Chain", "Domestic"], link: "/industrials" },
+      { title: "Regional blocs solidify", tags: ["Geopolitics", "Trade", "Policy"], link: "/geopolitics" }
+    ],
+    actionable: {
+      horizon: "3–6 months",
+      conviction: "Medium",
+      directives: [
+        "Hedge: prioritize domestic resilience and energy exposure.",
+        "Diversify: reduce single-region concentration risk."
+      ]
+    },
+    footer: {
+      primary_cta: { label: "Risk analysis", route: "/geopolitics/risk" },
+      secondary_link: { label: "Supply chain tracker", route: "/supply-chain" },
+      timestamp: new Date().toISOString()
+    },
     last_updated_iso: new Date().toISOString(),
     sparkline: [0.65, 0.66, 0.68, 0.70, 0.71, 0.72, 0.71, 0.72, 0.72],
-    confidenceDelta: 4 
+    confidenceDelta: 4
   }
 ];
 
@@ -258,7 +335,6 @@ const HoverCardPortal = ({
   getDomainIcon, 
   getDomainText,
   getPostureIcon,
-  getConfidenceStrength,
   shouldReduceMotion
 }) => {
   const portalRoot = usePortalRoot();
@@ -460,7 +536,7 @@ const HoverCardPortal = ({
               fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
             }}
           >
-            {domain.id.charAt(0).toUpperCase() + domain.id.slice(1)} Markets
+            {domain.title}
           </motion.h4>
         </div>
 
@@ -483,7 +559,7 @@ const HoverCardPortal = ({
             fontWeight: 500,
             fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
           }}>
-            {domain.posture.charAt(0).toUpperCase() + domain.posture.slice(1)} Momentum
+            {domain.trend}
           </span>
         </motion.div>
 
@@ -609,7 +685,7 @@ const HoverCardPortal = ({
               fontWeight: 600,
               letterSpacing: '-0.01em'
             }}>
-              {domain.confidence_pct}% • {getConfidenceStrength(domain.confidence_pct)}
+              {domain.confidence_pct}% • {domain.confidence_label}
             </div>
           </div>
         </motion.div>
@@ -904,7 +980,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       return `Market forces in near-perfect balance; tactical opportunities across sectors.`;
     }
     const dominant = domains.find(d => d.id === dominantDriver);
-    return `${dominantDriver.charAt(0).toUpperCase() + dominantDriver.slice(1)} dynamics are pulling the market with ${Math.round(dominant.strength * 100)}% conviction.`;
+    return `${dominant.title} dynamics are pulling the market with ${Math.round(dominant.strength * 100)}% conviction.`;
   }, [domains, dominantDriver]);
 
   const balanceAngle = useMemo(() => dominantDriver === "balanced" ? 0 : ANGLES[dominantDriver] || 0, [dominantDriver]);
@@ -988,34 +1064,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   };
 
   const getBlur = useCallback((type) => isLowPower ? (type === 'panel' ? 'blur(16px)' : 'blur(12px)') : (type === 'panel' ? 'blur(20px)' : 'blur(16px)'), [isLowPower]);
-
-  const getConfidenceStrength = useCallback((confidence_pct) => {
-    if (confidence_pct >= 75) return "High Signal Strength";
-    if (confidence_pct >= 65) return "Moderate Strength";
-    if (confidence_pct >= 55) return "Emerging Signal";
-    return "Weak Signal";
-  }, []);
-
-  const getConfidenceDescriptor = useCallback((confidence_pct) => {
-    if (confidence_pct >= 75) return "High certainty";
-    if (confidence_pct >= 65) return "Moderate confidence";
-    if (confidence_pct >= 55) return "Cautious read";
-    return "Emerging signal";
-  }, []);
-
-  const getActionableSignal = useCallback((domain) => ({
-    rates: "Defensive rotation likely; monitor tech multiples for compression signals.",
-    fx: "Limited near-term FX risk; watch yield-curve divergence for carry trade shifts.",
-    growth: "Defensive rotation likely within 48 h; monitor commodities for further softening.",
-    geopolitics: "Regional supply-chain hedges warranted; elevated energy exposure continues."
-  }[domain.id] || "Monitor for emerging cross-domain shifts."), []);
-
-  const getSoWhatInterpretation = useCallback((domain) => ({
-    rates: "So what: Long-duration positioning at risk; favor defensive rotation until data stabilizes.",
-    fx: "So what: Carry positions re-enter range; favor domestic exposure until vol returns.",
-    growth: "So what: Favor defensive and pricing-power names amid margin compression.",
-    geopolitics: "So what: Prioritize domestic resilience and energy hedges for portfolio stability."
-  }[domain.id] || "Monitor for shifts in macro equilibrium dynamics."), []);
 
   // FLICKER-PROOF HOVER HANDLERS — Atomic state updates + grace zone
   const handleDomainHoverEnter = useCallback((domain, event) => {
@@ -1551,7 +1599,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   getDomainIcon={getDomainIcon}
                   getDomainText={getDomainText}
                   getPostureIcon={getPostureIcon}
-                  getConfidenceStrength={getConfidenceStrength}
                   shouldReduceMotion={shouldReduceMotion}
                 />
               );
@@ -1638,7 +1685,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             >
               Global Equilibrium: <span style={{ opacity: 0.85 }}>
                 {dominantDriver === 'balanced' ? 'Balanced' : 
-                  `${dominantDriver.charAt(0).toUpperCase() + dominantDriver.slice(1)} Bias`}
+                  `${domains.find(d => d.id === dominantDriver).title.split(' ')[0]} Bias`}
               </span>
             </motion.h4>
 
@@ -1845,7 +1892,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       {' '}
                       {dominantDriver === 'balanced' 
                         ? "Market forces are in near-perfect balance—no single macro theme dominating. This creates tactical opportunities across sectors. "
-                        : `${dominantDriver.charAt(0).toUpperCase() + dominantDriver.slice(1)} dynamics are pulling the market with ${Math.round(domains.find(d => d.id === dominantDriver).strength * 100)}% conviction. Watch for cross-asset spillovers and positioning shifts.`
+                        : `${domains.find(d => d.id === dominantDriver).title} dynamics are pulling the market with ${Math.round(domains.find(d => d.id === dominantDriver).strength * 100)}% conviction. Watch for cross-asset spillovers and positioning shifts.`
                       }
                     </p>
                     <div style={{
@@ -1914,8 +1961,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               WebkitBackdropFilter: 'blur(12px) brightness(0.97)',
               transition: {
                 opacity: { duration: 0.1, ease: 'easeOut' },
-                backdropFilter: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] },
-                WebkitBackdropFilter: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }
+                backdropFilter: { duration: 0.5, ease: MOTION_TOKENS.CURVES.horizonIn },
+                WebkitBackdropFilter: { duration: 0.5, ease: MOTION_TOKENS.CURVES.horizonIn }
               }
             }}
             exit={{ 
@@ -1940,7 +1987,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             className="fixed z-50 flex flex-col drawer-with-header-safe"
             role="dialog"
             aria-modal="true"
-            aria-label={`${selectedDomain.id} domain details`}
+            aria-label={`${selectedDomain.title} detailed analysis`}
             style={{
               left: drawerCenterPosition.left,
               top: drawerCenterPosition.top,
@@ -1956,28 +2003,24 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               filter: `brightness(${drawerLuminance})`
             }}
             initial={{
-              left: drawerCenterPosition.left,
-              top: drawerCenterPosition.top,
-              width: drawerCenterPosition.width,
-              height: drawerCenterPosition.height,
-              scale: 0.985,
+              scale: 0.98,
               opacity: 0,
-              y: 0
+              y: 2
             }}
             animate={{
-              scale: [0.985, 1.015, 1.005],
+              scale: [0.98, 1.015, 1.005],
               opacity: [0, 1, 1],
-              y: [0, 0, 0],
+              y: [2, 0, 0],
               transition: {
                 scale: {
                   duration: 0.5,
                   times: [0, 0.5, 1],
-                  ease: [0.25, 0.1, 0.25, 1]
+                  ease: MOTION_TOKENS.CURVES.horizonSpring
                 },
                 opacity: {
                   duration: 0.25,
                   delay: 0.1,
-                  ease: 'easeInOut'
+                  ease: MOTION_TOKENS.CURVES.horizonOpacity
                 }
               }
             }}
@@ -1985,13 +2028,13 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               scale: 0.99,
               opacity: 0,
               transition: {
-                scale: { duration: 0.25, ease: 'easeInOut' },
-                opacity: { duration: 0.25, ease: 'easeInOut' }
+                scale: { duration: MOTION_TOKENS.DURATIONS.base, ease: MOTION_TOKENS.CURVES.horizonOut },
+                opacity: { duration: MOTION_TOKENS.DURATIONS.base, ease: MOTION_TOKENS.CURVES.horizonOut }
               }
             }}
             onClick={(e) => e.stopPropagation()}
           >
-
+            {/* Background layers */}
             <div
               className="drawer-header-blur-extension"
               style={{
@@ -2064,7 +2107,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             
             <div className="panel-glass" style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '100%', background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%)', pointerEvents: 'none', borderRadius: '24px', zIndex: 1 }} />
 
-            {/* OS HORIZON REFINED HEADER v2.3 - FINAL AUDIT */}
+            {/* HEADER */}
             <motion.div 
               className="flex-shrink-0 p-5 border-b" 
               style={{ 
@@ -2078,17 +2121,20 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               animate={{ 
                 opacity: 1, 
                 y: 0,
-                transition: { duration: 0.3, delay: 0.2, ease: 'easeOut' }
+                transition: { 
+                  duration: MOTION_TOKENS.DURATIONS.fast, 
+                  delay: shouldReduceMotion ? 0 : 0.03, 
+                  ease: MOTION_TOKENS.CURVES.horizonIn 
+                }
               }} 
               exit={{ 
                 opacity: 0, 
                 y: -5,
-                transition: { duration: 0.15 }
+                transition: { duration: MOTION_TOKENS.DURATIONS.fast }
               }}
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-4">
-                  {/* Icon with breathing glow */}
                   <motion.div 
                     className="w-12 h-12 rounded-full flex items-center justify-center" 
                     style={{ 
@@ -2098,11 +2144,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       color: getDomainColor(selectedDomain.id) 
                     }}
                     animate={shouldReduceMotion ? {} : {
-                      filter: [
-                        'brightness(1)',
-                        'brightness(1.08)',
-                        'brightness(1)'
-                      ]
+                      filter: ['brightness(1)', 'brightness(1.08)', 'brightness(1)']
                     }}
                     transition={{
                       duration: 6,
@@ -2121,12 +2163,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif', 
                       marginBottom: '8px' 
                     }}>
-                      {selectedDomain.id.charAt(0).toUpperCase() + selectedDomain.id.slice(1)} Markets
+                      {selectedDomain.title}
                     </h3>
                     <div className="flex items-center gap-2">
                       {React.cloneElement(getPostureIcon(selectedDomain.posture), {className: "w-4 h-4"})}
                       <span style={{ color: getDomainText(selectedDomain.id), fontSize: '14px', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif', fontWeight: 500 }}>
-                        {selectedDomain.posture.charAt(0).toUpperCase() + selectedDomain.posture.slice(1)} Momentum
+                        {selectedDomain.trend}
                       </span>
                     </div>
                   </div>
@@ -2139,25 +2181,18 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               </div>
 
               <div className="flex items-center gap-4">
-                {/* Enhanced confidence ring with inner glow */}
                 <div className="relative w-9 h-9">
                   <svg className="transform -rotate-90" width="36" height="36">
                     <circle cx="18" cy="18" r="16" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="3" />
                     <motion.circle 
-                      cx="18" 
-                      cy="18" 
-                      r="16" 
-                      fill="none" 
+                      cx="18" cy="18" r="16" fill="none" 
                       stroke={getDomainColor(selectedDomain.id)} 
-                      strokeWidth="3" 
-                      strokeLinecap="round" 
+                      strokeWidth="3" strokeLinecap="round" 
                       strokeDasharray="100" 
                       initial={{ strokeDashoffset: 100, opacity: 0.9 }} 
                       animate={{ strokeDashoffset: 100 - (100 * selectedDomain.confidence_pct / 100), opacity: 0.98 }} 
-                      transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
-                      style={{
-                        filter: `drop-shadow(0 0 8px ${getDomainBloom(selectedDomain.id)})`
-                      }}
+                      transition={{ duration: 0.7, ease: MOTION_TOKENS.CURVES.horizonIn }}
+                      style={{ filter: `drop-shadow(0 0 8px ${getDomainBloom(selectedDomain.id)})` }}
                     />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center font-bold" style={{ color: TOKENS.colors.textPrimary, fontSize: '12px' }}>
@@ -2173,52 +2208,67 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   <div className="text-xs font-medium mb-1" style={{ 
                     color: TOKENS.colors.textLabel, 
                     letterSpacing: '0.2em', 
-                    fontSize: '15px', 
+                    fontSize: '11px', 
                     lineHeight: '1.5', 
-                    fontWeight: 500 
+                    fontWeight: 600 
                   }}>
                     CONFIDENCE
                   </div>
                   <div className="text-sm" style={{ 
-                    color: TOKENS.colors.textSecondary, 
-                    fontWeight: 400, 
-                    fontSize: '14px',
-                    lineHeight: '1.5'
+                    color: TOKENS.colors.textPrimary, 
+                    fontWeight: 600, 
+                    fontSize: '14.5px',
+                    lineHeight: '1.5',
+                    letterSpacing: '-0.01em'
                   }}>
-                    {selectedDomain.confidence_pct}% — {getConfidenceDescriptor(selectedDomain.confidence_pct)}
+                    {selectedDomain.confidence_pct}% • {selectedDomain.confidence_label}
                   </div>
                 </div>
               </div>
             </motion.div>
 
-            {/* OS HORIZON REFINED BODY v2.3 - FINAL AUDIT */}
+            {/* SCROLLABLE BODY */}
             <motion.div 
-              className="flex-1 overflow-y-auto p-6" 
+              className="flex-1 overflow-y-auto px-6 pt-6 pb-20" 
               style={{ position: 'relative', zIndex: 2 }}
               initial={{ opacity: 0 }}
               animate={{ 
                 opacity: 1,
-                transition: { duration: 0.3, delay: 0.25, ease: 'easeOut' }
+                transition: { 
+                  duration: MOTION_TOKENS.DURATIONS.fast, 
+                  delay: shouldReduceMotion ? 0 : 0.06, 
+                  ease: MOTION_TOKENS.CURVES.horizonIn 
+                }
               }}
               exit={{ 
                 opacity: 0,
-                transition: { duration: 0.15 }
+                transition: { duration: MOTION_TOKENS.DURATIONS.fast }
               }}
             >
-              {/* What It Means - Enhanced Typography */}
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.2 }} style={{ marginBottom: '16px' }}>
+              {/* 1) WHAT IT MEANS */}
+              <motion.div 
+                initial={{ opacity: 0, y: 4 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                transition={{ 
+                  delay: shouldReduceMotion ? 0 : 0.09, 
+                  duration: MOTION_TOKENS.DURATIONS.fast 
+                }} 
+                style={{ marginBottom: '20px' }}
+              >
                 <h4 style={{ 
                   color: 'rgba(255,255,255,0.9)', 
-                  fontSize: '15px', 
-                  fontWeight: 500, 
-                  marginBottom: '8px', 
-                  lineHeight: '1.5' 
+                  fontSize: '13px', 
+                  fontWeight: 600, 
+                  marginBottom: '10px', 
+                  lineHeight: '1.5',
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase'
                 }}>
                   What It Means
                 </h4>
                 <p style={{ 
-                  color: TOKENS.colors.textSecondary, 
-                  fontSize: '14.5px', 
+                  color: TOKENS.colors.textBody, 
+                  fontSize: '15px', 
                   lineHeight: '1.6', 
                   fontWeight: 400 
                 }}>
@@ -2227,8 +2277,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 {selectedDomain.addendum && (
                   <p style={{ 
                     color: TOKENS.colors.textSecondary, 
-                    fontSize: '13.5px', 
-                    marginTop: '8px', 
+                    fontSize: '14px', 
+                    marginTop: '10px', 
                     opacity: 0.9, 
                     lineHeight: '1.6', 
                     fontWeight: 400 
@@ -2239,98 +2289,144 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               </motion.div>
 
               <div style={{
-                height: '2px',
+                height: '1px',
                 background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
-                filter: 'blur(1px)',
-                margin: '16px 0',
-                opacity: 0.6
+                filter: 'blur(0.5px)',
+                margin: '20px 0',
+                opacity: 0.5
               }} />
 
-              {/* Downstream Effects - Enhanced Typography & Hover Ripple */}
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.33, duration: 0.2 }} style={{ marginBottom: '16px' }}>
+              {/* 2) DOWNSTREAM EFFECTS */}
+              <motion.div 
+                initial={{ opacity: 0, y: 4 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                transition={{ 
+                  delay: shouldReduceMotion ? 0 : 0.12, 
+                  duration: MOTION_TOKENS.DURATIONS.fast 
+                }} 
+                style={{ marginBottom: '20px' }}
+              >
                 <h4 style={{ 
                   color: 'rgba(255,255,255,0.9)', 
-                  fontSize: '15px', 
-                  fontWeight: 500, 
-                  marginBottom: '8px', 
-                  lineHeight: '1.5' 
+                  fontSize: '13px', 
+                  fontWeight: 600, 
+                  marginBottom: '10px', 
+                  lineHeight: '1.5',
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase'
                 }}>
                   Downstream Effects
                 </h4>
                 <div className="space-y-2" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {selectedDomain.ripple.slice(0, 3).map((effect, i) => (
+                  {selectedDomain.downstream_effects.map((effect, i) => (
                     <motion.div 
-                      key={i} 
-                      whileHover={{ scale: 1.01 }}
+                      key={i}
+                      className="eq-effect-row group"
+                      initial={{ opacity: 0, x: -4 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ 
+                        delay: shouldReduceMotion ? 0 : 0.15 + (i * 0.04),
+                        duration: MOTION_TOKENS.DURATIONS.fast,
+                        ease: MOTION_TOKENS.CURVES.horizonIn
+                      }}
+                      whileHover={effect.link ? { 
+                        x: 2,
+                        transition: { 
+                          duration: MOTION_TOKENS.DURATIONS.microPulse, 
+                          ease: MOTION_TOKENS.CURVES.horizonIn 
+                        }
+                      } : {}}
                       style={{ 
                         backdropFilter: getBlur('chip'), 
                         background: i % 2 === 0 ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.04)', 
                         border: `1px solid ${TOKENS.HORIZON.glassBorder}`, 
-                        borderRadius: '16px',
+                        borderRadius: '14px',
                         padding: '12px 14px', 
                         display: 'flex', 
+                        alignItems: 'center',
                         gap: '10px',
                         position: 'relative',
                         overflow: 'hidden',
-                        cursor: 'default',
-                        transition: 'transform 0.2s ease-out'
+                        cursor: effect.link ? 'pointer' : 'default',
+                        transition: `transform ${MOTION_TOKENS.DURATIONS.microPulse}s ${MOTION_TOKENS.CURVES.horizonIn.map(n => n).join(',')}`
                       }}
-                      onHoverStart={(e) => {
-                        const ripple = document.createElement('div');
-                        ripple.style.cssText = `
-                          position: absolute;
-                          inset: 0;
-                          background: radial-gradient(circle at center, rgba(255,255,255,0.1), transparent 70%);
-                          opacity: 0;
-                          animation: ripple 0.3s ease-out;
-                          pointer-events: none;
-                        `;
-                        const target = e.currentTarget;
-                        if (target) {
-                          target.appendChild(ripple);
-                          setTimeout(() => ripple.remove(), 300);
-                        }
-                      }}
+                      onClick={effect.link ? () => console.log(`Navigate to ${effect.link}`) : undefined}
                     >
                       <div style={{ 
                         width: '4px', 
                         height: '4px', 
                         borderRadius: '999px', 
-                        marginTop: '8px', 
+                        flexShrink: 0,
                         background: getDomainColor(selectedDomain.id), 
                         boxShadow: `0 0 6px ${getDomainBloom(selectedDomain.id)}` 
                       }} />
-                      <span style={{ 
-                        color: TOKENS.colors.textChip, 
-                        fontSize: '14px', 
-                        lineHeight: '1.6', 
-                        fontWeight: 500 
-                      }}>
-                        {effect}
-                      </span>
+                      <div className="flex-1 min-w-0">
+                        <span style={{ 
+                          color: TOKENS.colors.textChip, 
+                          fontSize: '14.5px', 
+                          lineHeight: '1.4', 
+                          fontWeight: 500,
+                          display: 'block',
+                          marginBottom: '4px'
+                        }}>
+                          {effect.title}
+                        </span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {effect.tags.map((tag, idx) => (
+                            <span 
+                              key={idx}
+                              style={{
+                                fontSize: '10px',
+                                fontWeight: 500,
+                                letterSpacing: '0.05em',
+                                textTransform: 'uppercase',
+                                color: 'rgba(255, 255, 255, 0.55)',
+                                padding: '2px 6px',
+                                borderRadius: '6px',
+                                background: 'rgba(255, 255, 255, 0.05)',
+                                border: '1px solid rgba(255, 255, 255, 0.08)'
+                              }}
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      {effect.link && (
+                        <motion.div
+                          style={{ flexShrink: 0, opacity: 0.4 }}
+                          animate={{ opacity: 0.4 }}
+                          whileHover={{ opacity: 1 }}
+                        >
+                          <ArrowRight className="w-3.5 h-3.5" style={{ color: TOKENS.colors.textTertiary }} />
+                        </motion.div>
+                      )}
                     </motion.div>
                   ))}
                 </div>
               </motion.div>
 
               <div style={{
-                height: '2px',
+                height: '1px',
                 background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
-                filter: 'blur(1px)',
-                margin: '16px 0 12px 0',
-                opacity: 0.6
+                filter: 'blur(0.5px)',
+                margin: '20px 0',
+                opacity: 0.5
               }} />
 
-              {/* Actionable Signal - Enhanced Box Styling */}
+              {/* 3) ACTIONABLE SIGNAL */}
               <motion.div
-                initial={{ opacity: 0, y: -4 }}
+                initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.36, duration: 0.2 }}
-                className="mt-3 p-4 rounded-lg relative overflow-hidden"
+                transition={{ 
+                  delay: shouldReduceMotion ? 0 : 0.15, 
+                  duration: MOTION_TOKENS.DURATIONS.fast 
+                }}
+                className="p-5 rounded-2xl relative overflow-hidden"
                 style={{ 
                   background: 'rgba(66,135,245,0.065)',
                   border: '1px solid rgba(66,135,245,0.25)',
-                  borderLeft: '2px solid rgba(66,135,245,0.6)',
+                  borderLeft: '3px solid rgba(66,135,245,0.6)',
                   boxShadow: 'inset 1px 0 0 rgba(255,255,255,0.1)'
                 }}
               >
@@ -2342,95 +2438,156 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%)',
                       pointerEvents: 'none'
                     }}
-                    animate={{
-                      x: ['-100%', '200%']
-                    }}
-                    transition={{
-                      duration: 6,
-                      repeat: Infinity,
-                      ease: 'linear'
-                    }}
+                    animate={{ x: ['-100%', '200%'] }}
+                    transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
                   />
                 )}
-                <p className="text-xs font-semibold mb-1" style={{ 
-                  color: 'rgba(66,135,245,0.9)', 
-                  letterSpacing: '0.15em', 
-                  fontSize: '15px',
-                  lineHeight: '1.5', 
-                  fontWeight: 500 
-                }}>
-                  ACTIONABLE SIGNAL
-                </p>
-                <p style={{ 
-                  color: 'rgba(180,200,230,0.95)', 
-                  fontSize: '15px',
-                  lineHeight: '1.6', 
-                  fontWeight: 400 
-                }}>
-                  {selectedDomain.insight}
-                </p>
+                
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-xs font-semibold" style={{ 
+                    color: 'rgba(66,135,245,0.9)', 
+                    letterSpacing: '0.12em', 
+                    fontSize: '11px',
+                    lineHeight: '1.5', 
+                    fontWeight: 600,
+                    textTransform: 'uppercase'
+                  }}>
+                    Actionable Signal
+                  </p>
+                  <div className="flex items-center gap-3 text-xs">
+                    <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+                      {selectedDomain.actionable.horizon}
+                    </span>
+                    <span 
+                      className="px-2 py-0.5 rounded-full text-[10px] font-semibold"
+                      style={{
+                        background: selectedDomain.actionable.conviction === 'High' 
+                          ? 'rgba(88, 227, 164, 0.15)'
+                          : 'rgba(255, 255, 255, 0.10)',
+                        color: selectedDomain.actionable.conviction === 'High'
+                          ? 'rgba(88, 227, 164, 0.95)'
+                          : 'rgba(255, 255, 255, 0.75)',
+                        border: '1px solid rgba(255, 255, 255, 0.10)'
+                      }}
+                    >
+                      {selectedDomain.actionable.conviction} Conviction
+                    </span>
+                  </div>
+                </div>
 
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.46, duration: 0.1 }}
-                  style={{ 
-                    color: 'rgba(255,255,255,0.60)', 
-                    fontSize: '14.5px',
-                    lineHeight: '1.6', 
-                    fontWeight: 400, 
-                    marginTop: '10px', 
-                    fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' 
-                  }}
-                >
-                  {selectedDomain.addendum || selectedDomain.summary}
-                </motion.p>
+                <div className="space-y-2.5">
+                  {selectedDomain.actionable.directives.map((directive, i) => (
+                    <motion.p 
+                      key={i}
+                      initial={{ opacity: 0, x: -3 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{
+                        delay: shouldReduceMotion ? 0 : 0.18 + (i * 0.05),
+                        duration: MOTION_TOKENS.DURATIONS.fast
+                      }}
+                      style={{ 
+                        color: 'rgba(180,200,230,0.95)', 
+                        fontSize: '14.5px',
+                        lineHeight: '1.6', 
+                        fontWeight: 400,
+                        paddingLeft: '12px',
+                        borderLeft: '2px solid rgba(66,135,245,0.3)'
+                      }}
+                    >
+                      {directive}
+                    </motion.p>
+                  ))}
+                </div>
               </motion.div>
+            </motion.div>
 
-              <div style={{
-                height: '2px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
-                filter: 'blur(1px)',
-                margin: '16px 0 12px 0',
-                opacity: 0.6
-              }} />
-
-              {/* CTA Button - Enhanced Padding & Font */}
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.39, duration: 0.2 }} className="pt-3">
-                <motion.button 
-                  className="w-full flex items-center justify-center gap-2 rounded-lg font-medium transition-all"
+            {/* STICKY FOOTER */}
+            <motion.div 
+              className="flex-shrink-0 border-t p-5"
+              style={{
+                position: 'sticky',
+                bottom: 0,
+                background: TOKENS.HORIZON.drawerTint,
+                borderColor: TOKENS.HORIZON.drawerDivider,
+                backdropFilter: getBlur('panel'),
+                zIndex: 10
+              }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ 
+                opacity: 1, 
+                y: 0,
+                transition: { 
+                  duration: MOTION_TOKENS.DURATIONS.fast, 
+                  delay: shouldReduceMotion ? 0 : 0.2, 
+                  ease: MOTION_TOKENS.CURVES.horizonIn 
+                }
+              }}
+              exit={{ 
+                opacity: 0, 
+                y: 5,
+                transition: { duration: MOTION_TOKENS.DURATIONS.fast }
+              }}
+            >
+              <div className="flex items-center justify-between gap-4 mb-3">
+                <motion.button
+                  className="flex-1 flex items-center justify-center gap-2 rounded-xl font-medium transition-all"
                   style={{ 
                     background: 'rgba(66,135,245,0.15)', 
-                    color: '#4287f5', 
+                    color: '#5A9EFF', 
                     border: '1px solid rgba(66,135,245,0.3)', 
-                    fontSize: '15px',
-                    paddingTop: '14px',
-                    paddingBottom: '14px',
-                    paddingLeft: '34px',
-                    paddingRight: '34px'
+                    fontSize: '14px',
+                    paddingTop: '12px',
+                    paddingBottom: '12px',
+                    fontWeight: 600
                   }} 
-                  aria-label="View detailed market implications"
+                  aria-label={selectedDomain.footer.primary_cta.label}
                   whileHover={{
                     y: -2,
                     boxShadow: '0 0 20px rgba(66,135,245,0.3)',
-                    transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
+                    transition: { 
+                      duration: MOTION_TOKENS.DURATIONS.microPulse, 
+                      ease: MOTION_TOKENS.CURVES.horizonIn 
+                    }
                   }}
+                  whileTap={{
+                    scale: 0.98,
+                    transition: { duration: MOTION_TOKENS.DURATIONS.microPulse }
+                  }}
+                  onClick={() => console.log(`Navigate to ${selectedDomain.footer.primary_cta.route}`)}
                 >
-                  <span>View market implications</span>
-                  <motion.div
-                    whileHover={{
-                      x: 2,
-                      transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
-                    }}
-                  >
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </motion.div>
+                  <span>{selectedDomain.footer.primary_cta.label}</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </motion.button>
-                <div className="flex items-center justify-between mt-2 text-xs" style={{ color: TOKENS.colors.textTertiary }}>
-                  <span>Updated {new Date(selectedDomain.last_updated_iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                  <span className="opacity-60">1-4 • ← → • ESC</span>
-                </div>
-              </motion.div>
+
+                <motion.button
+                  className="px-4 py-3 rounded-xl text-sm font-medium transition-all"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.06)',
+                    color: TOKENS.colors.textSecondary,
+                    border: '1px solid rgba(255, 255, 255, 0.10)'
+                  }}
+                  whileHover={{
+                    background: 'rgba(255, 255, 255, 0.10)',
+                    transition: { 
+                      duration: MOTION_TOKENS.DURATIONS.microPulse, 
+                      ease: MOTION_TOKENS.CURVES.horizonIn 
+                    }
+                  }}
+                  whileTap={{
+                    scale: 0.98,
+                    transition: { duration: MOTION_TOKENS.DURATIONS.microPulse }
+                  }}
+                  onClick={() => console.log(`Navigate to ${selectedDomain.footer.secondary_link.route}`)}
+                  aria-label={selectedDomain.footer.secondary_link.label}
+                >
+                  {selectedDomain.footer.secondary_link.label}
+                </motion.button>
+              </div>
+
+              <div className="flex items-center justify-between text-xs" style={{ color: TOKENS.colors.textTertiary }}>
+                <span>Updated {new Date(selectedDomain.footer.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                <span className="opacity-60">1-4 • ← → • ESC</span>
+              </div>
             </motion.div>
           </motion.div>
         )}
