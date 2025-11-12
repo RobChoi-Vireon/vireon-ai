@@ -6,8 +6,8 @@ import LyraLogo from '../core/LyraLogo';
 import { createPortal } from 'react-dom';
 
 // ============================================================================
-// MACRO CONSTELLATION — OS HORIZON V2.5 "PORTAL + SMART PLACEMENT"
-// Portal overlay + collision-aware positioning + graceful edge handling
+// MACRO CONSTELLATION — OS HORIZON V2.6 "PORTAL + SMART PLACEMENT + ANTI-CLIP"
+// Fixed overlay + collision-aware positioning + graceful edge handling + no scroll
 // ============================================================================
 
 const TOKENS = {
@@ -96,7 +96,7 @@ const MOCK_DOMAINS = [
 ];
 
 // ============================================================================
-// PORTAL OVERLAY ROOT MANAGER — ENHANCED FOR CLIPPING PREVENTION
+// PORTAL OVERLAY ROOT MANAGER — ANTI-CLIP ARCHITECTURE
 // ============================================================================
 const usePortalRoot = () => {
   const [portalRoot, setPortalRoot] = useState(null);
@@ -121,7 +121,6 @@ const usePortalRoot = () => {
     setPortalRoot(root);
 
     return () => {
-      // Cleanup with delay to prevent batching issues
       setTimeout(() => {
         if (root && root.childNodes.length === 0 && document.body.contains(root)) {
           root.remove();
@@ -134,10 +133,10 @@ const usePortalRoot = () => {
 };
 
 // ============================================================================
-// SMART PLACEMENT CALCULATOR — ENHANCED FOR CLIPPING PREVENTION
+// SMART PLACEMENT CALCULATOR — ENHANCED EDGE-AWARE LOGIC
 // ============================================================================
 const calculateSmartPlacement = (nodeRect) => {
-  const SAFE_PADDING = 24;
+  const SAFE_PADDING = 32;
   const GAP_FROM_NODE = 12;
   const CARD_WIDTH = 270;
   const CARD_MAX_HEIGHT = 260;
@@ -163,8 +162,8 @@ const calculateSmartPlacement = (nodeRect) => {
   // Clamp vertical position to safe boundaries
   y = Math.max(SAFE_PADDING, Math.min(y, viewport.height - CARD_MAX_HEIGHT - SAFE_PADDING));
 
-  // Horizontal positioning: start at node left, clamp to viewport
-  let x = nodeRect.left;
+  // Horizontal positioning: center on node, clamp to viewport
+  let x = nodeRect.left + (nodeRect.width / 2) - (CARD_WIDTH / 2);
   x = Math.max(SAFE_PADDING, Math.min(x, viewport.width - CARD_WIDTH - SAFE_PADDING));
 
   // Calculate arrow position (points to node center)
@@ -187,7 +186,7 @@ const calculateSmartPlacement = (nodeRect) => {
 };
 
 // ============================================================================
-// HOVER CARD PORTAL COMPONENT — CLIPPING-PROOF + CONFIDENCE RING ANIMATION
+// HOVER CARD PORTAL COMPONENT — NO-CLIP + CONFIDENCE RING ANIMATION
 // ============================================================================
 const HoverCardPortal = ({ 
   domain, 
@@ -218,7 +217,6 @@ const HoverCardPortal = ({
       const pos = calculateSmartPlacement(nodeRect);
       setPosition(pos);
       
-      // Delay visibility for smooth entrance
       const timer = setTimeout(() => setIsVisible(true), 16);
       return () => clearTimeout(timer);
     }
@@ -608,10 +606,9 @@ const HoverCardPortal = ({
         {/* Divider */}
         <div style={{
           height: '2px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
-          filter: 'blur(1px)',
-          margin: '12px 0',
-          opacity: 0.6
+          background: `linear-gradient(90deg, transparent, ${TOKENS.HORIZON.drawerDivider}, transparent)`,
+          margin: '0 0 12px 0',
+          opacity: 0.5
         }} />
 
         {/* Signal Summary */}
