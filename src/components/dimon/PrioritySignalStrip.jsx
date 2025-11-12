@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { AlertTriangle, Zap, TrendingDown, ExternalLink, ShieldAlert, Waves, Globe, Lock, CalendarClock, Link, Factory, Banknote } from 'lucide-react';
@@ -376,11 +377,6 @@ export default function PrioritySignalStrip({ signals = [], onOpenDrawer }) {
           opacity: 0.7;
         }
         
-        /* Vertical Spacing Adjustment - +8px breathing room */
-        #priority-signals-heading {
-          margin-bottom: 30px !important; /* Was 22px (6px + 8px extra) */
-        }
-        
         /* Performance optimization */
         .hzn-priority-signal {
           transform: translateZ(0);
@@ -436,47 +432,25 @@ export default function PrioritySignalStrip({ signals = [], onOpenDrawer }) {
         }
       `}</style>
 
-      <div className="flex items-center mb-6 pl-2">
-        <div className="relative p-3 rounded-xl bg-gradient-to-br from-red-500/10 to-red-600/20 border border-red-500/30 backdrop-blur-sm">
-          <motion.div
-            className="absolute inset-0 rounded-xl bg-red-500/10"
-            animate={{ opacity: [0.3, 0.6, 0.3] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="relative z-10"
-            animate={{ 
-              x: [0, 3, 0],
-              rotate: [0, 5, 0]
-            }}
-            transition={{ 
-              duration: 2.5, 
-              repeat: Infinity, 
-              ease: "easeInOut" 
-            }}
-          >
-            <AlertTriangle className="w-5 h-5 text-red-400" />
-          </motion.div>
-        </div>
-        <div className="ml-4">
-          <motion.h2 
-            id="priority-signals-heading" 
-            className="text-xl font-bold text-gray-100 tracking-tight"
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            U.S. Front Page Signals
-          </motion.h2>
-          <motion.p 
-            className="text-sm text-gray-400 font-medium"
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            Urgent developments requiring immediate attention.
-          </motion.p>
-        </div>
+      {/* MATCHED HEADER STYLING */}
+      <div className="mb-4 pl-2">
+        <h2 
+          className="font-semibold mb-2"
+          style={{ 
+            fontSize: '34px',
+            lineHeight: '1.2',
+            color: 'rgba(255, 255, 255, 0.95)',
+            letterSpacing: '-0.02em'
+          }}
+        >
+          U.S. Front Page Signals
+        </h2>
+        <p 
+          className="text-sm"
+          style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+        >
+          Urgent developments requiring immediate attention.
+        </p>
       </div>
       
       <div className="grid gap-6 md:grid-cols-2">
