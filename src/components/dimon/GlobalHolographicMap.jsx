@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLeft, ChevronRight, BarChart3, DollarSign, Activity } from 'lucide-react';
@@ -854,7 +853,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           console.warn('Failed to get bounding rect:', error);
         }
       }
-    }, TOKENS.HORIZON.hoverEnterDelay + 50); // Add 50ms delay for intent
+    }, TOKENS.HORIZON.hoverEnterDelay + 50);
   }, []);
 
   const handleDomainHoverLeave = useCallback(() => {
@@ -870,7 +869,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     hoverExitTimerRef.current = setTimeout(() => {
       setHoveredDomain(null);
       setHoveredNodeRect(null);
-    }, TOKENS.HORIZON.hoverExitDelay + 150); // Add 150ms grace period
+    }, TOKENS.HORIZON.hoverExitDelay + 150);
   }, []);
 
   const handleOpenDrawer = useCallback((domain) => {
@@ -911,8 +910,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   }, [selectedDomain, getOrbPosition, swayTime]);
 
   const handleCardClick = useCallback((domain) => {
-    // This function is now primarily called from the portal's onClick to open the drawer
-    // The portal itself doesn't need to manage timers.
     if (hoverEnterTimerRef.current) {
       clearTimeout(hoverEnterTimerRef.current);
       hoverEnterTimerRef.current = null;
@@ -1095,6 +1092,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       height: drawerHeight - viewportAdjustment
     };
   }, [selectedDomain, drawerOrigin]);
+
+  const balanceIndicatorLeft = 10 + (balanceBias * 80);
+  const balanceIndicatorColor = dominantDriver === 'balanced' ? 'rgba(255,255,255,0.7)' : getDomainColor(dominantDriver);
+  const balanceIndicatorShadow = dominantDriver === 'balanced' ? 'rgba(255,255,255,0.5)' : getDomainBloom(dominantDriver);
 
   return (
     <motion.section variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} aria-label="Macro Constellation" style={{ maxWidth: '84vw', margin: '0 auto' }}>
@@ -1287,32 +1288,33 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 );
               })}
             </g>
+          </svg>
 
-            {/* Hover Card - Now Rendered via Portal */}
-            <AnimatePresence>
-              {hoveredDomain && !selectedDomain && hoveredNodeRect && (() => {
-                const domain = domains.find(d => d.id === hoveredDomain);
-                if (!domain) return null;
+          {/* Hover Card - Now Rendered via Portal */}
+          <AnimatePresence>
+            {hoveredDomain && !selectedDomain && hoveredNodeRect && (() => {
+              const domain = domains.find(d => d.id === hoveredDomain);
+              if (!domain) return null;
 
-                return (
-                  <HoverCardPortal
-                    key={`tooltip-${hoveredDomain}`}
-                    domain={domain}
-                    nodeRect={hoveredNodeRect}
-                    onClose={() => handleCardClick(domain)} // Maps to handleCardClick which opens drawer
-                    getDomainColor={getDomainColor}
-                    getDomainBloom={getDomainBloom}
-                    getDomainIcon={getDomainIcon}
-                    getDomainText={getDomainText}
-                    getPostureIcon={getPostureIcon}
-                    getTextOpacityAdjustment={getTextOpacityAdjustment}
-                    getInsightLine={getInsightLine}
-                    getConcisenSummary={getConcisenSummary}
-                    shouldReduceMotion={shouldReduceMotion}
-                  />
-                );
-              })()}
-            </AnimatePresence>
+              return (
+                <HoverCardPortal
+                  key={`tooltip-${hoveredDomain}`}
+                  domain={domain}
+                  nodeRect={hoveredNodeRect}
+                  onClose={() => handleCardClick(domain)}
+                  getDomainColor={getDomainColor}
+                  getDomainBloom={getDomainBloom}
+                  getDomainIcon={getDomainIcon}
+                  getDomainText={getDomainText}
+                  getPostureIcon={getPostureIcon}
+                  getTextOpacityAdjustment={getTextOpacityAdjustment}
+                  getInsightLine={getInsightLine}
+                  getConcisenSummary={getConcisenSummary}
+                  shouldReduceMotion={shouldReduceMotion}
+                />
+              );
+            })()}
+          </AnimatePresence>
 
           {domains.map((domain) => {
             const orbPos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
@@ -1333,7 +1335,21 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             <div style={{ height: '2px', borderRadius: '999px', position: 'relative', overflow: 'hidden', background: 'linear-gradient(90deg, rgba(106,199,247,0.3), rgba(180,247,192,0.3), rgba(255,211,122,0.3))' }}>
               {!shouldReduceMotion && <motion.div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%)', width: '100%' }} animate={{ x: ['-100%', '100%'] }} transition={{ duration: TOKENS.HORIZON.t_sweep, repeat: Infinity, ease: 'linear' }} />}
               <div style={{ position: 'absolute', bottom: '-8px', left: 0, right: 0, height: '8px', background: 'linear-gradient(90deg, rgba(106,199,247,0.15), rgba(180,247,192,0.15), rgba(255,255,255,0.15))', filter: 'blur(8px)', opacity: 0.15 }} />
-              <motion.div style={{ position: 'absolute', top: '50%', width: '10px', height: '10px', borderRadius: '999px', background: dominantDriver === 'balanced' ? 'rgba(255,255,255,0.7)' : getDomainColor(dominantDriver), boxShadow: `0 0 20px ${dominantDriver === 'balanced' ? 'rgba(255,255,255,0.5)' : getDomainBloom(dominantDriver)}, 0 0 8px rgba(255,255,255,0.3)', transform: 'translate(-50%, -50%)', border: '1px solid rgba(255,255,255,0.3)' }} animate={{ left: `${10 + (balanceBias * 80)}%` }} transition={{ duration: 0.8, ease: TOKENS.HORIZON.overshoot }} />
+              <motion.div 
+                style={{ 
+                  position: 'absolute', 
+                  top: '50%', 
+                  width: '10px', 
+                  height: '10px', 
+                  borderRadius: '999px', 
+                  background: balanceIndicatorColor,
+                  boxShadow: `0 0 20px ${balanceIndicatorShadow}, 0 0 8px rgba(255,255,255,0.3)`, 
+                  transform: 'translate(-50%, -50%)', 
+                  border: '1px solid rgba(255,255,255,0.3)' 
+                }} 
+                animate={{ left: `${balanceIndicatorLeft}%` }} 
+                transition={{ duration: 0.8, ease: TOKENS.HORIZON.overshoot }} 
+              />
             </div>
           </div>
           <div className="flex-1 flex items-center gap-3">
@@ -1346,9 +1362,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </div>
           </div>
         </div>
+      </div>
 
       <div className="flex justify-center" style={{ marginTop: '10px' }}>
-        <p style={{ fontSize: '9px', fontWeight: 400, color: TOKENS.colors.textTertiary, opacity: 0.55, fontFamily: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Data via Lyra models</p>
+        <p style={{ fontSize: '9px', fontWeight: 400, color: TOKENS.colors.textTertiary, opacity: 0.55, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Data via Lyra models</p>
       </div>
 
       <AnimatePresence>
@@ -1418,32 +1435,32 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               top: drawerCenterPosition.top,
               width: drawerCenterPosition.width,
               height: drawerCenterPosition.height,
-              scale: 0.985, // Start slightly smaller for depth
+              scale: 0.985,
               opacity: 0,
               y: 0
             }}
             animate={{
-              scale: [0.985, 1.015, 1.005], // Lift 1.5%, settle with -0.5% bounce
+              scale: [0.985, 1.015, 1.005],
               opacity: [0, 1, 1],
               y: [0, 0, 0],
               transition: {
                 scale: {
                   duration: 0.5,
-                  times: [0, 0.5, 1], // Pre-stage (0-100ms implicit), Lift (100-350ms), Settle (350-500ms)
-                  ease: [0.25, 0.1, 0.25, 1] // Cubic ease-in-out for smooth lift
+                  times: [0, 0.5, 1],
+                  ease: [0.25, 0.1, 0.25, 1]
                 },
                 opacity: {
                   duration: 0.25,
-                  delay: 0.1, // After pre-stage
+                  delay: 0.1,
                   ease: 'easeInOut'
                 }
               }
             }}
             exit={{
-              scale: 0.99, // Scale down 1%
+              scale: 0.99,
               opacity: 0,
               transition: {
-                scale: { duration: 0.25, ease: 'easeInOut' }, // Fade-back 250ms
+                scale: { duration: 0.25, ease: 'easeInOut' },
                 opacity: { duration: 0.25, ease: 'easeInOut' }
               }
             }}
@@ -1614,7 +1631,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       animate={{ strokeDashoffset: 100 - (100 * selectedDomain.confidence_pct / 100), opacity: 0.98 }} 
                       transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
                       style={{
-                        filter: `drop-shadow(0 0 8px ${getDomainBloom(selectedDomain.id)})` // +8% inner glow
+                        filter: `drop-shadow(0 0 8px ${getDomainBloom(selectedDomain.id)})`
                       }}
                     />
                   </svg>
@@ -1724,14 +1741,14 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         backdropFilter: getBlur('chip'), 
                         background: i % 2 === 0 ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.04)', 
                         border: `1px solid ${TOKENS.HORIZON.glassBorder}`, 
-                        borderRadius: '16px', // xl radius
+                        borderRadius: '16px',
                         padding: '12px 14px', 
                         display: 'flex', 
                         gap: '10px',
                         position: 'relative',
                         overflow: 'hidden',
                         cursor: 'default',
-                        transition: 'transform 0.2s ease-out' // 0.2s hover ripple
+                        transition: 'transform 0.2s ease-out'
                       }}
                       onHoverStart={(e) => {
                         const ripple = document.createElement('div');
@@ -1786,9 +1803,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 transition={{ delay: 0.36, duration: 0.2 }}
                 className="mt-3 p-4 rounded-lg relative overflow-hidden"
                 style={{ 
-                  background: 'rgba(66,135,245,0.065)', // brightness -10%
+                  background: 'rgba(66,135,245,0.065)',
                   border: '1px solid rgba(66,135,245,0.25)',
-                  borderLeft: '2px solid rgba(66,135,245,0.6)', // 1px left accent (using 2px for visibility)
+                  borderLeft: '2px solid rgba(66,135,245,0.6)',
                   boxShadow: 'inset 1px 0 0 rgba(255,255,255,0.1)'
                 }}
               >
@@ -1813,7 +1830,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 <p className="text-xs font-semibold mb-1" style={{ 
                   color: 'rgba(66,135,245,0.9)', 
                   letterSpacing: '0.15em', 
-                  fontSize: '15px', // font +1px (was 14px)
+                  fontSize: '15px',
                   lineHeight: '1.5', 
                   fontWeight: 500 
                 }}>
@@ -1821,7 +1838,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 </p>
                 <p style={{ 
                   color: 'rgba(180,200,230,0.95)', 
-                  fontSize: '15px', // font +1px (was 14px)
+                  fontSize: '15px',
                   lineHeight: '1.6', 
                   fontWeight: 400 
                 }}>
@@ -1834,7 +1851,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   transition={{ delay: 0.46, duration: 0.1 }}
                   style={{ 
                     color: 'rgba(255,255,255,0.60)', 
-                    fontSize: '14.5px', // font +1px (was 13.5px)
+                    fontSize: '14.5px',
                     lineHeight: '1.6', 
                     fontWeight: 400, 
                     marginTop: '10px', 
@@ -1861,16 +1878,16 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     background: 'rgba(66,135,245,0.15)', 
                     color: '#4287f5', 
                     border: '1px solid rgba(66,135,245,0.3)', 
-                    fontSize: '15px', // CTA font 15px
-                    paddingTop: '14px', // padding +10px H (was ~4px)
+                    fontSize: '15px',
+                    paddingTop: '14px',
                     paddingBottom: '14px',
-                    paddingLeft: '34px', // padding +10px H (was ~24px)
+                    paddingLeft: '34px',
                     paddingRight: '34px'
                   }} 
                   aria-label="View detailed market implications"
                   whileHover={{
                     y: -2,
-                    boxShadow: '0 0 20px rgba(66,135,245,0.3)', // hover glow 0.2s
+                    boxShadow: '0 0 20px rgba(66,135,245,0.3)',
                     transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
                   }}
                 >
@@ -1938,16 +1955,16 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         
         html { background-color: #0B0E13; }
         
-        #equilibrium-overlay-root { /* Targeting the portal root div */
+        #equilibrium-overlay-root {
           position: fixed;
           inset: 0;
-          pointer-events: none; /* Allow clicks to pass through by default */
-          z-index: 9999; /* High z-index */
+          pointer-events: none;
+          z-index: 9999;
           overflow: hidden;
         }
         
-        #equilibrium-overlay-root > div { /* Targeting the actual motion.div of HoverCardPortal */
-          pointer-events: auto; /* Re-enable pointer events for the card itself */
+        #equilibrium-overlay-root > div {
+          pointer-events: auto;
         }
 
         .vireon-portal-container {
@@ -2060,10 +2077,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         .orb-halo, .link-path, .glow-overlay, .panel-glass, .drawer-overlay {
           pointer-events: none !important;
         }
-        .grid-wrapper { /* Ensure grid-wrapper itself doesn't block portal events */
+        .grid-wrapper {
           pointer-events: all;
         }
-        /* Orb nucleus already has pointer-events: auto in its style attr, which is good. */
       `}</style>
     </motion.section>
   );
