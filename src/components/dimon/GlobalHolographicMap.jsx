@@ -6,8 +6,8 @@ import LyraLogo from '../core/LyraLogo';
 import { createPortal } from 'react-dom';
 
 // ============================================================================
-// EQUILIBRIUM — OS HORIZON V2.5 "PORTAL + SMART PLACEMENT"
-// Portal overlay + collision-aware positioning + graceful edge handling
+// EQUILIBRIUM — OS HORIZON V3.1 "UNIFIED HOVER INTELLIGENCE"
+// Portal overlay + collision-aware positioning + zero redundancy
 // ============================================================================
 
 const TOKENS = {
@@ -32,7 +32,7 @@ const TOKENS = {
     overshoot: [0.34, 1.56, 0.64, 1],
     t_drawerOpen: 0.25, t_drawerClose: 0.20,
     t_hover: 0.12, t_haloDecay: 0.18, t_labelLag: 0.08,
-    t_tooltipOpen: 0.20, t_tooltipClose: 0.15, t_tooltipTextStagger: 0.08, t_tooltipTextDuration: 0.14,
+    t_tooltipOpen: 0.06, t_tooltipClose: 0.18, t_tooltipTextStagger: 0.08, t_tooltipTextDuration: 0.14,
     t_orbBreathIn: 0.14, t_orbBreathOut: 0.14, t_beamLink: 0.14,
     t_contentStagger: 0.06, t_soWhatDelay: 0.10,
     t_breathe: 4.5, t_orbLifePulse: 4.0, t_haloPulse: 1.5,
@@ -65,34 +65,58 @@ const ANGLES = { rates: 22.5, fx: 160.0, growth: 297.5, geopolitics: 75.0 };
 const RADII = { rates: 0.35, fx: 0.39, growth: 0.37, geopolitics: 0.32 };
 
 const MOCK_DOMAINS = [
-  { id: "rates", posture: "hawkish", confidence_pct: 78, strength: 0.82,
-    summary: "Fed holds firm; terminal rate expectations drift higher on sticky services inflation.",
+  { 
+    id: "rates", 
+    posture: "hawkish", 
+    confidence_pct: 78, 
+    strength: 0.82,
+    summary: "Fed holds firm amid sticky services inflation; terminal rate expectations drift higher.",
+    insight: "Yields steady — credit markets adjusting to new baseline.",
     ripple: ["Credit spreads widen", "Tech multiples compress", "EM funding costs rise"], 
     addendum: null,
     last_updated_iso: new Date().toISOString(),
     sparkline: [0.72, 0.74, 0.76, 0.75, 0.78, 0.80, 0.79, 0.81, 0.82],
-    confidenceDelta: 2 },
-  { id: "fx", posture: "stable", confidence_pct: 65, strength: 0.58,
-    summary: "Global rates converge; carry trades unwind as risk appetite cools gradually.",
+    confidenceDelta: 2 
+  },
+  { 
+    id: "fx", 
+    posture: "stable", 
+    confidence_pct: 65, 
+    strength: 0.58,
+    summary: "Carry trades unwind as global rates converge and risk appetite cools.",
+    insight: "Capital flows stabilizing; global risk appetite cooling.",
     ripple: ["EM currencies stabilize", "Energy imports neutral", "Bond yields compressed"],
     addendum: "Next 48h: FX likely stable; carry re-risk limited unless yields diverge.",
     last_updated_iso: new Date().toISOString(),
     sparkline: [0.60, 0.59, 0.58, 0.57, 0.58, 0.59, 0.58, 0.57, 0.58],
-    confidenceDelta: -3 },
-  { id: "growth", posture: "softening", confidence_pct: 71, strength: 0.68,
-    summary: "China's deceleration is cooling global demand while US resilience persists but eases.",
+    confidenceDelta: -3 
+  },
+  { 
+    id: "growth", 
+    posture: "softening", 
+    confidence_pct: 71, 
+    strength: 0.68,
+    summary: "China deceleration dampens global demand; US resilience persists but moderates.",
+    insight: "Rotation toward defensive assets underway as markets rebalance.",
     ripple: ["Commodity prices soften", "Defensive rotation starts", "Services remain steady"], 
     addendum: null,
     last_updated_iso: new Date().toISOString(),
     sparkline: [0.75, 0.74, 0.72, 0.70, 0.69, 0.68, 0.67, 0.68, 0.68],
-    confidenceDelta: -1 },
-  { id: "geopolitics", posture: "tightening", confidence_pct: 58, strength: 0.72,
-    summary: "Energy security concerns persist as trade fragmentation reshapes supply chains.",
+    confidenceDelta: -1 
+  },
+  { 
+    id: "geopolitics", 
+    posture: "tightening", 
+    confidence_pct: 58, 
+    strength: 0.72,
+    summary: "Trade fragmentation reshapes supply chains; energy security concerns elevate.",
+    insight: "Policy tensions rising — volatility expanding in select regions.",
     ripple: ["Energy premium elevated", "Onshoring accelerates", "Regional blocs solidify"], 
     addendum: null,
     last_updated_iso: new Date().toISOString(),
     sparkline: [0.65, 0.66, 0.68, 0.70, 0.71, 0.72, 0.71, 0.72, 0.72],
-    confidenceDelta: 4 }
+    confidenceDelta: 4 
+  }
 ];
 
 // ============================================================================
@@ -121,7 +145,6 @@ const usePortalRoot = () => {
     setPortalRoot(root);
 
     return () => {
-      // Cleanup with delay to prevent batching issues
       setTimeout(() => {
         if (root && root.childNodes.length === 0 && document.body.contains(root)) {
           root.remove();
@@ -136,7 +159,7 @@ const usePortalRoot = () => {
 // ============================================================================
 // SMART PLACEMENT CALCULATOR (COLLISION-AWARE)
 // ============================================================================
-const calculateSmartPlacement = (nodeRect, cardWidth = 270, cardHeight = 380) => {
+const calculateSmartPlacement = (nodeRect, cardWidth = 270, cardHeight = 340) => {
   const SAFE_MARGIN = 32;
   const GAP_FROM_NODE = 14;
   
@@ -199,7 +222,7 @@ const calculateSmartPlacement = (nodeRect, cardWidth = 270, cardHeight = 380) =>
 };
 
 // ============================================================================
-// HOVER CARD PORTAL COMPONENT — FLICKER-PROOF v2.0 + CONFIDENCE RING ANIMATION
+// HOVER CARD PORTAL — OS HORIZON V3.1 UNIFIED INTELLIGENCE
 // ============================================================================
 const HoverCardPortal = ({ 
   domain, 
@@ -212,9 +235,7 @@ const HoverCardPortal = ({
   getDomainIcon, 
   getDomainText,
   getPostureIcon,
-  getTextOpacityAdjustment,
-  getInsightLine,
-  getConcisenSummary,
+  getConfidenceStrength,
   shouldReduceMotion
 }) => {
   const portalRoot = usePortalRoot();
@@ -222,6 +243,7 @@ const HoverCardPortal = ({
   const [position, setPosition] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
   const [ringAnimationComplete, setRingAnimationComplete] = useState(false);
+  const [isInsightHovered, setIsInsightHovered] = useState(false);
   const rafRef = useRef(null);
 
   // Calculate initial position
@@ -284,10 +306,6 @@ const HoverCardPortal = ({
 
   if (!portalRoot || !position || !domain) return null;
 
-  const opacityAdjust = getTextOpacityAdjustment(domain.id);
-  const insightText = getInsightLine(domain.id);
-  const summaryText = getConcisenSummary(domain);
-
   // Calculate ring metrics
   const ringRadius = 14;
   const ringCircumference = 2 * Math.PI * ringRadius;
@@ -306,10 +324,10 @@ const HoverCardPortal = ({
         opacity: 0,
         y: 4,
         scale: 0.96,
-        transition: { duration: 0.15, ease: 'easeOut' }
+        transition: { duration: 0.18, ease: [0.25, 0.1, 0.25, 1] }
       }}
       transition={{
-        duration: 0.2,
+        duration: TOKENS.HORIZON.t_tooltipOpen,
         ease: [0.25, 0.1, 0.25, 1]
       }}
       style={{
@@ -319,7 +337,7 @@ const HoverCardPortal = ({
         width: '270px',
         maxHeight: position.maxHeight ? `${position.maxHeight}px` : 'none',
         overflowY: position.maxHeight ? 'auto' : 'visible',
-        padding: '16px 18px',
+        padding: '18px 20px',
         borderRadius: '18px',
         backdropFilter: 'blur(22px) saturate(165%) brightness(1.05)',
         WebkitBackdropFilter: 'blur(22px) saturate(165%) brightness(1.05)',
@@ -336,7 +354,7 @@ const HoverCardPortal = ({
       onMouseLeave={onCardLeave}
       role="button"
       tabIndex={0}
-      aria-label={`${domain.id} signal details. Click to expand or press Escape to close.`}
+      aria-label={`${domain.id} signal: ${domain.summary}. Click to expand.`}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
@@ -389,8 +407,8 @@ const HoverCardPortal = ({
 
       {/* Content wrapper */}
       <div style={{ position: 'relative', zIndex: 1 }}>
-        {/* Header: Icon + Title + Posture */}
-        <div className="flex items-center gap-3 mb-4">
+        {/* HEADER: Icon + Signal Name */}
+        <div className="flex items-center gap-3 mb-2">
           <div
             className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
             style={{
@@ -402,69 +420,57 @@ const HoverCardPortal = ({
           >
             {React.cloneElement(getDomainIcon(domain.id), { className: "w-4 h-4", strokeWidth: 2.5 })}
           </div>
-          <div className="flex-1 min-w-0">
-            <motion.h4
-              initial={{ opacity: 0, y: -3 }}
-              animate={{
-                opacity: 0.95 + opacityAdjust,
-                y: 0
-              }}
-              transition={{
-                delay: 0.05,
-                duration: 0.18
-              }}
-              style={{
-                color: TOKENS.colors.textPrimary,
-                fontSize: '18px',
-                fontWeight: 600,
-                letterSpacing: '-0.02em',
-                textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
-                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
-              }}
-            >
-              {domain.id.charAt(0).toUpperCase() + domain.id.slice(1)} Markets
-            </motion.h4>
-            <motion.div
-              initial={{ opacity: 0, y: -3 }}
-              animate={{
-                opacity: 0.82 + opacityAdjust,
-                y: 0
-              }}
-              transition={{
-                delay: 0.08,
-                duration: 0.18
-              }}
-              className="flex items-center gap-1.5"
-            >
-              {React.cloneElement(getPostureIcon(domain.posture), { className: "w-3.5 h-3.5" })}
-              <span style={{
-                color: getDomainText(domain.id),
-                fontSize: '13px',
-                letterSpacing: '0.2px',
-                textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
-                fontWeight: 500,
-                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-              }}>
-                {domain.posture.charAt(0).toUpperCase() + domain.posture.slice(1)} Momentum
-              </span>
-            </motion.div>
-          </div>
+          <motion.h4
+            initial={{ opacity: 0, y: -2 }}
+            animate={{ opacity: 0.95, y: 0 }}
+            transition={{ delay: 0.05, duration: 0.14 }}
+            style={{
+              color: TOKENS.colors.textPrimary,
+              fontSize: '18px',
+              fontWeight: 600,
+              letterSpacing: '-0.02em',
+              textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)',
+              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
+            }}
+          >
+            {domain.id.charAt(0).toUpperCase() + domain.id.slice(1)} Markets
+          </motion.h4>
         </div>
+
+        {/* SUBHEADER: Momentum Label */}
+        <motion.div
+          initial={{ opacity: 0, y: -2 }}
+          animate={{ opacity: 0.82, y: 0 }}
+          transition={{ delay: 0.08, duration: 0.14 }}
+          className="flex items-center gap-1.5 mb-4"
+        >
+          {React.cloneElement(getPostureIcon(domain.posture), { className: "w-3.5 h-3.5" })}
+          <span style={{
+            color: getDomainText(domain.id),
+            fontSize: '13px',
+            letterSpacing: '0.2px',
+            textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
+            fontWeight: 500,
+            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+          }}>
+            {domain.posture.charAt(0).toUpperCase() + domain.posture.slice(1)} Momentum
+          </span>
+        </motion.div>
 
         {/* Subtle section divider */}
         <div style={{
           height: '1px',
           background: `linear-gradient(90deg, transparent, ${TOKENS.HORIZON.drawerDivider}, transparent)`,
-          margin: '0 0 12px 0',
+          margin: '0 0 14px 0',
           opacity: 0.5
         }} />
 
-        {/* Confidence Section — ENHANCED WITH VITALITY ANIMATION */}
+        {/* CONFIDENCE BLOCK — Numeric + Strength Label Only */}
         <motion.div
           initial={{ opacity: 0, y: 3 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.12, duration: 0.18 }}
-          className="flex items-center gap-3 mb-3"
+          transition={{ delay: 0.12, duration: 0.14 }}
+          className="flex items-center gap-3 mb-4"
         >
           <div className="relative w-8 h-8 flex-shrink-0">
             <svg className="transform -rotate-90" width="32" height="32" style={{ overflow: 'visible' }}>
@@ -597,24 +603,26 @@ const HoverCardPortal = ({
               {domain.confidence_pct}
             </motion.div>
           </div>
+          
           <div className="flex-1">
             <div style={{
-              fontSize: '13px',
-              color: 'rgba(255, 255, 255, 0.88)',
+              fontSize: '11px',
+              color: 'rgba(255, 255, 255, 0.75)',
               letterSpacing: '0.15em',
               fontWeight: 600,
               textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
-              marginBottom: '2px'
+              marginBottom: '3px'
             }}>
               CONFIDENCE
             </div>
             <div style={{
-              fontSize: '14px',
-              color: TOKENS.colors.textSecondary,
+              fontSize: '14.5px',
+              color: TOKENS.colors.textPrimary,
               textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
-              fontWeight: 400
+              fontWeight: 600,
+              letterSpacing: '-0.01em'
             }}>
-              {domain.confidence_pct}% — {summaryText.substring(0, 65)}...
+              {domain.confidence_pct}% • {getConfidenceStrength(domain.confidence_pct)}
             </div>
           </div>
         </motion.div>
@@ -624,58 +632,67 @@ const HoverCardPortal = ({
           height: '2px',
           background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
           filter: 'blur(1px)',
-          margin: '12px 0',
+          margin: '14px 0',
           opacity: 0.6
         }} />
 
-        {/* Signal Summary */}
+        {/* BODY DESCRIPTION — Concise cause & effect (1-2 sentences) */}
         <motion.p
           initial={{ opacity: 0, y: 3 }}
-          animate={{ opacity: 0.90 + opacityAdjust, y: 0 }}
-          transition={{ delay: 0.16, duration: 0.18 }}
+          animate={{ opacity: 0.90, y: 0 }}
+          transition={{ delay: 0.16, duration: 0.14 }}
           style={{
-            color: 'rgba(255, 255, 255, 0.90)',
-            fontSize: '16.5px',
-            lineHeight: '25px',
-            marginBottom: '8px',
+            color: 'rgba(255, 255, 255, 0.88)',
+            fontSize: '15px',
+            lineHeight: '1.55',
+            marginBottom: '12px',
             textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
             fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
             fontWeight: 400
           }}
         >
-          {summaryText.length > 100 ? summaryText.substring(0, 100) + '...' : summaryText}
+          {domain.summary}
         </motion.p>
 
-        {/* Insight Pane */}
+        {/* INSIGHT BOX — Lyra-branded with 3% brightness pulse */}
         <motion.div
           initial={{ opacity: 0, y: 2 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.20, duration: 0.2, ease: 'easeInOut' }}
-          whileHover={{ filter: 'brightness(1.05)', transition: { duration: 0.15 } }}
+          transition={{ delay: 0.20, duration: 0.14, ease: 'easeInOut' }}
+          onHoverStart={() => setIsInsightHovered(true)}
+          onHoverEnd={() => setIsInsightHovered(false)}
           style={{
             position: 'relative',
             width: '100%',
-            padding: '7px 12px',
+            padding: '9px 13px',
             borderRadius: '12px',
-            marginTop: '8px',
-            marginBottom: '10px',
+            marginTop: '10px',
+            marginBottom: '14px',
             background: 'rgba(255, 255, 255, 0.10)',
             backdropFilter: 'blur(16px)',
             WebkitBackdropFilter: 'blur(16px)',
             border: '1px solid rgba(255, 255, 255, 0.20)',
             boxShadow: 'inset 0 0 0 1px rgba(255, 255, 255, 0.08)',
             fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-            fontSize: '14.5px',
-            lineHeight: '1.6',
+            fontSize: '14px',
+            lineHeight: '1.5',
             color: 'rgba(255, 255, 255, 0.92)',
-            pointerEvents: 'none'
+            pointerEvents: 'none',
+            filter: isInsightHovered ? 'brightness(1.03)' : 'brightness(1)',
+            transition: 'filter 0.15s ease-out'
           }}
         >
-          <span style={{ fontWeight: 500, opacity: 0.75, marginRight: '4px', letterSpacing: '0.3px' }}>
-            {insightText.split(':')[0]}:
+          <span style={{ 
+            fontWeight: 600, 
+            opacity: 0.85, 
+            marginRight: '5px', 
+            letterSpacing: '0.3px',
+            color: 'rgba(106, 199, 247, 0.9)'
+          }}>
+            Lyra Insight →
           </span>
-          <span style={{ fontWeight: 400, opacity: 0.90 }}>
-            {insightText.split(':')[1]}
+          <span style={{ fontWeight: 400, opacity: 0.92 }}>
+            {domain.insight}
           </span>
         </motion.div>
 
@@ -683,21 +700,16 @@ const HoverCardPortal = ({
         <div style={{
           height: '1px',
           background: `linear-gradient(90deg, transparent, ${TOKENS.HORIZON.drawerDivider}, transparent)`,
-          margin: '12px 0 10px 0',
+          margin: '14px 0 12px 0',
           opacity: 0.5
         }} />
 
-        {/* CTA — APPLE-GRADE MICRO ANIMATION */}
+        {/* CTA — OS HORIZON MICRO-ANIMATION */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.24, duration: 0.15 }}
-          style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center',
-            position: 'relative'
-          }}
+          transition={{ delay: 0.24, duration: 0.14 }}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}
         >
           <motion.button
             onClick={(e) => {
@@ -707,13 +719,10 @@ const HoverCardPortal = ({
             className="cta-expand-signal group"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            whileHover={shouldReduceMotion ? {} : {
-              backgroundColor: 'rgba(255, 255, 255, 0.06)',
-              transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }
-            }}
+            whileHover={shouldReduceMotion ? {} : { backgroundColor: 'rgba(255, 255, 255, 0.06)', y: -1, transition: { duration: 0.008, ease: 'easeInOut' } }}
             whileTap={shouldReduceMotion ? {} : {
               y: 1,
-              transition: { duration: 0.09, ease: 'easeOut' }
+              transition: { duration: 0.008, ease: 'easeOut' }
             }}
             style={{
               position: 'relative',
@@ -734,9 +743,9 @@ const HoverCardPortal = ({
               WebkitTapHighlightColor: 'transparent',
               outline: 'none',
               overflow: 'hidden',
-              willChange: 'transform, background-color, filter'
+              willChange: 'transform, background-color'
             }}
-            aria-label="Open detailed signal view"
+            aria-label="Expand signal for detailed analysis"
           >
             {/* Underline animation layer */}
             {!shouldReduceMotion && (
@@ -750,40 +759,6 @@ const HoverCardPortal = ({
                 initial={{ scaleX: 0 }}
                 whileHover={{
                   scaleX: 1,
-                  transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }
-                }}
-              />
-            )}
-
-            {/* Backdrop blur layer (hover) */}
-            {!shouldReduceMotion && (
-              <motion.div
-                className="absolute inset-0 rounded-[12px]"
-                style={{
-                  backdropFilter: 'blur(0px)',
-                  WebkitBackdropFilter: 'blur(0px)',
-                  pointerEvents: 'none'
-                }}
-                initial={{ backdropFilter: 'blur(0px)', WebkitBackdropFilter: 'blur(0px)' }}
-                whileHover={{
-                  backdropFilter: 'blur(8px)',
-                  WebkitBackdropFilter: 'blur(8px)',
-                  transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }
-                }}
-              />
-            )}
-
-            {/* Glow layer (hover) */}
-            {!shouldReduceMotion && (
-              <motion.div
-                className="absolute inset-0 rounded-[12px]"
-                style={{
-                  boxShadow: '0 0 0 rgba(0,0,0,0)',
-                  pointerEvents: 'none'
-                }}
-                initial={{ boxShadow: '0 0 0 rgba(0,0,0,0)' }}
-                whileHover={{
-                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.18)',
                   transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }
                 }}
               />
@@ -804,38 +779,16 @@ const HoverCardPortal = ({
               whileHover={shouldReduceMotion ? {} : {
                 x: 5,
                 opacity: 1,
-                transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }
+                transition: { duration: 0.008, ease: 'easeInOut' }
               }}
               whileTap={shouldReduceMotion ? {} : {
                 x: 6,
-                transition: { duration: 0.09, ease: 'easeOut' }
+                transition: { duration: 0.008, ease: 'easeOut' }
               }}
             >
               <ArrowRight className="w-3.5 h-3.5" />
             </motion.div>
           </motion.button>
-
-          {/* Tooltip on long hover */}
-          {!shouldReduceMotion && (
-            <motion.div
-              className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 rounded-lg text-xs whitespace-nowrap pointer-events-none"
-              style={{
-                background: 'rgba(10, 14, 20, 0.95)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                color: 'rgba(255, 255, 255, 0.85)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)'
-              }}
-              initial={{ opacity: 0, y: 2 }}
-              whileHover={{
-                opacity: 1,
-                y: 0,
-                transition: { delay: 0.5, duration: 0.15 }
-              }}
-            >
-              Open detailed view
-            </motion.div>
-          )}
         </motion.div>
       </div>
 
@@ -876,7 +829,6 @@ const HoverCardPortal = ({
 
 const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const containerRef = useRef(null);
-  const footerRef = useRef(null);
   const constellationRef = useRef(null);
   const drawerRef = useRef(null);
 
@@ -1036,23 +988,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const getDomainText = (id) => TOKENS.MACRO[id]?.text || TOKENS.MACRO.rates.text;
   const getDomainBloom = (id) => TOKENS.MACRO[id]?.bloom || TOKENS.MACRO.rates.bloom;
 
-  const getTextOpacityAdjustment = useCallback((domainId) => {
-    const bloomColor = TOKENS.MACRO[domainId]?.bloom || TOKENS.MACRO.rates.bloom;
-    const rgbaMatch = bloomColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(,\s*([0-9.]+))?\)/);
-    if (!rgbaMatch) return 0;
-
-    const r = parseFloat(rgbaMatch[1]);
-    const g = parseFloat(rgbaMatch[2]);
-    const b = parseFloat(rgbaMatch[3]);
-    const a = rgbaMatch[5] !== undefined ? parseFloat(rgbaMatch[5]) : 1;
-
-    const luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255 * a;
-
-    if (luminance > 0.65) return 0.05;
-    if (luminance < 0.35) return -0.05;
-    return 0;
-  }, []);
-
   const getDomainIcon = (id) => {
     const p = { className: "w-6 h-6", strokeWidth: 2 };
     return { rates: <BarChart3 {...p} />, fx: <DollarSign {...p} />, growth: <Activity {...p} />, geopolitics: <Globe {...p} /> }[id] || <Activity {...p} />;
@@ -1066,35 +1001,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
   const getBlur = useCallback((type) => isLowPower ? (type === 'panel' ? 'blur(16px)' : 'blur(12px)') : (type === 'panel' ? 'blur(20px)' : 'blur(16px)'), [isLowPower]);
 
-  const getActionableSignal = useCallback((domain) => ({
-    rates: "Defensive rotation likely; monitor tech multiples for compression signals.",
-    fx: "Limited near-term FX risk; watch yield-curve divergence for carry trade shifts.",
-    growth: "Defensive rotation likely within 48 h; monitor commodities for further softening.",
-    geopolitics: "Regional supply-chain hedges warranted; elevated energy exposure continues."
-  }[domain.id] || "Monitor for emerging cross-domain shifts."), []);
-
-  const getSoWhatInterpretation = useCallback((domain) => ({
-    rates: "So what: Long-duration positioning at risk; favor defensive rotation until data stabilizes.",
-    fx: "So what: Carry positions re-enter range; favor domestic exposure until vol returns.",
-    growth: "So what: Favor defensive and pricing-power names amid margin compression.",
-    geopolitics: "So what: Prioritize domestic resilience and energy hedges for portfolio stability."
-  }[domain.id] || "Monitor for shifts in macro equilibrium dynamics."), []);
-
-  const getInsightLine = useCallback((domainId) => ({
-    growth: "Insight: Rotation toward defensive assets underway as markets rebalance.",
-    rates: "Insight: Yields steady — credit markets adjusting to new baseline.",
-    fx: "Insight: Capital flows stabilizing; global risk appetite cooling.",
-    geopolitics: "Insight: Policy tensions rising — volatility expanding in select regions."
-  }[domainId] || "Insight: Market dynamics shifting — monitor key indicators."), []);
-
-  const getConcisenSummary = useCallback((domain) => {
-    const summaries = {
-      rates: "Fed holds firm; terminal rate expectations drift higher on sticky services inflation.",
-      fx: "Global rates converge; carry trades unwind as risk appetite cools gradually.",
-      growth: "China's deceleration is cooling global demand while US resilience persists but eases.",
-      geopolitics: "Energy security concerns persist as trade fragmentation reshapes supply chains."
-    };
-    return summaries[domain.id] || domain.summary;
+  const getConfidenceStrength = useCallback((confidence_pct) => {
+    if (confidence_pct >= 75) return "High Signal Strength";
+    if (confidence_pct >= 65) return "Moderate Strength";
+    if (confidence_pct >= 55) return "Emerging Signal";
+    return "Weak Signal";
   }, []);
 
   const getConfidenceDescriptor = useCallback((confidence_pct) => {
@@ -1621,7 +1532,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </g>
           </svg>
 
-          {/* Hover Card - FLICKER-PROOF with grace zone handlers */}
+          {/* Hover Card - OS HORIZON V3.1 */}
           <AnimatePresence>
             {hoveredDomain && !selectedDomain && hoveredNodeRect && (() => {
               const domain = domains.find(d => d.id === hoveredDomain);
@@ -1640,9 +1551,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   getDomainIcon={getDomainIcon}
                   getDomainText={getDomainText}
                   getPostureIcon={getPostureIcon}
-                  getTextOpacityAdjustment={getTextOpacityAdjustment}
-                  getInsightLine={getInsightLine}
-                  getConcisenSummary={getConcisenSummary}
+                  getConfidenceStrength={getConfidenceStrength}
                   shouldReduceMotion={shouldReduceMotion}
                 />
               );
@@ -1665,7 +1574,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
         {/* EQUILIBRIUM PULSE BAR — OS HORIZON UPGRADE */}
         <motion.div 
-          ref={footerRef} 
           onMouseEnter={() => setIsStatusBarHovered(true)} 
           onMouseLeave={() => setIsStatusBarHovered(false)}
           className="equilibrium-pulse-bar group"
@@ -1936,7 +1844,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       </span>
                       {' '}
                       {dominantDriver === 'balanced' 
-                        ? "Market forces are in near-perfect balance—no single macro theme dominating. This creates tactical opportunities across sectors."
+                        ? "Market forces are in near-perfect balance—no single macro theme dominating. This creates tactical opportunities across sectors. "
                         : `${dominantDriver.charAt(0).toUpperCase() + dominantDriver.slice(1)} dynamics are pulling the market with ${Math.round(domains.find(d => d.id === dominantDriver).strength * 100)}% conviction. Watch for cross-asset spillovers and positioning shifts.`
                       }
                     </p>
@@ -2314,7 +2222,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   lineHeight: '1.6', 
                   fontWeight: 400 
                 }}>
-                  {getConcisenSummary(selectedDomain)}
+                  {selectedDomain.summary}
                 </p>
                 {selectedDomain.addendum && (
                   <p style={{ 
@@ -2459,7 +2367,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   lineHeight: '1.6', 
                   fontWeight: 400 
                 }}>
-                  {getActionableSignal(selectedDomain)}
+                  {selectedDomain.insight}
                 </p>
 
                 <motion.p
@@ -2475,7 +2383,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' 
                   }}
                 >
-                  {getSoWhatInterpretation(selectedDomain)}
+                  {selectedDomain.addendum || selectedDomain.summary}
                 </motion.p>
               </motion.div>
 
