@@ -252,7 +252,7 @@ const PrioritySignal = ({ signal, index, onClick }) => {
         {style.icon}
       </motion.div>
 
-      {/* Content with ENHANCED LEGIBILITY */}
+      {/* Content with MATCHED SIZING from ExecutiveTakeaway */}
       <div className="flex-1 min-w-0 z-10">
         <motion.div 
           className="flex items-center space-x-3 mb-3"
@@ -260,12 +260,14 @@ const PrioritySignal = ({ signal, index, onClick }) => {
           transition={{ duration: 0.2 }}
         >
           <motion.span 
-            className="inline-block px-3 py-1.5 text-sm font-bold rounded-full text-white border backdrop-blur-sm"
+            className="inline-block px-3 py-1.5 font-bold rounded-full text-white border backdrop-blur-sm"
             whileHover={{ scale: 1.05 }}
             style={{ 
               background: 'linear-gradient(135deg, rgba(0,0,0,0.55), rgba(40,40,40,0.35))',
               borderColor: 'rgba(255, 255, 255, 0.35)',
               textShadow: '0 1px 3px rgba(0, 0, 0, 0.8)',
+              fontSize: '15px',
+              letterSpacing: '-0.01em'
             }}
           >
             {signal.tag}
@@ -275,8 +277,9 @@ const PrioritySignal = ({ signal, index, onClick }) => {
               className="text-sm uppercase tracking-widest font-semibold"
               animate={{ opacity: isHovered ? 1 : 0.85 }}
               style={{
-                color: 'rgba(200, 210, 220, 0.95)',
-                textShadow: '0 1px 2px rgba(0, 0, 0, 0.6)'
+                color: 'rgba(255, 255, 255, 0.88)',
+                textShadow: '0 1px 2px rgba(0, 0, 0, 0.6)',
+                letterSpacing: '-0.01em'
               }}
             >
               {signal.source}
@@ -284,14 +287,15 @@ const PrioritySignal = ({ signal, index, onClick }) => {
           )}
         </motion.div>
         <motion.p 
-          className="text-base md:text-lg font-semibold leading-relaxed"
+          className="font-semibold"
           animate={{ x: isHovered ? 2 : 0 }}
           transition={{ duration: 0.2, delay: 0.05 }}
           style={{ 
-            lineHeight: '1.65',
-            color: 'rgba(245, 248, 252, 0.96)',
+            fontSize: '22px',
+            lineHeight: '1.25',
+            color: 'rgba(255, 255, 255, 0.95)',
             textShadow: '0 1px 3px rgba(0, 0, 0, 0.7), 0 2px 6px rgba(0, 0, 0, 0.3)',
-            letterSpacing: '-0.01em',
+            letterSpacing: '-0.02em',
             fontWeight: 600
           }}
         >
@@ -357,7 +361,8 @@ export default function PrioritySignalStrip({ signals = [], onOpenDrawer }) {
     >
       <style>{`
         /* ============================================================================
-           HORIZON OS — FRONT PAGE SIGNALS: LEGIBILITY ENHANCEMENT v2.0
+           HORIZON OS — FRONT PAGE SIGNALS: TYPOGRAPHY CONGRUENCY v3.0
+           Matched to ExecutiveTakeaway component for visual consistency
         ============================================================================ */
         
         /* Glass Blur Tightening - Reduced by 2px for sharper refractions */
@@ -374,11 +379,6 @@ export default function PrioritySignalStrip({ signals = [], onOpenDrawer }) {
         
         .hzn-priority-signal:hover .hzn-edge-shadow {
           opacity: 0.7;
-        }
-        
-        /* Vertical Spacing Adjustment - +8px breathing room */
-        #priority-signals-heading {
-          margin-bottom: 30px !important; /* Was 22px (6px + 8px extra) */
         }
         
         /* Performance optimization */
@@ -436,7 +436,7 @@ export default function PrioritySignalStrip({ signals = [], onOpenDrawer }) {
         }
       `}</style>
 
-      <div className="flex items-center mb-6 pl-2">
+      <div className="flex items-center mb-4 pl-2">
         <div className="relative p-3 rounded-xl bg-gradient-to-br from-red-500/10 to-red-600/20 border border-red-500/30 backdrop-blur-sm">
           <motion.div
             className="absolute inset-0 rounded-xl bg-red-500/10"
@@ -461,18 +461,25 @@ export default function PrioritySignalStrip({ signals = [], onOpenDrawer }) {
         <div className="ml-4">
           <motion.h2 
             id="priority-signals-heading" 
-            className="text-xl font-bold text-gray-100 tracking-tight"
+            className="font-semibold mb-2"
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
+            style={{ 
+              fontSize: '34px',
+              lineHeight: '1.2',
+              color: 'rgba(255, 255, 255, 0.95)',
+              letterSpacing: '-0.02em'
+            }}
           >
             U.S. Front Page Signals
           </motion.h2>
           <motion.p 
-            className="text-sm text-gray-400 font-medium"
+            className="text-sm"
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
+            style={{ color: 'rgba(255, 255, 255, 0.7)' }}
           >
             Urgent developments requiring immediate attention.
           </motion.p>
