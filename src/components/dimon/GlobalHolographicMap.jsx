@@ -199,7 +199,7 @@ const calculateSmartPlacement = (nodeRect, cardWidth = 270, cardHeight = 380) =>
 };
 
 // ============================================================================
-// HOVER CARD PORTAL COMPONENT — FLICKER-PROOF v2.0
+// HOVER CARD PORTAL COMPONENT — FLICKER-PROOF v2.0 + CONFIDENCE RING ANIMATION
 // ============================================================================
 const HoverCardPortal = ({ 
   domain, 
@@ -221,6 +221,7 @@ const HoverCardPortal = ({
   const cardRef = useRef(null);
   const [position, setPosition] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [ringAnimationComplete, setRingAnimationComplete] = useState(false);
   const rafRef = useRef(null);
 
   // Calculate initial position
@@ -234,6 +235,11 @@ const HoverCardPortal = ({
       return () => clearTimeout(timer);
     }
   }, [nodeRect]);
+
+  // Reset ring animation state when domain changes
+  useEffect(() => {
+    setRingAnimationComplete(false);
+  }, [domain?.id]);
 
   // Recalculate on scroll/resize (throttled with rAF)
   useEffect(() => {
@@ -281,6 +287,11 @@ const HoverCardPortal = ({
   const opacityAdjust = getTextOpacityAdjustment(domain.id);
   const insightText = getInsightLine(domain.id);
   const summaryText = getConcisenSummary(domain);
+
+  // Calculate ring metrics
+  const ringRadius = 14;
+  const ringCircumference = 2 * Math.PI * ringRadius;
+  const targetOffset = ringCircumference - (ringCircumference * domain.confidence_pct / 100);
 
   const cardContent = (
     <motion.div
@@ -448,7 +459,7 @@ const HoverCardPortal = ({
           opacity: 0.5
         }} />
 
-        {/* Confidence Section */}
+        {/* Confidence Section — ENHANCED WITH VITALITY ANIMATION */}
         <motion.div
           initial={{ opacity: 0, y: 3 }}
           animate={{ opacity: 1, y: 0 }}
@@ -456,34 +467,135 @@ const HoverCardPortal = ({
           className="flex items-center gap-3 mb-3"
         >
           <div className="relative w-8 h-8 flex-shrink-0">
-            <svg className="transform -rotate-90" width="32" height="32">
-              <circle cx="16" cy="16" r="14" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2.5" />
-              <circle
+            <svg className="transform -rotate-90" width="32" height="32" style={{ overflow: 'visible' }}>
+              {/* Background ring */}
+              <circle 
+                cx="16" 
+                cy="16" 
+                r={ringRadius} 
+                fill="none" 
+                stroke="rgba(255,255,255,0.08)" 
+                strokeWidth="2.5" 
+              />
+              
+              {/* Animated progress ring with glow */}
+              <motion.circle
                 cx="16"
                 cy="16"
-                r="14"
+                r={ringRadius}
                 fill="none"
                 stroke={getDomainColor(domain.id)}
                 strokeWidth="2.5"
                 strokeLinecap="round"
-                strokeDasharray="87.9"
-                strokeDashoffset={87.9 - (87.9 * domain.confidence_pct / 100)}
+                strokeDasharray={ringCircumference}
                 style={{
-                  filter: `drop-shadow(0 0 5px ${getDomainBloom(domain.id)})`,
+                  transformOrigin: 'center',
+                  willChange: 'stroke-dashoffset, filter'
+                }}
+                initial={{ 
+                  strokeDashoffset: ringCircumference,
+                  opacity: 0.85
+                }}
+                animate={shouldReduceMotion ? {
+                  strokeDashoffset: targetOffset,
                   opacity: 1.0
+                } : {
+                  strokeDashoffset: targetOffset,
+                  opacity: 1.0,
+                  filter: ringAnimationComplete 
+                    ? [
+                        `drop-shadow(0 0 5px ${getDomainBloom(domain.id)})`,
+                        `drop-shadow(0 0 8px ${getDomainBloom(domain.id)})`,
+                        `drop-shadow(0 0 5px ${getDomainBloom(domain.id)})`
+                      ]
+                    : `drop-shadow(0 0 5px ${getDomainBloom(domain.id)})`
+                }}
+                transition={shouldReduceMotion ? {
+                  strokeDashoffset: { duration: 0 },
+                  opacity: { duration: 0 }
+                } : {
+                  strokeDashoffset: {
+                    duration: 0.6,
+                    delay: 0.3, // 100ms card fade + 200ms content cascade
+                    ease: [0.25, 0.1, 0.25, 1]
+                  },
+                  opacity: {
+                    duration: 0.6,
+                    delay: 0.3,
+                    ease: [0.25, 0.1, 0.25, 1]
+                  },
+                  filter: ringAnimationComplete ? {
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: 'easeInOut'
+                  } : {
+                    duration: 0.2,
+                    ease: 'easeOut'
+                  }
+                }}
+                onAnimationComplete={() => {
+                  if (!ringAnimationComplete) {
+                    setRingAnimationComplete(true);
+                  }
                 }}
               />
+              
+              {/* Pulse-glow layer (activated after progress completes) */}
+              {!shouldReduceMotion && (
+                <motion.circle
+                  cx="16"
+                  cy="16"
+                  r={ringRadius}
+                  fill="none"
+                  stroke={getDomainColor(domain.id)}
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeDasharray={ringCircumference}
+                  strokeDashoffset={targetOffset}
+                  style={{
+                    transformOrigin: 'center',
+                    pointerEvents: 'none'
+                  }}
+                  initial={{ 
+                    opacity: 0,
+                    filter: `blur(6px) drop-shadow(0 0 6px ${getDomainBloom(domain.id)})`
+                  }}
+                  animate={{
+                    opacity: ringAnimationComplete ? [0, 0.25, 0] : 0,
+                    filter: `blur(6px) drop-shadow(0 0 6px ${getDomainBloom(domain.id)})`
+                  }}
+                  transition={{
+                    opacity: {
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: 'easeInOut'
+                    }
+                  }}
+                />
+              )}
             </svg>
-            <div
+            
+            {/* Confidence percentage text */}
+            <motion.div
               className="absolute inset-0 flex items-center justify-center font-bold"
               style={{
                 color: TOKENS.colors.textPrimary,
                 fontSize: '10px',
                 textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)'
               }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ 
+                opacity: 1, 
+                scale: 1
+              }}
+              transition={{
+                delay: 0.4,
+                duration: 0.25,
+                ease: [0.25, 0.1, 0.25, 1]
+              }}
             >
               {domain.confidence_pct}
-            </div>
+            </motion.div>
           </div>
           <div className="flex-1">
             <div style={{
