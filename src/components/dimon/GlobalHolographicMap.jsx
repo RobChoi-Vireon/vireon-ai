@@ -65,34 +65,62 @@ const ANGLES = { rates: 22.5, fx: 160.0, growth: 297.5, geopolitics: 75.0 };
 const RADII = { rates: 0.35, fx: 0.39, growth: 0.37, geopolitics: 0.32 };
 
 const MOCK_DOMAINS = [
-  { id: "rates", posture: "hawkish", confidence_pct: 78, strength: 0.82,
-    summary: "Fed holds firm; terminal rate expectations drift higher on sticky services inflation.",
-    ripple: ["Credit spreads widen", "Tech multiples compress", "EM funding costs rise"], 
+  {
+    id: "rates",
+    posture: "hawkish",
+    confidence_pct: 78,
+    strength: 0.82,
+    confidence_rationale: "Sticky services inflation persists above Fed target range.",
+    summary: "Terminal rate expectations drift higher as central banks maintain restrictive stance.",
+    insight: "Rotation toward defensive positioning accelerates across duration-sensitive sectors.",
+    ripple: ["Credit spreads widen", "Tech multiples compress", "EM funding costs rise"],
     addendum: null,
     last_updated_iso: new Date().toISOString(),
     sparkline: [0.72, 0.74, 0.76, 0.75, 0.78, 0.80, 0.79, 0.81, 0.82],
-    confidenceDelta: 2 },
-  { id: "fx", posture: "stable", confidence_pct: 65, strength: 0.58,
-    summary: "Global rates converge; carry trades unwind as risk appetite cools gradually.",
+    confidenceDelta: 2
+  },
+  {
+    id: "fx",
+    posture: "stable",
+    confidence_pct: 65,
+    strength: 0.58,
+    confidence_rationale: "Cross-border rate differentials compress to narrow bands.",
+    summary: "Carry trades unwind methodically as global monetary policy paths converge toward neutral.",
+    insight: "Capital flows stabilizing; favor domestic exposure until volatility regime shifts.",
     ripple: ["EM currencies stabilize", "Energy imports neutral", "Bond yields compressed"],
     addendum: "Next 48h: FX likely stable; carry re-risk limited unless yields diverge.",
     last_updated_iso: new Date().toISOString(),
     sparkline: [0.60, 0.59, 0.58, 0.57, 0.58, 0.59, 0.58, 0.57, 0.58],
-    confidenceDelta: -3 },
-  { id: "growth", posture: "softening", confidence_pct: 71, strength: 0.68,
-    summary: "China's deceleration is cooling global demand while US resilience persists but eases.",
-    ripple: ["Commodity prices soften", "Defensive rotation starts", "Services remain steady"], 
+    confidenceDelta: -3
+  },
+  {
+    id: "growth",
+    posture: "softening",
+    confidence_pct: 71,
+    strength: 0.68,
+    confidence_rationale: "China manufacturing PMI contracts for third consecutive month.",
+    summary: "Global demand cooling as US resilience fades and Asia industrial activity slows markedly.",
+    insight: "Defensive rotation building momentum; commodity exposure faces headwinds near-term.",
+    ripple: ["Commodity prices soften", "Defensive rotation starts", "Services remain steady"],
     addendum: null,
     last_updated_iso: new Date().toISOString(),
     sparkline: [0.75, 0.74, 0.72, 0.70, 0.69, 0.68, 0.67, 0.68, 0.68],
-    confidenceDelta: -1 },
-  { id: "geopolitics", posture: "tightening", confidence_pct: 58, strength: 0.72,
-    summary: "Energy security concerns persist as trade fragmentation reshapes supply chains.",
-    ripple: ["Energy premium elevated", "Onshoring accelerates", "Regional blocs solidify"], 
+    confidenceDelta: -1
+  },
+  {
+    id: "geopolitics",
+    posture: "tightening",
+    confidence_pct: 58,
+    strength: 0.72,
+    confidence_rationale: "Trade fragmentation accelerates across strategic sectors.",
+    summary: "Supply chain realignment intensifies as energy security concerns reshape regional alliances.",
+    insight: "Policy tensions rising; volatility premium expanding in select commodity and FX pairs.",
+    ripple: ["Energy premium elevated", "Onshoring accelerates", "Regional blocs solidify"],
     addendum: null,
     last_updated_iso: new Date().toISOString(),
     sparkline: [0.65, 0.66, 0.68, 0.70, 0.71, 0.72, 0.71, 0.72, 0.72],
-    confidenceDelta: 4 }
+    confidenceDelta: 4
+  }
 ];
 
 // ============================================================================
@@ -199,7 +227,7 @@ const calculateSmartPlacement = (nodeRect, cardWidth = 270, cardHeight = 380) =>
 };
 
 // ============================================================================
-// HOVER CARD PORTAL COMPONENT — FLICKER-PROOF v2.0 + CONFIDENCE RING ANIMATION
+// HOVER CARD PORTAL COMPONENT — OS HORIZON INFORMATION HIERARCHY v2.5
 // ============================================================================
 const HoverCardPortal = ({ 
   domain, 
@@ -213,8 +241,6 @@ const HoverCardPortal = ({
   getDomainText,
   getPostureIcon,
   getTextOpacityAdjustment,
-  getInsightLine,
-  getConcisenSummary,
   shouldReduceMotion
 }) => {
   const portalRoot = usePortalRoot();
@@ -285,8 +311,6 @@ const HoverCardPortal = ({
   if (!portalRoot || !position || !domain) return null;
 
   const opacityAdjust = getTextOpacityAdjustment(domain.id);
-  const insightText = getInsightLine(domain.id);
-  const summaryText = getConcisenSummary(domain);
 
   // Calculate ring metrics
   const ringRadius = 14;
@@ -317,9 +341,9 @@ const HoverCardPortal = ({
         left: `${position.x}px`,
         top: `${position.y}px`,
         width: '270px',
-        maxHeight: position.maxHeight ? `${position.maxHeight}px` : 'none',
-        overflowY: position.maxHeight ? 'auto' : 'visible',
-        padding: '16px 18px',
+        maxHeight: '260px',
+        overflowY: 'visible',
+        padding: '14px 16px',
         borderRadius: '18px',
         backdropFilter: 'blur(22px) saturate(165%) brightness(1.05)',
         WebkitBackdropFilter: 'blur(22px) saturate(165%) brightness(1.05)',
@@ -344,22 +368,6 @@ const HoverCardPortal = ({
         }
       }}
     >
-      {/* Scroll fade mask for capped height */}
-      {position.maxHeight && (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: '32px',
-            background: 'linear-gradient(to top, rgba(24, 28, 33, 0.95), transparent)',
-            pointerEvents: 'none',
-            zIndex: 10
-          }}
-        />
-      )}
-
       {/* Reflected halo - alive calmness pulse */}
       {!shouldReduceMotion && (
         <motion.div
@@ -389,10 +397,10 @@ const HoverCardPortal = ({
 
       {/* Content wrapper */}
       <div style={{ position: 'relative', zIndex: 1 }}>
-        {/* Header: Icon + Title + Posture */}
-        <div className="flex items-center gap-3 mb-4">
+        {/* 1. TITLE + STATE */}
+        <div className="flex items-center gap-2.5 mb-3">
           <div
-            className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
+            className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
             style={{
               background: `${getDomainColor(domain.id)}15`,
               border: `1px solid ${getDomainColor(domain.id)}30`,
@@ -400,7 +408,7 @@ const HoverCardPortal = ({
               color: getDomainColor(domain.id)
             }}
           >
-            {React.cloneElement(getDomainIcon(domain.id), { className: "w-4 h-4", strokeWidth: 2.5 })}
+            {React.cloneElement(getDomainIcon(domain.id), { className: "w-3.5 h-3.5", strokeWidth: 2.5 })}
           </div>
           <div className="flex-1 min-w-0">
             <motion.h4
@@ -415,14 +423,15 @@ const HoverCardPortal = ({
               }}
               style={{
                 color: TOKENS.colors.textPrimary,
-                fontSize: '18px',
+                fontSize: '16px',
                 fontWeight: 600,
-                letterSpacing: '-0.02em',
+                letterSpacing: '-0.01em',
                 textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
-                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
+                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                lineHeight: '1.3'
               }}
             >
-              {domain.id.charAt(0).toUpperCase() + domain.id.slice(1)} Markets
+              {domain.id.charAt(0).toUpperCase() + domain.id.slice(1)}
             </motion.h4>
             <motion.div
               initial={{ opacity: 0, y: -3 }}
@@ -434,13 +443,13 @@ const HoverCardPortal = ({
                 delay: 0.08,
                 duration: 0.18
               }}
-              className="flex items-center gap-1.5"
+              className="flex items-center gap-1"
             >
-              {React.cloneElement(getPostureIcon(domain.posture), { className: "w-3.5 h-3.5" })}
+              {React.cloneElement(getPostureIcon(domain.posture), { className: "w-3 h-3" })}
               <span style={{
                 color: getDomainText(domain.id),
-                fontSize: '13px',
-                letterSpacing: '0.2px',
+                fontSize: '12px',
+                letterSpacing: '0.15px',
                 textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
                 fontWeight: 500,
                 fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
@@ -451,37 +460,37 @@ const HoverCardPortal = ({
           </div>
         </div>
 
-        {/* Subtle section divider */}
+        {/* Divider */}
         <div style={{
           height: '1px',
           background: `linear-gradient(90deg, transparent, ${TOKENS.HORIZON.drawerDivider}, transparent)`,
-          margin: '0 0 12px 0',
-          opacity: 0.5
+          margin: '0 0 10px 0',
+          opacity: 0.4
         }} />
 
-        {/* Confidence Section — ENHANCED WITH VITALITY ANIMATION */}
+        {/* 2. CONFIDENCE RING + RATIONALE */}
         <motion.div
           initial={{ opacity: 0, y: 3 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.12, duration: 0.18 }}
-          className="flex items-center gap-3 mb-3"
+          className="flex items-start gap-2.5 mb-3"
         >
-          <div className="relative w-8 h-8 flex-shrink-0">
-            <svg className="transform -rotate-90" width="32" height="32" style={{ overflow: 'visible' }}>
+          <div className="relative w-7 h-7 flex-shrink-0 mt-0.5">
+            <svg className="transform -rotate-90" width="28" height="28" style={{ overflow: 'visible' }}>
               {/* Background ring */}
               <circle 
-                cx="16" 
-                cy="16" 
+                cx="14" 
+                cy="14" 
                 r={ringRadius} 
                 fill="none" 
                 stroke="rgba(255,255,255,0.08)" 
                 strokeWidth="2.5" 
               />
               
-              {/* Animated progress ring with glow */}
+              {/* Animated progress ring */}
               <motion.circle
-                cx="16"
-                cy="16"
+                cx="14"
+                cy="14"
                 r={ringRadius}
                 fill="none"
                 stroke={getDomainColor(domain.id)}
@@ -490,7 +499,7 @@ const HoverCardPortal = ({
                 strokeDasharray={ringCircumference}
                 style={{
                   transformOrigin: 'center',
-                  willChange: 'stroke-dashoffset, filter'
+                  willChange: 'stroke-dashoffset'
                 }}
                 initial={{ 
                   strokeDashoffset: ringCircumference,
@@ -504,11 +513,11 @@ const HoverCardPortal = ({
                   opacity: 1.0,
                   filter: ringAnimationComplete 
                     ? [
-                        `drop-shadow(0 0 5px ${getDomainBloom(domain.id)})`,
-                        `drop-shadow(0 0 8px ${getDomainBloom(domain.id)})`,
-                        `drop-shadow(0 0 5px ${getDomainBloom(domain.id)})`
+                        `drop-shadow(0 0 4px ${getDomainBloom(domain.id)})`,
+                        `drop-shadow(0 0 7px ${getDomainBloom(domain.id)})`,
+                        `drop-shadow(0 0 4px ${getDomainBloom(domain.id)})`
                       ]
-                    : `drop-shadow(0 0 5px ${getDomainBloom(domain.id)})`
+                    : `drop-shadow(0 0 4px ${getDomainBloom(domain.id)})`
                 }}
                 transition={shouldReduceMotion ? {
                   strokeDashoffset: { duration: 0 },
@@ -516,7 +525,7 @@ const HoverCardPortal = ({
                 } : {
                   strokeDashoffset: {
                     duration: 0.6,
-                    delay: 0.3, // 100ms card fade + 200ms content cascade
+                    delay: 0.3,
                     ease: [0.25, 0.1, 0.25, 1]
                   },
                   opacity: {
@@ -539,48 +548,14 @@ const HoverCardPortal = ({
                   }
                 }}
               />
-              
-              {/* Pulse-glow layer (activated after progress completes) */}
-              {!shouldReduceMotion && (
-                <motion.circle
-                  cx="16"
-                  cy="16"
-                  r={ringRadius}
-                  fill="none"
-                  stroke={getDomainColor(domain.id)}
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeDasharray={ringCircumference}
-                  strokeDashoffset={targetOffset}
-                  style={{
-                    transformOrigin: 'center',
-                    pointerEvents: 'none'
-                  }}
-                  initial={{ 
-                    opacity: 0,
-                    filter: `blur(6px) drop-shadow(0 0 6px ${getDomainBloom(domain.id)})`
-                  }}
-                  animate={{
-                    opacity: ringAnimationComplete ? [0, 0.25, 0] : 0,
-                    filter: `blur(6px) drop-shadow(0 0 6px ${getDomainBloom(domain.id)})`
-                  }}
-                  transition={{
-                    opacity: {
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: 'easeInOut'
-                    }
-                  }}
-                />
-              )}
             </svg>
             
-            {/* Confidence percentage text */}
+            {/* Confidence percentage */}
             <motion.div
               className="absolute inset-0 flex items-center justify-center font-bold"
               style={{
                 color: TOKENS.colors.textPrimary,
-                fontSize: '10px',
+                fontSize: '9px',
                 textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)'
               }}
               initial={{ opacity: 0, scale: 0.9 }}
@@ -597,97 +572,88 @@ const HoverCardPortal = ({
               {domain.confidence_pct}
             </motion.div>
           </div>
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <div style={{
-              fontSize: '13px',
-              color: 'rgba(255, 255, 255, 0.88)',
-              letterSpacing: '0.15em',
+              fontSize: '10px',
+              color: 'rgba(255, 255, 255, 0.65)',
+              letterSpacing: '0.08em',
               fontWeight: 600,
+              textTransform: 'uppercase',
               textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
-              marginBottom: '2px'
+              marginBottom: '3px'
             }}>
-              CONFIDENCE
+              Confidence
             </div>
             <div style={{
-              fontSize: '14px',
+              fontSize: '12.5px',
               color: TOKENS.colors.textSecondary,
               textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
-              fontWeight: 400
+              fontWeight: 400,
+              lineHeight: '1.5',
+              letterSpacing: '-0.005em'
             }}>
-              {domain.confidence_pct}% — {summaryText.substring(0, 65)}...
+              {domain.confidence_pct}% — {domain.confidence_rationale}
             </div>
           </div>
         </motion.div>
 
-        {/* Divider */}
-        <div style={{
-          height: '2px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
-          filter: 'blur(1px)',
-          margin: '12px 0',
-          opacity: 0.6
-        }} />
-
-        {/* Signal Summary */}
+        {/* 3. SUMMARY (Market Dynamic) */}
         <motion.p
           initial={{ opacity: 0, y: 3 }}
-          animate={{ opacity: 0.90 + opacityAdjust, y: 0 }}
+          animate={{ opacity: 0.92 + opacityAdjust, y: 0 }}
           transition={{ delay: 0.16, duration: 0.18 }}
           style={{
-            color: 'rgba(255, 255, 255, 0.90)',
-            fontSize: '16.5px',
-            lineHeight: '25px',
-            marginBottom: '8px',
+            color: 'rgba(255, 255, 255, 0.92)',
+            fontSize: '14px',
+            lineHeight: '1.5',
+            marginBottom: '10px',
             textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
             fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
-            fontWeight: 400
+            fontWeight: 400,
+            letterSpacing: '-0.005em'
           }}
         >
-          {summaryText.length > 100 ? summaryText.substring(0, 100) + '...' : summaryText}
+          {domain.summary.length > 120 ? domain.summary.substring(0, 120) + '…' : domain.summary}
         </motion.p>
 
-        {/* Insight Pane */}
+        {/* 4. INSIGHT (So-What Frosted Pane) */}
         <motion.div
           initial={{ opacity: 0, y: 2 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.20, duration: 0.2, ease: 'easeInOut' }}
-          whileHover={{ filter: 'brightness(1.05)', transition: { duration: 0.15 } }}
+          whileHover={{ filter: 'brightness(1.04)', transition: { duration: 0.15 } }}
           style={{
             position: 'relative',
             width: '100%',
-            padding: '7px 12px',
-            borderRadius: '12px',
-            marginTop: '8px',
+            padding: '6px 10px',
+            borderRadius: '10px',
             marginBottom: '10px',
             background: 'rgba(255, 255, 255, 0.10)',
             backdropFilter: 'blur(16px)',
             WebkitBackdropFilter: 'blur(16px)',
-            border: '1px solid rgba(255, 255, 255, 0.20)',
-            boxShadow: 'inset 0 0 0 1px rgba(255, 255, 255, 0.08)',
-            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-            fontSize: '14.5px',
-            lineHeight: '1.6',
-            color: 'rgba(255, 255, 255, 0.92)',
-            pointerEvents: 'none'
+            border: '1px solid rgba(255, 255, 255, 0.18)',
+            boxShadow: 'inset 0 0 0 1px rgba(255, 255, 255, 0.06)',
+            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
+            fontSize: '13px',
+            lineHeight: '1.5',
+            color: 'rgba(255, 255, 255, 0.90)',
+            pointerEvents: 'none',
+            fontWeight: 400,
+            letterSpacing: '-0.005em'
           }}
         >
-          <span style={{ fontWeight: 500, opacity: 0.75, marginRight: '4px', letterSpacing: '0.3px' }}>
-            {insightText.split(':')[0]}:
-          </span>
-          <span style={{ fontWeight: 400, opacity: 0.90 }}>
-            {insightText.split(':')[1]}
-          </span>
+          {domain.insight.length > 100 ? domain.insight.substring(0, 100) + '…' : domain.insight}
         </motion.div>
 
         {/* Divider */}
         <div style={{
           height: '1px',
           background: `linear-gradient(90deg, transparent, ${TOKENS.HORIZON.drawerDivider}, transparent)`,
-          margin: '12px 0 10px 0',
-          opacity: 0.5
+          margin: '0 0 8px 0',
+          opacity: 0.4
         }} />
 
-        {/* CTA — APPLE-GRADE MICRO ANIMATION */}
+        {/* 5. CTA — APPLE-GRADE MICRO ANIMATION */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -720,28 +686,28 @@ const HoverCardPortal = ({
               display: 'inline-flex',
               alignItems: 'center',
               gap: '5px',
-              minHeight: '36px',
-              padding: '8px 12px',
-              borderRadius: '12px',
+              minHeight: '32px',
+              padding: '6px 10px',
+              borderRadius: '10px',
               border: 'none',
               background: 'transparent',
               cursor: 'pointer',
               fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-              fontSize: '14px',
+              fontSize: '13px',
               fontWeight: 500,
-              letterSpacing: '0.25px',
+              letterSpacing: '0.2px',
               color: 'rgba(90, 160, 255, 0.95)',
               WebkitTapHighlightColor: 'transparent',
               outline: 'none',
               overflow: 'hidden',
-              willChange: 'transform, background-color, filter'
+              willChange: 'transform, background-color'
             }}
             aria-label="Open detailed signal view"
           >
             {/* Underline animation layer */}
             {!shouldReduceMotion && (
               <motion.div
-                className="absolute left-3 right-3 bottom-2 h-[1px]"
+                className="absolute left-2 right-2 bottom-1.5 h-[1px]"
                 style={{
                   background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.67), transparent)',
                   transformOrigin: '50% 50%',
@@ -758,7 +724,7 @@ const HoverCardPortal = ({
             {/* Backdrop blur layer (hover) */}
             {!shouldReduceMotion && (
               <motion.div
-                className="absolute inset-0 rounded-[12px]"
+                className="absolute inset-0 rounded-[10px]"
                 style={{
                   backdropFilter: 'blur(0px)',
                   WebkitBackdropFilter: 'blur(0px)',
@@ -776,14 +742,14 @@ const HoverCardPortal = ({
             {/* Glow layer (hover) */}
             {!shouldReduceMotion && (
               <motion.div
-                className="absolute inset-0 rounded-[12px]"
+                className="absolute inset-0 rounded-[10px]"
                 style={{
                   boxShadow: '0 0 0 rgba(0,0,0,0)',
                   pointerEvents: 'none'
                 }}
                 initial={{ boxShadow: '0 0 0 rgba(0,0,0,0)' }}
                 whileHover={{
-                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.18)',
+                  boxShadow: '0 3px 12px rgba(0, 0, 0, 0.16)',
                   transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }
                 }}
               />
@@ -802,40 +768,18 @@ const HoverCardPortal = ({
               initial={{ x: 0, opacity: 0.85 }}
               animate={{ x: 0, opacity: 0.85 }}
               whileHover={shouldReduceMotion ? {} : {
-                x: 5,
+                x: 4,
                 opacity: 1,
                 transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }
               }}
               whileTap={shouldReduceMotion ? {} : {
-                x: 6,
+                x: 5,
                 transition: { duration: 0.09, ease: 'easeOut' }
               }}
             >
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-3 h-3" />
             </motion.div>
           </motion.button>
-
-          {/* Tooltip on long hover */}
-          {!shouldReduceMotion && (
-            <motion.div
-              className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 rounded-lg text-xs whitespace-nowrap pointer-events-none"
-              style={{
-                background: 'rgba(10, 14, 20, 0.95)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                color: 'rgba(255, 255, 255, 0.85)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)'
-              }}
-              initial={{ opacity: 0, y: 2 }}
-              whileHover={{
-                opacity: 1,
-                y: 0,
-                transition: { delay: 0.5, duration: 0.15 }
-              }}
-            >
-              Open detailed view
-            </motion.div>
-          )}
         </motion.div>
       </div>
 
@@ -1068,23 +1012,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     growth: "So what: Favor defensive and pricing-power names amid margin compression.",
     geopolitics: "So what: Prioritize domestic resilience and energy hedges for portfolio stability."
   }[domain.id] || "Monitor for shifts in macro equilibrium dynamics."), []);
-
-  const getInsightLine = useCallback((domainId) => ({
-    growth: "Insight: Rotation toward defensive assets underway as markets rebalance.",
-    rates: "Insight: Yields steady — credit markets adjusting to new baseline.",
-    fx: "Insight: Capital flows stabilizing; global risk appetite cooling.",
-    geopolitics: "Insight: Policy tensions rising — volatility expanding in select regions."
-  }[domainId] || "Insight: Market dynamics shifting — monitor key indicators."), []);
-
-  const getConcisenSummary = useCallback((domain) => {
-    const summaries = {
-      rates: "Fed holds firm; terminal rate expectations drift higher on sticky services inflation.",
-      fx: "Global rates converge; carry trades unwind as risk appetite cools gradually.",
-      growth: "China's deceleration is cooling global demand while US resilience persists but eases.",
-      geopolitics: "Energy security concerns persist as trade fragmentation reshapes supply chains."
-    };
-    return summaries[domain.id] || domain.summary;
-  }, []);
 
   const getConfidenceDescriptor = useCallback((confidence_pct) => {
     if (confidence_pct >= 75) return "High certainty";
@@ -1630,8 +1557,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   getDomainText={getDomainText}
                   getPostureIcon={getPostureIcon}
                   getTextOpacityAdjustment={getTextOpacityAdjustment}
-                  getInsightLine={getInsightLine}
-                  getConcisenSummary={getConcisenSummary}
                   shouldReduceMotion={shouldReduceMotion}
                 />
               );
@@ -2019,7 +1944,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   lineHeight: '1.6', 
                   fontWeight: 400 
                 }}>
-                  {getConcisenSummary(selectedDomain)}
+                  {selectedDomain.summary}
                 </p>
                 {selectedDomain.addendum && (
                   <p style={{ 
@@ -2062,7 +1987,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       style={{ 
                         backdropFilter: getBlur('chip'), 
                         background: i % 2 === 0 ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.04)', 
-                        border: `1px solid ${TOKENS.HORIZON.glassBorder}`, 
+                        border: '1px solid rgba(255,255,255,0.1)', 
                         borderRadius: '16px',
                         padding: '12px 14px', 
                         display: 'flex', 
