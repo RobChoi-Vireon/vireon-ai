@@ -1287,33 +1287,32 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 );
               })}
             </g>
-          </svg>
 
-          {/* Hover Card - Now Rendered via Portal */}
-          <AnimatePresence>
-            {hoveredDomain && !selectedDomain && hoveredNodeRect && (() => {
-              const domain = domains.find(d => d.id === hoveredDomain);
-              if (!domain) return null;
+            {/* Hover Card - Now Rendered via Portal */}
+            <AnimatePresence>
+              {hoveredDomain && !selectedDomain && hoveredNodeRect && (() => {
+                const domain = domains.find(d => d.id === hoveredDomain);
+                if (!domain) return null;
 
-              return (
-                <HoverCardPortal
-                  key={`tooltip-${hoveredDomain}`}
-                  domain={domain}
-                  nodeRect={hoveredNodeRect}
-                  onClose={() => handleCardClick(domain)} // Maps to handleCardClick which opens drawer
-                  getDomainColor={getDomainColor}
-                  getDomainBloom={getDomainBloom}
-                  getDomainIcon={getDomainIcon}
-                  getDomainText={getDomainText}
-                  getPostureIcon={getPostureIcon}
-                  getTextOpacityAdjustment={getTextOpacityAdjustment}
-                  getInsightLine={getInsightLine}
-                  getConcisenSummary={getConcisenSummary}
-                  shouldReduceMotion={shouldReduceMotion}
-                />
-              );
-            })()}
-          </AnimatePresence>
+                return (
+                  <HoverCardPortal
+                    key={`tooltip-${hoveredDomain}`}
+                    domain={domain}
+                    nodeRect={hoveredNodeRect}
+                    onClose={() => handleCardClick(domain)} // Maps to handleCardClick which opens drawer
+                    getDomainColor={getDomainColor}
+                    getDomainBloom={getDomainBloom}
+                    getDomainIcon={getDomainIcon}
+                    getDomainText={getDomainText}
+                    getPostureIcon={getPostureIcon}
+                    getTextOpacityAdjustment={getTextOpacityAdjustment}
+                    getInsightLine={getInsightLine}
+                    getConcisenSummary={getConcisenSummary}
+                    shouldReduceMotion={shouldReduceMotion}
+                  />
+                );
+              })()}
+            </AnimatePresence>
 
           {domains.map((domain) => {
             const orbPos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
