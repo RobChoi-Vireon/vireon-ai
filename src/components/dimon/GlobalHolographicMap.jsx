@@ -6,9 +6,32 @@ import LyraLogo from '../core/LyraLogo';
 import { createPortal } from 'react-dom';
 
 // ============================================================================
-// EQUILIBRIUM — OS HORIZON V3.1 "UNIFIED HOVER INTELLIGENCE"
-// Portal overlay + collision-aware positioning + zero redundancy
+// EQUILIBRIUM — OS HORIZON V3.1 "UNIFIED MOTION CHOREOGRAPHY"
+// Motion curves + micro-interactions + GPU-optimized transitions
 // ============================================================================
+
+const MOTION_TOKENS = {
+  CURVES: {
+    horizonIn: [0.22, 0.61, 0.36, 1],      // gentle ease-out
+    horizonOut: [0.4, 0.0, 0.2, 1],         // iOS-like ease-in
+    horizonSpring: [0.16, 1, 0.3, 1],       // soft spring
+    horizonOpacity: [0.33, 0.0, 0.67, 1],   // smooth alpha
+  },
+  DURATIONS: {
+    ultraFast: 0.06,   // 60ms
+    fast: 0.12,        // 120ms
+    base: 0.18,        // 180ms
+    slow: 0.24,        // 240ms
+    microPulse: 0.008  // 8ms - sub-frame tactile feedback
+  },
+  ELEVATION: {
+    hover: { blur: 12, spread: 0, opacity: 0.10 },
+    chip: { blur: 10, spread: 0, opacity: 0.08 }
+  },
+  INTENT_DELAY: {
+    hoverReveal: 0.12  // 120ms prevents flicker on pass-throughs
+  }
+};
 
 const TOKENS = {
   HORIZON: {
@@ -25,7 +48,7 @@ const TOKENS = {
     blurPanel: 'blur(22px) saturate(165%) brightness(1.05)',
     blurChip: 'blur(16px)', vignetteColor: '#070A0F', vignetteOpacity: 0.28,
     vignetteBlur: 24, localBloomIntensity: 0.18, localBloomRadius: [220, 280],
-    hoverEnterRadius: 6, hoverExitRadius: 10, hoverEnterDelay: 100, hoverExitDelay: 90,
+    hoverEnterRadius: 6, hoverExitRadius: 10, hoverEnterDelay: 120, hoverExitDelay: 90,
     corridorWidth: 16, corridorTTL: 250, velocityThreshold: 600,
     easing: [0.4, 0, 0.2, 1], easingApple: [0.32, 0.72, 0, 1], easingCubic: [0.65, 0, 0.35, 1],
     easingElastic: [0.22, 1, 0.36, 1], easingSine: [0.61, 1, 0.88, 1], easingOutQuad: [0.25, 0.46, 0.45, 0.94],
@@ -222,7 +245,7 @@ const calculateSmartPlacement = (nodeRect, cardWidth = 270, cardHeight = 340) =>
 };
 
 // ============================================================================
-// HOVER CARD PORTAL — OS HORIZON V3.1 UNIFIED INTELLIGENCE
+// HOVER CARD PORTAL — OS HORIZON V3.1 MOTION CHOREOGRAPHY
 // ============================================================================
 const HoverCardPortal = ({ 
   domain, 
@@ -244,26 +267,22 @@ const HoverCardPortal = ({
   const [isVisible, setIsVisible] = useState(false);
   const [ringAnimationComplete, setRingAnimationComplete] = useState(false);
   const [isInsightHovered, setIsInsightHovered] = useState(false);
+  const [isCardHovered, setIsCardHovered] = useState(false);
   const rafRef = useRef(null);
 
-  // Calculate initial position
   useEffect(() => {
     if (nodeRect) {
       const pos = calculateSmartPlacement(nodeRect);
       setPosition(pos);
-      
-      // Delay visibility for smooth entrance
-      const timer = setTimeout(() => setIsVisible(true), 16);
+      const timer = setTimeout(() => setIsVisible(true), MOTION_TOKENS.INTENT_DELAY.hoverReveal * 1000);
       return () => clearTimeout(timer);
     }
   }, [nodeRect]);
 
-  // Reset ring animation state when domain changes
   useEffect(() => {
     setRingAnimationComplete(false);
   }, [domain?.id]);
 
-  // Recalculate on scroll/resize (throttled with rAF)
   useEffect(() => {
     if (!nodeRect) return;
 
@@ -286,49 +305,65 @@ const HoverCardPortal = ({
     return () => {
       window.removeEventListener('scroll', handleUpdate);
       window.removeEventListener('resize', handleUpdate);
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-      }
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, [nodeRect]);
 
-  // Keyboard handler for Escape key
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
+      if (e.key === 'Escape') onClose();
     };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose]);
 
   if (!portalRoot || !position || !domain) return null;
 
-  // Calculate ring metrics
   const ringRadius = 14;
   const ringCircumference = 2 * Math.PI * ringRadius;
   const targetOffset = ringCircumference - (ringCircumference * domain.confidence_pct / 100);
 
+  const adjustedDurations = shouldReduceMotion ? {
+    ultraFast: MOTION_TOKENS.DURATIONS.ultraFast / 2,
+    fast: MOTION_TOKENS.DURATIONS.fast / 2,
+    base: MOTION_TOKENS.DURATIONS.base / 2
+  } : MOTION_TOKENS.DURATIONS;
+
   const cardContent = (
     <motion.div
       ref={cardRef}
-      initial={{ opacity: 0, y: 6, scale: 0.96 }}
+      className="eq-hover-card"
+      initial={{ 
+        opacity: 0, 
+        y: 4, 
+        scale: 0.995,
+        filter: 'blur(2px)'
+      }}
       animate={{
         opacity: isVisible ? 1 : 0,
-        y: isVisible ? 0 : 6,
-        scale: isVisible ? 1 : 0.96
+        y: isVisible ? 0 : 4,
+        scale: isVisible ? 1 : 0.995,
+        filter: isVisible ? 'blur(0px)' : 'blur(2px)',
+        boxShadow: isCardHovered 
+          ? `0 8px 24px rgba(0, 0, 0, ${MOTION_TOKENS.ELEVATION.hover.opacity}), inset 0 0 0 1px rgba(255,255,255,0.08)`
+          : `0 0 ${MOTION_TOKENS.ELEVATION.hover.blur}px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255,255,255,0.08)`
       }}
       exit={{
         opacity: 0,
-        y: 4,
-        scale: 0.96,
-        transition: { duration: 0.18, ease: [0.25, 0.1, 0.25, 1] }
+        y: 2,
+        scale: 0.997,
+        transition: { 
+          duration: adjustedDurations.base, 
+          ease: MOTION_TOKENS.CURVES.horizonOut 
+        }
       }}
       transition={{
-        duration: TOKENS.HORIZON.t_tooltipOpen,
-        ease: [0.25, 0.1, 0.25, 1]
+        duration: adjustedDurations.ultraFast,
+        ease: MOTION_TOKENS.CURVES.horizonIn,
+        boxShadow: {
+          duration: adjustedDurations.fast,
+          ease: MOTION_TOKENS.CURVES.horizonIn
+        }
       }}
       style={{
         position: 'absolute',
@@ -343,15 +378,20 @@ const HoverCardPortal = ({
         WebkitBackdropFilter: 'blur(22px) saturate(165%) brightness(1.05)',
         background: 'rgba(24, 28, 33, 0.45)',
         border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
-        boxShadow: TOKENS.HORIZON.hoverCardShadow,
         pointerEvents: 'auto',
         cursor: 'pointer',
         transformOrigin: position.transformOrigin,
-        willChange: 'transform, opacity'
+        willChange: 'transform, opacity, filter, box-shadow'
       }}
       onClick={onClose}
-      onMouseEnter={onCardEnter}
-      onMouseLeave={onCardLeave}
+      onMouseEnter={() => {
+        setIsCardHovered(true);
+        onCardEnter();
+      }}
+      onMouseLeave={() => {
+        setIsCardHovered(false);
+        onCardLeave();
+      }}
       role="button"
       tabIndex={0}
       aria-label={`${domain.id} signal: ${domain.summary}. Click to expand.`}
@@ -362,23 +402,14 @@ const HoverCardPortal = ({
         }
       }}
     >
-      {/* Scroll fade mask for capped height */}
       {position.maxHeight && (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: '32px',
-            background: 'linear-gradient(to top, rgba(24, 28, 33, 0.95), transparent)',
-            pointerEvents: 'none',
-            zIndex: 10
-          }}
-        />
+        <div style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0, height: '32px',
+          background: 'linear-gradient(to top, rgba(24, 28, 33, 0.95), transparent)',
+          pointerEvents: 'none', zIndex: 10
+        }} />
       )}
 
-      {/* Reflected halo - alive calmness pulse */}
       {!shouldReduceMotion && (
         <motion.div
           className="absolute inset-0 rounded-[18px]"
@@ -389,25 +420,18 @@ const HoverCardPortal = ({
             zIndex: -1
           }}
           animate={{ opacity: [0.10, 0.14, 0.10] }}
-          transition={{ duration: 0.3, repeat: Infinity, ease: 'easeInOut' }}
+          transition={{ duration: TOKENS.HORIZON.t_pulse, repeat: Infinity, ease: 'easeInOut' }}
         />
       )}
 
-      {/* Top rim highlight */}
       <div style={{
-        position: 'absolute',
-        top: 0,
-        left: '14px',
-        right: '14px',
-        height: '1px',
+        position: 'absolute', top: 0, left: '14px', right: '14px', height: '1px',
         background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
-        borderRadius: '999px',
-        pointerEvents: 'none'
+        borderRadius: '999px', pointerEvents: 'none'
       }} />
 
-      {/* Content wrapper */}
       <div style={{ position: 'relative', zIndex: 1 }}>
-        {/* HEADER: Icon + Signal Name */}
+        {/* HEADER */}
         <div className="flex items-center gap-3 mb-2">
           <div
             className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
@@ -423,7 +447,10 @@ const HoverCardPortal = ({
           <motion.h4
             initial={{ opacity: 0, y: -2 }}
             animate={{ opacity: 0.95, y: 0 }}
-            transition={{ delay: 0.05, duration: 0.14 }}
+            transition={{ 
+              delay: shouldReduceMotion ? 0 : 0.05, 
+              duration: adjustedDurations.fast 
+            }}
             style={{
               color: TOKENS.colors.textPrimary,
               fontSize: '18px',
@@ -437,11 +464,14 @@ const HoverCardPortal = ({
           </motion.h4>
         </div>
 
-        {/* SUBHEADER: Momentum Label */}
+        {/* SUBHEADER */}
         <motion.div
           initial={{ opacity: 0, y: -2 }}
           animate={{ opacity: 0.82, y: 0 }}
-          transition={{ delay: 0.08, duration: 0.14 }}
+          transition={{ 
+            delay: shouldReduceMotion ? 0 : 0.08, 
+            duration: adjustedDurations.fast 
+          }}
           className="flex items-center gap-1.5 mb-4"
         >
           {React.cloneElement(getPostureIcon(domain.posture), { className: "w-3.5 h-3.5" })}
@@ -457,7 +487,6 @@ const HoverCardPortal = ({
           </span>
         </motion.div>
 
-        {/* Subtle section divider */}
         <div style={{
           height: '1px',
           background: `linear-gradient(90deg, transparent, ${TOKENS.HORIZON.drawerDivider}, transparent)`,
@@ -465,48 +494,39 @@ const HoverCardPortal = ({
           opacity: 0.5
         }} />
 
-        {/* CONFIDENCE BLOCK — Numeric + Strength Label Only */}
+        {/* CONFIDENCE BLOCK */}
         <motion.div
           initial={{ opacity: 0, y: 3 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.12, duration: 0.14 }}
+          transition={{ 
+            delay: shouldReduceMotion ? 0 : 0.12, 
+            duration: adjustedDurations.fast 
+          }}
           className="flex items-center gap-3 mb-4"
         >
-          <div className="relative w-8 h-8 flex-shrink-0">
+          <motion.div 
+            className="relative w-8 h-8 flex-shrink-0 eq-confidence-ring"
+            whileHover={shouldReduceMotion ? {} : {
+              scale: 1.04,
+              transition: { 
+                duration: adjustedDurations.fast, 
+                ease: MOTION_TOKENS.CURVES.horizonSpring 
+              }
+            }}
+          >
             <svg className="transform -rotate-90" width="32" height="32" style={{ overflow: 'visible' }}>
-              {/* Background ring */}
-              <circle 
-                cx="16" 
-                cy="16" 
-                r={ringRadius} 
-                fill="none" 
-                stroke="rgba(255,255,255,0.08)" 
-                strokeWidth="2.5" 
-              />
-              
-              {/* Animated progress ring with glow */}
+              <circle cx="16" cy="16" r={ringRadius} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2.5" />
               <motion.circle
-                cx="16"
-                cy="16"
-                r={ringRadius}
-                fill="none"
+                cx="16" cy="16" r={ringRadius} fill="none"
                 stroke={getDomainColor(domain.id)}
-                strokeWidth="2.5"
-                strokeLinecap="round"
+                strokeWidth="2.5" strokeLinecap="round"
                 strokeDasharray={ringCircumference}
-                style={{
-                  transformOrigin: 'center',
-                  willChange: 'stroke-dashoffset, filter'
-                }}
-                initial={{ 
-                  strokeDashoffset: ringCircumference,
-                  opacity: 0.85
-                }}
+                style={{ transformOrigin: 'center', willChange: 'stroke-dashoffset, filter' }}
+                initial={{ strokeDashoffset: ringCircumference, opacity: 0.85 }}
                 animate={shouldReduceMotion ? {
-                  strokeDashoffset: targetOffset,
-                  opacity: 1.0
+                  strokeDashoffset: targetOffset, opacity: 1.0
                 } : {
-                  strokeDashoffset: targetOffset,
+                  strokeDashoffset: targetOffset, 
                   opacity: 1.0,
                   filter: ringAnimationComplete 
                     ? [
@@ -517,71 +537,41 @@ const HoverCardPortal = ({
                     : `drop-shadow(0 0 5px ${getDomainBloom(domain.id)})`
                 }}
                 transition={shouldReduceMotion ? {
-                  strokeDashoffset: { duration: 0 },
-                  opacity: { duration: 0 }
+                  strokeDashoffset: { duration: 0 }, opacity: { duration: 0 }
                 } : {
-                  strokeDashoffset: {
-                    duration: 0.6,
-                    delay: 0.3, // 100ms card fade + 200ms content cascade
-                    ease: [0.25, 0.1, 0.25, 1]
-                  },
-                  opacity: {
-                    duration: 0.6,
-                    delay: 0.3,
-                    ease: [0.25, 0.1, 0.25, 1]
-                  },
-                  filter: ringAnimationComplete ? {
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: 'easeInOut'
-                  } : {
-                    duration: 0.2,
-                    ease: 'easeOut'
+                  strokeDashoffset: { duration: 0.6, delay: 0.3, ease: MOTION_TOKENS.CURVES.horizonIn },
+                  opacity: { duration: 0.6, delay: 0.3, ease: MOTION_TOKENS.CURVES.horizonOpacity },
+                  filter: ringAnimationComplete ? { 
+                    duration: TOKENS.HORIZON.t_pulse, 
+                    repeat: Infinity, 
+                    ease: 'easeInOut' 
+                  } : { 
+                    duration: adjustedDurations.base, 
+                    ease: 'easeOut' 
                   }
                 }}
                 onAnimationComplete={() => {
-                  if (!ringAnimationComplete) {
-                    setRingAnimationComplete(true);
-                  }
+                  if (!ringAnimationComplete) setRingAnimationComplete(true);
                 }}
               />
-              
-              {/* Pulse-glow layer (activated after progress completes) */}
               {!shouldReduceMotion && (
                 <motion.circle
-                  cx="16"
-                  cy="16"
-                  r={ringRadius}
-                  fill="none"
+                  cx="16" cy="16" r={ringRadius} fill="none"
                   stroke={getDomainColor(domain.id)}
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
+                  strokeWidth="2.5" strokeLinecap="round"
                   strokeDasharray={ringCircumference}
                   strokeDashoffset={targetOffset}
-                  style={{
-                    transformOrigin: 'center',
-                    pointerEvents: 'none'
-                  }}
-                  initial={{ 
-                    opacity: 0,
-                    filter: `blur(6px) drop-shadow(0 0 6px ${getDomainBloom(domain.id)})`
-                  }}
+                  style={{ transformOrigin: 'center', pointerEvents: 'none' }}
+                  initial={{ opacity: 0, filter: `blur(6px) drop-shadow(0 0 6px ${getDomainBloom(domain.id)})` }}
                   animate={{
                     opacity: ringAnimationComplete ? [0, 0.25, 0] : 0,
                     filter: `blur(6px) drop-shadow(0 0 6px ${getDomainBloom(domain.id)})`
                   }}
-                  transition={{
-                    opacity: {
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: 'easeInOut'
-                    }
-                  }}
+                  transition={{ opacity: { duration: TOKENS.HORIZON.t_pulse, repeat: Infinity, ease: 'easeInOut' } }}
                 />
               )}
             </svg>
             
-            {/* Confidence percentage text */}
             <motion.div
               className="absolute inset-0 flex items-center justify-center font-bold"
               style={{
@@ -590,19 +580,16 @@ const HoverCardPortal = ({
                 textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)'
               }}
               initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ 
-                opacity: 1, 
-                scale: 1
-              }}
-              transition={{
-                delay: 0.4,
-                duration: 0.25,
-                ease: [0.25, 0.1, 0.25, 1]
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ 
+                delay: shouldReduceMotion ? 0 : 0.4, 
+                duration: adjustedDurations.slow, 
+                ease: MOTION_TOKENS.CURVES.horizonIn 
               }}
             >
               {domain.confidence_pct}
             </motion.div>
-          </div>
+          </motion.div>
           
           <div className="flex-1">
             <div style={{
@@ -627,20 +614,14 @@ const HoverCardPortal = ({
           </div>
         </motion.div>
 
-        {/* Divider */}
-        <div style={{
-          height: '2px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
-          filter: 'blur(1px)',
-          margin: '14px 0',
-          opacity: 0.6
-        }} />
-
-        {/* BODY DESCRIPTION — Concise cause & effect (1-2 sentences) */}
+        {/* BODY DESCRIPTION */}
         <motion.p
           initial={{ opacity: 0, y: 3 }}
           animate={{ opacity: 0.90, y: 0 }}
-          transition={{ delay: 0.16, duration: 0.14 }}
+          transition={{ 
+            delay: shouldReduceMotion ? 0 : 0.16, 
+            duration: adjustedDurations.fast 
+          }}
           style={{
             color: 'rgba(255, 255, 255, 0.88)',
             fontSize: '15px',
@@ -654,11 +635,16 @@ const HoverCardPortal = ({
           {domain.summary}
         </motion.p>
 
-        {/* INSIGHT BOX — Lyra-branded with 3% brightness pulse */}
+        {/* INSIGHT BOX — Lyra-branded with hover pulse */}
         <motion.div
+          className="eq-insight-chip"
           initial={{ opacity: 0, y: 2 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.20, duration: 0.14, ease: 'easeInOut' }}
+          transition={{ 
+            delay: shouldReduceMotion ? 0 : 0.20, 
+            duration: adjustedDurations.fast, 
+            ease: MOTION_TOKENS.CURVES.horizonIn 
+          }}
           onHoverStart={() => setIsInsightHovered(true)}
           onHoverEnd={() => setIsInsightHovered(false)}
           style={{
@@ -672,14 +658,16 @@ const HoverCardPortal = ({
             backdropFilter: 'blur(16px)',
             WebkitBackdropFilter: 'blur(16px)',
             border: '1px solid rgba(255, 255, 255, 0.20)',
-            boxShadow: 'inset 0 0 0 1px rgba(255, 255, 255, 0.08)',
+            boxShadow: isInsightHovered 
+              ? `inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 0 ${MOTION_TOKENS.ELEVATION.chip.blur}px rgba(0, 0, 0, ${MOTION_TOKENS.ELEVATION.chip.opacity})`
+              : 'inset 0 0 0 1px rgba(255, 255, 255, 0.08)',
             fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
             fontSize: '14px',
             lineHeight: '1.5',
             color: 'rgba(255, 255, 255, 0.92)',
             pointerEvents: 'none',
             filter: isInsightHovered ? 'brightness(1.03)' : 'brightness(1)',
-            transition: 'filter 0.15s ease-out'
+            transition: `filter ${adjustedDurations.fast}s ${MOTION_TOKENS.CURVES.horizonOpacity.map(n => n).join(',')}, box-shadow ${adjustedDurations.fast}s ${MOTION_TOKENS.CURVES.horizonIn.map(n => n).join(',')}`
           }}
         >
           <span style={{ 
@@ -696,7 +684,6 @@ const HoverCardPortal = ({
           </span>
         </motion.div>
 
-        {/* Divider */}
         <div style={{
           height: '1px',
           background: `linear-gradient(90deg, transparent, ${TOKENS.HORIZON.drawerDivider}, transparent)`,
@@ -704,11 +691,14 @@ const HoverCardPortal = ({
           opacity: 0.5
         }} />
 
-        {/* CTA — OS HORIZON MICRO-ANIMATION */}
+        {/* CTA — 8MS MICRO-NUDGE */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.24, duration: 0.14 }}
+          transition={{ 
+            delay: shouldReduceMotion ? 0 : 0.24, 
+            duration: adjustedDurations.fast 
+          }}
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}
         >
           <motion.button
@@ -719,10 +709,20 @@ const HoverCardPortal = ({
             className="cta-expand-signal group"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            whileHover={shouldReduceMotion ? {} : { backgroundColor: 'rgba(255, 255, 255, 0.06)', y: -1, transition: { duration: 0.008, ease: 'easeInOut' } }}
-            whileTap={shouldReduceMotion ? {} : {
+            whileHover={{
+              backgroundColor: 'rgba(255, 255, 255, 0.06)',
+              y: -1,
+              transition: { 
+                duration: MOTION_TOKENS.DURATIONS.microPulse, 
+                ease: MOTION_TOKENS.CURVES.horizonIn 
+              }
+            }}
+            whileTap={{
               y: 1,
-              transition: { duration: 0.008, ease: 'easeOut' }
+              transition: { 
+                duration: MOTION_TOKENS.DURATIONS.microPulse, 
+                ease: MOTION_TOKENS.CURVES.horizonOut 
+              }
             }}
             style={{
               position: 'relative',
@@ -747,7 +747,6 @@ const HoverCardPortal = ({
             }}
             aria-label="Expand signal for detailed analysis"
           >
-            {/* Underline animation layer */}
             {!shouldReduceMotion && (
               <motion.div
                 className="absolute left-3 right-3 bottom-2 h-[1px]"
@@ -759,31 +758,34 @@ const HoverCardPortal = ({
                 initial={{ scaleX: 0 }}
                 whileHover={{
                   scaleX: 1,
-                  transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }
+                  transition: { 
+                    duration: adjustedDurations.base, 
+                    ease: MOTION_TOKENS.CURVES.horizonIn 
+                  }
                 }}
               />
             )}
 
             <span style={{ position: 'relative', zIndex: 1 }}>Expand signal</span>
             
-            {/* Animated arrow */}
             <motion.div
-              style={{ 
-                position: 'relative', 
-                zIndex: 1,
-                display: 'flex',
-                alignItems: 'center'
-              }}
+              style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center' }}
               initial={{ x: 0, opacity: 0.85 }}
               animate={{ x: 0, opacity: 0.85 }}
-              whileHover={shouldReduceMotion ? {} : {
-                x: 5,
+              whileHover={{
+                x: 2, 
                 opacity: 1,
-                transition: { duration: 0.008, ease: 'easeInOut' }
+                transition: { 
+                  duration: MOTION_TOKENS.DURATIONS.microPulse, 
+                  ease: MOTION_TOKENS.CURVES.horizonIn 
+                }
               }}
-              whileTap={shouldReduceMotion ? {} : {
-                x: 6,
-                transition: { duration: 0.008, ease: 'easeOut' }
+              whileTap={{
+                x: 3,
+                transition: { 
+                  duration: MOTION_TOKENS.DURATIONS.microPulse, 
+                  ease: MOTION_TOKENS.CURVES.horizonOut 
+                }
               }}
             >
               <ArrowRight className="w-3.5 h-3.5" />
@@ -792,7 +794,6 @@ const HoverCardPortal = ({
         </motion.div>
       </div>
 
-      {/* Arrow pointer (if not capped) */}
       {!position.maxHeight && (
         <>
           <div style={{
@@ -800,8 +801,7 @@ const HoverCardPortal = ({
             left: `${position.arrow.x}px`,
             [position.arrow.direction === 'down' ? 'bottom' : 'top']: '-6px',
             transform: 'translateX(-50%)',
-            width: 0,
-            height: 0,
+            width: 0, height: 0,
             borderLeft: '8px solid transparent',
             borderRight: '8px solid transparent',
             [position.arrow.direction === 'down' ? 'borderTop' : 'borderBottom']: `8px solid ${TOKENS.HORIZON.glassBorder}`,
@@ -812,8 +812,7 @@ const HoverCardPortal = ({
             left: `${position.arrow.x}px`,
             [position.arrow.direction === 'down' ? 'bottom' : 'top']: '-5px',
             transform: 'translateX(-50%)',
-            width: 0,
-            height: 0,
+            width: 0, height: 0,
             borderLeft: '7px solid transparent',
             borderRight: '7px solid transparent',
             [position.arrow.direction === 'down' ? 'borderTop' : 'borderBottom']: '7px solid rgba(24, 28, 33, 0.45)',
@@ -829,6 +828,7 @@ const HoverCardPortal = ({
 
 const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const containerRef = useRef(null);
+  const footerRef = useRef(null);
   const constellationRef = useRef(null);
   const drawerRef = useRef(null);
 
@@ -844,7 +844,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const [isLowPower, setIsLowPower] = useState(false);
   const [constellationShift, setConstellationShift] = useState(0);
   const [orbitScale, setOrbitScale] = useState(1.0);
-  const [showEquilibriumTip, setShowEquilibriumTip] = useState(false);
   const [noiseDrift, setNoiseDrift] = useState(0);
   const [isStatusBarHovered, setIsStatusBarHovered] = useState(false);
   const [filamentFlash, setFilamentFlash] = useState(null);
@@ -854,7 +853,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const [showBeam, setShowBeam] = useState(false);
   const [swayTime, setSwayTime] = useState(0);
   const [orbPulseActive, setOrbPulseActive] = useState(false);
-  const [hoveredChartPoint, setHoveredChartPoint] = useState(null);
   const [drawerLuminance, setDrawerLuminance] = useState(1.0);
 
   const glassParallaxX = useSpring(0, { damping: 30, stiffness: 90 });
@@ -890,31 +888,21 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   }, [domains]);
 
   const balanceBias = useMemo(() => {
-    if (dominantDriver === "balanced") return 0.5; // Centered for balanced
+    if (dominantDriver === "balanced") return 0.5;
     const dominant = domains.find(d => d.id === dominantDriver);
-    // Scale balanceBias from 0.0 to 1.0 based on strength relative to 0.5-1.0 range
-    // If dominant strength is 0.65, bias is 0. If strength is 1.0, bias is 1.
-    // If it's a rates or fx, it leans left (0-0.5), if growth or geopolitics, it leans right (0.5-1)
-    const normalizedStrength = Math.min(Math.max((dominant.strength - 0.5) / (1.0 - 0.5), 0), 1); // 0 to 1
+    const normalizedStrength = Math.min(Math.max((dominant.strength - 0.5) / (1.0 - 0.5), 0), 1);
     
     if (dominant.id === "rates" || dominant.id === "fx") {
-      return 0.5 - (normalizedStrength * 0.5); // 0.5 down to 0
-    } else { // growth, geopolitics
-      return 0.5 + (normalizedStrength * 0.5); // 0.5 up to 1
+      return 0.5 - (normalizedStrength * 0.5);
+    } else {
+      return 0.5 + (normalizedStrength * 0.5);
     }
   }, [dominantDriver, domains]);
 
-
   const globalSummary = useMemo(() => {
-    const rates = domains.find(d => d.id === "rates");
-    const fx = domains.find(d => d.id === "fx");
-    const growth = domains.find(d => d.id === "growth");
-    const geo = domains.find(d => d.id === "geopolitics");
-
     if (dominantDriver === "balanced") {
       return `Market forces in near-perfect balance; tactical opportunities across sectors.`;
     }
-
     const dominant = domains.find(d => d.id === dominantDriver);
     return `${dominantDriver.charAt(0).toUpperCase() + dominantDriver.slice(1)} dynamics are pulling the market with ${Math.round(dominant.strength * 100)}% conviction.`;
   }, [domains, dominantDriver]);
@@ -943,7 +931,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
   const nucleusOffset = useMemo(() => {
     const angleRad = (balanceAngle * Math.PI) / 180;
-    const offsetMagnitude = (balanceBias - 0.5) * 2 * 12; // Adjusted for new bias range 0-1
+    const offsetMagnitude = (balanceBias - 0.5) * 2 * 12;
     return { x: Math.sin(angleRad) * offsetMagnitude, y: -Math.cos(angleRad) * offsetMagnitude };
   }, [balanceAngle, balanceBias]);
 
@@ -1014,6 +1002,20 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     if (confidence_pct >= 55) return "Cautious read";
     return "Emerging signal";
   }, []);
+
+  const getActionableSignal = useCallback((domain) => ({
+    rates: "Defensive rotation likely; monitor tech multiples for compression signals.",
+    fx: "Limited near-term FX risk; watch yield-curve divergence for carry trade shifts.",
+    growth: "Defensive rotation likely within 48 h; monitor commodities for further softening.",
+    geopolitics: "Regional supply-chain hedges warranted; elevated energy exposure continues."
+  }[domain.id] || "Monitor for emerging cross-domain shifts."), []);
+
+  const getSoWhatInterpretation = useCallback((domain) => ({
+    rates: "So what: Long-duration positioning at risk; favor defensive rotation until data stabilizes.",
+    fx: "So what: Carry positions re-enter range; favor domestic exposure until vol returns.",
+    growth: "So what: Favor defensive and pricing-power names amid margin compression.",
+    geopolitics: "So what: Prioritize domestic resilience and energy hedges for portfolio stability."
+  }[domain.id] || "Monitor for shifts in macro equilibrium dynamics."), []);
 
   // FLICKER-PROOF HOVER HANDLERS — Atomic state updates + grace zone
   const handleDomainHoverEnter = useCallback((domain, event) => {
@@ -1336,8 +1338,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   }, [selectedDomain, drawerOrigin]);
 
   const balanceIndicatorLeft = balanceBias * 100;
-  const balanceIndicatorColor = dominantDriver === 'balanced' ? 'rgba(255,255,255,0.7)' : getDomainColor(dominantDriver);
-  const balanceIndicatorShadow = dominantDriver === 'balanced' ? 'rgba(255,255,255,0.5)' : getDomainBloom(dominantDriver);
 
   return (
     <motion.section variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} aria-label="Equilibrium" style={{ maxWidth: '84vw', margin: '0 auto' }}>
@@ -1362,7 +1362,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
         <motion.div style={{ position: 'absolute', inset: 0, background: `radial-gradient(900px circle at 52% 48%, ${TOKENS.HORIZON.bgSubsurfaceCenter} 0%, ${TOKENS.HORIZON.bgSubsurfaceEdge} 70%)`, opacity: 0.35, borderRadius: '24px', pointerEvents: 'none', zIndex: 1 }} animate={{ x: shouldReduceMotion ? 0 : bgParallaxX.get() * TOKENS.HORIZON.parallaxOffset * 0.6, y: shouldReduceMotion ? 0 : bgParallaxY.get() * TOKENS.HORIZON.parallaxOffset * 0.6 }} transition={{ duration: TOKENS.HORIZON.t_parallax, ease: TOKENS.HORIZON.easingApple }} />
 
-        <motion.div style={{ position: 'absolute', inset: 0, backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3Cfilter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3Csvg%3E")`, backgroundSize: '200px 200px', opacity: 0.15, borderRadius: '24px', pointerEvents: 'none', zIndex: 2 }} animate={{ backgroundPosition: [`${noiseDrift}px 0px`, `${noiseDrift + 0.3}px 0px`] }} transition={{ duration: 1, ease: 'linear' }} />
+        <motion.div style={{ position: 'absolute', inset: 0, backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3Cfilter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E")`, backgroundSize: '200px 200px', opacity: 0.15, borderRadius: '24px', pointerEvents: 'none', zIndex: 2 }} animate={{ backgroundPosition: [`${noiseDrift}px 0px`, `${noiseDrift + 0.3}px 0px`] }} transition={{ duration: 1, ease: 'linear' }} />
 
         <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(ellipse at center, transparent 60%, ${TOKENS.HORIZON.vignetteColor} 100%)`, opacity: TOKENS.HORIZON.vignetteOpacity, filter: `blur(${TOKENS.HORIZON.vignetteBlur}px)`, borderRadius: '24px', pointerEvents: 'none', zIndex: 2 }} />
 
@@ -1532,7 +1532,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </g>
           </svg>
 
-          {/* Hover Card - OS HORIZON V3.1 */}
+          {/* Hover Card - OS HORIZON V3.1 MOTION */}
           <AnimatePresence>
             {hoveredDomain && !selectedDomain && hoveredNodeRect && (() => {
               const domain = domains.find(d => d.id === hoveredDomain);
@@ -2317,7 +2317,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 height: '2px',
                 background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
                 filter: 'blur(1px)',
-                margin: '16px 0',
+                margin: '16px 0 12px 0',
                 opacity: 0.6
               }} />
 
@@ -2727,6 +2727,106 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         }
         .grid-wrapper {
           pointer-events: all;
+        }
+        /* ============================================================================
+           OS HORIZON V3.1 — MOTION PERFORMANCE LAYER
+        ============================================================================ */
+        
+        /* GPU Compositing - Isolate animated elements */
+        .eq-hover-card,
+        .eq-confidence-ring,
+        .eq-insight-chip,
+        .cta-expand-signal,
+        .drawer-with-header-safe {
+          transform: translateZ(0);
+          backface-visibility: hidden;
+          will-change: transform, opacity, filter;
+        }
+        
+        /* Font Rendering */
+        .eq-hover-card p,
+        .eq-hover-card span,
+        .drawer-with-header-safe p,
+        .drawer-with-header-safe span {
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          text-rendering: optimizeLegibility;
+        }
+        
+        /* Reduced Motion Compliance */
+        @media (prefers-reduced-motion: reduce) {
+          .eq-hover-card,
+          .eq-confidence-ring,
+          .eq-insight-chip,
+          .cta-expand-signal,
+          .drawer-with-header-safe {
+            transition: none !important;
+            animation: none !important;
+          }
+          
+          .eq-confidence-ring circle {
+            animation: none !important;
+          }
+        }
+        
+        /* High Contrast Mode */
+        @media (prefers-contrast: high) {
+          .eq-hover-card {
+            border-color: rgba(255, 255, 255, 0.5) !important;
+          }
+          
+          .eq-hover-card p,
+          .eq-hover-card span {
+            color: #FFFFFF !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 1) !important;
+          }
+        }
+        
+        /* Touch Target Minimum */
+        @media (pointer: coarse) {
+          .cta-expand-signal,
+          .orb-nucleus {
+            min-width: 44px;
+            min-height: 44px;
+          }
+        }
+        
+        /* Focus Rings */
+        .cta-expand-signal:focus-visible {
+          outline: none;
+          box-shadow: 
+            inset 0 0 0 1.5px rgba(255, 255, 255, 0.28),
+            0 0 0 3px rgba(255, 255, 255, 0.10);
+        }
+        
+        .orb-nucleus:focus-visible {
+          outline: 2px solid rgba(122,215,240,0.9);
+          outline-offset: 3px;
+          z-index: 102;
+        }
+        
+        /* Pointer Events Hierarchy */
+        .orb-halo, 
+        .link-path, 
+        .glow-overlay, 
+        .panel-glass, 
+        .drawer-overlay {
+          pointer-events: none !important;
+        }
+        
+        .grid-wrapper {
+          pointer-events: all;
+        }
+        
+        /* Performance: Layer Promotion */
+        @supports (will-change: transform) {
+          .eq-hover-card::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            z-index: -1;
+            border-radius: 19px;
+          }
         }
       `}</style>
     </motion.section>
