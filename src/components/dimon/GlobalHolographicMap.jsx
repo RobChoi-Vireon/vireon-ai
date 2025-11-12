@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLeft, ChevronRight, BarChart3, DollarSign, Activity } from 'lucide-react';
@@ -120,10 +121,12 @@ const usePortalRoot = () => {
     setPortalRoot(root);
 
     return () => {
-      // Cleanup: remove root if no other instances
-      if (root && root.childNodes.length === 0) {
-        root.remove();
-      }
+      // Cleanup with delay to prevent batching issues
+      setTimeout(() => {
+        if (root && root.childNodes.length === 0 && document.body.contains(root)) {
+          root.remove();
+        }
+      }, 100);
     };
   }, []);
 
@@ -196,12 +199,14 @@ const calculateSmartPlacement = (nodeRect, cardWidth = 270, cardHeight = 380) =>
 };
 
 // ============================================================================
-// HOVER CARD PORTAL COMPONENT
+// HOVER CARD PORTAL COMPONENT — FLICKER-PROOF v2.0
 // ============================================================================
 const HoverCardPortal = ({ 
   domain, 
   nodeRect, 
-  onClose, 
+  onClose,
+  onCardEnter,
+  onCardLeave,
   getDomainColor, 
   getDomainBloom, 
   getDomainIcon, 
@@ -259,6 +264,18 @@ const HoverCardPortal = ({
     };
   }, [nodeRect]);
 
+  // Keyboard handler for Escape key
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
   if (!portalRoot || !position || !domain) return null;
 
   const opacityAdjust = getTextOpacityAdjustment(domain.id);
@@ -304,9 +321,17 @@ const HoverCardPortal = ({
         willChange: 'transform, opacity'
       }}
       onClick={onClose}
+      onMouseEnter={onCardEnter}
+      onMouseLeave={onCardLeave}
       role="button"
       tabIndex={0}
       aria-label={`${domain.id} signal details. Click to expand or press Escape to close.`}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClose();
+        }
+      }}
     >
       {/* Scroll fade mask for capped height */}
       {position.maxHeight && (
@@ -617,6 +642,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
   const [hoveredDomain, setHoveredDomain] = useState(null);
   const [hoveredNodeRect, setHoveredNodeRect] = useState(null);
+  const [isCardHovered, setIsCardHovered] = useState(false);
   const hoverEnterTimerRef = useRef(null);
   const hoverExitTimerRef = useRef(null);
 
@@ -827,41 +853,71 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return "Emerging signal";
   }, []);
 
-  // Enhanced hover handlers with rect capture - FIXED: Capture target before timeout
+  // FLICKER-PROOF HOVER HANDLERS — Atomic state updates + grace zone
   const handleDomainHoverEnter = useCallback((domain, event) => {
-    // CRITICAL: Capture target immediately before setTimeout
-    // React recycles synthetic events, so event.currentTarget becomes null in async callbacks
     const target = event.currentTarget;
     
+    // Cancel any pending exit
     if (hoverExitTimerRef.current) {
       clearTimeout(hoverExitTimerRef.current);
       hoverExitTimerRef.current = null;
     }
     
+    // Cancel any pending enter (restart timer)
     if (hoverEnterTimerRef.current) {
       clearTimeout(hoverEnterTimerRef.current);
     }
     
     hoverEnterTimerRef.current = setTimeout(() => {
-      // Check target exists before accessing
       if (target && typeof target.getBoundingClientRect === 'function') {
         try {
           const rect = target.getBoundingClientRect();
-          setHoveredNodeRect(rect);
+          // ATOMIC STATE UPDATE - set both together to prevent race conditions
           setHoveredDomain(domain.id);
+          setHoveredNodeRect(rect);
         } catch (error) {
           console.warn('Failed to get bounding rect:', error);
         }
       }
-    }, TOKENS.HORIZON.hoverEnterDelay + 50);
+    }, TOKENS.HORIZON.hoverEnterDelay);
   }, []);
 
   const handleDomainHoverLeave = useCallback(() => {
+    // Cancel pending enter
     if (hoverEnterTimerRef.current) {
       clearTimeout(hoverEnterTimerRef.current);
       hoverEnterTimerRef.current = null;
     }
     
+    // Cancel any existing exit timer
+    if (hoverExitTimerRef.current) {
+      clearTimeout(hoverExitTimerRef.current);
+    }
+    
+    // EXTENDED GRACE PERIOD - only hide if not hovering card
+    hoverExitTimerRef.current = setTimeout(() => {
+      if (!isCardHovered) {
+        setHoveredDomain(null);
+        setHoveredNodeRect(null);
+      }
+    }, 400); // 400ms grace period for cursor travel
+  }, [isCardHovered]);
+
+  // Card hover handlers - prevent premature hiding
+  const handleCardEnter = useCallback(() => {
+    setIsCardHovered(true);
+    
+    // Cancel any pending exit
+    if (hoverExitTimerRef.current) {
+      clearTimeout(hoverExitTimerRef.current);
+      hoverExitTimerRef.current = null;
+    }
+  }, []);
+
+  const handleCardLeave = useCallback(() => {
+    setIsCardHovered(false);
+    
+    // Quick hide after leaving card
     if (hoverExitTimerRef.current) {
       clearTimeout(hoverExitTimerRef.current);
     }
@@ -869,17 +925,25 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     hoverExitTimerRef.current = setTimeout(() => {
       setHoveredDomain(null);
       setHoveredNodeRect(null);
-    }, TOKENS.HORIZON.hoverExitDelay + 150);
+    }, 150);
   }, []);
 
   const handleOpenDrawer = useCallback((domain) => {
     if (selectedDomain?.id === domain.id) return;
     
-    // Clear hover state and rect immediately when opening drawer
+    // IMMEDIATE CLEANUP - clear all hover state and timers atomically
+    if (hoverEnterTimerRef.current) {
+      clearTimeout(hoverEnterTimerRef.current);
+      hoverEnterTimerRef.current = null;
+    }
+    if (hoverExitTimerRef.current) {
+      clearTimeout(hoverExitTimerRef.current);
+      hoverExitTimerRef.current = null;
+    }
+    
     setHoveredDomain(null);
     setHoveredNodeRect(null);
-    if (hoverEnterTimerRef.current) clearTimeout(hoverEnterTimerRef.current);
-    if (hoverExitTimerRef.current) clearTimeout(hoverExitTimerRef.current);
+    setIsCardHovered(false);
 
     const domainPos = getOrbPosition(domain.id, domain.strength, swayTime, 0, 0); 
     const containerRect = containerRef.current?.getBoundingClientRect();
@@ -910,6 +974,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   }, [selectedDomain, getOrbPosition, swayTime]);
 
   const handleCardClick = useCallback((domain) => {
+    // Clear all timers
     if (hoverEnterTimerRef.current) {
       clearTimeout(hoverEnterTimerRef.current);
       hoverEnterTimerRef.current = null;
@@ -919,8 +984,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       hoverExitTimerRef.current = null;
     }
     
+    // Atomic state clear
     setHoveredDomain(null);
     setHoveredNodeRect(null);
+    setIsCardHovered(false);
+    
     handleOpenDrawer(domain);
   }, [handleOpenDrawer]);
 
@@ -1064,6 +1132,18 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     rafId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafId);
   }, [shouldReduceMotion]);
+  
+  // Cleanup timers on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverEnterTimerRef.current) {
+        clearTimeout(hoverEnterTimerRef.current);
+      }
+      if (hoverExitTimerRef.current) {
+        clearTimeout(hoverExitTimerRef.current);
+      }
+    };
+  }, []);
 
   const drawerCenterPosition = useMemo(() => {
     if (!selectedDomain || !drawerOrigin) return { x: 0, y: 0 };
@@ -1290,7 +1370,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </g>
           </svg>
 
-          {/* Hover Card - Now Rendered via Portal */}
+          {/* Hover Card - FLICKER-PROOF with grace zone handlers */}
           <AnimatePresence>
             {hoveredDomain && !selectedDomain && hoveredNodeRect && (() => {
               const domain = domains.find(d => d.id === hoveredDomain);
@@ -1302,6 +1382,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   domain={domain}
                   nodeRect={hoveredNodeRect}
                   onClose={() => handleCardClick(domain)}
+                  onCardEnter={handleCardEnter}
+                  onCardLeave={handleCardLeave}
                   getDomainColor={getDomainColor}
                   getDomainBloom={getDomainBloom}
                   getDomainIcon={getDomainIcon}
