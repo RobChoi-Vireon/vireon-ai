@@ -573,6 +573,74 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     };
   }, [selectedDomain, drawerOrigin]);
 
+  // Dynamic hover card positioning with edge detection (OS Horizon v2.4)
+  const getOptimalCardPosition = useCallback((orbPos, cardWidth = 270, cardHeight = 400) => {
+    const safeMargin = 32;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    
+    // Determine horizontal position
+    const isLeft = orbPos.x < cx;
+    let tooltipX = isLeft ? orbPos.x + orbPos.radius + 22 : orbPos.x - orbPos.radius - 22;
+    let anchorSide = isLeft ? 'left' : 'right';
+    let xTransform = isLeft ? '0' : '-100%';
+    
+    // Check right edge overflow
+    if (isLeft && tooltipX + cardWidth > viewportWidth - safeMargin) {
+      // Switch to left side
+      tooltipX = orbPos.x - orbPos.radius - 22;
+      anchorSide = 'right';
+      xTransform = '-100%';
+    }
+    
+    // Check left edge overflow
+    if (!isLeft && tooltipX - cardWidth < safeMargin) {
+      // Switch to right side
+      tooltipX = orbPos.x + orbPos.radius + 22;
+      anchorSide = 'left';
+      xTransform = '0';
+    }
+    
+    // Final left edge safety check
+    if (anchorSide === 'right' && tooltipX - cardWidth < safeMargin) {
+      tooltipX = safeMargin + cardWidth;
+    }
+    
+    // Determine vertical position
+    let tooltipY = orbPos.y;
+    let yTransform = '-50%'; // Default center alignment
+    let verticalAnchor = 'center';
+    
+    // Check bottom edge overflow
+    if (tooltipY + (cardHeight / 2) > viewportHeight - safeMargin) {
+      // Align to bottom
+      tooltipY = viewportHeight - safeMargin - cardHeight;
+      yTransform = '0';
+      verticalAnchor = 'bottom';
+    }
+    
+    // Check top edge overflow
+    if (tooltipY - (cardHeight / 2) < headerSafe + safeMargin) {
+      // Align to top
+      tooltipY = headerSafe + safeMargin;
+      yTransform = '0';
+      verticalAnchor = 'top';
+    }
+    
+    return {
+      x: tooltipX,
+      y: tooltipY,
+      xTransform,
+      yTransform,
+      anchorSide,
+      verticalAnchor,
+      arrowPosition: {
+        x: orbPos.x,
+        y: orbPos.y
+      }
+    };
+  }, [cx, headerSafe]);
+
   return (
     <motion.section variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} aria-label="Macro Constellation" style={{ maxWidth: '84vw', margin: '0 auto' }}>
       <div className="flex items-center justify-between mb-6 pl-2">
@@ -767,20 +835,27 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </g>
           </svg>
 
-          {/* Hover Card - FINAL OS HORIZON POLISH v2.2 */}
+          {/* Hover Card - OS HORIZON v2.4 - DYNAMIC POSITIONING */}
           <AnimatePresence>
             {hoveredDomain && !selectedDomain && (() => {
               const domain = domains.find(d => d.id === hoveredDomain);
               if (!domain) return null;
 
               const orbPos = getOrbPosition(hoveredDomain, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
-              const isLeft = orbPos.x < cx;
-              const tooltipX = isLeft ? orbPos.x + orbPos.radius + 22 : orbPos.x - orbPos.radius - 22;
-              const tooltipY = orbPos.y;
+              const cardDimensions = { width: 270, height: 380 }; // Estimated card height
+              const position = getOptimalCardPosition(orbPos, cardDimensions.width, cardDimensions.height);
 
               const opacityAdjust = getTextOpacityAdjustment(domain.id);
               const insightText = getInsightLine(hoveredDomain);
               const summaryText = getConcisenSummary(domain);
+
+              // Calculate arrow position relative to card
+              const isArrowOnLeft = position.anchorSide === 'left';
+              const arrowY = position.verticalAnchor === 'center' 
+                ? '50%' 
+                : position.verticalAnchor === 'top'
+                  ? Math.max(40, position.arrowPosition.y - position.y)
+                  : Math.min(cardDimensions.height - 40, position.arrowPosition.y - position.y);
 
               return (
                 <motion.div
@@ -800,10 +875,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   }}
                   style={{
                     position: 'absolute',
-                    left: `${tooltipX}px`,
-                    top: `${tooltipY}px`,
-                    transform: `translate(${isLeft ? '0' : '-100%'}, -50%)`,
-                    width: '270px',
+                    left: `${position.x}px`,
+                    top: `${position.y}px`,
+                    transform: `translate(${position.xTransform}, ${position.yTransform})`,
+                    width: `${cardDimensions.width}px`,
                     padding: '16px 18px',
                     borderRadius: '18px',
                     backdropFilter: 'blur(22px) saturate(165%) brightness(1.05)',
@@ -812,8 +887,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
                     boxShadow: TOKENS.HORIZON.hoverCardShadow,
                     pointerEvents: 'auto',
-                    zIndex: 101,
-                    cursor: 'pointer'
+                    zIndex: 120, // Highest layer in Equilibrium canvas
+                    cursor: 'pointer',
+                    transition: 'left 0.2s cubic-bezier(0.25, 0.1, 0.25, 1), top 0.2s cubic-bezier(0.25, 0.1, 0.25, 1)'
                   }}
                   onClick={() => handleCardClick(domain)}
                   onMouseEnter={() => {
@@ -854,11 +930,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     />
                   )}
                   
-                  {/* Vignette mask for glare clamp */}
+                  {/* Vignette mask for glare clamp - adjusted for dynamic positioning */}
                   <div 
                     className="absolute inset-0 rounded-[18px]"
                     style={{
-                      background: `radial-gradient(circle at ${isLeft ? '85%' : '15%'} 15%, rgba(0,0,0,0.22), rgba(0,0,0,0) 140px)`,
+                      background: `radial-gradient(circle at ${isArrowOnLeft ? '85%' : '15%'} ${position.verticalAnchor === 'center' ? '50%' : position.verticalAnchor === 'top' ? '20%' : '80%'}, rgba(0,0,0,0.22), rgba(0,0,0,0) 140px)`,
                       pointerEvents: 'none',
                       zIndex: 0
                     }}
@@ -1175,33 +1251,41 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     </motion.div>
                   </div>
 
-                  {/* Pointer triangles */}
-                  <div
+                  {/* Pointer triangles - DYNAMICALLY POSITIONED */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.1, duration: 0.15 }}
                     style={{
                       position: 'absolute',
-                      [isLeft ? 'left' : 'right']: '-6px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
+                      [isArrowOnLeft ? 'left' : 'right']: isArrowOnLeft ? '-6px' : '-6px',
+                      top: position.verticalAnchor === 'center' ? arrowY : `${arrowY}px`,
+                      transform: position.verticalAnchor === 'center' ? 'translateY(-50%)' : 'none',
                       width: 0,
                       height: 0,
                       borderTop: '8px solid transparent',
                       borderBottom: '8px solid transparent',
-                      [isLeft ? 'borderRight' : 'borderLeft']: `8px solid ${TOKENS.HORIZON.glassBorder}`,
-                      pointerEvents: 'none'
+                      [isArrowOnLeft ? 'borderRight' : 'borderLeft']: `8px solid ${TOKENS.HORIZON.glassBorder}`,
+                      pointerEvents: 'none',
+                      transition: 'top 0.2s cubic-bezier(0.25, 0.1, 0.25, 1)'
                     }}
                   />
-                  <div
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.1, duration: 0.15 }}
                     style={{
                       position: 'absolute',
-                      [isLeft ? 'left' : 'right']: '-5px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
+                      [isArrowOnLeft ? 'left' : 'right']: isArrowOnLeft ? '-5px' : '-5px',
+                      top: position.verticalAnchor === 'center' ? arrowY : `${arrowY}px`,
+                      transform: position.verticalAnchor === 'center' ? 'translateY(-50%)' : 'none',
                       width: 0,
                       height: 0,
                       borderTop: '7px solid transparent',
                       borderBottom: '7px solid transparent',
-                      [isLeft ? 'borderRight' : 'borderLeft']: '7px solid rgba(24, 28, 33, 0.45)',
-                      pointerEvents: 'none'
+                      [isArrowOnLeft ? 'borderRight' : 'borderLeft']: '7px solid rgba(24, 28, 33, 0.45)',
+                      pointerEvents: 'none',
+                      transition: 'top 0.2s cubic-bezier(0.25, 0.1, 0.25, 1)'
                     }}
                   />
                 </motion.div>
