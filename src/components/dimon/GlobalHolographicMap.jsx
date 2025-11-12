@@ -6,8 +6,8 @@ import LyraLogo from '../core/LyraLogo';
 import { createPortal } from 'react-dom';
 
 // ============================================================================
-// MACRO CONSTELLATION — OS HORIZON V2.6 "PORTAL + SMART PLACEMENT + ANTI-CLIP"
-// Fixed overlay + collision-aware positioning + graceful edge handling + no scroll
+// MACRO CONSTELLATION — OS HORIZON V3.0 "PORTAL + COLLISION-AWARE PLACEMENT"
+// Portal overlay + advanced collision detection + graceful edge handling
 // ============================================================================
 
 const TOKENS = {
@@ -25,7 +25,7 @@ const TOKENS = {
     blurPanel: 'blur(22px) saturate(165%) brightness(1.05)',
     blurChip: 'blur(16px)', vignetteColor: '#070A0F', vignetteOpacity: 0.28,
     vignetteBlur: 24, localBloomIntensity: 0.18, localBloomRadius: [220, 280],
-    hoverEnterRadius: 6, hoverExitRadius: 10, hoverEnterDelay: 100, hoverExitDelay: 90,
+    hoverEnterRadius: 6, hoverExitRadius: 10, hoverEnterDelay: 150, hoverExitDelay: 200,
     corridorWidth: 16, corridorTTL: 250, velocityThreshold: 600,
     easing: [0.4, 0, 0.2, 1], easingApple: [0.32, 0.72, 0, 1], easingCubic: [0.65, 0, 0.35, 1],
     easingElastic: [0.22, 1, 0.36, 1], easingSine: [0.61, 1, 0.88, 1], easingOutQuad: [0.25, 0.46, 0.45, 0.94],
@@ -96,17 +96,17 @@ const MOCK_DOMAINS = [
 ];
 
 // ============================================================================
-// PORTAL OVERLAY ROOT MANAGER — ANTI-CLIP ARCHITECTURE
+// PORTAL OVERLAY ROOT MANAGER — V3.0 PRODUCTION-GRADE
 // ============================================================================
 const usePortalRoot = () => {
   const [portalRoot, setPortalRoot] = useState(null);
 
   useEffect(() => {
-    let root = document.getElementById('equilibrium-hover-overlay');
+    let root = document.getElementById('equilibrium-overlay-root');
     
     if (!root) {
       root = document.createElement('div');
-      root.id = 'equilibrium-hover-overlay';
+      root.id = 'equilibrium-overlay-root';
       root.setAttribute('aria-hidden', 'true');
       root.style.cssText = `
         position: fixed;
@@ -133,60 +133,117 @@ const usePortalRoot = () => {
 };
 
 // ============================================================================
-// SMART PLACEMENT CALCULATOR — ENHANCED EDGE-AWARE LOGIC
+// COLLISION-AWARE SMART PLACEMENT — V3.0 WITH FLIP, SHIFT, CAP
 // ============================================================================
-const calculateSmartPlacement = (nodeRect) => {
-  const SAFE_PADDING = 32;
-  const GAP_FROM_NODE = 12;
-  const CARD_WIDTH = 270;
-  const CARD_MAX_HEIGHT = 260;
+const calculateSmartPlacement = (nodeRect, cardWidth = 270, cardHeight = 380) => {
+  const SAFE_MARGIN = 32;
+  const GAP_FROM_NODE = 14;
   
   const viewport = {
     width: window.innerWidth,
     height: window.innerHeight
   };
 
-  // Calculate available space above and below node
-  const spaceAbove = nodeRect.top - SAFE_PADDING;
-  const spaceBelow = viewport.height - nodeRect.bottom - SAFE_PADDING;
+  // Footer bar detection (assume 84px height at bottom)
+  const footerHeight = 84;
+  const footerTop = viewport.height - footerHeight;
 
-  // Determine placement: prefer below, flip to above if insufficient space
+  // Start with preferred placement: bottom-start
   let placement = 'bottom';
+  let x = nodeRect.left;
   let y = nodeRect.bottom + GAP_FROM_NODE;
-  
-  if (spaceBelow < CARD_MAX_HEIGHT && spaceAbove > spaceBelow) {
-    placement = 'top';
-    y = nodeRect.top - GAP_FROM_NODE - CARD_MAX_HEIGHT;
+  let maxHeight = null;
+  let transformOrigin = 'top left';
+
+  // VERTICAL COLLISION: FLIP if would collide with bottom or footer
+  const cardBottom = y + cardHeight;
+  if (cardBottom > footerTop - SAFE_MARGIN) {
+    // Try flipping to top
+    const topY = nodeRect.top - GAP_FROM_NODE - cardHeight;
+    const spaceAbove = nodeRect.top - SAFE_MARGIN;
+    
+    if (spaceAbove >= cardHeight) {
+      // Flip to top-start
+      placement = 'top';
+      y = topY;
+      transformOrigin = 'bottom left';
+    } else {
+      // Cap height to available space
+      // Check which side has more available space for potential capping, preferring below
+      const availableSpaceBelow = footerTop - SAFE_MARGIN - (nodeRect.bottom + GAP_FROM_NODE);
+      const availableSpaceAbove = nodeRect.top - SAFE_MARGIN - GAP_FROM_NODE;
+      
+      if (availableSpaceBelow > 200 || availableSpaceAbove > 200) { // Only cap if there's reasonable space
+        if (availableSpaceBelow >= availableSpaceAbove) { // More space below or equal, try capping below
+          placement = 'bottom-capped';
+          maxHeight = availableSpaceBelow;
+          y = nodeRect.bottom + GAP_FROM_NODE;
+          transformOrigin = 'top left';
+        } else { // More space above, try capping above
+          placement = 'top-capped';
+          maxHeight = availableSpaceAbove;
+          y = SAFE_MARGIN; // Align top of card with safe margin
+          transformOrigin = 'bottom left';
+        }
+      } else { // Not enough space for a meaningful cap on either side, just try to center vertically
+          placement = 'centered-capped';
+          y = SAFE_MARGIN;
+          maxHeight = viewport.height - SAFE_MARGIN * 2 - footerHeight;
+          transformOrigin = 'top center'; // Or bottom center, depending on original node rect
+      }
+    }
   }
 
-  // Clamp vertical position to safe boundaries
-  y = Math.max(SAFE_PADDING, Math.min(y, viewport.height - CARD_MAX_HEIGHT - SAFE_PADDING));
+  // Clamp vertical position to safe boundaries after initial placement attempt
+  // Ensure y is not above SAFE_MARGIN from top
+  y = Math.max(SAFE_MARGIN, y);
+  // Ensure bottom of card is not below footerTop - SAFE_MARGIN
+  const effectiveCardHeight = maxHeight || cardHeight;
+  y = Math.min(y, footerTop - SAFE_MARGIN - effectiveCardHeight);
 
-  // Horizontal positioning: center on node, clamp to viewport
-  let x = nodeRect.left + (nodeRect.width / 2) - (CARD_WIDTH / 2);
-  x = Math.max(SAFE_PADDING, Math.min(x, viewport.width - CARD_WIDTH - SAFE_PADDING));
+
+  // Horizontal collision: SHIFT if would overflow edges
+  if (x + cardWidth > viewport.width - SAFE_MARGIN) {
+    x = viewport.width - cardWidth - SAFE_MARGIN;
+    // Adjust transformOrigin based on shift
+    if (transformOrigin.includes('left')) transformOrigin = transformOrigin.replace('left', 'right');
+  }
+
+  if (x < SAFE_MARGIN) {
+    x = SAFE_MARGIN;
+    // Adjust transformOrigin based on shift
+    if (transformOrigin.includes('right')) transformOrigin = transformOrigin.replace('right', 'left');
+  }
 
   // Calculate arrow position (points to node center)
-  const arrowX = nodeRect.left + (nodeRect.width / 2) - x;
-  const arrowY = placement === 'top' ? CARD_MAX_HEIGHT : -8;
+  const nodeCenter = nodeRect.left + (nodeRect.width / 2);
+  let arrowX = nodeCenter - x; // Relative to card's top-left corner
+  arrowX = Math.max(16, Math.min(arrowX, cardWidth - 16)); // Clamp arrow X within card bounds to avoid it going out of card body
+
+  let arrowY;
+  if (placement.includes('top')) {
+    arrowY = (maxHeight || cardHeight); // Arrow points down from bottom of card
+  } else {
+    arrowY = -GAP_FROM_NODE; // Arrow points up from top of card
+  }
 
   return {
     x,
     y,
-    width: CARD_WIDTH,
-    maxHeight: CARD_MAX_HEIGHT,
+    width: cardWidth,
+    maxHeight: maxHeight, // Can be null, HoverCardPortal should handle default if null
     placement,
     arrow: {
       x: arrowX,
       y: arrowY,
-      direction: placement === 'top' ? 'down' : 'up'
+      direction: placement.includes('top') ? 'down' : 'up'
     },
-    transformOrigin: placement === 'top' ? 'bottom center' : 'top center'
+    transformOrigin
   };
 };
 
 // ============================================================================
-// HOVER CARD PORTAL COMPONENT — NO-CLIP + CONFIDENCE RING ANIMATION
+// HOVER CARD PORTAL COMPONENT — V3.0 COLLISION-AWARE + VITALITY RING
 // ============================================================================
 const HoverCardPortal = ({ 
   domain, 
@@ -210,12 +267,14 @@ const HoverCardPortal = ({
   const [isVisible, setIsVisible] = useState(false);
   const [ringAnimationComplete, setRingAnimationComplete] = useState(false);
   const rafRef = useRef(null);
+  const prevPositionRef = useRef(null);
 
   // Calculate initial position
   useEffect(() => {
     if (nodeRect) {
-      const pos = calculateSmartPlacement(nodeRect);
+      const pos = calculateSmartPlacement(nodeRect, 270, 380);
       setPosition(pos);
+      prevPositionRef.current = pos;
       
       const timer = setTimeout(() => setIsVisible(true), 16);
       return () => clearTimeout(timer);
@@ -227,13 +286,25 @@ const HoverCardPortal = ({
     setRingAnimationComplete(false);
   }, [domain?.id]);
 
-  // Recalculate on scroll/resize (throttled with rAF)
+  // Recalculate on scroll/resize with smooth transitions (60fps throttled)
   useEffect(() => {
     if (!nodeRect) return;
 
     const updatePosition = () => {
-      const pos = calculateSmartPlacement(nodeRect);
-      setPosition(pos);
+      const newPos = calculateSmartPlacement(nodeRect, 270, 380);
+      
+      // Only update if position actually changed
+      if (prevPositionRef.current) {
+        const changed = 
+          Math.abs(newPos.x - prevPositionRef.current.x) > 1 ||
+          Math.abs(newPos.y - prevPositionRef.current.y) > 1 ||
+          newPos.placement !== prevPositionRef.current.placement;
+        
+        if (changed) {
+          setPosition(newPos);
+          prevPositionRef.current = newPos;
+        }
+      }
     };
 
     const handleUpdate = () => {
@@ -255,6 +326,27 @@ const HoverCardPortal = ({
       }
     };
   }, [nodeRect]);
+
+  // Auto-dismiss if node leaves viewport by >50%
+  useEffect(() => {
+    if (!nodeRect) return;
+
+    const checkVisibility = () => {
+      const rect = nodeRect;
+      const visible = 
+        rect.bottom > 0 &&
+        rect.top < window.innerHeight &&
+        rect.right > 0 &&
+        rect.left < window.innerWidth;
+      
+      if (!visible) {
+        onClose();
+      }
+    };
+
+    const interval = setInterval(checkVisibility, 100);
+    return () => clearInterval(interval);
+  }, [nodeRect, onClose]);
 
   // Keyboard handler for Escape key
   useEffect(() => {
@@ -282,11 +374,13 @@ const HoverCardPortal = ({
   const cardContent = (
     <motion.div
       ref={cardRef}
-      initial={{ opacity: 0, y: 8, scale: 0.96 }}
+      initial={{ opacity: 0, y: 6, scale: 0.96 }}
       animate={{
         opacity: isVisible ? 1 : 0,
-        y: isVisible ? 0 : 8,
-        scale: isVisible ? 1 : 0.96
+        y: isVisible ? 0 : 6,
+        scale: isVisible ? 1 : 0.96,
+        x: position.x,
+        top: position.y
       }}
       exit={{
         opacity: 0,
@@ -295,21 +389,23 @@ const HoverCardPortal = ({
         transition: { duration: 0.15, ease: 'easeOut' }
       }}
       transition={{
-        duration: 0.2,
-        ease: [0.25, 0.1, 0.25, 1]
+        opacity: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] },
+        y: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] },
+        scale: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] },
+        x: { duration: 0.18, ease: [0.4, 0, 0.2, 1] },
+        top: { duration: 0.18, ease: [0.4, 0, 0.2, 1] }
       }}
       style={{
         position: 'absolute',
-        left: `${position.x}px`,
-        top: `${position.y}px`,
+        left: 0,
         width: `${position.width}px`,
-        maxHeight: `${position.maxHeight}px`,
+        maxHeight: position.maxHeight ? `${position.maxHeight}px` : '380px',
         overflow: 'hidden',
         padding: '16px 18px',
         borderRadius: '18px',
-        backdropFilter: 'blur(22px) saturate(165%) brightness(1.05)',
-        WebkitBackdropFilter: 'blur(22px) saturate(165%) brightness(1.05)',
-        background: 'rgba(24, 28, 33, 0.45)',
+        backdropFilter: TOKENS.HORIZON.blurPanel,
+        WebkitBackdropFilter: TOKENS.HORIZON.blurPanel,
+        background: TOKENS.HORIZON.glassBg,
         border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
         boxShadow: TOKENS.HORIZON.hoverCardShadow,
         pointerEvents: 'auto',
@@ -331,18 +427,20 @@ const HoverCardPortal = ({
       }}
     >
       {/* Fade mask at bottom for truncated content */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: '60px',
-          background: 'linear-gradient(to top, rgba(24, 28, 33, 1), rgba(24, 28, 33, 0.8) 40%, rgba(24, 28, 33, 0))',
-          pointerEvents: 'none',
-          zIndex: 10
-        }}
-      />
+      {position.maxHeight && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: '80px',
+            background: 'linear-gradient(to top, rgba(24, 28, 33, 1), rgba(24, 28, 33, 0.85) 30%, rgba(24, 28, 33, 0))',
+            pointerEvents: 'none',
+            zIndex: 10
+          }}
+        />
+      )}
 
       {/* Reflected halo - alive calmness pulse */}
       {!shouldReduceMotion && (
@@ -355,7 +453,7 @@ const HoverCardPortal = ({
             zIndex: -1
           }}
           animate={{ opacity: [0.10, 0.14, 0.10] }}
-          transition={{ duration: 0.3, repeat: Infinity, ease: 'easeInOut' }}
+          transition={{ duration: TOKENS.HORIZON.t_haloPulse, repeat: Infinity, ease: 'easeInOut' }}
         />
       )}
 
@@ -443,7 +541,7 @@ const HoverCardPortal = ({
           opacity: 0.5
         }} />
 
-        {/* Confidence Section — ENHANCED WITH VITALITY ANIMATION */}
+        {/* Confidence Section with Vitality Ring */}
         <motion.div
           initial={{ opacity: 0, y: 3 }}
           animate={{ opacity: 1, y: 0 }}
@@ -452,7 +550,6 @@ const HoverCardPortal = ({
         >
           <div className="relative w-8 h-8 flex-shrink-0">
             <svg className="transform -rotate-90" width="32" height="32" style={{ overflow: 'visible' }}>
-              {/* Background ring */}
               <circle 
                 cx="16" 
                 cy="16" 
@@ -462,7 +559,6 @@ const HoverCardPortal = ({
                 strokeWidth="2.5" 
               />
               
-              {/* Animated progress ring with glow */}
               <motion.circle
                 cx="16"
                 cy="16"
@@ -524,7 +620,6 @@ const HoverCardPortal = ({
                 }}
               />
               
-              {/* Pulse-glow layer (activated after progress completes) */}
               {!shouldReduceMotion && (
                 <motion.circle
                   cx="16"
@@ -559,7 +654,6 @@ const HoverCardPortal = ({
               )}
             </svg>
             
-            {/* Confidence percentage text */}
             <motion.div
               className="absolute inset-0 flex items-center justify-center font-bold"
               style={{
@@ -603,15 +697,14 @@ const HoverCardPortal = ({
           </div>
         </motion.div>
 
-        {/* Divider */}
         <div style={{
           height: '2px',
-          background: `linear-gradient(90deg, transparent, ${TOKENS.HORIZON.drawerDivider}, transparent)`,
-          margin: '0 0 12px 0',
-          opacity: 0.5
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
+          filter: 'blur(1px)',
+          margin: '12px 0',
+          opacity: 0.6
         }} />
 
-        {/* Signal Summary */}
         <motion.p
           initial={{ opacity: 0, y: 3 }}
           animate={{ opacity: 0.90 + opacityAdjust, y: 0 }}
@@ -629,7 +722,6 @@ const HoverCardPortal = ({
           {summaryText.length > 85 ? summaryText.substring(0, 85) + '...' : summaryText}
         </motion.p>
 
-        {/* Insight Pane — ALWAYS VISIBLE WITH MIN-HEIGHT */}
         <motion.div
           initial={{ opacity: 0, y: 2 }}
           animate={{ opacity: 1, y: 0 }}
@@ -665,7 +757,6 @@ const HoverCardPortal = ({
           </span>
         </motion.div>
 
-        {/* Divider */}
         <div style={{
           height: '1px',
           background: `linear-gradient(90deg, transparent, ${TOKENS.HORIZON.drawerDivider}, transparent)`,
@@ -673,7 +764,6 @@ const HoverCardPortal = ({
           opacity: 0.5
         }} />
 
-        {/* CTA — ALWAYS VISIBLE */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -947,17 +1037,15 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return "Emerging signal";
   }, []);
 
-  // FLICKER-PROOF HOVER HANDLERS — Atomic state updates + grace zone
+  // FLICKER-PROOF HOVER HANDLERS with HoverIntent™ + Grace Corridor
   const handleDomainHoverEnter = useCallback((domain, event) => {
     const target = event.currentTarget;
     
-    // Cancel any pending exit
     if (hoverExitTimerRef.current) {
       clearTimeout(hoverExitTimerRef.current);
       hoverExitTimerRef.current = null;
     }
     
-    // Cancel any pending enter (restart timer)
     if (hoverEnterTimerRef.current) {
       clearTimeout(hoverEnterTimerRef.current);
     }
@@ -966,7 +1054,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       if (target && typeof target.getBoundingClientRect === 'function') {
         try {
           const rect = target.getBoundingClientRect();
-          // ATOMIC STATE UPDATE - set both together to prevent race conditions
           setHoveredDomain(domain.id);
           setHoveredNodeRect(rect);
         } catch (error) {
@@ -977,31 +1064,26 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   }, []);
 
   const handleDomainHoverLeave = useCallback(() => {
-    // Cancel pending enter
     if (hoverEnterTimerRef.current) {
       clearTimeout(hoverEnterTimerRef.current);
       hoverEnterTimerRef.current = null;
     }
     
-    // Cancel any existing exit timer
     if (hoverExitTimerRef.current) {
       clearTimeout(hoverExitTimerRef.current);
     }
     
-    // EXTENDED GRACE PERIOD - only hide if not hovering card
     hoverExitTimerRef.current = setTimeout(() => {
       if (!isCardHovered) {
         setHoveredDomain(null);
         setHoveredNodeRect(null);
       }
-    }, 400); // 400ms grace period for cursor travel
+    }, TOKENS.HORIZON.hoverExitDelay);
   }, [isCardHovered]);
 
-  // Card hover handlers - prevent premature hiding
   const handleCardEnter = useCallback(() => {
     setIsCardHovered(true);
     
-    // Cancel any pending exit
     if (hoverExitTimerRef.current) {
       clearTimeout(hoverExitTimerRef.current);
       hoverExitTimerRef.current = null;
@@ -1011,7 +1093,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const handleCardLeave = useCallback(() => {
     setIsCardHovered(false);
     
-    // Quick hide after leaving card
     if (hoverExitTimerRef.current) {
       clearTimeout(hoverExitTimerRef.current);
     }
@@ -1025,7 +1106,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const handleOpenDrawer = useCallback((domain) => {
     if (selectedDomain?.id === domain.id) return;
     
-    // IMMEDIATE CLEANUP - clear all hover state and timers atomically
     if (hoverEnterTimerRef.current) {
       clearTimeout(hoverEnterTimerRef.current);
       hoverEnterTimerRef.current = null;
@@ -1068,7 +1148,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   }, [selectedDomain, getOrbPosition, swayTime]);
 
   const handleCardClick = useCallback((domain) => {
-    // Clear all timers
     if (hoverEnterTimerRef.current) {
       clearTimeout(hoverEnterTimerRef.current);
       hoverEnterTimerRef.current = null;
@@ -1078,7 +1157,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       hoverExitTimerRef.current = null;
     }
     
-    // Atomic state clear
     setHoveredDomain(null);
     setHoveredNodeRect(null);
     setIsCardHovered(false);
@@ -1227,7 +1305,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return () => cancelAnimationFrame(rafId);
   }, [shouldReduceMotion]);
   
-  // Cleanup timers on unmount
   useEffect(() => {
     return () => {
       if (hoverEnterTimerRef.current) {
@@ -1464,7 +1541,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </g>
           </svg>
 
-          {/* Hover Card - FLICKER-PROOF with grace zone handlers */}
+          {/* Hover Card - COLLISION-AWARE PORTAL */}
           <AnimatePresence>
             {hoveredDomain && !selectedDomain && hoveredNodeRect && (() => {
               const domain = domains.find(d => d.id === hoveredDomain);
@@ -2087,12 +2164,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         )}
       </AnimatePresence>
 
-      <style jsx>{`
-        @keyframes ripple {
-          from { opacity: 1; transform: scale(0); }
-          to { opacity: 0; transform: scale(2); }
-        }
-        
+      <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         
         :root {
@@ -2131,47 +2203,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         
         html { background-color: #0B0E13; }
         
-        #equilibrium-hover-overlay {
+        #equilibrium-overlay-root {
           position: fixed;
           inset: 0;
           pointer-events: none;
           z-index: 9999;
           overflow: hidden;
-        }
-        
-        #equilibrium-hover-overlay > div {
-          pointer-events: auto;
-        }
-
-        .vireon-portal-container {
-          position: relative;
-          z-index: var(--z-modal);
-        }
-        
-        .drawer-overlay {
-          position: fixed;
-          inset: 0;
-          z-index: var(--z-modal);
-          background: rgba(0, 0, 0, 0.5);
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
-        }
-        
-        .drawer-panel {
-          position: fixed;
-          z-index: calc(var(--z-modal) + 1);
-          background: rgba(18, 20, 25, 0.95);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
-          overscroll-behavior: contain;
-        }
-        
-        body.drawer-open {
-          overflow: hidden;
-          position: fixed;
-          width: 100%;
         }
         
         * {
@@ -2195,12 +2232,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           z-index: calc(var(--z-modal) + 2);
         }
 
-        @media (prefers-contrast: high) {
-          * {
-            border-color: currentColor !important;
-          }
-        }
-
         ::-webkit-scrollbar { 
           width: 6px; 
         }
@@ -2213,16 +2244,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         }
         ::-webkit-scrollbar-thumb:hover {
           background: var(--text-tertiary);
-        }
-
-        @supports (padding: max(0px)) {
-          .drawer-panel-bottom {
-            padding-bottom: max(env(safe-area-inset-bottom), 16px);
-          }
-          
-          .drawer-panel-top {
-            top: max(var(--header-h), env(safe-area-inset-top));
-          }
         }
 
         .orb-nucleus {
@@ -2242,19 +2263,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           outline: 2px solid rgba(122,215,240,0.9);
           outline-offset: 3px;
           z-index: 102;
-        }
-
-        .drawer-with-header-safe:focus-within {
-          outline: 2px solid rgba(66,135,245,0.6);
-          outline-offset: -2px;
-          z-index: 102;
-        }
-
-        .orb-halo, .link-path, .glow-overlay, .panel-glass, .drawer-overlay {
-          pointer-events: none !important;
-        }
-        .grid-wrapper {
-          pointer-events: all;
         }
       `}</style>
     </motion.section>
