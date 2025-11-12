@@ -687,27 +687,155 @@ const HoverCardPortal = ({
           opacity: 0.5
         }} />
 
-        {/* CTA */}
+        {/* CTA — APPLE-GRADE MICRO ANIMATION */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.24, duration: 0.15 }}
-          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            position: 'relative'
+          }}
         >
-          <span style={{
-            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-            fontSize: '14px',
-            fontWeight: 500,
-            letterSpacing: '0.25px',
-            color: 'rgba(90, 160, 255, 0.95)',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '5px',
-            cursor: 'pointer'
-          }}>
-            <span>Expand signal</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </span>
+          <motion.button
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+            className="cta-expand-signal group"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            whileHover={shouldReduceMotion ? {} : {
+              backgroundColor: 'rgba(255, 255, 255, 0.06)',
+              transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }
+            }}
+            whileTap={shouldReduceMotion ? {} : {
+              y: 1,
+              transition: { duration: 0.09, ease: 'easeOut' }
+            }}
+            style={{
+              position: 'relative',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '5px',
+              minHeight: '36px',
+              padding: '8px 12px',
+              borderRadius: '12px',
+              border: 'none',
+              background: 'transparent',
+              cursor: 'pointer',
+              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+              fontSize: '14px',
+              fontWeight: 500,
+              letterSpacing: '0.25px',
+              color: 'rgba(90, 160, 255, 0.95)',
+              WebkitTapHighlightColor: 'transparent',
+              outline: 'none',
+              overflow: 'hidden',
+              willChange: 'transform, background-color, filter'
+            }}
+            aria-label="Open detailed signal view"
+          >
+            {/* Underline animation layer */}
+            {!shouldReduceMotion && (
+              <motion.div
+                className="absolute left-3 right-3 bottom-2 h-[1px]"
+                style={{
+                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.67), transparent)',
+                  transformOrigin: '50% 50%',
+                  scaleX: 0
+                }}
+                initial={{ scaleX: 0 }}
+                whileHover={{
+                  scaleX: 1,
+                  transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }
+                }}
+              />
+            )}
+
+            {/* Backdrop blur layer (hover) */}
+            {!shouldReduceMotion && (
+              <motion.div
+                className="absolute inset-0 rounded-[12px]"
+                style={{
+                  backdropFilter: 'blur(0px)',
+                  WebkitBackdropFilter: 'blur(0px)',
+                  pointerEvents: 'none'
+                }}
+                initial={{ backdropFilter: 'blur(0px)', WebkitBackdropFilter: 'blur(0px)' }}
+                whileHover={{
+                  backdropFilter: 'blur(8px)',
+                  WebkitBackdropFilter: 'blur(8px)',
+                  transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }
+                }}
+              />
+            )}
+
+            {/* Glow layer (hover) */}
+            {!shouldReduceMotion && (
+              <motion.div
+                className="absolute inset-0 rounded-[12px]"
+                style={{
+                  boxShadow: '0 0 0 rgba(0,0,0,0)',
+                  pointerEvents: 'none'
+                }}
+                initial={{ boxShadow: '0 0 0 rgba(0,0,0,0)' }}
+                whileHover={{
+                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.18)',
+                  transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }
+                }}
+              />
+            )}
+
+            <span style={{ position: 'relative', zIndex: 1 }}>Expand signal</span>
+            
+            {/* Animated arrow */}
+            <motion.div
+              style={{ 
+                position: 'relative', 
+                zIndex: 1,
+                display: 'flex',
+                alignItems: 'center'
+              }}
+              initial={{ x: 0, opacity: 0.85 }}
+              animate={{ x: 0, opacity: 0.85 }}
+              whileHover={shouldReduceMotion ? {} : {
+                x: 5,
+                opacity: 1,
+                transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }
+              }}
+              whileTap={shouldReduceMotion ? {} : {
+                x: 6,
+                transition: { duration: 0.09, ease: 'easeOut' }
+              }}
+            >
+              <ArrowRight className="w-3.5 h-3.5" />
+            </motion.div>
+          </motion.button>
+
+          {/* Tooltip on long hover */}
+          {!shouldReduceMotion && (
+            <motion.div
+              className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 rounded-lg text-xs whitespace-nowrap pointer-events-none"
+              style={{
+                background: 'rgba(10, 14, 20, 0.95)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                color: 'rgba(255, 255, 255, 0.85)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)'
+              }}
+              initial={{ opacity: 0, y: 2 }}
+              whileHover={{
+                opacity: 1,
+                y: 0,
+                transition: { delay: 0.5, duration: 0.15 }
+              }}
+            >
+              Open detailed view
+            </motion.div>
+          )}
         </motion.div>
       </div>
 
@@ -1793,7 +1921,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       {selectedDomain.id.charAt(0).toUpperCase() + selectedDomain.id.slice(1)} Markets
                     </h3>
                     <div className="flex items-center gap-2">
-                      {getPostureIcon(selectedDomain.posture)}
+                      {React.cloneElement(getPostureIcon(selectedDomain.posture), {className: "w-4 h-4"})}
                       <span style={{ color: getDomainText(selectedDomain.id), fontSize: '14px', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif', fontWeight: 500 }}>
                         {selectedDomain.posture.charAt(0).toUpperCase() + selectedDomain.posture.slice(1)} Momentum
                       </span>
@@ -2113,6 +2241,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         
+        /* Global Z-Index Scale */
         :root {
           --z-app: 10;
           --z-popover: 40;
@@ -2121,6 +2250,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           --z-toast: 60;
           --z-devtools: 70;
           --header-h: 72px;
+          /* Premium OLED Dark Mode - Only Theme */
           --bg: #0B0E13;
           --card: rgba(18, 20, 28, 0.65);
           --border: #2C2F36;
@@ -2137,35 +2267,29 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           --chart-grid: #242833;
           --chart-text: #B6BDCB;
           --scrim: rgba(0, 0, 0, 0.55);
+          --horizon-link: rgba(90, 160, 255, 0.95);
         }
         
+        /* Disable transitions on all elements initially to prevent flashes */
         html:not(.transitions-enabled) * {
           transition: none !important;
         }
         
+        /* Once the app is ready, enable transitions on specific, animatable properties */
         html.transitions-enabled * {
           transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, opacity 200ms ease, transform 200ms ease, box-shadow 200ms ease !important;
         }
         
+        /* Base background color set on html */
         html { background-color: #0B0E13; }
         
-        #equilibrium-overlay-root {
-          position: fixed;
-          inset: 0;
-          pointer-events: none;
-          z-index: 9999;
-          overflow: hidden;
-        }
-        
-        #equilibrium-overlay-root > div {
-          pointer-events: auto;
-        }
-
+        /* Portal container styles */
         .vireon-portal-container {
           position: relative;
           z-index: var(--z-modal);
         }
         
+        /* Drawer overlay styles */
         .drawer-overlay {
           position: fixed;
           inset: 0;
@@ -2175,6 +2299,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           -webkit-backdrop-filter: blur(8px);
         }
         
+        /* Drawer panel styles */
         .drawer-panel {
           position: fixed;
           z-index: calc(var(--z-modal) + 1);
@@ -2186,18 +2311,49 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           overscroll-behavior: contain;
         }
         
+        /* Prevent background scroll when drawer is open */
         body.drawer-open {
           overflow: hidden;
           position: fixed;
           width: 100%;
         }
         
+        /* Elevation tokens */
+        .elevation-0 {
+          background: var(--bg);
+        }
+        
+        .elevation-1 {
+          background: var(--card);
+          border: 1px solid var(--border);
+          box-shadow: 0 2px 12px var(--shadow);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+        }
+        
+        .elevation-2 {
+          background: var(--card);
+          border: 1px solid var(--border);
+          box-shadow: 0 8px 32px var(--shadow);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+        }
+        
+        .elevation-3 {
+          background: var(--card);
+          border: 1px solid var(--border);
+          box-shadow: 0 16px 64px var(--shadow);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+        }
+
         * {
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
         }
 
+        /* Accessibility: Respect reduced motion */
         @media (prefers-reduced-motion: reduce) {
           *, *::before, *::after {
             animation-duration: 0.01ms !important;
@@ -2207,18 +2363,29 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           }
         }
 
+        /* Enhanced focus styles for keyboard navigation */
         *:focus-visible {
           outline: 2px solid var(--accent);
           outline-offset: 2px;
           z-index: calc(var(--z-modal) + 2);
         }
 
+        /* CTA Button Focus Ring */
+        .cta-expand-signal:focus-visible {
+          outline: none;
+          box-shadow: 
+            inset 0 0 0 1.5px rgba(255, 255, 255, 0.28),
+            0 0 0 3px rgba(255, 255, 255, 0.10);
+        }
+
+        /* High contrast mode support */
         @media (prefers-contrast: high) {
           * {
             border-color: currentColor !important;
           }
         }
 
+        /* Custom scrollbar */
         ::-webkit-scrollbar { 
           width: 6px; 
         }
@@ -2233,6 +2400,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           background: var(--text-tertiary);
         }
 
+        /* Safe area handling for iOS */
         @supports (padding: max(0px)) {
           .drawer-panel-bottom {
             padding-bottom: max(env(safe-area-inset-bottom), 16px);
@@ -2241,6 +2409,89 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           .drawer-panel-top {
             top: max(var(--header-h), env(safe-area-inset-top));
           }
+        }
+
+        /* PWA optimizations */
+        .animate-shimmer {
+          background: linear-gradient(
+            90deg,
+            var(--card) 0%,
+            var(--border) 50%,
+            var(--card) 100%
+          );
+          background-size: 200% 100%;
+          animation: shimmer 1.3s infinite;
+        }
+        
+        @keyframes shimmer {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+
+        /* Card hover effects */
+        .card-hover {
+          transition: transform 150ms ease-out, box-shadow 150ms ease-out;
+        }
+        
+        .card-hover:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 12px 40px var(--shadow);
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+          .card-hover:hover {
+            transform: none;
+          }
+        }
+
+        /* Tap highlight removal for better mobile experience */
+        .tap-highlight-transparent {
+          -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Text sizing for readability */
+        body {
+          font-size: 15px;
+          line-height: 1.5;
+          color: var(--text-primary);
+          background: var(--bg);
+        }
+        
+        @media (max-width: 768px) {
+          :root {
+            --header-h: 60px;
+          }
+          
+          body {
+            font-size: 14px;
+            line-height: 1.55;
+          }
+        }
+        
+        /* Success/error toast styling */
+        .toast-success {
+          background: rgba(43, 190, 118, 0.08);
+          border: 1px solid rgba(43, 190, 118, 0.15);
+          color: var(--bull);
+        }
+        
+        .toast-error {
+          background: rgba(227, 63, 95, 0.08);
+          border: 1px solid rgba(227, 63, 95, 0.15);
+          color: var(--bear);
+        }
+
+        /* Touch target minimum for mobile */
+        @media (pointer: coarse) {
+          .cta-expand-signal {
+            min-width: 44px;
+            min-height: 44px;
+          }
+        }
+
+        /* Active/press brightness enhancement */
+        .cta-expand-signal:active {
+          filter: brightness(1.02);
         }
 
         .orb-nucleus {
