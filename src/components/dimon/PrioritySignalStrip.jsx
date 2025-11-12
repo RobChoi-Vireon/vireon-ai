@@ -252,7 +252,7 @@ const PrioritySignal = ({ signal, index, onClick }) => {
         {style.icon}
       </motion.div>
 
-      {/* Content with enhanced typography */}
+      {/* Content with ENHANCED LEGIBILITY */}
       <div className="flex-1 min-w-0 z-10">
         <motion.div 
           className="flex items-center space-x-3 mb-3"
@@ -260,28 +260,40 @@ const PrioritySignal = ({ signal, index, onClick }) => {
           transition={{ duration: 0.2 }}
         >
           <motion.span 
-            className="inline-block px-3 py-1.5 text-sm font-bold rounded-full bg-black/40 text-white border border-white/30 backdrop-blur-sm"
+            className="inline-block px-3 py-1.5 text-sm font-bold rounded-full text-white border backdrop-blur-sm"
             whileHover={{ scale: 1.05 }}
             style={{ 
-              background: 'linear-gradient(135deg, rgba(0,0,0,0.4), rgba(255,255,255,0.1))'
+              background: 'linear-gradient(135deg, rgba(0,0,0,0.55), rgba(40,40,40,0.35))',
+              borderColor: 'rgba(255, 255, 255, 0.35)',
+              textShadow: '0 1px 3px rgba(0, 0, 0, 0.8)',
             }}
           >
             {signal.tag}
           </motion.span>
           {signal.source && (
             <motion.span 
-              className="text-sm opacity-70 uppercase tracking-widest font-semibold text-gray-300"
-              animate={{ opacity: isHovered ? 0.9 : 0.7 }}
+              className="text-sm uppercase tracking-widest font-semibold"
+              animate={{ opacity: isHovered ? 1 : 0.85 }}
+              style={{
+                color: 'rgba(200, 210, 220, 0.95)',
+                textShadow: '0 1px 2px rgba(0, 0, 0, 0.6)'
+              }}
             >
               {signal.source}
             </motion.span>
           )}
         </motion.div>
         <motion.p 
-          className="text-base md:text-lg font-semibold leading-relaxed text-gray-100"
+          className="text-base md:text-lg font-semibold leading-relaxed"
           animate={{ x: isHovered ? 2 : 0 }}
           transition={{ duration: 0.2, delay: 0.05 }}
-          style={{ lineHeight: '1.6' }}
+          style={{ 
+            lineHeight: '1.65',
+            color: 'rgba(245, 248, 252, 0.96)',
+            textShadow: '0 1px 3px rgba(0, 0, 0, 0.7), 0 2px 6px rgba(0, 0, 0, 0.3)',
+            letterSpacing: '-0.01em',
+            fontWeight: 600
+          }}
         >
           {signal.text}
         </motion.p>
@@ -345,7 +357,7 @@ export default function PrioritySignalStrip({ signals = [], onOpenDrawer }) {
     >
       <style>{`
         /* ============================================================================
-           HORIZON OS — FRONT PAGE SIGNALS: MICRO-POLISH TIER
+           HORIZON OS — FRONT PAGE SIGNALS: LEGIBILITY ENHANCEMENT v2.0
         ============================================================================ */
         
         /* Glass Blur Tightening - Reduced by 2px for sharper refractions */
@@ -376,6 +388,29 @@ export default function PrioritySignalStrip({ signals = [], onOpenDrawer }) {
           will-change: transform, box-shadow;
         }
         
+        /* Text Rendering Optimization for Legibility */
+        .hzn-priority-signal p,
+        .hzn-priority-signal span {
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          text-rendering: optimizeLegibility;
+        }
+        
+        /* Contrast Enhancement Layer */
+        .hzn-priority-signal::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: 18px;
+          background: linear-gradient(135deg, 
+            rgba(0, 0, 0, 0.15) 0%, 
+            transparent 40%, 
+            rgba(0, 0, 0, 0.08) 100%
+          );
+          pointer-events: none;
+          z-index: 1;
+        }
+        
         /* Reduced Motion Support */
         @media (prefers-reduced-motion: reduce) {
           .hzn-priority-signal {
@@ -385,6 +420,18 @@ export default function PrioritySignalStrip({ signals = [], onOpenDrawer }) {
           .hzn-priority-signal * {
             animation: none !important;
             transition: none !important;
+          }
+        }
+        
+        /* High Contrast Mode Support */
+        @media (prefers-contrast: high) {
+          .hzn-priority-signal p {
+            color: #FFFFFF !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 1) !important;
+          }
+          
+          .hzn-priority-signal {
+            border-color: rgba(255, 255, 255, 0.5) !important;
           }
         }
       `}</style>
