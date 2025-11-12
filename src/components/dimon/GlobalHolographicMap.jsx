@@ -1089,12 +1089,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     const viewportAdjustment = window.innerHeight < 720 ? 24 : 0;
 
     return {
-      left: drawerCenterPosition.left,
+      left: `calc(50% - ${drawerWidth / 2}px)`,
       top: targetTop,
       width: drawerWidth,
       height: drawerHeight - viewportAdjustment
     };
-  }, [selectedDomain, drawerOrigin, drawerCenterPosition.left]);
+  }, [selectedDomain, drawerOrigin]);
 
   return (
     <motion.section variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} aria-label="Macro Constellation" style={{ maxWidth: '84vw', margin: '0 auto' }}>
@@ -1334,7 +1334,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             <div style={{ height: '2px', borderRadius: '999px', position: 'relative', overflow: 'hidden', background: 'linear-gradient(90deg, rgba(106,199,247,0.3), rgba(180,247,192,0.3), rgba(255,211,122,0.3))' }}>
               {!shouldReduceMotion && <motion.div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%)', width: '100%' }} animate={{ x: ['-100%', '100%'] }} transition={{ duration: TOKENS.HORIZON.t_sweep, repeat: Infinity, ease: 'linear' }} />}
               <div style={{ position: 'absolute', bottom: '-8px', left: 0, right: 0, height: '8px', background: 'linear-gradient(90deg, rgba(106,199,247,0.15), rgba(180,247,192,0.15), rgba(255,255,255,0.15))', filter: 'blur(8px)', opacity: 0.15 }} />
-              <motion.div style={{ position: 'absolute', top: '50%', width: '10px', height: '10px', borderRadius: '999px', background: dominantDriver === 'balanced' ? 'rgba(255,255,255,0.7)' : getDomainColor(dominantDriver), boxShadow: `0 0 20px ${dominantDriver === 'balanced' ? 'rgba(255,255,255,0.5)' : getDomainBloom(dominantDriver)}, 0 0 8px rgba(255,255,255,0.3)', transform: 'translate(-50%, -50%)', border: '1px solid rgba(255,255,255,0.3)' }} animate={{ left: `calc(10% + ${balanceBias * 80}%)` }} transition={{ duration: 0.8, ease: TOKENS.HORIZON.overshoot }} />
+              <motion.div style={{ position: 'absolute', top: '50%', width: '10px', height: '10px', borderRadius: '999px', background: dominantDriver === 'balanced' ? 'rgba(255,255,255,0.7)' : getDomainColor(dominantDriver), boxShadow: `0 0 20px ${dominantDriver === 'balanced' ? 'rgba(255,255,255,0.5)' : getDomainBloom(dominantDriver)}, 0 0 8px rgba(255,255,255,0.3)', transform: 'translate(-50%, -50%)', border: '1px solid rgba(255,255,255,0.3)' }} animate={{ left: `${10 + (balanceBias * 80)}%` }} transition={{ duration: 0.8, ease: TOKENS.HORIZON.overshoot }} />
             </div>
           </div>
           <div className="flex-1 flex items-center gap-3">
@@ -1347,7 +1347,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             </div>
           </div>
         </div>
-      </div>
 
       <div className="flex justify-center" style={{ marginTop: '10px' }}>
         <p style={{ fontSize: '9px', fontWeight: 400, color: TOKENS.colors.textTertiary, opacity: 0.55, fontFamily: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Data via Lyra models</p>
