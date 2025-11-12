@@ -6,7 +6,7 @@ import LyraLogo from '../core/LyraLogo';
 import { createPortal } from 'react-dom';
 
 // ============================================================================
-// MACRO CONSTELLATION — OS HORIZON V2.5 "PORTAL + SMART PLACEMENT"
+// EQUILIBRIUM — OS HORIZON V2.5 "PORTAL + SMART PLACEMENT"
 // Portal overlay + collision-aware positioning + graceful edge handling
 // ============================================================================
 
@@ -1429,12 +1429,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const balanceIndicatorShadow = dominantDriver === 'balanced' ? 'rgba(255,255,255,0.5)' : getDomainBloom(dominantDriver);
 
   return (
-    <motion.section variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} aria-label="Macro Constellation" style={{ maxWidth: '84vw', margin: '0 auto' }}>
+    <motion.section variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} aria-label="Equilibrium" style={{ maxWidth: '84vw', margin: '0 auto' }}>
       <div className="flex items-center justify-between mb-6 pl-2">
         <div className="flex items-center space-x-3">
           <Globe className="w-6 h-6" style={{ color: '#6AC7F7' }} />
           <div>
-            <h2 style={{ fontSize: '18px', lineHeight: '24px', fontWeight: 600, color: TOKENS.colors.textPrimary, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif' }}>Macro Constellation</h2>
+            <h2 style={{ fontSize: '18px', lineHeight: '24px', fontWeight: 600, color: TOKENS.colors.textPrimary, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif' }}>Equilibrium</h2>
             <p style={{ fontSize: '13px', color: TOKENS.colors.textTertiary, letterSpacing: '0.2em', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Real-time balance of global macro forces.</p>
           </div>
         </div>
@@ -1527,7 +1527,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               {connections.map((conn, i) => (
                 <linearGradient key={`conn-grad-${i}`} id={`conn-grad-${i}`} x1="0%" y1="0%" x2="100%" y2="0%">
                   <stop offset="0%" stopColor="#6AC7F7" stopOpacity="0.20" />
-                  <stop offset="50%" stopColor="#B4F7C0" stopOpacity="0.20" />
+                  <stop offset="50%" stopColor="#C9B46B" stopOpacity="0.20" /> {/* Adjusted this color to be closer to middle/growth */}
                   <stop offset="100%" stopColor="#FFD37A" stopOpacity="0.20" />
                 </linearGradient>
               ))}
@@ -2702,7 +2702,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           }
           
           .drawer-panel-top {
-            top: max(var(--header-h), env(safe-area-inset-top));
+            padding-top: max(var(--header-h), env(safe-area-inset-top));
           }
         }
 
