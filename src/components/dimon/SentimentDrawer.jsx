@@ -241,250 +241,257 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
 
   return (
     <AnimatePresence>
-      <motion.div 
-        className="fixed inset-0 z-[200] flex items-center justify-center p-4"
-        variants={backdropVariants}
-        initial="hidden"
-        animate="visible"
-        exit="hidden"
-      >
-        <motion.div
-          className="absolute inset-0"
-          style={{ 
-            background: 'rgba(0,0,0,0.60)'
-          }}
-          onClick={onClose}
-        />
+      {isOpen && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            className="fixed inset-0 z-[200]"
+            style={{ 
+              background: 'rgba(0,0,0,0.60)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)'
+            }}
+            variants={backdropVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            onClick={onClose}
+          />
 
-        <motion.div
-          className="relative w-full max-w-2xl max-h-[90vh] rounded-3xl overflow-hidden border"
-          style={{
-            background: 'rgba(15, 18, 25, 0.95)',
-            backdropFilter: 'blur(22px)',
-            WebkitBackdropFilter: 'blur(22px)',
-            borderColor: 'rgba(255,255,255,0.12)',
-            boxShadow: `
-              0 25px 50px -12px rgba(0, 0, 0, 0.8),
-              0 0 40px rgba(94, 167, 255, 0.15),
-              inset 0 1px 0 rgba(255, 255, 255, 0.08)
-            `
-          }}
-          variants={drawerVariants}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-        >
-          {/* Subsurface Lighting */}
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: '10%',
-            right: '10%',
-            height: '1px',
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.20), transparent)',
-            pointerEvents: 'none'
-          }} />
+          {/* Drawer - Centered in Viewport */}
+          <div className="fixed inset-0 z-[201] flex items-center justify-center p-4 pointer-events-none">
+            <motion.div
+              className="relative w-full max-w-2xl max-h-[85vh] rounded-3xl overflow-hidden border pointer-events-auto"
+              style={{
+                background: 'rgba(15, 18, 25, 0.95)',
+                backdropFilter: 'blur(22px)',
+                WebkitBackdropFilter: 'blur(22px)',
+                borderColor: 'rgba(255,255,255,0.12)',
+                boxShadow: `
+                  0 25px 50px -12px rgba(0, 0, 0, 0.8),
+                  0 0 40px rgba(94, 167, 255, 0.15),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.08)
+                `
+              }}
+              variants={drawerVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Subsurface Lighting */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: '10%',
+                right: '10%',
+                height: '1px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.20), transparent)',
+                pointerEvents: 'none'
+              }} />
 
-          {/* Header */}
-          <motion.div variants={itemVariants} className="relative p-6 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div 
-                  className="w-12 h-12 rounded-xl border flex items-center justify-center"
-                  style={{
-                    background: 'rgba(94, 167, 255, 0.10)',
-                    borderColor: 'rgba(94, 167, 255, 0.25)',
-                    backdropFilter: 'blur(10px)'
-                  }}
-                >
-                  <Activity className="w-6 h-6" style={{ color: '#5EA7FF' }} strokeWidth={2} />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold tracking-tight" style={{ color: 'rgba(255,255,255,0.95)' }}>
-                    Street Alignment
-                  </h2>
-                  <p className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.70)' }}>
-                    Consensus & Segment Breakdown
-                  </p>
-                </div>
-              </div>
-              <motion.button
-                onClick={onClose}
-                className="w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200"
-                style={{
-                  background: 'rgba(255,255,255,0.08)',
-                  border: '1px solid rgba(255,255,255,0.10)'
-                }}
-                whileHover={{ scale: 1.05, background: 'rgba(255,255,255,0.12)' }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <X className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.70)' }} />
-              </motion.button>
-            </div>
-          </motion.div>
-
-          {/* Body */}
-          <div className="p-8 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 96px)' }}>
-            {/* Top Section: Gauge */}
-            <motion.div variants={itemVariants} className="flex flex-col items-center mb-8">
-              <RadialGauge score={consensusScore} />
-              
-              {/* Source Footer Under Gauge */}
-              <motion.p
-                className="text-xs text-center mt-4"
-                style={{ color: 'rgba(255,255,255,0.70)' }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.9 }}
-              >
-                Based on 5 sources • Updated 2m ago
-              </motion.p>
-            </motion.div>
-
-            {/* Bottom Section: Segment Tiles */}
-            {segments.length > 0 ? (
-              <motion.div variants={containerVariants} className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {segments.map((segment, index) => {
-                  const { Icon } = getTrendInfo(segment?.trend, segment?.name);
-                  const weight = (segment?.weight || 0) * 100;
-                  const iconColor = getSegmentIconColor(segment?.name);
-                  const stressChip = getStressChip(segment?.stress_level);
-                  const trendChip = getTrendChip(segment?.trend_indicator);
-
-                  const handleOpenDetail = () => onOpenDetail && onOpenDetail(segment);
-
-                  return (
-                    <motion.div
-                      key={segment.name}
-                      variants={itemVariants}
-                      className="relative p-4 rounded-2xl border backdrop-blur-lg transition-all duration-300 cursor-pointer group overflow-hidden"
+              {/* Header */}
+              <motion.div variants={itemVariants} className="relative p-6 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div 
+                      className="w-12 h-12 rounded-xl border flex items-center justify-center"
                       style={{
-                        background: 'rgba(255, 255, 255, 0.06)',
-                        borderColor: 'rgba(255,255,255,0.12)',
-                        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05), 0 4px 16px rgba(0,0,0,0.15)'
+                        background: 'rgba(94, 167, 255, 0.10)',
+                        borderColor: 'rgba(94, 167, 255, 0.25)',
+                        backdropFilter: 'blur(10px)'
                       }}
-                      whileHover={{ 
-                        y: -3,
-                        borderColor: 'rgba(255,255,255,0.20)',
-                        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 24px rgba(0,0,0,0.25)',
-                        transition: { duration: 0.2 }
-                      }}
-                      onClick={handleOpenDetail}
                     >
-                      {/* Ambient Glow */}
-                      <motion.div
-                        className="absolute inset-0 rounded-2xl pointer-events-none"
-                        style={{
-                          background: `radial-gradient(circle at 50% 0%, ${iconColor}15 0%, transparent 60%)`,
-                          opacity: 0
-                        }}
-                        animate={{ opacity: 0 }}
-                        whileHover={{ opacity: 1 }}
-                        transition={{ duration: 0.3 }}
-                      />
-
-                      {/* Row 1: Icon + Title + Weight */}
-                      <div className="flex items-center justify-between mb-2.5">
-                        <div className="flex items-center gap-2.5">
-                          <div 
-                            className="w-8 h-8 rounded-lg flex items-center justify-center"
-                            style={{
-                              background: `${iconColor}12`,
-                              border: `1px solid ${iconColor}25`
-                            }}
-                          >
-                            <Icon className="w-4 h-4" style={{ color: iconColor }} strokeWidth={2.5} />
-                          </div>
-                          <span className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.92)' }}>
-                            {String(segment?.name || 'Unknown')}
-                          </span>
-                        </div>
-                        <span className="text-lg font-bold" style={{ color: iconColor }}>
-                          {Math.round(weight)}%
-                        </span>
-                      </div>
-                      
-                      {/* Row 2: Short Description */}
-                      <p className="text-sm mb-3" style={{ 
-                        color: 'rgba(255,255,255,0.82)', 
-                        lineHeight: '1.5',
-                        minHeight: '2.5em'
-                      }}>
-                        {String(segment?.note || 'No additional insights.')}
+                      <Activity className="w-6 h-6" style={{ color: '#5EA7FF' }} strokeWidth={2} />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold tracking-tight" style={{ color: 'rgba(255,255,255,0.95)' }}>
+                        Street Alignment
+                      </h2>
+                      <p className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.70)' }}>
+                        Consensus & Segment Breakdown
                       </p>
+                    </div>
+                  </div>
+                  <motion.button
+                    onClick={onClose}
+                    className="w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200"
+                    style={{
+                      background: 'rgba(255,255,255,0.08)',
+                      border: '1px solid rgba(255,255,255,0.10)'
+                    }}
+                    whileHover={{ scale: 1.05, background: 'rgba(255,255,255,0.12)' }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <X className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.70)' }} />
+                  </motion.button>
+                </div>
+              </motion.div>
 
-                      {/* Row 3: Chips + Mini Bar */}
-                      <div className="space-y-2.5">
-                        {/* Chips Row */}
-                        <div className="flex items-center gap-2 flex-wrap">
-                          {/* Stress Chip */}
-                          <div
-                            className="px-2.5 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-wide flex items-center gap-1.5"
-                            style={{
-                              background: stressChip.bg,
-                              border: `1px solid ${stressChip.border}`,
-                              color: stressChip.text,
-                              letterSpacing: '0.05em'
-                            }}
-                          >
-                            <AlertTriangle className="w-3 h-3" />
-                            <span>{stressChip.label}</span>
-                          </div>
+              {/* Body */}
+              <div className="p-8 overflow-y-auto" style={{ maxHeight: 'calc(85vh - 96px)' }}>
+                {/* Top Section: Gauge */}
+                <motion.div variants={itemVariants} className="flex flex-col items-center mb-8">
+                  <RadialGauge score={consensusScore} />
+                  
+                  {/* Source Footer Under Gauge */}
+                  <motion.p
+                    className="text-xs text-center mt-4"
+                    style={{ color: 'rgba(255,255,255,0.70)' }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.9 }}
+                  >
+                    Based on 5 sources • Updated 2m ago
+                  </motion.p>
+                </motion.div>
 
-                          {/* Trend Chip */}
-                          <div
-                            className="px-2.5 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-wide flex items-center gap-1.5"
-                            style={{
-                              background: `${trendChip.color}12`,
-                              border: `1px solid ${trendChip.color}30`,
-                              color: trendChip.color,
-                              letterSpacing: '0.05em'
-                            }}
-                          >
-                            {React.cloneElement(<trendChip.Icon />, { className: "w-3 h-3" })}
-                            <span>{trendChip.label}</span>
-                          </div>
-                        </div>
+                {/* Bottom Section: Segment Tiles */}
+                {segments.length > 0 ? (
+                  <motion.div variants={containerVariants} className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {segments.map((segment, index) => {
+                      const { Icon } = getTrendInfo(segment?.trend, segment?.name);
+                      const weight = (segment?.weight || 0) * 100;
+                      const iconColor = getSegmentIconColor(segment?.name);
+                      const stressChip = getStressChip(segment?.stress_level);
+                      const trendChip = getTrendChip(segment?.trend_indicator);
 
-                        {/* Mini Status Bar */}
-                        <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.25)' }}>
+                      const handleOpenDetail = () => onOpenDetail && onOpenDetail(segment);
+
+                      return (
+                        <motion.div
+                          key={segment.name}
+                          variants={itemVariants}
+                          className="relative p-4 rounded-2xl border backdrop-blur-lg transition-all duration-300 cursor-pointer group overflow-hidden"
+                          style={{
+                            background: 'rgba(255, 255, 255, 0.06)',
+                            borderColor: 'rgba(255,255,255,0.12)',
+                            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05), 0 4px 16px rgba(0,0,0,0.15)'
+                          }}
+                          whileHover={{ 
+                            y: -3,
+                            borderColor: 'rgba(255,255,255,0.20)',
+                            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 24px rgba(0,0,0,0.25)',
+                            transition: { duration: 0.2 }
+                          }}
+                          onClick={handleOpenDetail}
+                        >
+                          {/* Ambient Glow */}
                           <motion.div
-                            className="h-full rounded-full"
-                            style={{ 
-                              background: `linear-gradient(90deg, ${getScoreColor(weight)}99, ${getScoreColor(weight)}ff)`
+                            className="absolute inset-0 rounded-2xl pointer-events-none"
+                            style={{
+                              background: `radial-gradient(circle at 50% 0%, ${iconColor}15 0%, transparent 60%)`,
+                              opacity: 0
                             }}
-                            initial={{ width: '0%' }}
-                            animate={{ width: `${weight}%` }}
-                            transition={{ duration: 0.6, delay: 0.3 + index * 0.08, ease: 'easeOut' }}
+                            animate={{ opacity: 0 }}
+                            whileHover={{ opacity: 1 }}
+                            transition={{ duration: 0.3 }}
                           />
-                        </div>
-                      </div>
 
-                      {/* Hover CTA */}
-                      <motion.div 
-                        className="flex items-center justify-end text-xs font-medium mt-2.5"
-                        style={{ color: 'rgba(255,255,255,0.60)' }}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 0 }}
-                        whileHover={{ opacity: 1 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <span>View Analysis</span>
-                        <ArrowRight className="w-3 h-3 ml-1.5" />
-                      </motion.div>
-                    </motion.div>
-                  );
-                })}
-              </motion.div>
-            ) : (
-              <motion.div variants={itemVariants} className="text-center py-8">
-                <Zap className="w-8 h-8 mx-auto mb-2" style={{ color: 'rgba(255,255,255,0.30)' }} />
-                <p style={{ color: 'rgba(255,255,255,0.60)' }}>No segment data available</p>
-              </motion.div>
-            )}
+                          {/* Row 1: Icon + Title + Weight */}
+                          <div className="flex items-center justify-between mb-2.5">
+                            <div className="flex items-center gap-2.5">
+                              <div 
+                                className="w-8 h-8 rounded-lg flex items-center justify-center"
+                                style={{
+                                  background: `${iconColor}12`,
+                                  border: `1px solid ${iconColor}25`
+                                }}
+                              >
+                                <Icon className="w-4 h-4" style={{ color: iconColor }} strokeWidth={2.5} />
+                              </div>
+                              <span className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.92)' }}>
+                                {String(segment?.name || 'Unknown')}
+                              </span>
+                            </div>
+                            <span className="text-lg font-bold" style={{ color: iconColor }}>
+                              {Math.round(weight)}%
+                            </span>
+                          </div>
+                          
+                          {/* Row 2: Short Description */}
+                          <p className="text-sm mb-3" style={{ 
+                            color: 'rgba(255,255,255,0.82)', 
+                            lineHeight: '1.5',
+                            minHeight: '2.5em'
+                          }}>
+                            {String(segment?.note || 'No additional insights.')}
+                          </p>
+
+                          {/* Row 3: Chips + Mini Bar */}
+                          <div className="space-y-2.5">
+                            {/* Chips Row */}
+                            <div className="flex items-center gap-2 flex-wrap">
+                              {/* Stress Chip */}
+                              <div
+                                className="px-2.5 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-wide flex items-center gap-1.5"
+                                style={{
+                                  background: stressChip.bg,
+                                  border: `1px solid ${stressChip.border}`,
+                                  color: stressChip.text,
+                                  letterSpacing: '0.05em'
+                                }}
+                              >
+                                <AlertTriangle className="w-3 h-3" />
+                                <span>{stressChip.label}</span>
+                              </div>
+
+                              {/* Trend Chip */}
+                              <div
+                                className="px-2.5 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-wide flex items-center gap-1.5"
+                                style={{
+                                  background: `${trendChip.color}12`,
+                                  border: `1px solid ${trendChip.color}30`,
+                                  color: trendChip.color,
+                                  letterSpacing: '0.05em'
+                                }}
+                              >
+                                {React.cloneElement(<trendChip.Icon />, { className: "w-3 h-3" })}
+                                <span>{trendChip.label}</span>
+                              </div>
+                            </div>
+
+                            {/* Mini Status Bar */}
+                            <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.25)' }}>
+                              <motion.div
+                                className="h-full rounded-full"
+                                style={{ 
+                                  background: `linear-gradient(90deg, ${getScoreColor(weight)}99, ${getScoreColor(weight)}ff)`
+                                }}
+                                initial={{ width: '0%' }}
+                                animate={{ width: `${weight}%` }}
+                                transition={{ duration: 0.6, delay: 0.3 + index * 0.08, ease: 'easeOut' }}
+                              />
+                            </div>
+                          </div>
+
+                          {/* Hover CTA */}
+                          <motion.div 
+                            className="flex items-center justify-end text-xs font-medium mt-2.5"
+                            style={{ color: 'rgba(255,255,255,0.60)' }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 0 }}
+                            whileHover={{ opacity: 1 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <span>View Analysis</span>
+                            <ArrowRight className="w-3 h-3 ml-1.5" />
+                          </motion.div>
+                        </motion.div>
+                      );
+                    })}
+                  </motion.div>
+                ) : (
+                  <motion.div variants={itemVariants} className="text-center py-8">
+                    <Zap className="w-8 h-8 mx-auto mb-2" style={{ color: 'rgba(255,255,255,0.30)' }} />
+                    <p style={{ color: 'rgba(255,255,255,0.60)' }}>No segment data available</p>
+                  </motion.div>
+                )}
+              </div>
+            </motion.div>
           </div>
-        </motion.div>
-      </motion.div>
+        </>
+      )}
     </AnimatePresence>
   );
 };
