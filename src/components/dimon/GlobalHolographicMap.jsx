@@ -1606,12 +1606,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           })}
         </motion.div>
 
-        {/* EQUILIBRIUM PULSE — ENHANCED BREATHING ROOM */}
+        {/* EQUILIBRIUM PULSE — HORIZON TIER UPGRADE (SPACING REFINED) */}
         <div style={{
           position: 'absolute',
           left: '14%',
           right: '14%',
-          bottom: '120px',
+          bottom: '68px',
           zIndex: 6,
           pointerEvents: 'auto'
         }}>
