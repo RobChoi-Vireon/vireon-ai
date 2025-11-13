@@ -4,7 +4,7 @@ import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motio
 import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLeft, ChevronRight, BarChart3, DollarSign, Activity, Sparkles } from 'lucide-react';
 import LyraLogo from '../core/LyraLogo';
 import { createPortal } from 'react-dom';
-import EquilibriumPulse from './EquilibriumPulse'; // Changed import from EquilibriumBalanceModule to EquilibriumPulse
+import EquilibriumPulse from './EquilibriumPulse';
 
 // ============================================================================
 // EQUILIBRIUM — OS HORIZON V3.2 "UNIFIED MOTION + INFORMATION HIERARCHY"
@@ -1606,18 +1606,18 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           })}
         </motion.div>
 
-        {/* EQUILIBRIUM PULSE — HORIZON TIER UPGRADE */}
+        {/* EQUILIBRIUM PULSE — HORIZON TIER UPGRADE (SPACING REFINED) */}
         <div style={{
           position: 'absolute',
           left: '14%',
           right: '14%',
-          bottom: '32px',
-          zIndex: 6, // Adjusted zIndex to 6
+          bottom: '68px',
+          zIndex: 6,
           pointerEvents: 'auto'
         }}>
           <EquilibriumPulse
             equilibriumScore={balanceBias}
-            volatility={0.3 + (Math.abs(balanceBias - 0.5) * 0.4)} // New volatility prop
+            volatility={0.3 + (Math.abs(balanceBias - 0.5) * 0.4)}
             dominantForce={dominantDriver}
             forces={{
               growth: domains.find(d => d.id === 'growth')?.strength || 0,
@@ -1628,10 +1628,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             stabilityIndex={
               dominantDriver === 'balanced' 
                 ? 85 
-                : Math.round(75 - (Math.abs(balanceBias - 0.5) * 50)) // Updated stabilityIndex calculation
+                : Math.round(75 - (Math.abs(balanceBias - 0.5) * 50))
             }
             summary={globalSummary}
-            onOpenDrawer={() => console.log('Equilibrium drawer requested')} // New onOpenDrawer prop
+            onOpenDrawer={() => console.log('Equilibrium drawer requested')}
           />
         </div>
 
