@@ -3,8 +3,8 @@ import { motion, AnimatePresence, useSpring } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, ArrowRight, Sparkles } from 'lucide-react';
 
 // ============================================================================
-// EQUILIBRIUM PULSE — OS HORIZON V3.2 (REFINED)
-// Living macro force visualization with enhanced readability + Apple-grade polish
+// EQUILIBRIUM PULSE — OS HORIZON V3.2 (APPLE-GRADE MICRO-INTERACTIONS)
+// Living macro force visualization with premium polish + tactile feedback
 // ============================================================================
 
 const MOTION_TOKENS = {
@@ -12,7 +12,9 @@ const MOTION_TOKENS = {
     horizonIn: [0.22, 0.61, 0.36, 1],
     horizonSpring: [0.16, 1, 0.3, 1],
     pulsePhysics: [0.4, 0.0, 0.2, 1],
-    appleEaseOut: [0.32, 0, 0.67, 1.2]
+    appleEaseOut: [0.32, 0, 0.67, 1.2],
+    appleSettle: [0.25, 0.1, 0.25, 1],
+    breathe: [0.33, 0, 0.4, 1]
   },
   DURATIONS: {
     moduleReveal: 0.6,
@@ -20,7 +22,15 @@ const MOTION_TOKENS = {
     pulseReaction: 0.14,
     hoverLift: 0.18,
     arrowNudge: 0.12,
-    ripple: 0.08
+    ripple: 0.16,
+    breathe: 4.5,
+    settle: 0.06,
+    hoverEnter: 0.16,
+    hoverExit: 0.16,
+    focusEnter: 0.15,
+    focusExit: 0.15,
+    pressDown: 0.06,
+    pressRelease: 0.14
   }
 };
 
@@ -46,11 +56,19 @@ export default function EquilibriumPulse({
   onOpenDrawer
 }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isSliderHovered, setIsSliderHovered] = useState(false);
+  const [isSliderFocused, setIsSliderFocused] = useState(false);
   const [isMoreHovered, setIsMoreHovered] = useState(false);
+  const [isMoreFocused, setIsMoreFocused] = useState(false);
+  const [isMorePressed, setIsMorePressed] = useState(false);
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
   const [pulseTime, setPulseTime] = useState(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [showRipple, setShowRipple] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const [prevEquilibriumScore, setPrevEquilibriumScore] = useState(equilibriumScore);
+  const [isValueChanging, setIsValueChanging] = useState(false);
+  
   const containerRef = useRef(null);
   const rafRef = useRef(null);
 
@@ -65,8 +83,27 @@ export default function EquilibriumPulse({
   }, []);
 
   useEffect(() => {
-    pulseX.set(equilibriumScore * 100);
-  }, [equilibriumScore, pulseX]);
+    const timer = setTimeout(() => setIsMounted(true), 300);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Value change detection with micro-settle
+  useEffect(() => {
+    if (Math.abs(equilibriumScore - prevEquilibriumScore) > 0.01) {
+      setIsValueChanging(true);
+      
+      const distance = Math.abs(equilibriumScore - prevEquilibriumScore);
+      const duration = distance < 0.10 ? 220 : distance < 0.30 ? 280 : 320;
+      
+      pulseX.set(equilibriumScore * 100);
+      
+      setTimeout(() => {
+        setIsValueChanging(false);
+      }, duration + 120);
+      
+      setPrevEquilibriumScore(equilibriumScore);
+    }
+  }, [equilibriumScore, prevEquilibriumScore, pulseX]);
 
   useEffect(() => {
     if (shouldReduceMotion || drawerOpen) return;
@@ -92,16 +129,16 @@ export default function EquilibriumPulse({
   }, [pulseTime, volatility, equilibriumScore, shouldReduceMotion, drawerOpen]);
 
   const pulseScale = useMemo(() => {
-    if (shouldReduceMotion || drawerOpen) return 1;
-    const breathe = Math.sin(pulseTime * 1.5) * 0.08;
+    if (shouldReduceMotion || drawerOpen || !isMounted) return 1;
+    const breathe = Math.sin(pulseTime * (2 * Math.PI / MOTION_TOKENS.DURATIONS.breathe)) * 0.03;
     return 1 + breathe;
-  }, [pulseTime, shouldReduceMotion, drawerOpen]);
+  }, [pulseTime, shouldReduceMotion, drawerOpen, isMounted]);
 
   const pulseGlowIntensity = useMemo(() => {
-    if (shouldReduceMotion || drawerOpen) return 0.5;
-    const pulse = Math.sin(pulseTime * 2) * 0.25;
-    return 0.5 + pulse;
-  }, [pulseTime, shouldReduceMotion, drawerOpen]);
+    if (shouldReduceMotion || drawerOpen || !isMounted) return 0.4;
+    const pulse = Math.sin(pulseTime * (2 * Math.PI / MOTION_TOKENS.DURATIONS.breathe)) * 0.12;
+    return 0.4 + pulse;
+  }, [pulseTime, shouldReduceMotion, drawerOpen, isMounted]);
 
   const getStateLabel = () => {
     if (dominantForce === 'balanced') return 'Balanced';
@@ -151,6 +188,31 @@ export default function EquilibriumPulse({
   const handleMoreClick = (e) => {
     e.stopPropagation();
     handleToggleDrawer();
+  };
+
+  // Calculate knob scale with all state modifiers
+  const getKnobScale = () => {
+    let baseScale = pulseScale;
+    
+    if (drawerOpen) return 1.3;
+    if (isSliderHovered || isSliderFocused) return baseScale * 1.05;
+    
+    return baseScale;
+  };
+
+  // Calculate knob glow with all state modifiers
+  const getKnobGlow = () => {
+    let baseIntensity = pulseGlowIntensity;
+    
+    if (isSliderHovered) {
+      baseIntensity *= 1.15; // +15% on hover
+    }
+    
+    if (isValueChanging) {
+      baseIntensity *= 1.10; // +10% spike during value change
+    }
+    
+    return baseIntensity;
   };
 
   return (
@@ -256,36 +318,74 @@ export default function EquilibriumPulse({
 
         {/* More Link — Apple-Grade Micro-Interaction */}
         <motion.button
-          className="flex items-center gap-1.5 px-2 py-1 -mr-2 rounded-lg"
+          className="more-link-group flex items-center gap-1.5 px-3 py-1.5 -mr-2 rounded-full relative"
           onMouseEnter={() => setIsMoreHovered(true)}
           onMouseLeave={() => setIsMoreHovered(false)}
+          onFocus={() => setIsMoreFocused(true)}
+          onBlur={() => setIsMoreFocused(false)}
+          onPointerDown={() => setIsMorePressed(true)}
+          onPointerUp={() => setIsMorePressed(false)}
+          onPointerLeave={() => setIsMorePressed(false)}
           onClick={handleMoreClick}
           style={{
             background: 'transparent',
             border: 'none',
             cursor: 'pointer',
             position: 'relative',
-            overflow: 'hidden'
+            overflow: 'visible',
+            WebkitTapHighlightColor: 'transparent'
           }}
-          whileHover={{
-            background: 'rgba(255,255,255,0.06)',
-            transition: { duration: 0.14 }
+          animate={{
+            x: isMoreHovered ? 3 : 0,
+            scale: isMorePressed ? 0.97 : (isValueChanging ? [1, 1.02, 1] : 1)
+          }}
+          transition={{
+            x: { 
+              duration: isMoreHovered ? MOTION_TOKENS.DURATIONS.hoverEnter : MOTION_TOKENS.DURATIONS.hoverExit,
+              ease: MOTION_TOKENS.CURVES.appleEaseOut 
+            },
+            scale: isMorePressed 
+              ? { duration: MOTION_TOKENS.DURATIONS.pressDown, ease: 'easeOut' }
+              : { duration: MOTION_TOKENS.DURATIONS.pressRelease, ease: MOTION_TOKENS.CURVES.appleSettle }
           }}
           aria-label="View detailed force breakdown"
+          tabIndex={0}
         >
-          {/* Ripple Effect on Click */}
+          {/* Focus Ring (Pill Shape) */}
+          <motion.div
+            className="absolute inset-0 -mx-1 -my-0.5 rounded-full pointer-events-none"
+            style={{
+              background: 'rgba(90, 160, 255, 0.35)',
+              border: '1px solid rgba(90, 160, 255, 0.45)',
+              zIndex: 0
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isMoreFocused ? 0.4 : 0 }}
+            transition={{ 
+              duration: isMoreFocused ? MOTION_TOKENS.DURATIONS.focusEnter : MOTION_TOKENS.DURATIONS.focusExit,
+              ease: MOTION_TOKENS.CURVES.horizonIn
+            }}
+          />
+
+          {/* Click Ripple Glow */}
           <AnimatePresence>
             {showRipple && (
               <motion.div
-                className="absolute inset-0 rounded-lg"
+                className="absolute inset-0 rounded-full pointer-events-none"
                 style={{
-                  background: 'radial-gradient(circle, rgba(90,160,255,0.3) 0%, transparent 70%)',
-                  pointerEvents: 'none'
+                  background: 'radial-gradient(circle, rgba(90,160,255,0.35) 0%, transparent 70%)',
+                  zIndex: 0
                 }}
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: [0.6, 0], scale: 1.5 }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ 
+                  opacity: [0.3, 0], 
+                  scale: [0.8, 1.4]
+                }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: MOTION_TOKENS.DURATIONS.ripple * 5 }}
+                transition={{ 
+                  duration: MOTION_TOKENS.DURATIONS.ripple,
+                  ease: MOTION_TOKENS.CURVES.appleSettle
+                }}
               />
             )}
           </AnimatePresence>
@@ -294,29 +394,27 @@ export default function EquilibriumPulse({
             style={{
               fontSize: '12.5px',
               fontWeight: 500,
-              color: 'rgba(90, 160, 255, 0.90)',
               letterSpacing: '0.01em',
               position: 'relative',
               zIndex: 1
             }}
             animate={{
-              color: isMoreHovered ? 'rgba(120, 180, 255, 1)' : 'rgba(90, 160, 255, 0.90)',
-              x: isMoreHovered ? 2 : 0
+              color: isMoreHovered 
+                ? 'rgba(120, 180, 255, 1)' 
+                : 'rgba(90, 160, 255, 0.90)',
+              filter: isMoreHovered ? 'brightness(1.12)' : 'brightness(1)'
             }}
-            transition={{ duration: MOTION_TOKENS.DURATIONS.arrowNudge }}
+            transition={{ duration: 0.15 }}
           >
             More
           </motion.span>
+          
           <motion.div
-            style={{ position: 'relative', zIndex: 1 }}
+            style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center' }}
             animate={{ 
-              x: isMoreHovered ? 3 : 0,
               opacity: isMoreHovered ? 1 : 0.85
             }}
-            transition={{ 
-              duration: MOTION_TOKENS.DURATIONS.arrowNudge,
-              ease: MOTION_TOKENS.CURVES.appleEaseOut
-            }}
+            transition={{ duration: 0.15 }}
           >
             <ArrowRight className="w-3.5 h-3.5" style={{ color: 'rgba(90, 160, 255, 0.90)' }} />
           </motion.div>
@@ -324,12 +422,25 @@ export default function EquilibriumPulse({
       </div>
 
       {/* 3-Layer Pulse Bar Container */}
-      <div style={{ 
-        position: 'relative',
-        height: '38px',
-        marginBottom: '14px',
-        marginTop: '8px'
-      }}>
+      <div 
+        className="slider-container"
+        style={{ 
+          position: 'relative',
+          height: '38px',
+          marginBottom: '14px',
+          marginTop: '8px'
+        }}
+        onMouseEnter={() => setIsSliderHovered(true)}
+        onMouseLeave={() => setIsSliderHovered(false)}
+        onFocus={() => setIsSliderFocused(true)}
+        onBlur={() => setIsSliderFocused(false)}
+        tabIndex={0}
+        role="slider"
+        aria-label={`Equilibrium at ${Math.round(equilibriumScore * 100)}%`}
+        aria-valuenow={Math.round(equilibriumScore * 100)}
+        aria-valuemin={0}
+        aria-valuemax={100}
+      >
         {/* Layer 1: Glass Rail Background */}
         <div
           className="pulse-rail"
@@ -349,7 +460,7 @@ export default function EquilibriumPulse({
             overflow: 'hidden'
           }}
         >
-          {/* Layer 2: Dynamic Gradient Flow (increased saturation) */}
+          {/* Layer 2: Dynamic Gradient Flow */}
           <motion.div
             className="absolute inset-0"
             style={{
@@ -386,9 +497,31 @@ export default function EquilibriumPulse({
               }}
             />
           )}
+
+          {/* Rail Highlight (Hover State) */}
+          <motion.div
+            className="absolute"
+            style={{
+              top: '50%',
+              left: `${equilibriumScore * 100}%`,
+              transform: 'translate(-50%, -50%)',
+              width: '80px',
+              height: '20px',
+              background: `radial-gradient(ellipse, ${getPulseGlow()} 0%, transparent 70%)`,
+              filter: 'blur(12px)',
+              pointerEvents: 'none',
+              zIndex: 1
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isSliderHovered ? 1 : 0 }}
+            transition={{ 
+              duration: isSliderHovered ? MOTION_TOKENS.DURATIONS.hoverEnter : MOTION_TOKENS.DURATIONS.hoverExit,
+              ease: MOTION_TOKENS.CURVES.horizonIn
+            }}
+          />
         </div>
 
-        {/* Subsurface Glow Layer (enhanced softness) */}
+        {/* Subsurface Glow Layer */}
         <div style={{
           position: 'absolute',
           top: '50%',
@@ -403,7 +536,31 @@ export default function EquilibriumPulse({
           borderRadius: '999px'
         }} />
 
-        {/* Layer 3: Living Pulse Particle (enhanced glow) */}
+        {/* Focus Ring (Accessibility) */}
+        <motion.div
+          className="absolute pointer-events-none"
+          style={{
+            top: '50%',
+            left: `${equilibriumScore * 100}%`,
+            transform: 'translate(-50%, -50%)',
+            width: '28px',
+            height: '28px',
+            borderRadius: '999px',
+            border: '2px solid rgba(90, 160, 255, 0.5)',
+            zIndex: 4
+          }}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ 
+            opacity: isSliderFocused ? 0.5 : 0,
+            scale: isSliderFocused ? 1 : 0.9
+          }}
+          transition={{ 
+            duration: isSliderFocused ? MOTION_TOKENS.DURATIONS.focusEnter : MOTION_TOKENS.DURATIONS.focusExit,
+            ease: MOTION_TOKENS.CURVES.horizonIn
+          }}
+        />
+
+        {/* Layer 3: Living Pulse Particle */}
         <motion.div
           className="pulse-particle"
           style={{
@@ -415,7 +572,6 @@ export default function EquilibriumPulse({
             height: '16px',
             borderRadius: '999px',
             background: getPulseColor(),
-            boxShadow: `0 0 ${22 * pulseGlowIntensity}px ${getPulseGlow()}, 0 0 8px rgba(255,255,255,0.55), inset 0 0 0 2px rgba(255,255,255,0.45)`,
             border: '1.5px solid rgba(255,255,255,0.65)',
             zIndex: 5,
             pointerEvents: 'none',
@@ -423,14 +579,25 @@ export default function EquilibriumPulse({
             filter: drawerOpen ? 'brightness(1.18)' : 'brightness(1)'
           }}
           animate={{
-            scale: drawerOpen ? 1.3 : (isHovered ? pulseScale * 1.08 : pulseScale),
+            scale: getKnobScale(),
             boxShadow: drawerOpen 
               ? `0 0 36px ${getPulseGlow()}, 0 0 14px rgba(255,255,255,0.85), inset 0 0 0 2px rgba(255,255,255,0.65)`
-              : `0 0 ${22 * pulseGlowIntensity}px ${getPulseGlow()}, 0 0 8px rgba(255,255,255,0.55), inset 0 0 0 2px rgba(255,255,255,0.45)`
+              : `0 0 ${22 * getKnobGlow()}px ${getPulseGlow()}, 0 0 8px rgba(255,255,255,0.55), inset 0 0 0 2px rgba(255,255,255,0.45)`,
+            ...(isValueChanging && !shouldReduceMotion ? {
+              x: [0, 2, 0]
+            } : {})
           }}
           transition={{
-            scale: { duration: 0.3, ease: MOTION_TOKENS.CURVES.horizonSpring },
-            boxShadow: { duration: 0.3, ease: 'easeOut' }
+            scale: { 
+              duration: isSliderHovered || isSliderFocused 
+                ? MOTION_TOKENS.DURATIONS.hoverEnter 
+                : 0.3, 
+              ease: MOTION_TOKENS.CURVES.horizonSpring 
+            },
+            boxShadow: { duration: 0.3, ease: 'easeOut' },
+            x: isValueChanging 
+              ? { duration: MOTION_TOKENS.DURATIONS.settle, times: [0, 0.5, 1], ease: 'easeOut' }
+              : {}
           }}
         >
           {/* Inner Refraction Highlight */}
@@ -447,23 +614,28 @@ export default function EquilibriumPulse({
           }} />
 
           {/* Ambient Underside Glow (Apple Control Center style) */}
-          <div style={{
-            position: 'absolute',
-            bottom: '-4px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '20px',
-            height: '6px',
-            background: getPulseGlow(),
-            filter: 'blur(6px)',
-            opacity: pulseGlowIntensity * 0.6,
-            borderRadius: '999px',
-            pointerEvents: 'none'
-          }} />
+          <motion.div 
+            style={{
+              position: 'absolute',
+              bottom: '-5px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '24px',
+              height: '8px',
+              background: getPulseGlow(),
+              filter: 'blur(7px)',
+              borderRadius: '999px',
+              pointerEvents: 'none'
+            }}
+            animate={{
+              opacity: getKnobGlow() * 0.6
+            }}
+            transition={{ duration: 0.3 }}
+          />
         </motion.div>
 
-        {/* Force Zone Labels (enhanced brightness + spacing) */}
-        <div className="absolute left-0 right-0 flex justify-between text-xs" style={{
+        {/* Force Zone Labels */}
+        <div className="force-zone-labels absolute left-0 right-0 flex justify-between text-xs" style={{
           color: 'rgba(255,255,255,0.68)',
           fontWeight: 500,
           fontSize: '13px',
@@ -475,7 +647,7 @@ export default function EquilibriumPulse({
         </div>
       </div>
 
-      {/* Summary Line (enhanced prominence) */}
+      {/* Summary Line */}
       <motion.p
         style={{
           fontSize: '16px',
@@ -601,7 +773,6 @@ export default function EquilibriumPulse({
 
               {/* Stability Index + Label */}
               <div className="flex items-center gap-4 mb-4">
-                {/* Stability Ring */}
                 <div className="relative w-11 h-11 flex-shrink-0">
                   <svg className="transform -rotate-90" width="44" height="44">
                     <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2.8" />
@@ -625,7 +796,6 @@ export default function EquilibriumPulse({
                   </div>
                 </div>
 
-                {/* Stability Label */}
                 <div className="flex-1">
                   <div style={{
                     fontSize: '10px',
@@ -721,9 +891,20 @@ export default function EquilibriumPulse({
       <style jsx>{`
         /* GPU Acceleration */
         .pulse-particle,
-        .equilibrium-pulse-module {
+        .equilibrium-pulse-module,
+        .more-link-group {
           transform: translateZ(0);
           backface-visibility: hidden;
+        }
+
+        /* Slider Focus */
+        .slider-container:focus-visible {
+          outline: none;
+        }
+
+        /* More Link Focus (handled by inline focus ring) */
+        .more-link-group:focus-visible {
+          outline: none;
         }
 
         /* Reduced Motion Support */
@@ -732,12 +913,10 @@ export default function EquilibriumPulse({
             animation: none !important;
             transition: none !important;
           }
-        }
-
-        /* Focus State */
-        .equilibrium-pulse-module:focus-visible {
-          outline: 2px solid rgba(90, 160, 255, 0.65);
-          outline-offset: 4px;
+          
+          .more-link-group {
+            transition: none !important;
+          }
         }
 
         /* High Contrast Mode */
@@ -757,6 +936,11 @@ export default function EquilibriumPulse({
           .equilibrium-pulse-module {
             min-height: 48px;
           }
+          
+          .more-link-group {
+            min-width: 44px;
+            min-height: 44px;
+          }
         }
 
         /* Mobile Responsiveness */
@@ -769,7 +953,7 @@ export default function EquilibriumPulse({
             font-size: 15px !important;
           }
           
-          .equilibrium-pulse-module .force-zone-labels {
+          .force-zone-labels {
             font-size: 12px !important;
           }
         }
