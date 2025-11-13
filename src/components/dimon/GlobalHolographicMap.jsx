@@ -64,7 +64,16 @@ const TOKENS = {
     t_breathe: 4.5, t_orbLifePulse: 4.0, t_haloPulse: 1.5,
     t_pulse: 3, t_orbit: 10, t_sweep: 12, t_parallax: 0.12,
     parallaxOffset: 6, parallaxResponse: 0.4, microParallaxMax: 4, microParallaxDamping: 0.85,
-    bgBase: '#06080D', bgEnd: '#0A0E14', bgSubsurfaceCenter: '#121823', bgSubsurfaceEdge: '#0B1016',
+    // OS HORIZON ATMOSPHERIC UNITY — Single Unified Gradient
+    bgGradientTop: '#05070D',
+    bgGradientMid1: '#0A0F19',
+    bgGradientMid2: '#0B0F17',
+    bgGradientBottom: '#0A0D14',
+    // Parallax Cloud Tint (derived from base, 50-60% opacity)
+    parallaxCloudTint: 'rgba(10, 15, 25, 0.55)',
+    // Gravity Field (unified middle region)
+    gravityFieldColor: '#242C48',
+    gravityFieldOpacity: 0.20,
     lightTemp: 'rgba(255, 255, 255, 0.03)', lightTempBottom: 'rgba(255, 255, 255, 0.00)',
     lineHeight: 26
   },
@@ -1386,7 +1395,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         </div>
       </div>
 
-      {/* OS HORIZON V4.0 — EQUILIBRIUM STACK CONTAINER (AUTO-LAYOUT) */}
+      {/* OS HORIZON V4.1 — ATMOSPHERIC UNITY UPGRADE */}
       <div
         className="equilibrium-stack-container"
         style={{
@@ -1398,15 +1407,16 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           height: 'auto',
           paddingTop: '48px',
           paddingBottom: '48px',
-          background: `linear-gradient(184deg, ${TOKENS.HORIZON.bgBase} 0%, ${TOKENS.HORIZON.bgEnd} 100%)`,
+          // UNIFIED BASE GRADIENT — No tonal seams
+          background: `linear-gradient(184deg, ${TOKENS.HORIZON.bgGradientTop} 0%, ${TOKENS.HORIZON.bgGradientMid1} 35%, ${TOKENS.HORIZON.bgGradientMid2} 65%, ${TOKENS.HORIZON.bgGradientBottom} 100%)`,
           border: '1px solid rgba(160,191,255,0.08)',
           borderRadius: '24px',
           position: 'relative',
           overflow: 'hidden',
-          pointerEvents: 'none' // Allow click-through to children by default
+          pointerEvents: 'none'
         }}
       >
-        {/* ORB CLUSTER VISUAL (NO ABSOLUTE POSITIONING) */}
+        {/* ORB CLUSTER VISUAL */}
         <div
           ref={containerRef}
           className="orb-cluster-visual"
@@ -1414,15 +1424,71 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           style={{
             position: 'relative',
             width: '100%',
-            height: '500px', // Fixed height for the visual area
-            pointerEvents: 'auto' // Re-enable pointer events for the visual elements inside
+            height: '500px',
+            pointerEvents: 'auto'
           }}
         >
-          <motion.div style={{ position: 'absolute', inset: 0, background: `radial-gradient(900px circle at 52% 48%, ${TOKENS.HORIZON.bgSubsurfaceCenter} 0%, ${TOKENS.HORIZON.bgSubsurfaceEdge} 70%)`, opacity: 0.35, borderRadius: '24px', pointerEvents: 'none', zIndex: 1 }} animate={{ x: shouldReduceMotion ? 0 : bgParallaxX.get() * TOKENS.HORIZON.parallaxOffset * 0.6, y: shouldReduceMotion ? 0 : bgParallaxY.get() * TOKENS.HORIZON.parallaxOffset * 0.6 }} transition={{ duration: TOKENS.HORIZON.t_parallax, ease: TOKENS.HORIZON.easingApple }} />
+          {/* LAYER 1: UNIFIED GRAVITY FIELD — Subtle Radial Glow */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: `radial-gradient(ellipse 900px 700px at 52% 52%, ${TOKENS.HORIZON.gravityFieldColor} 0%, transparent 60%)`,
+              opacity: TOKENS.HORIZON.gravityFieldOpacity,
+              filter: 'blur(40px)',
+              pointerEvents: 'none',
+              zIndex: 1
+            }}
+            aria-hidden="true"
+          />
 
-          <motion.div style={{ position: 'absolute', inset: 0, backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3Cfilter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E")`, backgroundSize: '200px 200px', opacity: 0.15, borderRadius: '24px', pointerEvents: 'none', zIndex: 2 }} animate={{ backgroundPosition: [`${noiseDrift}px 0px`, `${noiseDrift + 0.3}px 0px`] }} transition={{ duration: 1, ease: 'linear' }} />
+          {/* LAYER 2: PARALLAX CLOUD — Tinted to Match Base */}
+          <motion.div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: `radial-gradient(900px circle at 52% 48%, ${TOKENS.HORIZON.parallaxCloudTint} 0%, transparent 70%)`,
+              opacity: 0.35,
+              borderRadius: '24px',
+              pointerEvents: 'none',
+              zIndex: 2
+            }}
+            animate={{
+              x: shouldReduceMotion ? 0 : bgParallaxX.get() * TOKENS.HORIZON.parallaxOffset * 0.6,
+              y: shouldReduceMotion ? 0 : bgParallaxY.get() * TOKENS.HORIZON.parallaxOffset * 0.6
+            }}
+            transition={{ duration: TOKENS.HORIZON.t_parallax, ease: TOKENS.HORIZON.easingApple }}
+          />
 
-          <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(ellipse at center, transparent 60%, ${TOKENS.HORIZON.vignetteColor} 100%)`, opacity: TOKENS.HORIZON.vignetteOpacity, filter: `blur(${TOKENS.HORIZON.vignetteBlur}px)`, borderRadius: '24px', pointerEvents: 'none', zIndex: 2 }} />
+          {/* LAYER 3: NOISE TEXTURE — Subtle Grain */}
+          <motion.div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3Cfilter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E")`,
+              backgroundSize: '200px 200px',
+              opacity: 0.15,
+              borderRadius: '24px',
+              pointerEvents: 'none',
+              zIndex: 3
+            }}
+            animate={{ backgroundPosition: [`${noiseDrift}px 0px`, `${noiseDrift + 0.3}px 0px`] }}
+            transition={{ duration: 1, ease: 'linear' }}
+          />
+
+          {/* LAYER 4: EDGE VIGNETTE — Subtle Framing */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: `radial-gradient(ellipse at center, transparent 60%, ${TOKENS.HORIZON.vignetteColor} 100%)`,
+              opacity: TOKENS.HORIZON.vignetteOpacity,
+              filter: `blur(${TOKENS.HORIZON.vignetteBlur}px)`,
+              borderRadius: '24px',
+              pointerEvents: 'none',
+              zIndex: 3
+            }}
+          />
 
           {domains.map((domain) => {
             const pos = getOrbPosition(domain.id, domain.strength, swayTime, 0, 0);
@@ -1623,12 +1689,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
               return (
                 <motion.div key={`label-${domain.id}`} style={{ position: 'absolute', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', background: 'rgba(10,14,20,0.50)', border: `1px solid ${TOKENS.HORIZON.glassBorder}`, borderRadius: '10px', padding: '5px 9px', fontWeight: 600, fontSize: '11px', letterSpacing: '0.03em', textTransform: 'lowercase', textShadow: '0 1px 2px rgba(0,0,0,0.4)', pointerEvents: 'none', zIndex: 3, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }} animate={{ left: `${labelPos.x}px`, top: `${labelPos.y}px`, x: '-50%', y: '-50%', color: isHovered || isSelected ? TOKENS.colors.textLabel : getDomainText(domain.id), scale: isHovered || isSelected ? 1.05 : 1, boxShadow: isHovered || isSelected ? '0 0 16px rgba(160,191,255,0.15)' : 'none' }} transition={{ left: { duration: TOKENS.HORIZON.t_labelLag, ease: TOKENS.HORIZON.easingApple }, top: { duration: TOKENS.HORIZON.t_labelLag, ease: TOKENS.HORIZON.easingApple }, color: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }, scale: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }, boxShadow: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing } }}>
-                {domain.id}
-              </motion.div>
-            );
-          })}
-        </motion.div>
-      </div>
+                  {domain.id}
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        </div>
 
         {/* GLOBAL EQUILIBRIUM PANEL (AUTO-LAYOUT POSITIONED) */}
         <div
