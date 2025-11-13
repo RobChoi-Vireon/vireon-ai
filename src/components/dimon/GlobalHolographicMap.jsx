@@ -1,8 +1,10 @@
+
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLeft, ChevronRight, BarChart3, DollarSign, Activity, Sparkles } from 'lucide-react';
 import LyraLogo from '../core/LyraLogo';
 import { createPortal } from 'react-dom';
+import EquilibriumBalanceModule from './EquilibriumBalanceModule';
 
 // ============================================================================
 // EQUILIBRIUM — OS HORIZON V3.2 "UNIFIED MOTION + INFORMATION HIERARCHY"
@@ -917,7 +919,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const [constellationShift, setConstellationShift] = useState(0);
   const [orbitScale, setOrbitScale] = useState(1.0);
   const [noiseDrift, setNoiseDrift] = useState(0);
-  const [isStatusBarHovered, setIsStatusBarHovered] = useState(false);
   const [filamentFlash, setFilamentFlash] = useState(null);
   const [isSwitchingNode, setIsSwitchingNode] = useState(false);
   const [viewportSize, setViewportSize] = useState('lg');
@@ -964,9 +965,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     const dominant = domains.find(d => d.id === dominantDriver);
     const normalizedStrength = Math.min(Math.max((dominant.strength - 0.5) / (1.0 - 0.5), 0), 1);
     
-    if (dominant.id === "rates" || dominant.id === "fx") {
+    if (dominant.id === "rates" || dominant.id === "geopolitics") { // Rates and geopolitics are "negative" forces
       return 0.5 - (normalizedStrength * 0.5);
-    } else {
+    } else { // FX and Growth are "positive" forces
       return 0.5 + (normalizedStrength * 0.5);
     }
   }, [dominantDriver, domains]);
@@ -976,7 +977,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       return `Market forces in near-perfect balance; tactical opportunities across sectors.`;
     }
     const dominant = domains.find(d => d.id === dominantDriver);
-    return `${dominantDriver.charAt(0).toUpperCase() + dominantDriver.slice(1)} dynamics are pulling the market with ${Math.round(dominant.strength * 100)}% conviction.`;
+    return `${dominant.title.split(' ')[0]} dynamics are pulling the market with ${Math.round(dominant.strength * 100)}% conviction.`;
   }, [domains, dominantDriver]);
 
   const balanceAngle = useMemo(() => dominantDriver === "balanced" ? 0 : ANGLES[dominantDriver] || 0, [dominantDriver]);
@@ -1371,7 +1372,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     };
   }, [selectedDomain, drawerOrigin]);
 
-  const balanceIndicatorLeft = balanceBias * 100;
 
   return (
     <motion.section variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} aria-label="Equilibrium" style={{ maxWidth: '84vw', margin: '0 auto' }}>
@@ -1606,308 +1606,37 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           })}
         </motion.div>
 
-        <motion.div 
-          onMouseEnter={() => setIsStatusBarHovered(true)} 
-          onMouseLeave={() => setIsStatusBarHovered(false)}
-          className="equilibrium-pulse-bar group"
-          style={{ 
-            position: 'absolute', 
-            left: '14%', 
-            right: '14%', 
-            bottom: '32px', 
-            height: `${footerH}px`, 
-            borderRadius: '16px', 
-            padding: '16px 20px', 
-            display: 'flex', 
-            flexDirection: 'column',
-            gap: '12px',
-            backdropFilter: 'blur(24px) saturate(165%)',
-            WebkitBackdropFilter: 'blur(24px) saturate(165%)',
-            background: 'rgba(20, 24, 29, 0.35)', 
-            border: `1px solid rgba(255,255,255,0.08)`, 
-            boxShadow: `inset 0 2px 12px rgba(0, 0, 0, 0.45), 0 8px 32px rgba(0, 0, 0, 0.25)`,
-            zIndex: 1, 
-            cursor: 'pointer', 
-            pointerEvents: 'auto',
-            willChange: 'filter, transform'
-          }}
-          whileHover={{
-            filter: 'brightness(1.04)',
-            transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }
-          }}
-          whileTap={{
-            scale: 0.995,
-            transition: { duration: 0.1, ease: 'easeOut' }
-          }}
-        >
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: '20px',
-            right: '20px',
-            height: '1px',
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
-            borderRadius: '999px',
-            pointerEvents: 'none'
-          }} />
-
-          <div className="flex items-center justify-between">
-            <motion.h4 
-              style={{
-                fontSize: '14px',
-                fontWeight: 600,
-                letterSpacing: '-0.01em',
-                color: TOKENS.colors.textPrimary,
-                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
-              }}
-              animate={{
-                color: dominantDriver === 'balanced' 
-                  ? TOKENS.colors.textPrimary 
-                  : getDomainText(dominantDriver)
-              }}
-              transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-            >
-              Global Equilibrium: <span style={{ opacity: 0.85 }}>
-                {dominantDriver === 'balanced' ? 'Balanced' : 
-                  `${domains.find(d => d.id === dominantDriver).title.split(' ')[0]} Bias`}
-              </span>
-            </motion.h4>
-
-            <motion.div
-              className="flex items-center gap-2 overflow-hidden"
-              style={{ height: '20px' }}
-            >
-              <AnimatePresence mode="wait">
-                {!isStatusBarHovered ? (
-                  <motion.div
-                    key="info-icon"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 10 }}
-                    transition={{ duration: 0.15 }}
-                  >
-                    <Info className="w-4 h-4" style={{ color: TOKENS.colors.textTertiary }} />
-                  </motion.div>
-                ) : (
-                  <motion.span
-                    key="info-text"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 10 }}
-                    transition={{ duration: 0.15 }}
-                    style={{
-                      fontSize: '13px',
-                      fontWeight: 500,
-                      color: 'rgba(90, 160, 255, 0.95)',
-                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
-                      whiteSpace: 'nowrap',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px'
-                    }}
-                  >
-                    View Lyra Insight
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          </div>
-
-          <div style={{ 
-            width: '88%', 
-            margin: '0 auto',
-            position: 'relative',
-            height: '3px'
-          }}>
-            <motion.div 
-              style={{ 
-                height: '3px', 
-                borderRadius: '999px',
-                position: 'relative',
-                overflow: 'hidden',
-                background: 'linear-gradient(90deg, #3CA9FF 0%, #C9B46B 45%, #FFBF4D 100%)',
-                boxShadow: '0 2px 8px rgba(60, 169, 255, 0.15)'
-              }}
-              animate={{
-                scaleX: [1, 1.02, 1],
-                opacity: [0.9, 1, 0.9]
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: [0.4, 0, 0.2, 1]
-              }}
-            >
-              {!shouldReduceMotion && (
-                <motion.div 
-                  style={{
-                    position: 'absolute',
-                    inset: 0,
-                    background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)',
-                    width: '100%'
-                  }}
-                  animate={{
-                    x: ['-100%', '200%']
-                  }}
-                  transition={{
-                    duration: 4,
-                    repeat: Infinity,
-                    ease: 'linear',
-                    repeatDelay: 1
-                  }}
-                />
-              )}
-            </motion.div>
-
-            <div style={{
-              position: 'absolute',
-              bottom: '-6px',
-              left: 0,
-              right: 0,
-              height: '6px',
-              background: 'linear-gradient(90deg, rgba(60,169,255,0.15), rgba(255,191,77,0.15))',
-              filter: 'blur(6px)',
-              opacity: 0.6
-            }} />
-
-            <motion.div 
-              style={{ 
-                position: 'absolute', 
-                top: '50%', 
-                width: '10px', 
-                height: '10px', 
-                borderRadius: '999px', 
-                background: dominantDriver === 'balanced' 
-                  ? 'rgba(60, 169, 255, 0.95)' 
-                  : balanceBias > 0.6 
-                    ? 'rgba(255, 191, 77, 0.95)'
-                    : 'rgba(201, 180, 107, 0.95)',
-                boxShadow: dominantDriver === 'balanced'
-                  ? '0 0 16px rgba(60, 169, 255, 0.6), 0 0 4px rgba(255,255,255,0.4)'
-                  : '0 0 16px rgba(255, 191, 77, 0.6), 0 0 4px rgba(255,255,255,0.4)', 
-                transform: 'translate(-50%, -50%)', 
-                border: '1.5px solid rgba(255,255,255,0.4)',
-                zIndex: 2
-              }} 
-              animate={{ 
-                left: `${balanceIndicatorLeft}%`,
-                scale: isStatusBarHovered ? [1, 1.15, 1] : 1
-              }} 
-              transition={{ 
-                left: { duration: 0.8, ease: TOKENS.HORIZON.overshoot },
-                scale: { duration: 0.4, ease: 'easeInOut' }
-              }} 
-            />
-          </div>
-
-          <motion.p
-            style={{
-              fontSize: '13px',
-              lineHeight: '1.5',
-              color: TOKENS.colors.textSecondary,
-              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
-              fontWeight: 400,
-              textAlign: 'center',
-              opacity: 0.88
+        {/* EQUILIBRIUM BALANCE MODULE — HORIZON TIER UPGRADE */}
+        <div style={{
+          position: 'absolute',
+          left: '14%',
+          right: '14%',
+          bottom: '32px',
+          zIndex: 1,
+          pointerEvents: 'auto'
+        }}>
+          <EquilibriumBalanceModule
+            equilibriumScore={balanceBias}
+            trend={dominantDriver === 'balanced' ? 'neutral' : balanceBias > 0.6 ? 'deteriorating' : balanceBias < 0.4 ? 'improving' : 'neutral'}
+            dominantForce={dominantDriver}
+            forces={{
+              growth: domains.find(d => d.id === 'growth')?.strength || 0,
+              rates: -(domains.find(d => d.id === 'rates')?.strength || 0), // Rates as a negative force
+              fx: (domains.find(d => d.id === 'fx')?.strength || 0) * 0.5, // FX as a moderate force
+              geopolitics: -(domains.find(d => d.id === 'geopolitics')?.strength || 0) // Geopolitics as a negative force
             }}
-            animate={{
-              opacity: isStatusBarHovered ? 1 : 0.88
-            }}
-            transition={{ duration: 0.2 }}
-          >
-            {globalSummary}
-          </motion.p>
-
-          <AnimatePresence>
-            {isStatusBarHovered && (
-              <motion.div
-                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 5, scale: 0.97 }}
-                transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-                style={{
-                  position: 'absolute',
-                  bottom: 'calc(100% + 12px)',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  maxWidth: '420px',
-                  padding: '12px 16px',
-                  borderRadius: '14px',
-                  backdropFilter: 'blur(20px) saturate(180%)',
-                  WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-                  background: 'rgba(15, 18, 23, 0.92)',
-                  border: '1px solid rgba(255,255,255,0.10)',
-                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.08)',
-                  pointerEvents: 'none',
-                  zIndex: 10
-                }}
-              >
-                <div className="flex items-start gap-3">
-                  <div 
-                    className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
-                    style={{
-                      background: 'rgba(106, 199, 247, 0.15)',
-                      border: '1px solid rgba(106, 199, 247, 0.3)'
-                    }}
-                  >
-                    <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-                  </div>
-                  <div className="flex-1">
-                    <p style={{
-                      fontSize: '12px',
-                      lineHeight: '1.6',
-                      color: 'rgba(180, 200, 230, 0.95)',
-                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
-                      fontWeight: 400,
-                      marginBottom: '6px'
-                    }}>
-                      <span style={{ fontWeight: 600, color: 'rgba(255, 255, 255, 0.95)' }}>
-                        Lyra Insight:
-                      </span>
-                      {' '}
-                      {dominantDriver === 'balanced' 
-                        ? "Market forces are in near-perfect balance—no single macro theme dominating. This creates tactical opportunities across sectors. "
-                        : `${domains.find(d => d.id === dominantDriver).title} dynamics are pulling the market with ${Math.round(domains.find(d => d.id === dominantDriver).strength * 100)}% conviction. Watch for cross-asset spillovers and positioning shifts.`
-                      }
-                    </p>
-                    <div style={{
-                      fontSize: '11px',
-                      color: 'rgba(106, 199, 247, 0.75)',
-                      fontWeight: 500,
-                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-                    }}>
-                      Click for detailed node analysis →
-                    </div>
-                  </div>
-                </div>
-
-                <div style={{
-                  position: 'absolute',
-                  bottom: '-6px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  width: 0,
-                  height: 0,
-                  borderLeft: '8px solid transparent',
-                  borderRight: '8px solid transparent',
-                  borderTop: '8px solid rgba(255,255,255,0.10)'
-                }} />
-                <div style={{
-                  position: 'absolute',
-                  bottom: '-5px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  width: 0,
-                  height: 0,
-                  borderLeft: '7px solid transparent',
-                  borderRight: '7px solid transparent',
-                  borderTop: '7px solid rgba(15, 18, 23, 0.92)'
-                }} />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
+            stabilityIndex={dominantDriver === 'balanced' ? 85 : Math.round(60 + (Math.random() * 20))}
+            summary={globalSummary}
+            actionableInsight={
+              dominantDriver === 'balanced'
+                ? "Equilibrium stable; opportunities expanding across defensive and cyclical sectors."
+                : balanceBias > 0.6
+                  ? "Watch geopolitical and rate pressure — defensive positioning advised."
+                  : "Growth resilience offsetting tight rates — favor cyclical exposure."
+            }
+            lastUpdated={new Date()}
+          />
+        </div>
 
       </div>
 
