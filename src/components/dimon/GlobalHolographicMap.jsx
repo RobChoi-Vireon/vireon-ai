@@ -928,16 +928,20 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const [orbPulseActive, setOrbPulseActive] = useState(false);
   const [drawerLuminance, setDrawerLuminance] = useState(1.0);
 
-  // Calculate responsive bottom spacing for Equilibrium panel
+  // Calculate responsive bottom spacing for Equilibrium panel (OS Horizon V4.0)
   const getEquilibriumBottomSpacing = useCallback(() => {
     const width = window.innerWidth;
+    const height = window.innerHeight;
 
-    // Responsive spacing tiers (OS Horizon standards)
-    if (width >= 1920) return 240; // Ultrawide: maximum serenity
-    if (width >= 1400) return 220; // Desktop: generous breathing room
-    if (width >= 1024) return 200; // Large: premium spacing
-    if (width >= 768) return 180;  // Medium: balanced spacing
-    return 160; // Mobile: compact but clear
+    // OS Horizon responsive spacing tiers
+    // Adjusted to spec: 72px to 104px range with viewport-aware scaling
+    if (width >= 1920) return 104; // Ultrawide: maximal serenity
+    if (width >= 1400) return 88;  // Desktop: target spec
+    if (width >= 1024) return 80;  // Large: balanced
+    if (width >= 768) return 72;   // Medium: target spec
+
+    // Mobile: compact but clear, scale with height
+    return height >= 800 ? 68 : 60;
   }, []);
 
   const [equilibriumSpacing, setEquilibriumSpacing] = useState(getEquilibriumBottomSpacing());
@@ -1629,13 +1633,13 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           })}
         </motion.div>
 
-        {/* EQUILIBRIUM PULSE — OS HORIZON V4.0 (PREMIUM RESPONSIVE SPACING) */}
+        {/* EQUILIBRIUM PULSE — OS HORIZON V4.0 (PREMIUM RESPONSIVE SPACING + SAFE ZONE) */}
         <div style={{
           position: 'absolute',
           left: '14%',
           right: '14%',
           bottom: `${equilibriumSpacing}px`,
-          zIndex: 7,
+          zIndex: 4,
           pointerEvents: 'auto'
         }}>
           <EquilibriumPulse
@@ -2117,7 +2121,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   boxShadow: `inset 0 0 20px ${getDomainGlow(selectedDomain.id)}`
                 }}
                 whileHover={shouldReduceMotion ? {} : {
-                  filter: 'brightness(1.02)',
+                  filter: 'brightness(1.03)',
                   transition: { duration: 0.14 }
                 }}
               >

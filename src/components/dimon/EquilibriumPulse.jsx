@@ -201,19 +201,27 @@ export default function EquilibriumPulse({
     return baseScale;
   };
 
-  // Calculate knob glow with all state modifiers
+  // Enhanced knob glow with Horizon slider micro-motion
   const getKnobGlow = () => {
     let baseIntensity = pulseGlowIntensity;
     
     if (isSliderHovered) {
-      baseIntensity *= 1.15; // +15% on hover
+      baseIntensity *= 1.19; // +19% on hover (Horizon spec: +4% glow expansion * 1.15 multiplier)
     }
     
     if (isValueChanging) {
-      baseIntensity *= 1.10; // +10% spike during value change
+      baseIntensity *= 1.12; // +12% bloom during value change (Horizon drag spec)
     }
     
     return baseIntensity;
+  };
+
+  // Enhanced knob color on hover (Horizon spec: fade to soft blue #8EBBFF)
+  const getKnobHoverColor = () => {
+    if (!isSliderHovered && !isSliderFocused) return getPulseColor();
+    
+    // For simplicity, return target on hover (proper interpolation could be added)
+    return '#8EBBFF';
   };
 
   return (
@@ -222,13 +230,13 @@ export default function EquilibriumPulse({
       className="equilibrium-pulse-module group relative"
       style={{
         width: '100%',
-        padding: '32px 28px',
+        padding: '32px 28px 44px 28px',
         borderRadius: '24px',
         backdropFilter: 'blur(22px) saturate(170%) brightness(1.05)',
         WebkitBackdropFilter: 'blur(22px) saturate(170%) brightness(1.05)',
-        background: 'rgba(18, 22, 28, 0.45)',
+        background: 'rgba(18, 22, 28, 0.10)',
         border: '1px solid rgba(255,255,255,0.10)',
-        boxShadow: 'inset 0 2px 16px rgba(0, 0, 0, 0.36), 0 24px 48px rgba(0, 0, 0, 0.38)',
+        boxShadow: 'inset 0 2px 16px rgba(0, 0, 0, 0.36), 0 24px 48px rgba(0, 0, 0, 0.36)',
         cursor: 'pointer',
         willChange: 'filter, transform'
       }}
@@ -500,7 +508,7 @@ export default function EquilibriumPulse({
             />
           )}
 
-          {/* Rail Highlight (Hover State) */}
+          {/* Rail Highlight (Horizon Hover: 140ms fade-in to soft blue) */}
           <motion.div
             className="absolute"
             style={{
@@ -509,15 +517,15 @@ export default function EquilibriumPulse({
               transform: 'translate(-50%, -50%)',
               width: '80px',
               height: '20px',
-              background: `radial-gradient(ellipse, ${getPulseGlow()} 0%, transparent 70%)`,
+              background: `radial-gradient(ellipse, ${isSliderHovered || isSliderFocused ? 'rgba(142, 187, 255, 0.50)' : getPulseGlow()} 0%, transparent 70%)`,
               filter: 'blur(12px)',
               pointerEvents: 'none',
               zIndex: 1
             }}
             initial={{ opacity: 0 }}
-            animate={{ opacity: isSliderHovered ? 1 : 0 }}
+            animate={{ opacity: isSliderHovered || isSliderFocused ? 1 : 0 }}
             transition={{ 
-              duration: isSliderHovered ? MOTION_TOKENS.DURATIONS.hoverEnter : MOTION_TOKENS.DURATIONS.hoverExit,
+              duration: isSliderHovered || isSliderFocused ? 0.14 : MOTION_TOKENS.DURATIONS.hoverExit,
               ease: MOTION_TOKENS.CURVES.horizonIn
             }}
           />
@@ -562,7 +570,7 @@ export default function EquilibriumPulse({
           }}
         />
 
-        {/* Layer 3: Living Pulse Particle */}
+        {/* Layer 3: Living Pulse Particle (Horizon Slider Spec: 180ms spring on drag) */}
         <motion.div
           className="pulse-particle"
           style={{
@@ -573,18 +581,18 @@ export default function EquilibriumPulse({
             width: '16px',
             height: '16px',
             borderRadius: '999px',
-            background: getPulseColor(),
+            background: isSliderHovered || isSliderFocused ? getKnobHoverColor() : getPulseColor(),
             border: '1.5px solid rgba(255,255,255,0.65)',
             zIndex: 5,
             pointerEvents: 'none',
-            willChange: 'transform, box-shadow',
+            willChange: 'transform, box-shadow, background-color',
             filter: drawerOpen ? 'brightness(1.18)' : 'brightness(1)'
           }}
           animate={{
             scale: getKnobScale(),
             boxShadow: drawerOpen 
               ? `0 0 36px ${getPulseGlow()}, 0 0 14px rgba(255,255,255,0.85), inset 0 0 0 2px rgba(255,255,255,0.65)`
-              : `0 0 ${22 * getKnobGlow()}px ${getPulseGlow()}, 0 0 8px rgba(255,255,255,0.55), inset 0 0 0 2px rgba(255,255,255,0.45)`,
+              : `0 0 ${22 * getKnobGlow()}px ${isSliderHovered || isSliderFocused ? 'rgba(142, 187, 255, 0.50)' : getPulseGlow()}, 0 0 8px rgba(255,255,255,0.55), inset 0 0 0 2px rgba(255,255,255,0.45)`,
             ...(isValueChanging && !shouldReduceMotion ? {
               x: [0, 2, 0]
             } : {})
@@ -596,9 +604,10 @@ export default function EquilibriumPulse({
                 : 0.3, 
               ease: MOTION_TOKENS.CURVES.horizonSpring 
             },
-            boxShadow: { duration: 0.3, ease: 'easeOut' },
+            boxShadow: { duration: 0.14, ease: 'easeOut' },
+            backgroundColor: { duration: 0.14, ease: MOTION_TOKENS.CURVES.horizonIn },
             x: isValueChanging 
-              ? { duration: MOTION_TOKENS.DURATIONS.settle, times: [0, 0.5, 1], ease: 'easeOut' }
+              ? { duration: 0.18, times: [0, 0.5, 1], ease: [0.25, 0.84, 0.32, 1] }
               : {}
           }}
         >
@@ -624,7 +633,7 @@ export default function EquilibriumPulse({
               transform: 'translateX(-50%)',
               width: '24px',
               height: '8px',
-              background: getPulseGlow(),
+              background: isSliderHovered || isSliderFocused ? 'rgba(142, 187, 255, 0.50)' : getPulseGlow(),
               filter: 'blur(7px)',
               borderRadius: '999px',
               pointerEvents: 'none'
@@ -632,17 +641,17 @@ export default function EquilibriumPulse({
             animate={{
               opacity: getKnobGlow() * 0.6
             }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.14 }}
           />
         </motion.div>
 
-        {/* Force Zone Labels */}
+        {/* Force Zone Labels (OS Horizon: +8px edge spacing) */}
         <div className="force-zone-labels absolute left-0 right-0 flex justify-between text-xs" style={{
           color: 'rgba(255,255,255,0.68)',
           fontWeight: 500,
           fontSize: '13px',
           letterSpacing: '0.01em',
-          bottom: '-28px',
+          bottom: '-30px',
           paddingLeft: '8px',
           paddingRight: '8px'
         }}>
@@ -651,7 +660,7 @@ export default function EquilibriumPulse({
         </div>
       </div>
 
-      {/* Summary Line */}
+      {/* Summary Line (OS Horizon: +12px spacing from slider, line-height 1.6) */}
       <motion.p
         style={{
           fontSize: '16px',
@@ -660,7 +669,7 @@ export default function EquilibriumPulse({
           fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
           fontWeight: 500,
           textAlign: 'center',
-          marginTop: '32px',
+          marginTop: '38px',
           marginBottom: 0,
           letterSpacing: '-0.005em',
           textShadow: '0 1px 2px rgba(0,0,0,0.20)'
