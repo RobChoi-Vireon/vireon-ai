@@ -1606,12 +1606,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           })}
         </motion.div>
 
-        {/* EQUILIBRIUM PULSE — HORIZON TIER UPGRADE (INCREASED SPACING) */}
+        {/* EQUILIBRIUM PULSE — HORIZON TIER UPGRADE (GENEROUS SPACING) */}
         <div style={{
           position: 'absolute',
           left: '14%',
           right: '14%',
-          bottom: '110px',
+          bottom: '150px',
           zIndex: 6,
           pointerEvents: 'auto'
         }}>
@@ -1626,8 +1626,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               geopolitics: -(domains.find(d => d.id === 'geopolitics')?.strength || 0)
             }}
             stabilityIndex={
-              dominantDriver === 'balanced'
-                ? 85
+              dominantDriver === 'balanced' 
+                ? 85 
                 : Math.round(75 - (Math.abs(balanceBias - 0.5) * 50))
             }
             summary={globalSummary}
