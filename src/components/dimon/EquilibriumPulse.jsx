@@ -3,29 +3,32 @@ import { motion, AnimatePresence, useSpring } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, ArrowRight, Sparkles } from 'lucide-react';
 
 // ============================================================================
-// EQUILIBRIUM PULSE — OS HORIZON V3.2
-// Living macro force visualization with physics-based pulse particle
+// EQUILIBRIUM PULSE — OS HORIZON V3.2 (REFINED)
+// Living macro force visualization with enhanced readability + Apple-grade polish
 // ============================================================================
 
 const MOTION_TOKENS = {
   CURVES: {
     horizonIn: [0.22, 0.61, 0.36, 1],
     horizonSpring: [0.16, 1, 0.3, 1],
-    pulsePhysics: [0.4, 0.0, 0.2, 1]
+    pulsePhysics: [0.4, 0.0, 0.2, 1],
+    appleEaseOut: [0.32, 0, 0.67, 1.2]
   },
   DURATIONS: {
     moduleReveal: 0.6,
     drawerReveal: 0.22,
     pulseReaction: 0.14,
-    hoverLift: 0.18
+    hoverLift: 0.18,
+    arrowNudge: 0.12,
+    ripple: 0.08
   }
 };
 
 const FORCE_COLORS = {
-  growth: { core: '#B4F7C0', glow: 'rgba(180,247,192,0.35)' },
-  rates: { core: '#C0A6FF', glow: 'rgba(192,166,255,0.35)' },
-  fx: { core: '#6AC7F7', glow: 'rgba(106,199,247,0.35)' },
-  geopolitics: { core: '#FFD37A', glow: 'rgba(255,211,122,0.35)' }
+  growth: { core: '#B4F7C0', glow: 'rgba(180,247,192,0.40)' },
+  rates: { core: '#C0A6FF', glow: 'rgba(192,166,255,0.40)' },
+  fx: { core: '#6AC7F7', glow: 'rgba(106,199,247,0.40)' },
+  geopolitics: { core: '#FFD37A', glow: 'rgba(255,211,122,0.40)' }
 };
 
 export default function EquilibriumPulse({ 
@@ -43,9 +46,11 @@ export default function EquilibriumPulse({
   onOpenDrawer
 }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isMoreHovered, setIsMoreHovered] = useState(false);
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
   const [pulseTime, setPulseTime] = useState(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [showRipple, setShowRipple] = useState(false);
   const containerRef = useRef(null);
   const rafRef = useRef(null);
 
@@ -117,12 +122,12 @@ export default function EquilibriumPulse({
   };
 
   const getPulseGlow = () => {
-    if (dominantForce === 'balanced') return 'rgba(141,196,255,0.35)';
+    if (dominantForce === 'balanced') return 'rgba(141,196,255,0.40)';
     if (equilibriumScore < 0.35) return FORCE_COLORS.growth.glow;
     if (equilibriumScore > 0.65) return FORCE_COLORS.geopolitics.glow;
     if (dominantForce === 'rates') return FORCE_COLORS.rates.glow;
     if (dominantForce === 'fx') return FORCE_COLORS.fx.glow;
-    return 'rgba(141,196,255,0.35)';
+    return 'rgba(141,196,255,0.40)';
   };
 
   const sortedForces = useMemo(() => {
@@ -131,14 +136,21 @@ export default function EquilibriumPulse({
         name: key, 
         value,
         color: FORCE_COLORS[key]?.core || '#8DC4FF',
-        glow: FORCE_COLORS[key]?.glow || 'rgba(141,196,255,0.25)'
+        glow: FORCE_COLORS[key]?.glow || 'rgba(141,196,255,0.28)'
       }))
       .sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
   }, [forces]);
 
   const handleToggleDrawer = () => {
+    setShowRipple(true);
+    setTimeout(() => setShowRipple(false), 400);
     setDrawerOpen(!drawerOpen);
     if (onOpenDrawer) onOpenDrawer();
+  };
+
+  const handleMoreClick = (e) => {
+    e.stopPropagation();
+    handleToggleDrawer();
   };
 
   return (
@@ -147,13 +159,13 @@ export default function EquilibriumPulse({
       className="equilibrium-pulse-module group relative"
       style={{
         width: '100%',
-        padding: '18px 22px',
-        borderRadius: '18px',
-        backdropFilter: 'blur(26px) saturate(165%) brightness(1.04)',
-        WebkitBackdropFilter: 'blur(26px) saturate(165%) brightness(1.04)',
-        background: 'rgba(18, 22, 28, 0.38)',
-        border: '1px solid rgba(255,255,255,0.09)',
-        boxShadow: 'inset 0 2px 14px rgba(0, 0, 0, 0.40), 0 10px 36px rgba(0, 0, 0, 0.28)',
+        padding: '24px',
+        borderRadius: '24px',
+        backdropFilter: 'blur(32px) saturate(170%) brightness(1.05)',
+        WebkitBackdropFilter: 'blur(32px) saturate(170%) brightness(1.05)',
+        background: 'rgba(18, 22, 28, 0.42)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        boxShadow: 'inset 0 2px 16px rgba(0, 0, 0, 0.38), 0 12px 42px rgba(0, 0, 0, 0.30)',
         cursor: 'pointer',
         willChange: 'filter, transform'
       }}
@@ -161,7 +173,7 @@ export default function EquilibriumPulse({
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleToggleDrawer}
       whileHover={shouldReduceMotion ? {} : {
-        filter: 'brightness(1.05)',
+        filter: 'brightness(1.06)',
         y: -2,
         transition: { 
           duration: MOTION_TOKENS.DURATIONS.hoverLift, 
@@ -193,21 +205,21 @@ export default function EquilibriumPulse({
       <div style={{
         position: 'absolute',
         top: 0,
-        left: '20px',
-        right: '20px',
+        left: '28px',
+        right: '28px',
         height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
         borderRadius: '999px',
         pointerEvents: 'none'
       }} />
 
       <motion.div
-        className="absolute inset-0 rounded-[18px] pointer-events-none"
+        className="absolute inset-0 rounded-[24px] pointer-events-none"
         style={{
-          background: 'radial-gradient(circle at 50% 0%, rgba(255,255,255,0.04) 0%, transparent 60%)',
+          background: 'radial-gradient(circle at 50% 0%, rgba(255,255,255,0.05) 0%, transparent 65%)',
           opacity: 0
         }}
-        animate={{ opacity: isHovered ? 0.6 : 0 }}
+        animate={{ opacity: isHovered ? 0.7 : 0 }}
         transition={{ duration: 0.3 }}
       />
 
@@ -216,58 +228,107 @@ export default function EquilibriumPulse({
         <div className="flex items-center gap-2.5">
           <h4 
             style={{
-              fontSize: '15px',
+              fontSize: '18px',
               fontWeight: 600,
-              letterSpacing: '-0.005em',
-              color: 'rgba(255,255,255,0.95)',
-              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
+              letterSpacing: '-0.01em',
+              color: 'rgba(255,255,255,0.98)',
+              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+              textShadow: '0 1px 2px rgba(0,0,0,0.25)'
             }}
           >
             Global Equilibrium
           </h4>
           
           <div
-            className="px-2 py-0.5 rounded-md"
+            className="px-2.5 py-1 rounded-lg"
             style={{
-              background: 'rgba(255,255,255,0.08)',
+              background: 'rgba(255,255,255,0.10)',
               fontSize: '11px',
               fontWeight: 600,
-              color: 'rgba(255,255,255,0.75)',
-              letterSpacing: '0.02em'
+              color: 'rgba(255,255,255,0.88)',
+              letterSpacing: '0.02em',
+              border: '1px solid rgba(255,255,255,0.08)'
             }}
           >
             {getStateLabel()}
           </div>
         </div>
 
-        {/* More Link */}
-        <motion.div
-          className="flex items-center gap-1.5"
-          animate={{ opacity: isHovered ? 1 : 0.6 }}
-          transition={{ duration: 0.15 }}
+        {/* More Link — Apple-Grade Micro-Interaction */}
+        <motion.button
+          className="flex items-center gap-1.5 px-2 py-1 -mr-2 rounded-lg"
+          onMouseEnter={() => setIsMoreHovered(true)}
+          onMouseLeave={() => setIsMoreHovered(false)}
+          onClick={handleMoreClick}
+          style={{
+            background: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+          whileHover={{
+            background: 'rgba(255,255,255,0.06)',
+            transition: { duration: 0.14 }
+          }}
+          aria-label="View detailed force breakdown"
         >
-          <span style={{
-            fontSize: '12px',
-            fontWeight: 500,
-            color: 'rgba(90, 160, 255, 0.85)',
-            letterSpacing: '0.01em'
-          }}>
-            More
-          </span>
-          <motion.div
-            animate={{ x: isHovered ? 2 : 0 }}
-            transition={{ duration: 0.14 }}
+          {/* Ripple Effect on Click */}
+          <AnimatePresence>
+            {showRipple && (
+              <motion.div
+                className="absolute inset-0 rounded-lg"
+                style={{
+                  background: 'radial-gradient(circle, rgba(90,160,255,0.3) 0%, transparent 70%)',
+                  pointerEvents: 'none'
+                }}
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: [0.6, 0], scale: 1.5 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: MOTION_TOKENS.DURATIONS.ripple * 5 }}
+              />
+            )}
+          </AnimatePresence>
+
+          <motion.span
+            style={{
+              fontSize: '12.5px',
+              fontWeight: 500,
+              color: 'rgba(90, 160, 255, 0.90)',
+              letterSpacing: '0.01em',
+              position: 'relative',
+              zIndex: 1
+            }}
+            animate={{
+              color: isMoreHovered ? 'rgba(120, 180, 255, 1)' : 'rgba(90, 160, 255, 0.90)',
+              x: isMoreHovered ? 2 : 0
+            }}
+            transition={{ duration: MOTION_TOKENS.DURATIONS.arrowNudge }}
           >
-            <ArrowRight className="w-3.5 h-3.5" style={{ color: 'rgba(90, 160, 255, 0.85)' }} />
+            More
+          </motion.span>
+          <motion.div
+            style={{ position: 'relative', zIndex: 1 }}
+            animate={{ 
+              x: isMoreHovered ? 3 : 0,
+              opacity: isMoreHovered ? 1 : 0.85
+            }}
+            transition={{ 
+              duration: MOTION_TOKENS.DURATIONS.arrowNudge,
+              ease: MOTION_TOKENS.CURVES.appleEaseOut
+            }}
+          >
+            <ArrowRight className="w-3.5 h-3.5" style={{ color: 'rgba(90, 160, 255, 0.90)' }} />
           </motion.div>
-        </motion.div>
+        </motion.button>
       </div>
 
       {/* 3-Layer Pulse Bar Container */}
       <div style={{ 
         position: 'relative',
-        height: '32px',
-        marginBottom: '14px'
+        height: '38px',
+        marginBottom: '14px',
+        marginTop: '8px'
       }}>
         {/* Layer 1: Glass Rail Background */}
         <div
@@ -277,27 +338,27 @@ export default function EquilibriumPulse({
             top: '50%',
             left: 0,
             right: 0,
-            height: '6px',
+            height: '7px',
             transform: 'translateY(-50%)',
             borderRadius: '999px',
-            background: 'rgba(255,255,255,0.06)',
-            backdropFilter: 'blur(8px)',
-            WebkitBackdropFilter: 'blur(8px)',
+            background: 'rgba(255,255,255,0.07)',
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
             border: '1px solid rgba(255,255,255,0.08)',
-            boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.25)',
+            boxShadow: 'inset 0 1px 4px rgba(0,0,0,0.28)',
             overflow: 'hidden'
           }}
         >
-          {/* Layer 2: Dynamic Gradient Flow */}
+          {/* Layer 2: Dynamic Gradient Flow (increased saturation) */}
           <motion.div
             className="absolute inset-0"
             style={{
-              background: 'linear-gradient(90deg, #3FAEFF 0%, #77E9CE 15%, #8DC4FF 35%, #C9B46B 50%, #FFD37A 65%, #FFB35C 85%, #FFC772 100%)',
-              opacity: 0.35,
+              background: 'linear-gradient(90deg, #42B0FF 0%, #7AEDCF 15%, #90CAFF 35%, #D4BD78 50%, #FFD982 65%, #FFB965 85%, #FFCA7A 100%)',
+              opacity: 0.42,
               mixBlendMode: 'screen'
             }}
             animate={shouldReduceMotion ? {} : {
-              opacity: [0.35, 0.45, 0.35]
+              opacity: [0.42, 0.52, 0.42]
             }}
             transition={{
               duration: 3.5,
@@ -311,7 +372,7 @@ export default function EquilibriumPulse({
             <motion.div
               className="absolute inset-0"
               style={{
-                background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.28) 50%, transparent 100%)',
+                background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.32) 50%, transparent 100%)',
                 width: '40%'
               }}
               animate={{
@@ -327,22 +388,22 @@ export default function EquilibriumPulse({
           )}
         </div>
 
-        {/* Subsurface Glow Layer */}
+        {/* Subsurface Glow Layer (enhanced softness) */}
         <div style={{
           position: 'absolute',
           top: '50%',
           left: 0,
           right: 0,
-          height: '12px',
+          height: '16px',
           transform: 'translateY(-50%)',
-          background: 'linear-gradient(90deg, rgba(63,174,255,0.10), rgba(119,233,206,0.08), rgba(201,180,107,0.08), rgba(255,179,92,0.10))',
-          filter: 'blur(10px)',
-          opacity: 0.7,
+          background: 'linear-gradient(90deg, rgba(66,176,255,0.12), rgba(122,237,207,0.10), rgba(212,189,120,0.10), rgba(255,185,101,0.12))',
+          filter: 'blur(12px)',
+          opacity: 0.75,
           pointerEvents: 'none',
           borderRadius: '999px'
         }} />
 
-        {/* Layer 3: Living Pulse Particle */}
+        {/* Layer 3: Living Pulse Particle (enhanced glow) */}
         <motion.div
           className="pulse-particle"
           style={{
@@ -350,22 +411,22 @@ export default function EquilibriumPulse({
             top: '50%',
             left: `${pulseX.get() + pulseDrift}%`,
             transform: 'translate(-50%, -50%)',
-            width: '14px',
-            height: '14px',
+            width: '16px',
+            height: '16px',
             borderRadius: '999px',
             background: getPulseColor(),
-            boxShadow: `0 0 ${18 * pulseGlowIntensity}px ${getPulseGlow()}, 0 0 6px rgba(255,255,255,0.5), inset 0 0 0 2px rgba(255,255,255,0.4)`,
-            border: '1.5px solid rgba(255,255,255,0.6)',
+            boxShadow: `0 0 ${22 * pulseGlowIntensity}px ${getPulseGlow()}, 0 0 8px rgba(255,255,255,0.55), inset 0 0 0 2px rgba(255,255,255,0.45)`,
+            border: '1.5px solid rgba(255,255,255,0.65)',
             zIndex: 5,
             pointerEvents: 'none',
             willChange: 'transform, box-shadow',
-            filter: drawerOpen ? 'brightness(1.15)' : 'brightness(1)'
+            filter: drawerOpen ? 'brightness(1.18)' : 'brightness(1)'
           }}
           animate={{
             scale: drawerOpen ? 1.3 : (isHovered ? pulseScale * 1.08 : pulseScale),
             boxShadow: drawerOpen 
-              ? `0 0 32px ${getPulseGlow()}, 0 0 12px rgba(255,255,255,0.8), inset 0 0 0 2px rgba(255,255,255,0.6)`
-              : `0 0 ${18 * pulseGlowIntensity}px ${getPulseGlow()}, 0 0 6px rgba(255,255,255,0.5), inset 0 0 0 2px rgba(255,255,255,0.4)`
+              ? `0 0 36px ${getPulseGlow()}, 0 0 14px rgba(255,255,255,0.85), inset 0 0 0 2px rgba(255,255,255,0.65)`
+              : `0 0 ${22 * pulseGlowIntensity}px ${getPulseGlow()}, 0 0 8px rgba(255,255,255,0.55), inset 0 0 0 2px rgba(255,255,255,0.45)`
           }}
           transition={{
             scale: { duration: 0.3, ease: MOTION_TOKENS.CURVES.horizonSpring },
@@ -375,43 +436,61 @@ export default function EquilibriumPulse({
           {/* Inner Refraction Highlight */}
           <div style={{
             position: 'absolute',
-            top: '2px',
-            left: '2px',
-            width: '5px',
-            height: '5px',
+            top: '2.5px',
+            left: '2.5px',
+            width: '5.5px',
+            height: '5.5px',
             borderRadius: '999px',
-            background: 'rgba(255,255,255,0.75)',
-            filter: 'blur(0.8px)',
+            background: 'rgba(255,255,255,0.80)',
+            filter: 'blur(0.9px)',
+            pointerEvents: 'none'
+          }} />
+
+          {/* Ambient Underside Glow (Apple Control Center style) */}
+          <div style={{
+            position: 'absolute',
+            bottom: '-4px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '20px',
+            height: '6px',
+            background: getPulseGlow(),
+            filter: 'blur(6px)',
+            opacity: pulseGlowIntensity * 0.6,
+            borderRadius: '999px',
             pointerEvents: 'none'
           }} />
         </motion.div>
 
-        {/* Force Zone Labels */}
-        <div className="absolute -bottom-5 left-0 right-0 flex justify-between text-xs" style={{
-          color: 'rgba(255,255,255,0.52)',
+        {/* Force Zone Labels (enhanced brightness + spacing) */}
+        <div className="absolute left-0 right-0 flex justify-between text-xs" style={{
+          color: 'rgba(255,255,255,0.68)',
           fontWeight: 500,
-          fontSize: '10px',
-          letterSpacing: '0.02em'
+          fontSize: '13px',
+          letterSpacing: '0.01em',
+          bottom: '-26px'
         }}>
           <span>Growth / Demand</span>
           <span>Tightening / Supply</span>
         </div>
       </div>
 
-      {/* Summary Line */}
+      {/* Summary Line (enhanced prominence) */}
       <motion.p
         style={{
-          fontSize: '13px',
-          lineHeight: '1.45',
-          color: 'rgba(255,255,255,0.88)',
+          fontSize: '16px',
+          lineHeight: '1.42',
+          color: 'rgba(255,255,255,0.96)',
           fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
-          fontWeight: 400,
+          fontWeight: 500,
           textAlign: 'center',
-          marginTop: '14px',
-          marginBottom: 0
+          marginTop: '20px',
+          marginBottom: 0,
+          letterSpacing: '-0.005em',
+          textShadow: '0 1px 2px rgba(0,0,0,0.20)'
         }}
         animate={{
-          opacity: isHovered ? 1 : 0.88,
+          opacity: isHovered ? 1 : 0.96,
           y: isHovered ? -1 : 0
         }}
         transition={{ duration: 0.18 }}
@@ -425,8 +504,8 @@ export default function EquilibriumPulse({
           <motion.div
             className="absolute left-1/2 -translate-x-1/2 pointer-events-none"
             style={{
-              bottom: 'calc(100% + 14px)',
-              width: '380px',
+              bottom: 'calc(100% + 16px)',
+              width: '420px',
               maxWidth: '90vw',
               zIndex: 30
             }}
@@ -441,21 +520,21 @@ export default function EquilibriumPulse({
             <div
               className="p-5 rounded-2xl"
               style={{
-                background: 'rgba(10, 14, 20, 0.94)',
-                backdropFilter: 'blur(32px) saturate(180%) brightness(1.06)',
-                WebkitBackdropFilter: 'blur(32px) saturate(180%) brightness(1.06)',
-                border: '1px solid rgba(255,255,255,0.12)',
-                boxShadow: '0 14px 44px rgba(0,0,0,0.50), inset 0 1px 0 rgba(255,255,255,0.10)'
+                background: 'rgba(10, 14, 20, 0.95)',
+                backdropFilter: 'blur(36px) saturate(185%) brightness(1.08)',
+                WebkitBackdropFilter: 'blur(36px) saturate(185%) brightness(1.08)',
+                border: '1px solid rgba(255,255,255,0.13)',
+                boxShadow: '0 16px 48px rgba(0,0,0,0.52), inset 0 1px 0 rgba(255,255,255,0.12)'
               }}
             >
               {/* Drawer Top Highlight */}
               <div style={{
                 position: 'absolute',
                 top: 0,
-                left: '28px',
-                right: '28px',
+                left: '32px',
+                right: '32px',
                 height: '1px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.20), transparent)',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent)',
                 borderRadius: '999px'
               }} />
 
@@ -466,8 +545,8 @@ export default function EquilibriumPulse({
                   fontWeight: 600,
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase',
-                  color: 'rgba(255,255,255,0.60)',
-                  marginBottom: '12px'
+                  color: 'rgba(255,255,255,0.68)',
+                  marginBottom: '14px'
                 }}>
                   Force Contributions
                 </h5>
@@ -476,36 +555,36 @@ export default function EquilibriumPulse({
                   {sortedForces.map((force, i) => (
                     <motion.div
                       key={force.name}
-                      className="flex items-center justify-between px-3 py-2.5 rounded-xl"
+                      className="flex items-center justify-between px-3.5 py-3 rounded-xl"
                       style={{
-                        background: 'rgba(255,255,255,0.04)',
-                        border: '1px solid rgba(255,255,255,0.05)'
+                        background: 'rgba(255,255,255,0.05)',
+                        border: '1px solid rgba(255,255,255,0.06)'
                       }}
                       initial={{ opacity: 0, y: 3 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.05 + (i * 0.04), duration: 0.16 }}
                     >
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2.5">
                         <div style={{
-                          width: '5px',
-                          height: '5px',
+                          width: '6px',
+                          height: '6px',
                           borderRadius: '999px',
                           background: force.color,
-                          boxShadow: `0 0 10px ${force.glow}`
+                          boxShadow: `0 0 12px ${force.glow}`
                         }} />
                         <span style={{
-                          fontSize: '11.5px',
+                          fontSize: '12px',
                           fontWeight: 500,
-                          color: 'rgba(255,255,255,0.85)',
+                          color: 'rgba(255,255,255,0.92)',
                           textTransform: 'capitalize'
                         }}>
                           {force.name}
                         </span>
                       </div>
                       <span style={{
-                        fontSize: '12.5px',
+                        fontSize: '13px',
                         fontWeight: 700,
-                        color: force.value > 0 ? '#6EF3A5' : force.value < 0 ? '#F38B82' : 'rgba(255,255,255,0.55)'
+                        color: force.value > 0 ? '#6EF3A5' : force.value < 0 ? '#F38B82' : 'rgba(255,255,255,0.60)'
                       }}>
                         {force.value > 0 ? '+' : ''}{Math.round(force.value * 100)}
                       </span>
@@ -516,31 +595,31 @@ export default function EquilibriumPulse({
 
               <div style={{
                 height: '1px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
-                margin: '14px 0'
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)',
+                margin: '16px 0'
               }} />
 
-              {/* Stability Index + Actionable */}
+              {/* Stability Index + Label */}
               <div className="flex items-center gap-4 mb-4">
                 {/* Stability Ring */}
-                <div className="relative w-10 h-10 flex-shrink-0">
-                  <svg className="transform -rotate-90" width="40" height="40">
-                    <circle cx="20" cy="20" r="17" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2.5" />
+                <div className="relative w-11 h-11 flex-shrink-0">
+                  <svg className="transform -rotate-90" width="44" height="44">
+                    <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2.8" />
                     <motion.circle
-                      cx="20" cy="20" r="17" fill="none"
+                      cx="22" cy="22" r="18" fill="none"
                       stroke="#5EA7FF"
-                      strokeWidth="2.5"
+                      strokeWidth="2.8"
                       strokeLinecap="round"
-                      strokeDasharray="107"
-                      initial={{ strokeDashoffset: 107 }}
-                      animate={{ strokeDashoffset: 107 - stabilityIndex }}
+                      strokeDasharray="113"
+                      initial={{ strokeDashoffset: 113 }}
+                      animate={{ strokeDashoffset: 113 - stabilityIndex }}
                       transition={{ duration: 0.8, delay: 0.25, ease: MOTION_TOKENS.CURVES.horizonIn }}
-                      style={{ filter: 'drop-shadow(0 0 6px rgba(94,167,255,0.3))' }}
+                      style={{ filter: 'drop-shadow(0 0 7px rgba(94,167,255,0.35))' }}
                     />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center font-bold" style={{
-                    color: 'rgba(255,255,255,0.95)',
-                    fontSize: '11px'
+                    color: 'rgba(255,255,255,0.98)',
+                    fontSize: '12px'
                   }}>
                     {stabilityIndex}
                   </div>
@@ -549,19 +628,20 @@ export default function EquilibriumPulse({
                 {/* Stability Label */}
                 <div className="flex-1">
                   <div style={{
-                    fontSize: '9px',
-                    color: 'rgba(255,255,255,0.60)',
+                    fontSize: '10px',
+                    color: 'rgba(255,255,255,0.68)',
                     letterSpacing: '0.12em',
                     fontWeight: 600,
-                    marginBottom: '2px',
+                    marginBottom: '3px',
                     textTransform: 'uppercase'
                   }}>
                     Stability Index
                   </div>
                   <div style={{
-                    fontSize: '12px',
-                    color: 'rgba(255,255,255,0.88)',
-                    fontWeight: 600
+                    fontSize: '13px',
+                    color: 'rgba(255,255,255,0.94)',
+                    fontWeight: 600,
+                    letterSpacing: '-0.005em'
                   }}>
                     {stabilityIndex >= 70 ? 'High Stability' : stabilityIndex >= 50 ? 'Moderate' : 'Elevated Risk'}
                   </div>
@@ -570,34 +650,35 @@ export default function EquilibriumPulse({
 
               {/* Lyra Actionable Insight */}
               <motion.div
-                className="px-4 py-3 rounded-xl"
+                className="px-4 py-3.5 rounded-xl"
                 style={{
-                  background: 'rgba(106, 199, 247, 0.05)',
-                  border: '1px solid rgba(106, 199, 247, 0.14)',
-                  boxShadow: 'inset 0 0 18px rgba(106, 199, 247, 0.06)'
+                  background: 'rgba(106, 199, 247, 0.06)',
+                  border: '1px solid rgba(106, 199, 247, 0.16)',
+                  boxShadow: 'inset 0 0 20px rgba(106, 199, 247, 0.07)'
                 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3, duration: 0.2 }}
               >
-                <div className="flex items-start gap-2.5">
-                  <Sparkles className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: 'rgba(106, 199, 247, 0.75)' }} />
+                <div className="flex items-start gap-3">
+                  <Sparkles className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: 'rgba(106, 199, 247, 0.82)' }} />
                   <div>
                     <p style={{
                       fontSize: '10px',
                       fontWeight: 600,
-                      letterSpacing: '0.1em',
+                      letterSpacing: '0.12em',
                       textTransform: 'uppercase',
-                      color: 'rgba(106, 199, 247, 0.80)',
-                      marginBottom: '5px'
+                      color: 'rgba(106, 199, 247, 0.85)',
+                      marginBottom: '6px'
                     }}>
                       Lyra Insight
                     </p>
                     <p style={{
-                      fontSize: '12.5px',
-                      lineHeight: '1.5',
-                      color: 'rgba(225, 238, 248, 0.95)',
-                      fontWeight: 400
+                      fontSize: '13px',
+                      lineHeight: '1.52',
+                      color: 'rgba(235, 245, 252, 0.97)',
+                      fontWeight: 400,
+                      letterSpacing: '-0.003em'
                     }}>
                       {dominantForce === 'balanced'
                         ? "Equilibrium stable; opportunities expanding across defensive and cyclical sectors."
@@ -612,6 +693,17 @@ export default function EquilibriumPulse({
               {/* Drawer Arrow */}
               <div style={{
                 position: 'absolute',
+                bottom: '-9px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: 0,
+                height: 0,
+                borderLeft: '11px solid transparent',
+                borderRight: '11px solid transparent',
+                borderTop: '11px solid rgba(255,255,255,0.13)'
+              }} />
+              <div style={{
+                position: 'absolute',
                 bottom: '-8px',
                 left: '50%',
                 transform: 'translateX(-50%)',
@@ -619,18 +711,7 @@ export default function EquilibriumPulse({
                 height: 0,
                 borderLeft: '10px solid transparent',
                 borderRight: '10px solid transparent',
-                borderTop: '10px solid rgba(255,255,255,0.12)'
-              }} />
-              <div style={{
-                position: 'absolute',
-                bottom: '-7px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                width: 0,
-                height: 0,
-                borderLeft: '9px solid transparent',
-                borderRight: '9px solid transparent',
-                borderTop: '9px solid rgba(10, 14, 20, 0.94)'
+                borderTop: '10px solid rgba(10, 14, 20, 0.95)'
               }} />
             </div>
           </motion.div>
@@ -655,7 +736,7 @@ export default function EquilibriumPulse({
 
         /* Focus State */
         .equilibrium-pulse-module:focus-visible {
-          outline: 2px solid rgba(90, 160, 255, 0.6);
+          outline: 2px solid rgba(90, 160, 255, 0.65);
           outline-offset: 4px;
         }
 
@@ -664,13 +745,42 @@ export default function EquilibriumPulse({
           .pulse-rail {
             border-color: rgba(255, 255, 255, 0.5) !important;
           }
+          
+          .equilibrium-pulse-module h4,
+          .equilibrium-pulse-module p {
+            color: #FFFFFF !important;
+          }
         }
 
         /* Touch Targets */
         @media (pointer: coarse) {
           .equilibrium-pulse-module {
-            min-height: 44px;
+            min-height: 48px;
           }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+          .equilibrium-pulse-module h4 {
+            font-size: 17px !important;
+          }
+          
+          .equilibrium-pulse-module p {
+            font-size: 15px !important;
+          }
+          
+          .equilibrium-pulse-module .force-zone-labels {
+            font-size: 12px !important;
+          }
+        }
+
+        /* Performance Optimization */
+        .pulse-particle::before {
+          content: '';
+          position: absolute;
+          inset: -2px;
+          border-radius: 999px;
+          z-index: -1;
         }
       `}</style>
     </motion.div>
