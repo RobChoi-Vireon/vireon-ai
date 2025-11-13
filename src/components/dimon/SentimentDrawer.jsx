@@ -247,19 +247,17 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
         initial="hidden"
         animate="visible"
         exit="hidden"
-        style={{ paddingTop: '80px' }}
       >
         <motion.div
-          className="absolute left-0 right-0 bottom-0"
+          className="absolute inset-0"
           style={{ 
-            top: '80px',
             background: 'rgba(0,0,0,0.60)'
           }}
           onClick={onClose}
         />
 
         <motion.div
-          className="relative w-full max-w-2xl rounded-3xl overflow-hidden border"
+          className="relative w-full max-w-2xl max-h-[90vh] rounded-3xl overflow-hidden border"
           style={{
             background: 'rgba(15, 18, 25, 0.95)',
             backdropFilter: 'blur(22px)',
@@ -326,7 +324,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
           </motion.div>
 
           {/* Body */}
-          <div className="p-8 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 240px)' }}>
+          <div className="p-8 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 96px)' }}>
             {/* Top Section: Gauge */}
             <motion.div variants={itemVariants} className="flex flex-col items-center mb-8">
               <RadialGauge score={consensusScore} />
