@@ -945,13 +945,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const minClear = 24;
   const safeBottom = footerH + footerBleed + haloBleed + minClear;
 
-  // Responsive equilibrium spacing (calculated from orb glow boundary)
-  const getEquilibriumSpacing = useCallback(() => {
-    if (viewportSize === 'sm') return 48; // Mobile: 40-56px range
-    if (viewportSize === 'md') return 64; // Tablet: 56-72px range
-    return 92; // Desktop: 88-96px range (optimal visual rhythm)
-  }, [viewportSize]);
-
   const getGlobalScale = useCallback(() => {
     if (viewportSize === 'sm') return TOKENS.HORIZON.globalScaleSm;
     if (viewportSize === 'md') return TOKENS.HORIZON.globalScaleMd;
@@ -1613,12 +1606,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           })}
         </motion.div>
 
-        {/* EQUILIBRIUM PULSE — GLOW-AWARE RESPONSIVE SPACING */}
+        {/* EQUILIBRIUM PULSE — HORIZON TIER UPGRADE (SPACING REFINED) */}
         <div style={{
           position: 'absolute',
           left: '14%',
           right: '14%',
-          bottom: `${getEquilibriumSpacing()}px`,
+          bottom: '68px',
           zIndex: 6,
           pointerEvents: 'auto'
         }}>
