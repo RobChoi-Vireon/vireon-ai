@@ -42,7 +42,7 @@ const MiniRing = ({ label, value, color, delay }) => {
                                 />
                             </svg>
                         </div>
-                        <span className="text-[10px] font-medium" style={{ color: '#AAB1B8' }}>
+                        <span className="text-[10px] font-medium" style={{ color: 'rgba(255,255,255,0.70)' }}>
                             {label}
                         </span>
                     </div>
@@ -138,7 +138,7 @@ const RadialGauge = ({ score, isHovered }) => {
         return () => mediaQuery.removeEventListener('change', handler);
     }, []);
 
-    const radius = 50;
+    const radius = 58; // Increased from 50 to 58 (+8px)
     const circumference = 2 * Math.PI * radius;
     const offset = circumference - (score / 100) * circumference;
 
@@ -158,11 +158,17 @@ const RadialGauge = ({ score, isHovered }) => {
     const label = getZoneLabel(score);
 
     return (
-        <div className="relative flex items-center justify-center w-[120px] h-[120px] mx-auto">
-            <svg width="120" height="120" className="transform -rotate-90">
+        <div className="relative flex items-center justify-center w-[136px] h-[136px] mx-auto">
+            <svg width="136" height="136" className="transform -rotate-90">
                 <defs>
-                    <filter id="gauge-glow">
-                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                    {/* Enhanced glow filter (~15% stronger) */}
+                    <filter id="gauge-glow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                        <feColorMatrix 
+                            in="coloredBlur" 
+                            type="matrix" 
+                            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1.15 0"
+                        />
                         <feMerge>
                             <feMergeNode in="coloredBlur"/>
                             <feMergeNode in="SourceGraphic"/>
@@ -172,8 +178,8 @@ const RadialGauge = ({ score, isHovered }) => {
                 
                 {/* Background Circle */}
                 <circle
-                    cx="60"
-                    cy="60"
+                    cx="68"
+                    cy="68"
                     r={radius}
                     fill="none"
                     stroke="rgba(255,255,255,0.1)"
@@ -182,8 +188,8 @@ const RadialGauge = ({ score, isHovered }) => {
                 
                 {/* Animated Progress Circle */}
                 <motion.circle
-                    cx="60"
-                    cy="60"
+                    cx="68"
+                    cy="68"
                     r={radius}
                     fill="none"
                     stroke={color}
@@ -206,6 +212,20 @@ const RadialGauge = ({ score, isHovered }) => {
             
             {/* Center Content */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
+                {/* Label Above Number */}
+                <motion.span
+                    className="text-[10px] font-medium uppercase tracking-wide mb-1"
+                    style={{ 
+                        color: 'rgba(255,255,255,0.70)',
+                        letterSpacing: '0.08em'
+                    }}
+                    initial={{ opacity: 0, y: -3 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4, duration: 0.3 }}
+                >
+                    Overall Street Alignment
+                </motion.span>
+                
                 <motion.span
                     className="text-3xl font-bold"
                     style={{ color }}
@@ -215,15 +235,20 @@ const RadialGauge = ({ score, isHovered }) => {
                 >
                     {score}
                 </motion.span>
-                <motion.span
-                    className="text-[13px] font-medium mt-0.5"
-                    style={{ color: 'rgba(255,255,255,0.8)' }}
+                
+                <motion.div
+                    className="text-center mt-1"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.7, duration: 0.3 }}
                 >
-                    {label}
-                </motion.span>
+                    <div className="text-[13px] font-semibold" style={{ color: 'rgba(255,255,255,0.88)' }}>
+                        {label} Consensus
+                    </div>
+                    <div className="text-[11px] font-medium mt-0.5" style={{ color: 'rgba(255,255,255,0.65)' }}>
+                        Weight: Medium
+                    </div>
+                </motion.div>
             </div>
         </div>
     );
@@ -266,7 +291,9 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
                 backdropFilter: 'blur(16px)',
                 border: '1px solid rgba(255, 255, 255, 0.12)',
                 boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)',
-                backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.08) 100%)'
+                backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.08) 100%)',
+                paddingTop: '30px',
+                paddingBottom: '30px'
             }}
             whileHover={{ 
                 y: -4,
@@ -282,7 +309,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
             <div className="flex items-center justify-between mb-3">
                 <motion.h2 
                     className="text-base font-semibold"
-                    style={{ color: '#FFFFFF' }}
+                    style={{ color: 'rgba(255,255,255,0.95)' }}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.1 }}
@@ -293,7 +320,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
                     className="px-2.5 py-1 rounded-full text-xs font-semibold"
                     style={{
                         background: 'rgba(255, 255, 255, 0.1)',
-                        color: '#FFFFFF'
+                        color: 'rgba(255,255,255,0.92)'
                     }}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -337,10 +364,10 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
                 <Sparkline data={trendData} delay={0.9} />
             </motion.div>
 
-            {/* Footnote */}
+            {/* Footnote - OS Horizon Typography */}
             <motion.p
                 className="text-xs text-center"
-                style={{ color: 'rgba(255,255,255,0.55)' }}
+                style={{ color: 'rgba(255,255,255,0.70)' }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}

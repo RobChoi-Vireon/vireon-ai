@@ -648,13 +648,19 @@ export default function MacroSignalsPage() {
                   <GlobalSignalLattice onOpenSignalDrawer={setSelectedSignal} />
                 </motion.div>
                 
-                {/* 3) Global Signals */}
+                {/* 3) Global Signals — OS HORIZON REFINED LAYOUT */}
                 <motion.div className="col-span-12" variants={sectionVariants} id="section-global-signals" data-section-order="3">
                     <div className="mb-6 pl-2">
-                        <h2 className="text-2xl font-bold mb-2 text-gray-100">Global Signals</h2>
-                        <p className="text-sm text-gray-400">Consensus and divergence across key sources.</p>
+                        <h2 className="text-2xl font-bold mb-2" style={{ color: 'rgba(255,255,255,0.95)' }}>
+                          Global Signals
+                        </h2>
+                        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.70)' }}>
+                          Consensus and divergence across key sources.
+                        </p>
                     </div>
-                    <div className="grid grid-cols-12 gap-6 md:gap-8">
+                    
+                    {/* Enhanced Grid with Breathing Room */}
+                    <div className="grid grid-cols-12 gap-5 items-start">
                         <div className="col-span-12 lg:col-span-4">
                             <ConsensusMeter 
                                 score={digest.consensus_score} 
