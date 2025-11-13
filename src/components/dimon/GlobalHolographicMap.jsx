@@ -4,7 +4,7 @@ import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motio
 import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLeft, ChevronRight, BarChart3, DollarSign, Activity, Sparkles } from 'lucide-react';
 import LyraLogo from '../core/LyraLogo';
 import { createPortal } from 'react-dom';
-import EquilibriumBalanceModule from './EquilibriumBalanceModule';
+import EquilibriumPulse from './EquilibriumPulse'; // Changed import from EquilibriumBalanceModule to EquilibriumPulse
 
 // ============================================================================
 // EQUILIBRIUM — OS HORIZON V3.2 "UNIFIED MOTION + INFORMATION HIERARCHY"
@@ -1606,35 +1606,32 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           })}
         </motion.div>
 
-        {/* EQUILIBRIUM BALANCE MODULE — HORIZON TIER UPGRADE */}
+        {/* EQUILIBRIUM PULSE — HORIZON TIER UPGRADE */}
         <div style={{
           position: 'absolute',
           left: '14%',
           right: '14%',
           bottom: '32px',
-          zIndex: 1,
+          zIndex: 6, // Adjusted zIndex to 6
           pointerEvents: 'auto'
         }}>
-          <EquilibriumBalanceModule
+          <EquilibriumPulse
             equilibriumScore={balanceBias}
-            trend={dominantDriver === 'balanced' ? 'neutral' : balanceBias > 0.6 ? 'deteriorating' : balanceBias < 0.4 ? 'improving' : 'neutral'}
+            volatility={0.3 + (Math.abs(balanceBias - 0.5) * 0.4)} // New volatility prop
             dominantForce={dominantDriver}
             forces={{
               growth: domains.find(d => d.id === 'growth')?.strength || 0,
-              rates: -(domains.find(d => d.id === 'rates')?.strength || 0), // Rates as a negative force
-              fx: (domains.find(d => d.id === 'fx')?.strength || 0) * 0.5, // FX as a moderate force
-              geopolitics: -(domains.find(d => d.id === 'geopolitics')?.strength || 0) // Geopolitics as a negative force
+              rates: -(domains.find(d => d.id === 'rates')?.strength || 0),
+              fx: (domains.find(d => d.id === 'fx')?.strength || 0) * 0.5,
+              geopolitics: -(domains.find(d => d.id === 'geopolitics')?.strength || 0)
             }}
-            stabilityIndex={dominantDriver === 'balanced' ? 85 : Math.round(60 + (Math.random() * 20))}
-            summary={globalSummary}
-            actionableInsight={
-              dominantDriver === 'balanced'
-                ? "Equilibrium stable; opportunities expanding across defensive and cyclical sectors."
-                : balanceBias > 0.6
-                  ? "Watch geopolitical and rate pressure — defensive positioning advised."
-                  : "Growth resilience offsetting tight rates — favor cyclical exposure."
+            stabilityIndex={
+              dominantDriver === 'balanced' 
+                ? 85 
+                : Math.round(75 - (Math.abs(balanceBias - 0.5) * 50)) // Updated stabilityIndex calculation
             }
-            lastUpdated={new Date()}
+            summary={globalSummary}
+            onOpenDrawer={() => console.log('Equilibrium drawer requested')} // New onOpenDrawer prop
           />
         </div>
 
