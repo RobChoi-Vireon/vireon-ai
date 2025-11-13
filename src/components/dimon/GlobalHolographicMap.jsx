@@ -945,7 +945,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const minClear = 24;
   const safeBottom = footerH + footerBleed + haloBleed + minClear;
 
-  // Responsive equilibrium spacing (from orb glow boundary)
+  // Responsive equilibrium spacing (calculated from orb glow boundary)
   const getEquilibriumSpacing = useCallback(() => {
     if (viewportSize === 'sm') return 48; // Mobile: 40-56px range
     if (viewportSize === 'md') return 64; // Tablet: 56-72px range
@@ -1613,7 +1613,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           })}
         </motion.div>
 
-        {/* EQUILIBRIUM PULSE — HORIZON TIER UPGRADE (SPACING REFINED) */}
+        {/* EQUILIBRIUM PULSE — GLOW-AWARE RESPONSIVE SPACING */}
         <div style={{
           position: 'absolute',
           left: '14%',
