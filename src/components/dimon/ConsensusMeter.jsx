@@ -3,7 +3,20 @@ import { motion } from 'framer-motion';
 import { Activity } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
+// OS Horizon Motion Tokens
+const MOTION = {
+  CURVES: {
+    horizonIn: [0.22, 0.61, 0.36, 1],
+    horizonOut: [0.4, 0.0, 0.2, 1]
+  },
+  DURATIONS: {
+    fast: 0.12,
+    base: 0.18
+  }
+};
+
 const MiniRing = ({ label, value, color, delay }) => {
+    const [isHovered, setIsHovered] = useState(false);
     const radius = 12;
     const circumference = 2 * Math.PI * radius;
     const offset = circumference - (value / 100) * circumference;
@@ -12,9 +25,32 @@ const MiniRing = ({ label, value, color, delay }) => {
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <div className="flex flex-col items-center gap-1.5 cursor-help">
+                    <motion.div 
+                        className="flex flex-col items-center gap-1.5 cursor-help"
+                        onHoverStart={() => setIsHovered(true)}
+                        onHoverEnd={() => setIsHovered(false)}
+                        whileHover={{
+                            scale: 1.02,
+                            transition: { duration: 0.09 }
+                        }}
+                    >
                         <div className="relative w-7 h-7">
                             <svg width="28" height="28" className="transform -rotate-90">
+                                <defs>
+                                    <filter id={`mini-ring-glow-${label}`} x="-50%" y="-50%" width="200%" height="200%">
+                                        <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                                        <feColorMatrix 
+                                            in="coloredBlur" 
+                                            type="matrix" 
+                                            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.85 0"
+                                        />
+                                        <feMerge>
+                                            <feMergeNode in="coloredBlur"/>
+                                            <feMergeNode in="SourceGraphic"/>
+                                        </feMerge>
+                                    </filter>
+                                </defs>
+                                
                                 <circle
                                     cx="14"
                                     cy="14"
@@ -32,20 +68,38 @@ const MiniRing = ({ label, value, color, delay }) => {
                                     strokeWidth="3"
                                     strokeDasharray={circumference}
                                     strokeLinecap="round"
+                                    filter={`url(#mini-ring-glow-${label})`}
                                     initial={{ strokeDashoffset: circumference }}
-                                    animate={{ strokeDashoffset: offset }}
+                                    animate={{ 
+                                        strokeDashoffset: offset,
+                                        opacity: isHovered ? 1 : 0.92
+                                    }}
                                     transition={{ 
-                                        duration: 0.7, 
-                                        delay: delay * 0.18 + 0.3,
-                                        ease: [0.25, 1, 0.5, 1] 
+                                        strokeDashoffset: {
+                                            duration: 0.7, 
+                                            delay: delay * 0.18 + 0.3,
+                                            ease: [0.25, 1, 0.5, 1]
+                                        },
+                                        opacity: { duration: 0.09 }
                                     }}
                                 />
                             </svg>
+                            
+                            {/* Soft Pulse Highlight on Hover */}
+                            <motion.div
+                                className="absolute inset-0 rounded-full pointer-events-none"
+                                style={{
+                                    background: `radial-gradient(circle, ${color}40 0%, transparent 70%)`,
+                                    opacity: 0
+                                }}
+                                animate={{ opacity: isHovered ? 0.3 : 0 }}
+                                transition={{ duration: 0.09 }}
+                            />
                         </div>
                         <span className="text-[10px] font-medium" style={{ color: 'rgba(255,255,255,0.70)' }}>
                             {label}
                         </span>
-                    </div>
+                    </motion.div>
                 </TooltipTrigger>
                 <TooltipContent>
                     {label}: {Math.round(value)}%
@@ -138,7 +192,7 @@ const RadialGauge = ({ score, isHovered }) => {
         return () => mediaQuery.removeEventListener('change', handler);
     }, []);
 
-    const radius = 58; // Increased from 50 to 58 (+8px)
+    const radius = 58;
     const circumference = 2 * Math.PI * radius;
     const offset = circumference - (score / 100) * circumference;
 
@@ -161,13 +215,13 @@ const RadialGauge = ({ score, isHovered }) => {
         <div className="relative flex items-center justify-center w-[136px] h-[136px] mx-auto">
             <svg width="136" height="136" className="transform -rotate-90">
                 <defs>
-                    {/* Enhanced glow filter (~15% stronger) */}
+                    {/* Reduced glow intensity by ~10% (was 1.15, now 1.04) */}
                     <filter id="gauge-glow" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                        <feGaussianBlur stdDeviation="3.2" result="coloredBlur"/>
                         <feColorMatrix 
                             in="coloredBlur" 
                             type="matrix" 
-                            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1.15 0"
+                            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1.04 0"
                         />
                         <feMerge>
                             <feMergeNode in="coloredBlur"/>
@@ -210,14 +264,14 @@ const RadialGauge = ({ score, isHovered }) => {
                 />
             </svg>
             
-            {/* Center Content */}
+            {/* Center Content - OS Horizon Typography Hierarchy */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-                {/* Label Above Number */}
+                {/* Tier 1: Caption Label (55-65% opacity, smaller) */}
                 <motion.span
-                    className="text-[10px] font-medium uppercase tracking-wide mb-1"
+                    className="text-[9px] font-medium uppercase tracking-wide mb-2"
                     style={{ 
-                        color: 'rgba(255,255,255,0.70)',
-                        letterSpacing: '0.08em'
+                        color: 'rgba(255,255,255,0.60)',
+                        letterSpacing: '0.10em'
                     }}
                     initial={{ opacity: 0, y: -3 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -226,8 +280,9 @@ const RadialGauge = ({ score, isHovered }) => {
                     Overall Street Alignment
                 </motion.span>
                 
+                {/* Tier 2: Hero Number (unchanged brightness) */}
                 <motion.span
-                    className="text-3xl font-bold"
+                    className="text-3xl font-bold mb-2"
                     style={{ color }}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -236,16 +291,19 @@ const RadialGauge = ({ score, isHovered }) => {
                     {score}
                 </motion.span>
                 
+                {/* Tier 3 & 4: Medium Emphasis + Caption */}
                 <motion.div
-                    className="text-center mt-1"
+                    className="text-center"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.7, duration: 0.3 }}
                 >
-                    <div className="text-[13px] font-semibold" style={{ color: 'rgba(255,255,255,0.88)' }}>
+                    {/* Tier 3: Medium Emphasis (stronger than caption) */}
+                    <div className="text-[13px] font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.82)' }}>
                         {label} Consensus
                     </div>
-                    <div className="text-[11px] font-medium mt-0.5" style={{ color: 'rgba(255,255,255,0.65)' }}>
+                    {/* Tier 4: Caption (55-65% opacity, smaller) */}
+                    <div className="text-[10px] font-medium" style={{ color: 'rgba(255,255,255,0.60)' }}>
                         Weight: Medium
                     </div>
                 </motion.div>
@@ -285,7 +343,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
     return (
         <motion.div
             variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
-            className="h-full rounded-2xl p-6 flex flex-col cursor-pointer relative overflow-hidden"
+            className="h-full rounded-2xl flex flex-col cursor-pointer relative overflow-hidden"
             style={{
                 background: 'rgba(16, 20, 28, 0.55)',
                 backdropFilter: 'blur(16px)',
@@ -293,12 +351,16 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
                 boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)',
                 backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.08) 100%)',
                 paddingTop: '30px',
-                paddingBottom: '30px'
+                paddingBottom: '30px',
+                paddingLeft: '24px',
+                paddingRight: '24px'
             }}
             whileHover={{ 
-                y: -4,
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05), 0 12px 40px rgba(0,0,0,0.3)',
-                borderColor: 'rgba(255,255,255,0.2)'
+                y: -1.5,
+                scale: 1.01,
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05), 0 12px 42px rgba(0,0,0,0.36)',
+                borderColor: 'rgba(255,255,255,0.2)',
+                transition: { duration: MOTION.DURATIONS.fast, ease: MOTION.CURVES.horizonOut }
             }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
             onHoverStart={() => setIsHovered(true)}
@@ -332,13 +394,23 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
             </div>
 
             {/* Main Gauge */}
-            <div className="flex-1 flex items-center justify-center my-4">
+            <div className="flex-1 flex items-center justify-center" style={{ marginTop: '16px', marginBottom: '16px' }}>
                 <RadialGauge score={score} isHovered={isHovered} />
             </div>
 
-            {/* Mini Segment Rings */}
+            {/* Low-Opacity Divider (Grounding Element) */}
+            <div 
+                className="h-px mb-4"
+                style={{
+                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent)',
+                    marginTop: '12px'
+                }}
+            />
+
+            {/* Mini Segment Rings (+10-14px spacing from donut) */}
             <motion.div 
-                className="flex justify-center gap-2.5 mb-4"
+                className="flex justify-center gap-2.5"
+                style={{ marginBottom: '18px' }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
@@ -354,9 +426,9 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
                 ))}
             </motion.div>
 
-            {/* Sparkline */}
+            {/* Sparkline (+6-10px spacing from mini-rings) */}
             <motion.div
-                className="mb-3"
+                style={{ marginBottom: '16px' }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8 }}
@@ -364,10 +436,13 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
                 <Sparkline data={trendData} delay={0.9} />
             </motion.div>
 
-            {/* Footnote - OS Horizon Typography */}
+            {/* Footnote (+10px above footer) */}
             <motion.p
                 className="text-xs text-center"
-                style={{ color: 'rgba(255,255,255,0.70)' }}
+                style={{ 
+                    color: 'rgba(255,255,255,0.70)',
+                    marginTop: '10px'
+                }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}

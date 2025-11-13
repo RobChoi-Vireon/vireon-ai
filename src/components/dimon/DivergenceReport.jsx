@@ -2,12 +2,24 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GitCommit, AlertTriangle, ExternalLink, TrendingUp, TrendingDown, Minus, Database, BarChart2 } from 'lucide-react';
 
+// OS Horizon Motion Tokens
+const MOTION = {
+  CURVES: {
+    horizonIn: [0.22, 0.61, 0.36, 1],
+    horizonOut: [0.4, 0.0, 0.2, 1]
+  },
+  DURATIONS: {
+    fast: 0.12,
+    base: 0.17
+  }
+};
+
 const DivergenceIntensityMeter = ({ divergences = [] }) => {
   const intensity = Math.min(5, Math.max(1, divergences.length));
   
   return (
     <div className="mb-6">
-      <div className="flex items-center gap-3 mb-2">
+      <div className="flex items-center gap-3 mb-2.5">
         <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.70)' }}>
           Fracture Intensity
         </span>
@@ -21,9 +33,9 @@ const DivergenceIntensityMeter = ({ divergences = [] }) => {
                   animate={{ 
                     opacity: [0.7, 1, 0.7],
                     boxShadow: [
-                      '0 0 3px rgba(168, 85, 247, 0.3)', 
-                      '0 0 6px rgba(236, 72, 153, 0.4)', 
-                      '0 0 3px rgba(168, 85, 247, 0.3)'
+                      '0 0 2px rgba(168, 85, 247, 0.25)', 
+                      '0 0 4px rgba(236, 72, 153, 0.35)', 
+                      '0 0 2px rgba(168, 85, 247, 0.25)'
                     ]
                   }}
                   transition={{ 
@@ -91,29 +103,48 @@ const DivergenceCapsule = ({ divergence, onClick, index }) => {
   return (
     <motion.div
       className="relative"
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.08, duration: 0.4, ease: [0.22, 0.61, 0.36, 1] }}
+      transition={{ 
+        delay: index * 0.02, 
+        duration: MOTION.DURATIONS.base, 
+        ease: MOTION.CURVES.horizonIn 
+      }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
     >
       <motion.div
         onClick={handleClick}
         className="relative cursor-pointer group"
-        whileHover={{ y: -2 }}
+        whileHover={{ 
+          y: -2,
+          scale: 1.01,
+          transition: { duration: MOTION.DURATIONS.fast }
+        }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        style={{
+          // Horizontal inset: 16-24px from container edge
+          marginLeft: '20px',
+          marginRight: '20px'
+        }}
       >
-        {/* OS Horizon Compact Card */}
+        {/* OS Horizon Compact Card - Floating Design */}
         <div
-          className="relative px-4 py-3.5 rounded-2xl border transition-all duration-300 overflow-hidden"
+          className="relative rounded-2xl border transition-all duration-300 overflow-hidden"
           style={{
-            background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(236, 72, 153, 0.08))',
+            // Row card inset and floating effect
+            paddingTop: '14px',
+            paddingBottom: '14px',
+            paddingLeft: '16px',
+            paddingRight: '16px',
+            borderRadius: '20px',
+            background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.10), rgba(236, 72, 153, 0.12))',
             backdropFilter: 'blur(14px)',
             WebkitBackdropFilter: 'blur(14px)',
             border: '1px solid rgba(168, 85, 247, 0.18)',
             boxShadow: `
               inset 0 1px 0 rgba(255,255,255,0.06),
-              0 0 16px rgba(168, 85, 247, 0.05),
+              0 0 12px rgba(168, 85, 247, 0.05),
               0 4px 12px rgba(0,0,0,0.15)
             `
           }}
@@ -129,18 +160,32 @@ const DivergenceCapsule = ({ divergence, onClick, index }) => {
             transition={{ duration: 0.3 }}
           />
 
-          {/* Header Row */}
+          {/* Header Row - Icon + Title + Risk Pill */}
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2.5">
-              <AlertTriangle className="w-4 h-4" style={{ color: '#C084FC' }} />
-              <h4 className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.92)' }}>
+              {/* Warning Icon (scaled down 15-20%, purple outer glow) */}
+              <div className="relative">
+                <AlertTriangle className="w-3.5 h-3.5" style={{ color: '#C084FC' }} />
+                <div 
+                  className="absolute inset-0 rounded-full"
+                  style={{
+                    background: `radial-gradient(circle, rgba(168, 85, 247, 0.08), transparent 70%)`,
+                    filter: 'blur(4px)',
+                    transform: 'scale(2.5)',
+                    pointerEvents: 'none'
+                  }}
+                />
+              </div>
+              
+              {/* Title (medium weight, full opacity) */}
+              <h4 className="text-sm font-medium" style={{ color: 'rgba(255,255,255,1.0)' }}>
                 {String(divergence?.topic || 'Unknown Topic')}
               </h4>
             </div>
             
-            {/* Risk Tag Chip */}
+            {/* Risk Tag Chip (vertically centered, reduced padding 10%) */}
             <div
-              className="px-2.5 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-wide"
+              className="px-2 py-0.5 rounded-lg text-[10px] font-semibold uppercase tracking-wide flex items-center"
               style={{
                 background: `${riskLevel.color}15`,
                 border: `1px solid ${riskLevel.color}40`,
@@ -152,13 +197,14 @@ const DivergenceCapsule = ({ divergence, onClick, index }) => {
             </div>
           </div>
 
-          {/* Body - One-Line Explanation */}
+          {/* Body - One-Line Explanation (75% opacity, smaller font) */}
           <p 
-            className="text-sm"
+            className="text-[13px]"
             style={{ 
               color: 'rgba(255,255,255,0.75)', 
               lineHeight: '1.5',
-              fontWeight: 400
+              fontWeight: 400,
+              marginTop: '6px'
             }}
           >
             {contextCue}
@@ -219,13 +265,34 @@ export default function DivergenceReport({ divergences = [], onOpenDrawer }) {
   return (
     <motion.div
       variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
-      className="h-full rounded-2xl p-6 backdrop-filter backdrop-blur-md border"
+      className="h-full rounded-2xl backdrop-filter backdrop-blur-md border"
       style={{ 
         background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))',
-        borderColor: 'rgba(255,255,255,0.10)'
+        borderColor: 'rgba(255,255,255,0.10)',
+        paddingTop: '24px',
+        paddingBottom: '24px',
+        paddingLeft: '24px',
+        paddingRight: '24px'
       }}
     >
-      <div className="flex items-center mb-4">
+      {/* Header Block (subtle fade-in + hover shimmer) */}
+      <motion.div 
+        className="flex items-center mb-5 relative"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.14, ease: MOTION.CURVES.horizonIn }}
+      >
+        {/* Hover Shimmer Effect (4-6% intensity) */}
+        <motion.div
+          className="absolute inset-0 rounded-xl pointer-events-none"
+          style={{
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent)',
+            opacity: 0
+          }}
+          whileHover={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+        />
+        
         <div className="p-2.5 rounded-xl mr-3" style={{ background: 'rgba(0,0,0,0.30)', border: '1px solid rgba(255,255,255,0.10)' }}>
           <GitCommit className="w-5 h-5 text-purple-300" />
         </div>
@@ -237,13 +304,13 @@ export default function DivergenceReport({ divergences = [], onOpenDrawer }) {
             Where the consensus narrative fractures.
           </p>
         </div>
-      </div>
+      </motion.div>
 
       {/* Divergence Intensity Meter */}
       <DivergenceIntensityMeter divergences={divergences} />
       
-      {/* Divergence Cards - 12px vertical spacing */}
-      <div className="space-y-3">
+      {/* Divergence Cards - 16px vertical spacing (14-18px range) */}
+      <div className="space-y-4">
         {divergences.slice(0, 3).map((divergence, index) => (
           <DivergenceCapsule
             key={divergence?.id || index}
@@ -256,8 +323,11 @@ export default function DivergenceReport({ divergences = [], onOpenDrawer }) {
 
       {divergences.length > 3 && (
         <motion.div
-          className="text-center mt-6 pt-4"
-          style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}
+          className="text-center pt-4"
+          style={{ 
+            borderTop: '1px solid rgba(255,255,255,0.05)',
+            marginTop: '24px'
+          }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
