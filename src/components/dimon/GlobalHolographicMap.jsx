@@ -928,6 +928,29 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const [orbPulseActive, setOrbPulseActive] = useState(false);
   const [drawerLuminance, setDrawerLuminance] = useState(1.0);
 
+  // Calculate responsive bottom spacing for Equilibrium panel
+  const getEquilibriumBottomSpacing = useCallback(() => {
+    const width = window.innerWidth;
+
+    // Responsive spacing tiers (OS Horizon standards)
+    if (width >= 1920) return 240; // Ultrawide: maximum serenity
+    if (width >= 1400) return 220; // Desktop: generous breathing room
+    if (width >= 1024) return 200; // Large: premium spacing
+    if (width >= 768) return 180;  // Medium: balanced spacing
+    return 160; // Mobile: compact but clear
+  }, []);
+
+  const [equilibriumSpacing, setEquilibriumSpacing] = useState(getEquilibriumBottomSpacing());
+
+  useEffect(() => {
+    const handleResize = () => {
+      setEquilibriumSpacing(getEquilibriumBottomSpacing());
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [getEquilibriumBottomSpacing]);
+
   const glassParallaxX = useSpring(0, { damping: 30, stiffness: 90 });
   const glassParallaxY = useSpring(0, { damping: 30, stiffness: 90 });
   const mouseX = useMotionValue(0);
@@ -1606,13 +1629,13 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           })}
         </motion.div>
 
-        {/* EQUILIBRIUM PULSE — HORIZON TIER UPGRADE (GENEROUS SPACING) */}
+        {/* EQUILIBRIUM PULSE — OS HORIZON V4.0 (PREMIUM RESPONSIVE SPACING) */}
         <div style={{
           position: 'absolute',
           left: '14%',
           right: '14%',
-          bottom: '150px',
-          zIndex: 6,
+          bottom: `${equilibriumSpacing}px`,
+          zIndex: 7,
           pointerEvents: 'auto'
         }}>
           <EquilibriumPulse
@@ -1626,8 +1649,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               geopolitics: -(domains.find(d => d.id === 'geopolitics')?.strength || 0)
             }}
             stabilityIndex={
-              dominantDriver === 'balanced' 
-                ? 85 
+              dominantDriver === 'balanced'
+                ? 85
                 : Math.round(75 - (Math.abs(balanceBias - 0.5) * 50))
             }
             summary={globalSummary}

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence, useSpring } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, ArrowRight, Sparkles } from 'lucide-react';
@@ -221,13 +222,13 @@ export default function EquilibriumPulse({
       className="equilibrium-pulse-module group relative"
       style={{
         width: '100%',
-        padding: '24px',
+        padding: '32px 28px',
         borderRadius: '24px',
-        backdropFilter: 'blur(32px) saturate(170%) brightness(1.05)',
-        WebkitBackdropFilter: 'blur(32px) saturate(170%) brightness(1.05)',
-        background: 'rgba(18, 22, 28, 0.42)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        boxShadow: 'inset 0 2px 16px rgba(0, 0, 0, 0.38), 0 12px 42px rgba(0, 0, 0, 0.30)',
+        backdropFilter: 'blur(22px) saturate(170%) brightness(1.05)',
+        WebkitBackdropFilter: 'blur(22px) saturate(170%) brightness(1.05)',
+        background: 'rgba(18, 22, 28, 0.45)',
+        border: '1px solid rgba(255,255,255,0.10)',
+        boxShadow: 'inset 0 2px 16px rgba(0, 0, 0, 0.36), 0 24px 48px rgba(0, 0, 0, 0.38)',
         cursor: 'pointer',
         willChange: 'filter, transform'
       }}
@@ -237,6 +238,7 @@ export default function EquilibriumPulse({
       whileHover={shouldReduceMotion ? {} : {
         filter: 'brightness(1.06)',
         y: -2,
+        boxShadow: 'inset 0 2px 16px rgba(0, 0, 0, 0.36), 0 24px 48px rgba(0, 0, 0, 0.44)',
         transition: { 
           duration: MOTION_TOKENS.DURATIONS.hoverLift, 
           ease: MOTION_TOKENS.CURVES.horizonIn 
@@ -267,10 +269,10 @@ export default function EquilibriumPulse({
       <div style={{
         position: 'absolute',
         top: 0,
-        left: '28px',
-        right: '28px',
+        left: '32px',
+        right: '32px',
         height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
         borderRadius: '999px',
         pointerEvents: 'none'
       }} />
@@ -278,7 +280,7 @@ export default function EquilibriumPulse({
       <motion.div
         className="absolute inset-0 rounded-[24px] pointer-events-none"
         style={{
-          background: 'radial-gradient(circle at 50% 0%, rgba(255,255,255,0.05) 0%, transparent 65%)',
+          background: 'radial-gradient(circle at 50% 0%, rgba(255,255,255,0.06) 0%, transparent 70%)',
           opacity: 0
         }}
         animate={{ opacity: isHovered ? 0.7 : 0 }}
@@ -286,7 +288,7 @@ export default function EquilibriumPulse({
       />
 
       {/* Header Row */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2.5">
           <h4 
             style={{
@@ -427,7 +429,7 @@ export default function EquilibriumPulse({
         style={{ 
           position: 'relative',
           height: '38px',
-          marginBottom: '14px',
+          marginBottom: '26px',
           marginTop: '8px'
         }}
         onMouseEnter={() => setIsSliderHovered(true)}
@@ -640,7 +642,9 @@ export default function EquilibriumPulse({
           fontWeight: 500,
           fontSize: '13px',
           letterSpacing: '0.01em',
-          bottom: '-26px'
+          bottom: '-28px',
+          paddingLeft: '8px',
+          paddingRight: '8px'
         }}>
           <span>Growth / Demand</span>
           <span>Tightening / Supply</span>
@@ -651,12 +655,12 @@ export default function EquilibriumPulse({
       <motion.p
         style={{
           fontSize: '16px',
-          lineHeight: '1.42',
+          lineHeight: '1.6',
           color: 'rgba(255,255,255,0.96)',
           fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
           fontWeight: 500,
           textAlign: 'center',
-          marginTop: '20px',
+          marginTop: '32px',
           marginBottom: 0,
           letterSpacing: '-0.005em',
           textShadow: '0 1px 2px rgba(0,0,0,0.20)'
