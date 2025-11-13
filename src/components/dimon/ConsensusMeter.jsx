@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Activity, Shield, Briefcase, BarChart3, Globe, TrendingUp, TrendingDown } from 'lucide-react';
@@ -378,11 +379,18 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
   const sourcesCount = 5;
   const updatedAgo = "2m";
 
-  const handleOpenDrawer = () => {
+  const handleOpenDrawer = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('🎯 ConsensusMeter clicked - opening drawer');
     try {
-      onOpenDrawer();
+      if (onOpenDrawer && typeof onOpenDrawer === 'function') {
+        onOpenDrawer();
+      } else {
+        console.error('❌ onOpenDrawer is not a function:', onOpenDrawer);
+      }
     } catch (error) {
-      console.error('Error opening sentiment drawer:', error);
+      console.error('❌ Error opening sentiment drawer:', error);
     }
   };
 
@@ -413,10 +421,23 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
           ease: MOTION.CURVES.horizonOut 
         }
       }}
+      whileTap={{
+        scale: 0.99,
+        transition: { duration: 0.06 }
+      }}
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       onClick={handleOpenDrawer}
+      role="button"
+      tabIndex={0}
+      aria-label="Open consensus breakdown with 4 segments"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleOpenDrawer(e);
+        }
+      }}
     >
       {/* Subsurface Lighting */}
       <div style={{
