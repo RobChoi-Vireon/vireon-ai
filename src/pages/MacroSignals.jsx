@@ -1,5 +1,8 @@
+
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { DimonDigestRun } from '@/entities/DimonDigestRun';
+import { generateDimonDigest } from '@/functions/generateDimonDigest';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import DigestHeader from '@/components/dimon/DigestHeader';
@@ -59,7 +62,7 @@ const MOCK_DATA = {
         { label: "Equities (-)", icon: "TrendingDown", color: "text-red-300" }
       ],
       associated_country_codes: ["US", "EU"],
-      coordinates: [38.9072, -77.0369]
+      coordinates: [38.9072, -77.0369] // Washington D.C.
     },
     {
       tag: "Credit Stress", 
@@ -71,7 +74,7 @@ const MOCK_DATA = {
         { label: "Global (-)", icon: "Globe", color: "text-red-300" }
       ],
       associated_country_codes: ["AR", "TR", "ZA"],
-      coordinates: [-34.6037, -58.3816]
+      coordinates: [-34.6037, -58.3816] // Buenos Aires, Argentina
     },
     {
       tag: "Tech Disruption",
@@ -83,7 +86,7 @@ const MOCK_DATA = {
         { label: "Long-Term", icon: "CalendarClock", color: "text-gray-300" }
       ],
       associated_country_codes: ["US", "CN", "GB"],
-      coordinates: [34.0522, -118.2437]
+      coordinates: [34.0522, -118.2437] // Los Angeles, USA
     },
     {
       tag: "Geopolitical Risk",
@@ -95,7 +98,7 @@ const MOCK_DATA = {
         { label: "Industrials (-)", icon: "Factory", color: "text-red-300" }
       ],
       associated_country_codes: ["US", "CN", "DE", "JP"],
-      coordinates: [39.9042, 116.4074]
+      coordinates: [39.9042, 116.4074] // Beijing, China
     },
     {
       tag: "Energy Transition",
@@ -107,7 +110,7 @@ const MOCK_DATA = {
         { label: "Opportunity", icon: "TrendingUp", color: "text-emerald-300" }
       ],
       associated_country_codes: ["DE", "FR", "US"],
-      coordinates: [52.5200, 13.4050]
+      coordinates: [52.5200, 13.4050] // Berlin, Germany
     },
     {
       tag: "Social Unrest",
@@ -119,7 +122,7 @@ const MOCK_DATA = {
         { label: "Europe (-)", icon: "Euro", color: "text-red-300" }
       ],
       associated_country_codes: ["FR", "GB", "ES"],
-      coordinates: [48.8566, 2.3522]
+      coordinates: [48.8566, 2.3522] // Paris, France
     }
   ],
   executive_takeaway: [
@@ -366,6 +369,7 @@ const MOCK_DATA = {
   insight_line: "Markets lean risk-off — 3 divergences flagged in global credit spreads."
 };
 
+// Main page component
 export default function MacroSignalsPage() {
   const [digest, setDigest] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -378,8 +382,13 @@ export default function MacroSignalsPage() {
   const [isConsensusDrawerOpen, setIsConsensusDrawerOpen] = useState(false);
   const [selectedSegment, setSelectedSegment] = useState(null);
 
+  // Scroll position preservation
+  const scrollPositionRef = useRef(0);
+
   const sanitizedDigest = useMemo(() => {
     if (!MOCK_DATA) return null;
+    // NOTE: For very large objects, this sanitization could be moved to a Web Worker
+    // to avoid blocking the main thread on initial load.
     return deepSanitize(MOCK_DATA);
   }, []);
 
@@ -388,9 +397,11 @@ export default function MacroSignalsPage() {
     setError(null);
     setDigest(null);
 
+    // Add performance mark for tracking
     performance.mark('digest_fetch_start');
 
     try {
+      // Simulate fetching data with a delay
       await new Promise(resolve => setTimeout(resolve, 1200));
       
       setDigest(sanitizedDigest);
@@ -404,12 +415,13 @@ export default function MacroSignalsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [sanitizedDigest]);
+  }, [sanitizedDigest]); // Dependency is stable
 
   useEffect(() => {
     fetchDigest(targetDate);
   }, [targetDate, fetchDigest]);
 
+  // Wrap navigation handlers in useCallback to stabilize them for child components
   const handleNavigateTakeaway = useCallback((direction) => {
     if (!digest?.executive_takeaway || !selectedTakeaway) return;
     const takeaways = digest.executive_takeaway;
@@ -450,24 +462,41 @@ export default function MacroSignalsPage() {
     setSelectedDivergence(divergences[nextIndex]);
   }, [digest, selectedDivergence]);
 
+  // Stable callbacks for opening/closing drawers
   const closeTakeawayDrawer = useCallback(() => setSelectedTakeaway(null), []);
   
   const openConsensusDrawer = useCallback(() => {
+    scrollPositionRef.current = window.scrollY;
+    
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollPositionRef.current}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
     document.body.style.overflow = 'hidden';
+    
     setIsConsensusDrawerOpen(true);
   }, []);
   
   const closeConsensusDrawer = useCallback(() => {
     setIsConsensusDrawerOpen(false);
+    
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
     document.body.style.overflow = '';
+    
+    window.scrollTo(0, scrollPositionRef.current);
   }, []);
-  
+
   const closeDivergenceDrawer = useCallback(() => setSelectedDivergence(null), []);
   const closeSignalDrawer = useCallback(() => setSelectedSignal(null), []);
   const closeSegmentDrawer = useCallback(() => setSelectedSegment(null), []);
   
+  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e) => {
+        // Handle takeaway navigation
         if (selectedTakeaway) {
             if (e.key === 'ArrowRight') {
                 e.preventDefault();
@@ -478,6 +507,7 @@ export default function MacroSignalsPage() {
             }
         }
         
+        // Handle signal navigation
         else if (selectedSignal) {
             if (e.key === 'ArrowRight') {
                 e.preventDefault();
@@ -488,6 +518,7 @@ export default function MacroSignalsPage() {
             }
         }
 
+        // Handle segment navigation
         else if (selectedSegment) {
             if (e.key === 'ArrowRight') {
                 e.preventDefault();
@@ -497,6 +528,7 @@ export default function MacroSignalsPage() {
                 handleNavigateSegment('prev');
             }
         }
+        // Handle divergence navigation
         else if (selectedDivergence) {
             if (e.key === 'ArrowRight') {
                 e.preventDefault();
@@ -513,7 +545,7 @@ export default function MacroSignalsPage() {
         window.removeEventListener('keydown', handleKeyDown);
     };
   }, [selectedTakeaway, handleNavigateTakeaway, selectedSignal, handleNavigateSignal, selectedSegment, handleNavigateSegment, selectedDivergence, handleNavigateDivergence]);
-
+  
   const isDegraded = useMemo(() => digest?.status === 'degraded' || (digest?.missing_sources?.length || 0) > 0, [digest]);
 
   const containerVariants = {
@@ -552,6 +584,7 @@ export default function MacroSignalsPage() {
       background: '#0B0E13',
       color: '#F8FAFC'
     }}>
+      {/* Subtle Vignette */}
       <div className="fixed inset-0 pointer-events-none opacity-25">
         <div 
           className="absolute inset-0"
@@ -601,6 +634,7 @@ export default function MacroSignalsPage() {
                   </motion.div>
                 )}
                 
+                {/* 1) U.S. Front Page Signals */}
                 {digest.priority_signals && digest.priority_signals.length > 0 && (
                   <motion.div 
                     variants={sectionVariants}
@@ -612,6 +646,7 @@ export default function MacroSignalsPage() {
                   </motion.div>
                 )}
 
+                {/* 2) U.S. Business & Markets */}
                 {digest.executive_takeaway && digest.executive_takeaway.length > 0 && (
                   <motion.div 
                     variants={sectionVariants}
@@ -623,6 +658,7 @@ export default function MacroSignalsPage() {
                   </motion.div>
                 )}
 
+                {/* 2.5) Global Holographic Map - MIDDLE ANCHOR PLACEMENT */}
                 <motion.div 
                   variants={sectionVariants}
                   id="section-global-holographic-map" 
@@ -632,6 +668,7 @@ export default function MacroSignalsPage() {
                   <GlobalSignalLattice onOpenSignalDrawer={setSelectedSignal} />
                 </motion.div>
                 
+                {/* 3) Global Signals — OS HORIZON REFINED LAYOUT */}
                 <motion.div className="col-span-12" variants={sectionVariants} id="section-global-signals" data-section-order="3">
                     <div className="mb-6 pl-2">
                         <h2 className="text-2xl font-bold mb-2" style={{ color: 'rgba(255,255,255,0.95)' }}>
@@ -642,6 +679,7 @@ export default function MacroSignalsPage() {
                         </p>
                     </div>
                     
+                    {/* Enhanced Grid with Breathing Room */}
                     <div className="grid grid-cols-12 gap-5 items-start">
                         <div className="col-span-12 lg:col-span-4">
                             <ConsensusMeter 
@@ -659,6 +697,8 @@ export default function MacroSignalsPage() {
                     </div>
                 </motion.div>
 
+                {/* 4) Narrative Map */}
+                {/* NOTE: NarrativeMap would be a great candidate for React.lazy() to code-split it */}
                 {digest.synthesis && (
                   <motion.div 
                     variants={sectionVariants}
@@ -670,6 +710,7 @@ export default function MacroSignalsPage() {
                   </motion.div>
                 )}
                 
+                {/* 5) Trusted Source Weighting */}
                 {digest.sources && digest.sources.length > 0 && (
                    <motion.div 
                     variants={sectionVariants}
@@ -681,6 +722,7 @@ export default function MacroSignalsPage() {
                   </motion.div>
                 )}
 
+                {/* 6) Strategic Implications & Trajectory */}
                  <div className="col-span-12 grid grid-cols-1 gap-6 md:gap-8">
                     {digest.strategic_implications && digest.strategic_implications.length > 0 && (
                       <motion.div 
@@ -702,6 +744,7 @@ export default function MacroSignalsPage() {
                     )}
                  </div>
 
+                {/* 7) Counterpoints & Blindspots */}
                 {((digest.counterpoints && digest.counterpoints.length > 0) || (digest.blindspots && digest.blindspots.length > 0)) && (
                   <motion.div 
                     variants={sectionVariants}
@@ -722,6 +765,12 @@ export default function MacroSignalsPage() {
         </RetryWrapper>
       </main>
 
+      {/* 
+        NOTE: Performance optimization. Only one drawer is truly "open" at a time.
+        The current structure correctly ensures only one's content is rendered.
+        The isOpen={!!...} pattern is efficient.
+        We pass stable callbacks to prevent re-renders of memoized drawers.
+      */}
       <MemoDrawer 
         isOpen={!!selectedTakeaway}
         onClose={closeTakeawayDrawer}
