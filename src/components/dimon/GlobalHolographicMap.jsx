@@ -11,6 +11,11 @@ import EquilibriumPulse from './EquilibriumPulse';
 // Motion curves + micro-interactions + GPU-optimized transitions + simplified visual language
 // ============================================================================
 
+// 🔒 DESIGN LOCKED — OS HORIZON V4.0
+// Last Updated: 2025-01-20
+// Do not modify visual design without explicit assignment
+// See: DESIGN_LOCKED_COMPONENTS.md
+
 const MOTION_TOKENS = {
   CURVES: {
     horizonIn: [0.22, 0.61, 0.36, 1],      // gentle ease-out

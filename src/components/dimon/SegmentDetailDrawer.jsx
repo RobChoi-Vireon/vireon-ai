@@ -1,3 +1,9 @@
+
+// 🔒 DESIGN LOCKED — OS HORIZON V4.0
+// Last Updated: 2025-01-20
+// Do not modify visual design without explicit assignment
+// See: DESIGN_LOCKED_COMPONENTS.md
+
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Shield, Briefcase, BarChart3, Globe, Zap, Target, TrendingUp, Eye, ChevronLeft, ChevronRight, Sparkles, Minus, Plus, FileText, Building2, Users, Gavel, DollarSign, TrendingDown, Factory } from 'lucide-react';

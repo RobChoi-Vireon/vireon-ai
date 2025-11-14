@@ -1,3 +1,9 @@
+
+// 🔒 DESIGN LOCKED — OS HORIZON V4.0
+// Last Updated: 2025-01-20
+// Do not modify visual design without explicit assignment
+// See: DESIGN_LOCKED_COMPONENTS.md
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Activity } from 'lucide-react';

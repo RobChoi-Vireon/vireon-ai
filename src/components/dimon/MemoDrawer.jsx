@@ -1,4 +1,9 @@
 
+// 🔒 DESIGN LOCKED — OS HORIZON V4.0
+// Last Updated: 2025-01-20
+// Do not modify visual design without explicit assignment
+// See: DESIGN_LOCKED_COMPONENTS.md
+
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, DollarSign, Scale, Globe, Info, Target, BookOpen, Activity, GitBranch, Lightbulb, Sparkles, ChevronLeft, ChevronRight, TrendingDown, TrendingUp, Building, AlertTriangle, ShieldCheck, Minus, Plus, Landmark, Package, Home, Construction, Banknote, Clock } from 'lucide-react';
