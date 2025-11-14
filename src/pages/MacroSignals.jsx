@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DimonDigestRun } from '@/entities/DimonDigestRun';
 import { generateDimonDigest } from '@/functions/generateDimonDigest';
@@ -19,11 +19,6 @@ import DigestSkeleton from '@/components/dimon/DigestSkeleton';
 import DegradedBanner from '@/components/dimon/DegradedBanner';
 import RetryWrapper from '@/components/core/RetryWrapper';
 
-// NOTE: Lazy loading components is a key performance optimization.
-// In a real build setup, these would be loaded asynchronously.
-// const MemoDrawer = React.lazy(() => import('@/components/dimon/MemoDrawer'));
-// const SentimentDrawer = React.lazy(() => import('@/components/dimon/SentimentDrawer'));
-// etc.
 import MemoDrawer from '@/components/dimon/MemoDrawer';
 import SentimentDrawer from '@/components/dimon/SentimentDrawer';
 import DivergenceDrawer from '@/components/dimon/DivergenceDrawer';
@@ -384,9 +379,12 @@ export default function MacroSignalsPage() {
   const [selectedSignal, setSelectedSignal] = useState(null);
   const [selectedTakeaway, setSelectedTakeaway] = useState(null);
   const [selectedDivergence, setSelectedDivergence] = useState(null);
+  const [isConsensusDrawerOpen, setIsConsensusDrawerOpen] = useState(false);
   const [selectedSegment, setSelectedSegment] = useState(null);
 
-  // Memoize sanitized data to prevent re-computation on re-renders
+  // Scroll position preservation
+  const scrollPositionRef = useRef(0);
+
   const sanitizedDigest = useMemo(() => {
     if (!MOCK_DATA) return null;
     // NOTE: For very large objects, this sanitization could be moved to a Web Worker
@@ -466,6 +464,25 @@ export default function MacroSignalsPage() {
 
   // Stable callbacks for opening/closing drawers
   const closeTakeawayDrawer = useCallback(() => setSelectedTakeaway(null), []);
+  
+  const openConsensusDrawer = useCallback(() => {
+    scrollPositionRef.current = window.scrollY;
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollPositionRef.current}px`;
+    document.body.style.width = '100%';
+    setIsConsensusDrawerOpen(true);
+  }, []);
+  
+  const closeConsensusDrawer = useCallback(() => {
+    setIsConsensusDrawerOpen(false);
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    window.scrollTo(0, scrollPositionRef.current);
+  }, []);
+
   const closeDivergenceDrawer = useCallback(() => setSelectedDivergence(null), []);
   const closeSignalDrawer = useCallback(() => setSelectedSignal(null), []);
   const closeSegmentDrawer = useCallback(() => setSelectedSegment(null), []);
@@ -561,7 +578,7 @@ export default function MacroSignalsPage() {
       background: '#0B0E13',
       color: '#F8FAFC'
     }}>
-      {/* Subtle Vignette - Replaces Grid */}
+      {/* Subtle Vignette */}
       <div className="fixed inset-0 pointer-events-none opacity-25">
         <div 
           className="absolute inset-0"
@@ -662,7 +679,7 @@ export default function MacroSignalsPage() {
                             <ConsensusMeter 
                                 score={digest.consensus_score} 
                                 breakdown={digest.consensus_breakdown} 
-                                onOpenDrawer={setSelectedSegment}
+                                onOpenDrawer={openConsensusDrawer}
                             />
                         </div>
                         <div className="col-span-12 lg:col-span-8">
@@ -754,7 +771,13 @@ export default function MacroSignalsPage() {
         item={selectedTakeaway}
         onNavigate={handleNavigateTakeaway}
       />
-      {/* Removed SentimentDrawer as per instructions, ConsensusMeter now directly triggers SegmentDetailDrawer */}
+      <SentimentDrawer 
+        isOpen={isConsensusDrawerOpen}
+        onClose={closeConsensusDrawer}
+        score={digest?.consensus_score}
+        breakdown={digest?.consensus_breakdown}
+        onOpenDetail={setSelectedSegment}
+      />
       <DivergenceDrawer
         isOpen={!!selectedDivergence}
         onClose={closeDivergenceDrawer}
