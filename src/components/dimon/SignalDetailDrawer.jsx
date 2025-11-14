@@ -415,14 +415,14 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             ============================================================================ */
             
             :root {
-              --hzn-dur-open: 280ms;
+              --hzn-dur-open: 280ms;          /* +20ms sweet spot: luxurious but responsive */
               --hzn-dur-close: 200ms;
-              --hzn-dur-stagger: 60ms;
-              --hzn-ease-silk: cubic-bezier(0.19, 1, 0.22, 1);
+              --hzn-dur-stagger: 60ms;        /* +10ms for smoother cascade */
+              --hzn-ease-silk: cubic-bezier(0.19, 1, 0.22, 1);  /* Ultra-smooth easing */
               --hzn-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
               --hzn-ease-io: cubic-bezier(0.4, 0, 0.2, 1);
-              --hzn-open-scale: 0.96;
-              --hzn-open-translate: 8px;
+              --hzn-open-scale: 0.96;         /* More pronounced lift */
+              --hzn-open-translate: 8px;      /* Subtler vertical motion */
               
               --ri-gap-lg: 28px;
               --ri-gap-md: 14px;
@@ -447,38 +447,95 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               --mp-ease: cubic-bezier(0.4,0,0.2,1);
             }
             
-            /* Frosted Backdrop - Centered Modal Style */
+            /* Frosted Backdrop - Synchronized Timing */
             .hzn-frosted-backdrop {
               position: fixed;
               inset: 0;
-              z-index: 200;
-              background: rgba(0, 0, 0, 0.60);
-              backdrop-filter: blur(12px);
-              -webkit-backdrop-filter: blur(12px);
+              z-index: 80;
+              background: rgba(24, 26, 29, 0.55);
+              backdrop-filter: blur(26px) saturate(1.3) brightness(1.15);
+              -webkit-backdrop-filter: blur(26px) saturate(1.3) brightness(1.15);
               opacity: 0;
-              transition: opacity 300ms ease;
+              transition: opacity var(--hzn-dur-open) var(--hzn-ease-silk),  /* Match drawer timing */
+                          filter var(--li-duration) var(--li-ease),
+                          backdrop-filter var(--li-duration) var(--li-ease);
+              will-change: opacity, filter, backdrop-filter;
+              contain: paint;
+              mask-image: linear-gradient(to bottom, transparent 0, black calc(72px + 8px));
+              -webkit-mask-image: linear-gradient(to bottom, transparent 0, black calc(72px + 8px));
             }
             
             .hzn-frosted-backdrop--open {
               opacity: 1;
             }
             
-            /* Priority Drawer - Centered Modal Style */
+            /* Ambient hue drift based on sentiment */
+            [data-sentiment="risk"] .hzn-frosted-backdrop {
+              filter: blur(26px) saturate(1.15) brightness(1.03) hue-rotate(0deg);
+            }
+            
+            [data-sentiment="opportunity"] .hzn-frosted-backdrop {
+              filter: blur(26px) saturate(1.15) brightness(1.03) hue-rotate(150deg);
+            }
+            
+            [data-sentiment="neutral"] .hzn-frosted-backdrop {
+              filter: blur(26px) saturate(1.05) brightness(1.02) hue-rotate(220deg);
+            }
+            
+            .hzn-frosted-backdrop::after {
+              content: "";
+              position: absolute;
+              inset: -2%;
+              pointer-events: none;
+              background: radial-gradient(70% 60% at 50% 40%, rgba(255,255,255,0.02), rgba(0,0,0,0.22) 70%, rgba(0,0,0,0.30) 100%), linear-gradient(to top right, transparent 60%, rgba(90, 150, 255, 0.06));
+              mix-blend-mode: soft-light;
+              mask-image: radial-gradient(circle at 50% 45%, rgba(0,0,0,0) 42%, black 100%);
+              -webkit-mask-image: radial-gradient(circle at 50% 45%, rgba(0,0,0,0) 42%, black 100%);
+            }
+            
+            @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+              .hzn-frosted-backdrop {
+                background: rgba(24, 26, 29, 0.82);
+              }
+            }
+            
+            /* Header Scrim - Synchronized Timing */
+            .hzn-header-scrim {
+              position: fixed;
+              inset-inline: 0;
+              top: 0;
+              height: 72px;
+              z-index: 95;
+              pointer-events: none;
+              background: linear-gradient(to bottom, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.22) 35%, rgba(0, 0, 0, 0.00) 100%);
+              box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+              mix-blend-mode: normal;
+              opacity: 0;
+              transition: opacity var(--hzn-dur-open) var(--hzn-ease-silk);  /* Match drawer timing */
+              will-change: opacity;
+            }
+            
+            .hzn-header-scrim--open {
+              opacity: 1;
+            }
+            
+            /* Priority Drawer - Liquid Silk Motion (Sweet Spot) */
             .hzn-drawer {
               position: fixed;
-              z-index: 201;
-              left: 50%;
-              top: 50%;
-              transform: translate(-50%, -50%) translateY(var(--hzn-open-translate)) scale(var(--hzn-open-scale));
-              width: min(820px, 90vw);
-              max-height: 85vh;
-              border: 1px solid rgba(255, 255, 255, 0.12);
-              background: rgba(15, 18, 25, 0.95);
-              backdrop-filter: blur(22px);
-              -webkit-backdrop-filter: blur(22px);
-              box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-              border-radius: 24px;
-              overflow: hidden;
+              z-index: 90;
+              left: 0;
+              right: 0;
+              margin-inline: auto;
+              top: calc(72px + 14px);
+              max-width: min(820px, 90vw);
+              border: 1px solid rgba(255, 255, 255, 0.06);
+              background: linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(0,0,0,0.12));
+              box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+              border-radius: calc(var(--mp-radius) + 8px);
+              overflow: visible;
+              
+              /* Liquid Silk Initial State */
+              transform: translateY(var(--hzn-open-translate)) scale(var(--hzn-open-scale));
               opacity: 0;
               will-change: transform, opacity;
               transition: 
@@ -487,7 +544,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             }
             
             .hzn-drawer--open {
-              transform: translate(-50%, -50%) translateY(0) scale(1);
+              transform: translateY(0) scale(1);
               opacity: 1;
             }
             
@@ -891,6 +948,12 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             }
           `}</style>
 
+          {/* Header Scrim */}
+          <div
+            className={`hzn-header-scrim ${isAnimatingIn ? 'hzn-header-scrim--open' : ''}`}
+            aria-hidden="true"
+          />
+
           {/* Sentiment-Aware Frosted Backdrop (Living Awareness) */}
           <div
             data-sentiment={sentiment}
@@ -913,7 +976,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             {/* Center Light Beam - Subtle & Stateful */}
             <div ref={beamRef} className="li-beam" aria-hidden="true" />
 
-            <div className="relative w-full max-h-[85vh]" style={{ overflow: 'hidden' }}>
+            <div className="relative w-full max-h-[88vh]" style={{ overflow: 'hidden' }}>
               {/* Keyboard Hints */}
               <AnimatePresence>
                 {showHint && (
@@ -1072,7 +1135,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               <div
                 className="relative z-10 overflow-y-auto"
                 style={{
-                  maxHeight: 'calc(85vh - 180px)', // Adjusted for new 85vh max-height on drawer
+                  maxHeight: 'calc(88vh - 180px)',
                   scrollbarWidth: 'thin',
                   scrollbarColor: 'rgba(255, 255, 255, 0.18) rgba(255, 255, 255, 0.04)',
                 }}
@@ -1221,7 +1284,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                       <h4 className="ri-section-title">Market Relevance</h4>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                          <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }>
+                          <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
                             Impacts
                           </div>
                           <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
