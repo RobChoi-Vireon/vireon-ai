@@ -384,6 +384,7 @@ export default function MacroSignalsPage() {
   const [selectedSignal, setSelectedSignal] = useState(null);
   const [selectedTakeaway, setSelectedTakeaway] = useState(null);
   const [selectedDivergence, setSelectedDivergence] = useState(null);
+  const [isConsensusDrawerOpen, setIsConsensusDrawerOpen] = useState(false);
   const [selectedSegment, setSelectedSegment] = useState(null);
 
   // Memoize sanitized data to prevent re-computation on re-renders
@@ -466,6 +467,8 @@ export default function MacroSignalsPage() {
 
   // Stable callbacks for opening/closing drawers
   const closeTakeawayDrawer = useCallback(() => setSelectedTakeaway(null), []);
+  const openConsensusDrawer = useCallback(() => setIsConsensusDrawerOpen(true), []);
+  const closeConsensusDrawer = useCallback(() => setIsConsensusDrawerOpen(false), []);
   const closeDivergenceDrawer = useCallback(() => setSelectedDivergence(null), []);
   const closeSignalDrawer = useCallback(() => setSelectedSignal(null), []);
   const closeSegmentDrawer = useCallback(() => setSelectedSegment(null), []);
@@ -662,7 +665,7 @@ export default function MacroSignalsPage() {
                             <ConsensusMeter 
                                 score={digest.consensus_score} 
                                 breakdown={digest.consensus_breakdown} 
-                                onOpenDrawer={setSelectedSegment}
+                                onOpenDrawer={openConsensusDrawer}
                             />
                         </div>
                         <div className="col-span-12 lg:col-span-8">
@@ -754,7 +757,13 @@ export default function MacroSignalsPage() {
         item={selectedTakeaway}
         onNavigate={handleNavigateTakeaway}
       />
-      {/* Removed SentimentDrawer as per instructions, ConsensusMeter now directly triggers SegmentDetailDrawer */}
+      <SentimentDrawer 
+        isOpen={isConsensusDrawerOpen}
+        onClose={closeConsensusDrawer}
+        score={digest?.consensus_score}
+        breakdown={digest?.consensus_breakdown}
+        onOpenDetail={setSelectedSegment}
+      />
       <DivergenceDrawer
         isOpen={!!selectedDivergence}
         onClose={closeDivergenceDrawer}
