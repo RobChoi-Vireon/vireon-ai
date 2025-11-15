@@ -1,6 +1,6 @@
-// 🔒 DESIGN LOCKED — OS HORIZON V4.0 + SPIRIT LAYER + HARMONIC WAVE
+// 🔒 DESIGN LOCKED — OS HORIZON V4.0 + SPIRIT LAYER + LIGHT-FIELD LENS
 // Last Updated: 2025-01-20
-// Harmonic Alignment Wave visualization applied
+// VisionOS-inspired Light-Field Consensus Lens applied
 // See: DESIGN_LOCKED_COMPONENTS.md
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -189,12 +189,12 @@ const Sparkline = ({ data = [62, 58, 61, 59, 64, 67, 66], delay = 0 }) => {
 };
 
 // ============================================================================
-// HARMONIC ALIGNMENT WAVE — OS HORIZON V4.0 SPIRIT LAYER
-// Metaphor: Consensus as gravitational harmonic convergence
+// LIGHT-FIELD CONSENSUS LENS — OS HORIZON V4.0 (VisionOS-INSPIRED)
+// Metaphor: Consensus as refractive volumetric light surface
 // ============================================================================
-const HarmonicAlignmentWave = ({ score, isHovered }) => {
+const LightFieldConsensusLens = ({ score, isHovered }) => {
     const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
-    const [wavePhase, setWavePhase] = useState(0);
+    const [lightPhase, setLightPhase] = useState(0);
 
     useEffect(() => {
         const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -212,7 +212,7 @@ const HarmonicAlignmentWave = ({ score, isHovered }) => {
         
         const animate = () => {
             const elapsed = (Date.now() - startTime) / 1000;
-            setWavePhase(elapsed);
+            setLightPhase(elapsed);
             rafId = requestAnimationFrame(animate);
         };
         
@@ -220,123 +220,158 @@ const HarmonicAlignmentWave = ({ score, isHovered }) => {
         return () => cancelAnimationFrame(rafId);
     }, [shouldReduceMotion]);
 
-    // Consensus coherence: 66 = mixed → slightly imperfect harmony
+    // Consensus coherence: 66 = mixed → 70% uniformity, slight asymmetry
     const consensusCoherence = score / 100;
-    const phaseDesync = (1 - consensusCoherence) * 8; // 5-12 degrees phase offset
-    const amplitudeVariance = (1 - consensusCoherence) * 0.03; // 3% amplitude variance
+    const uniformity = 0.70; // 70% for score of 66
+    const driftVariance = (1 - uniformity) * 12; // Medium drift variance
 
-    // Generate smooth sine wave path
-    const generateWavePath = (amplitude, frequency, phaseOffset, verticalOffset) => {
-        const points = [];
-        const width = 200;
-        const steps = 100;
-        
-        for (let i = 0; i <= steps; i++) {
-            const x = (i / steps) * width;
-            const normalizedX = x / width;
-            const waveX = normalizedX * Math.PI * frequency;
-            
-            // Slow horizontal drift
-            const drift = (wavePhase * 0.08) % (Math.PI * 2);
-            
-            // Breathing amplitude
-            const breathe = Math.sin(wavePhase * 0.5) * amplitudeVariance;
-            const finalAmplitude = amplitude * (1 + breathe);
-            
-            const y = verticalOffset + Math.sin(waveX + phaseOffset + drift) * finalAmplitude;
-            
-            points.push(`${x},${y}`);
-        }
-        
-        return points.join(' ');
-    };
+    // Internal light drift (15 second cycle)
+    const verticalDrift = Math.sin(lightPhase * (Math.PI * 2 / 15)) * driftVariance;
+    const diagonalDrift = Math.cos(lightPhase * (Math.PI * 2 / 15) * 0.7) * (driftVariance * 0.5);
 
-    const baseAmplitude = isHovered ? 14 : 13; // +1% on hover
-    const speedMultiplier = isHovered ? 1.1 : 1.0; // 10% faster on hover
+    // Hover effects
+    const baseLuminance = isHovered ? 0.15 : 0.12; // +3% on hover
+    const baseThickness = isHovered ? 1.02 : 1.0; // +2% thickness on hover
+    const parallaxTilt = isHovered ? 0.8 : 0; // 0.8° parallax tilt
 
     return (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-            <svg 
-                width="200" 
-                height="140" 
-                viewBox="0 0 200 140"
+            {/* VisionOS Light-Field Plane */}
+            <motion.div
                 className="absolute"
                 style={{
+                    width: '145%',
+                    height: '42px',
                     left: '50%',
                     top: '50%',
                     transform: 'translate(-50%, -50%)',
-                    opacity: isHovered ? 0.12 : 0.10 // +2% luminance on hover
+                    borderRadius: '24px',
+                    overflow: 'hidden',
+                    willChange: 'transform, opacity'
+                }}
+                animate={{
+                    rotateX: `${parallaxTilt}deg`,
+                    y: shouldReduceMotion ? 0 : verticalDrift,
+                    x: shouldReduceMotion ? 0 : diagonalDrift,
+                    scaleY: baseThickness
+                }}
+                transition={{
+                    rotateX: { duration: 0.12, ease: MOTION_TOKENS.CURVES.horizonIn },
+                    y: { duration: 15, ease: 'easeInOut' },
+                    x: { duration: 15, ease: 'easeInOut' },
+                    scaleY: { duration: 0.12, ease: MOTION_TOKENS.CURVES.horizonIn }
                 }}
             >
-                <defs>
-                    <linearGradient id="wave-gradient-1" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#5EA3FF" stopOpacity="0" />
-                        <stop offset="20%" stopColor="#5EA3FF" stopOpacity="0.85" />
-                        <stop offset="50%" stopColor="#7BB8FF" stopOpacity="1" />
-                        <stop offset="80%" stopColor="#5EA3FF" stopOpacity="0.85" />
-                        <stop offset="100%" stopColor="#5EA3FF" stopOpacity="0" />
-                    </linearGradient>
-                    
-                    <linearGradient id="wave-gradient-2" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#7BB8FF" stopOpacity="0" />
-                        <stop offset="15%" stopColor="#7BB8FF" stopOpacity="0.75" />
-                        <stop offset="50%" stopColor="#A3C8FF" stopOpacity="0.9" />
-                        <stop offset="85%" stopColor="#7BB8FF" stopOpacity="0.75" />
-                        <stop offset="100%" stopColor="#7BB8FF" stopOpacity="0" />
-                    </linearGradient>
-
-                    <linearGradient id="wave-gradient-3" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#A3C8FF" stopOpacity="0" />
-                        <stop offset="25%" stopColor="#A3C8FF" stopOpacity="0.65" />
-                        <stop offset="50%" stopColor="#C5DCFF" stopOpacity="0.8" />
-                        <stop offset="75%" stopColor="#A3C8FF" stopOpacity="0.65" />
-                        <stop offset="100%" stopColor="#A3C8FF" stopOpacity="0" />
-                    </linearGradient>
-                    
-                    <filter id="wave-blur">
-                        <feGaussianBlur stdDeviation="1.2" />
-                    </filter>
-                </defs>
-
-                {/* Layer 1: Primary Wave (Policy voice) */}
-                <motion.polyline
-                    points={generateWavePath(baseAmplitude, 3.2, 0, 70)}
-                    fill="none"
-                    stroke="url(#wave-gradient-1)"
-                    strokeWidth="2.4"
-                    strokeLinecap="round"
-                    filter="url(#wave-blur)"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.3, ease: MOTION_TOKENS.CURVES.horizonIn }}
+                {/* Base light-field layer */}
+                <motion.div
+                    className="absolute inset-0"
+                    style={{
+                        background: `
+                            linear-gradient(
+                                180deg,
+                                rgba(167, 209, 255, ${baseLuminance * 0.65}) 0%,
+                                rgba(123, 184, 255, ${baseLuminance}) 35%,
+                                rgba(123, 184, 255, ${baseLuminance * 0.95}) 65%,
+                                rgba(167, 209, 255, ${baseLuminance * 0.55}) 100%
+                            )
+                        `,
+                        filter: 'blur(8px)',
+                        mixBlendMode: 'screen'
+                    }}
+                    animate={{
+                        opacity: shouldReduceMotion ? 1 : [1, 0.92, 1]
+                    }}
+                    transition={{
+                        duration: 14,
+                        repeat: Infinity,
+                        ease: 'easeInOut'
+                    }}
                 />
 
-                {/* Layer 2: Secondary Wave (Credit voice) */}
-                <motion.polyline
-                    points={generateWavePath(baseAmplitude * 0.85, 3.5, phaseDesync * (Math.PI / 180), 70)}
-                    fill="none"
-                    stroke="url(#wave-gradient-2)"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    filter="url(#wave-blur)"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.4, ease: MOTION_TOKENS.CURVES.horizonIn }}
+                {/* Refracted highlight layer (top edge bloom) */}
+                <motion.div
+                    className="absolute"
+                    style={{
+                        top: 0,
+                        left: '10%',
+                        right: '10%',
+                        height: '12px',
+                        background: 'linear-gradient(180deg, rgba(167, 209, 255, 0.08) 0%, transparent 100%)',
+                        filter: 'blur(6px)',
+                        mixBlendMode: 'screen'
+                    }}
+                    animate={{
+                        opacity: shouldReduceMotion ? 0.6 : [0.6, 0.75, 0.6],
+                        scaleX: shouldReduceMotion ? 1 : [1, 1.08, 1]
+                    }}
+                    transition={{
+                        duration: 16,
+                        repeat: Infinity,
+                        ease: 'easeInOut'
+                    }}
                 />
 
-                {/* Layer 3: Tertiary Wave (Global voice) */}
-                <motion.polyline
-                    points={generateWavePath(baseAmplitude * 0.72, 3.8, -phaseDesync * 0.7 * (Math.PI / 180), 70)}
-                    fill="none"
-                    stroke="url(#wave-gradient-3)"
-                    strokeWidth="2.0"
-                    strokeLinecap="round"
-                    filter="url(#wave-blur)"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.5, ease: MOTION_TOKENS.CURVES.horizonIn }}
+                {/* Inner shadow (bottom edge depth) */}
+                <div
+                    className="absolute"
+                    style={{
+                        bottom: 0,
+                        left: '8%',
+                        right: '8%',
+                        height: '8px',
+                        background: 'linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.018) 100%)',
+                        filter: 'blur(4px)',
+                        pointerEvents: 'none'
+                    }}
                 />
-            </svg>
+
+                {/* Asymmetric refraction (consensus at 66 = slight irregularity) */}
+                <motion.div
+                    className="absolute"
+                    style={{
+                        left: '15%',
+                        right: '20%',
+                        top: '25%',
+                        bottom: '25%',
+                        background: 'radial-gradient(ellipse, rgba(167, 209, 255, 0.12) 0%, transparent 65%)',
+                        filter: 'blur(14px)',
+                        mixBlendMode: 'screen'
+                    }}
+                    animate={{
+                        opacity: shouldReduceMotion ? 0.7 : [0.7, 0.85, 0.7],
+                        x: shouldReduceMotion ? 0 : [0, 3, 0]
+                    }}
+                    transition={{
+                        duration: 13,
+                        repeat: Infinity,
+                        ease: 'easeInOut'
+                    }}
+                />
+
+                {/* Secondary refraction layer (offset for "mixed" feeling) */}
+                <motion.div
+                    className="absolute"
+                    style={{
+                        left: '25%',
+                        right: '15%',
+                        top: '20%',
+                        bottom: '20%',
+                        background: 'radial-gradient(ellipse, rgba(123, 184, 255, 0.10) 0%, transparent 60%)',
+                        filter: 'blur(12px)',
+                        mixBlendMode: 'screen'
+                    }}
+                    animate={{
+                        opacity: shouldReduceMotion ? 0.65 : [0.65, 0.78, 0.65],
+                        x: shouldReduceMotion ? 0 : [0, -2, 0]
+                    }}
+                    transition={{
+                        duration: 17,
+                        repeat: Infinity,
+                        ease: 'easeInOut',
+                        delay: 0.5
+                    }}
+                />
+            </motion.div>
 
             {/* Darkening scrim for text contrast */}
             <div 
@@ -344,7 +379,7 @@ const HarmonicAlignmentWave = ({ score, isHovered }) => {
                 style={{
                     width: '140px',
                     height: '140px',
-                    background: 'radial-gradient(circle, rgba(16, 20, 28, 0.45) 0%, transparent 70%)',
+                    background: 'radial-gradient(circle, rgba(16, 20, 28, 0.35) 0%, transparent 70%)',
                     pointerEvents: 'none'
                 }}
             />
@@ -370,8 +405,8 @@ const RadialGauge = ({ score, isHovered }) => {
 
     return (
         <div className="relative flex items-center justify-center w-[136px] h-[136px] mx-auto">
-            {/* HARMONIC ALIGNMENT WAVE (replaces radial arc) */}
-            <HarmonicAlignmentWave score={score} isHovered={isHovered} />
+            {/* LIGHT-FIELD CONSENSUS LENS (replaces harmonic wave) */}
+            <LightFieldConsensusLens score={score} isHovered={isHovered} />
 
             {/* Center Content — UNCHANGED */}
             <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ zIndex: 10 }}>
@@ -380,7 +415,7 @@ const RadialGauge = ({ score, isHovered }) => {
                     className="text-[10px] font-medium uppercase tracking-wide mb-2"
                     style={{ 
                         color: 'rgba(255,255,255,0.70)',
-                        letterSpacing: '0.07em' // Tightened by ~1%
+                        letterSpacing: '0.07em'
                     }}
                     initial={{ opacity: 0, y: -3 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -426,11 +461,10 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
 
     const segments = breakdown?.segments || [];
     
-    // Spirit Layer: Slightly desaturated colors for macOS Tahoe calm
     const segmentColors = {
         'Policy': '#F26A6A',
         'Credit': '#5EA7FF',
-        'Equities': '#2BC686', // Reduced green saturation by ~6%
+        'Equities': '#2BC686',
         'Global': '#FFB020'
     };
 
@@ -451,13 +485,12 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
             variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
             className="h-full rounded-2xl flex flex-col cursor-pointer relative overflow-hidden consensus-meter-card"
             style={{
-                padding: '24px', // Balanced padding
+                padding: '24px',
                 background: 'rgba(16, 20, 28, 0.55)',
                 backdropFilter: 'blur(16px) saturate(140%)',
                 WebkitBackdropFilter: 'blur(16px) saturate(140%)',
                 border: '1px solid rgba(255, 255, 255, 0.12)',
                 boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)',
-                // Spirit Layer: Subsurface vertical luminance gradient
                 backgroundImage: `
                     linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 50%, rgba(0,0,0,0.11) 100%)
                 `,
@@ -514,13 +547,13 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
                 <motion.div
                     className="px-2.5 py-1 rounded-full text-xs font-semibold"
                     style={{
-                        background: 'rgba(255, 255, 255, 0.08)', // Reduced from 0.1
-                        color: 'rgba(255,255,255,0.75)', // Reduced opacity to 75%
-                        fontSize: '11px' // Reduced size by ~7%
+                        background: 'rgba(255, 255, 255, 0.08)',
+                        color: 'rgba(255,255,255,0.75)',
+                        fontSize: '11px'
                     }}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ 
-                        opacity: 0.75, // Visual subordination
+                        opacity: 0.75,
                         scale: 1 
                     }}
                     transition={{ delay: 0.2 }}
@@ -530,12 +563,12 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
                 </motion.div>
             </div>
 
-            {/* Main Gauge with Harmonic Waves */}
+            {/* Main Gauge with Light-Field Lens */}
             <div className="flex-1 flex items-center justify-center my-3">
                 <RadialGauge score={score} isHovered={isHovered} />
             </div>
 
-            {/* Mini Segment Rings (reduced gap for unified line) */}
+            {/* Mini Segment Rings */}
             <motion.div 
                 className="flex justify-center gap-2 mb-4"
                 initial={{ opacity: 0 }}
@@ -561,18 +594,18 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
                 animate={{ opacity: 1 }}
                 transition={{ 
                     delay: 0.8,
-                    duration: 0.15 // 150ms fade-in
+                    duration: 0.15
                 }}
             >
                 <Sparkline data={trendData} delay={0.85} />
             </motion.div>
 
-            {/* Footnote - OS Horizon Typography */}
+            {/* Footnote */}
             <motion.p
                 className="text-xs text-center"
                 style={{ 
                     color: 'rgba(255,255,255,0.70)',
-                    opacity: 0.82 // 80-85% opacity for timestamp
+                    opacity: 0.82
                 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.82 }}
@@ -593,22 +626,19 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
                 View detailed breakdown
             </motion.div>
 
-            {/* Spirit Layer: GPU optimization */}
+            {/* GPU optimization */}
             <style jsx>{`
-                /* GPU Acceleration */
                 .consensus-meter-card {
                     transform: translateZ(0);
                     backface-visibility: hidden;
                 }
 
-                /* Ensure single continuous visual object */
                 .consensus-meter-card * {
                     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
                     -webkit-font-smoothing: antialiased;
                     -moz-osx-font-smoothing: grayscale;
                 }
 
-                /* Reduced motion support */
                 @media (prefers-reduced-motion: reduce) {
                     * {
                         animation: none !important;
