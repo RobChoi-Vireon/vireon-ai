@@ -771,106 +771,100 @@ const HoverCardPortal = ({
         }} />
 
         {/* CTA — 8MS MICRO-NUDGE */}
-        <motion.div
+        <motion.button
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+          className="cta-expand-signal group"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{
             delay: shouldReduceMotion ? 0 : 0.24,
             duration: adjustedDurations.fast
           }}
-          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}
+          whileHover={shouldReduceMotion ? {} : {
+            backgroundColor: 'rgba(255, 255, 255, 0.06)',
+            y: -1,
+            transition: {
+              duration: MOTION_TOKENS.DURATIONS.microPulse,
+              ease: MOTION_TOKENS.CURVES.horizonIn
+            }
+          }}
+          whileTap={shouldReduceMotion ? {} : {
+            y: 1,
+            transition: {
+              duration: MOTION_TOKENS.DURATIONS.microPulse,
+              ease: MOTION_TOKENS.CURVES.horizonOut
+            }
+          }}
+          style={{
+            position: 'relative',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '5px',
+            minHeight: '36px',
+            padding: '8px 12px',
+            borderRadius: '12px',
+            border: 'none',
+            background: 'transparent',
+            cursor: 'pointer',
+            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+            fontSize: '14px',
+            fontWeight: 500,
+            letterSpacing: '0.25px',
+            color: 'rgba(90, 160, 255, 0.95)',
+            WebkitTapHighlightColor: 'transparent',
+            outline: 'none',
+            overflow: 'hidden',
+            willChange: 'transform, background-color'
+          }}
+          aria-label="Expand signal for detailed analysis"
         >
-          <motion.button
-            onClick={(e) => {
-              e.stopPropagation();
-              onClose();
-            }}
-            className="cta-expand-signal group"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+          {!shouldReduceMotion && (
+            <motion.div
+              className="absolute left-3 right-3 bottom-2 h-[1px]"
+              style={{
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.67), transparent)',
+                transformOrigin: '50% 50%',
+                scaleX: 0
+              }}
+              initial={{ scaleX: 0 }}
+              whileHover={{
+                scaleX: 1,
+                transition: {
+                  duration: adjustedDurations.base,
+                  ease: MOTION_TOKENS.CURVES.horizonIn
+                }
+              }}
+            />
+          )}
+
+          <span style={{ position: 'relative', zIndex: 1 }}>Expand signal</span>
+
+          <motion.div
+            style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center' }}
+            initial={{ x: 0, opacity: 0.85 }}
+            animate={{ x: 0, opacity: 0.85 }}
             whileHover={shouldReduceMotion ? {} : {
-              backgroundColor: 'rgba(255, 255, 255, 0.06)',
-              y: -1,
+              x: 2,
+              opacity: 1,
               transition: {
                 duration: MOTION_TOKENS.DURATIONS.microPulse,
                 ease: MOTION_TOKENS.CURVES.horizonIn
               }
             }}
             whileTap={shouldReduceMotion ? {} : {
-              y: 1,
+              x: 3,
               transition: {
                 duration: MOTION_TOKENS.DURATIONS.microPulse,
                 ease: MOTION_TOKENS.CURVES.horizonOut
               }
             }}
-            style={{
-              position: 'relative',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '5px',
-              minHeight: '36px',
-              padding: '8px 12px',
-              borderRadius: '12px',
-              border: 'none',
-              background: 'transparent',
-              cursor: 'pointer',
-              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-              fontSize: '14px',
-              fontWeight: 500,
-              letterSpacing: '0.25px',
-              color: 'rgba(90, 160, 255, 0.95)',
-              WebkitTapHighlightColor: 'transparent',
-              outline: 'none',
-              overflow: 'hidden',
-              willChange: 'transform, background-color'
-            }}
-            aria-label="Expand signal for detailed analysis"
           >
-            {!shouldReduceMotion && (
-              <motion.div
-                className="absolute left-3 right-3 bottom-2 h-[1px]"
-                style={{
-                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.67), transparent)',
-                  transformOrigin: '50% 50%',
-                  scaleX: 0
-                }}
-                initial={{ scaleX: 0 }}
-                whileHover={{
-                  scaleX: 1,
-                  transition: {
-                    duration: adjustedDurations.base,
-                    ease: MOTION_TOKENS.CURVES.horizonIn
-                  }
-                }}
-              />
-            )}
-
-            <span style={{ position: 'relative', zIndex: 1 }}>Expand signal</span>
-
-            <motion.div
-              style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center' }}
-              initial={{ x: 0, opacity: 0.85 }}
-              animate={{ x: 0, opacity: 0.85 }}
-              whileHover={shouldReduceMotion ? {} : {
-                x: 2,
-                opacity: 1,
-                transition: {
-                  duration: MOTION_TOKENS.DURATIONS.microPulse,
-                  ease: MOTION_TOKENS.CURVES.horizonIn
-                }
-              }}
-              whileTap={shouldReduceMotion ? {} : {
-                x: 3,
-                transition: {
-                  duration: MOTION_TOKENS.DURATIONS.microPulse,
-                  ease: MOTION_TOKENS.CURVES.horizonOut
-                }
-              }}
-            >
-              <ArrowRight className="w-3.5 h-3.5" />
-            </motion.div>
-          </motion.button>
-        </motion.div>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </motion.div>
+        </motion.button>
       </div>
 
       {!position.maxHeight && (
@@ -917,7 +911,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const hoverExitTimerRef = useRef(null);
 
   const [selectedDomain, setSelectedDomain] = useState(null);
-  const [dimensions, setDimensions] = useState({ width: 800, height: 500 }); // Adjusted height for orb-cluster-visual
+  const [dimensions, setDimensions] = useState({ width: 800, height: 500 });
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
   const [isLowPower, setIsLowPower] = useState(false);
   const [constellationShift, setConstellationShift] = useState(0);
@@ -1411,7 +1405,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           pointerEvents: 'none' // Allow click-through to children by default
         }}
       >
-        {/* ORB CLUSTER VISUAL (NO ABSOLUTE POSITIONING) */}
+        {/* ORB CLUSTER VISUAL (FIXED HEIGHT) */}
         <div
           ref={containerRef}
           className="orb-cluster-visual"
@@ -1423,12 +1417,73 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             pointerEvents: 'auto' // Re-enable pointer events for the visual elements inside
           }}
         >
-          <motion.div style={{ position: 'absolute', inset: 0, background: `radial-gradient(900px circle at 52% 48%, ${TOKENS.HORIZON.bgSubsurfaceCenter} 0%, ${TOKENS.HORIZON.bgSubsurfaceEdge} 70%)`, opacity: 0.35, borderRadius: '24px', pointerEvents: 'none', zIndex: 1 }} animate={{ x: shouldReduceMotion ? 0 : bgParallaxX.get() * TOKENS.HORIZON.parallaxOffset * 0.6, y: shouldReduceMotion ? 0 : bgParallaxY.get() * TOKENS.HORIZON.parallaxOffset * 0.6 }} transition={{ duration: TOKENS.HORIZON.t_parallax, ease: TOKENS.HORIZON.easingApple }} />
+          {/* UNIFIED ATMOSPHERIC BACKGROUND — SINGLE RADIAL GRADIENT */}
+          <div
+            className="equilibrium-unified-background"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              background: `radial-gradient(ellipse 900px 550px at 50% 48%, rgba(18, 24, 35, 0.65) 0%, rgba(11, 14, 19, 0.45) 42%, rgba(7, 10, 15, 0.25) 70%, transparent 100%)`,
+              borderRadius: '24px',
+              pointerEvents: 'none',
+              zIndex: 1
+            }}
+            aria-hidden="true"
+          />
 
-          <motion.div style={{ position: 'absolute', inset: 0, backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3Cfilter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E")`, backgroundSize: '200px 200px', opacity: 0.15, borderRadius: '24px', pointerEvents: 'none', zIndex: 2 }} animate={{ backgroundPosition: [`${noiseDrift}px 0px`, `${noiseDrift + 0.3}px 0px`] }} transition={{ duration: 1, ease: 'linear' }} />
+          {/* SUBSURFACE CENTER GLOW — SINGLE PSEUDO-ELEMENT */}
+          <div
+            className="equilibrium-subsurface-glow"
+            style={{
+              position: 'absolute',
+              left: '50%',
+              top: '48%',
+              transform: 'translate(-50%, -50%)',
+              width: '420px',
+              height: '420px',
+              background: 'radial-gradient(circle, rgba(160, 191, 255, 0.08) 0%, transparent 65%)',
+              filter: 'blur(60px)',
+              pointerEvents: 'none',
+              zIndex: 2,
+              opacity: 0.75
+            }}
+            aria-hidden="true"
+          />
 
-          <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(ellipse at center, transparent 60%, ${TOKENS.HORIZON.vignetteColor} 100%)`, opacity: TOKENS.HORIZON.vignetteOpacity, filter: `blur(${TOKENS.HORIZON.vignetteBlur}px)`, borderRadius: '24px', pointerEvents: 'none', zIndex: 2 }} />
+          {/* NOISE TEXTURE — SINGLE LAYER */}
+          <motion.div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E")`,
+              backgroundSize: '200px 200px',
+              opacity: 0.15,
+              borderRadius: '24px',
+              pointerEvents: 'none',
+              zIndex: 3
+            }}
+            animate={{ backgroundPosition: [`${noiseDrift}px 0px`, `${noiseDrift + 0.3}px 0px`] }}
+            transition={{ duration: 1, ease: 'linear' }}
+          />
 
+          {/* VIGNETTE — SINGLE UNIFORM LAYER */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: `radial-gradient(ellipse at center, transparent 55%, ${TOKENS.HORIZON.vignetteColor} 100%)`,
+              opacity: TOKENS.HORIZON.vignetteOpacity,
+              filter: `blur(${TOKENS.HORIZON.vignetteBlur}px)`,
+              borderRadius: '24px',
+              pointerEvents: 'none',
+              zIndex: 4
+            }}
+          />
+
+          {/* BLOOM HALOS (BENEATH CONSTELLATION) */}
           {domains.map((domain) => {
             const pos = getOrbPosition(domain.id, domain.strength, swayTime, 0, 0);
             const bloomRadius = Math.min(...TOKENS.HORIZON.localBloomRadius) + (domain.strength * (Math.max(...TOKENS.HORIZON.localBloomRadius) - Math.min(...TOKENS.HORIZON.localBloomRadius)));
@@ -1450,7 +1505,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     opacity: selectedDomain ? 0.12 : (isHovered ? 0.45 : TOKENS.HORIZON.localBloomIntensity),
                     mixBlendMode: 'screen',
                     pointerEvents: 'none',
-                    zIndex: 2
+                    zIndex: 5
                   }}
                 />
                 {isActiveOrb && (
@@ -1458,26 +1513,69 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     className="orb-halo"
                     animate={{ opacity: [0.15, 0.22, 0.15], scale: [1, 1.12, 1] }}
                     transition={{ opacity: { duration: 4, repeat: Infinity, ease: 'easeInOut' }, scale: { duration: 4, repeat: Infinity, ease: 'easeInOut' } }}
-                    style={{ position: 'absolute', left: pos.x, top: pos.y, width: bloomRadius * 2.3, height: bloomRadius * 2.3, transform: 'translate(-50%, -50%)', background: `radial-gradient(circle, ${getDomainBloom(domain.id)} 0%, transparent 65%)`, filter: 'blur(28px)', mixBlendMode: 'screen', pointerEvents: 'none', zIndex: 1 }}
+                    style={{ position: 'absolute', left: pos.x, top: pos.y, width: bloomRadius * 2.3, height: bloomRadius * 2.3, transform: 'translate(-50%, -50%)', background: `radial-gradient(circle, ${getDomainBloom(domain.id)} 0%, transparent 65%)`, filter: 'blur(28px)', mixBlendMode: 'screen', pointerEvents: 'none', zIndex: 5 }}
                   />
                 )}
               </React.Fragment>
             );
           })}
 
-          <motion.div className="glow-overlay" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 3 }} animate={{ x: shouldReduceMotion ? 0 : parallaxX.get() * TOKENS.HORIZON.parallaxOffset * 0.15, y: shouldReduceMotion ? 0 : parallaxY.get() * TOKENS.HORIZON.parallaxOffset * 0.15 }} transition={{ duration: TOKENS.HORIZON.t_parallax, ease: TOKENS.HORIZON.easingApple }}>
-            {selectedDomain && <motion.div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', width: '100%', height: '100%', background: `radial-gradient(circle at center, ${getDomainBloom(selectedDomain.id)} 0%, transparent 60%)`, opacity: 0.1, filter: 'blur(80px)', pointerEvents: 'none', mixBlendMode: 'screen' }} initial={{ opacity: 0 }} animate={{ opacity: 0.1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5, ease: 'easeInOut' }} />}
+          {/* SELECTED DOMAIN AMBIENT GLOW (STATIC) */}
+          <motion.div className="glow-overlay" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 6 }} animate={{ x: shouldReduceMotion ? 0 : parallaxX.get() * TOKENS.HORIZON.parallaxOffset * 0.15, y: shouldReduceMotion ? 0 : parallaxY.get() * TOKENS.HORIZON.parallaxOffset * 0.15 }} transition={{ duration: TOKENS.HORIZON.t_parallax, ease: TOKENS.HORIZON.easingApple }}>
+            {selectedDomain && (
+              <motion.div
+                style={{
+                  position: 'absolute',
+                  left: '50%',
+                  top: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: '100%',
+                  height: '100%',
+                  background: `radial-gradient(circle at center, ${getDomainBloom(selectedDomain.id)} 0%, transparent 60%)`,
+                  opacity: 0.1,
+                  filter: 'blur(80px)',
+                  pointerEvents: 'none',
+                  mixBlendMode: 'screen'
+                }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5, ease: 'easeInOut' }}
+              />
+            )}
           </motion.div>
 
-          <motion.div ref={constellationRef} style={{ position: 'absolute', inset: 0, willChange: 'transform', zIndex: 3, opacity: selectedDomain ? 0.9 : 1, pointerEvents: 'auto' }} animate={{ y: constellationShift, x: shouldReduceMotion ? 0 : parallaxX.get() * TOKENS.HORIZON.parallaxResponse }} transition={{ y: { duration: shouldReduceMotion ? 0 : 0.4, ease: TOKENS.HORIZON.easing }, x: { duration: shouldReduceMotion ? 0 : TOKENS.HORIZON.t_parallax, ease: TOKENS.HORIZON.easingApple } }}>
-            <div style={{ position: 'absolute', left: `${cx}px`, top: `${cy}px`, width: `${orbitBaseRadius * 2}px`, height: `${orbitBaseRadius * 2}px`, transform: 'translate(-50%, -50%)', borderRadius: '999px', boxShadow: 'inset 0 0 0 1px rgba(160,191,255,0.06)', opacity: 0.2, filter: 'blur(0.5px)', pointerEvents: 'none', zIndex: 2, transition: shouldReduceMotion ? 'none' : 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)' }} aria-hidden="true" />
+          {/* CONSTELLATION LAYER — PARALLAX APPLIES HERE */}
+          <motion.div
+            ref={constellationRef}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              willChange: 'transform',
+              zIndex: 10,
+              opacity: selectedDomain ? 0.9 : 1,
+              pointerEvents: 'auto'
+            }}
+            animate={{
+              y: constellationShift,
+              x: shouldReduceMotion ? 0 : parallaxX.get() * TOKENS.HORIZON.parallaxResponse
+            }}
+            transition={{
+              y: { duration: shouldReduceMotion ? 0 : 0.4, ease: TOKENS.HORIZON.easing },
+              x: { duration: shouldReduceMotion ? 0 : TOKENS.HORIZON.t_parallax, ease: TOKENS.HORIZON.easingApple }
+            }}
+          >
+            {/* ORBIT RING */}
+            <div style={{ position: 'absolute', left: `${cx}px`, top: `${cy}px`, width: `${orbitBaseRadius * 2}px`, height: `${orbitBaseRadius * 2}px`, transform: 'translate(-50%, -50%)', borderRadius: '999px', boxShadow: 'inset 0 0 0 1px rgba(160,191,255,0.06)', opacity: 0.2, filter: 'blur(0.5px)', pointerEvents: 'none', zIndex: 1, transition: shouldReduceMotion ? 'none' : 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)' }} aria-hidden="true" />
 
+            {/* CENTRAL NUCLEUS */}
             <motion.div style={{ position: 'absolute', left: `${cx}px`, top: `${cy}px`, zIndex: 2, pointerEvents: 'none' }} animate={{ x: nucleusOffset.x, y: nucleusOffset.y }} transition={{ duration: 0.8, ease: TOKENS.HORIZON.easing }}>
               <motion.div style={{ position: 'absolute', left: 0, top: 0, transform: 'translate(-50%, -50%)', width: `${22 * getGlobalScale()}px`, height: `${22 * getGlobalScale()}px`, borderRadius: '999px', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', background: 'rgba(160,191,255,0.12)', boxShadow: '0 0 80px rgba(160,191,255,0.15), inset 0 0 0 1px rgba(255,255,255,0.08)', pointerEvents: 'none' }} animate={shouldReduceMotion ? {} : { scale: [0.985, 1.025, 0.985], opacity: [0.985, 1, 0.985] }} transition={{ duration: TOKENS.HORIZON.t_breathe, repeat: Infinity, ease: "easeInOut" }} aria-hidden="true" />
               {domains.map((d) => <motion.div key={`ray-${d.id}`} style={{ position: 'absolute', left: 0, top: 0, width: '28%', height: '2px', transformOrigin: 'left center', borderRadius: '999px', background: 'linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.45))', pointerEvents: 'none' }} animate={{ rotate: ANGLES[d.id], opacity: d.id === dominantDriver ? 0.5 : 0.15 }} transition={{ duration: 0.8, ease: TOKENS.HORIZON.easing }} />)}
             </motion.div>
 
-            <svg width={dimensions.width} height={dimensions.height} style={{ position: 'absolute', inset: 0, overflow: 'visible', zIndex: 2, pointerEvents: 'none' }}>
+            {/* SVG LAYER — CONNECTIONS + ORBS */}
+            <svg width={dimensions.width} height={dimensions.height} style={{ position: 'absolute', inset: 0, overflow: 'visible', zIndex: 3, pointerEvents: 'none' }}>
               <defs>
                 {domains.map((d) => (
                   <React.Fragment key={`defs-${d.id}`}>
@@ -1620,6 +1718,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               })()}
             </AnimatePresence>
 
+            {/* LABELS */}
             {domains.map((domain) => {
               const orbPos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
               const labelPos = getLabelPosition(orbPos.x, orbPos.y, orbPos.radius);
@@ -1627,7 +1726,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               const isSelected = selectedDomain?.id === domain.id;
 
               return (
-                <motion.div key={`label-${domain.id}`} style={{ position: 'absolute', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', background: 'rgba(10,14,20,0.50)', border: `1px solid ${TOKENS.HORIZON.glassBorder}`, borderRadius: '10px', padding: '5px 9px', fontWeight: 600, fontSize: '11px', letterSpacing: '0.03em', textTransform: 'lowercase', textShadow: '0 1px 2px rgba(0,0,0,0.4)', pointerEvents: 'none', zIndex: 3, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }} animate={{ left: `${labelPos.x}px`, top: `${labelPos.y}px`, x: '-50%', y: '-50%', color: isHovered || isSelected ? TOKENS.colors.textLabel : getDomainText(domain.id), scale: isHovered || isSelected ? 1.05 : 1, boxShadow: isHovered || isSelected ? '0 0 16px rgba(160,191,255,0.15)' : 'none' }} transition={{ left: { duration: TOKENS.HORIZON.t_labelLag, ease: TOKENS.HORIZON.easingApple }, top: { duration: TOKENS.HORIZON.t_labelLag, ease: TOKENS.HORIZON.easingApple }, color: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }, scale: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }, boxShadow: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing } }}>
+                <motion.div key={`label-${domain.id}`} style={{ position: 'absolute', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', background: 'rgba(10,14,20,0.50)', border: `1px solid ${TOKENS.HORIZON.glassBorder}`, borderRadius: '10px', padding: '5px 9px', fontWeight: 600, fontSize: '11px', letterSpacing: '0.03em', textTransform: 'lowercase', textShadow: '0 1px 2px rgba(0,0,0,0.4)', pointerEvents: 'none', zIndex: 11, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }} animate={{ left: `${labelPos.x}px`, top: `${labelPos.y}px`, x: '-50%', y: '-50%', color: isHovered || isSelected ? TOKENS.colors.textLabel : getDomainText(domain.id), scale: isHovered || isSelected ? 1.05 : 1, boxShadow: isHovered || isSelected ? '0 0 16px rgba(160,191,255,0.15)' : 'none' }} transition={{ left: { duration: TOKENS.HORIZON.t_labelLag, ease: TOKENS.HORIZON.easingApple }, top: { duration: TOKENS.HORIZON.t_labelLag, ease: TOKENS.HORIZON.easingApple }, color: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }, scale: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }, boxShadow: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing } }}>
                 {domain.id}
               </motion.div>
             );
@@ -2443,6 +2542,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             transition-duration: 0.01ms !important;
             transform: none !important;
           }
+        }
+
+        html.transitions-enabled *:not([data-no-transition]) {
+          transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, opacity 200ms ease, transform 200ms ease, box-shadow 200ms ease;
         }
 
         *:focus-visible {
