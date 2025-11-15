@@ -22,7 +22,7 @@ const MOTION_TOKENS = {
 };
 
 // ============================================================================
-// RADIANT PANE + HYBRID FLOWFIELD ENGINE
+// TRUE HYBRID FLOWFIELD ENGINE
 // ============================================================================
 const RadiantPaneFlowfield = ({ score, isHovered }) => {
     const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
@@ -37,24 +37,20 @@ const RadiantPaneFlowfield = ({ score, isHovered }) => {
         return () => mediaQuery.removeEventListener('change', handler);
     }, []);
 
-    // Consensus coherence: 66 = moderate alignment with soft imperfections
-    const consensusCoherence = score / 100;
-    const alignmentFactor = 0.70;
-    const curvatureVariance = 10;
-
-    // Initialize particles
+    // Initialize 30 micro-particles (25-40 range)
     useEffect(() => {
-        particlesRef.current = Array.from({ length: 32 }, () => ({
-            x: Math.random() * 260,
-            y: Math.random() * 170,
-            vx: (Math.random() - 0.5) * 0.13,
-            vy: (Math.random() - 0.5) * 0.11,
-            size: Math.random() * 1.4 + 0.9,
-            opacity: Math.random() * 0.03 + 0.03
+        particlesRef.current = Array.from({ length: 30 }, () => ({
+            x: Math.random() * 240,
+            y: Math.random() * 160,
+            vx: (Math.random() - 0.5) * 0.10,
+            vy: (Math.random() - 0.5) * 0.08,
+            size: Math.random() * 1.0 + 1.0, // 1-2px
+            opacity: Math.random() * 0.03 + 0.03, // 3-6%
+            depth: Math.random() * 0.6 + 0.3 // 0.3-0.9 for parallax
         }));
     }, []);
 
-    // Animation loop
+    // Animation loop for flowfield and particles
     useEffect(() => {
         if (shouldReduceMotion) return;
         
@@ -65,19 +61,22 @@ const RadiantPaneFlowfield = ({ score, isHovered }) => {
             const elapsed = (Date.now() - startTime) / 1000;
             setFlowPhase(elapsed);
             
-            const speedMultiplier = isHovered ? 1.06 : 1.0;
-            particlesRef.current.forEach(p => {
-                const flowAngle = Math.sin(p.x * 0.016 + elapsed * 0.22) * (curvatureVariance * Math.PI / 180);
-                p.vx = Math.cos(flowAngle) * 0.12 * speedMultiplier;
-                p.vy = Math.sin(flowAngle) * 0.08 * speedMultiplier;
+            // Update particle positions following flowfield vectors
+            particlesRef.current.forEach((p, i) => {
+                const flowAngle = Math.sin(p.x * 0.014 + elapsed * 0.18) * 0.15;
+                const flowSpeed = 0.08; // VisionOS-style calmness
                 
-                p.x += p.vx;
-                p.y += p.vy;
+                p.vx = Math.cos(flowAngle) * flowSpeed;
+                p.vy = Math.sin(flowAngle) * flowSpeed * 0.7;
                 
-                if (p.x < -15) p.x = 275;
-                if (p.x > 275) p.x = -15;
-                if (p.y < -15) p.y = 185;
-                if (p.y > 185) p.y = -15;
+                p.x += p.vx * p.depth; // depth parallax
+                p.y += p.vy * p.depth;
+                
+                // Wrap around edges
+                if (p.x < -10) p.x = 250;
+                if (p.x > 250) p.x = -10;
+                if (p.y < -10) p.y = 170;
+                if (p.y > 170) p.y = -10;
             });
             
             rafId = requestAnimationFrame(animate);
@@ -85,22 +84,23 @@ const RadiantPaneFlowfield = ({ score, isHovered }) => {
         
         rafId = requestAnimationFrame(animate);
         return () => cancelAnimationFrame(rafId);
-    }, [shouldReduceMotion, isHovered, curvatureVariance]);
+    }, [shouldReduceMotion]);
 
-    // Generate flow line with smooth Bézier curvature
-    const generateFlowLine = (startY, amplitude, phaseOffset, variance) => {
+    // Generate smooth cubic Bézier flow lines
+    const generateFlowLine = (startY, amplitude, phaseOffset) => {
         const points = [];
-        const steps = 75;
+        const steps = 60;
         
         for (let i = 0; i <= steps; i++) {
             const t = i / steps;
-            const x = t * 260;
+            const x = t * 240;
             
-            const baseFlow = Math.sin((t * Math.PI * 2.4) + phaseOffset + (flowPhase * 0.16));
-            const varianceFlow = Math.sin((t * Math.PI * 1.7) + variance) * 0.32;
-            const breathe = Math.sin(flowPhase * 0.35) * 0.015;
-            const hoverAmplitude = isHovered ? 1.02 : 1.0;
-            const y = startY + (baseFlow + varianceFlow) * amplitude * (1 + breathe) * hoverAmplitude;
+            // Moderate coherence with slight imperfections (score 66)
+            const baseFlow = Math.sin((t * Math.PI * 2.2) + phaseOffset + (flowPhase * 0.14));
+            const imperfection = Math.sin((t * Math.PI * 1.5) + phaseOffset * 0.7) * 0.25;
+            const breathe = Math.sin(flowPhase * 0.3) * 0.015; // 1-2% amplitude breathing
+            
+            const y = startY + (baseFlow + imperfection) * amplitude * (1 + breathe);
             
             points.push(`${x},${y}`);
         }
@@ -108,121 +108,107 @@ const RadiantPaneFlowfield = ({ score, isHovered }) => {
         return points.join(' ');
     };
 
-    const diagonalDrift = Math.sin(flowPhase * (Math.PI / 15)) * 2.5;
-    const shimmer = Math.cos(flowPhase * (Math.PI / 13)) * 0.012;
+    // Slight parallax tilt (0.5-1°)
+    const parallaxTilt = Math.sin(flowPhase * 0.25) * 0.7;
 
     return (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-            {/* Radiant Pane */}
+            {/* RADIANT PANE (liquid glass panel) */}
             <motion.div
                 className="absolute"
                 style={{
-                    width: '235px',
-                    height: '155px',
-                    borderRadius: '34px',
+                    width: '220px',
+                    height: '150px',
+                    borderRadius: '32px',
+                    // Horizon blue gradient (#7BB8FF → #A7D1FF)
                     background: `
-                        linear-gradient(145deg, 
-                            rgba(167, 209, 255, 0.14) 0%, 
-                            rgba(123, 184, 255, 0.16) 40%,
-                            rgba(155, 203, 255, 0.12) 100%
+                        linear-gradient(140deg, 
+                            rgba(123, 184, 255, 0.13) 0%, 
+                            rgba(167, 209, 255, 0.15) 100%
                         )
                     `,
-                    backdropFilter: 'blur(20px)',
-                    WebkitBackdropFilter: 'blur(20px)',
-                    border: '1px solid rgba(255, 255, 255, 0.10)',
+                    // Blur: 18px (16-22px range), Opacity: 14% (12-16% range)
+                    backdropFilter: 'blur(18px)',
+                    WebkitBackdropFilter: 'blur(18px)',
+                    opacity: 0.14,
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
                     boxShadow: `
-                        inset 0 1px 2px rgba(255, 255, 255, 0.15),
-                        inset 0 -1px 1px rgba(0, 0, 0, 0.10),
-                        0 0 35px rgba(123, 184, 255, 0.10)
+                        inset 0 1px 1px rgba(255, 255, 255, 0.12),
+                        0 0 28px rgba(123, 184, 255, 0.08)
                     `,
-                    willChange: 'transform, filter'
+                    willChange: 'transform'
                 }}
                 animate={{
-                    filter: isHovered ? 'brightness(1.03)' : 'brightness(1)',
-                    rotateX: isHovered ? '0.7deg' : '0deg',
-                    x: shouldReduceMotion ? 0 : diagonalDrift * 0.5,
-                    y: shouldReduceMotion ? 0 : diagonalDrift * 0.3
+                    // Slight parallax tilt (0.5-1°)
+                    rotateX: shouldReduceMotion ? 0 : `${parallaxTilt}deg`,
+                    rotateY: shouldReduceMotion ? 0 : `${parallaxTilt * 0.5}deg`
                 }}
                 transition={{
-                    filter: { duration: 0.12, ease: MOTION_TOKENS.CURVES.horizonIn },
-                    rotateX: { duration: 0.12, ease: MOTION_TOKENS.CURVES.horizonIn },
-                    x: { duration: 15, ease: 'easeInOut' },
-                    y: { duration: 15, ease: 'easeInOut' }
+                    duration: 15,
+                    ease: 'easeInOut'
                 }}
             >
-                {/* Internal diagonal streak */}
-                <motion.div
-                    className="absolute inset-0 rounded-[34px]"
-                    style={{
-                        background: 'linear-gradient(125deg, rgba(255, 255, 255, 0.10) 0%, transparent 45%, rgba(167, 209, 255, 0.05) 100%)',
-                        opacity: 0.6 + shimmer
-                    }}
-                />
-
-                {/* Top bloom */}
+                {/* Very soft top bloom (1-2%) */}
                 <div 
-                    className="absolute top-0 left-[18%] right-[18%] h-[18px] rounded-full"
+                    className="absolute top-0 left-[15%] right-[15%] h-[16px] rounded-full"
                     style={{
-                        background: 'linear-gradient(180deg, rgba(167, 209, 255, 0.15) 0%, transparent 100%)',
-                        filter: 'blur(9px)'
+                        background: 'linear-gradient(180deg, rgba(167, 209, 255, 0.015) 0%, transparent 100%)',
+                        filter: 'blur(8px)'
                     }}
                 />
             </motion.div>
 
-            {/* Flowfield Layer */}
+            {/* DYNAMIC FLOWFIELD (10-16 flow lines) */}
             <svg 
-                width="260" 
-                height="170" 
-                viewBox="0 0 260 170"
+                width="240" 
+                height="160" 
+                viewBox="0 0 240 160"
                 className="absolute"
-                style={{
-                    zIndex: 2,
-                    opacity: isHovered ? 0.72 : 0.65
-                }}
+                style={{ zIndex: 2 }}
             >
                 <defs>
-                    <filter id="flow-blur-capsule">
-                        <feGaussianBlur stdDeviation="1.4" />
+                    <filter id="flow-blur-hybrid">
+                        <feGaussianBlur stdDeviation="1.2" />
                     </filter>
                     
-                    <linearGradient id="flow-grad-capsule-1" x1="0%" y1="0%" x2="100%" y2="0%">
+                    {/* Desaturated horizon blues */}
+                    <linearGradient id="flow-grad-1" x1="0%" y1="0%" x2="100%" y2="0%">
                         <stop offset="0%" stopColor="#8EBFFF" stopOpacity="0" />
-                        <stop offset="22%" stopColor="#9CCFFF" stopOpacity="0.058" />
-                        <stop offset="50%" stopColor="#ABD7FF" stopOpacity="0.068" />
-                        <stop offset="78%" stopColor="#9CCFFF" stopOpacity="0.058" />
+                        <stop offset="25%" stopColor="#8EBFFF" stopOpacity="0.055" />
+                        <stop offset="50%" stopColor="#A7D1FF" stopOpacity="0.065" />
+                        <stop offset="75%" stopColor="#8EBFFF" stopOpacity="0.055" />
                         <stop offset="100%" stopColor="#8EBFFF" stopOpacity="0" />
                     </linearGradient>
                     
-                    <linearGradient id="flow-grad-capsule-2" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#9CCFFF" stopOpacity="0" />
-                        <stop offset="25%" stopColor="#ABD7FF" stopOpacity="0.052" />
-                        <stop offset="50%" stopColor="#B8E2FF" stopOpacity="0.062" />
-                        <stop offset="75%" stopColor="#ABD7FF" stopOpacity="0.052" />
-                        <stop offset="100%" stopColor="#9CCFFF" stopOpacity="0" />
+                    <linearGradient id="flow-grad-2" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#A7D1FF" stopOpacity="0" />
+                        <stop offset="25%" stopColor="#A7D1FF" stopOpacity="0.050" />
+                        <stop offset="50%" stopColor="#8EBFFF" stopOpacity="0.060" />
+                        <stop offset="75%" stopColor="#A7D1FF" stopOpacity="0.050" />
+                        <stop offset="100%" stopColor="#A7D1FF" stopOpacity="0" />
                     </linearGradient>
                 </defs>
 
-                {/* Generate 14 flow lines */}
-                {Array.from({ length: 14 }).map((_, i) => {
-                    const yPos = 38 + (i * (94 / 13));
-                    const phaseOffset = (i / 14) * Math.PI * 2;
-                    const variance = (1 - alignmentFactor) * ((i % 4) * 0.42);
-                    const gradient = i % 2 === 0 ? 'flow-grad-capsule-1' : 'flow-grad-capsule-2';
+                {/* Generate 12 flow lines (10-16 range) */}
+                {Array.from({ length: 12 }).map((_, i) => {
+                    const yPos = 30 + (i * (100 / 11));
+                    const phaseOffset = (i / 12) * Math.PI * 2;
+                    const gradient = i % 2 === 0 ? 'flow-grad-1' : 'flow-grad-2';
                     
                     return (
                         <motion.polyline
                             key={i}
-                            points={generateFlowLine(yPos, 7.8, phaseOffset, variance)}
+                            points={generateFlowLine(yPos, 6.5, phaseOffset)}
                             fill="none"
                             stroke={`url(#${gradient})`}
-                            strokeWidth="1.5"
+                            strokeWidth="1.4" // 1.2-1.6px range
                             strokeLinecap="round"
-                            filter="url(#flow-blur-capsule)"
+                            filter="url(#flow-blur-hybrid)"
                             initial={{ opacity: 0, pathLength: 0 }}
                             animate={{ opacity: 1, pathLength: 1 }}
                             transition={{ 
-                                duration: 0.9, 
-                                delay: 0.12 + (i * 0.032),
+                                duration: 0.8, 
+                                delay: 0.1 + (i * 0.04),
                                 ease: MOTION_TOKENS.CURVES.horizonIn
                             }}
                         />
@@ -230,21 +216,21 @@ const RadiantPaneFlowfield = ({ score, isHovered }) => {
                 })}
             </svg>
 
-            {/* Micro-Particle Layer */}
+            {/* MICRO-PARTICLE DRIFT (30 particles) */}
             <div className="absolute inset-0" style={{ zIndex: 3 }}>
                 {particlesRef.current.map((particle, i) => (
                     <div
                         key={i}
                         className="absolute rounded-full"
                         style={{
-                            left: `${(particle.x / 260) * 100}%`,
-                            top: `${(particle.y / 170) * 100}%`,
+                            left: `${(particle.x / 240) * 100}%`,
+                            top: `${(particle.y / 160) * 100}%`,
                             width: `${particle.size}px`,
                             height: `${particle.size}px`,
                             background: i % 3 === 0 ? '#C9EBFF' : '#FFFFFF',
                             opacity: particle.opacity,
-                            filter: 'blur(0.6px)',
-                            transform: `translate3d(${Math.cos(i) * 0.3}px, ${Math.sin(i) * 0.3}px, 0)`,
+                            filter: 'blur(0.5px)',
+                            transform: `translate3d(0, 0, ${particle.depth}px)`, // depth parallax
                             pointerEvents: 'none'
                         }}
                     />
@@ -255,9 +241,9 @@ const RadiantPaneFlowfield = ({ score, isHovered }) => {
             <div 
                 className="absolute"
                 style={{
-                    width: '145px',
-                    height: '145px',
-                    background: 'radial-gradient(circle, rgba(16, 20, 28, 0.26) 0%, transparent 63%)',
+                    width: '140px',
+                    height: '140px',
+                    background: 'radial-gradient(circle, rgba(16, 20, 28, 0.24) 0%, transparent 62%)',
                     pointerEvents: 'none',
                     zIndex: 5
                 }}
