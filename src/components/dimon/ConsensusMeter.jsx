@@ -1,12 +1,11 @@
-// 🔒 DESIGN LOCKED — OS HORIZON V4.0 + SPIRIT LAYER + HYBRID FLOWFIELD
+// 🔒 DESIGN LOCKED — OS HORIZON V4.0 + SPIRIT LAYER + RADIANT PANE
 // Last Updated: 2025-01-20
-// Hybrid Flowfield Consensus Visual — 3-layer vector alignment system
+// Complete architecture redesign: Radiant Pane + Flowfield + Micro-Flowlets
 // See: DESIGN_LOCKED_COMPONENTS.md
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Activity } from 'lucide-react';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 // OS Horizon Motion Tokens
 const MOTION_TOKENS = {
@@ -21,181 +20,13 @@ const MOTION_TOKENS = {
   }
 };
 
-const MiniRing = ({ label, value, color, delay, isHovered }) => {
-    const radius = 12;
-    const circumference = 2 * Math.PI * radius;
-    const offset = circumference - (value / 100) * circumference;
-    const [iconHovered, setIconHovered] = useState(false);
-
-    return (
-        <TooltipProvider>
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <motion.div 
-                        className="flex flex-col items-center gap-1.5 cursor-help"
-                        onHoverStart={() => setIconHovered(true)}
-                        onHoverEnd={() => setIconHovered(false)}
-                        whileHover={{
-                            scale: 1.02,
-                            y: -0.5,
-                            transition: { duration: 0.15, ease: MOTION_TOKENS.CURVES.horizonIn }
-                        }}
-                        style={{ position: 'relative' }}
-                    >
-                        {/* Gravitational orbital halo (Spirit Layer) */}
-                        <motion.div
-                            className="absolute"
-                            style={{
-                                top: '50%',
-                                left: '50%',
-                                transform: 'translate(-50%, -50%)',
-                                width: '36px',
-                                height: '36px',
-                                borderRadius: '999px',
-                                background: `radial-gradient(circle, ${color}15 0%, transparent 70%)`,
-                                filter: 'blur(10px)',
-                                pointerEvents: 'none',
-                                zIndex: -1
-                            }}
-                            animate={{
-                                opacity: iconHovered ? 0.8 : 0.3,
-                                scale: iconHovered ? 1.1 : 1
-                            }}
-                            transition={{ duration: 0.15 }}
-                        />
-
-                        <div className="relative w-7 h-7">
-                            <svg width="28" height="28" className="transform -rotate-90">
-                                <circle
-                                    cx="14"
-                                    cy="14"
-                                    r={radius}
-                                    fill="none"
-                                    stroke="rgba(255,255,255,0.1)"
-                                    strokeWidth="2.8"
-                                />
-                                <motion.circle
-                                    cx="14"
-                                    cy="14"
-                                    r={radius}
-                                    fill="none"
-                                    stroke={color}
-                                    strokeWidth="2.8"
-                                    strokeDasharray={circumference}
-                                    strokeLinecap="round"
-                                    initial={{ strokeDashoffset: circumference, opacity: 0.88 }}
-                                    animate={{ 
-                                        strokeDashoffset: offset,
-                                        opacity: iconHovered ? 0.98 : 0.92,
-                                        filter: iconHovered 
-                                            ? `drop-shadow(0 0 8px ${color}40)` 
-                                            : `drop-shadow(0 0 6px ${color}28)`
-                                    }}
-                                    transition={{ 
-                                        strokeDashoffset: { duration: 0.7, delay: delay * 0.18 + 0.3, ease: [0.25, 1, 0.5, 1] },
-                                        opacity: { duration: 0.15 },
-                                        filter: { duration: 0.15 }
-                                    }}
-                                />
-                            </svg>
-                        </div>
-                        <span className="text-[10px] font-medium" style={{ color: 'rgba(255,255,255,0.70)' }}>
-                            {label}
-                        </span>
-                    </motion.div>
-                </TooltipTrigger>
-                <TooltipContent>
-                    {label}: {Math.round(value)}%
-                </TooltipContent>
-            </Tooltip>
-        </TooltipProvider>
-    );
-};
-
-const Sparkline = ({ data = [62, 58, 61, 59, 64, 67, 66], delay = 0 }) => {
-    const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
-
-    useEffect(() => {
-        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-        setShouldReduceMotion(mediaQuery.matches);
-        const handler = (e) => setShouldReduceMotion(e.matches);
-        mediaQuery.addEventListener('change', handler);
-        return () => mediaQuery.removeEventListener('change', handler);
-    }, []);
-
-    const maxValue = Math.max(...data);
-    const minValue = Math.min(...data);
-    const range = maxValue - minValue;
-    
-    const points = data.map((value, index) => {
-        const x = (index / (data.length - 1)) * 96;
-        const y = 36 - ((value - minValue) / range) * 32;
-        return `${x},${y}`;
-    }).join(' ');
-
-    const slope = data[data.length - 1] - data[0];
-    const color = slope > 0 ? '#2BC686' : slope < 0 ? '#F26A6A' : '#5EA7FF';
-
-    return (
-        <div className="flex items-center justify-center">
-            <svg width="96" height="36" className="overflow-visible">
-                <defs>
-                    <filter id="sparkline-glow">
-                        <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
-                        <feMerge>
-                            <feMergeNode in="coloredBlur"/>
-                            <feMergeNode in="SourceGraphic"/>
-                        </feMerge>
-                    </filter>
-                </defs>
-                
-                <motion.polyline
-                    points={points}
-                    fill="none"
-                    stroke={color}
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    filter="url(#sparkline-glow)"
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{ 
-                        pathLength: shouldReduceMotion ? 1 : 1, 
-                        opacity: shouldReduceMotion ? 1 : 1 
-                    }}
-                    transition={shouldReduceMotion ? { duration: 0 } : { 
-                        duration: 0.3, 
-                        delay: delay,
-                        ease: [0.25, 1, 0.5, 1] 
-                    }}
-                />
-                
-                <motion.circle
-                    cx={points.split(' ')[data.length - 1].split(',')[0]}
-                    cy={points.split(' ')[data.length - 1].split(',')[1]}
-                    r="2"
-                    fill={color}
-                    filter="url(#sparkline-glow)"
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ 
-                        duration: 0.3, 
-                        delay: delay + 0.15,
-                        ease: MOTION_TOKENS.CURVES.horizonIn
-                    }}
-                />
-            </svg>
-        </div>
-    );
-};
-
 // ============================================================================
-// HYBRID FLOWFIELD CONSENSUS VISUAL — OS HORIZON V4.0 SPIRIT LAYER
-// Three-layer vector alignment system expressing market consensus
+// RADIANT PANE + FLOWFIELD VISUALIZATION
+// VisionOS-inspired liquid glass pane with coherence-driven flowfield
 // ============================================================================
-const HybridFlowfieldConsensusVisual = ({ score, isHovered }) => {
+const RadiantPaneFlowfield = ({ score, isHovered }) => {
     const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
     const [flowPhase, setFlowPhase] = useState(0);
-    const canvasRef = useRef(null);
     const particlesRef = useRef([]);
 
     useEffect(() => {
@@ -206,22 +37,20 @@ const HybridFlowfieldConsensusVisual = ({ score, isHovered }) => {
         return () => mediaQuery.removeEventListener('change', handler);
     }, []);
 
-    // Consensus coherence: 66 = mixed → 70% alignment, 12° variance
+    // Consensus coherence: 66 = moderate alignment
     const consensusCoherence = score / 100;
     const alignmentFactor = 0.70; // 70% for score 66
-    const directionalVariance = 12; // degrees
+    const curvatureVariance = 11; // degrees
 
     // Initialize particles
     useEffect(() => {
-        const particleCount = 32;
-        particlesRef.current = Array.from({ length: particleCount }, (_, i) => ({
-            x: Math.random() * 200,
-            y: Math.random() * 140,
-            vx: (Math.random() - 0.5) * 0.15,
-            vy: (Math.random() - 0.5) * 0.15,
-            size: Math.random() * 1.2 + 0.8,
-            opacity: Math.random() * 0.02 + 0.04,
-            phase: Math.random() * Math.PI * 2
+        particlesRef.current = Array.from({ length: 35 }, () => ({
+            x: Math.random() * 240,
+            y: Math.random() * 160,
+            vx: (Math.random() - 0.5) * 0.12,
+            vy: (Math.random() - 0.5) * 0.12,
+            size: Math.random() * 1.3 + 0.8,
+            opacity: Math.random() * 0.03 + 0.03
         }));
     }, []);
 
@@ -237,21 +66,19 @@ const HybridFlowfieldConsensusVisual = ({ score, isHovered }) => {
             setFlowPhase(elapsed);
             
             // Update particles
-            const speedMultiplier = isHovered ? 1.07 : 1.0;
+            const speedMultiplier = isHovered ? 1.06 : 1.0;
             particlesRef.current.forEach(p => {
-                // Vector field following (simplified)
-                const flowAngle = Math.sin(p.x * 0.02 + elapsed * 0.3) * (directionalVariance * Math.PI / 180);
-                p.vx = Math.cos(flowAngle) * 0.12 * speedMultiplier;
-                p.vy = Math.sin(flowAngle) * 0.08 * speedMultiplier;
+                const flowAngle = Math.sin(p.x * 0.018 + elapsed * 0.25) * (curvatureVariance * Math.PI / 180);
+                p.vx = Math.cos(flowAngle) * 0.11 * speedMultiplier;
+                p.vy = Math.sin(flowAngle) * 0.07 * speedMultiplier;
                 
                 p.x += p.vx;
                 p.y += p.vy;
                 
-                // Wrap around
-                if (p.x < -10) p.x = 210;
-                if (p.x > 210) p.x = -10;
-                if (p.y < -10) p.y = 150;
-                if (p.y > 150) p.y = -10;
+                if (p.x < -10) p.x = 250;
+                if (p.x > 250) p.x = -10;
+                if (p.y < -10) p.y = 170;
+                if (p.y > 170) p.y = -10;
             });
             
             rafId = requestAnimationFrame(animate);
@@ -259,21 +86,21 @@ const HybridFlowfieldConsensusVisual = ({ score, isHovered }) => {
         
         rafId = requestAnimationFrame(animate);
         return () => cancelAnimationFrame(rafId);
-    }, [shouldReduceMotion, isHovered, directionalVariance]);
+    }, [shouldReduceMotion, isHovered, curvatureVariance]);
 
-    // Generate flow line path (cubic Bézier)
+    // Generate flow line path
     const generateFlowLine = (startY, amplitude, phaseOffset, variance) => {
         const points = [];
-        const steps = 60;
+        const steps = 70;
         
         for (let i = 0; i <= steps; i++) {
             const t = i / steps;
-            const x = t * 200;
+            const x = t * 240;
             
-            // Smooth cubic curve with slight directional variance
-            const baseFlow = Math.sin((t * Math.PI * 2.5) + phaseOffset + (flowPhase * 0.2));
-            const varianceFlow = Math.sin((t * Math.PI * 1.8) + variance) * 0.3;
-            const y = startY + (baseFlow + varianceFlow) * amplitude * (1 + (isHovered ? 0.01 : 0));
+            const baseFlow = Math.sin((t * Math.PI * 2.2) + phaseOffset + (flowPhase * 0.18));
+            const varianceFlow = Math.sin((t * Math.PI * 1.6) + variance) * 0.35;
+            const hoverAmplitude = isHovered ? 1.02 : 1.0;
+            const y = startY + (baseFlow + varianceFlow) * amplitude * hoverAmplitude;
             
             points.push(`${x},${y}`);
         }
@@ -281,84 +108,119 @@ const HybridFlowfieldConsensusVisual = ({ score, isHovered }) => {
         return points.join(' ');
     };
 
-    const baseAmplitude = 8;
-    const lineCount = 11;
+    const lightDrift = Math.sin(flowPhase * (Math.PI / 16)) * 3;
+    const shimmer = Math.cos(flowPhase * (Math.PI / 14)) * 0.015;
 
     return (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-            {/* LAYER 3: Gradient Depth Field */}
+            {/* Radiant Pane Background */}
             <motion.div
-                className="absolute inset-0"
-                style={{
-                    background: `
-                        radial-gradient(ellipse at 35% 40%, rgba(123, 184, 255, 0.08) 0%, transparent 55%),
-                        radial-gradient(ellipse at 65% 60%, rgba(156, 207, 255, 0.06) 0%, transparent 50%),
-                        radial-gradient(ellipse at 50% 50%, rgba(167, 209, 255, 0.04) 0%, transparent 70%)
-                    `,
-                    filter: 'blur(18px)'
-                }}
-                animate={{
-                    opacity: isHovered ? 0.12 : 0.10 // +2% luminance on hover
-                }}
-                transition={{ duration: 0.12, ease: MOTION_TOKENS.CURVES.horizonIn }}
-            />
-
-            {/* LAYER 1: Flow Lines (SVG) */}
-            <svg 
-                width="200" 
-                height="140" 
-                viewBox="0 0 200 140"
                 className="absolute"
                 style={{
-                    left: '50%',
-                    top: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    zIndex: 1
+                    width: '220px',
+                    height: '145px',
+                    borderRadius: '32px',
+                    background: `
+                        linear-gradient(180deg, 
+                            rgba(167, 209, 255, 0.10) 0%, 
+                            rgba(123, 184, 255, 0.12) 45%,
+                            rgba(155, 203, 255, 0.09) 100%
+                        )
+                    `,
+                    backdropFilter: 'blur(18px)',
+                    WebkitBackdropFilter: 'blur(18px)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    boxShadow: `
+                        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+                        inset 0 -1px 0 rgba(0, 0, 0, 0.08),
+                        0 0 30px rgba(123, 184, 255, 0.08)
+                    `,
+                    willChange: 'transform, filter'
+                }}
+                animate={{
+                    filter: isHovered ? 'brightness(1.03)' : 'brightness(1)',
+                    rotateX: isHovered ? '0.8deg' : '0deg',
+                    y: shouldReduceMotion ? 0 : lightDrift
+                }}
+                transition={{
+                    filter: { duration: 0.12, ease: MOTION_TOKENS.CURVES.horizonIn },
+                    rotateX: { duration: 0.12, ease: MOTION_TOKENS.CURVES.horizonIn },
+                    y: { duration: 16, ease: 'easeInOut' }
+                }}
+            >
+                {/* Internal shimmer layer */}
+                <motion.div
+                    className="absolute inset-0 rounded-[32px]"
+                    style={{
+                        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, transparent 60%)',
+                        opacity: 0.5 + shimmer
+                    }}
+                />
+
+                {/* Top bloom */}
+                <div 
+                    className="absolute top-0 left-[15%] right-[15%] h-[16px] rounded-full"
+                    style={{
+                        background: 'linear-gradient(180deg, rgba(167, 209, 255, 0.12) 0%, transparent 100%)',
+                        filter: 'blur(8px)'
+                    }}
+                />
+            </motion.div>
+
+            {/* Flowfield Layer */}
+            <svg 
+                width="240" 
+                height="160" 
+                viewBox="0 0 240 160"
+                className="absolute"
+                style={{
+                    zIndex: 2,
+                    opacity: isHovered ? 0.75 : 0.68
                 }}
             >
                 <defs>
-                    <filter id="flow-blur">
-                        <feGaussianBlur stdDeviation="1.2" />
+                    <filter id="flow-blur-new">
+                        <feGaussianBlur stdDeviation="1.3" />
                     </filter>
                     
-                    <linearGradient id="flow-gradient-1" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#77B4FF" stopOpacity="0" />
-                        <stop offset="20%" stopColor="#8BC4FF" stopOpacity="0.06" />
-                        <stop offset="50%" stopColor="#9CCFFF" stopOpacity="0.07" />
-                        <stop offset="80%" stopColor="#8BC4FF" stopOpacity="0.06" />
-                        <stop offset="100%" stopColor="#77B4FF" stopOpacity="0" />
+                    <linearGradient id="flow-grad-1" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#8EBFFF" stopOpacity="0" />
+                        <stop offset="20%" stopColor="#9CCFFF" stopOpacity="0.055" />
+                        <stop offset="50%" stopColor="#ABD7FF" stopOpacity="0.065" />
+                        <stop offset="80%" stopColor="#9CCFFF" stopOpacity="0.055" />
+                        <stop offset="100%" stopColor="#8EBFFF" stopOpacity="0" />
                     </linearGradient>
                     
-                    <linearGradient id="flow-gradient-2" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#88BFFF" stopOpacity="0" />
-                        <stop offset="25%" stopColor="#9CCFFF" stopOpacity="0.055" />
-                        <stop offset="50%" stopColor="#A7D1FF" stopOpacity="0.065" />
-                        <stop offset="75%" stopColor="#9CCFFF" stopOpacity="0.055" />
-                        <stop offset="100%" stopColor="#88BFFF" stopOpacity="0" />
+                    <linearGradient id="flow-grad-2" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#9CCFFF" stopOpacity="0" />
+                        <stop offset="25%" stopColor="#ABD7FF" stopOpacity="0.05" />
+                        <stop offset="50%" stopColor="#B8E2FF" stopOpacity="0.06" />
+                        <stop offset="75%" stopColor="#ABD7FF" stopOpacity="0.05" />
+                        <stop offset="100%" stopColor="#9CCFFF" stopOpacity="0" />
                     </linearGradient>
                 </defs>
 
-                {/* Generate flow lines with moderate alignment */}
-                {Array.from({ length: lineCount }).map((_, i) => {
-                    const yPos = 30 + (i * (80 / (lineCount - 1)));
-                    const phaseOffset = (i / lineCount) * Math.PI * 2;
-                    const variance = (1 - alignmentFactor) * (i % 3) * 0.5;
-                    const gradient = i % 2 === 0 ? 'flow-gradient-1' : 'flow-gradient-2';
+                {/* Generate 12 flow lines */}
+                {Array.from({ length: 12 }).map((_, i) => {
+                    const yPos = 35 + (i * (90 / 11));
+                    const phaseOffset = (i / 12) * Math.PI * 2;
+                    const variance = (1 - alignmentFactor) * ((i % 4) * 0.4);
+                    const gradient = i % 2 === 0 ? 'flow-grad-1' : 'flow-grad-2';
                     
                     return (
                         <motion.polyline
                             key={i}
-                            points={generateFlowLine(yPos, baseAmplitude, phaseOffset, variance)}
+                            points={generateFlowLine(yPos, 7.5, phaseOffset, variance)}
                             fill="none"
                             stroke={`url(#${gradient})`}
-                            strokeWidth="1.8"
+                            strokeWidth="1.4"
                             strokeLinecap="round"
-                            filter="url(#flow-blur)"
+                            filter="url(#flow-blur-new)"
                             initial={{ opacity: 0, pathLength: 0 }}
                             animate={{ opacity: 1, pathLength: 1 }}
                             transition={{ 
-                                duration: 0.8, 
-                                delay: 0.2 + (i * 0.04),
+                                duration: 0.85, 
+                                delay: 0.15 + (i * 0.035),
                                 ease: MOTION_TOKENS.CURVES.horizonIn
                             }}
                         />
@@ -366,52 +228,33 @@ const HybridFlowfieldConsensusVisual = ({ score, isHovered }) => {
                 })}
             </svg>
 
-            {/* LAYER 2: Micro-Particle Drift (Canvas) */}
-            <canvas
-                ref={canvasRef}
-                width={200}
-                height={140}
-                className="absolute"
-                style={{
-                    left: '50%',
-                    top: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    zIndex: 2,
-                    opacity: isHovered ? 0.92 : 0.88
-                }}
-            />
-
-            {/* Render particles via DOM (lighter than canvas for small count) */}
-            {particlesRef.current.map((particle, i) => (
-                <motion.div
-                    key={i}
-                    className="absolute rounded-full"
-                    style={{
-                        left: `${(particle.x / 200) * 100}%`,
-                        top: `${(particle.y / 140) * 100}%`,
-                        width: `${particle.size}px`,
-                        height: `${particle.size}px`,
-                        background: i % 3 === 0 ? '#A7D1FF' : '#C9EBFF',
-                        opacity: particle.opacity,
-                        filter: 'blur(0.5px)',
-                        pointerEvents: 'none',
-                        willChange: 'transform'
-                    }}
-                    animate={{
-                        x: particle.x,
-                        y: particle.y
-                    }}
-                    transition={{ type: 'tween', ease: 'linear', duration: 0 }}
-                />
-            ))}
+            {/* Micro-Particle Layer */}
+            <div className="absolute inset-0" style={{ zIndex: 3 }}>
+                {particlesRef.current.map((particle, i) => (
+                    <div
+                        key={i}
+                        className="absolute rounded-full"
+                        style={{
+                            left: `${(particle.x / 240) * 100}%`,
+                            top: `${(particle.y / 160) * 100}%`,
+                            width: `${particle.size}px`,
+                            height: `${particle.size}px`,
+                            background: i % 3 === 0 ? '#C9EBFF' : '#FFFFFF',
+                            opacity: particle.opacity,
+                            filter: 'blur(0.5px)',
+                            pointerEvents: 'none'
+                        }}
+                    />
+                ))}
+            </div>
 
             {/* Text contrast scrim */}
             <div 
                 className="absolute"
                 style={{
-                    width: '130px',
-                    height: '130px',
-                    background: 'radial-gradient(circle, rgba(16, 20, 28, 0.32) 0%, transparent 68%)',
+                    width: '140px',
+                    height: '140px',
+                    background: 'radial-gradient(circle, rgba(16, 20, 28, 0.28) 0%, transparent 65%)',
                     pointerEvents: 'none',
                     zIndex: 5
                 }}
@@ -420,7 +263,206 @@ const HybridFlowfieldConsensusVisual = ({ score, isHovered }) => {
     );
 };
 
-const RadialGauge = ({ score, isHovered }) => {
+// ============================================================================
+// CATEGORY MICRO-FLOWLETS (Replace Legacy Rings)
+// ============================================================================
+const CategoryMicroFlowlets = ({ segments, isHovered }) => {
+    const segmentColors = {
+        'Policy': { main: '#F26A6A', soft: '#FFB8B8' },
+        'Credit': { main: '#5EA7FF', soft: '#A3CFFF' },
+        'Equities': { main: '#2BC686', soft: '#7FE8B8' },
+        'Global': { main: '#FFB020', soft: '#FFD280' }
+    };
+
+    const generateMicroFlow = (phase) => {
+        const points = [];
+        for (let i = 0; i <= 20; i++) {
+            const t = i / 20;
+            const x = t * 34;
+            const y = 3 + Math.sin((t * Math.PI * 1.5) + phase) * 1.2;
+            points.push(`${x},${y}`);
+        }
+        return points.join(' ');
+    };
+
+    return (
+        <div className="flex justify-center gap-3 mb-6">
+            {segments.map((segment, index) => {
+                const colors = segmentColors[segment.name] || { main: '#AAB1B8', soft: '#D0D0D0' };
+                const value = (segment.weight || 0) * 100;
+                
+                return (
+                    <motion.div
+                        key={segment.name}
+                        className="flex flex-col items-center gap-1.5"
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6 + (index * 0.05), duration: 0.3 }}
+                    >
+                        {/* Micro-flowlet visualization */}
+                        <motion.div
+                            className="relative"
+                            whileHover={{ scale: 1.04 }}
+                            transition={{ duration: 0.12 }}
+                        >
+                            <svg width="34" height="6" viewBox="0 0 34 6">
+                                <defs>
+                                    <linearGradient id={`micro-grad-${index}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" stopColor={colors.main} stopOpacity="0" />
+                                        <stop offset="30%" stopColor={colors.main} stopOpacity="0.25" />
+                                        <stop offset="70%" stopColor={colors.soft} stopOpacity="0.30" />
+                                        <stop offset="100%" stopColor={colors.main} stopOpacity="0" />
+                                    </linearGradient>
+                                </defs>
+                                
+                                <motion.polyline
+                                    points={generateMicroFlow(index * 0.8)}
+                                    fill="none"
+                                    stroke={`url(#micro-grad-${index})`}
+                                    strokeWidth="1.2"
+                                    strokeLinecap="round"
+                                    animate={{
+                                        opacity: isHovered ? 0.35 : 0.28
+                                    }}
+                                    transition={{ duration: 0.12 }}
+                                />
+                            </svg>
+                            
+                            {/* Glow on hover */}
+                            <motion.div
+                                className="absolute inset-0"
+                                style={{
+                                    background: `radial-gradient(circle, ${colors.main}20 0%, transparent 70%)`,
+                                    filter: 'blur(4px)'
+                                }}
+                                animate={{
+                                    opacity: isHovered ? 0.6 : 0
+                                }}
+                                transition={{ duration: 0.12 }}
+                            />
+                        </motion.div>
+
+                        {/* Label and value */}
+                        <div className="text-center">
+                            <div className="text-[10px] font-medium" style={{ color: 'rgba(255,255,255,0.70)' }}>
+                                {segment.name}
+                            </div>
+                            <div className="text-[11px] font-bold" style={{ color: colors.main }}>
+                                {Math.round(value)}%
+                            </div>
+                        </div>
+                    </motion.div>
+                );
+            })}
+        </div>
+    );
+};
+
+// ============================================================================
+// MICRO TRENDLINE BAND (Replace Legacy Zigzag)
+// ============================================================================
+const MicroTrendlineBand = ({ data, delay, isHovered }) => {
+    const [driftPhase, setDriftPhase] = useState(0);
+    const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        setShouldReduceMotion(mediaQuery.matches);
+        const handler = (e) => setShouldReduceMotion(e.matches);
+        mediaQuery.addEventListener('change', handler);
+        return () => mediaQuery.removeEventListener('change', handler);
+    }, []);
+
+    useEffect(() => {
+        if (shouldReduceMotion) return;
+        
+        let rafId;
+        let startTime = Date.now();
+        
+        const animate = () => {
+            const elapsed = (Date.now() - startTime) / 1000;
+            setDriftPhase(elapsed);
+            rafId = requestAnimationFrame(animate);
+        };
+        
+        rafId = requestAnimationFrame(animate);
+        return () => cancelAnimationFrame(rafId);
+    }, [shouldReduceMotion]);
+
+    const maxValue = Math.max(...data);
+    const minValue = Math.min(...data);
+    const range = maxValue - minValue;
+    
+    // Smooth curve interpolation
+    const points = data.map((value, index) => {
+        const x = (index / (data.length - 1)) * 120;
+        const y = 18 - ((value - minValue) / range) * 14;
+        return `${x},${y}`;
+    }).join(' ');
+
+    const slope = data[data.length - 1] - data[0];
+    const baseColor = slope > 0 ? '#7FFFC1' : slope < 0 ? '#FFB8A3' : '#A3CFFF';
+
+    return (
+        <div className="flex items-center justify-center mb-6">
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay, duration: 0.3 }}
+            >
+                <svg width="120" height="20" className="overflow-visible">
+                    <defs>
+                        <filter id="trendline-glow">
+                            <feGaussianBlur stdDeviation="1.2" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    
+                    <motion.path
+                        d={`M ${points.split(' ').map((p, i) => {
+                            const [x, y] = p.split(',').map(Number);
+                            return i === 0 ? `${x},${y}` : `L ${x},${y}`;
+                        }).join(' ')}`}
+                        fill="none"
+                        stroke={baseColor}
+                        strokeWidth="1.3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        filter="url(#trendline-glow)"
+                        style={{ opacity: 0.35 }}
+                        animate={{
+                            opacity: isHovered ? 0.42 : 0.35,
+                            x: shouldReduceMotion ? 0 : Math.sin(driftPhase * 0.4) * 1.5
+                        }}
+                        transition={{
+                            opacity: { duration: 0.12 },
+                            x: { duration: 20, ease: 'linear' }
+                        }}
+                    />
+                </svg>
+            </motion.div>
+        </div>
+    );
+};
+
+// ============================================================================
+// MAIN CONSENSUS COMPONENT
+// ============================================================================
+export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
+    const [isHovered, setIsHovered] = useState(false);
+
+    if (typeof score !== 'number') {
+        return null;
+    }
+
+    const segments = breakdown?.segments || [];
+    const trendData = [62, 58, 61, 59, 64, 67, 66];
+    const sourcesCount = 5;
+    const updatedAgo = "2m ago";
+
     const getZoneColor = (score) => {
         if (score < 40) return '#F26A6A';
         if (score < 70) return '#5EA7FF';
@@ -433,77 +475,6 @@ const RadialGauge = ({ score, isHovered }) => {
         return 'Constructive';
     };
 
-    const color = getZoneColor(score);
-    const label = getZoneLabel(score);
-
-    return (
-        <div className="relative flex items-center justify-center w-[136px] h-[136px] mx-auto">
-            {/* HYBRID FLOWFIELD CONSENSUS VISUAL */}
-            <HybridFlowfieldConsensusVisual score={score} isHovered={isHovered} />
-
-            {/* Center Content — UNCHANGED */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ zIndex: 10 }}>
-                <motion.span
-                    className="text-[10px] font-medium uppercase tracking-wide mb-2"
-                    style={{ 
-                        color: 'rgba(255,255,255,0.70)',
-                        letterSpacing: '0.07em'
-                    }}
-                    initial={{ opacity: 0, y: -3 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4, duration: 0.3 }}
-                >
-                    Overall Street Alignment
-                </motion.span>
-                
-                <motion.span
-                    className="text-3xl font-bold mb-2"
-                    style={{ color }}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.5, duration: 0.3 }}
-                >
-                    {score}
-                </motion.span>
-                
-                <motion.div
-                    className="text-center mt-2"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.7, duration: 0.3 }}
-                >
-                    <div className="text-[13px] font-bold mb-2" style={{ color: 'rgba(255,255,255,0.88)' }}>
-                        {label} Consensus
-                    </div>
-                    <div className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.65)' }}>
-                        Weight: Medium
-                    </div>
-                </motion.div>
-            </div>
-        </div>
-    );
-};
-
-export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
-    const [isHovered, setIsHovered] = useState(false);
-
-    if (typeof score !== 'number') {
-        return null;
-    }
-
-    const segments = breakdown?.segments || [];
-    
-    const segmentColors = {
-        'Policy': '#F26A6A',
-        'Credit': '#5EA7FF',
-        'Equities': '#2BC686',
-        'Global': '#FFB020'
-    };
-
-    const trendData = [62, 58, 61, 59, 64, 67, 66];
-    const sourcesCount = 5;
-    const updatedAgo = "2m ago";
-
     const handleOpenDrawer = () => {
         try {
             onOpenDrawer();
@@ -512,12 +483,15 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
         }
     };
 
+    const scoreColor = getZoneColor(score);
+    const scoreLabel = getZoneLabel(score);
+
     return (
         <motion.div
             variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
             className="h-full rounded-2xl flex flex-col cursor-pointer relative overflow-hidden consensus-meter-card"
             style={{
-                padding: '24px',
+                padding: '28px 24px',
                 background: 'rgba(16, 20, 28, 0.55)',
                 backdropFilter: 'blur(16px) saturate(140%)',
                 WebkitBackdropFilter: 'blur(16px) saturate(140%)',
@@ -526,13 +500,12 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
                 backgroundImage: `
                     linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 50%, rgba(0,0,0,0.11) 100%)
                 `,
-                filter: 'brightness(1) blur(0px)',
                 willChange: 'transform, filter, box-shadow'
             }}
             whileHover={{ 
                 y: -4,
                 scale: 1.015,
-                filter: 'brightness(1.01) blur(0px)',
+                filter: 'brightness(1.01)',
                 boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05), 0 12px 40px rgba(0,0,0,0.3)',
                 borderColor: 'rgba(255,255,255,0.2)',
                 transition: { duration: 0.12, ease: MOTION_TOKENS.CURVES.horizonIn }
@@ -542,7 +515,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
             onHoverEnd={() => setIsHovered(false)}
             onClick={handleOpenDrawer}
         >
-            {/* Spirit Layer: Subsurface lighting */}
+            {/* Subsurface lighting */}
             <div style={{
                 position: 'absolute',
                 top: 0,
@@ -550,7 +523,6 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
                 right: '28px',
                 height: '1px',
                 background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
-                borderRadius: '999px',
                 pointerEvents: 'none'
             }} />
 
@@ -558,15 +530,14 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
             <motion.div
                 className="absolute inset-0 rounded-2xl pointer-events-none"
                 style={{
-                    background: 'radial-gradient(circle at 50% 45%, rgba(94, 167, 255, 0.06) 0%, transparent 65%)',
-                    opacity: 0
+                    background: 'radial-gradient(circle at 50% 45%, rgba(94, 167, 255, 0.06) 0%, transparent 65%)'
                 }}
                 animate={{ opacity: isHovered ? 0.7 : 0 }}
                 transition={{ duration: 0.3 }}
             />
 
-            {/* Header */}
-            <div className="flex items-center justify-between mb-2">
+            {/* TOP: Title Row */}
+            <div className="flex items-center justify-between mb-6">
                 <motion.h2 
                     className="text-base font-semibold"
                     style={{ color: 'rgba(255,255,255,0.95)' }}
@@ -584,64 +555,71 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
                         fontSize: '11px'
                     }}
                     initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ 
-                        opacity: 0.75,
-                        scale: 1 
-                    }}
+                    animate={{ opacity: 0.75, scale: 1 }}
                     transition={{ delay: 0.2 }}
-                    aria-label={`Consensus score ${score} percent`}
                 >
                     {score}%
                 </motion.div>
             </div>
 
-            {/* Main Gauge with Hybrid Flowfield */}
-            <div className="flex-1 flex items-center justify-center my-3">
-                <RadialGauge score={score} isHovered={isHovered} />
+            {/* MIDDLE: Primary Content Area (Radiant Pane + Flowfield + Score) */}
+            <div className="relative flex items-center justify-center mb-8" style={{ minHeight: '160px' }}>
+                <RadiantPaneFlowfield score={score} isHovered={isHovered} />
+                
+                {/* Center Score */}
+                <div className="relative z-10 flex flex-col items-center justify-center">
+                    <motion.span
+                        className="text-[10px] font-medium uppercase tracking-wide mb-2"
+                        style={{ color: 'rgba(255,255,255,0.70)', letterSpacing: '0.07em' }}
+                        initial={{ opacity: 0, y: -3 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4, duration: 0.3 }}
+                    >
+                        Overall Street Alignment
+                    </motion.span>
+                    
+                    <motion.span
+                        className="text-4xl font-bold mb-2"
+                        style={{ 
+                            color: scoreColor,
+                            textShadow: isHovered ? `0 0 12px ${scoreColor}40` : 'none'
+                        }}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.5, duration: 0.3 }}
+                    >
+                        {score}
+                    </motion.span>
+                    
+                    <motion.div
+                        className="text-center"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.7, duration: 0.3 }}
+                    >
+                        <div className="text-[13px] font-bold mb-1" style={{ color: 'rgba(255,255,255,0.88)' }}>
+                            {scoreLabel} Consensus
+                        </div>
+                        <div className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.65)' }}>
+                            Weight: Medium
+                        </div>
+                    </motion.div>
+                </div>
             </div>
 
-            {/* Mini Segment Rings */}
-            <motion.div 
-                className="flex justify-center gap-2 mb-4"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-            >
-                {segments.map((segment, index) => (
-                    <MiniRing
-                        key={segment.name}
-                        label={segment.name}
-                        value={(segment.weight || 0) * 100}
-                        color={segmentColors[segment.name] || '#AAB1B8'}
-                        delay={index}
-                        isHovered={isHovered}
-                    />
-                ))}
-            </motion.div>
+            {/* LOWER MIDDLE: Category Micro-Flowlets */}
+            <CategoryMicroFlowlets segments={segments} isHovered={isHovered} />
 
-            {/* Sparkline */}
-            <motion.div
-                className="mb-4"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ 
-                    delay: 0.8,
-                    duration: 0.15
-                }}
-            >
-                <Sparkline data={trendData} delay={0.85} />
-            </motion.div>
+            {/* BOTTOM: Micro Trendline Band */}
+            <MicroTrendlineBand data={trendData} delay={0.9} isHovered={isHovered} />
 
-            {/* Footnote */}
+            {/* FOOTER: Sources + Updated */}
             <motion.p
                 className="text-xs text-center"
-                style={{ 
-                    color: 'rgba(255,255,255,0.70)',
-                    opacity: 0.82
-                }}
+                style={{ color: 'rgba(255,255,255,0.70)', opacity: 0.82 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.82 }}
-                transition={{ delay: 1 }}
+                transition={{ delay: 1.1 }}
             >
                 Based on {sourcesCount} sources • Updated {updatedAgo}
             </motion.p>
