@@ -455,12 +455,13 @@ const HoverCardPortal = ({
         borderRadius: '18px',
         backdropFilter: 'blur(22px) saturate(165%) brightness(1.05)',
         WebkitBackdropFilter: 'blur(22px) saturate(165%) brightness(1.05)',
-        background: 'rgba(24, 28, 33, 0.45)',
+        background: 'rgba(24, 28, 33, 0.65)',
         border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
         pointerEvents: 'auto',
         cursor: 'pointer',
         transformOrigin: position.transformOrigin,
-        willChange: 'transform, opacity, filter, box-shadow'
+        willChange: 'transform, opacity, filter, box-shadow',
+        zIndex: 9999
       }}
       onClick={onClose}
       onMouseEnter={() => {
@@ -888,7 +889,7 @@ const HoverCardPortal = ({
             width: 0, height: 0,
             borderLeft: '7px solid transparent',
             borderRight: '7px solid transparent',
-            [position.arrow.direction === 'down' ? 'borderTop' : 'borderBottom']: '7px solid rgba(24, 28, 33, 0.45)',
+            [position.arrow.direction === 'down' ? 'borderTop' : 'borderBottom']: '7px solid rgba(24, 28, 33, 0.65)',
             pointerEvents: 'none'
           }} />
         </>
