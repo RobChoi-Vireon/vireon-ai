@@ -1,3 +1,4 @@
+
 // 🔒 DESIGN LOCKED — OS HORIZON V4.0 + SPIRIT LAYER + RADIANT CAPSULE
 // Last Updated: 2025-01-20
 // Complete rebuild: Floating capsule + unified flowfield architecture
@@ -460,7 +461,7 @@ const MicrotrendBand = ({ data, delay, isHovered }) => {
 };
 
 // ============================================================================
-// MAIN CONSENSUS COMPONENT (FLOATING RADIANT CAPSULE)
+// MAIN CONSENSUS COMPONENT (FLOATING RADIANT CAPSULE CONTAINER)
 // ============================================================================
 export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
     const [isHovered, setIsHovered] = useState(false);
@@ -500,67 +501,82 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
     return (
         <motion.div
             variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
-            className="h-full rounded-[28px] flex flex-col cursor-pointer relative overflow-hidden consensus-capsule"
+            className="h-full rounded-[30px] flex flex-col cursor-pointer relative overflow-hidden consensus-capsule"
             style={{
                 padding: '30px 26px',
+                // Liquid glass with 10% translucency (8-12% range)
                 background: `
                     linear-gradient(180deg, 
-                        rgba(18, 22, 30, 0.60) 0%,
-                        rgba(16, 20, 28, 0.58) 50%,
-                        rgba(14, 18, 26, 0.62) 100%
+                        rgba(20, 24, 32, 0.92) 0%,
+                        rgba(18, 22, 30, 0.90) 100%
                     )
                 `,
-                backdropFilter: 'blur(18px) saturate(145%)',
-                WebkitBackdropFilter: 'blur(18px) saturate(145%)',
-                border: '1px solid rgba(255, 255, 255, 0.13)',
+                backdropFilter: 'blur(20px) saturate(150%)',
+                WebkitBackdropFilter: 'blur(20px) saturate(150%)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                // Outer glow (blur 20px, opacity 7%)
                 boxShadow: `
-                    inset 0 1px 0 rgba(255,255,255,0.08),
-                    0 0 40px rgba(123, 184, 255, 0.06),
-                    0 20px 40px rgba(0, 0, 0, 0.18)
+                    0 0 20px rgba(123, 184, 255, 0.07),
+                    0 20px 40px rgba(0, 0, 0, 0.20)
                 `,
                 willChange: 'transform, filter, box-shadow'
             }}
             whileHover={{ 
-                y: -2,
-                scale: 1.012,
+                y: -1.5,
+                // +3% luminance increase
                 filter: 'brightness(1.03)',
                 boxShadow: `
-                    inset 0 1px 0 rgba(255,255,255,0.08),
-                    0 0 45px rgba(123, 184, 255, 0.09),
-                    0 22px 48px rgba(0, 0, 0, 0.24)
+                    0 0 22px rgba(123, 184, 255, 0.10),
+                    0 22px 48px rgba(0, 0, 0, 0.26)
                 `,
-                borderColor: 'rgba(255,255,255,0.18)',
-                transition: { duration: 0.12, ease: MOTION_TOKENS.CURVES.horizonIn }
+                transition: { 
+                    duration: 0.12, 
+                    ease: MOTION_TOKENS.CURVES.horizonIn 
+                }
             }}
             transition={{ type: "spring", stiffness: 320, damping: 26 }}
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
             onClick={handleOpenDrawer}
         >
-            {/* Subsurface top highlight */}
+            {/* Subsurface gradient lighting (top +2% luminance) */}
             <div style={{
                 position: 'absolute',
                 top: 0,
-                left: '30px',
-                right: '30px',
+                left: 0,
+                right: 0,
+                height: '60%',
+                background: 'linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%)',
+                pointerEvents: 'none',
+                borderRadius: '30px 30px 0 0'
+            }} />
+
+            {/* Subsurface gradient lighting (bottom -3% luminance) */}
+            <div style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: '60%',
+                background: 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.03) 100%)',
+                pointerEvents: 'none',
+                borderRadius: '0 0 30px 30px'
+            }} />
+
+            {/* Soft edge bloom (1-2% opacity) */}
+            <div style={{
+                position: 'absolute',
+                top: 0,
+                left: '20%',
+                right: '20%',
                 height: '1px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.015), transparent)',
+                filter: 'blur(2px)',
                 pointerEvents: 'none'
             }} />
 
-            {/* External soft glow */}
-            <motion.div
-                className="absolute inset-0 rounded-[28px] pointer-events-none"
-                style={{
-                    background: 'radial-gradient(circle at 50% 42%, rgba(94, 167, 255, 0.08) 0%, transparent 68%)',
-                    opacity: 0
-                }}
-                animate={{ opacity: isHovered ? 0.75 : 0 }}
-                transition={{ duration: 0.3 }}
-            />
-
             {/* TOP: Title Row */}
-            <div className="flex items-center justify-between mb-7">
+            <div className="flex items-center justify-between mb-7" style={{ position: 'relative', zIndex: 10 }}>
                 <motion.h2 
                     className="text-base font-semibold"
                     style={{ color: 'rgba(255,255,255,0.96)' }}
@@ -586,7 +602,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
             </div>
 
             {/* MIDDLE: Primary Content (Radiant Pane + Flowfield + Score) */}
-            <div className="relative flex items-center justify-center mb-9" style={{ minHeight: '170px' }}>
+            <div className="relative flex items-center justify-center mb-9" style={{ minHeight: '170px', zIndex: 10 }}>
                 <RadiantPaneFlowfield score={score} isHovered={isHovered} />
                 
                 {/* Center Score Stack */}
@@ -636,15 +652,19 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
             </div>
 
             {/* LOWER MIDDLE: Category Micro-Flowlets */}
-            <CategoryMicroFlowlets segments={segments} isHovered={isHovered} />
+            <div style={{ position: 'relative', zIndex: 10 }}>
+                <CategoryMicroFlowlets segments={segments} isHovered={isHovered} />
+            </div>
 
             {/* BOTTOM: Microtrend Band */}
-            <MicrotrendBand data={trendData} delay={0.95} isHovered={isHovered} />
+            <div style={{ position: 'relative', zIndex: 10 }}>
+                <MicrotrendBand data={trendData} delay={0.95} isHovered={isHovered} />
+            </div>
 
             {/* FOOTER: Metadata */}
             <motion.p
                 className="text-xs text-center"
-                style={{ color: 'rgba(255,255,255,0.68)', opacity: 0.80 }}
+                style={{ color: 'rgba(255,255,255,0.68)', opacity: 0.80, position: 'relative', zIndex: 10 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.80 }}
                 transition={{ delay: 1.15 }}
@@ -655,7 +675,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
             {/* Hover Hint */}
             <motion.div 
                 className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center text-xs pointer-events-none"
-                style={{ color: 'rgba(255,255,255,0.58)' }}
+                style={{ color: 'rgba(255,255,255,0.58)', zIndex: 10 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: isHovered ? 1 : 0 }}
                 transition={{ duration: 0.2 }}
