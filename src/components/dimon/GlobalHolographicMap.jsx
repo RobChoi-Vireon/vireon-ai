@@ -936,6 +936,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const bgParallaxY = useSpring(mouseY, { damping: 25, stiffness: 80 });
 
   const [isPillHovered, setIsPillHovered] = useState(false);
+  const [isEquilibriumHovered, setIsEquilibriumHovered] = useState(false);
 
   const domains = MOCK_DOMAINS;
 
@@ -1065,6 +1066,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   }, []);
 
   const handleDomainHoverEnter = useCallback((domain, event) => {
+    // CRITICAL: Don't trigger hover if Equilibrium panel is active
+    if (isEquilibriumHovered) return;
+
     const target = event.currentTarget;
 
     if (hoverExitTimerRef.current) {
@@ -1087,7 +1091,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         }
       }
     }, TOKENS.HORIZON.hoverEnterDelay);
-  }, []);
+  }, [isEquilibriumHovered]);
 
   const handleDomainHoverLeave = useCallback(() => {
     if (hoverEnterTimerRef.current) {
@@ -1378,18 +1382,18 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             <p style={{ fontSize: '13px', color: TOKENS.colors.textTertiary, letterSpacing: '0.2em', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Real-time balance of global macro forces.</p>
           </div>
         </div>
-        
+
         {/* LIQUID GLASS PILL — POWERED BY LYRA */}
         <motion.div
           className="powered-by-lyra-pill"
           initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ 
-            opacity: 1, 
+          animate={{
+            opacity: 1,
             scale: isPillHovered ? 1.03 : 1,
             y: isPillHovered ? -1.5 : 0,
             filter: isPillHovered ? 'brightness(1.08)' : 'brightness(1)'
           }}
-          transition={{ 
+          transition={{
             scale: { duration: 0.18, ease: MOTION_TOKENS.CURVES.horizonIn },
             y: { duration: 0.18, ease: MOTION_TOKENS.CURVES.horizonIn },
             filter: { duration: 0.18, ease: MOTION_TOKENS.CURVES.horizonIn },
@@ -1420,7 +1424,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             backdropFilter: 'blur(16px) saturate(140%)',
             WebkitBackdropFilter: 'blur(16px) saturate(140%)',
             border: isPillHovered ? '1px solid rgba(160, 191, 255, 0.35)' : '1px solid rgba(160, 191, 255, 0.22)',
-            boxShadow: isPillHovered 
+            boxShadow: isPillHovered
               ? `0 6px 24px rgba(0, 0, 0, 0.30), 0 0 18px rgba(106, 199, 247, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.18)`
               : `0 4px 16px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12)`,
             willChange: 'transform, filter, box-shadow'
@@ -1455,14 +1459,14 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             animate={{
               x: isPillHovered ? -0.5 : 0
             }}
-            transition={{ 
-              duration: 0.16, 
-              ease: [0.22, 1, 0.36, 1] 
+            transition={{
+              duration: 0.16,
+              ease: [0.22, 1, 0.36, 1]
             }}
           >
-            <span 
+            <span
               className="text-xs font-medium"
-              style={{ 
+              style={{
                 color: 'rgba(255, 255, 255, 0.65)',
                 letterSpacing: '0.3px',
                 fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
@@ -1472,9 +1476,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               Powered by
             </span>
             <LyraLogo className="w-5 h-5" style={{ flexShrink: 0 }} />
-            <span 
+            <span
               className="font-bold"
-              style={{ 
+              style={{
                 color: TOKENS.colors.textPrimary,
                 fontSize: 'clamp(12px, 1.4vw, 13.5px)',
                 letterSpacing: '-0.01em',
@@ -1726,16 +1730,17 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   const orbPos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
                   const color = getDomainColor(domain.id);
                   const bloom = getDomainBloom(domain.id);
-                  const isHovered = hoveredDomain === domain.id;
+                  const isHovered = hoveredDomain === domain.id && !isEquilibriumHovered;
                   const isSelected = selectedDomain?.id === domain.id;
                   const isPulsing = orbPulseActive && (isHovered || isSelected || (selectedDomain === null && hoveredDomain === domain.id));
+                  const isMuted = isEquilibriumHovered;
 
                   return (
                     <g key={domain.id}>
-                      <motion.circle className="orb-halo" cx={orbPos.x} cy={orbPos.y} r={orbPos.radius + 40} fill={bloom} style={{ filter: 'blur(20px)', pointerEvents: 'none' }} animate={shouldReduceMotion ? {} : { opacity: isPulsing ? [0.38, 0.55, 0.38] : isHovered || isSelected ? 0.55 : [0.38, 0.42, 0.38], scale: isPulsing ? [1, 1.08, 1] : isHovered || isSelected ? 1.05 : [0.985, 1.025, 0.985] }} transition={isPulsing ? { duration: TOKENS.HORIZON.t_orbBreathIn, ease: TOKENS.HORIZON.easingSine } : isHovered || isSelected ? { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easingApple } : { duration: TOKENS.HORIZON.t_breathe, repeat: Infinity, ease: "easeInOut", delay: idx * 1.2 }} />
+                      <motion.circle className="orb-halo" cx={orbPos.x} cy={orbPos.y} r={orbPos.radius + 40} fill={bloom} style={{ filter: 'blur(20px)', pointerEvents: 'none' }} animate={shouldReduceMotion ? {} : { opacity: isMuted ? 0.15 : (isPulsing ? [0.38, 0.55, 0.38] : isHovered || isSelected ? 0.55 : [0.38, 0.42, 0.38]), scale: isPulsing ? [1, 1.08, 1] : isHovered || isSelected ? 1.05 : [0.985, 1.025, 0.985] }} transition={isPulsing ? { duration: TOKENS.HORIZON.t_orbBreathIn, ease: TOKENS.HORIZON.easingSine } : isHovered || isSelected ? { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easingApple } : { duration: TOKENS.HORIZON.t_breathe, repeat: Infinity, ease: "easeInOut", delay: idx * 1.2 }} />
                       <circle cx={orbPos.x} cy={orbPos.y} r={orbPos.radius + 2} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="2" style={{ filter: `url(#scatter-${domain.id})`, pointerEvents: 'none' }} />
                       <AnimatePresence>
-                        {(isHovered || isSelected) && <motion.circle className="orb-halo" cx={orbPos.x} cy={orbPos.y} r={orbPos.radius + 11} fill={bloom} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 0.6, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ opacity: { duration: TOKENS.HORIZON.t_haloDecay, ease: TOKENS.HORIZON.easingSine }, scale: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easingApple } }} style={{ filter: 'blur(16px)', pointerEvents: 'none' }} />}
+                        {(isHovered || isSelected) && !isMuted && <motion.circle className="orb-halo" cx={orbPos.x} cy={orbPos.y} r={orbPos.radius + 11} fill={bloom} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 0.6, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ opacity: { duration: TOKENS.HORIZON.t_haloDecay, ease: TOKENS.HORIZON.easingSine }, scale: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easingApple } }} style={{ filter: 'blur(16px)', pointerEvents: 'none' }} />}
                       </AnimatePresence>
 
                       {isSelected && !shouldReduceMotion && (
@@ -1771,23 +1776,24 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         style={{
                           filter: `url(#bloom-${domain.id})`,
                           transformOrigin: `${orbPos.x}px ${orbPos.y}px`,
-                          pointerEvents: 'auto',
-                          color
+                          pointerEvents: isEquilibriumHovered ? 'none' : 'auto',
+                          color,
+                          opacity: isMuted ? 0.6 : 1
                         }}
                         animate={shouldReduceMotion ? {} : {
-                          scale: isPulsing ? [1, 1.05, 1] : isSelected ? [1, 1.025, 1] : isHovered ? 1.05 : [0.985, 1.025, 0.985],
-                          opacity: isPulsing ? [0.985, 1, 0.985] : isHovered || isSelected ? 1 : [0.985, 1, 0.985]
+                          scale: isMuted ? 0.985 : (isPulsing ? [1, 1.05, 1] : isSelected ? [1, 1.025, 1] : isHovered ? 1.05 : [0.985, 1.025, 0.985]),
+                          opacity: isMuted ? 0.6 : (isPulsing ? [0.985, 1, 0.985] : isHovered || isSelected ? 1 : [0.985, 1, 0.985])
                         }}
                         transition={isPulsing ? { duration: TOKENS.HORIZON.t_orbBreathIn, ease: TOKENS.HORIZON.easingSine } : isSelected ? { duration: TOKENS.HORIZON.t_orbLifePulse, repeat: Infinity, ease: "easeInOut" } : isHovered ? { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easingApple } : { duration: TOKENS.HORIZON.t_breathe, repeat: Infinity, ease: "easeInOut", delay: idx * 1.2 }}
-                        onMouseEnter={(e) => handleDomainHoverEnter(domain, e)}
+                        onMouseEnter={(e) => !isEquilibriumHovered && handleDomainHoverEnter(domain, e)}
                         onMouseLeave={handleDomainHoverLeave}
-                        onClick={() => handleOpenDrawer(domain)}
-                        onKeyDown={(e) => { if (e.key === 'Enter') handleOpenDrawer(domain); }}
-                        tabIndex={0}
+                        onClick={() => !isEquilibriumHovered && handleOpenDrawer(domain)}
+                        onKeyDown={(e) => { if (e.key === 'Enter' && !isEquilibriumHovered) handleOpenDrawer(domain); }}
+                        tabIndex={isEquilibriumHovered ? -1 : 0}
                         role="button"
                         aria-label={`Open ${domain.id} drawer: ${domain.posture}, ${domain.confidence_pct}% confidence`}
                       />
-                      <circle cx={orbPos.x} cy={orbPos.y} r={orbPos.radius} fill="none" stroke={color} strokeWidth="1" opacity="0.25" style={{ pointerEvents: 'none' }} />
+                      <circle cx={orbPos.x} cy={orbPos.y} r={orbPos.radius} fill="none" stroke={color} strokeWidth="1" opacity={isMuted ? "0.15" : "0.25"} style={{ pointerEvents: 'none' }} />
                     </g>
                   );
                 })}
@@ -1796,7 +1802,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
             {/* Hover Card Portal */}
             <AnimatePresence>
-              {hoveredDomain && !selectedDomain && hoveredNodeRect && (() => {
+              {hoveredDomain && !selectedDomain && !isEquilibriumHovered && hoveredNodeRect && (() => {
                 const domain = domains.find(d => d.id === hoveredDomain);
                 if (!domain) return null;
 
@@ -1824,11 +1830,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             {domains.map((domain) => {
               const orbPos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
               const labelPos = getLabelPosition(orbPos.x, orbPos.y, orbPos.radius);
-              const isHovered = hoveredDomain === domain.id;
+              const isHovered = hoveredDomain === domain.id && !isEquilibriumHovered;
               const isSelected = selectedDomain?.id === domain.id;
+              const isMuted = isEquilibriumHovered;
 
               return (
-                <motion.div key={`label-${domain.id}`} style={{ position: 'absolute', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', background: 'rgba(10,14,20,0.50)', border: `1px solid ${TOKENS.HORIZON.glassBorder}`, borderRadius: '10px', padding: '5px 9px', fontWeight: 600, fontSize: '11px', letterSpacing: '0.03em', textTransform: 'lowercase', textShadow: '0 1px 2px rgba(0,0,0,0.4)', pointerEvents: 'none', zIndex: 11, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }} animate={{ left: `${labelPos.x}px`, top: `${labelPos.y}px`, x: '-50%', y: '-50%', color: isHovered || isSelected ? TOKENS.colors.textLabel : getDomainText(domain.id), scale: isHovered || isSelected ? 1.05 : 1, boxShadow: isHovered || isSelected ? '0 0 16px rgba(160,191,255,0.15)' : 'none' }} transition={{ left: { duration: TOKENS.HORIZON.t_labelLag, ease: TOKENS.HORIZON.easingApple }, top: { duration: TOKENS.HORIZON.t_labelLag, ease: TOKENS.HORIZON.easingApple }, color: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }, scale: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }, boxShadow: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing } }}>
+                <motion.div key={`label-${domain.id}`} style={{ position: 'absolute', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', background: 'rgba(10,14,20,0.50)', border: `1px solid ${TOKENS.HORIZON.glassBorder}`, borderRadius: '10px', padding: '5px 9px', fontWeight: 600, fontSize: '11px', letterSpacing: '0.03em', textTransform: 'lowercase', textShadow: '0 1px 2px rgba(0,0,0,0.4)', pointerEvents: 'none', zIndex: 11, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }} animate={{ left: `${labelPos.x}px`, top: `${labelPos.y}px`, x: '-50%', y: '-50%', color: isHovered || isSelected ? TOKENS.colors.textLabel : getDomainText(domain.id), scale: isHovered || isSelected ? 1.05 : 1, boxShadow: isHovered || isSelected ? '0 0 16px rgba(160,191,255,0.15)' : 'none', opacity: isMuted ? 0.5 : 1 }} transition={{ left: { duration: TOKENS.HORIZON.t_labelLag, ease: TOKENS.HORIZON.easingApple }, top: { duration: TOKENS.HORIZON.t_labelLag, ease: TOKENS.HORIZON.easingApple }, color: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }, scale: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }, boxShadow: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }, opacity: { duration: 0.2, ease: 'easeOut' } }}>
                 {domain.id}
               </motion.div>
             );
@@ -1839,6 +1846,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         {/* GLOBAL EQUILIBRIUM PANEL (AUTO-LAYOUT POSITIONED) */}
         <div
           className="global-equilibrium-panel"
+          onMouseEnter={() => setIsEquilibriumHovered(true)}
+          onMouseLeave={() => setIsEquilibriumHovered(false)}
           style={{
             position: 'relative',
             width: '72%',
