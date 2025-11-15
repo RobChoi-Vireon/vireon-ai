@@ -936,6 +936,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const bgParallaxY = useSpring(mouseY, { damping: 25, stiffness: 80 });
 
   const [isPillHovered, setIsPillHovered] = useState(false);
+  const [isEquilibriumHovered, setIsEquilibriumHovered] = useState(false);
 
   const domains = MOCK_DOMAINS;
 
@@ -1065,6 +1066,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   }, []);
 
   const handleDomainHoverEnter = useCallback((domain, event) => {
+    if (isEquilibriumHovered) return; // BLOCK hero interactions when equilibrium is active
+
     const target = event.currentTarget;
 
     if (hoverExitTimerRef.current) {
@@ -1087,9 +1090,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         }
       }
     }, TOKENS.HORIZON.hoverEnterDelay);
-  }, []);
+  }, [isEquilibriumHovered]);
 
   const handleDomainHoverLeave = useCallback(() => {
+    if (isEquilibriumHovered) return; // BLOCK hero interactions when equilibrium is active
+
     if (hoverEnterTimerRef.current) {
       clearTimeout(hoverEnterTimerRef.current);
       hoverEnterTimerRef.current = null;
@@ -1105,7 +1110,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         setHoveredNodeRect(null);
       }
     }, 400);
-  }, [isCardHovered]);
+  }, [isCardHovered, isEquilibriumHovered]);
 
   const handleCardEnter = useCallback(() => {
     setIsCardHovered(true);
@@ -1257,7 +1262,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
   useEffect(() => {
     const handleMouseMove = (e) => {
-      if (!containerRef.current || shouldReduceMotion) return;
+      if (!containerRef.current || shouldReduceMotion || isEquilibriumHovered) return; // BLOCK parallax when equilibrium active
       const rect = containerRef.current.getBoundingClientRect();
       const normX = ((e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2));
       const normY = ((e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2));
@@ -1274,7 +1279,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [shouldReduceMotion, selectedDomain, mouseX, mouseY, glassParallaxX, glassParallaxY]);
+  }, [shouldReduceMotion, selectedDomain, mouseX, mouseY, glassParallaxX, glassParallaxY, isEquilibriumHovered]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -1378,18 +1383,18 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             <p style={{ fontSize: '13px', color: TOKENS.colors.textTertiary, letterSpacing: '0.2em', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Real-time balance of global macro forces.</p>
           </div>
         </div>
-        
+
         {/* LIQUID GLASS PILL — POWERED BY LYRA */}
         <motion.div
           className="powered-by-lyra-pill"
           initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ 
-            opacity: 1, 
+          animate={{
+            opacity: 1,
             scale: isPillHovered ? 1.03 : 1,
             y: isPillHovered ? -1.5 : 0,
             filter: isPillHovered ? 'brightness(1.08)' : 'brightness(1)'
           }}
-          transition={{ 
+          transition={{
             scale: { duration: 0.18, ease: MOTION_TOKENS.CURVES.horizonIn },
             y: { duration: 0.18, ease: MOTION_TOKENS.CURVES.horizonIn },
             filter: { duration: 0.18, ease: MOTION_TOKENS.CURVES.horizonIn },
@@ -1420,7 +1425,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             backdropFilter: 'blur(16px) saturate(140%)',
             WebkitBackdropFilter: 'blur(16px) saturate(140%)',
             border: isPillHovered ? '1px solid rgba(160, 191, 255, 0.35)' : '1px solid rgba(160, 191, 255, 0.22)',
-            boxShadow: isPillHovered 
+            boxShadow: isPillHovered
               ? `0 6px 24px rgba(0, 0, 0, 0.30), 0 0 18px rgba(106, 199, 247, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.18)`
               : `0 4px 16px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12)`,
             willChange: 'transform, filter, box-shadow'
@@ -1455,14 +1460,14 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             animate={{
               x: isPillHovered ? -0.5 : 0
             }}
-            transition={{ 
-              duration: 0.16, 
-              ease: [0.22, 1, 0.36, 1] 
+            transition={{
+              duration: 0.16,
+              ease: [0.22, 1, 0.36, 1]
             }}
           >
-            <span 
+            <span
               className="text-xs font-medium"
-              style={{ 
+              style={{
                 color: 'rgba(255, 255, 255, 0.65)',
                 letterSpacing: '0.3px',
                 fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
@@ -1472,9 +1477,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               Powered by
             </span>
             <LyraLogo className="w-5 h-5" style={{ flexShrink: 0 }} />
-            <span 
+            <span
               className="font-bold"
-              style={{ 
+              style={{
                 color: TOKENS.colors.textPrimary,
                 fontSize: 'clamp(12px, 1.4vw, 13.5px)',
                 letterSpacing: '-0.01em',
@@ -1494,7 +1499,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: 'clamp(32px, 6vw, 76px)',
+          gap: 'clamp(48px, 8vw, 96px)', // Increased minimum gap from 32px to 48px
           width: '100%',
           height: 'auto',
           paddingTop: '48px',
@@ -1507,16 +1512,21 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           pointerEvents: 'none' // Allow click-through to children by default
         }}
       >
-        {/* ORB CLUSTER VISUAL (FIXED HEIGHT) */}
+        {/* ORB CLUSTER VISUAL (FIXED HEIGHT + BOTTOM BOUNDARY) */}
         <div
           ref={containerRef}
-          className="orb-cluster-visual"
+          className={`orb-cluster-visual ${isEquilibriumHovered ? 'hero-orbs-muted' : ''}`}
           data-dominant={dominantDriver}
           style={{
             position: 'relative',
             width: '100%',
             height: '500px', // Fixed height for the visual area
-            pointerEvents: 'auto' // Re-enable pointer events for the visual elements inside
+            maxHeight: '500px',
+            overflow: 'hidden', // CRITICAL: Prevents orbs/glow from bleeding into equilibrium area
+            pointerEvents: isEquilibriumHovered ? 'none' : 'auto', // DISABLE all hero interactions when equilibrium is active
+            opacity: isEquilibriumHovered ? 0.6 : 1, // Visual de-emphasis when equilibrium is active
+            filter: isEquilibriumHovered ? 'brightness(0.7) saturate(0.8)' : 'brightness(1) saturate(1)',
+            transition: 'opacity 0.2s ease-out, filter 0.2s ease-out'
           }}
         >
           {/* UNIFIED ATMOSPHERIC BACKGROUND — SINGLE RADIAL GRADIENT */}
@@ -1839,12 +1849,32 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         {/* GLOBAL EQUILIBRIUM PANEL (AUTO-LAYOUT POSITIONED) */}
         <div
           className="global-equilibrium-panel"
+          onPointerEnter={() => {
+            setIsEquilibriumHovered(true);
+            // Immediately close any open hero tooltips
+            if (hoveredDomain) {
+              setHoveredDomain(null);
+              setHoveredNodeRect(null);
+              setIsCardHovered(false);
+            }
+            if (hoverEnterTimerRef.current) {
+              clearTimeout(hoverEnterTimerRef.current);
+              hoverEnterTimerRef.current = null;
+            }
+            if (hoverExitTimerRef.current) {
+              clearTimeout(hoverExitTimerRef.current);
+              hoverExitTimerRef.current = null;
+            }
+          }}
+          onPointerLeave={() => {
+            setIsEquilibriumHovered(false);
+          }}
           style={{
             position: 'relative',
             width: '72%',
             maxWidth: '900px',
             zIndex: 4,
-            pointerEvents: 'auto'
+            pointerEvents: 'auto' // Re-enable pointer events for equilibrium panel
           }}
         >
           <EquilibriumPulse
@@ -2901,6 +2931,21 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             z-index: -1;
             border-radius: 19px;
           }
+        }
+
+        /* OS HORIZON V4.0 — HERO MUTED STATE */
+        .hero-orbs-muted {
+          pointer-events: none !important;
+        }
+
+        .hero-orbs-muted .orb-nucleus {
+          pointer-events: none !important;
+          cursor: default !important;
+        }
+
+        .hero-orbs-muted .orb-halo,
+        .hero-orbs-muted .link-path {
+          opacity: 0.5 !important;
         }
       `}</style>
     </motion.section>
