@@ -1,6 +1,6 @@
-// 🔒 DESIGN LOCKED — OS HORIZON V4.0 + SPIRIT LAYER + RADIANT PANE
+// 🔒 DESIGN LOCKED — OS HORIZON V4.0 + SPIRIT LAYER + RADIANT CAPSULE
 // Last Updated: 2025-01-20
-// Complete architecture redesign: Radiant Pane + Flowfield + Micro-Flowlets
+// Complete rebuild: Floating capsule + unified flowfield architecture
 // See: DESIGN_LOCKED_COMPONENTS.md
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -21,8 +21,7 @@ const MOTION_TOKENS = {
 };
 
 // ============================================================================
-// RADIANT PANE + FLOWFIELD VISUALIZATION
-// VisionOS-inspired liquid glass pane with coherence-driven flowfield
+// RADIANT PANE + HYBRID FLOWFIELD ENGINE
 // ============================================================================
 const RadiantPaneFlowfield = ({ score, isHovered }) => {
     const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
@@ -37,19 +36,19 @@ const RadiantPaneFlowfield = ({ score, isHovered }) => {
         return () => mediaQuery.removeEventListener('change', handler);
     }, []);
 
-    // Consensus coherence: 66 = moderate alignment
+    // Consensus coherence: 66 = moderate alignment with soft imperfections
     const consensusCoherence = score / 100;
-    const alignmentFactor = 0.70; // 70% for score 66
-    const curvatureVariance = 11; // degrees
+    const alignmentFactor = 0.70;
+    const curvatureVariance = 10;
 
     // Initialize particles
     useEffect(() => {
-        particlesRef.current = Array.from({ length: 35 }, () => ({
-            x: Math.random() * 240,
-            y: Math.random() * 160,
-            vx: (Math.random() - 0.5) * 0.12,
-            vy: (Math.random() - 0.5) * 0.12,
-            size: Math.random() * 1.3 + 0.8,
+        particlesRef.current = Array.from({ length: 32 }, () => ({
+            x: Math.random() * 260,
+            y: Math.random() * 170,
+            vx: (Math.random() - 0.5) * 0.13,
+            vy: (Math.random() - 0.5) * 0.11,
+            size: Math.random() * 1.4 + 0.9,
             opacity: Math.random() * 0.03 + 0.03
         }));
     }, []);
@@ -65,20 +64,19 @@ const RadiantPaneFlowfield = ({ score, isHovered }) => {
             const elapsed = (Date.now() - startTime) / 1000;
             setFlowPhase(elapsed);
             
-            // Update particles
             const speedMultiplier = isHovered ? 1.06 : 1.0;
             particlesRef.current.forEach(p => {
-                const flowAngle = Math.sin(p.x * 0.018 + elapsed * 0.25) * (curvatureVariance * Math.PI / 180);
-                p.vx = Math.cos(flowAngle) * 0.11 * speedMultiplier;
-                p.vy = Math.sin(flowAngle) * 0.07 * speedMultiplier;
+                const flowAngle = Math.sin(p.x * 0.016 + elapsed * 0.22) * (curvatureVariance * Math.PI / 180);
+                p.vx = Math.cos(flowAngle) * 0.12 * speedMultiplier;
+                p.vy = Math.sin(flowAngle) * 0.08 * speedMultiplier;
                 
                 p.x += p.vx;
                 p.y += p.vy;
                 
-                if (p.x < -10) p.x = 250;
-                if (p.x > 250) p.x = -10;
-                if (p.y < -10) p.y = 170;
-                if (p.y > 170) p.y = -10;
+                if (p.x < -15) p.x = 275;
+                if (p.x > 275) p.x = -15;
+                if (p.y < -15) p.y = 185;
+                if (p.y > 185) p.y = -15;
             });
             
             rafId = requestAnimationFrame(animate);
@@ -88,19 +86,20 @@ const RadiantPaneFlowfield = ({ score, isHovered }) => {
         return () => cancelAnimationFrame(rafId);
     }, [shouldReduceMotion, isHovered, curvatureVariance]);
 
-    // Generate flow line path
+    // Generate flow line with smooth Bézier curvature
     const generateFlowLine = (startY, amplitude, phaseOffset, variance) => {
         const points = [];
-        const steps = 70;
+        const steps = 75;
         
         for (let i = 0; i <= steps; i++) {
             const t = i / steps;
-            const x = t * 240;
+            const x = t * 260;
             
-            const baseFlow = Math.sin((t * Math.PI * 2.2) + phaseOffset + (flowPhase * 0.18));
-            const varianceFlow = Math.sin((t * Math.PI * 1.6) + variance) * 0.35;
+            const baseFlow = Math.sin((t * Math.PI * 2.4) + phaseOffset + (flowPhase * 0.16));
+            const varianceFlow = Math.sin((t * Math.PI * 1.7) + variance) * 0.32;
+            const breathe = Math.sin(flowPhase * 0.35) * 0.015;
             const hoverAmplitude = isHovered ? 1.02 : 1.0;
-            const y = startY + (baseFlow + varianceFlow) * amplitude * hoverAmplitude;
+            const y = startY + (baseFlow + varianceFlow) * amplitude * (1 + breathe) * hoverAmplitude;
             
             points.push(`${x},${y}`);
         }
@@ -108,119 +107,121 @@ const RadiantPaneFlowfield = ({ score, isHovered }) => {
         return points.join(' ');
     };
 
-    const lightDrift = Math.sin(flowPhase * (Math.PI / 16)) * 3;
-    const shimmer = Math.cos(flowPhase * (Math.PI / 14)) * 0.015;
+    const diagonalDrift = Math.sin(flowPhase * (Math.PI / 15)) * 2.5;
+    const shimmer = Math.cos(flowPhase * (Math.PI / 13)) * 0.012;
 
     return (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-            {/* Radiant Pane Background */}
+            {/* Radiant Pane */}
             <motion.div
                 className="absolute"
                 style={{
-                    width: '220px',
-                    height: '145px',
-                    borderRadius: '32px',
+                    width: '235px',
+                    height: '155px',
+                    borderRadius: '34px',
                     background: `
-                        linear-gradient(180deg, 
-                            rgba(167, 209, 255, 0.10) 0%, 
-                            rgba(123, 184, 255, 0.12) 45%,
-                            rgba(155, 203, 255, 0.09) 100%
+                        linear-gradient(145deg, 
+                            rgba(167, 209, 255, 0.14) 0%, 
+                            rgba(123, 184, 255, 0.16) 40%,
+                            rgba(155, 203, 255, 0.12) 100%
                         )
                     `,
-                    backdropFilter: 'blur(18px)',
-                    WebkitBackdropFilter: 'blur(18px)',
-                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    backdropFilter: 'blur(20px)',
+                    WebkitBackdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(255, 255, 255, 0.10)',
                     boxShadow: `
-                        inset 0 1px 0 rgba(255, 255, 255, 0.12),
-                        inset 0 -1px 0 rgba(0, 0, 0, 0.08),
-                        0 0 30px rgba(123, 184, 255, 0.08)
+                        inset 0 1px 2px rgba(255, 255, 255, 0.15),
+                        inset 0 -1px 1px rgba(0, 0, 0, 0.10),
+                        0 0 35px rgba(123, 184, 255, 0.10)
                     `,
                     willChange: 'transform, filter'
                 }}
                 animate={{
                     filter: isHovered ? 'brightness(1.03)' : 'brightness(1)',
-                    rotateX: isHovered ? '0.8deg' : '0deg',
-                    y: shouldReduceMotion ? 0 : lightDrift
+                    rotateX: isHovered ? '0.7deg' : '0deg',
+                    x: shouldReduceMotion ? 0 : diagonalDrift * 0.5,
+                    y: shouldReduceMotion ? 0 : diagonalDrift * 0.3
                 }}
                 transition={{
                     filter: { duration: 0.12, ease: MOTION_TOKENS.CURVES.horizonIn },
                     rotateX: { duration: 0.12, ease: MOTION_TOKENS.CURVES.horizonIn },
-                    y: { duration: 16, ease: 'easeInOut' }
+                    x: { duration: 15, ease: 'easeInOut' },
+                    y: { duration: 15, ease: 'easeInOut' }
                 }}
             >
-                {/* Internal shimmer layer */}
+                {/* Internal diagonal streak */}
                 <motion.div
-                    className="absolute inset-0 rounded-[32px]"
+                    className="absolute inset-0 rounded-[34px]"
                     style={{
-                        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, transparent 60%)',
-                        opacity: 0.5 + shimmer
+                        background: 'linear-gradient(125deg, rgba(255, 255, 255, 0.10) 0%, transparent 45%, rgba(167, 209, 255, 0.05) 100%)',
+                        opacity: 0.6 + shimmer
                     }}
                 />
 
                 {/* Top bloom */}
                 <div 
-                    className="absolute top-0 left-[15%] right-[15%] h-[16px] rounded-full"
+                    className="absolute top-0 left-[18%] right-[18%] h-[18px] rounded-full"
                     style={{
-                        background: 'linear-gradient(180deg, rgba(167, 209, 255, 0.12) 0%, transparent 100%)',
-                        filter: 'blur(8px)'
+                        background: 'linear-gradient(180deg, rgba(167, 209, 255, 0.15) 0%, transparent 100%)',
+                        filter: 'blur(9px)'
                     }}
                 />
             </motion.div>
 
             {/* Flowfield Layer */}
             <svg 
-                width="240" 
-                height="160" 
-                viewBox="0 0 240 160"
+                width="260" 
+                height="170" 
+                viewBox="0 0 260 170"
                 className="absolute"
                 style={{
                     zIndex: 2,
-                    opacity: isHovered ? 0.75 : 0.68
+                    opacity: isHovered ? 0.72 : 0.65
                 }}
             >
                 <defs>
-                    <filter id="flow-blur-new">
-                        <feGaussianBlur stdDeviation="1.3" />
+                    <filter id="flow-blur-capsule">
+                        <feGaussianBlur stdDeviation="1.4" />
                     </filter>
                     
-                    <linearGradient id="flow-grad-1" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <linearGradient id="flow-grad-capsule-1" x1="0%" y1="0%" x2="100%" y2="0%">
                         <stop offset="0%" stopColor="#8EBFFF" stopOpacity="0" />
-                        <stop offset="20%" stopColor="#9CCFFF" stopOpacity="0.055" />
-                        <stop offset="50%" stopColor="#ABD7FF" stopOpacity="0.065" />
-                        <stop offset="80%" stopColor="#9CCFFF" stopOpacity="0.055" />
+                        <stop offset="22%" stopColor="#9CCFFF" stopOpacity="0.058" />
+                        <stop offset="50%" stopColor="#ABD7FF" stopOpacity="0.068" />
+                        <stop offset="78%" stopColor="#9CCFFF" stopOpacity="0.058" />
                         <stop offset="100%" stopColor="#8EBFFF" stopOpacity="0" />
                     </linearGradient>
                     
-                    <linearGradient id="flow-grad-2" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <linearGradient id="flow-grad-capsule-2" x1="0%" y1="0%" x2="100%" y2="0%">
                         <stop offset="0%" stopColor="#9CCFFF" stopOpacity="0" />
-                        <stop offset="25%" stopColor="#ABD7FF" stopOpacity="0.05" />
-                        <stop offset="50%" stopColor="#B8E2FF" stopOpacity="0.06" />
-                        <stop offset="75%" stopColor="#ABD7FF" stopOpacity="0.05" />
+                        <stop offset="25%" stopColor="#ABD7FF" stopOpacity="0.052" />
+                        <stop offset="50%" stopColor="#B8E2FF" stopOpacity="0.062" />
+                        <stop offset="75%" stopColor="#ABD7FF" stopOpacity="0.052" />
                         <stop offset="100%" stopColor="#9CCFFF" stopOpacity="0" />
                     </linearGradient>
                 </defs>
 
-                {/* Generate 12 flow lines */}
-                {Array.from({ length: 12 }).map((_, i) => {
-                    const yPos = 35 + (i * (90 / 11));
-                    const phaseOffset = (i / 12) * Math.PI * 2;
-                    const variance = (1 - alignmentFactor) * ((i % 4) * 0.4);
-                    const gradient = i % 2 === 0 ? 'flow-grad-1' : 'flow-grad-2';
+                {/* Generate 14 flow lines */}
+                {Array.from({ length: 14 }).map((_, i) => {
+                    const yPos = 38 + (i * (94 / 13));
+                    const phaseOffset = (i / 14) * Math.PI * 2;
+                    const variance = (1 - alignmentFactor) * ((i % 4) * 0.42);
+                    const gradient = i % 2 === 0 ? 'flow-grad-capsule-1' : 'flow-grad-capsule-2';
                     
                     return (
                         <motion.polyline
                             key={i}
-                            points={generateFlowLine(yPos, 7.5, phaseOffset, variance)}
+                            points={generateFlowLine(yPos, 7.8, phaseOffset, variance)}
                             fill="none"
                             stroke={`url(#${gradient})`}
-                            strokeWidth="1.4"
+                            strokeWidth="1.5"
                             strokeLinecap="round"
-                            filter="url(#flow-blur-new)"
+                            filter="url(#flow-blur-capsule)"
                             initial={{ opacity: 0, pathLength: 0 }}
                             animate={{ opacity: 1, pathLength: 1 }}
                             transition={{ 
-                                duration: 0.85, 
-                                delay: 0.15 + (i * 0.035),
+                                duration: 0.9, 
+                                delay: 0.12 + (i * 0.032),
                                 ease: MOTION_TOKENS.CURVES.horizonIn
                             }}
                         />
@@ -235,13 +236,14 @@ const RadiantPaneFlowfield = ({ score, isHovered }) => {
                         key={i}
                         className="absolute rounded-full"
                         style={{
-                            left: `${(particle.x / 240) * 100}%`,
-                            top: `${(particle.y / 160) * 100}%`,
+                            left: `${(particle.x / 260) * 100}%`,
+                            top: `${(particle.y / 170) * 100}%`,
                             width: `${particle.size}px`,
                             height: `${particle.size}px`,
                             background: i % 3 === 0 ? '#C9EBFF' : '#FFFFFF',
                             opacity: particle.opacity,
-                            filter: 'blur(0.5px)',
+                            filter: 'blur(0.6px)',
+                            transform: `translate3d(${Math.cos(i) * 0.3}px, ${Math.sin(i) * 0.3}px, 0)`,
                             pointerEvents: 'none'
                         }}
                     />
@@ -252,9 +254,9 @@ const RadiantPaneFlowfield = ({ score, isHovered }) => {
             <div 
                 className="absolute"
                 style={{
-                    width: '140px',
-                    height: '140px',
-                    background: 'radial-gradient(circle, rgba(16, 20, 28, 0.28) 0%, transparent 65%)',
+                    width: '145px',
+                    height: '145px',
+                    background: 'radial-gradient(circle, rgba(16, 20, 28, 0.26) 0%, transparent 63%)',
                     pointerEvents: 'none',
                     zIndex: 5
                 }}
@@ -264,7 +266,7 @@ const RadiantPaneFlowfield = ({ score, isHovered }) => {
 };
 
 // ============================================================================
-// CATEGORY MICRO-FLOWLETS (Replace Legacy Rings)
+// CATEGORY MICRO-FLOWLETS
 // ============================================================================
 const CategoryMicroFlowlets = ({ segments, isHovered }) => {
     const segmentColors = {
@@ -276,17 +278,17 @@ const CategoryMicroFlowlets = ({ segments, isHovered }) => {
 
     const generateMicroFlow = (phase) => {
         const points = [];
-        for (let i = 0; i <= 20; i++) {
-            const t = i / 20;
-            const x = t * 34;
-            const y = 3 + Math.sin((t * Math.PI * 1.5) + phase) * 1.2;
+        for (let i = 0; i <= 22; i++) {
+            const t = i / 22;
+            const x = t * 32;
+            const y = 3.5 + Math.sin((t * Math.PI * 1.6) + phase) * 1.3;
             points.push(`${x},${y}`);
         }
         return points.join(' ');
     };
 
     return (
-        <div className="flex justify-center gap-3 mb-6">
+        <div className="flex justify-center gap-4 mb-7">
             {segments.map((segment, index) => {
                 const colors = segmentColors[segment.name] || { main: '#AAB1B8', soft: '#D0D0D0' };
                 const value = (segment.weight || 0) * 100;
@@ -294,49 +296,49 @@ const CategoryMicroFlowlets = ({ segments, isHovered }) => {
                 return (
                     <motion.div
                         key={segment.name}
-                        className="flex flex-col items-center gap-1.5"
-                        initial={{ opacity: 0, y: 5 }}
+                        className="flex flex-col items-center gap-2"
+                        initial={{ opacity: 0, y: 6 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.6 + (index * 0.05), duration: 0.3 }}
+                        transition={{ delay: 0.65 + (index * 0.05), duration: 0.32 }}
                     >
                         {/* Micro-flowlet visualization */}
                         <motion.div
                             className="relative"
-                            whileHover={{ scale: 1.04 }}
-                            transition={{ duration: 0.12 }}
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ duration: 0.12, ease: MOTION_TOKENS.CURVES.horizonIn }}
                         >
-                            <svg width="34" height="6" viewBox="0 0 34 6">
+                            <svg width="32" height="7" viewBox="0 0 32 7">
                                 <defs>
-                                    <linearGradient id={`micro-grad-${index}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <linearGradient id={`micro-grad-capsule-${index}`} x1="0%" y1="0%" x2="100%" y2="0%">
                                         <stop offset="0%" stopColor={colors.main} stopOpacity="0" />
-                                        <stop offset="30%" stopColor={colors.main} stopOpacity="0.25" />
-                                        <stop offset="70%" stopColor={colors.soft} stopOpacity="0.30" />
+                                        <stop offset="28%" stopColor={colors.main} stopOpacity="0.24" />
+                                        <stop offset="72%" stopColor={colors.soft} stopOpacity="0.28" />
                                         <stop offset="100%" stopColor={colors.main} stopOpacity="0" />
                                     </linearGradient>
                                 </defs>
                                 
                                 <motion.polyline
-                                    points={generateMicroFlow(index * 0.8)}
+                                    points={generateMicroFlow(index * 0.9)}
                                     fill="none"
-                                    stroke={`url(#micro-grad-${index})`}
-                                    strokeWidth="1.2"
+                                    stroke={`url(#micro-grad-capsule-${index})`}
+                                    strokeWidth="1.3"
                                     strokeLinecap="round"
                                     animate={{
-                                        opacity: isHovered ? 0.35 : 0.28
+                                        opacity: isHovered ? 0.32 : 0.26
                                     }}
-                                    transition={{ duration: 0.12 }}
+                                    transition={{ duration: 0.12, ease: MOTION_TOKENS.CURVES.horizonIn }}
                                 />
                             </svg>
                             
-                            {/* Glow on hover */}
+                            {/* Soft glow on hover */}
                             <motion.div
                                 className="absolute inset-0"
                                 style={{
-                                    background: `radial-gradient(circle, ${colors.main}20 0%, transparent 70%)`,
-                                    filter: 'blur(4px)'
+                                    background: `radial-gradient(ellipse, ${colors.main}25 0%, transparent 70%)`,
+                                    filter: 'blur(5px)'
                                 }}
                                 animate={{
-                                    opacity: isHovered ? 0.6 : 0
+                                    opacity: isHovered ? 0.65 : 0
                                 }}
                                 transition={{ duration: 0.12 }}
                             />
@@ -344,7 +346,7 @@ const CategoryMicroFlowlets = ({ segments, isHovered }) => {
 
                         {/* Label and value */}
                         <div className="text-center">
-                            <div className="text-[10px] font-medium" style={{ color: 'rgba(255,255,255,0.70)' }}>
+                            <div className="text-[10px] font-medium" style={{ color: 'rgba(255,255,255,0.68)' }}>
                                 {segment.name}
                             </div>
                             <div className="text-[11px] font-bold" style={{ color: colors.main }}>
@@ -359,9 +361,9 @@ const CategoryMicroFlowlets = ({ segments, isHovered }) => {
 };
 
 // ============================================================================
-// MICRO TRENDLINE BAND (Replace Legacy Zigzag)
+// MICROTREND BAND
 // ============================================================================
-const MicroTrendlineBand = ({ data, delay, isHovered }) => {
+const MicrotrendBand = ({ data, delay, isHovered }) => {
     const [driftPhase, setDriftPhase] = useState(0);
     const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
 
@@ -393,27 +395,39 @@ const MicroTrendlineBand = ({ data, delay, isHovered }) => {
     const minValue = Math.min(...data);
     const range = maxValue - minValue;
     
-    // Smooth curve interpolation
-    const points = data.map((value, index) => {
-        const x = (index / (data.length - 1)) * 120;
-        const y = 18 - ((value - minValue) / range) * 14;
-        return `${x},${y}`;
-    }).join(' ');
+    // Smooth curve interpolation (no sharp angles)
+    const generateSmoothPath = () => {
+        let path = '';
+        data.forEach((value, index) => {
+            const x = (index / (data.length - 1)) * 128;
+            const y = 20 - ((value - minValue) / range) * 15;
+            
+            if (index === 0) {
+                path += `M ${x},${y}`;
+            } else {
+                const prevX = ((index - 1) / (data.length - 1)) * 128;
+                const prevY = 20 - ((data[index - 1] - minValue) / range) * 15;
+                const cpX = (prevX + x) / 2;
+                path += ` Q ${cpX},${prevY} ${x},${y}`;
+            }
+        });
+        return path;
+    };
 
     const slope = data[data.length - 1] - data[0];
     const baseColor = slope > 0 ? '#7FFFC1' : slope < 0 ? '#FFB8A3' : '#A3CFFF';
 
     return (
-        <div className="flex items-center justify-center mb-6">
+        <div className="flex items-center justify-center mb-7">
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay, duration: 0.3 }}
+                transition={{ delay, duration: 0.35 }}
             >
-                <svg width="120" height="20" className="overflow-visible">
+                <svg width="128" height="22" className="overflow-visible">
                     <defs>
-                        <filter id="trendline-glow">
-                            <feGaussianBlur stdDeviation="1.2" result="coloredBlur"/>
+                        <filter id="microtrend-glow">
+                            <feGaussianBlur stdDeviation="1.3" result="coloredBlur"/>
                             <feMerge>
                                 <feMergeNode in="coloredBlur"/>
                                 <feMergeNode in="SourceGraphic"/>
@@ -422,24 +436,21 @@ const MicroTrendlineBand = ({ data, delay, isHovered }) => {
                     </defs>
                     
                     <motion.path
-                        d={`M ${points.split(' ').map((p, i) => {
-                            const [x, y] = p.split(',').map(Number);
-                            return i === 0 ? `${x},${y}` : `L ${x},${y}`;
-                        }).join(' ')}`}
+                        d={generateSmoothPath()}
                         fill="none"
                         stroke={baseColor}
                         strokeWidth="1.3"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        filter="url(#trendline-glow)"
+                        filter="url(#microtrend-glow)"
                         style={{ opacity: 0.35 }}
                         animate={{
-                            opacity: isHovered ? 0.42 : 0.35,
-                            x: shouldReduceMotion ? 0 : Math.sin(driftPhase * 0.4) * 1.5
+                            opacity: isHovered ? 0.41 : 0.35,
+                            x: shouldReduceMotion ? 0 : Math.sin(driftPhase * 0.35) * 1.8
                         }}
                         transition={{
-                            opacity: { duration: 0.12 },
-                            x: { duration: 20, ease: 'linear' }
+                            opacity: { duration: 0.12, ease: MOTION_TOKENS.CURVES.horizonIn },
+                            x: { duration: 12, ease: 'linear' }
                         }}
                     />
                 </svg>
@@ -449,7 +460,7 @@ const MicroTrendlineBand = ({ data, delay, isHovered }) => {
 };
 
 // ============================================================================
-// MAIN CONSENSUS COMPONENT
+// MAIN CONSENSUS COMPONENT (FLOATING RADIANT CAPSULE)
 // ============================================================================
 export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
     const [isHovered, setIsHovered] = useState(false);
@@ -489,104 +500,121 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
     return (
         <motion.div
             variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
-            className="h-full rounded-2xl flex flex-col cursor-pointer relative overflow-hidden consensus-meter-card"
+            className="h-full rounded-[28px] flex flex-col cursor-pointer relative overflow-hidden consensus-capsule"
             style={{
-                padding: '28px 24px',
-                background: 'rgba(16, 20, 28, 0.55)',
-                backdropFilter: 'blur(16px) saturate(140%)',
-                WebkitBackdropFilter: 'blur(16px) saturate(140%)',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)',
-                backgroundImage: `
-                    linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 50%, rgba(0,0,0,0.11) 100%)
+                padding: '30px 26px',
+                background: `
+                    linear-gradient(180deg, 
+                        rgba(18, 22, 30, 0.60) 0%,
+                        rgba(16, 20, 28, 0.58) 50%,
+                        rgba(14, 18, 26, 0.62) 100%
+                    )
+                `,
+                backdropFilter: 'blur(18px) saturate(145%)',
+                WebkitBackdropFilter: 'blur(18px) saturate(145%)',
+                border: '1px solid rgba(255, 255, 255, 0.13)',
+                boxShadow: `
+                    inset 0 1px 0 rgba(255,255,255,0.08),
+                    0 0 40px rgba(123, 184, 255, 0.06),
+                    0 20px 40px rgba(0, 0, 0, 0.18)
                 `,
                 willChange: 'transform, filter, box-shadow'
             }}
             whileHover={{ 
-                y: -4,
-                scale: 1.015,
-                filter: 'brightness(1.01)',
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05), 0 12px 40px rgba(0,0,0,0.3)',
-                borderColor: 'rgba(255,255,255,0.2)',
+                y: -2,
+                scale: 1.012,
+                filter: 'brightness(1.03)',
+                boxShadow: `
+                    inset 0 1px 0 rgba(255,255,255,0.08),
+                    0 0 45px rgba(123, 184, 255, 0.09),
+                    0 22px 48px rgba(0, 0, 0, 0.24)
+                `,
+                borderColor: 'rgba(255,255,255,0.18)',
                 transition: { duration: 0.12, ease: MOTION_TOKENS.CURVES.horizonIn }
             }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            transition={{ type: "spring", stiffness: 320, damping: 26 }}
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
             onClick={handleOpenDrawer}
         >
-            {/* Subsurface lighting */}
+            {/* Subsurface top highlight */}
             <div style={{
                 position: 'absolute',
                 top: 0,
-                left: '28px',
-                right: '28px',
+                left: '30px',
+                right: '30px',
                 height: '1px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
                 pointerEvents: 'none'
             }} />
 
-            {/* Ambient glow */}
+            {/* External soft glow */}
             <motion.div
-                className="absolute inset-0 rounded-2xl pointer-events-none"
+                className="absolute inset-0 rounded-[28px] pointer-events-none"
                 style={{
-                    background: 'radial-gradient(circle at 50% 45%, rgba(94, 167, 255, 0.06) 0%, transparent 65%)'
+                    background: 'radial-gradient(circle at 50% 42%, rgba(94, 167, 255, 0.08) 0%, transparent 68%)',
+                    opacity: 0
                 }}
-                animate={{ opacity: isHovered ? 0.7 : 0 }}
+                animate={{ opacity: isHovered ? 0.75 : 0 }}
                 transition={{ duration: 0.3 }}
             />
 
             {/* TOP: Title Row */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-7">
                 <motion.h2 
                     className="text-base font-semibold"
-                    style={{ color: 'rgba(255,255,255,0.95)' }}
+                    style={{ color: 'rgba(255,255,255,0.96)' }}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ delay: 0.1 }}
+                    transition={{ delay: 0.08 }}
                 >
                     Consensus
                 </motion.h2>
                 <motion.div
-                    className="px-2.5 py-1 rounded-full text-xs font-semibold"
+                    className="px-3 py-1.5 rounded-full text-xs font-semibold"
                     style={{
-                        background: 'rgba(255, 255, 255, 0.08)',
-                        color: 'rgba(255,255,255,0.75)',
+                        background: 'rgba(255, 255, 255, 0.09)',
+                        color: 'rgba(255,255,255,0.76)',
                         fontSize: '11px'
                     }}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 0.75, scale: 1 }}
-                    transition={{ delay: 0.2 }}
+                    initial={{ opacity: 0, scale: 0.92 }}
+                    animate={{ opacity: 0.76, scale: 1 }}
+                    transition={{ delay: 0.18 }}
                 >
                     {score}%
                 </motion.div>
             </div>
 
-            {/* MIDDLE: Primary Content Area (Radiant Pane + Flowfield + Score) */}
-            <div className="relative flex items-center justify-center mb-8" style={{ minHeight: '160px' }}>
+            {/* MIDDLE: Primary Content (Radiant Pane + Flowfield + Score) */}
+            <div className="relative flex items-center justify-center mb-9" style={{ minHeight: '170px' }}>
                 <RadiantPaneFlowfield score={score} isHovered={isHovered} />
                 
-                {/* Center Score */}
+                {/* Center Score Stack */}
                 <div className="relative z-10 flex flex-col items-center justify-center">
                     <motion.span
-                        className="text-[10px] font-medium uppercase tracking-wide mb-2"
-                        style={{ color: 'rgba(255,255,255,0.70)', letterSpacing: '0.07em' }}
-                        initial={{ opacity: 0, y: -3 }}
+                        className="text-[10px] font-medium uppercase tracking-wide mb-3"
+                        style={{ 
+                            color: 'rgba(255,255,255,0.72)', 
+                            letterSpacing: '0.08em',
+                            textShadow: '0 0 4px rgba(0,0,0,0.15)'
+                        }}
+                        initial={{ opacity: 0, y: -4 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.4, duration: 0.3 }}
+                        transition={{ delay: 0.38, duration: 0.32 }}
                     >
                         Overall Street Alignment
                     </motion.span>
                     
                     <motion.span
-                        className="text-4xl font-bold mb-2"
+                        className="text-[40px] font-bold mb-3"
                         style={{ 
                             color: scoreColor,
-                            textShadow: isHovered ? `0 0 12px ${scoreColor}40` : 'none'
+                            textShadow: isHovered ? `0 0 14px ${scoreColor}38` : `0 0 8px ${scoreColor}22`,
+                            letterSpacing: '-0.02em'
                         }}
-                        initial={{ opacity: 0, scale: 0.8 }}
+                        initial={{ opacity: 0, scale: 0.85 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.5, duration: 0.3 }}
+                        transition={{ delay: 0.48, duration: 0.35 }}
                     >
                         {score}
                     </motion.span>
@@ -595,12 +623,12 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
                         className="text-center"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        transition={{ delay: 0.7, duration: 0.3 }}
+                        transition={{ delay: 0.68, duration: 0.32 }}
                     >
-                        <div className="text-[13px] font-bold mb-1" style={{ color: 'rgba(255,255,255,0.88)' }}>
+                        <div className="text-[14px] font-bold mb-1.5" style={{ color: 'rgba(255,255,255,0.90)' }}>
                             {scoreLabel} Consensus
                         </div>
-                        <div className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.65)' }}>
+                        <div className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.66)' }}>
                             Weight: Medium
                         </div>
                     </motion.div>
@@ -610,39 +638,39 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
             {/* LOWER MIDDLE: Category Micro-Flowlets */}
             <CategoryMicroFlowlets segments={segments} isHovered={isHovered} />
 
-            {/* BOTTOM: Micro Trendline Band */}
-            <MicroTrendlineBand data={trendData} delay={0.9} isHovered={isHovered} />
+            {/* BOTTOM: Microtrend Band */}
+            <MicrotrendBand data={trendData} delay={0.95} isHovered={isHovered} />
 
-            {/* FOOTER: Sources + Updated */}
+            {/* FOOTER: Metadata */}
             <motion.p
                 className="text-xs text-center"
-                style={{ color: 'rgba(255,255,255,0.70)', opacity: 0.82 }}
+                style={{ color: 'rgba(255,255,255,0.68)', opacity: 0.80 }}
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 0.82 }}
-                transition={{ delay: 1.1 }}
+                animate={{ opacity: 0.80 }}
+                transition={{ delay: 1.15 }}
             >
                 Based on {sourcesCount} sources • Updated {updatedAgo}
             </motion.p>
 
             {/* Hover Hint */}
             <motion.div 
-                className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center text-xs pointer-events-none"
-                style={{ color: 'rgba(255,255,255,0.6)' }}
+                className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center text-xs pointer-events-none"
+                style={{ color: 'rgba(255,255,255,0.58)' }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: isHovered ? 1 : 0 }}
                 transition={{ duration: 0.2 }}
             >
-                <Activity className="w-3 h-3 mr-1" />
+                <Activity className="w-3 h-3 mr-1.5" />
                 View detailed breakdown
             </motion.div>
 
             <style jsx>{`
-                .consensus-meter-card {
+                .consensus-capsule {
                     transform: translateZ(0);
                     backface-visibility: hidden;
                 }
 
-                .consensus-meter-card * {
+                .consensus-capsule * {
                     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
                     -webkit-font-smoothing: antialiased;
                     -moz-osx-font-smoothing: grayscale;
