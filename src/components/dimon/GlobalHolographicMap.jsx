@@ -936,7 +936,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const bgParallaxY = useSpring(mouseY, { damping: 25, stiffness: 80 });
 
   const [isPillHovered, setIsPillHovered] = useState(false);
-  const [isEquilibriumHovered, setIsEquilibriumHovered] = useState(false);
+  const [isEquilibriumActive, setIsEquilibriumActive] = useState(false);
+  const equilibriumExitTimerRef = useRef(null);
 
   const domains = MOCK_DOMAINS;
 
@@ -1066,8 +1067,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   }, []);
 
   const handleDomainHoverEnter = useCallback((domain, event) => {
-    if (isEquilibriumHovered) return; // BLOCK hero interactions when equilibrium is active
-
+    if (isEquilibriumActive) return; // BLOCK hero interactions when equilibrium is active
+    
     const target = event.currentTarget;
 
     if (hoverExitTimerRef.current) {
@@ -1090,11 +1091,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         }
       }
     }, TOKENS.HORIZON.hoverEnterDelay);
-  }, [isEquilibriumHovered]);
+  }, [isEquilibriumActive]);
 
   const handleDomainHoverLeave = useCallback(() => {
-    if (isEquilibriumHovered) return; // BLOCK hero interactions when equilibrium is active
-
+    if (isEquilibriumActive) return; // BLOCK hero interactions when equilibrium is active
+    
     if (hoverEnterTimerRef.current) {
       clearTimeout(hoverEnterTimerRef.current);
       hoverEnterTimerRef.current = null;
@@ -1110,7 +1111,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         setHoveredNodeRect(null);
       }
     }, 400);
-  }, [isCardHovered, isEquilibriumHovered]);
+  }, [isCardHovered, isEquilibriumActive]);
 
   const handleCardEnter = useCallback(() => {
     setIsCardHovered(true);
@@ -1262,7 +1263,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
   useEffect(() => {
     const handleMouseMove = (e) => {
-      if (!containerRef.current || shouldReduceMotion || isEquilibriumHovered) return; // BLOCK parallax when equilibrium active
+      if (!containerRef.current || shouldReduceMotion || isEquilibriumActive) return; // BLOCK parallax when equilibrium active
       const rect = containerRef.current.getBoundingClientRect();
       const normX = ((e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2));
       const normY = ((e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2));
@@ -1279,7 +1280,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [shouldReduceMotion, selectedDomain, mouseX, mouseY, glassParallaxX, glassParallaxY, isEquilibriumHovered]);
+  }, [shouldReduceMotion, selectedDomain, mouseX, mouseY, glassParallaxX, glassParallaxY, isEquilibriumActive]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -1341,6 +1342,15 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return () => {
       if (hoverEnterTimerRef.current) clearTimeout(hoverEnterTimerRef.current);
       if (hoverExitTimerRef.current) clearTimeout(hoverExitTimerRef.current);
+    };
+  }, []);
+
+  // Cleanup equilibrium exit timer on unmount
+  useEffect(() => {
+    return () => {
+      if (equilibriumExitTimerRef.current) {
+        clearTimeout(equilibriumExitTimerRef.current);
+      }
     };
   }, []);
 
@@ -1515,7 +1525,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         {/* ORB CLUSTER VISUAL (FIXED HEIGHT + BOTTOM BOUNDARY) */}
         <div
           ref={containerRef}
-          className={`orb-cluster-visual ${isEquilibriumHovered ? 'hero-orbs-muted' : ''}`}
+          className={`orb-cluster-visual ${isEquilibriumActive ? 'hero-orbs-muted' : ''}`}
           data-dominant={dominantDriver}
           style={{
             position: 'relative',
@@ -1523,9 +1533,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             height: '500px', // Fixed height for the visual area
             maxHeight: '500px',
             overflow: 'hidden', // CRITICAL: Prevents orbs/glow from bleeding into equilibrium area
-            pointerEvents: isEquilibriumHovered ? 'none' : 'auto', // DISABLE all hero interactions when equilibrium is active
-            opacity: isEquilibriumHovered ? 0.6 : 1, // Visual de-emphasis when equilibrium is active
-            filter: isEquilibriumHovered ? 'brightness(0.7) saturate(0.8)' : 'brightness(1) saturate(1)',
+            pointerEvents: isEquilibriumActive ? 'none' : 'auto', // DISABLE all hero interactions when equilibrium is active
+            opacity: isEquilibriumActive ? 0.6 : 1, // Visual de-emphasis when equilibrium is active
+            filter: isEquilibriumActive ? 'brightness(0.7) saturate(0.8)' : 'brightness(1) saturate(1)',
             transition: 'opacity 0.2s ease-out, filter 0.2s ease-out'
           }}
         >
@@ -1846,11 +1856,19 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         </motion.div>
       </div>
 
-        {/* GLOBAL EQUILIBRIUM PANEL (AUTO-LAYOUT POSITIONED) */}
+        {/* GLOBAL EQUILIBRIUM FOCUS REGION (CARD + HOVER MENU) */}
         <div
-          className="global-equilibrium-panel"
+          className="equilibrium-focus-region"
           onPointerEnter={() => {
-            setIsEquilibriumHovered(true);
+            // Clear any pending exit timer
+            if (equilibriumExitTimerRef.current) {
+              clearTimeout(equilibriumExitTimerRef.current);
+              equilibriumExitTimerRef.current = null;
+            }
+            
+            // Activate equilibrium state
+            setIsEquilibriumActive(true);
+            
             // Immediately close any open hero tooltips
             if (hoveredDomain) {
               setHoveredDomain(null);
@@ -1867,14 +1885,23 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             }
           }}
           onPointerLeave={() => {
-            setIsEquilibriumHovered(false);
+            // Set timer to deactivate after delay (prevents flicker on quick re-entry)
+            if (equilibriumExitTimerRef.current) {
+              clearTimeout(equilibriumExitTimerRef.current);
+            }
+            
+            equilibriumExitTimerRef.current = setTimeout(() => {
+              setIsEquilibriumActive(false);
+            }, 150); // 150ms delay to prevent flickering
           }}
           style={{
             position: 'relative',
             width: '72%',
             maxWidth: '900px',
             zIndex: 4,
-            pointerEvents: 'auto' // Re-enable pointer events for equilibrium panel
+            pointerEvents: 'auto', // Re-enable pointer events for equilibrium region
+            paddingTop: '12px', // Padding to prevent hit-test gap between menu and card
+            paddingBottom: '12px'
           }}
         >
           <EquilibriumPulse
@@ -2921,16 +2948,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         /* Ensure .orb-cluster-visual manages pointer events correctly */
         .orb-cluster-visual {
             pointer-events: all;
-        }
-
-        @supports (will-change: transform) {
-          .eq-hover-card::before {
-            content: '';
-            position: absolute;
-            inset: -1px;
-            z-index: -1;
-            border-radius: 19px;
-          }
         }
 
         /* OS HORIZON V4.0 — HERO MUTED STATE */
