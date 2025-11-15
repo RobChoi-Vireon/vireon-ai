@@ -1376,13 +1376,128 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             <p style={{ fontSize: '13px', color: TOKENS.colors.textTertiary, letterSpacing: '0.2em', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Real-time balance of global macro forces.</p>
           </div>
         </div>
-        <div className="powered-by-lyra cursor-pointer" style={{ opacity: 0.6 }}>
-          <div className="flex items-center space-x-2 px-4 py-2" style={{ background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', border: '1px solid rgba(160,191,255,0.08)', borderRadius: '12px' }}>
-            <span className="text-xs font-medium" style={{ color: TOKENS.colors.textTertiary, letterSpacing: '0.25px', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Powered by</span>
-            <LyraLogo className="w-5 h-5" />
-            <span className="text-sm font-bold" style={{ color: TOKENS.colors.textPrimary }}>Lyra</span>
-          </div>
-        </div>
+        
+        {/* LIQUID GLASS PILL — POWERED BY LYRA */}
+        <motion.div
+          className="powered-by-lyra-pill"
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4, delay: 0.2, ease: MOTION_TOKENS.CURVES.horizonIn }}
+          whileHover={{
+            scale: 1.03,
+            y: -1.5,
+            transition: {
+              duration: 0.18,
+              ease: MOTION_TOKENS.CURVES.horizonIn
+            }
+          }}
+          whileTap={{
+            scale: 0.98,
+            y: 0,
+            transition: {
+              duration: 0.08,
+              ease: MOTION_TOKENS.CURVES.horizonOut
+            }
+          }}
+          style={{
+            position: 'relative',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '9px 20px',
+            borderRadius: '999px',
+            cursor: 'pointer',
+            overflow: 'hidden',
+            background: 'linear-gradient(180deg, rgba(14, 18, 26, 0.62) 0%, rgba(10, 13, 20, 0.68) 100%)',
+            backdropFilter: 'blur(16px) saturate(140%)',
+            WebkitBackdropFilter: 'blur(16px) saturate(140%)',
+            border: '1px solid rgba(160, 191, 255, 0.22)',
+            boxShadow: `
+              0 4px 16px rgba(0, 0, 0, 0.25),
+              inset 0 1px 0 rgba(255, 255, 255, 0.12)
+            `,
+            willChange: 'transform, filter, box-shadow'
+          }}
+          onHoverStart={(e) => {
+            e.currentTarget.style.filter = 'brightness(1.08)';
+            e.currentTarget.style.borderColor = 'rgba(160, 191, 255, 0.35)';
+            e.currentTarget.style.boxShadow = `
+              0 6px 24px rgba(0, 0, 0, 0.30),
+              0 0 18px rgba(106, 199, 247, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.18)
+            `;
+          }}
+          onHoverEnd={(e) => {
+            e.currentTarget.style.filter = 'brightness(1)';
+            e.currentTarget.style.borderColor = 'rgba(160, 191, 255, 0.22)';
+            e.currentTarget.style.boxShadow = `
+              0 4px 16px rgba(0, 0, 0, 0.25),
+              inset 0 1px 0 rgba(255, 255, 255, 0.12)
+            `;
+          }}
+          onTapStart={(e) => {
+            e.currentTarget.style.filter = 'brightness(0.94)';
+          }}
+          onTap={(e) => {
+            e.currentTarget.style.filter = 'brightness(1)';
+          }}
+          role="button"
+          aria-label="Powered by Lyra AI"
+          tabIndex={0}
+        >
+          {/* Ambient Inner Glow */}
+          <motion.div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'radial-gradient(circle at 50% 20%, rgba(106, 199, 247, 0.08) 0%, transparent 70%)',
+              pointerEvents: 'none',
+              borderRadius: '999px'
+            }}
+            animate={{
+              opacity: [0.6, 0.8, 0.6]
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: 'easeInOut'
+            }}
+          />
+
+          {/* Content Layer */}
+          <motion.div
+            className="flex items-center gap-2"
+            style={{ position: 'relative', zIndex: 1 }}
+            whileHover={{
+              x: -0.5,
+              transition: { duration: 0.16, ease: [0.22, 1, 0.36, 1] }
+            }}
+          >
+            <span 
+              className="text-xs font-medium"
+              style={{ 
+                color: 'rgba(255, 255, 255, 0.65)',
+                letterSpacing: '0.3px',
+                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
+                fontSize: 'clamp(10px, 1.2vw, 11.5px)'
+              }}
+            >
+              Powered by
+            </span>
+            <LyraLogo className="w-5 h-5" style={{ flexShrink: 0 }} />
+            <span 
+              className="font-bold"
+              style={{ 
+                color: TOKENS.colors.textPrimary,
+                fontSize: 'clamp(12px, 1.4vw, 13.5px)',
+                letterSpacing: '-0.01em',
+                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
+              }}
+            >
+              Lyra
+            </span>
+          </motion.div>
+        </motion.div>
       </div>
 
       {/* OS HORIZON V4.0 — EQUILIBRIUM STACK CONTAINER (AUTO-LAYOUT) */}
