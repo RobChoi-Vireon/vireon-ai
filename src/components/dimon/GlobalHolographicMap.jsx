@@ -1921,6 +1921,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             }
             summary={globalSummary}
             onOpenDrawer={() => console.log('Equilibrium drawer requested')}
+            isEquilibriumActive={isEquilibriumActive}
           />
         </div>
       </div>
