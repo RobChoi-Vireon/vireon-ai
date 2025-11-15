@@ -1392,7 +1392,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '96px',
+          gap: 'clamp(32px, 6vw, 76px)',
           width: '100%',
           height: 'auto',
           paddingTop: '48px',
