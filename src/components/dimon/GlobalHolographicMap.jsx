@@ -935,6 +935,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const bgParallaxX = useSpring(mouseX, { damping: 25, stiffness: 80 });
   const bgParallaxY = useSpring(mouseY, { damping: 25, stiffness: 80 });
 
+  const [isPillHovered, setIsPillHovered] = useState(false);
+
   const domains = MOCK_DOMAINS;
 
   const getGlobalScale = useCallback(() => {
@@ -1381,21 +1383,27 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         <motion.div
           className="powered-by-lyra-pill"
           initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.4, delay: 0.2, ease: MOTION_TOKENS.CURVES.horizonIn }}
-          whileHover={{
-            scale: 1.03,
-            y: -1.5,
-            transition: {
-              duration: 0.18,
-              ease: MOTION_TOKENS.CURVES.horizonIn
-            }
+          animate={{ 
+            opacity: 1, 
+            scale: isPillHovered ? 1.03 : 1,
+            y: isPillHovered ? -1.5 : 0,
+            filter: isPillHovered ? 'brightness(1.08)' : 'brightness(1)'
           }}
+          transition={{ 
+            scale: { duration: 0.18, ease: MOTION_TOKENS.CURVES.horizonIn },
+            y: { duration: 0.18, ease: MOTION_TOKENS.CURVES.horizonIn },
+            filter: { duration: 0.18, ease: MOTION_TOKENS.CURVES.horizonIn },
+            border: { duration: 0.18, ease: MOTION_TOKENS.CURVES.horizonIn },
+            boxShadow: { duration: 0.18, ease: MOTION_TOKENS.CURVES.horizonIn }
+          }}
+          onHoverStart={() => setIsPillHovered(true)}
+          onHoverEnd={() => setIsPillHovered(false)}
           whileTap={{
             scale: 0.98,
             y: 0,
+            filter: 'brightness(0.94)',
             transition: {
-              duration: 0.08,
+              duration: MOTION_TOKENS.DURATIONS.microPulse,
               ease: MOTION_TOKENS.CURVES.horizonOut
             }
           }}
@@ -1404,42 +1412,18 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
-            padding: '9px 20px',
+            padding: 'clamp(7px, 1vw, 9px) clamp(16px, 2vw, 20px)',
             borderRadius: '999px',
             cursor: 'pointer',
             overflow: 'hidden',
             background: 'linear-gradient(180deg, rgba(14, 18, 26, 0.62) 0%, rgba(10, 13, 20, 0.68) 100%)',
             backdropFilter: 'blur(16px) saturate(140%)',
             WebkitBackdropFilter: 'blur(16px) saturate(140%)',
-            border: '1px solid rgba(160, 191, 255, 0.22)',
-            boxShadow: `
-              0 4px 16px rgba(0, 0, 0, 0.25),
-              inset 0 1px 0 rgba(255, 255, 255, 0.12)
-            `,
+            border: isPillHovered ? '1px solid rgba(160, 191, 255, 0.35)' : '1px solid rgba(160, 191, 255, 0.22)',
+            boxShadow: isPillHovered 
+              ? `0 6px 24px rgba(0, 0, 0, 0.30), 0 0 18px rgba(106, 199, 247, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.18)`
+              : `0 4px 16px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12)`,
             willChange: 'transform, filter, box-shadow'
-          }}
-          onHoverStart={(e) => {
-            e.currentTarget.style.filter = 'brightness(1.08)';
-            e.currentTarget.style.borderColor = 'rgba(160, 191, 255, 0.35)';
-            e.currentTarget.style.boxShadow = `
-              0 6px 24px rgba(0, 0, 0, 0.30),
-              0 0 18px rgba(106, 199, 247, 0.15),
-              inset 0 1px 0 rgba(255, 255, 255, 0.18)
-            `;
-          }}
-          onHoverEnd={(e) => {
-            e.currentTarget.style.filter = 'brightness(1)';
-            e.currentTarget.style.borderColor = 'rgba(160, 191, 255, 0.22)';
-            e.currentTarget.style.boxShadow = `
-              0 4px 16px rgba(0, 0, 0, 0.25),
-              inset 0 1px 0 rgba(255, 255, 255, 0.12)
-            `;
-          }}
-          onTapStart={(e) => {
-            e.currentTarget.style.filter = 'brightness(0.94)';
-          }}
-          onTap={(e) => {
-            e.currentTarget.style.filter = 'brightness(1)';
           }}
           role="button"
           aria-label="Powered by Lyra AI"
@@ -1455,7 +1439,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               borderRadius: '999px'
             }}
             animate={{
-              opacity: [0.6, 0.8, 0.6]
+              opacity: isPillHovered ? [0.7, 0.9, 0.7] : [0.6, 0.8, 0.6]
             }}
             transition={{
               duration: 3,
@@ -1468,9 +1452,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           <motion.div
             className="flex items-center gap-2"
             style={{ position: 'relative', zIndex: 1 }}
-            whileHover={{
-              x: -0.5,
-              transition: { duration: 0.16, ease: [0.22, 1, 0.36, 1] }
+            animate={{
+              x: isPillHovered ? -0.5 : 0
+            }}
+            transition={{ 
+              duration: 0.16, 
+              ease: [0.22, 1, 0.36, 1] 
             }}
           >
             <span 
