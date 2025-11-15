@@ -54,7 +54,8 @@ export default function EquilibriumPulse({
   },
   stabilityIndex = 72,
   summary = "Growth resilience offsetting tight rates",
-  onOpenDrawer
+  onOpenDrawer,
+  isEquilibriumActive = false // NEW PROP: controlled by parent focus region
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isSliderHovered, setIsSliderHovered] = useState(false);
@@ -685,14 +686,15 @@ export default function EquilibriumPulse({
 
       {/* Hover Drawer Bubble */}
       <AnimatePresence>
-        {isHovered && !drawerOpen && (
+        {isEquilibriumActive && !drawerOpen && (
           <motion.div
-            className="absolute left-1/2 -translate-x-1/2 pointer-events-none"
+            className="absolute left-1/2 -translate-x-1/2"
             style={{
-              bottom: 'calc(100% + 16px)',
+              bottom: 'calc(100% + 4px)', // Reduced gap from 16px to 4px to minimize hit-test gap
               width: '420px',
               maxWidth: '90vw',
-              zIndex: 30
+              zIndex: 30,
+              pointerEvents: 'auto' // CRITICAL: Enable pointer events so menu can receive hover
             }}
             initial={{ opacity: 0, y: 8, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
