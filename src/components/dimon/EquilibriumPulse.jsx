@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence, useSpring } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, ArrowRight, Sparkles } from 'lucide-react';
@@ -54,9 +53,9 @@ export default function EquilibriumPulse({
   },
   stabilityIndex = 72,
   summary = "Growth resilience offsetting tight rates",
+  isOpen = false, // Controlled by parent
   onOpenDrawer
 }) {
-  const [isHovered, setIsHovered] = useState(false);
   const [isSliderHovered, setIsSliderHovered] = useState(false);
   const [isSliderFocused, setIsSliderFocused] = useState(false);
   const [isMoreHovered, setIsMoreHovered] = useState(false);
@@ -64,7 +63,6 @@ export default function EquilibriumPulse({
   const [isMorePressed, setIsMorePressed] = useState(false);
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
   const [pulseTime, setPulseTime] = useState(0);
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const [showRipple, setShowRipple] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [prevEquilibriumScore, setPrevEquilibriumScore] = useState(equilibriumScore);
@@ -88,7 +86,6 @@ export default function EquilibriumPulse({
     return () => clearTimeout(timer);
   }, []);
 
-  // Value change detection with micro-settle
   useEffect(() => {
     if (Math.abs(equilibriumScore - prevEquilibriumScore) > 0.01) {
       setIsValueChanging(true);
@@ -107,7 +104,7 @@ export default function EquilibriumPulse({
   }, [equilibriumScore, prevEquilibriumScore, pulseX]);
 
   useEffect(() => {
-    if (shouldReduceMotion || drawerOpen) return;
+    if (shouldReduceMotion || isOpen) return;
 
     let startTime = Date.now();
     const animate = () => {
@@ -120,26 +117,26 @@ export default function EquilibriumPulse({
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [shouldReduceMotion, drawerOpen]);
+  }, [shouldReduceMotion, isOpen]);
 
   const pulseDrift = useMemo(() => {
-    if (shouldReduceMotion || drawerOpen) return 0;
+    if (shouldReduceMotion || isOpen) return 0;
     const speed = 0.3 + (volatility * 0.7);
     const direction = (equilibriumScore - 0.5) * 2;
     return Math.sin(pulseTime * speed) * 2 * (1 + Math.abs(direction) * 0.5);
-  }, [pulseTime, volatility, equilibriumScore, shouldReduceMotion, drawerOpen]);
+  }, [pulseTime, volatility, equilibriumScore, shouldReduceMotion, isOpen]);
 
   const pulseScale = useMemo(() => {
-    if (shouldReduceMotion || drawerOpen || !isMounted) return 1;
+    if (shouldReduceMotion || isOpen || !isMounted) return 1;
     const breathe = Math.sin(pulseTime * (2 * Math.PI / MOTION_TOKENS.DURATIONS.breathe)) * 0.03;
     return 1 + breathe;
-  }, [pulseTime, shouldReduceMotion, drawerOpen, isMounted]);
+  }, [pulseTime, shouldReduceMotion, isOpen, isMounted]);
 
   const pulseGlowIntensity = useMemo(() => {
-    if (shouldReduceMotion || drawerOpen || !isMounted) return 0.4;
+    if (shouldReduceMotion || isOpen || !isMounted) return 0.4;
     const pulse = Math.sin(pulseTime * (2 * Math.PI / MOTION_TOKENS.DURATIONS.breathe)) * 0.12;
     return 0.4 + pulse;
-  }, [pulseTime, shouldReduceMotion, drawerOpen, isMounted]);
+  }, [pulseTime, shouldReduceMotion, isOpen, isMounted]);
 
   const getStateLabel = () => {
     if (dominantForce === 'balanced') return 'Balanced';
@@ -182,7 +179,6 @@ export default function EquilibriumPulse({
   const handleToggleDrawer = () => {
     setShowRipple(true);
     setTimeout(() => setShowRipple(false), 400);
-    setDrawerOpen(!drawerOpen);
     if (onOpenDrawer) onOpenDrawer();
   };
 
@@ -191,508 +187,49 @@ export default function EquilibriumPulse({
     handleToggleDrawer();
   };
 
-  // Calculate knob scale with all state modifiers
   const getKnobScale = () => {
     let baseScale = pulseScale;
     
-    if (drawerOpen) return 1.3;
+    if (isOpen) return 1.3;
     if (isSliderHovered || isSliderFocused) return baseScale * 1.05;
     
     return baseScale;
   };
 
-  // Enhanced knob glow with Horizon slider micro-motion
   const getKnobGlow = () => {
     let baseIntensity = pulseGlowIntensity;
     
     if (isSliderHovered) {
-      baseIntensity *= 1.19; // +19% on hover (Horizon spec: +4% glow expansion * 1.15 multiplier)
+      baseIntensity *= 1.19;
     }
     
     if (isValueChanging) {
-      baseIntensity *= 1.12; // +12% bloom during value change (Horizon drag spec)
+      baseIntensity *= 1.12;
     }
     
     return baseIntensity;
   };
 
-  // Enhanced knob color on hover (Horizon spec: fade to soft blue #8EBBFF)
   const getKnobHoverColor = () => {
     if (!isSliderHovered && !isSliderFocused) return getPulseColor();
-    
-    // For simplicity, return target on hover (proper interpolation could be added)
     return '#8EBBFF';
   };
 
   return (
-    <motion.div
-      ref={containerRef}
-      className="equilibrium-pulse-module group relative"
-      style={{
-        width: '100%',
-        padding: '32px 28px 44px 28px',
-        borderRadius: '24px',
-        backdropFilter: 'blur(22px) saturate(170%) brightness(1.05)',
-        WebkitBackdropFilter: 'blur(22px) saturate(170%) brightness(1.05)',
-        background: 'rgba(18, 22, 28, 0.10)',
-        border: '1px solid rgba(255,255,255,0.10)',
-        boxShadow: 'inset 0 2px 16px rgba(0, 0, 0, 0.36), 0 24px 48px rgba(0, 0, 0, 0.36)',
-        cursor: 'pointer',
-        willChange: 'filter, transform'
-      }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onClick={handleToggleDrawer}
-      whileHover={shouldReduceMotion ? {} : {
-        filter: 'brightness(1.06)',
-        y: -2,
-        boxShadow: 'inset 0 2px 16px rgba(0, 0, 0, 0.36), 0 24px 48px rgba(0, 0, 0, 0.44)',
-        transition: { 
-          duration: MOTION_TOKENS.DURATIONS.hoverLift, 
-          ease: MOTION_TOKENS.CURVES.horizonIn 
-        }
-      }}
-      whileTap={{
-        scale: 0.996,
-        transition: { duration: 0.08, ease: 'easeOut' }
-      }}
-      initial={{ opacity: 0, y: 12, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ 
-        duration: MOTION_TOKENS.DURATIONS.moduleReveal, 
-        delay: 0.4, 
-        ease: MOTION_TOKENS.CURVES.horizonIn 
-      }}
-      tabIndex={0}
-      role="button"
-      aria-label={`Global Equilibrium: ${getStateLabel()}. Click for detailed breakdown.`}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleToggleDrawer();
-        }
-      }}
-    >
-      {/* Subsurface Horizon Lighting */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: '32px',
-        right: '32px',
-        height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
-        borderRadius: '999px',
-        pointerEvents: 'none'
-      }} />
-
-      <motion.div
-        className="absolute inset-0 rounded-[24px] pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle at 50% 0%, rgba(255,255,255,0.06) 0%, transparent 70%)',
-          opacity: 0
-        }}
-        animate={{ opacity: isHovered ? 0.7 : 0 }}
-        transition={{ duration: 0.3 }}
-      />
-
-      {/* Header Row */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-2.5">
-          <h4 
-            style={{
-              fontSize: '18px',
-              fontWeight: 600,
-              letterSpacing: '-0.01em',
-              color: 'rgba(255,255,255,0.98)',
-              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-              textShadow: '0 1px 2px rgba(0,0,0,0.25)'
-            }}
-          >
-            Global Equilibrium
-          </h4>
-          
-          <div
-            className="px-2.5 py-1 rounded-lg"
-            style={{
-              background: 'rgba(255,255,255,0.10)',
-              fontSize: '11px',
-              fontWeight: 600,
-              color: 'rgba(255,255,255,0.88)',
-              letterSpacing: '0.02em',
-              border: '1px solid rgba(255,255,255,0.08)'
-            }}
-          >
-            {getStateLabel()}
-          </div>
-        </div>
-
-        {/* More Link — Apple-Grade Micro-Interaction */}
-        <motion.button
-          className="more-link-group flex items-center gap-1.5 px-3 py-1.5 -mr-2 rounded-full relative"
-          onMouseEnter={() => setIsMoreHovered(true)}
-          onMouseLeave={() => setIsMoreHovered(false)}
-          onFocus={() => setIsMoreFocused(true)}
-          onBlur={() => setIsMoreFocused(false)}
-          onPointerDown={() => setIsMorePressed(true)}
-          onPointerUp={() => setIsMorePressed(false)}
-          onPointerLeave={() => setIsMorePressed(false)}
-          onClick={handleMoreClick}
-          style={{
-            background: 'transparent',
-            border: 'none',
-            cursor: 'pointer',
-            position: 'relative',
-            overflow: 'visible',
-            WebkitTapHighlightColor: 'transparent'
-          }}
-          animate={{
-            x: isMoreHovered ? 3 : 0,
-            scale: isMorePressed ? 0.97 : (isValueChanging ? [1, 1.02, 1] : 1)
-          }}
-          transition={{
-            x: { 
-              duration: isMoreHovered ? MOTION_TOKENS.DURATIONS.hoverEnter : MOTION_TOKENS.DURATIONS.hoverExit,
-              ease: MOTION_TOKENS.CURVES.appleEaseOut 
-            },
-            scale: isMorePressed 
-              ? { duration: MOTION_TOKENS.DURATIONS.pressDown, ease: 'easeOut' }
-              : { duration: MOTION_TOKENS.DURATIONS.pressRelease, ease: MOTION_TOKENS.CURVES.appleSettle }
-          }}
-          aria-label="View detailed force breakdown"
-          tabIndex={0}
-        >
-          {/* Focus Ring (Pill Shape) */}
+    <>
+      {/* EQUILIBRIUM HOVER DRAWER — Positioned above card */}
+      <AnimatePresence>
+        {isOpen && (
           <motion.div
-            className="absolute inset-0 -mx-1 -my-0.5 rounded-full pointer-events-none"
-            style={{
-              background: 'rgba(90, 160, 255, 0.35)',
-              border: '1px solid rgba(90, 160, 255, 0.45)',
-              zIndex: 0
-            }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isMoreFocused ? 0.4 : 0 }}
-            transition={{ 
-              duration: isMoreFocused ? MOTION_TOKENS.DURATIONS.focusEnter : MOTION_TOKENS.DURATIONS.focusExit,
-              ease: MOTION_TOKENS.CURVES.horizonIn
-            }}
-          />
-
-          {/* Click Ripple Glow */}
-          <AnimatePresence>
-            {showRipple && (
-              <motion.div
-                className="absolute inset-0 rounded-full pointer-events-none"
-                style={{
-                  background: 'radial-gradient(circle, rgba(90,160,255,0.35) 0%, transparent 70%)',
-                  zIndex: 0
-                }}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ 
-                  opacity: [0.3, 0], 
-                  scale: [0.8, 1.4]
-                }}
-                exit={{ opacity: 0 }}
-                transition={{ 
-                  duration: MOTION_TOKENS.DURATIONS.ripple,
-                  ease: MOTION_TOKENS.CURVES.appleSettle
-                }}
-              />
-            )}
-          </AnimatePresence>
-
-          <motion.span
-            style={{
-              fontSize: '12.5px',
-              fontWeight: 500,
-              letterSpacing: '0.01em',
-              position: 'relative',
-              zIndex: 1
-            }}
-            animate={{
-              color: isMoreHovered 
-                ? 'rgba(120, 180, 255, 1)' 
-                : 'rgba(90, 160, 255, 0.90)',
-              filter: isMoreHovered ? 'brightness(1.12)' : 'brightness(1)'
-            }}
-            transition={{ duration: 0.15 }}
-          >
-            More
-          </motion.span>
-          
-          <motion.div
-            style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center' }}
-            animate={{ 
-              opacity: isMoreHovered ? 1 : 0.85
-            }}
-            transition={{ duration: 0.15 }}
-          >
-            <ArrowRight className="w-3.5 h-3.5" style={{ color: 'rgba(90, 160, 255, 0.90)' }} />
-          </motion.div>
-        </motion.button>
-      </div>
-
-      {/* 3-Layer Pulse Bar Container */}
-      <div 
-        className="slider-container"
-        style={{ 
-          position: 'relative',
-          height: '38px',
-          marginBottom: '26px',
-          marginTop: '8px'
-        }}
-        onMouseEnter={() => setIsSliderHovered(true)}
-        onMouseLeave={() => setIsSliderHovered(false)}
-        onFocus={() => setIsSliderFocused(true)}
-        onBlur={() => setIsSliderFocused(false)}
-        tabIndex={0}
-        role="slider"
-        aria-label={`Equilibrium at ${Math.round(equilibriumScore * 100)}%`}
-        aria-valuenow={Math.round(equilibriumScore * 100)}
-        aria-valuemin={0}
-        aria-valuemax={100}
-      >
-        {/* Layer 1: Glass Rail Background */}
-        <div
-          className="pulse-rail"
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: 0,
-            right: 0,
-            height: '7px',
-            transform: 'translateY(-50%)',
-            borderRadius: '999px',
-            background: 'rgba(255,255,255,0.07)',
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            boxShadow: 'inset 0 1px 4px rgba(0,0,0,0.28)',
-            overflow: 'hidden'
-          }}
-        >
-          {/* Layer 2: Dynamic Gradient Flow */}
-          <motion.div
-            className="absolute inset-0"
-            style={{
-              background: 'linear-gradient(90deg, #42B0FF 0%, #7AEDCF 15%, #90CAFF 35%, #D4BD78 50%, #FFD982 65%, #FFB965 85%, #FFCA7A 100%)',
-              opacity: 0.42,
-              mixBlendMode: 'screen'
-            }}
-            animate={shouldReduceMotion ? {} : {
-              opacity: [0.42, 0.52, 0.42]
-            }}
-            transition={{
-              duration: 3.5,
-              repeat: Infinity,
-              ease: 'easeInOut'
-            }}
-          />
-
-          {/* Traveling Shimmer */}
-          {!shouldReduceMotion && !drawerOpen && (
-            <motion.div
-              className="absolute inset-0"
-              style={{
-                background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.32) 50%, transparent 100%)',
-                width: '40%'
-              }}
-              animate={{
-                x: ['-40%', '140%']
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: 'linear',
-                repeatDelay: 0.8
-              }}
-            />
-          )}
-
-          {/* Rail Highlight (Horizon Hover: 140ms fade-in to soft blue) */}
-          <motion.div
-            className="absolute"
-            style={{
-              top: '50%',
-              left: `${equilibriumScore * 100}%`,
-              transform: 'translate(-50%, -50%)',
-              width: '80px',
-              height: '20px',
-              background: `radial-gradient(ellipse, ${isSliderHovered || isSliderFocused ? 'rgba(142, 187, 255, 0.50)' : getPulseGlow()} 0%, transparent 70%)`,
-              filter: 'blur(12px)',
-              pointerEvents: 'none',
-              zIndex: 1
-            }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isSliderHovered || isSliderFocused ? 1 : 0 }}
-            transition={{ 
-              duration: isSliderHovered || isSliderFocused ? 0.14 : MOTION_TOKENS.DURATIONS.hoverExit,
-              ease: MOTION_TOKENS.CURVES.horizonIn
-            }}
-          />
-        </div>
-
-        {/* Subsurface Glow Layer */}
-        <div style={{
-          position: 'absolute',
-          top: '50%',
-          left: 0,
-          right: 0,
-          height: '16px',
-          transform: 'translateY(-50%)',
-          background: 'linear-gradient(90deg, rgba(66,176,255,0.12), rgba(122,237,207,0.10), rgba(212,189,120,0.10), rgba(255,185,101,0.12))',
-          filter: 'blur(12px)',
-          opacity: 0.75,
-          pointerEvents: 'none',
-          borderRadius: '999px'
-        }} />
-
-        {/* Focus Ring (Accessibility) */}
-        <motion.div
-          className="absolute pointer-events-none"
-          style={{
-            top: '50%',
-            left: `${equilibriumScore * 100}%`,
-            transform: 'translate(-50%, -50%)',
-            width: '28px',
-            height: '28px',
-            borderRadius: '999px',
-            border: '2px solid rgba(90, 160, 255, 0.5)',
-            zIndex: 4
-          }}
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ 
-            opacity: isSliderFocused ? 0.5 : 0,
-            scale: isSliderFocused ? 1 : 0.9
-          }}
-          transition={{ 
-            duration: isSliderFocused ? MOTION_TOKENS.DURATIONS.focusEnter : MOTION_TOKENS.DURATIONS.focusExit,
-            ease: MOTION_TOKENS.CURVES.horizonIn
-          }}
-        />
-
-        {/* Layer 3: Living Pulse Particle (Horizon Slider Spec: 180ms spring on drag) */}
-        <motion.div
-          className="pulse-particle"
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: `${pulseX.get() + pulseDrift}%`,
-            transform: 'translate(-50%, -50%)',
-            width: '16px',
-            height: '16px',
-            borderRadius: '999px',
-            background: isSliderHovered || isSliderFocused ? getKnobHoverColor() : getPulseColor(),
-            border: '1.5px solid rgba(255,255,255,0.65)',
-            zIndex: 5,
-            pointerEvents: 'none',
-            willChange: 'transform, box-shadow, background-color',
-            filter: drawerOpen ? 'brightness(1.18)' : 'brightness(1)'
-          }}
-          animate={{
-            scale: getKnobScale(),
-            boxShadow: drawerOpen 
-              ? `0 0 36px ${getPulseGlow()}, 0 0 14px rgba(255,255,255,0.85), inset 0 0 0 2px rgba(255,255,255,0.65)`
-              : `0 0 ${22 * getKnobGlow()}px ${isSliderHovered || isSliderFocused ? 'rgba(142, 187, 255, 0.50)' : getPulseGlow()}, 0 0 8px rgba(255,255,255,0.55), inset 0 0 0 2px rgba(255,255,255,0.45)`,
-            ...(isValueChanging && !shouldReduceMotion ? {
-              x: [0, 2, 0]
-            } : {})
-          }}
-          transition={{
-            scale: { 
-              duration: isSliderHovered || isSliderFocused 
-                ? MOTION_TOKENS.DURATIONS.hoverEnter 
-                : 0.3, 
-              ease: MOTION_TOKENS.CURVES.horizonSpring 
-            },
-            boxShadow: { duration: 0.14, ease: 'easeOut' },
-            backgroundColor: { duration: 0.14, ease: MOTION_TOKENS.CURVES.horizonIn },
-            x: isValueChanging 
-              ? { duration: 0.18, times: [0, 0.5, 1], ease: [0.25, 0.84, 0.32, 1] }
-              : {}
-          }}
-        >
-          {/* Inner Refraction Highlight */}
-          <div style={{
-            position: 'absolute',
-            top: '2.5px',
-            left: '2.5px',
-            width: '5.5px',
-            height: '5.5px',
-            borderRadius: '999px',
-            background: 'rgba(255,255,255,0.80)',
-            filter: 'blur(0.9px)',
-            pointerEvents: 'none'
-          }} />
-
-          {/* Ambient Underside Glow (Apple Control Center style) */}
-          <motion.div 
+            className="equilibrium-hover-drawer pointer-events-auto"
             style={{
               position: 'absolute',
-              bottom: '-5px',
+              bottom: 'calc(100% + 4px)', // Position just above the card with minimal gap
               left: '50%',
               transform: 'translateX(-50%)',
-              width: '24px',
-              height: '8px',
-              background: isSliderHovered || isSliderFocused ? 'rgba(142, 187, 255, 0.50)' : getPulseGlow(),
-              filter: 'blur(7px)',
-              borderRadius: '999px',
-              pointerEvents: 'none'
-            }}
-            animate={{
-              opacity: getKnobGlow() * 0.6
-            }}
-            transition={{ duration: 0.14 }}
-          />
-        </motion.div>
-
-        {/* Force Zone Labels (OS Horizon: +8px edge spacing) */}
-        <div className="force-zone-labels absolute left-0 right-0 flex justify-between text-xs" style={{
-          color: 'rgba(255,255,255,0.68)',
-          fontWeight: 500,
-          fontSize: '13px',
-          letterSpacing: '0.01em',
-          bottom: '-30px',
-          paddingLeft: '8px',
-          paddingRight: '8px'
-        }}>
-          <span>Growth / Demand</span>
-          <span>Tightening / Supply</span>
-        </div>
-      </div>
-
-      {/* Summary Line (OS Horizon: +12px spacing from slider, line-height 1.6) */}
-      <motion.p
-        style={{
-          fontSize: '16px',
-          lineHeight: '1.6',
-          color: 'rgba(255,255,255,0.96)',
-          fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
-          fontWeight: 500,
-          textAlign: 'center',
-          marginTop: '38px',
-          marginBottom: 0,
-          letterSpacing: '-0.005em',
-          textShadow: '0 1px 2px rgba(0,0,0,0.20)'
-        }}
-        animate={{
-          opacity: isHovered ? 1 : 0.96,
-          y: isHovered ? -1 : 0
-        }}
-        transition={{ duration: 0.18 }}
-      >
-        {summary}
-      </motion.p>
-
-      {/* Hover Drawer Bubble */}
-      <AnimatePresence>
-        {isHovered && !drawerOpen && (
-          <motion.div
-            className="absolute left-1/2 -translate-x-1/2 pointer-events-none"
-            style={{
-              bottom: 'calc(100% + 16px)',
               width: '420px',
               maxWidth: '90vw',
-              zIndex: 30
+              zIndex: 20
             }}
             initial={{ opacity: 0, y: 8, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -712,7 +249,6 @@ export default function EquilibriumPulse({
                 boxShadow: '0 16px 48px rgba(0,0,0,0.52), inset 0 1px 0 rgba(255,255,255,0.12)'
               }}
             >
-              {/* Drawer Top Highlight */}
               <div style={{
                 position: 'absolute',
                 top: 0,
@@ -723,7 +259,6 @@ export default function EquilibriumPulse({
                 borderRadius: '999px'
               }} />
 
-              {/* Force Contribution Grid */}
               <div className="mb-4">
                 <h5 style={{
                   fontSize: '10px',
@@ -784,7 +319,6 @@ export default function EquilibriumPulse({
                 margin: '16px 0'
               }} />
 
-              {/* Stability Index + Label */}
               <div className="flex items-center gap-4 mb-4">
                 <div className="relative w-11 h-11 flex-shrink-0">
                   <svg className="transform -rotate-90" width="44" height="44">
@@ -831,7 +365,6 @@ export default function EquilibriumPulse({
                 </div>
               </div>
 
-              {/* Lyra Actionable Insight */}
               <motion.div
                 className="px-4 py-3.5 rounded-xl"
                 style={{
@@ -873,7 +406,6 @@ export default function EquilibriumPulse({
                 </div>
               </motion.div>
 
-              {/* Drawer Arrow */}
               <div style={{
                 position: 'absolute',
                 bottom: '-9px',
@@ -901,85 +433,518 @@ export default function EquilibriumPulse({
         )}
       </AnimatePresence>
 
-      <style jsx>{`
-        /* GPU Acceleration */
-        .pulse-particle,
-        .equilibrium-pulse-module,
-        .more-link-group {
-          transform: translateZ(0);
-          backface-visibility: hidden;
-        }
-
-        /* Slider Focus */
-        .slider-container:focus-visible {
-          outline: none;
-        }
-
-        /* More Link Focus (handled by inline focus ring) */
-        .more-link-group:focus-visible {
-          outline: none;
-        }
-
-        /* Reduced Motion Support */
-        @media (prefers-reduced-motion: reduce) {
-          .pulse-particle {
-            animation: none !important;
-            transition: none !important;
+      {/* BASE CARD */}
+      <motion.div
+        ref={containerRef}
+        className="equilibrium-base-card group relative"
+        style={{
+          width: '100%',
+          padding: '32px 28px 44px 28px',
+          borderRadius: '24px',
+          backdropFilter: 'blur(22px) saturate(170%) brightness(1.05)',
+          WebkitBackdropFilter: 'blur(22px) saturate(170%) brightness(1.05)',
+          background: 'rgba(18, 22, 28, 0.10)',
+          border: '1px solid rgba(255,255,255,0.10)',
+          boxShadow: 'inset 0 2px 16px rgba(0, 0, 0, 0.36), 0 24px 48px rgba(0, 0, 0, 0.36)',
+          cursor: 'pointer',
+          willChange: 'filter, transform'
+        }}
+        onClick={handleToggleDrawer}
+        whileHover={shouldReduceMotion ? {} : {
+          filter: 'brightness(1.06)',
+          y: -2,
+          boxShadow: 'inset 0 2px 16px rgba(0, 0, 0, 0.36), 0 24px 48px rgba(0, 0, 0, 0.44)',
+          transition: { 
+            duration: MOTION_TOKENS.DURATIONS.hoverLift, 
+            ease: MOTION_TOKENS.CURVES.horizonIn 
           }
-          
+        }}
+        whileTap={{
+          scale: 0.996,
+          transition: { duration: 0.08, ease: 'easeOut' }
+        }}
+        initial={{ opacity: 0, y: 12, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ 
+          duration: MOTION_TOKENS.DURATIONS.moduleReveal, 
+          delay: 0.4, 
+          ease: MOTION_TOKENS.CURVES.horizonIn 
+        }}
+        tabIndex={0}
+        role="button"
+        aria-label={`Global Equilibrium: ${getStateLabel()}. Click for detailed breakdown.`}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleToggleDrawer();
+          }
+        }}
+      >
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '32px',
+          right: '32px',
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+          borderRadius: '999px',
+          pointerEvents: 'none'
+        }} />
+
+        <motion.div
+          className="absolute inset-0 rounded-[24px] pointer-events-none"
+          style={{
+            background: 'radial-gradient(circle at 50% 0%, rgba(255,255,255,0.06) 0%, transparent 70%)',
+            opacity: 0
+          }}
+          animate={{ opacity: isOpen ? 0.7 : 0 }}
+          transition={{ duration: 0.3 }}
+        />
+
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2.5">
+            <h4 
+              style={{
+                fontSize: '18px',
+                fontWeight: 600,
+                letterSpacing: '-0.01em',
+                color: 'rgba(255,255,255,0.98)',
+                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                textShadow: '0 1px 2px rgba(0,0,0,0.25)'
+              }}
+            >
+              Global Equilibrium
+            </h4>
+            
+            <div
+              className="px-2.5 py-1 rounded-lg"
+              style={{
+                background: 'rgba(255,255,255,0.10)',
+                fontSize: '11px',
+                fontWeight: 600,
+                color: 'rgba(255,255,255,0.88)',
+                letterSpacing: '0.02em',
+                border: '1px solid rgba(255,255,255,0.08)'
+              }}
+            >
+              {getStateLabel()}
+            </div>
+          </div>
+
+          <motion.button
+            className="more-link-group flex items-center gap-1.5 px-3 py-1.5 -mr-2 rounded-full relative"
+            onMouseEnter={() => setIsMoreHovered(true)}
+            onMouseLeave={() => setIsMoreHovered(false)}
+            onFocus={() => setIsMoreFocused(true)}
+            onBlur={() => setIsMoreFocused(false)}
+            onPointerDown={() => setIsMorePressed(true)}
+            onPointerUp={() => setIsMorePressed(false)}
+            onPointerLeave={() => setIsMorePressed(false)}
+            onClick={handleMoreClick}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              position: 'relative',
+              overflow: 'visible',
+              WebkitTapHighlightColor: 'transparent'
+            }}
+            animate={{
+              x: isMoreHovered ? 3 : 0,
+              scale: isMorePressed ? 0.97 : (isValueChanging ? [1, 1.02, 1] : 1)
+            }}
+            transition={{
+              x: { 
+                duration: isMoreHovered ? MOTION_TOKENS.DURATIONS.hoverEnter : MOTION_TOKENS.DURATIONS.hoverExit,
+                ease: MOTION_TOKENS.CURVES.appleEaseOut 
+              },
+              scale: isMorePressed 
+                ? { duration: MOTION_TOKENS.DURATIONS.pressDown, ease: 'easeOut' }
+                : { duration: MOTION_TOKENS.DURATIONS.pressRelease, ease: MOTION_TOKENS.CURVES.appleSettle }
+            }}
+            aria-label="View detailed force breakdown"
+            tabIndex={0}
+          >
+            <motion.div
+              className="absolute inset-0 -mx-1 -my-0.5 rounded-full pointer-events-none"
+              style={{
+                background: 'rgba(90, 160, 255, 0.35)',
+                border: '1px solid rgba(90, 160, 255, 0.45)',
+                zIndex: 0
+              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isMoreFocused ? 0.4 : 0 }}
+              transition={{ 
+                duration: isMoreFocused ? MOTION_TOKENS.DURATIONS.focusEnter : MOTION_TOKENS.DURATIONS.focusExit,
+                ease: MOTION_TOKENS.CURVES.horizonIn
+              }}
+            />
+
+            <AnimatePresence>
+              {showRipple && (
+                <motion.div
+                  className="absolute inset-0 rounded-full pointer-events-none"
+                  style={{
+                    background: 'radial-gradient(circle, rgba(90,160,255,0.35) 0%, transparent 70%)',
+                    zIndex: 0
+                  }}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ 
+                    opacity: [0.3, 0], 
+                    scale: [0.8, 1.4]
+                  }}
+                  exit={{ opacity: 0 }}
+                  transition={{ 
+                    duration: MOTION_TOKENS.DURATIONS.ripple,
+                    ease: MOTION_TOKENS.CURVES.appleSettle
+                  }}
+                />
+              )}
+            </AnimatePresence>
+
+            <motion.span
+              style={{
+                fontSize: '12.5px',
+                fontWeight: 500,
+                letterSpacing: '0.01em',
+                position: 'relative',
+                zIndex: 1
+              }}
+              animate={{
+                color: isMoreHovered 
+                  ? 'rgba(120, 180, 255, 1)' 
+                  : 'rgba(90, 160, 255, 0.90)',
+                filter: isMoreHovered ? 'brightness(1.12)' : 'brightness(1)'
+              }}
+              transition={{ duration: 0.15 }}
+            >
+              More
+            </motion.span>
+            
+            <motion.div
+              style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center' }}
+              animate={{ 
+                opacity: isMoreHovered ? 1 : 0.85
+              }}
+              transition={{ duration: 0.15 }}
+            >
+              <ArrowRight className="w-3.5 h-3.5" style={{ color: 'rgba(90, 160, 255, 0.90)' }} />
+            </motion.div>
+          </motion.button>
+        </div>
+
+        <div 
+          className="slider-container"
+          style={{ 
+            position: 'relative',
+            height: '38px',
+            marginBottom: '26px',
+            marginTop: '8px'
+          }}
+          onMouseEnter={() => setIsSliderHovered(true)}
+          onMouseLeave={() => setIsSliderHovered(false)}
+          onFocus={() => setIsSliderFocused(true)}
+          onBlur={() => setIsSliderFocused(false)}
+          tabIndex={0}
+          role="slider"
+          aria-label={`Equilibrium at ${Math.round(equilibriumScore * 100)}%`}
+          aria-valuenow={Math.round(equilibriumScore * 100)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+        >
+          <div
+            className="pulse-rail"
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: 0,
+              right: 0,
+              height: '7px',
+              transform: 'translateY(-50%)',
+              borderRadius: '999px',
+              background: 'rgba(255,255,255,0.07)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              boxShadow: 'inset 0 1px 4px rgba(0,0,0,0.28)',
+              overflow: 'hidden'
+            }}
+          >
+            <motion.div
+              className="absolute inset-0"
+              style={{
+                background: 'linear-gradient(90deg, #42B0FF 0%, #7AEDCF 15%, #90CAFF 35%, #D4BD78 50%, #FFD982 65%, #FFB965 85%, #FFCA7A 100%)',
+                opacity: 0.42,
+                mixBlendMode: 'screen'
+              }}
+              animate={shouldReduceMotion ? {} : {
+                opacity: [0.42, 0.52, 0.42]
+              }}
+              transition={{
+                duration: 3.5,
+                repeat: Infinity,
+                ease: 'easeInOut'
+              }}
+            />
+
+            {!shouldReduceMotion && !isOpen && (
+              <motion.div
+                className="absolute inset-0"
+                style={{
+                  background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.32) 50%, transparent 100%)',
+                  width: '40%'
+                }}
+                animate={{
+                  x: ['-40%', '140%']
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: 'linear',
+                  repeatDelay: 0.8
+                }}
+              />
+            )}
+
+            <motion.div
+              className="absolute"
+              style={{
+                top: '50%',
+                left: `${equilibriumScore * 100}%`,
+                transform: 'translate(-50%, -50%)',
+                width: '80px',
+                height: '20px',
+                background: `radial-gradient(ellipse, ${isSliderHovered || isSliderFocused ? 'rgba(142, 187, 255, 0.50)' : getPulseGlow()} 0%, transparent 70%)`,
+                filter: 'blur(12px)',
+                pointerEvents: 'none',
+                zIndex: 1
+              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isSliderHovered || isSliderFocused ? 1 : 0 }}
+              transition={{ 
+                duration: isSliderHovered || isSliderFocused ? 0.14 : MOTION_TOKENS.DURATIONS.hoverExit,
+                ease: MOTION_TOKENS.CURVES.horizonIn
+              }}
+            />
+          </div>
+
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: 0,
+            right: 0,
+            height: '16px',
+            transform: 'translateY(-50%)',
+            background: 'linear-gradient(90deg, rgba(66,176,255,0.12), rgba(122,237,207,0.10), rgba(212,189,120,0.10), rgba(255,185,101,0.12))',
+            filter: 'blur(12px)',
+            opacity: 0.75,
+            pointerEvents: 'none',
+            borderRadius: '999px'
+          }} />
+
+          <motion.div
+            className="absolute pointer-events-none"
+            style={{
+              top: '50%',
+              left: `${equilibriumScore * 100}%`,
+              transform: 'translate(-50%, -50%)',
+              width: '28px',
+              height: '28px',
+              borderRadius: '999px',
+              border: '2px solid rgba(90, 160, 255, 0.5)',
+              zIndex: 4
+            }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ 
+              opacity: isSliderFocused ? 0.5 : 0,
+              scale: isSliderFocused ? 1 : 0.9
+            }}
+            transition={{ 
+              duration: isSliderFocused ? MOTION_TOKENS.DURATIONS.focusEnter : MOTION_TOKENS.DURATIONS.focusExit,
+              ease: MOTION_TOKENS.CURVES.horizonIn
+            }}
+          />
+
+          <motion.div
+            className="pulse-particle"
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: `${pulseX.get() + pulseDrift}%`,
+              transform: 'translate(-50%, -50%)',
+              width: '16px',
+              height: '16px',
+              borderRadius: '999px',
+              background: isSliderHovered || isSliderFocused ? getKnobHoverColor() : getPulseColor(),
+              border: '1.5px solid rgba(255,255,255,0.65)',
+              zIndex: 5,
+              pointerEvents: 'none',
+              willChange: 'transform, box-shadow, background-color',
+              filter: isOpen ? 'brightness(1.18)' : 'brightness(1)'
+            }}
+            animate={{
+              scale: getKnobScale(),
+              boxShadow: isOpen 
+                ? `0 0 36px ${getPulseGlow()}, 0 0 14px rgba(255,255,255,0.85), inset 0 0 0 2px rgba(255,255,255,0.65)`
+                : `0 0 ${22 * getKnobGlow()}px ${isSliderHovered || isSliderFocused ? 'rgba(142, 187, 255, 0.50)' : getPulseGlow()}, 0 0 8px rgba(255,255,255,0.55), inset 0 0 0 2px rgba(255,255,255,0.45)`,
+              ...(isValueChanging && !shouldReduceMotion ? {
+                x: [0, 2, 0]
+              } : {})
+            }}
+            transition={{
+              scale: { 
+                duration: isSliderHovered || isSliderFocused 
+                  ? MOTION_TOKENS.DURATIONS.hoverEnter 
+                  : 0.3, 
+                ease: MOTION_TOKENS.CURVES.horizonSpring 
+              },
+              boxShadow: { duration: 0.14, ease: 'easeOut' },
+              backgroundColor: { duration: 0.14, ease: MOTION_TOKENS.CURVES.horizonIn },
+              x: isValueChanging 
+                ? { duration: 0.18, times: [0, 0.5, 1], ease: [0.25, 0.84, 0.32, 1] }
+                : {}
+            }}
+          >
+            <div style={{
+              position: 'absolute',
+              top: '2.5px',
+              left: '2.5px',
+              width: '5.5px',
+              height: '5.5px',
+              borderRadius: '999px',
+              background: 'rgba(255,255,255,0.80)',
+              filter: 'blur(0.9px)',
+              pointerEvents: 'none'
+            }} />
+
+            <motion.div 
+              style={{
+                position: 'absolute',
+                bottom: '-5px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: '24px',
+                height: '8px',
+                background: isSliderHovered || isSliderFocused ? 'rgba(142, 187, 255, 0.50)' : getPulseGlow(),
+                filter: 'blur(7px)',
+                borderRadius: '999px',
+                pointerEvents: 'none'
+              }}
+              animate={{
+                opacity: getKnobGlow() * 0.6
+              }}
+              transition={{ duration: 0.14 }}
+            />
+          </motion.div>
+
+          <div className="force-zone-labels absolute left-0 right-0 flex justify-between text-xs" style={{
+            color: 'rgba(255,255,255,0.68)',
+            fontWeight: 500,
+            fontSize: '13px',
+            letterSpacing: '0.01em',
+            bottom: '-30px',
+            paddingLeft: '8px',
+            paddingRight: '8px'
+          }}>
+            <span>Growth / Demand</span>
+            <span>Tightening / Supply</span>
+          </div>
+        </div>
+
+        <motion.p
+          style={{
+            fontSize: '16px',
+            lineHeight: '1.6',
+            color: 'rgba(255,255,255,0.96)',
+            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
+            fontWeight: 500,
+            textAlign: 'center',
+            marginTop: '38px',
+            marginBottom: 0,
+            letterSpacing: '-0.005em',
+            textShadow: '0 1px 2px rgba(0,0,0,0.20)'
+          }}
+          animate={{
+            opacity: isOpen ? 1 : 0.96,
+            y: isOpen ? -1 : 0
+          }}
+          transition={{ duration: 0.18 }}
+        >
+          {summary}
+        </motion.p>
+
+        <style jsx>{`
+          .pulse-particle,
+          .equilibrium-base-card,
           .more-link-group {
-            transition: none !important;
+            transform: translateZ(0);
+            backface-visibility: hidden;
           }
-        }
 
-        /* High Contrast Mode */
-        @media (prefers-contrast: high) {
-          .pulse-rail {
-            border-color: rgba(255, 255, 255, 0.5) !important;
+          .slider-container:focus-visible {
+            outline: none;
           }
-          
-          .equilibrium-pulse-module h4,
-          .equilibrium-pulse-module p {
-            color: #FFFFFF !important;
-          }
-        }
 
-        /* Touch Targets */
-        @media (pointer: coarse) {
-          .equilibrium-pulse-module {
-            min-height: 48px;
+          .more-link-group:focus-visible {
+            outline: none;
           }
-          
-          .more-link-group {
-            min-width: 44px;
-            min-height: 44px;
-          }
-        }
 
-        /* Mobile Responsiveness */
-        @media (max-width: 768px) {
-          .equilibrium-pulse-module h4 {
-            font-size: 17px !important;
+          @media (prefers-reduced-motion: reduce) {
+            .pulse-particle {
+              animation: none !important;
+              transition: none !important;
+            }
+            
+            .more-link-group {
+              transition: none !important;
+            }
           }
-          
-          .equilibrium-pulse-module p {
-            font-size: 15px !important;
-          }
-          
-          .force-zone-labels {
-            font-size: 12px !important;
-          }
-        }
 
-        /* Performance Optimization */
-        .pulse-particle::before {
-          content: '';
-          position: absolute;
-          inset: -2px;
-          border-radius: 999px;
-          z-index: -1;
-        }
-      `}</style>
-    </motion.div>
+          @media (prefers-contrast: high) {
+            .pulse-rail {
+              border-color: rgba(255, 255, 255, 0.5) !important;
+            }
+            
+            .equilibrium-base-card h4,
+            .equilibrium-base-card p {
+              color: #FFFFFF !important;
+            }
+          }
+
+          @media (pointer: coarse) {
+            .equilibrium-base-card {
+              min-height: 48px;
+            }
+            
+            .more-link-group {
+              min-width: 44px;
+              min-height: 44px;
+            }
+          }
+
+          @media (max-width: 768px) {
+            .equilibrium-base-card h4 {
+              font-size: 17px !important;
+            }
+            
+            .equilibrium-base-card p {
+              font-size: 15px !important;
+            }
+            
+            .force-zone-labels {
+              font-size: 12px !important;
+            }
+          }
+
+          .pulse-particle::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 999px;
+            z-index: -1;
+          }
+        `}</style>
+      </motion.div>
+    </>
   );
 }

@@ -936,7 +936,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const bgParallaxY = useSpring(mouseY, { damping: 25, stiffness: 80 });
 
   const [isPillHovered, setIsPillHovered] = useState(false);
-  const [isEquilibriumActive, setIsEquilibriumActive] = useState(false);
+  const [isGlobalEquilibriumOpen, setIsGlobalEquilibriumOpen] = useState(false);
   const equilibriumExitTimerRef = useRef(null);
 
   const domains = MOCK_DOMAINS;
@@ -1067,7 +1067,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   }, []);
 
   const handleDomainHoverEnter = useCallback((domain, event) => {
-    if (isEquilibriumActive) return; // BLOCK hero interactions when equilibrium is active
+    if (isGlobalEquilibriumOpen) return; // BLOCK hero interactions when equilibrium is active
     
     const target = event.currentTarget;
 
@@ -1091,10 +1091,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         }
       }
     }, TOKENS.HORIZON.hoverEnterDelay);
-  }, [isEquilibriumActive]);
+  }, [isGlobalEquilibriumOpen]);
 
   const handleDomainHoverLeave = useCallback(() => {
-    if (isEquilibriumActive) return; // BLOCK hero interactions when equilibrium is active
+    if (isGlobalEquilibriumOpen) return; // BLOCK hero interactions when equilibrium is active
     
     if (hoverEnterTimerRef.current) {
       clearTimeout(hoverEnterTimerRef.current);
@@ -1111,7 +1111,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         setHoveredNodeRect(null);
       }
     }, 400);
-  }, [isCardHovered, isEquilibriumActive]);
+  }, [isCardHovered, isGlobalEquilibriumOpen]);
 
   const handleCardEnter = useCallback(() => {
     setIsCardHovered(true);
@@ -1263,7 +1263,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
   useEffect(() => {
     const handleMouseMove = (e) => {
-      if (!containerRef.current || shouldReduceMotion || isEquilibriumActive) return; // BLOCK parallax when equilibrium active
+      if (!containerRef.current || shouldReduceMotion || isGlobalEquilibriumOpen) return; // BLOCK parallax when equilibrium active
       const rect = containerRef.current.getBoundingClientRect();
       const normX = ((e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2));
       const normY = ((e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2));
@@ -1280,7 +1280,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [shouldReduceMotion, selectedDomain, mouseX, mouseY, glassParallaxX, glassParallaxY, isEquilibriumActive]);
+  }, [shouldReduceMotion, selectedDomain, mouseX, mouseY, glassParallaxX, glassParallaxY, isGlobalEquilibriumOpen]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -1525,7 +1525,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         {/* ORB CLUSTER VISUAL (FIXED HEIGHT + BOTTOM BOUNDARY) */}
         <div
           ref={containerRef}
-          className={`orb-cluster-visual ${isEquilibriumActive ? 'hero-orbs-muted' : ''}`}
+          className={`orb-cluster-visual ${isGlobalEquilibriumOpen ? 'hero-orbs-muted' : ''}`}
           data-dominant={dominantDriver}
           style={{
             position: 'relative',
@@ -1533,9 +1533,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             height: '500px', // Fixed height for the visual area
             maxHeight: '500px',
             overflow: 'hidden', // CRITICAL: Prevents orbs/glow from bleeding into equilibrium area
-            pointerEvents: isEquilibriumActive ? 'none' : 'auto', // DISABLE all hero interactions when equilibrium is active
-            opacity: isEquilibriumActive ? 0.6 : 1, // Visual de-emphasis when equilibrium is active
-            filter: isEquilibriumActive ? 'brightness(0.7) saturate(0.8)' : 'brightness(1) saturate(1)',
+            pointerEvents: isGlobalEquilibriumOpen ? 'none' : 'auto', // DISABLE all hero interactions when equilibrium is active
+            opacity: isGlobalEquilibriumOpen ? 0.6 : 1, // Visual de-emphasis when equilibrium is active
+            filter: isGlobalEquilibriumOpen ? 'brightness(0.7) saturate(0.8)' : 'brightness(1) saturate(1)',
             transition: 'opacity 0.2s ease-out, filter 0.2s ease-out'
           }}
         >
@@ -1856,7 +1856,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         </motion.div>
       </div>
 
-        {/* GLOBAL EQUILIBRIUM FOCUS REGION (CARD + HOVER MENU) */}
+        {/* GLOBAL EQUILIBRIUM FOCUS REGION — UNIFIED HOVER ZONE */}
         <div
           className="equilibrium-focus-region"
           onPointerEnter={() => {
@@ -1867,7 +1867,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             }
             
             // Activate equilibrium state
-            setIsEquilibriumActive(true);
+            setIsGlobalEquilibriumOpen(true);
             
             // Immediately close any open hero tooltips
             if (hoveredDomain) {
@@ -1891,8 +1891,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             }
             
             equilibriumExitTimerRef.current = setTimeout(() => {
-              setIsEquilibriumActive(false);
-            }, 150); // 150ms delay to prevent flickering
+              setIsGlobalEquilibriumOpen(false);
+            }, 200); // Increased delay to 200ms
           }}
           style={{
             position: 'relative',
@@ -1900,7 +1900,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             maxWidth: '900px',
             zIndex: 4,
             pointerEvents: 'auto', // Re-enable pointer events for equilibrium region
-            paddingTop: '12px', // Padding to prevent hit-test gap between menu and card
+            paddingTop: '280px', // Ensure hover drawer area is within the region, adjusted from 12px
             paddingBottom: '12px'
           }}
         >
@@ -1920,6 +1920,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 : Math.round(75 - (Math.abs(balanceBias - 0.5) * 50))
             }
             summary={globalSummary}
+            isOpen={isGlobalEquilibriumOpen} // Added prop
             onOpenDrawer={() => console.log('Equilibrium drawer requested')}
           />
         </div>
@@ -2954,7 +2955,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         .hero-orbs-muted {
           pointer-events: none !important;
         }
-
+        
         .hero-orbs-muted .orb-nucleus {
           pointer-events: none !important;
           cursor: default !important;
