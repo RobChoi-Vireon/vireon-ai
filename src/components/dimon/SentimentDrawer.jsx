@@ -1,12 +1,12 @@
-// 🔒 DESIGN LOCKED — OS HORIZON V6.0 INSIGHT STRATA ARCHITECTURE
+// 🔒 DESIGN LOCKED — OS HORIZON INSIGHT STRATA V1 ARCHITECTURE
 // Last Updated: 2025-01-20
-// VIREON CERTIFIED — Insight Strata Model (3-Layer System)
+// VIREON CERTIFIED — 3-Layer Story/Force/Trajectory System
 // Apple macOS Tahoe + VisionOS Design Language
 // See: DESIGN_LOCKED_COMPONENTS.md
 
 import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
-import { X, TrendingUp, TrendingDown, ArrowRight, Activity } from 'lucide-react';
+import { X, TrendingUp, TrendingDown, Activity } from 'lucide-react';
 
 // OS Horizon Motion DNA
 const MOTION = {
@@ -58,28 +58,28 @@ const OutlineIcons = {
   )
 };
 
-// Narrative Content
-const NARRATIVE_MAP = {
+// Segment Narratives
+const SEGMENT_INSIGHTS = {
   Policy: {
     summary: "Regulators tightening oversight in medium-term policy environment.",
-    support: "Heightened scrutiny raising compliance costs across sectors."
+    trend: "Rising"
   },
   Credit: {
     summary: "Spreads widening as stress pockets form in credit markets.",
-    support: "Early-stage deterioration signaling caution on issuance."
+    trend: "Moderate"
   },
   Equities: {
     summary: "Market breadth remains flat with limited participation.",
-    support: "Narrow leadership offers weaker support to risk assets."
+    trend: "Moderate"
   },
   Global: {
     summary: "China slowdown weighing on global momentum and trade flows.",
-    support: "Softer demand dragging macro outlook into H1 2026."
+    trend: "Softening"
   }
 };
 
 // ============================================================================
-// STRATUM 1 — LUMINOUS ALIGNMENT ORB (VisionOS Hero Signal)
+// STRATUM 1 — LUMINOUS ALIGNMENT ORB + STORY LAYER
 // ============================================================================
 const LuminousAlignmentOrb = ({ score }) => {
   const [breathingPhase, setBreathingPhase] = useState(0);
@@ -165,15 +165,13 @@ const LuminousAlignmentOrb = ({ score }) => {
       ref={orbRef}
       className="relative flex items-center justify-center mx-auto"
       style={{
-        width: '220px',
-        height: '220px',
-        marginTop: '42px',
-        marginBottom: '38px',
+        width: '200px',
+        height: '200px',
         x: parallaxX,
         y: parallaxY
       }}
     >
-      {/* Volumetric Halo (Light-field Background) */}
+      {/* Volumetric Halo */}
       <motion.div
         className="absolute"
         style={{
@@ -194,7 +192,7 @@ const LuminousAlignmentOrb = ({ score }) => {
         }}
       />
 
-      {/* Light-field Crescent (VisionOS Alignment Indicator) */}
+      {/* Light-field Crescent */}
       <motion.div
         className="absolute"
         style={{
@@ -225,7 +223,7 @@ const LuminousAlignmentOrb = ({ score }) => {
         }}
       />
 
-      {/* Liquid Glass Orb Container */}
+      {/* Liquid Glass Orb */}
       <motion.div
         className="absolute"
         style={{
@@ -277,7 +275,7 @@ const LuminousAlignmentOrb = ({ score }) => {
           pointerEvents: 'none'
         }} />
 
-        {/* Micro Specular Highlight */}
+        {/* Micro Specular */}
         <div style={{
           position: 'absolute',
           top: '8px',
@@ -292,7 +290,7 @@ const LuminousAlignmentOrb = ({ score }) => {
         }} />
       </motion.div>
 
-      {/* Hero Text Stack */}
+      {/* Text Stack */}
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <motion.span
           className="text-[11px] font-medium uppercase tracking-wide mb-4"
@@ -303,7 +301,7 @@ const LuminousAlignmentOrb = ({ score }) => {
           }}
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25, duration: 0.4, ease: MOTION.CURVES.primary }}
+          transition={{ delay: 0.2, duration: 0.4, ease: MOTION.CURVES.primary }}
         >
           Street Alignment
         </motion.span>
@@ -318,7 +316,7 @@ const LuminousAlignmentOrb = ({ score }) => {
           }}
           initial={{ opacity: 0, scale: 0.82 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.35, duration: 0.38, ease: MOTION.CURVES.primary }}
+          transition={{ delay: 0.3, duration: 0.38, ease: MOTION.CURVES.primary }}
         >
           {score}
         </motion.span>
@@ -327,7 +325,7 @@ const LuminousAlignmentOrb = ({ score }) => {
           className="text-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.55, duration: 0.32 }}
+          transition={{ delay: 0.5, duration: 0.32 }}
         >
           <div className="text-[16px] font-semibold mb-1.5" style={{ color: 'rgba(255,255,255,0.98)' }}>
             {label}
@@ -342,17 +340,76 @@ const LuminousAlignmentOrb = ({ score }) => {
 };
 
 // ============================================================================
-// STRATUM 2 — NARRATIVE INSIGHT ROW (Apple Weather-Style)
+// STORY INSIGHT SENTENCE (Top-Level Narrative)
 // ============================================================================
-const NarrativeInsightRow = ({ segment, index, onOpenDetail }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  
-  const weight = (segment?.weight || 0) * 100;
-  const name = segment?.name || 'Unknown';
-  const narrative = NARRATIVE_MAP[name] || { 
-    summary: String(segment?.note || 'No insights'), 
-    support: '' 
+const StoryInsight = ({ segments }) => {
+  const generateStory = () => {
+    const hasPolicyRising = segments.find(s => s.name === 'Policy')?.trend === '+';
+    const hasCreditStress = segments.find(s => s.name === 'Credit')?.stress_level === 'high';
+    
+    if (hasPolicyRising && hasCreditStress) {
+      return "Markets show mild upward pressure driven by policy tightening and early credit stress signals.";
+    }
+    return "Markets show mixed sentiment across policy, credit, and global conditions.";
   };
+
+  return (
+    <motion.div
+      className="relative rounded-2xl overflow-hidden mb-8"
+      style={{
+        padding: '24px 28px',
+        background: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(28px) saturate(135%)',
+        WebkitBackdropFilter: 'blur(28px) saturate(135%)',
+        border: '1px solid rgba(255,255,255,0.10)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 3px 12px rgba(0,0,0,0.06)'
+      }}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.1, duration: 0.35, ease: MOTION.CURVES.primary }}
+    >
+      {/* Tahoe Spotlight Lighting */}
+      <div style={{
+        position: 'absolute',
+        top: '-30%',
+        left: '30%',
+        width: '50%',
+        height: '80%',
+        background: 'radial-gradient(ellipse, rgba(142, 187, 255, 0.045) 0%, transparent 65%)',
+        filter: 'blur(24px)',
+        pointerEvents: 'none'
+      }} />
+
+      {/* Top Rim */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '14%',
+        right: '14%',
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+        pointerEvents: 'none'
+      }} />
+
+      <p 
+        className="text-[15px] font-medium leading-relaxed text-center relative z-10"
+        style={{ 
+          color: 'rgba(255,255,255,0.94)',
+          letterSpacing: '-0.008em',
+          lineHeight: '1.55'
+        }}
+      >
+        {generateStory()}
+      </p>
+    </motion.div>
+  );
+};
+
+// ============================================================================
+// STRATUM 2 — FORCE GROUP (Macro Forces / Market Conditions)
+// ============================================================================
+const ForceGroup = ({ title, segments, delay }) => {
+  const [hoveredSegment, setHoveredSegment] = useState(null);
 
   const getIconColor = (n) => {
     switch (n) {
@@ -364,195 +421,266 @@ const NarrativeInsightRow = ({ segment, index, onOpenDetail }) => {
     }
   };
 
-  const getStatePill = () => {
-    const stressMap = {
-      high: { label: 'High Stress', icon: '↓', color: '#E86565' },
-      moderate: { label: 'Moderate', icon: '↑', color: '#EDB859' },
-      stable: { label: 'Stable', icon: '→', color: '#32C288' }
-    };
-    return stressMap[segment?.stress_level] || stressMap.stable;
-  };
-
-  const iconColor = getIconColor(name);
-  const Icon = OutlineIcons[name] || OutlineIcons.Global;
-  const statePill = getStatePill();
-
   return (
     <motion.div
-      className="relative"
-      initial={{ opacity: 0, y: 10 }}
+      className="relative rounded-3xl overflow-hidden mb-6"
+      style={{
+        background: 'rgba(255, 255, 255, 0.028)',
+        backdropFilter: 'blur(32px) saturate(145%)',
+        WebkitBackdropFilter: 'blur(32px) saturate(145%)',
+        border: '1px solid rgba(255,255,255,0.09)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.07), 0 4px 16px rgba(0,0,0,0.05)',
+        padding: '28px 26px'
+      }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.75 + (index * 0.07), duration: 0.38, ease: MOTION.CURVES.primary }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      onClick={() => onOpenDetail?.(segment)}
+      transition={{ delay, duration: 0.4, ease: MOTION.CURVES.primary }}
     >
-      <motion.div
-        className="relative rounded-2xl cursor-pointer overflow-hidden"
-        style={{
-          padding: '20px 22px',
-          background: 'rgba(255, 255, 255, 0.032)',
-          backdropFilter: 'blur(26px) saturate(125%)',
-          WebkitBackdropFilter: 'blur(26px) saturate(125%)',
-          border: '1px solid rgba(255,255,255,0.09)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.07), 0 2px 8px rgba(0,0,0,0.04)',
-          willChange: 'transform'
+      {/* Top Rim Light */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '12%',
+        right: '12%',
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.17), transparent)',
+        pointerEvents: 'none'
+      }} />
+
+      {/* Tahoe Gradient Backdrop */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: 'radial-gradient(ellipse at 50% -20%, rgba(142, 187, 255, 0.018) 0%, transparent 100%)',
+        borderRadius: '24px',
+        pointerEvents: 'none'
+      }} />
+
+      {/* Group Title */}
+      <motion.h3 
+        className="text-[11px] font-semibold uppercase tracking-wide mb-5"
+        style={{ 
+          color: 'rgba(255,255,255,0.66)',
+          letterSpacing: '0.12em'
         }}
-        animate={{
-          y: isHovered ? -2 : 0,
-          boxShadow: isHovered
-            ? `inset 0 1px 0 rgba(255,255,255,0.10), 0 4px 14px rgba(0,0,0,0.08), 0 0 22px ${iconColor}05`
-            : 'inset 0 1px 0 rgba(255,255,255,0.07), 0 2px 8px rgba(0,0,0,0.04)',
-          borderColor: isHovered ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.09)'
-        }}
-        transition={{ duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.secondary }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: delay + 0.1, duration: 0.3 }}
       >
-        {/* Top Edge Rim Light */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: '14%',
-          right: '14%',
-          height: '1px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
-          pointerEvents: 'none'
-        }} />
+        {title}
+      </motion.h3>
 
-        {/* Subsurface Color Tint */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: `radial-gradient(circle at 50% -25%, ${iconColor}03 0%, transparent 100%)`,
-          borderRadius: '16px',
-          pointerEvents: 'none'
-        }} />
+      {/* Segment Insights */}
+      <div className="space-y-5">
+        {segments.map((segment, idx) => {
+          const iconColor = getIconColor(segment.name);
+          const Icon = OutlineIcons[segment.name] || OutlineIcons.Global;
+          const weight = (segment?.weight || 0) * 100;
+          const narrative = SEGMENT_INSIGHTS[segment.name] || { summary: 'No insights', trend: 'Stable' };
+          const isHovered = hoveredSegment === segment.name;
 
-        {/* Section Header */}
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2.5">
-            <div 
-              className="w-10 h-10 rounded-xl flex items-center justify-center relative"
-              style={{
-                background: `${iconColor}06`,
-                border: `1px solid ${iconColor}14`
-              }}
-            >
-              <Icon style={{ color: iconColor, filter: 'brightness(1.12)' }} />
-            </div>
-            <span className="text-[15px] font-semibold tracking-tight" style={{ color: 'rgba(255,255,255,0.98)' }}>
-              {name}
-            </span>
-          </div>
-          <span className="text-lg font-bold tracking-tight" style={{ color: iconColor, filter: 'brightness(1.10)' }}>
-            {Math.round(weight)}%
-          </span>
-        </div>
-
-        {/* One-Line Narrative Summary */}
-        <p 
-          className="text-[14px] font-medium mb-1.5"
-          style={{ 
-            color: 'rgba(255,255,255,0.96)',
-            letterSpacing: '-0.008em',
-            lineHeight: '1.4'
-          }}
-        >
-          {narrative.summary}
-        </p>
-
-        {/* Supporting Micro-Insight */}
-        <p 
-          className="text-[12px] mb-3.5" 
-          style={{ 
-            color: 'rgba(255,255,255,0.65)', 
-            lineHeight: '1.5',
-            letterSpacing: '-0.004em'
-          }}
-        >
-          {narrative.support}
-        </p>
-
-        {/* Trend Strip (State Pill) */}
-        <div className="flex items-center gap-2.5 mb-3.5">
-          <div
-            className="px-2.5 py-1 rounded-lg text-[10px] font-semibold flex items-center gap-1.5"
-            style={{
-              background: `${statePill.color}08`,
-              border: `1px solid ${statePill.color}16`,
-              color: statePill.color,
-              letterSpacing: '0.02em'
-            }}
-          >
-            <span>{statePill.label}</span>
-            <span className="text-[13px]">{statePill.icon}</span>
-          </div>
-        </div>
-
-        {/* Visual Signal Bar */}
-        <div className="relative">
-          <div style={{
-            position: 'absolute',
-            top: '-5px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '100%',
-            height: '14px',
-            background: `radial-gradient(ellipse, ${iconColor}05 0%, transparent 78%)`,
-            filter: 'blur(7px)',
-            pointerEvents: 'none'
-          }} />
-          
-          <div 
-            className="w-full h-[3px] rounded-full overflow-hidden relative" 
-            style={{ background: 'rgba(0,0,0,0.18)' }}
-          >
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              height: '50%',
-              background: 'linear-gradient(180deg, rgba(255,255,255,0.05), transparent)',
-              pointerEvents: 'none'
-            }} />
-            
+          return (
             <motion.div
-              className="h-full rounded-full"
-              style={{ 
-                background: `linear-gradient(90deg, ${iconColor}95, ${iconColor}f5)`,
-                boxShadow: `0 0 8px ${iconColor}28`
-              }}
-              initial={{ width: '0%' }}
-              animate={{ width: `${weight}%` }}
-              transition={{ 
-                duration: 0.75, 
-                delay: 0.85 + (index * 0.07), 
-                ease: 'easeOut' 
-              }}
-            />
-          </div>
-        </div>
+              key={segment.name}
+              className="relative"
+              onHoverStart={() => setHoveredSegment(segment.name)}
+              onHoverEnd={() => setHoveredSegment(null)}
+              initial={{ opacity: 0, x: -6 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: delay + 0.2 + (idx * 0.06), duration: 0.32, ease: MOTION.CURVES.secondary }}
+            >
+              <motion.div
+                className="relative"
+                animate={{
+                  y: isHovered ? -1 : 0
+                }}
+                transition={{ duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.primary }}
+              >
+                {/* Icon + Name + Weight */}
+                <div className="flex items-center justify-between mb-2.5">
+                  <div className="flex items-center gap-2.5">
+                    <div 
+                      className="w-9 h-9 rounded-xl flex items-center justify-center"
+                      style={{
+                        background: `${iconColor}05`,
+                        border: `1px solid ${iconColor}12`
+                      }}
+                    >
+                      <Icon style={{ color: iconColor, filter: 'brightness(1.14)' }} />
+                    </div>
+                    <span className="text-[14px] font-semibold" style={{ color: 'rgba(255,255,255,0.98)' }}>
+                      {segment.name}
+                    </span>
+                  </div>
+                  <span className="text-[16px] font-bold" style={{ color: iconColor, filter: 'brightness(1.12)' }}>
+                    {Math.round(weight)}%
+                  </span>
+                </div>
 
-        {/* View Analysis Hint */}
-        <motion.div 
-          className="flex items-center justify-end text-[11px] font-medium mt-3.5"
-          style={{ color: 'rgba(255,255,255,0.52)' }}
-          animate={{ 
-            opacity: isHovered ? 1 : 0,
-            y: isHovered ? 0 : 2
-          }}
-          transition={{ duration: MOTION.DURATIONS.base }}
-        >
-          <span>View Analysis</span>
-          <ArrowRight className="w-3 h-3 ml-1.5" />
-        </motion.div>
-      </motion.div>
+                {/* Narrative Summary */}
+                <p 
+                  className="text-[13px] mb-2.5"
+                  style={{ 
+                    color: 'rgba(255,255,255,0.88)',
+                    letterSpacing: '-0.006em',
+                    lineHeight: '1.45'
+                  }}
+                >
+                  {narrative.summary}
+                </p>
+
+                {/* Trend Pill */}
+                <div className="flex items-center mb-2.5">
+                  <div
+                    className="px-2.5 py-1 rounded-lg text-[10px] font-semibold"
+                    style={{
+                      background: `${iconColor}07`,
+                      border: `1px solid ${iconColor}14`,
+                      color: iconColor,
+                      letterSpacing: '0.015em'
+                    }}
+                  >
+                    {narrative.trend}
+                  </div>
+                </div>
+
+                {/* Signal Bar */}
+                <div className="relative">
+                  <div style={{
+                    position: 'absolute',
+                    top: '-4px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    width: '100%',
+                    height: '12px',
+                    background: `radial-gradient(ellipse, ${iconColor}04 0%, transparent 80%)`,
+                    filter: 'blur(6px)',
+                    pointerEvents: 'none'
+                  }} />
+                  
+                  <div 
+                    className="w-full h-[2.5px] rounded-full overflow-hidden relative" 
+                    style={{ background: 'rgba(0,0,0,0.16)' }}
+                  >
+                    <motion.div
+                      className="h-full rounded-full"
+                      style={{ 
+                        background: `linear-gradient(90deg, ${iconColor}92, ${iconColor}f2)`,
+                        boxShadow: `0 0 7px ${iconColor}26`
+                      }}
+                      initial={{ width: '0%' }}
+                      animate={{ width: `${weight}%` }}
+                      transition={{ 
+                        duration: 0.7, 
+                        delay: delay + 0.3 + (idx * 0.06), 
+                        ease: 'easeOut' 
+                      }}
+                    />
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          );
+        })}
+      </div>
     </motion.div>
   );
 };
 
 // ============================================================================
-// MAIN DRAWER — INSIGHT STRATA ARCHITECTURE
+// STRATUM 3 — SIGNAL TRAJECTORY BAR (Unified Brainstem Output)
+// ============================================================================
+const SignalTrajectoryBar = ({ segments, delay }) => {
+  const getIconColor = (n) => {
+    switch (n) {
+      case 'Policy': return '#70A8E8';
+      case 'Credit': return '#B88AED';
+      case 'Equities': return '#32C288';
+      case 'Global': return '#EDB859';
+      default: return '#A8B1BA';
+    }
+  };
+
+  return (
+    <motion.div
+      className="relative rounded-2xl overflow-hidden"
+      style={{
+        background: 'rgba(255, 255, 255, 0.028)',
+        backdropFilter: 'blur(28px) saturate(135%)',
+        WebkitBackdropFilter: 'blur(28px) saturate(135%)',
+        border: '1px solid rgba(255,255,255,0.09)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.07), 0 3px 12px rgba(0,0,0,0.05)',
+        padding: '24px 26px'
+      }}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: 0.35, ease: MOTION.CURVES.primary }}
+    >
+      {/* Top Rim */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '12%',
+        right: '12%',
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+        pointerEvents: 'none'
+      }} />
+
+      <div className="flex items-center justify-between gap-4">
+        {segments.map((segment, idx) => {
+          const iconColor = getIconColor(segment.name);
+          const weight = (segment?.weight || 0) * 100;
+          const Icon = OutlineIcons[segment.name] || OutlineIcons.Global;
+
+          return (
+            <div key={segment.name} className="flex-1">
+              <div className="flex items-center gap-2 mb-2.5">
+                <div 
+                  className="w-7 h-7 rounded-lg flex items-center justify-center"
+                  style={{
+                    background: `${iconColor}05`,
+                    border: `1px solid ${iconColor}10`
+                  }}
+                >
+                  <Icon style={{ color: iconColor, filter: 'brightness(1.14)' }} />
+                </div>
+                <span className="text-[12px] font-medium" style={{ color: 'rgba(255,255,255,0.88)' }}>
+                  {segment.name}
+                </span>
+              </div>
+
+              <div className="relative">
+                <div 
+                  className="w-full h-[3px] rounded-full overflow-hidden relative" 
+                  style={{ background: 'rgba(0,0,0,0.18)' }}
+                >
+                  <motion.div
+                    className="h-full rounded-full"
+                    style={{ 
+                      background: `linear-gradient(90deg, ${iconColor}90, ${iconColor}f0)`,
+                      boxShadow: `0 0 6px ${iconColor}24`
+                    }}
+                    initial={{ width: '0%' }}
+                    animate={{ width: `${weight}%` }}
+                    transition={{ 
+                      duration: 0.12, 
+                      delay: delay + 0.15 + (idx * 0.03), 
+                      ease: 'easeOut' 
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+};
+
+// ============================================================================
+// MAIN DRAWER — INSIGHT STRATA V1
 // ============================================================================
 const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) => {
   useEffect(() => {
@@ -572,6 +700,9 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
   const consensusScore = useMemo(() => (typeof score === 'number' ? score : 0), [score]);
   const segments = useMemo(() => (Array.isArray(breakdown?.segments) ? breakdown.segments : []), [breakdown]);
 
+  const macroForces = segments.filter(s => ['Policy', 'Global'].includes(s.name));
+  const marketConditions = segments.filter(s => ['Credit', 'Equities'].includes(s.name));
+
   if (!isOpen) return null;
 
   return (
@@ -584,7 +715,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
         exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
         transition={{ duration: 0.28, ease: MOTION.CURVES.primary }}
       >
-        {/* Stabilized Background Scrim */}
+        {/* Stabilized Background */}
         <div
           className="absolute inset-0"
           style={{ background: 'rgba(0,0,0,0.65)' }}
@@ -689,66 +820,34 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
           </div>
 
           {/* Body */}
-          <div className="px-12 pt-4 pb-12 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 280px)' }}>
-            {/* STRATUM 1: Luminous Alignment Orb */}
+          <div className="px-10 pt-8 pb-10 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 280px)' }}>
+            {/* STRATUM 1: Orb + Story */}
             <LuminousAlignmentOrb score={consensusScore} />
-
-            {/* Metadata */}
+            
             <motion.p
-              className="text-xs text-center mb-12"
+              className="text-xs text-center mb-10"
               style={{ color: 'rgba(255,255,255,0.54)' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.65, duration: 0.3 }}
+              transition={{ delay: 0.6, duration: 0.3 }}
             >
               Based on 5 sources • Updated 2m ago
             </motion.p>
 
-            {/* STRATUM 2: Narrative Insight Rows (2-column) */}
-            {segments.length > 0 ? (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-12">
-                {segments.map((segment, index) => (
-                  <NarrativeInsightRow
-                    key={segment.name}
-                    segment={segment}
-                    index={index}
-                    onOpenDetail={onOpenDetail}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-16">
-                <Activity className="w-11 h-11 mx-auto mb-3.5" style={{ color: 'rgba(255,255,255,0.26)' }} />
-                <p style={{ color: 'rgba(255,255,255,0.56)' }}>No segment data available</p>
-              </div>
-            )}
+            <StoryInsight segments={segments} />
 
-            {/* STRATUM 3: Deep Dive Access */}
-            <motion.button
-              className="w-full py-5 px-7 rounded-2xl flex items-center justify-center gap-2.5"
-              style={{
-                background: 'rgba(255,255,255,0.032)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255,255,255,0.09)',
-                color: 'rgba(255,255,255,0.76)',
-                fontSize: '14px',
-                fontWeight: 500,
-                letterSpacing: '-0.006em'
-              }}
-              whileHover={{
-                background: 'rgba(255,255,255,0.052)',
-                borderColor: 'rgba(255,255,255,0.13)',
-                y: -2
-              }}
-              whileTap={{ scale: 0.99 }}
-              transition={{ duration: MOTION.DURATIONS.base }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.4, duration: 0.32 }}
-            >
-              View Full Segment Analysis
-              <ArrowRight className="w-4 h-4" />
-            </motion.button>
+            {/* STRATUM 2: Force Groups */}
+            <div className="mb-8">
+              {macroForces.length > 0 && (
+                <ForceGroup title="Macro Forces" segments={macroForces} delay={0.65} />
+              )}
+              {marketConditions.length > 0 && (
+                <ForceGroup title="Market Conditions" segments={marketConditions} delay={0.75} />
+              )}
+            </div>
+
+            {/* STRATUM 3: Signal Trajectory Bar */}
+            <SignalTrajectoryBar segments={segments} delay={0.9} />
           </div>
         </motion.div>
       </motion.div>
