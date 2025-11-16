@@ -1,11 +1,11 @@
-// 🔒 DESIGN LOCKED — OS HORIZON V5.0 POLICY ANALYSIS REFINEMENT
+// 🔒 DESIGN LOCKED — OS HORIZON TAHOE V5.0 SEGMENT ANALYSIS REFINEMENT
 // Last Updated: 2025-01-20
-// Full 16-Pillar Compliance: Typography, Spacing, Motion, Luxury
+// Full 16-Pillar Compliance: Glass Story Panels, Enhanced Atmosphere, Emotional Intelligence
 // See: DESIGN_LOCKED_COMPONENTS.md
 
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Shield, Briefcase, BarChart3, Globe, Zap, Target, TrendingUp, Eye, ChevronLeft, ChevronRight, Sparkles, Minus, Plus, FileText, Building2, Users, Gavel, DollarSign, TrendingDown, Factory, ArrowUp, ArrowDown, ArrowRight } from 'lucide-react';
+import { X, Shield, Briefcase, BarChart3, Globe, Zap, Target, TrendingUp, Eye, ChevronLeft, ChevronRight, Sparkles, FileText, Building2, Users, Gavel, DollarSign, TrendingDown, Factory, ArrowUp, ArrowDown, ArrowRight } from 'lucide-react';
 
 // OS Horizon Motion Tokens (Refined for Silk Transitions)
 const MOTION = {
@@ -15,7 +15,7 @@ const MOTION = {
     horizonOut: [0.4, 0.0, 0.2, 1]
   },
   DURATIONS: {
-    fast: 0.12,
+    fast: 0.13,
     base: 0.18,
     slow: 0.24
   }
@@ -30,9 +30,9 @@ const DirectionIcons = {
 
 const LuxurySection = ({ icon: Icon, title, children, iconColor = "#4F46E5", delay = 0 }) => (
   <motion.div 
-    className="space-y-3"
+    className="space-y-2.5"
     variants={{
-      hidden: { opacity: 0, y: 12 },
+      hidden: { opacity: 0, y: 10 },
       visible: { opacity: 1, y: 0 }
     }}
     transition={{ 
@@ -43,21 +43,21 @@ const LuxurySection = ({ icon: Icon, title, children, iconColor = "#4F46E5", del
   >
     <div className="flex items-center space-x-2.5">
       <motion.div 
-        className="relative p-2.5 rounded-xl border overflow-hidden"
+        className="relative p-2.5 rounded-[14px] border overflow-hidden"
         style={{ 
-          background: `${iconColor}12`,
-          borderColor: `${iconColor}30`,
-          backdropFilter: 'blur(10px)',
-          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.08), 0 2px 8px ${iconColor}14`
+          background: `${iconColor}14`,
+          borderColor: `${iconColor}32`,
+          backdropFilter: 'blur(14px)',
+          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.10), 0 3px 10px ${iconColor}16`
         }}
-        whileHover={{ scale: 1.03 }}
+        whileHover={{ scale: 1.04, boxShadow: `inset 0 1px 0 rgba(255,255,255,0.12), 0 5px 14px ${iconColor}22` }}
         transition={{ duration: MOTION.DURATIONS.fast, ease: MOTION.CURVES.horizonIn }}
       >
-        <Icon className="w-4 h-4 relative z-10" style={{ color: iconColor }} strokeWidth={2.5} />
+        <Icon className="w-4 h-4 relative z-10" style={{ color: iconColor, filter: 'brightness(1.12)' }} strokeWidth={2.5} />
       </motion.div>
       
       <div>
-        <h3 className="text-base font-semibold" style={{ color: 'rgba(255,255,255,0.92)', letterSpacing: '-0.01em' }}>
+        <h3 className="text-[15px] font-semibold" style={{ color: 'rgba(255,255,255,0.94)', letterSpacing: '-0.012em' }}>
           {title}
         </h3>
       </div>
@@ -76,16 +76,16 @@ const AssetGroupImpact = ({ group, items, delay }) => {
     >
       {/* Group Title */}
       <div className="relative pb-1">
-        <h4 className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.88)' }}>
+        <h4 className="text-[13px] font-semibold" style={{ color: 'rgba(255,255,255,0.90)' }}>
           {group}:
         </h4>
         <div 
           className="absolute bottom-0 left-0 right-0 h-px"
-          style={{ background: 'rgba(255,255,255,0.10)' }}
+          style={{ background: 'rgba(255,255,255,0.11)' }}
         />
       </div>
       
-      {/* Impact Items with Direction Icons */}
+      {/* Impact Items with Direction Icons (Tightened spacing) */}
       <div className="space-y-1.5 pl-2">
         {items.map((item, i) => {
           const isNegative = item.direction === '-';
@@ -102,7 +102,7 @@ const AssetGroupImpact = ({ group, items, delay }) => {
               transition={{ delay: delay + 0.05 + (i * 0.03), duration: MOTION.DURATIONS.fast }}
             >
               <DirectionIcon className="w-3.5 h-3.5 flex-shrink-0" style={{ color }} strokeWidth={2.5} />
-              <span style={{ color: 'rgba(255,255,255,0.85)' }}>{item.detail}</span>
+              <span style={{ color: 'rgba(255,255,255,0.88)' }}>{item.detail}</span>
             </motion.div>
           );
         })}
@@ -167,7 +167,7 @@ const getSegmentDetails = (segment) => {
       return {
         morning_takeaway: "EM HY spreads decompress rapidly → tightening financial conditions signal M&A slowdown and refinancing stress.",
         drivers: [
-          {icon: TrendingUp, text: "Widening high-yield (HY) and emerging market (EM) spreads", bold: "Widening high-yield (HY) and emerging market (EM) spreads", weight: "high"},
+          {icon: TrendingUp, text: "Widening high-yield (HY) and emerging market (EM) spreads", bold: "Widening high-yield spreads", weight: "high"},
           {icon: Building2, text: "Freezing issuance in primary debt markets", bold: "Freezing issuance", weight: "high"},
           {icon: Users, text: "Tighter underwriting standards from banks", bold: "Tighter underwriting standards", weight: "medium"}
         ],
@@ -191,7 +191,7 @@ const getSegmentDetails = (segment) => {
       return {
         morning_takeaway: "Market breadth deteriorating → fragile concentration in mega-caps signals vulnerability to rotation shocks.",
         drivers: [
-          {icon: TrendingDown, text: "Sector rotation from growth to value accelerating", bold: "Sector rotation", weight: "medium"},
+          {icon: TrendingDown, text: "Sector rotation from growth to value accelerating", bold: "Sector rotation accelerating", weight: "medium"},
           {icon: BarChart3, text: "Narrowing market breadth with fewer stocks participating", bold: "Narrowing market breadth", weight: "high"},
           {icon: FileText, text: "Earnings season surprises and guidance updates", bold: "Earnings season surprises", weight: "medium"}
         ],
@@ -219,7 +219,7 @@ const getSegmentDetails = (segment) => {
         drivers: [
           {icon: Factory, text: "Slowing demand from China post-reopening normalization", bold: "Slowing demand from China", weight: "high"},
           {icon: Zap, text: "European energy price volatility creating uncertainty", bold: "European energy price volatility", weight: "medium"},
-          {icon: DollarSign, text: "Strength of the US Dollar (DXY) pressuring EM", bold: "Strength of the US Dollar (DXY)", weight: "medium"}
+          {icon: DollarSign, text: "Strength of the US Dollar (DXY) pressuring EM", bold: "Strength of the US Dollar", weight: "medium"}
         ],
         sentiment_rationale: [
           "Structural slowdown in China moving beyond cyclical weakness.",
@@ -253,48 +253,49 @@ const DriverItem = ({ item, delay }) => {
   
   return (
     <motion.li 
-      className="flex items-start p-3.5 rounded-xl border relative" 
+      className="flex items-start p-4 rounded-[16px] border relative" 
       style={{
-        background: 'rgba(255,255,255,0.032)',
-        backdropFilter: 'blur(18px)',
-        WebkitBackdropFilter: 'blur(18px)',
-        borderColor: 'rgba(255,255,255,0.09)',
-        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)'
+        background: 'rgba(255,255,255,0.036)',
+        backdropFilter: 'blur(22px) saturate(140%)',
+        WebkitBackdropFilter: 'blur(22px) saturate(140%)',
+        borderColor: 'rgba(255,255,255,0.10)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 3px 10px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(255,255,255,0.04)'
       }}
       variants={{ hidden: { opacity: 0, x: -10 }, visible: { opacity: 1, x: 0 }}} 
       transition={{ delay: 0.1 + delay * 0.06, duration: MOTION.DURATIONS.base }}
       whileHover={{ 
         y: -1,
-        boxShadow: `inset 0 1px 0 rgba(255,255,255,0.09), 0 4px 12px rgba(0,0,0,0.08)`,
-        transition: { duration: 0.14 }
+        boxShadow: `inset 0 1px 0 rgba(255,255,255,0.11), 0 5px 14px rgba(0,0,0,0.10), 0 0 0 0.5px rgba(255,255,255,0.04)`,
+        transition: { duration: 0.15 }
       }}
     >
-      {/* Faint Separator (between rows) */}
+      {/* Faint Separator */}
       {delay > 0 && (
         <div style={{
           position: 'absolute',
-          top: '-1px',
-          left: '10%',
-          right: '10%',
+          top: 0,
+          left: '12%',
+          right: '12%',
           height: '1px',
-          background: 'rgba(255,255,255,0.04)',
+          background: 'rgba(255,255,255,0.045)',
           pointerEvents: 'none'
         }} />
       )}
 
-      <div className="flex items-center gap-2.5 mr-3.5 mt-0.5">
+      {/* Severity Spine (Indented Text Formation) */}
+      <div className="flex items-center gap-2.5 mr-4 mt-0.5 min-w-[46px]">
         <motion.div 
           className={`w-1.5 h-1.5 rounded-full ${config.dot}`}
           initial={{ scale: 0 }}
-          animate={{ scale: [0, 1.2, 1] }}
-          transition={{ delay: 0.12 + delay * 0.06, duration: 0.12 }}
+          animate={{ scale: [0, 1.25, 1] }}
+          transition={{ delay: 0.14 + delay * 0.06, duration: 0.13 }}
         />
-        <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: config.color, minWidth: '42px' }}>
+        <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: config.color }}>
           {config.label}
         </span>
       </div>
       <item.icon className="w-4 h-4 mr-2.5 mt-0.5 flex-shrink-0" style={{ color: '#5EA7FF' }} strokeWidth={2} />
-      <span className="text-sm" style={{ color: 'rgba(255,255,255,0.88)', lineHeight: '1.55', paddingLeft: '2px' }}>
+      <span className="text-[13px]" style={{ color: 'rgba(255,255,255,0.90)', lineHeight: '1.58', paddingLeft: '4px' }}>
         {item.text}
       </span>
     </motion.li>
@@ -329,13 +330,13 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
 
   const backdropVariants = {
     hidden: { opacity: 0, backdropFilter: 'blur(0px)' },
-    visible: { opacity: 1, backdropFilter: 'blur(16px)', transition: { duration: 0.32, ease: MOTION.CURVES.silk } }
+    visible: { opacity: 1, backdropFilter: 'blur(18px)', transition: { duration: 0.34, ease: MOTION.CURVES.silk } }
   };
 
   const drawerVariants = {
-    hidden: { opacity: 0, scale: 0.95, y: 24 },
-    visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.28, ease: MOTION.CURVES.silk } },
-    exit: { opacity: 0, scale: 0.97, y: 16, transition: { duration: 0.22, ease: MOTION.CURVES.horizonOut } }
+    hidden: { opacity: 0, scale: 0.94, y: 26 },
+    visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.30, ease: MOTION.CURVES.silk } },
+    exit: { opacity: 0, scale: 0.97, y: 18, transition: { duration: 0.24, ease: MOTION.CURVES.horizonOut } }
   };
 
   return (
@@ -350,7 +351,7 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
           className="absolute left-0 right-0 bottom-0" 
           style={{ 
             top: '80px',
-            background: 'rgba(0,0,0,0.68)'
+            background: 'rgba(0,0,0,0.72)'
           }}
           onClick={onClose} 
         />
@@ -361,31 +362,31 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
           style={{
             background: `
               linear-gradient(180deg, 
-                rgba(18, 20, 28, 0.88) 0%,
-                rgba(16, 18, 26, 0.92) 100%
+                rgba(18, 20, 28, 0.90) 0%,
+                rgba(16, 18, 26, 0.94) 100%
               )
             `,
-            backdropFilter: 'blur(56px) saturate(185%)',
-            WebkitBackdropFilter: 'blur(56px) saturate(185%)',
+            backdropFilter: 'blur(62px) saturate(195%)',
+            WebkitBackdropFilter: 'blur(62px) saturate(195%)',
             borderColor: theme.borderColor,
             boxShadow: `
-              0 32px 64px -14px rgba(0, 0, 0, 0.80), 
-              0 0 50px ${theme.glowColor}, 
-              inset 0 1px 0 rgba(255, 255, 255, 0.12),
-              inset 0 0 0 1px rgba(255,255,255,0.03)
+              0 36px 72px -16px rgba(0, 0, 0, 0.84), 
+              0 0 58px ${theme.glowColor}, 
+              inset 0 1px 0 rgba(255, 255, 255, 0.13),
+              inset 0 0 0 1px rgba(255,255,255,0.04)
             `
           }}
           variants={drawerVariants} initial="hidden" animate="visible" exit="exit"
         >
-          {/* Atmospheric Gradient */}
+          {/* Segment-Colored Ambient Glow (1.5% opacity) */}
           <div style={{
             position: 'absolute',
-            top: '-10%',
+            top: '-8%',
             left: '50%',
             transform: 'translateX(-50%)',
-            width: '80%',
-            height: '65%',
-            background: `radial-gradient(ellipse at 50% 10%, ${theme.color}03 0%, transparent 85%)`,
+            width: '82%',
+            height: '68%',
+            background: `radial-gradient(ellipse at 50% 12%, ${theme.color}04 0%, transparent 88%)`,
             pointerEvents: 'none',
             borderRadius: '32px'
           }} />
@@ -397,40 +398,52 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
             left: '12%',
             right: '12%',
             height: '1.5px',
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.26), transparent)',
-            filter: 'blur(1px)',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent)',
+            filter: 'blur(1.2px)',
             pointerEvents: 'none'
           }} />
 
-          {/* Header (Tighter Spacing, Lighter Nav Pills) */}
+          {/* Subtle Top Highlight (Tahoe Style) */}
+          <div style={{
+            position: 'absolute',
+            top: '1px',
+            left: '20%',
+            right: '20%',
+            height: '32px',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.025) 0%, transparent 100%)',
+            pointerEvents: 'none',
+            borderRadius: '32px 32px 0 0'
+          }} />
+
+          {/* Header (Reduced Nav Chrome Opacity) */}
           <motion.div 
             className="relative p-6 border-b" 
             style={{ 
-              borderColor: 'rgba(255,255,255,0.09)',
-              background: 'rgba(255, 255, 255, 0.012)'
+              borderColor: 'rgba(255,255,255,0.10)',
+              background: 'rgba(255, 255, 255, 0.015)'
             }}
             variants={{ hidden: { opacity: 0, y: -10 }, visible: { opacity: 1, y: 0 }}}
           >
             <div className="flex items-start justify-between">
               <div className="flex items-start space-x-3">
                 <motion.div 
-                  className="relative p-3 rounded-xl border overflow-hidden"
+                  className="relative p-3 rounded-[14px] border overflow-hidden"
                   style={{ 
-                    background: `${theme.color}14`,
-                    borderColor: `${theme.color}32`,
-                    backdropFilter: 'blur(12px)',
-                    boxShadow: `inset 0 1px 2px rgba(255,255,255,0.10), 0 3px 12px ${theme.glowColor}`
+                    background: `${theme.color}16`,
+                    borderColor: `${theme.color}34`,
+                    backdropFilter: 'blur(14px)',
+                    boxShadow: `inset 0 1px 2px rgba(255,255,255,0.12), 0 4px 14px ${theme.glowColor}`
                   }}
-                  whileHover={{ scale: 1.03 }}
+                  whileHover={{ scale: 1.04 }}
                   transition={{ duration: MOTION.DURATIONS.fast, ease: MOTION.CURVES.horizonIn }}
                 >
-                  <Icon className="w-6 h-6 relative z-10" style={{ color: theme.color, filter: 'brightness(1.10)' }} strokeWidth={2} />
+                  <Icon className="w-6 h-6 relative z-10" style={{ color: theme.color, filter: 'brightness(1.12)' }} strokeWidth={2} />
                 </motion.div>
                 <div>
-                  <h2 className="text-xl font-bold tracking-tight" style={{ color: 'rgba(255,255,255,0.98)', letterSpacing: '-0.02em' }}>
+                  <h2 className="text-xl font-bold tracking-tight" style={{ color: 'rgba(255,255,255,0.98)', letterSpacing: '-0.022em' }}>
                     {segment.name} Analysis
                   </h2>
-                  <p className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.74)', marginTop: '2px' }}>
+                  <p className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.76)', marginTop: '2px' }}>
                     Detailed Segment Breakdown
                   </p>
                 </div>
@@ -438,53 +451,59 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
               <div className="flex items-center space-x-2">
                 <motion.button
                   onClick={() => onNavigate('prev')}
-                  className="relative p-2.5 rounded-xl border backdrop-blur-sm"
+                  className="relative p-2.5 rounded-[14px] border backdrop-blur-sm"
                   style={{
-                    background: 'rgba(255,255,255,0.045)',
-                    borderColor: 'rgba(255,255,255,0.09)'
+                    background: 'rgba(255,255,255,0.042)',
+                    borderColor: 'rgba(255,255,255,0.09)',
+                    opacity: 0.88
                   }}
                   whileHover={{ 
-                    scale: 1.04,
+                    scale: 1.05,
                     background: 'rgba(255,255,255,0.08)',
+                    opacity: 1,
                     transition: { duration: MOTION.DURATIONS.fast }
                   }}
-                  whileTap={{ scale: 0.97 }}
+                  whileTap={{ scale: 0.96 }}
                   aria-label="Previous Segment"
                 >
-                  <ChevronLeft className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.72)' }} strokeWidth={2} />
+                  <ChevronLeft className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.74)' }} strokeWidth={2} />
                 </motion.button>
                 <motion.button
                   onClick={() => onNavigate('next')}
-                  className="relative p-2.5 rounded-xl border backdrop-blur-sm"
+                  className="relative p-2.5 rounded-[14px] border backdrop-blur-sm"
                   style={{
-                    background: 'rgba(255,255,255,0.045)',
-                    borderColor: 'rgba(255,255,255,0.09)'
+                    background: 'rgba(255,255,255,0.042)',
+                    borderColor: 'rgba(255,255,255,0.09)',
+                    opacity: 0.88
                   }}
                   whileHover={{ 
-                    scale: 1.04,
+                    scale: 1.05,
                     background: 'rgba(255,255,255,0.08)',
+                    opacity: 1,
                     transition: { duration: MOTION.DURATIONS.fast }
                   }}
-                  whileTap={{ scale: 0.97 }}
+                  whileTap={{ scale: 0.96 }}
                   aria-label="Next Segment"
                 >
-                  <ChevronRight className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.72)' }} strokeWidth={2} />
+                  <ChevronRight className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.74)' }} strokeWidth={2} />
                 </motion.button>
                 <motion.button 
                   onClick={onClose} 
-                  className="relative p-2.5 rounded-xl border"
+                  className="relative p-2.5 rounded-[14px] border"
                   style={{
-                    background: 'rgba(255,255,255,0.045)',
-                    borderColor: 'rgba(255,255,255,0.09)'
+                    background: 'rgba(255,255,255,0.042)',
+                    borderColor: 'rgba(255,255,255,0.09)',
+                    opacity: 0.88
                   }}
                   whileHover={{ 
-                    scale: 1.04,
+                    scale: 1.05,
                     background: 'rgba(255,255,255,0.08)',
+                    opacity: 1,
                     transition: { duration: MOTION.DURATIONS.fast }
                   }}
-                  whileTap={{ scale: 0.97 }}
+                  whileTap={{ scale: 0.96 }}
                 >
-                  <X className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.72)' }} />
+                  <X className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.74)' }} />
                 </motion.button>
               </div>
             </div>
@@ -493,40 +512,44 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
           {/* Body (Standardized 16px section spacing) */}
           <motion.div 
             key={`${segment.name}-content`}
-            className="overflow-y-auto max-h-[calc(90vh-140px)] p-8 space-y-6" 
+            className="overflow-y-auto max-h-[calc(90vh-140px)] p-8 space-y-4" 
             variants={containerVariants} 
             initial="hidden" 
             animate="visible"
             style={{ scrollBehavior: 'smooth' }}
           >
-            {/* Morning Takeaway (Enhanced TL;DR, Bold First Clause, More Padding) */}
+            {/* Morning Takeaway (More Padding, Bold First Clause, Inner Glow) */}
             <LuxurySection icon={Sparkles} title="Morning Takeaway" iconColor="#FBCFE8">
               <motion.div 
-                className="p-6 rounded-2xl relative overflow-hidden"
+                className="p-7 rounded-[20px] relative overflow-hidden"
                 style={{ 
-                  background: 'rgba(255,255,255,0.042)',
-                  backdropFilter: 'blur(26px) saturate(140%)',
-                  WebkitBackdropFilter: 'blur(26px) saturate(140%)',
-                  border: `1px solid rgba(255,255,255,0.10)`,
-                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.09), 0 3px 14px rgba(0,0,0,0.08)'
+                  background: 'rgba(255,255,255,0.045)',
+                  backdropFilter: 'blur(30px) saturate(145%)',
+                  WebkitBackdropFilter: 'blur(30px) saturate(145%)',
+                  border: `1px solid rgba(255,255,255,0.11)`,
+                  boxShadow: `
+                    inset 0 1px 0 rgba(255,255,255,0.10), 
+                    inset 0 0 24px ${theme.color}03,
+                    0 4px 16px rgba(0,0,0,0.10)
+                  `
                 }}
               >
                 {/* Top Rim */}
                 <div style={{
                   position: 'absolute',
                   top: 0,
-                  left: '16%',
-                  right: '16%',
+                  left: '18%',
+                  right: '18%',
                   height: '1px',
-                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.20), transparent)',
                   pointerEvents: 'none'
                 }} />
 
                 <div className="relative z-10">
-                  <div className="text-[10px] font-semibold uppercase tracking-wider mb-2.5" style={{ color: 'rgba(255,255,255,0.68)', letterSpacing: '0.08em' }}>
+                  <div className="text-[10px] font-semibold uppercase tracking-wider mb-3" style={{ color: 'rgba(255,255,255,0.70)', letterSpacing: '0.10em' }}>
                     TL;DR
                   </div>
-                  <p className="text-[15px] font-medium leading-relaxed" style={{ color: 'rgba(255,255,255,0.92)', lineHeight: '1.6', maxWidth: '92%' }}>
+                  <p className="text-[15px] font-medium leading-relaxed" style={{ color: 'rgba(255,255,255,0.94)', lineHeight: '1.62', maxWidth: '94%' }}>
                     <strong style={{ fontWeight: 600, color: 'rgba(255,255,255,0.98)' }}>
                       {details.morning_takeaway.split('→')[0]}→
                     </strong>
@@ -536,7 +559,7 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
               </motion.div>
             </LuxurySection>
 
-            {/* Key Drivers (Indented text, faint separators, settling pulse) */}
+            {/* Key Drivers (Faint Separators, Indented Text Spine) */}
             <LuxurySection icon={Target} title="Key Drivers" iconColor={theme.color}>
               <ul className="space-y-2.5">
                 {details.drivers.map((driver, i) => (
@@ -545,17 +568,19 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
               </ul>
             </LuxurySection>
 
-            {/* Impact Overview (Reduced spacing, directional icons, vertical separator) */}
+            {/* Impact Overview (Vertical Separator, Directional Icons, Subtle Gradient) */}
             <LuxurySection icon={Target} title="Impact Overview" iconColor="#C4B5FD" delay={0.1}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 rounded-2xl relative" style={{ 
-                background: 'rgba(255,255,255,0.035)',
-                backdropFilter: 'blur(24px)',
-                WebkitBackdropFilter: 'blur(24px)',
-                border: '1px solid rgba(255,255,255,0.09)',
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.07)'
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-7 rounded-[20px] relative" style={{ 
+                background: `
+                  linear-gradient(135deg, rgba(255,255,255,0.040) 0%, rgba(255,255,255,0.032) 100%)
+                `,
+                backdropFilter: 'blur(28px)',
+                WebkitBackdropFilter: 'blur(28px)',
+                border: '1px solid rgba(255,255,255,0.10)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.09)'
               }}>
                 {/* Vertical Separator (Desktop) */}
-                <div className="hidden md:block absolute top-6 bottom-6 left-1/2 w-px" style={{ background: 'rgba(255,255,255,0.08)' }} />
+                <div className="hidden md:block absolute top-6 bottom-6 left-1/2 w-px" style={{ background: 'rgba(255,255,255,0.10)' }} />
 
                 {Object.entries(details.impact_groups).map(([group, items], i) => (
                   <AssetGroupImpact key={group} group={group} items={items} delay={i * 0.06} />
@@ -563,19 +588,19 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
               </div>
             </LuxurySection>
 
-            {/* Sentiment Rationale (Bold first 3-4 words, more line spacing) */}
+            {/* Sentiment Rationale (Bold First 3-4 Words, 1.68 Line Height, Colored Dot) */}
             <LuxurySection icon={Eye} title="Sentiment Rationale" iconColor="#FBCFE8" delay={0.2}>
-              <div className="p-6 rounded-2xl space-y-3.5" style={{
-                background: 'rgba(255,255,255,0.035)',
-                backdropFilter: 'blur(24px)',
-                WebkitBackdropFilter: 'blur(24px)',
-                border: '1px solid rgba(255,255,255,0.09)',
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.07)'
+              <div className="p-7 rounded-[20px] space-y-4" style={{
+                background: 'rgba(255,255,255,0.038)',
+                backdropFilter: 'blur(28px)',
+                WebkitBackdropFilter: 'blur(28px)',
+                border: '1px solid rgba(255,255,255,0.10)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)'
               }}>
                 {details.sentiment_rationale.map((point, i) => {
                   const words = point.split(' ');
-                  const firstThreeWords = words.slice(0, 3).join(' ');
-                  const restOfText = words.slice(3).join(' ');
+                  const firstFourWords = words.slice(0, 4).join(' ');
+                  const restOfText = words.slice(4).join(' ');
 
                   return (
                     <motion.div
@@ -583,18 +608,21 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
                       className="flex items-start"
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.25 + i * 0.06, duration: MOTION.DURATIONS.base }}
+                      transition={{ delay: 0.28 + i * 0.07, duration: MOTION.DURATIONS.base }}
                     >
-                      <span className="mr-3 mt-0.5" style={{ color: theme.color }}>•</span>
+                      <div 
+                        className="w-1.5 h-1.5 rounded-full mr-3 mt-1.5 flex-shrink-0"
+                        style={{ background: theme.color, boxShadow: `0 0 8px ${theme.color}48` }}
+                      />
                       <span 
-                        className="text-sm leading-relaxed"
+                        className="text-[13px] leading-relaxed"
                         style={{ 
-                          color: 'rgba(255,255,255,0.88)',
-                          lineHeight: '1.65'
+                          color: 'rgba(255,255,255,0.90)',
+                          lineHeight: '1.68'
                         }}
                       >
                         <strong style={{ fontWeight: 600, color: 'rgba(255,255,255,0.98)' }}>
-                          {firstThreeWords}
+                          {firstFourWords}
                         </strong>
                         {' '}{restOfText}
                       </span>
@@ -604,42 +632,46 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
               </div>
             </LuxurySection>
             
-            {/* Forward Outlook (Info chip, more padding, stronger top glow) */}
+            {/* Forward Outlook (Info Chip, Enhanced Top Glow, More Padding) */}
             <LuxurySection icon={TrendingUp} title="Forward Outlook" iconColor="#A7F3D0" delay={0.3}>
               {/* Info Chip */}
               <div 
-                className="inline-block px-3 py-1.5 rounded-lg text-[11px] font-semibold mb-3"
+                className="inline-block px-3.5 py-1.5 rounded-lg text-[11px] font-semibold mb-3"
                 style={{
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.10)',
-                  color: 'rgba(255,255,255,0.70)',
-                  letterSpacing: '0.02em'
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  color: 'rgba(255,255,255,0.74)',
+                  letterSpacing: '0.025em'
                 }}
               >
                 Next 1–3 Months
               </div>
 
-              {/* Enhanced Top Glow Bar */}
+              {/* Enhanced Top Glow Accent */}
               <div 
                 className="h-px mb-4"
                 style={{
-                  background: `linear-gradient(90deg, transparent, ${theme.color}38, transparent)`,
-                  boxShadow: `0 0 12px ${theme.glowColor}`
+                  background: `linear-gradient(90deg, transparent, ${theme.color}42, transparent)`,
+                  boxShadow: `0 0 14px ${theme.glowColor}`
                 }}
               />
               
-              <div className="p-6 rounded-2xl space-y-3.5" style={{
-                background: 'rgba(255,255,255,0.038)',
-                backdropFilter: 'blur(26px)',
-                WebkitBackdropFilter: 'blur(26px)',
-                border: '1px solid rgba(255,255,255,0.10)',
-                boxShadow: `inset 0 1px 0 rgba(255,255,255,0.09), inset 0 0 20px ${theme.color}04`
+              <div className="p-7 rounded-[20px] space-y-4" style={{
+                background: 'rgba(255,255,255,0.042)',
+                backdropFilter: 'blur(30px)',
+                WebkitBackdropFilter: 'blur(30px)',
+                border: '1px solid rgba(255,255,255,0.12)',
+                boxShadow: `
+                  inset 0 1px 0 rgba(255,255,255,0.11), 
+                  inset 0 0 26px ${theme.color}05,
+                  0 4px 16px rgba(0,0,0,0.10)
+                `
               }}>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.88)', lineHeight: '1.65' }}>
+                <p className="text-[14px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.90)', lineHeight: '1.68' }}>
                   {details.outlook.line1}
                 </p>
                 {details.outlook.line2 && (
-                  <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.78)', lineHeight: '1.65' }}>
+                  <p className="text-[14px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.80)', lineHeight: '1.68' }}>
                     {details.outlook.line2}
                   </p>
                 )}
