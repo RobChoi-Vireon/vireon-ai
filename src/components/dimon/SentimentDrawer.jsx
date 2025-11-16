@@ -1,7 +1,7 @@
-// 🔒 DESIGN LOCKED — OS HORIZON INSIGHT STRATA V2 ARCHITECTURE
+// 🔒 DESIGN LOCKED — OS HORIZON LIGHT GLASS TAHOE V2.1
 // Last Updated: 2025-01-20
-// VIREON CERTIFIED — Above-the-Fold Intelligence Panel
-// Apple macOS Tahoe + VisionOS Design Language
+// VIREON CERTIFIED — Premium Frosted Glass Intelligence Panel
+// Apple macOS Tahoe + VisionOS Light Glass Design Language
 // See: DESIGN_LOCKED_COMPONENTS.md
 
 import React, { useEffect, useMemo, useState, useRef } from 'react';
@@ -19,8 +19,8 @@ const MOTION = {
   DURATIONS: {
     fast: 0.08,
     base: 0.14,
-    expand: 0.18,
-    slow: 0.18,
+    expand: 0.19,
+    slow: 0.20,
     breathing: 9
   }
 };
@@ -85,16 +85,16 @@ const SEGMENT_INSIGHTS = {
 };
 
 // ============================================================================
-// LUMINOUS ALIGNMENT ORB (Compact)
+// LIGHT GLASS TAHOE ORB
 // ============================================================================
-const LuminousAlignmentOrb = ({ score }) => {
+const LightGlassOrb = ({ score }) => {
   const [breathingPhase, setBreathingPhase] = useState(0);
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
 
   const getZoneColor = (s) => {
-    if (s < 40) return '#E86565';
-    if (s < 70) return '#70A8E8';
-    return '#32C288';
+    if (s < 40) return { base: '#DC6B6B', light: '#EF9A9A' };
+    if (s < 70) return { base: '#5B92D6', light: '#90B8E8' };
+    return { base: '#4CAF7A', light: '#81C995' };
   };
 
   const getZoneLabel = (s) => {
@@ -103,7 +103,7 @@ const LuminousAlignmentOrb = ({ score }) => {
     return 'Bullish';
   };
 
-  const color = getZoneColor(score);
+  const colorSet = getZoneColor(score);
   const label = getZoneLabel(score);
 
   useEffect(() => {
@@ -132,32 +132,31 @@ const LuminousAlignmentOrb = ({ score }) => {
     };
   }, [shouldReduceMotion]);
 
-  const breathingScale = 1 + Math.sin(breathingPhase * (2 * Math.PI / MOTION.DURATIONS.breathing)) * 0.009;
-  const breathingOpacity = 0.04 + Math.sin(breathingPhase * (2 * Math.PI / MOTION.DURATIONS.breathing)) * 0.018;
-  const crescentRotation = breathingPhase * 0.5;
+  const breathingScale = 1 + Math.sin(breathingPhase * (2 * Math.PI / MOTION.DURATIONS.breathing)) * 0.007;
+  const breathingOpacity = 0.06 + Math.sin(breathingPhase * (2 * Math.PI / MOTION.DURATIONS.breathing)) * 0.02;
 
   return (
     <motion.div 
-      className="relative flex items-center justify-center mx-auto mb-4"
+      className="relative flex items-center justify-center mx-auto mb-3"
       style={{
         width: '160px',
         height: '160px'
       }}
     >
-      {/* Volumetric Halo */}
+      {/* Soft Bloom Ring */}
       <motion.div
         className="absolute"
         style={{
-          width: '240px',
-          height: '240px',
+          width: '220px',
+          height: '220px',
           borderRadius: '50%',
-          background: `radial-gradient(circle, ${color}12 0%, ${color}06 45%, transparent 72%)`,
-          filter: 'blur(32px)',
+          background: `radial-gradient(circle, ${colorSet.light}18 0%, ${colorSet.light}08 40%, transparent 68%)`,
+          filter: 'blur(28px)',
           pointerEvents: 'none'
         }}
         animate={{
-          opacity: breathingOpacity + 0.05,
-          scale: breathingScale * 1.18
+          opacity: breathingOpacity + 0.06,
+          scale: breathingScale * 1.14
         }}
         transition={{
           duration: MOTION.DURATIONS.breathing,
@@ -165,36 +164,29 @@ const LuminousAlignmentOrb = ({ score }) => {
         }}
       />
 
-      {/* Light-field Crescent */}
+      {/* Atmospheric Glow (Floating Effect) */}
       <motion.div
         className="absolute"
         style={{
-          width: '160px',
-          height: '160px',
+          width: '140px',
+          height: '70px',
+          top: '85%',
           borderRadius: '50%',
-          background: `
-            conic-gradient(
-              from ${crescentRotation}deg,
-              ${color}20 0deg,
-              ${color}35 ${score * 3.6}deg,
-              transparent ${score * 3.6}deg,
-              transparent 360deg
-            )
-          `,
+          background: `radial-gradient(ellipse, ${colorSet.base}08 0%, transparent 70%)`,
           filter: 'blur(18px)',
           pointerEvents: 'none'
         }}
         animate={{
-          scale: breathingScale * 1.10,
-          opacity: [0.48, 0.62, 0.48]
+          opacity: breathingOpacity,
+          scale: breathingScale * 1.08
         }}
         transition={{
-          scale: { duration: MOTION.DURATIONS.breathing, ease: MOTION.CURVES.breathe },
-          opacity: { duration: MOTION.DURATIONS.breathing * 1.2, repeat: Infinity, ease: MOTION.CURVES.breathe }
+          duration: MOTION.DURATIONS.breathing,
+          ease: MOTION.CURVES.breathe
         }}
       />
 
-      {/* Liquid Glass Orb */}
+      {/* Light Glass Orb */}
       <motion.div
         className="absolute"
         style={{
@@ -203,17 +195,18 @@ const LuminousAlignmentOrb = ({ score }) => {
           borderRadius: '50%',
           background: `
             linear-gradient(135deg, 
-              rgba(255, 255, 255, 0.09) 0%, 
-              rgba(255, 255, 255, 0.03) 100%
+              rgba(255, 255, 255, 0.76) 0%, 
+              rgba(248, 250, 252, 0.82) 100%
             )
           `,
-          backdropFilter: 'blur(24px) saturate(140%)',
-          WebkitBackdropFilter: 'blur(24px) saturate(140%)',
-          border: '1px solid rgba(255,255,255,0.14)',
+          backdropFilter: 'blur(32px) saturate(120%)',
+          WebkitBackdropFilter: 'blur(32px) saturate(120%)',
+          border: '1px solid rgba(255,255,255,0.65)',
           boxShadow: `
-            inset 0 2px 12px rgba(255,255,255,0.12),
-            inset 0 -2px 8px rgba(0,0,0,0.18),
-            0 0 35px ${color}14
+            inset 0 2px 8px rgba(255,255,255,0.85),
+            inset 0 -2px 6px rgba(148,163,184,0.12),
+            0 4px 16px rgba(0,0,0,0.08),
+            0 0 24px ${colorSet.light}14
           `
         }}
         animate={{
@@ -224,25 +217,27 @@ const LuminousAlignmentOrb = ({ score }) => {
           ease: MOTION.CURVES.breathe
         }}
       >
-        {/* Subsurface Luminance */}
+        {/* Subsurface Lighting Highlight */}
         <div style={{
           position: 'absolute',
-          inset: 0,
-          borderRadius: '50%',
-          background: `radial-gradient(circle at 42% 38%, ${color}08 0%, transparent 68%)`,
-          pointerEvents: 'none'
-        }} />
-
-        {/* Top Rim Highlight */}
-        <div style={{
-          position: 'absolute',
-          top: '8px',
-          left: '8px',
+          top: '6px',
+          left: '6px',
           width: '52px',
           height: '52px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle at 32% 32%, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.12) 42%, transparent 68%)',
-          filter: 'blur(12px)',
+          background: 'radial-gradient(circle at 28% 28%, rgba(255,255,255,0.68) 0%, rgba(255,255,255,0.22) 45%, transparent 72%)',
+          filter: 'blur(10px)',
+          pointerEvents: 'none'
+        }} />
+
+        {/* Chrome Rim Highlight */}
+        <div style={{
+          position: 'absolute',
+          inset: '2px',
+          borderRadius: '50%',
+          background: `
+            radial-gradient(circle at 70% 32%, transparent 38%, rgba(255,255,255,0.48) 82%, rgba(255,255,255,0.24) 92%, transparent 100%)
+          `,
           pointerEvents: 'none'
         }} />
       </motion.div>
@@ -252,7 +247,7 @@ const LuminousAlignmentOrb = ({ score }) => {
         <motion.span
           className="text-[10px] font-medium uppercase tracking-wide mb-3"
           style={{ 
-            color: 'rgba(255,255,255,0.68)',
+            color: 'rgba(51, 65, 85, 0.76)',
             letterSpacing: '0.14em',
             fontWeight: 500
           }}
@@ -266,10 +261,10 @@ const LuminousAlignmentOrb = ({ score }) => {
         <motion.span
           className="text-4xl font-bold mb-2"
           style={{ 
-            color,
-            textShadow: `0 0 18px ${color}36, 0 2px 8px rgba(0,0,0,0.24)`,
-            filter: 'brightness(1.10) contrast(1.08)',
-            letterSpacing: '-0.04em'
+            color: colorSet.base,
+            textShadow: `0 1px 3px ${colorSet.base}18`,
+            letterSpacing: '-0.04em',
+            fontWeight: 700
           }}
           initial={{ opacity: 0, scale: 0.85 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -284,7 +279,7 @@ const LuminousAlignmentOrb = ({ score }) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.3 }}
         >
-          <div className="text-[14px] font-semibold" style={{ color: 'rgba(255,255,255,0.98)' }}>
+          <div className="text-[14px] font-semibold" style={{ color: 'rgba(30, 41, 59, 0.92)' }}>
             {label}
           </div>
         </motion.div>
@@ -294,50 +289,173 @@ const LuminousAlignmentOrb = ({ score }) => {
 };
 
 // ============================================================================
-// DISTILLED INSIGHT CHIP (Compact Capsule)
+// 2×2 INSIGHT PILLS GRID
 // ============================================================================
-const InsightChip = ({ segments }) => {
+const InsightPillsGrid = ({ segments, delay }) => {
+  const [hoveredPill, setHoveredPill] = useState(null);
+
+  const getIconColor = (n) => {
+    switch (n) {
+      case 'Policy': return { base: '#5B92D6', light: '#7FA9DE' };
+      case 'Credit': return { base: '#A77AD4', light: '#BA92E0' };
+      case 'Equities': return { base: '#4CAF7A', light: '#6BC18E' };
+      case 'Global': return { base: '#E5A546', light: '#EBB668' };
+      default: return { base: '#94A3B8', light: '#B0BCC9' };
+    }
+  };
+
+  const pillOrder = ['Policy', 'Credit', 'Equities', 'Global'];
+  const orderedSegments = pillOrder.map(name => 
+    segments.find(s => s.name === name) || { name, weight: 0 }
+  );
+
+  return (
+    <motion.div
+      className="grid grid-cols-2 gap-2.5 mb-4"
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: 0.32, ease: MOTION.CURVES.primary }}
+    >
+      {orderedSegments.map((segment, idx) => {
+        const colorSet = getIconColor(segment.name);
+        const Icon = OutlineIcons[segment.name] || OutlineIcons.Global;
+        const weight = (segment?.weight || 0) * 100;
+        const isHovered = hoveredPill === segment.name;
+
+        return (
+          <motion.div
+            key={segment.name}
+            className="relative"
+            onHoverStart={() => setHoveredPill(segment.name)}
+            onHoverEnd={() => setHoveredPill(null)}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: delay + 0.1 + (idx * 0.04), duration: 0.28 }}
+          >
+            <motion.div
+              className="relative rounded-2xl overflow-hidden"
+              style={{
+                padding: '12px 14px',
+                background: 'rgba(255, 255, 255, 0.62)',
+                backdropFilter: 'blur(28px) saturate(115%)',
+                WebkitBackdropFilter: 'blur(28px) saturate(115%)',
+                border: '1px solid rgba(226, 232, 240, 0.75)',
+                boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.85), 0 2px 6px rgba(0,0,0,0.04)'
+              }}
+              animate={{
+                y: isHovered ? -1.5 : 0,
+                boxShadow: isHovered
+                  ? `inset 0 1px 2px rgba(255,255,255,0.85), 0 3px 10px rgba(0,0,0,0.08), 0 0 16px ${colorSet.light}12`
+                  : 'inset 0 1px 2px rgba(255,255,255,0.85), 0 2px 6px rgba(0,0,0,0.04)',
+                borderColor: isHovered ? 'rgba(203, 213, 225, 0.85)' : 'rgba(226, 232, 240, 0.75)'
+              }}
+              transition={{ duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.secondary }}
+            >
+              {/* Chrome Rim */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: '8%',
+                right: '8%',
+                height: '1px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.65), transparent)',
+                pointerEvents: 'none'
+              }} />
+
+              {/* Interior Glow */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                background: `radial-gradient(circle at 50% -10%, ${colorSet.light}04 0%, transparent 75%)`,
+                borderRadius: '16px',
+                pointerEvents: 'none'
+              }} />
+
+              <div className="flex items-center justify-between relative z-10">
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="w-7 h-7 rounded-lg flex items-center justify-center"
+                    style={{
+                      background: `${colorSet.light}12`,
+                      border: `1px solid ${colorSet.light}24`
+                    }}
+                  >
+                    <Icon style={{ color: colorSet.base }} />
+                  </div>
+                  <span className="text-[12px] font-semibold" style={{ color: 'rgba(30, 41, 59, 0.92)' }}>
+                    {segment.name}
+                  </span>
+                </div>
+                <span className="text-[15px] font-bold" style={{ color: colorSet.base }}>
+                  {Math.round(weight)}%
+                </span>
+              </div>
+
+              {/* Micro-shadow */}
+              <div style={{
+                position: 'absolute',
+                bottom: '-3px',
+                left: '12%',
+                right: '12%',
+                height: '4px',
+                background: 'radial-gradient(ellipse, rgba(0,0,0,0.04) 0%, transparent 70%)',
+                filter: 'blur(2px)',
+                pointerEvents: 'none'
+              }} />
+            </motion.div>
+          </motion.div>
+        );
+      })}
+    </motion.div>
+  );
+};
+
+// ============================================================================
+// LIGHT GLASS INSIGHT STRIPE
+// ============================================================================
+const InsightStripe = ({ segments }) => {
   const generateInsight = () => {
     const hasPolicyRising = segments.find(s => s.name === 'Policy')?.trend === '+';
     const hasCreditStress = segments.find(s => s.name === 'Credit')?.stress_level === 'high';
     
     if (hasPolicyRising && hasCreditStress) {
-      return "Mild upward pressure from policy tightening and early credit stress.";
+      return "Mild upward pressure from policy tightening and credit stress.";
     }
     return "Mixed sentiment across policy, credit, and global conditions.";
   };
 
   return (
     <motion.div
-      className="relative inline-flex mx-auto mb-5"
+      className="relative rounded-xl overflow-hidden mb-4"
       style={{
-        padding: '10px 20px',
-        borderRadius: '20px',
-        background: 'rgba(255, 255, 255, 0.05)',
-        backdropFilter: 'blur(24px) saturate(130%)',
-        WebkitBackdropFilter: 'blur(24px) saturate(130%)',
-        border: '1px solid rgba(255,255,255,0.10)',
-        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 2px 10px rgba(0,0,0,0.06), 0 0 20px rgba(142, 187, 255, 0.04)'
+        padding: '8px 18px',
+        background: 'rgba(255, 255, 255, 0.54)',
+        backdropFilter: 'blur(24px) saturate(110%)',
+        WebkitBackdropFilter: 'blur(24px) saturate(110%)',
+        border: '1px solid rgba(226, 232, 240, 0.70)',
+        boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.80), 0 2px 5px rgba(0,0,0,0.03)'
       }}
-      initial={{ opacity: 0, y: 6 }}
+      initial={{ opacity: 0, y: 4 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.5, duration: 0.32, ease: MOTION.CURVES.primary }}
+      transition={{ delay: 0.52, duration: 0.30, ease: MOTION.CURVES.primary }}
     >
-      {/* Subsurface Glow */}
+      {/* Micro-shadow */}
       <div style={{
         position: 'absolute',
-        inset: '-8px',
-        borderRadius: '28px',
-        background: 'radial-gradient(ellipse at 50% 50%, rgba(142, 187, 255, 0.08) 0%, transparent 70%)',
-        filter: 'blur(12px)',
+        bottom: '-2px',
+        left: '14%',
+        right: '14%',
+        height: '3px',
+        background: 'radial-gradient(ellipse, rgba(0,0,0,0.03) 0%, transparent 70%)',
+        filter: 'blur(2px)',
         pointerEvents: 'none'
       }} />
 
       <p 
-        className="text-[13px] font-medium text-center relative z-10"
+        className="text-[12px] font-medium text-center relative z-10"
         style={{ 
-          color: 'rgba(255,255,255,0.92)',
-          letterSpacing: '-0.006em',
+          color: 'rgba(51, 65, 85, 0.88)',
+          letterSpacing: '-0.005em',
           lineHeight: '1.4'
         }}
       >
@@ -348,22 +466,22 @@ const InsightChip = ({ segments }) => {
 };
 
 // ============================================================================
-// COMPACT SEGMENT CARD (2×2 Grid Item)
+// LIGHT GLASS SEGMENT CARD
 // ============================================================================
 const SegmentCard = ({ segment, delay, onOpenDetail }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const getIconColor = (n) => {
     switch (n) {
-      case 'Policy': return '#70A8E8';
-      case 'Credit': return '#B88AED';
-      case 'Equities': return '#32C288';
-      case 'Global': return '#EDB859';
-      default: return '#A8B1BA';
+      case 'Policy': return { base: '#5B92D6', light: '#7FA9DE' };
+      case 'Credit': return { base: '#A77AD4', light: '#BA92E0' };
+      case 'Equities': return { base: '#4CAF7A', light: '#6BC18E' };
+      case 'Global': return { base: '#E5A546', light: '#EBB668' };
+      default: return { base: '#94A3B8', light: '#B0BCC9' };
     }
   };
 
-  const iconColor = getIconColor(segment.name);
+  const colorSet = getIconColor(segment.name);
   const Icon = OutlineIcons[segment.name] || OutlineIcons.Global;
   const weight = (segment?.weight || 0) * 100;
   const narrative = SEGMENT_INSIGHTS[segment.name] || { summary: 'No insights', trend: 'Stable' };
@@ -374,46 +492,37 @@ const SegmentCard = ({ segment, delay, onOpenDetail }) => {
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       onClick={() => onOpenDetail?.(segment)}
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.35, ease: MOTION.CURVES.primary }}
+      transition={{ delay, duration: 0.32, ease: MOTION.CURVES.primary }}
     >
       <motion.div
         className="relative rounded-2xl overflow-hidden"
         style={{
-          padding: '16px 18px',
-          background: 'rgba(255, 255, 255, 0.028)',
-          backdropFilter: 'blur(28px) saturate(142%)',
-          WebkitBackdropFilter: 'blur(28px) saturate(142%)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 2px 8px rgba(0,0,0,0.04)'
+          padding: '14px 16px',
+          background: 'rgba(255, 255, 255, 0.68)',
+          backdropFilter: 'blur(28px) saturate(118%)',
+          WebkitBackdropFilter: 'blur(28px) saturate(118%)',
+          border: '1px solid rgba(226, 232, 240, 0.72)',
+          boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.85), 0 2px 8px rgba(0,0,0,0.05)'
         }}
         animate={{
           y: isHovered ? -2 : 0,
           boxShadow: isHovered
-            ? `inset 0 1px 0 rgba(255,255,255,0.09), 0 4px 12px rgba(0,0,0,0.08), 0 0 18px ${iconColor}05`
-            : 'inset 0 1px 0 rgba(255,255,255,0.06), 0 2px 8px rgba(0,0,0,0.04)',
-          borderColor: isHovered ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.08)'
+            ? `inset 0 1px 2px rgba(255,255,255,0.85), 0 4px 12px rgba(0,0,0,0.08), 0 0 18px ${colorSet.light}10`
+            : 'inset 0 1px 2px rgba(255,255,255,0.85), 0 2px 8px rgba(0,0,0,0.05)',
+          borderColor: isHovered ? 'rgba(203, 213, 225, 0.85)' : 'rgba(226, 232, 240, 0.72)'
         }}
         transition={{ duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.secondary }}
       >
-        {/* Top Rim */}
+        {/* Chrome Rim */}
         <div style={{
           position: 'absolute',
           top: 0,
-          left: '12%',
-          right: '12%',
+          left: '10%',
+          right: '10%',
           height: '1px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-          pointerEvents: 'none'
-        }} />
-
-        {/* Subsurface Tint */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: `radial-gradient(circle at 50% -20%, ${iconColor}02 0%, transparent 100%)`,
-          borderRadius: '16px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.70), transparent)',
           pointerEvents: 'none'
         }} />
 
@@ -423,42 +532,42 @@ const SegmentCard = ({ segment, delay, onOpenDetail }) => {
             <div 
               className="w-8 h-8 rounded-lg flex items-center justify-center"
               style={{
-                background: `${iconColor}05`,
-                border: `1px solid ${iconColor}12`
+                background: `${colorSet.light}14`,
+                border: `1px solid ${colorSet.light}26`
               }}
             >
-              <Icon style={{ color: iconColor, filter: 'brightness(1.14)' }} />
+              <Icon style={{ color: colorSet.base }} />
             </div>
-            <span className="text-[13px] font-semibold" style={{ color: 'rgba(255,255,255,0.98)' }}>
+            <span className="text-[13px] font-semibold" style={{ color: 'rgba(30, 41, 59, 0.94)' }}>
               {segment.name}
             </span>
           </div>
-          <span className="text-[15px] font-bold" style={{ color: iconColor, filter: 'brightness(1.12)' }}>
+          <span className="text-[15px] font-bold" style={{ color: colorSet.base }}>
             {Math.round(weight)}%
           </span>
         </div>
 
-        {/* Narrative (One Sentence) */}
+        {/* Narrative */}
         <p 
-          className="text-[12px] mb-2.5"
+          className="text-[12px] mb-2"
           style={{ 
-            color: 'rgba(255,255,255,0.86)',
-            letterSpacing: '-0.005em',
+            color: 'rgba(51, 65, 85, 0.86)',
+            letterSpacing: '-0.004em',
             lineHeight: '1.4'
           }}
         >
           {narrative.summary}
         </p>
 
-        {/* Bottom Row: State Pill + Details Link */}
-        <div className="flex items-center justify-between mb-2">
+        {/* Bottom Row */}
+        <div className="flex items-center justify-between mb-1.5">
           <div
             className="px-2 py-0.5 rounded-md text-[10px] font-semibold"
             style={{
-              background: `${iconColor}06`,
-              border: `1px solid ${iconColor}12`,
-              color: iconColor,
-              letterSpacing: '0.01em'
+              background: `${colorSet.light}14`,
+              border: `1px solid ${colorSet.light}24`,
+              color: colorSet.base,
+              letterSpacing: '0.008em'
             }}
           >
             {narrative.trend}
@@ -466,7 +575,7 @@ const SegmentCard = ({ segment, delay, onOpenDetail }) => {
           
           <motion.div
             className="flex items-center gap-0.5 text-[10px] font-medium"
-            style={{ color: 'rgba(255,255,255,0.48)' }}
+            style={{ color: 'rgba(100, 116, 139, 0.68)' }}
             animate={{
               opacity: isHovered ? 1 : 0,
               x: isHovered ? 0 : -2
@@ -478,35 +587,23 @@ const SegmentCard = ({ segment, delay, onOpenDetail }) => {
           </motion.div>
         </div>
 
-        {/* Thin Signal Bar */}
+        {/* Signal Bar */}
         <div className="relative">
-          <div style={{
-            position: 'absolute',
-            top: '-3px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '100%',
-            height: '10px',
-            background: `radial-gradient(ellipse, ${iconColor}03 0%, transparent 80%)`,
-            filter: 'blur(5px)',
-            pointerEvents: 'none'
-          }} />
-          
           <div 
             className="w-full h-[2px] rounded-full overflow-hidden relative" 
-            style={{ background: 'rgba(0,0,0,0.15)' }}
+            style={{ background: 'rgba(203, 213, 225, 0.35)' }}
           >
             <motion.div
               className="h-full rounded-full"
               style={{ 
-                background: `linear-gradient(90deg, ${iconColor}90, ${iconColor}f0)`,
-                boxShadow: `0 0 6px ${iconColor}24`
+                background: `linear-gradient(90deg, ${colorSet.base}90, ${colorSet.base}e8)`,
+                boxShadow: `0 0 5px ${colorSet.light}20`
               }}
               initial={{ width: '0%' }}
               animate={{ width: `${weight}%` }}
               transition={{ 
-                duration: 0.65, 
-                delay: delay + 0.15, 
+                duration: 0.60, 
+                delay: delay + 0.12, 
                 ease: 'easeOut' 
               }}
             />
@@ -518,22 +615,22 @@ const SegmentCard = ({ segment, delay, onOpenDetail }) => {
 };
 
 // ============================================================================
-// SEGMENT DETAIL OVERLAY
+// SEGMENT DETAIL OVERLAY (LIGHT GLASS)
 // ============================================================================
 const SegmentDetailOverlay = ({ segment, onClose }) => {
   if (!segment) return null;
 
   const getIconColor = (n) => {
     switch (n) {
-      case 'Policy': return '#70A8E8';
-      case 'Credit': return '#B88AED';
-      case 'Equities': return '#32C288';
-      case 'Global': return '#EDB859';
-      default: return '#A8B1BA';
+      case 'Policy': return { base: '#5B92D6', light: '#7FA9DE' };
+      case 'Credit': return { base: '#A77AD4', light: '#BA92E0' };
+      case 'Equities': return { base: '#4CAF7A', light: '#6BC18E' };
+      case 'Global': return { base: '#E5A546', light: '#EBB668' };
+      default: return { base: '#94A3B8', light: '#B0BCC9' };
     }
   };
 
-  const iconColor = getIconColor(segment.name);
+  const colorSet = getIconColor(segment.name);
   const Icon = OutlineIcons[segment.name] || OutlineIcons.Global;
   const detail = SEGMENT_INSIGHTS[segment.name]?.detail || 'No additional details available.';
 
@@ -558,59 +655,59 @@ const SegmentDetailOverlay = ({ segment, onClose }) => {
         {/* Darkened Background */}
         <div
           className="absolute inset-0"
-          style={{ background: 'rgba(0,0,0,0.50)', backdropFilter: 'blur(6px)' }}
+          style={{ background: 'rgba(0,0,0,0.42)', backdropFilter: 'blur(5px)' }}
         />
 
         {/* Detail Card */}
         <motion.div
           className="relative rounded-3xl overflow-hidden max-w-lg w-full"
           style={{
-            background: 'rgba(18, 20, 28, 0.88)',
-            backdropFilter: 'blur(42px) saturate(160%)',
-            WebkitBackdropFilter: 'blur(42px) saturate(160%)',
-            border: '1px solid rgba(255,255,255,0.14)',
+            background: 'rgba(255, 255, 255, 0.88)',
+            backdropFilter: 'blur(48px) saturate(125%)',
+            WebkitBackdropFilter: 'blur(48px) saturate(125%)',
+            border: '1px solid rgba(226, 232, 240, 0.82)',
             boxShadow: `
-              0 24px 56px -12px rgba(0, 0, 0, 0.72),
-              0 0 40px ${iconColor}08,
-              inset 0 1px 0 rgba(255, 255, 255, 0.12)
+              0 24px 56px -12px rgba(0, 0, 0, 0.12),
+              0 0 32px ${colorSet.light}08,
+              inset 0 1px 2px rgba(255, 255, 255, 0.90)
             `,
-            padding: '28px 32px'
+            padding: '26px 30px'
           }}
           initial={{ opacity: 0, scale: 0.94, y: 16 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.96, y: 12 }}
-          transition={{ duration: 0.18, ease: MOTION.CURVES.expand }}
+          transition={{ duration: 0.19, ease: MOTION.CURVES.expand }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Top Rim */}
+          {/* Chrome Rim */}
           <div style={{
             position: 'absolute',
             top: 0,
-            left: '12%',
-            right: '12%',
+            left: '10%',
+            right: '10%',
             height: '1.5px',
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent)',
-            filter: 'blur(0.5px)',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.82), transparent)',
+            filter: 'blur(0.4px)',
             pointerEvents: 'none'
           }} />
 
           {/* Header */}
-          <div className="flex items-center gap-3 mb-5">
+          <div className="flex items-center gap-3 mb-4">
             <div 
               className="w-12 h-12 rounded-xl flex items-center justify-center"
               style={{
-                background: `${iconColor}08`,
-                border: `1px solid ${iconColor}18`,
-                boxShadow: `0 0 16px ${iconColor}10`
+                background: `${colorSet.light}18`,
+                border: `1px solid ${colorSet.light}32`,
+                boxShadow: `0 0 12px ${colorSet.light}10`
               }}
             >
-              <Icon style={{ color: iconColor, filter: 'brightness(1.16)', width: '22px', height: '22px' }} />
+              <Icon style={{ color: colorSet.base, width: '22px', height: '22px' }} />
             </div>
             <div>
-              <h3 className="text-lg font-bold" style={{ color: 'rgba(255,255,255,0.98)' }}>
+              <h3 className="text-lg font-bold" style={{ color: 'rgba(30, 41, 59, 0.96)' }}>
                 {segment.name}
               </h3>
-              <p className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.64)' }}>
+              <p className="text-[11px] font-medium" style={{ color: 'rgba(100, 116, 139, 0.76)' }}>
                 Detailed Analysis
               </p>
             </div>
@@ -619,16 +716,16 @@ const SegmentDetailOverlay = ({ segment, onClose }) => {
           {/* Divider */}
           <div style={{
             height: '1px',
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)',
-            margin: '16px 0 20px 0'
+            background: 'linear-gradient(90deg, transparent, rgba(203, 213, 225, 0.50), transparent)',
+            margin: '14px 0 18px 0'
           }} />
 
           {/* Detail Text */}
           <p 
-            className="text-[14px] leading-relaxed mb-6"
+            className="text-[14px] leading-relaxed mb-5"
             style={{ 
-              color: 'rgba(255,255,255,0.90)',
-              letterSpacing: '-0.006em',
+              color: 'rgba(51, 65, 85, 0.88)',
+              letterSpacing: '-0.005em',
               lineHeight: '1.6'
             }}
           >
@@ -640,11 +737,11 @@ const SegmentDetailOverlay = ({ segment, onClose }) => {
             onClick={onClose}
             className="w-full py-2.5 rounded-xl text-[13px] font-semibold"
             style={{
-              background: 'rgba(255,255,255,0.08)',
-              border: '1px solid rgba(255,255,255,0.10)',
-              color: 'rgba(255,255,255,0.88)'
+              background: 'rgba(226, 232, 240, 0.42)',
+              border: '1px solid rgba(203, 213, 225, 0.50)',
+              color: 'rgba(51, 65, 85, 0.88)'
             }}
-            whileHover={{ background: 'rgba(255,255,255,0.12)' }}
+            whileHover={{ background: 'rgba(203, 213, 225, 0.52)' }}
             whileTap={{ scale: 0.98 }}
             transition={{ duration: MOTION.DURATIONS.fast }}
           >
@@ -657,90 +754,108 @@ const SegmentDetailOverlay = ({ segment, onClose }) => {
 };
 
 // ============================================================================
-// BOTTOM NAV ROW (4-Segment Trajectory)
+// LIGHT GLASS DOCK (BOTTOM NAV)
 // ============================================================================
-const BottomNavRow = ({ segments, delay }) => {
+const LightGlassDock = ({ segments, delay }) => {
+  const [activeSegment, setActiveSegment] = useState('Policy');
+
   const getIconColor = (n) => {
     switch (n) {
-      case 'Policy': return '#70A8E8';
-      case 'Credit': return '#B88AED';
-      case 'Equities': return '#32C288';
-      case 'Global': return '#EDB859';
-      default: return '#A8B1BA';
+      case 'Policy': return { base: '#5B92D6', light: '#7FA9DE' };
+      case 'Credit': return { base: '#A77AD4', light: '#BA92E0' };
+      case 'Equities': return { base: '#4CAF7A', light: '#6BC18E' };
+      case 'Global': return { base: '#E5A546', light: '#EBB668' };
+      default: return { base: '#94A3B8', light: '#B0BCC9' };
     }
   };
 
   return (
     <motion.div
-      className="relative rounded-2xl overflow-hidden"
+      className="relative rounded-[22px] overflow-hidden"
       style={{
-        background: 'rgba(255, 255, 255, 0.028)',
-        backdropFilter: 'blur(24px) saturate(132%)',
-        WebkitBackdropFilter: 'blur(24px) saturate(132%)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 2px 10px rgba(0,0,0,0.04)',
-        padding: '16px 20px'
+        background: 'rgba(255, 255, 255, 0.58)',
+        backdropFilter: 'blur(32px) saturate(112%)',
+        WebkitBackdropFilter: 'blur(32px) saturate(112%)',
+        border: '1px solid rgba(226, 232, 240, 0.68)',
+        boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.82), 0 3px 10px rgba(0,0,0,0.06)',
+        padding: '14px 18px'
       }}
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.32, ease: MOTION.CURVES.primary }}
+      transition={{ delay, duration: 0.30, ease: MOTION.CURVES.primary }}
     >
-      {/* Top Rim */}
+      {/* Chrome Rim */}
       <div style={{
         position: 'absolute',
         top: 0,
-        left: '10%',
-        right: '10%',
+        left: '8%',
+        right: '8%',
         height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.72), transparent)',
         pointerEvents: 'none'
       }} />
 
-      <div className="flex items-center justify-between gap-3">
+      {/* Soft Shadow (Floating) */}
+      <div style={{
+        position: 'absolute',
+        bottom: '-4px',
+        left: '10%',
+        right: '10%',
+        height: '6px',
+        background: 'radial-gradient(ellipse, rgba(0,0,0,0.04) 0%, transparent 70%)',
+        filter: 'blur(4px)',
+        pointerEvents: 'none'
+      }} />
+
+      <div className="flex items-center justify-between gap-2.5">
         {segments.map((segment, idx) => {
-          const iconColor = getIconColor(segment.name);
+          const colorSet = getIconColor(segment.name);
           const weight = (segment?.weight || 0) * 100;
           const Icon = OutlineIcons[segment.name] || OutlineIcons.Global;
+          const isActive = activeSegment === segment.name;
 
           return (
-            <div key={segment.name} className="flex-1">
-              <div className="flex items-center gap-1.5 mb-1.5">
+            <motion.div 
+              key={segment.name} 
+              className="flex-1 cursor-pointer"
+              onHoverStart={() => setActiveSegment(segment.name)}
+            >
+              <div className="flex flex-col items-center gap-1">
                 <div 
                   className="w-6 h-6 rounded-lg flex items-center justify-center"
                   style={{
-                    background: `${iconColor}04`,
-                    border: `1px solid ${iconColor}10`
+                    background: isActive ? `${colorSet.light}18` : 'transparent',
+                    border: isActive ? `1px solid ${colorSet.light}28` : 'none',
+                    transition: 'all 0.14s ease'
                   }}
                 >
-                  <Icon style={{ color: iconColor, filter: 'brightness(1.14)', width: '14px', height: '14px' }} />
+                  <Icon style={{ color: isActive ? colorSet.base : 'rgba(100, 116, 139, 0.62)', width: '14px', height: '14px' }} />
                 </div>
-                <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.84)' }}>
+                <span 
+                  className="text-[10px] font-medium" 
+                  style={{ 
+                    color: isActive ? colorSet.base : 'rgba(100, 116, 139, 0.64)',
+                    transition: 'color 0.14s ease'
+                  }}
+                >
                   {segment.name}
                 </span>
+                
+                {/* Active Indicator */}
+                <motion.div
+                  className="h-[2px] rounded-full mt-0.5"
+                  style={{
+                    width: '20px',
+                    background: isActive ? `linear-gradient(90deg, ${colorSet.base}88, ${colorSet.base}e8)` : 'transparent',
+                    boxShadow: isActive ? `0 0 6px ${colorSet.light}28` : 'none'
+                  }}
+                  animate={{
+                    opacity: isActive ? 1 : 0
+                  }}
+                  transition={{ duration: 0.16 }}
+                />
               </div>
-
-              <div className="relative">
-                <div 
-                  className="w-full h-[2.5px] rounded-full overflow-hidden relative" 
-                  style={{ background: 'rgba(0,0,0,0.16)' }}
-                >
-                  <motion.div
-                    className="h-full rounded-full"
-                    style={{ 
-                      background: `linear-gradient(90deg, ${iconColor}88, ${iconColor}e8)`,
-                      boxShadow: `0 0 5px ${iconColor}20`
-                    }}
-                    initial={{ width: '0%' }}
-                    animate={{ width: `${weight}%` }}
-                    transition={{ 
-                      duration: 0.10, 
-                      delay: delay + 0.12 + (idx * 0.025), 
-                      ease: 'easeOut' 
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
+            </motion.div>
           );
         })}
       </div>
@@ -749,7 +864,7 @@ const BottomNavRow = ({ segments, delay }) => {
 };
 
 // ============================================================================
-// MAIN DRAWER — INSIGHT STRATA V2 (ABOVE-THE-FOLD)
+// MAIN DRAWER — LIGHT GLASS TAHOE
 // ============================================================================
 const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) => {
   const [activeOverlay, setActiveOverlay] = useState(null);
@@ -771,11 +886,6 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
   const consensusScore = useMemo(() => (typeof score === 'number' ? score : 0), [score]);
   const segments = useMemo(() => (Array.isArray(breakdown?.segments) ? breakdown.segments : []), [breakdown]);
 
-  const policy = segments.find(s => s.name === 'Policy');
-  const global = segments.find(s => s.name === 'Global');
-  const credit = segments.find(s => s.name === 'Credit');
-  const equities = segments.find(s => s.name === 'Equities');
-
   const handleSegmentClick = (segment) => {
     setActiveOverlay(segment);
   };
@@ -788,64 +898,61 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
         className="fixed inset-0 z-[200] flex items-center justify-center p-4"
         style={{ paddingTop: '80px' }}
         initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-        animate={{ opacity: 1, backdropFilter: 'blur(18px)' }}
+        animate={{ opacity: 1, backdropFilter: 'blur(16px)' }}
         exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-        transition={{ duration: 0.26, ease: MOTION.CURVES.primary }}
+        transition={{ duration: 0.24, ease: MOTION.CURVES.primary }}
       >
-        {/* Background */}
+        {/* Darkened Background */}
         <div
           className="absolute inset-0"
-          style={{ background: 'rgba(0,0,0,0.62)' }}
+          style={{ background: 'rgba(0,0,0,0.58)' }}
           onClick={!activeOverlay ? onClose : undefined}
         />
 
-        {/* Drawer Panel */}
+        {/* Light Glass Tahoe Panel */}
         <motion.div
           className="relative w-full max-w-4xl rounded-[32px] overflow-hidden border"
           style={{
             background: `
               linear-gradient(180deg, 
-                rgba(18, 20, 28, 0.84) 0%,
-                rgba(17, 19, 27, 0.88) 100%
+                rgba(248, 250, 252, 0.88) 0%,
+                rgba(241, 245, 249, 0.92) 100%
               )
             `,
-            backdropFilter: 'blur(44px) saturate(175%)',
-            WebkitBackdropFilter: 'blur(44px) saturate(175%)',
-            borderColor: 'rgba(255,255,255,0.12)',
+            backdropFilter: 'blur(52px) saturate(120%)',
+            WebkitBackdropFilter: 'blur(52px) saturate(120%)',
+            borderColor: 'rgba(226, 232, 240, 0.82)',
             boxShadow: `
-              0 28px 60px -12px rgba(0, 0, 0, 0.76),
-              0 0 40px rgba(142, 187, 255, 0.06),
-              inset 0 1px 0 rgba(255, 255, 255, 0.10),
-              inset 0 0 0 1px rgba(255, 255, 255, 0.024)
+              0 32px 64px -14px rgba(0, 0, 0, 0.15),
+              inset 0 1px 2px rgba(255, 255, 255, 0.92),
+              inset 0 0 0 1px rgba(255, 255, 255, 0.45),
+              0 0 48px rgba(100, 116, 139, 0.08)
             `,
             maxHeight: 'calc(100vh - 100px)'
           }}
           initial={{ opacity: 0, scale: 0.96, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.98, y: 14 }}
-          transition={{ duration: 0.22, ease: MOTION.CURVES.primary }}
+          transition={{ duration: 0.20, ease: MOTION.CURVES.primary }}
         >
-          {/* Gradient Overlay */}
+          {/* Inner Shadow (Depth) */}
           <div style={{
             position: 'absolute',
-            top: 0,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '65%',
-            height: '50%',
-            background: 'radial-gradient(ellipse at 50% 0%, rgba(142, 187, 255, 0.018) 0%, transparent 70%)',
-            pointerEvents: 'none',
-            borderRadius: '32px 32px 0 0'
+            inset: 0,
+            boxShadow: 'inset 0 0 24px rgba(148, 163, 184, 0.06)',
+            borderRadius: '32px',
+            pointerEvents: 'none'
           }} />
 
+          {/* Chrome Top Rim */}
           <div style={{
             position: 'absolute',
             top: 0,
-            left: '10%',
-            right: '10%',
+            left: '8%',
+            right: '8%',
             height: '1.5px',
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent)',
-            filter: 'blur(0.6px)',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.88), transparent)',
+            filter: 'blur(0.5px)',
             pointerEvents: 'none'
           }} />
 
@@ -853,83 +960,86 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
           <div 
             className="relative border-b" 
             style={{ 
-              borderColor: 'rgba(255,255,255,0.08)',
-              padding: '22px 28px 18px 28px',
-              background: 'rgba(255, 255, 255, 0.008)'
+              borderColor: 'rgba(226, 232, 240, 0.55)',
+              padding: '20px 26px 16px 26px',
+              background: 'rgba(255, 255, 255, 0.28)'
             }}
           >
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3.5">
+              <div className="flex items-center space-x-3">
                 <div 
-                  className="w-12 h-12 rounded-xl border flex items-center justify-center relative overflow-hidden"
+                  className="w-11 h-11 rounded-xl border flex items-center justify-center relative overflow-hidden"
                   style={{
-                    background: 'rgba(142, 187, 255, 0.08)',
-                    borderColor: 'rgba(142, 187, 255, 0.18)',
+                    background: 'rgba(147, 197, 253, 0.16)',
+                    borderColor: 'rgba(147, 197, 253, 0.35)',
                     backdropFilter: 'blur(14px)',
-                    boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.09), 0 2px 10px rgba(142, 187, 255, 0.14)'
+                    boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.70), 0 2px 8px rgba(59, 130, 246, 0.10)'
                   }}
                 >
-                  <Activity className="w-6 h-6 relative z-10" style={{ color: '#8EBBFF', filter: 'brightness(1.10)' }} strokeWidth={1.6} />
+                  <Activity className="w-5.5 h-5.5 relative z-10" style={{ color: '#3B82F6' }} strokeWidth={1.7} />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold tracking-tight" style={{ color: 'rgba(255,255,255,0.98)' }}>
+                  <h2 className="text-lg font-bold tracking-tight" style={{ color: 'rgba(30, 41, 59, 0.96)' }}>
                     Street Alignment
                   </h2>
-                  <p className="text-[12px] font-medium" style={{ color: 'rgba(255,255,255,0.74)' }}>
+                  <p className="text-[11px] font-medium" style={{ color: 'rgba(100, 116, 139, 0.80)' }}>
                     Consensus & Segment Breakdown
                   </p>
                 </div>
               </div>
               <motion.button
                 onClick={onClose}
-                className="w-10 h-10 rounded-xl flex items-center justify-center"
+                className="w-9 h-9 rounded-full flex items-center justify-center"
                 style={{
-                  background: 'rgba(255,255,255,0.08)',
-                  border: '1px solid rgba(255,255,255,0.09)'
+                  background: 'rgba(226, 232, 240, 0.48)',
+                  border: '1px solid rgba(203, 213, 225, 0.55)',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
                 }}
-                whileHover={{ scale: 1.04, background: 'rgba(255,255,255,0.12)' }}
+                whileHover={{ scale: 1.04, background: 'rgba(203, 213, 225, 0.55)' }}
                 whileTap={{ scale: 0.96 }}
                 transition={{ duration: MOTION.DURATIONS.fast }}
               >
-                <X className="w-4.5 h-4.5" style={{ color: 'rgba(255,255,255,0.76)' }} />
+                <X className="w-4 h-4" style={{ color: 'rgba(71, 85, 105, 0.82)' }} />
               </motion.button>
             </div>
           </div>
 
-          {/* Body (Above-the-Fold) */}
-          <div className="px-8 pt-5 pb-6">
+          {/* Body (Compressed for Above-the-Fold) */}
+          <div className="px-7 pt-3 pb-5 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 240px)' }}>
             {/* Orb */}
-            <LuminousAlignmentOrb score={consensusScore} />
+            <LightGlassOrb score={consensusScore} />
             
             {/* Metadata */}
             <motion.p
-              className="text-[10px] text-center mb-3"
-              style={{ color: 'rgba(255,255,255,0.50)' }}
+              className="text-[10px] text-center mb-2.5"
+              style={{ color: 'rgba(100, 116, 139, 0.68)' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.55, duration: 0.28 }}
+              transition={{ delay: 0.52, duration: 0.26 }}
             >
               Based on 5 sources • Updated 2m ago
             </motion.p>
 
-            {/* Insight Chip */}
-            <div className="flex justify-center mb-5">
-              <InsightChip segments={segments} />
+            {/* 2×2 Pills Grid */}
+            <InsightPillsGrid segments={segments} delay={0.58} />
+
+            {/* Insight Stripe */}
+            <InsightStripe segments={segments} />
+
+            {/* Segment Cards (Compressed) */}
+            <div className="space-y-3 mb-4">
+              {segments.map((segment, idx) => (
+                <SegmentCard 
+                  key={segment.name}
+                  segment={segment} 
+                  delay={0.68 + (idx * 0.05)} 
+                  onOpenDetail={handleSegmentClick} 
+                />
+              ))}
             </div>
 
-            {/* 2×2 Grid: Macro Forces + Market Conditions */}
-            <div className="grid grid-cols-2 gap-4 mb-5">
-              {/* Row 1: Policy + Global */}
-              {policy && <SegmentCard segment={policy} delay={0.68} onOpenDetail={handleSegmentClick} />}
-              {global && <SegmentCard segment={global} delay={0.73} onOpenDetail={handleSegmentClick} />}
-              
-              {/* Row 2: Credit + Equities */}
-              {credit && <SegmentCard segment={credit} delay={0.78} onOpenDetail={handleSegmentClick} />}
-              {equities && <SegmentCard segment={equities} delay={0.83} onOpenDetail={handleSegmentClick} />}
-            </div>
-
-            {/* Bottom Nav Row */}
-            <BottomNavRow segments={segments} delay={0.92} />
+            {/* Light Glass Dock */}
+            <LightGlassDock segments={segments} delay={0.92} />
           </div>
 
           {/* Segment Detail Overlay */}
