@@ -660,15 +660,15 @@ export default function MacroSignalsPage() {
                     </div>
                     
                     {/* Enhanced Grid with Breathing Room */}
-                    <div className="grid grid-cols-12 gap-5 items-start">
-                        <div className="col-span-12 lg:col-span-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+                        <div className="lg:col-span-5 min-h-[600px]">
                             <ConsensusMeter 
                                 score={digest.consensus_score} 
                                 breakdown={digest.consensus_breakdown} 
                                 onOpenDrawer={openConsensusDrawer}
                             />
                         </div>
-                        <div className="col-span-12 lg:col-span-8">
+                        <div className="lg:col-span-7">
                             <DivergenceReport 
                                 divergences={digest.synthesis?.divergences || []} 
                                 onOpenDrawer={setSelectedDivergence} 
