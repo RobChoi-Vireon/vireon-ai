@@ -1,297 +1,281 @@
-// 🔒 DESIGN LOCKED — OS HORIZON NARRATIVE CANVAS V9.0
+// 🔒 DESIGN LOCKED — OS HORIZON TAHOE V5.0 REFINEMENT
 // Last Updated: 2025-01-20
-// macOS Tahoe Intelligence Layer • Hero-Driven Narrative • Zero Dashboard Energy
-// Guided Understanding Flow: What → Why → So What → Outlook
+// VIREON CERTIFIED — Full 16-Pillar Compliance + macOS Tahoe Atmosphere
+// Apple-grade UI/UX, Cinematic Intelligence, Emotional Resonance
 // See: DESIGN_LOCKED_COMPONENTS.md
 
 import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
-import { X, Activity, Shield, Briefcase, BarChart3, Globe, Target, Eye, TrendingUp, Gavel, FileText, Users, Building2, DollarSign, Factory, Zap, ArrowUp, ArrowDown, ArrowRight } from 'lucide-react';
+import { X, Activity, ChevronDown, ChevronUp } from 'lucide-react';
 
-// Tahoe Motion DNA
+// OS Horizon Motion DNA (Liquid Silk / Halo Motion)
 const MOTION = {
   CURVES: {
-    liquid: [0.25, 0.1, 0, 1.0],
-    silk: [0.22, 0.61, 0.36, 1],
-    breathe: [0.33, 0, 0.4, 1]
+    silk: [0.25, 0.1, 0, 1.0],
+    breathe: [0.33, 0, 0.4, 1],
+    lift: [0.22, 0.61, 0.36, 1]
   },
   DURATIONS: {
-    drawer: 0.21,
-    hero: 0.24,
-    card: 0.19,
-    cascade: 0.06
+    instant: 0.10,
+    fast: 0.18,
+    base: 0.30,
+    breathing: 40
   }
 };
 
-const Icons = {
-  Policy: Shield,
-  Credit: Briefcase,
-  Equities: BarChart3,
-  Global: Globe
+// SF Symbol-Style Outline Icons
+const OutlineIcons = {
+  Policy: ({ style }) => (
+    <svg width="22" height="22" viewBox="0 0 20 20" fill="none" style={style}>
+      <path 
+        d="M10 3.5L5 5.5V9C5 12 7.5 14.5 10 15.5C12.5 14.5 15 12 15 9V5.5L10 3.5Z" 
+        stroke="currentColor" 
+        strokeWidth="1.2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+      />
+    </svg>
+  ),
+  Credit: ({ style }) => (
+    <svg width="22" height="22" viewBox="0 0 20 20" fill="none" style={style}>
+      <rect x="4.5" y="5.5" width="11" height="3" rx="0.6" stroke="currentColor" strokeWidth="1.2" />
+      <rect x="4.5" y="11.5" width="11" height="3" rx="0.6" stroke="currentColor" strokeWidth="1.2" />
+    </svg>
+  ),
+  Equities: ({ style }) => (
+    <svg width="22" height="22" viewBox="0 0 20 20" fill="none" style={style}>
+      <path d="M6 14V11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      <path d="M10 14V8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      <path d="M14 14V6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  ),
+  Global: ({ style }) => (
+    <svg width="22" height="22" viewBox="0 0 20 20" fill="none" style={style}>
+      <circle cx="10" cy="10" r="6.5" stroke="currentColor" strokeWidth="1.2" />
+      <path d="M10 3.5C10 3.5 12.5 6 12.5 10C12.5 14 10 16.5 10 16.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      <path d="M4 10H16" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  )
 };
 
-const DirectionIcons = { '+': ArrowUp, '-': ArrowDown, '=': ArrowRight };
-
-// Segment Data (15% Reduced Saturation)
-const SEGMENTS = {
-  Policy: { 
-    color: '#5E91D4', 
-    tint: 'rgba(94, 145, 212, 0.022)',
-    glow: 'rgba(94, 145, 212, 0.26)',
-    drivers: [
-      {icon: Gavel, text: "Intensified regulatory scrutiny on big tech platforms across content and privacy domains.", weight: "high"}, 
-      {icon: FileText, text: "Upcoming legislative proposals on AI content regulation expected Q1 2025.", weight: "medium"},
-      {icon: Globe, text: "Geopolitical factors influencing bilateral trade policy and tariff structures.", weight: "low"}
-    ],
-    rationale: [
-      "Compliance costs rising 40–60% for large-cap tech platforms as audit scope expands.",
-      "Margins pressured as capital allocation shifts from innovation to regulatory compliance infrastructure.",
-      "Hawkish Fed bias reinforced by tightening regulatory environment and reduced risk appetite."
-    ],
-    impact: {
-      Equities: [{ detail: "Tech sector multiples compress", direction: "-" }],
-      Rates: [{ detail: "Treasury demand increases (flight to quality)", direction: "+" }],
-      FX: [{ detail: "USD strengthens on risk-off sentiment", direction: "+" }],
-      Credit: [{ detail: "Investment-grade spreads neutral", direction: "=" }]
-    },
-    outlook: "Q4 congressional AI hearings likely → stricter oversight framework → rotation away from high-growth tech toward defensive sectors as compliance uncertainty weighs on forward guidance."
+// Segment Data
+const SEGMENT_INSIGHTS = {
+  Policy: {
+    summary: "Regulators tightening oversight in medium-term policy environment.",
+    detail: "Bipartisan push on content/privacy expands audit scope Y/Y. Capex guidance reflects regulatory friction across major platforms.",
+    trend: "Rising",
+    color: '#70A8E8'
   },
-  Credit: { 
-    color: '#A278D6', 
-    tint: 'rgba(162, 120, 214, 0.022)',
-    glow: 'rgba(162, 120, 214, 0.26)',
-    drivers: [
-      {icon: TrendingUp, text: "Widening high-yield (HY) and emerging market (EM) credit spreads indicating rising risk premium.", weight: "high"},
-      {icon: Building2, text: "Freezing issuance in primary debt markets as underwriting standards tighten sharply.", weight: "high"},
-      {icon: Users, text: "Tighter underwriting standards from banks reflecting increased credit risk assessment.", weight: "medium"}
-    ],
-    rationale: [
-      "Rising risk aversion driving rapid spread decompression in emerging market debt instruments.",
-      "Tightening financial conditions stalling M&A activity and refinancing windows globally across sectors.",
-      "Leading indicator for broader credit market stress ahead as liquidity conditions deteriorate."
-    ],
-    impact: {
-      Credit: [{ detail: "HY spreads widen further", direction: "-" }],
-      Equities: [{ detail: "Industrial sector underperforms", direction: "-" }],
-      FX: [{ detail: "USD bid strengthens", direction: "+" }],
-      Rates: [{ detail: "Flight to quality supports Treasuries", direction: "+" }]
-    },
-    outlook: "CDX HY index above 400 bps signals broader risk-off environment → continued debt issuance freeze through month-end would confirm significant credit cycle turn requiring defensive portfolio positioning."
+  Credit: {
+    summary: "Spreads widening as stress pockets form in credit markets.",
+    detail: "EM HY spreads widen 35bps WoW. Issuance windows shorten. Banks tighten underwriting standards.",
+    trend: "Moderate",
+    color: '#B88AED'
   },
-  Equities: { 
-    color: '#2BB578', 
-    tint: 'rgba(43, 181, 120, 0.022)',
-    glow: 'rgba(43, 181, 120, 0.26)',
-    drivers: [
-      {icon: TrendingDown, text: "Sector rotation from growth to value accelerating as rate expectations shift higher.", weight: "medium"},
-      {icon: BarChart3, text: "Narrowing market breadth with fewer stocks participating in rally creating fragility.", weight: "high"},
-      {icon: FileText, text: "Earnings season surprises and guidance updates revealing margin pressure themes.", weight: "medium"}
-    ],
-    rationale: [
-      "Market breadth deteriorating with concentration risk building in mega-cap technology stocks.",
-      "Fragile and selective market environment vulnerable to sentiment shocks or rotation catalysts.",
-      "Headline resilience masking underlying structural weaknesses in small and mid-cap performance."
-    ],
-    impact: {
-      Equities: [
-        { detail: "Growth stocks underperform", direction: "-" },
-        { detail: "Value/defensive sectors attract flows", direction: "+" }
-      ],
-      Rates: [{ detail: "Neutral impact on rates", direction: "=" }],
-      FX: [{ detail: "Mixed currency effects", direction: "=" }]
-    },
-    outlook: "Advance-decline ratio below 1.0 for 5+ consecutive days → mega-cap leadership breakdown could trigger 5-10% broad market correction within 2-3 weeks as breadth deterioration accelerates."
+  Equities: {
+    summary: "Market breadth remains flat with limited participation.",
+    detail: "Recent gains concentrated in large-cap. Underlying fragility despite headline resilience.",
+    trend: "Moderate",
+    color: '#32C288'
   },
-  Global: { 
-    color: '#D9A851', 
-    tint: 'rgba(217, 168, 81, 0.022)',
-    glow: 'rgba(217, 168, 81, 0.26)',
-    drivers: [
-      {icon: Factory, text: "Slowing demand from China post-reopening normalization weighing on global trade volumes.", weight: "high"},
-      {icon: Zap, text: "European energy price volatility creating uncertainty for industrial production costs.", weight: "medium"},
-      {icon: DollarSign, text: "Strength of the US Dollar (DXY) pressuring emerging market economies and debt servicing.", weight: "medium"}
-    ],
-    rationale: [
-      "Structural slowdown in China moving beyond cyclical weakness as consumer confidence remains subdued.",
-      "Global commodity demand declining as household spending lags despite targeted government stimulus.",
-      "Multinational earnings at risk from reduced China exposure and weakening export demand environment."
-    ],
-    impact: {
-      Equities: [{ detail: "Emerging markets underperform", direction: "-" }],
-      Commodities: [{ detail: "Metals and oil weaken", direction: "-" }],
-      FX: [{ detail: "USD strength continues", direction: "+" }],
-      Rates: [{ detail: "Neutral Treasury impact", direction: "=" }]
-    },
-    outlook: "Chinese PMI below 50 for 3+ months → global trade volume decline accelerates → commodity correction deepens 10-15% through Q2 as demand destruction spreads to industrial metals and energy."
+  Global: {
+    summary: "China slowdown weighing on global momentum and trade flows.",
+    detail: "Exports normalize. Household confidence lags. Local infra offsets narrow in 2H.",
+    trend: "Softening",
+    color: '#EDB859'
   }
 };
 
 // ============================================================================
-// TAHOE ALIGNMENT ORB
+// ENHANCED LUMINOUS ORB (15% Larger, Enhanced Halos, Subsurface Shimmer)
 // ============================================================================
-const TahoeOrb = ({ score }) => {
-  const [phase, setPhase] = useState(0);
-  const [shouldReduce, setShouldReduce] = useState(false);
+const LuminousAlignmentOrb = ({ score }) => {
+  const [breathingPhase, setBreathingPhase] = useState(0);
+  const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
+  const orbRef = useRef(null);
+  
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  
+  const springConfig = { stiffness: 75, damping: 26, mass: 0.9 };
+  const parallaxX = useSpring(useTransform(mouseX, [-100, 100], [-2, 2]), springConfig);
+  const parallaxY = useSpring(useTransform(mouseY, [-100, 100], [-2, 2]), springConfig);
 
-  const color = score < 40 ? '#E86565' : score < 70 ? '#5E91D4' : '#2BB578';
+  const getZoneColor = (s) => {
+    if (s < 40) return '#E86565';
+    if (s < 70) return '#70A8E8';
+    return '#32C288';
+  };
+
+  const color = getZoneColor(score);
 
   useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setShouldReduce(mq.matches);
-    return () => {};
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setShouldReduceMotion(mediaQuery.matches);
+    const handler = (e) => setShouldReduceMotion(e.matches);
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
   }, []);
 
   useEffect(() => {
-    if (shouldReduce) return;
-    let raf, t = Date.now();
-    const loop = () => {
-      setPhase((Date.now() - t) / 1000);
-      raf = requestAnimationFrame(loop);
+    if (shouldReduceMotion) return;
+    let rafId, startTime = Date.now();
+    const animate = () => {
+      setBreathingPhase((Date.now() - startTime) / 1000);
+      rafId = requestAnimationFrame(animate);
     };
-    raf = requestAnimationFrame(loop);
-    return () => raf && cancelAnimationFrame(raf);
-  }, [shouldReduce]);
+    rafId = requestAnimationFrame(animate);
+    return () => rafId && cancelAnimationFrame(rafId);
+  }, [shouldReduceMotion]);
 
-  const pulse = 1 + Math.sin(phase * (2 * Math.PI / 3.6)) * 0.016;
-  const luminance = 1 + Math.sin(phase * (2 * Math.PI / 3.6)) * 0.012;
+  useEffect(() => {
+    if (shouldReduceMotion || !orbRef?.current) return;
+    const handleMouseMove = (e) => {
+      const rect = orbRef.current.getBoundingClientRect();
+      mouseX.set(e.clientX - (rect.left + rect.width / 2));
+      mouseY.set(e.clientY - (rect.top + rect.height / 2));
+    };
+    const parent = orbRef.current.parentElement;
+    if (parent) {
+      parent.addEventListener('mousemove', handleMouseMove);
+      return () => parent.removeEventListener('mousemove', handleMouseMove);
+    }
+  }, [shouldReduceMotion, mouseX, mouseY]);
+
+  const breathingScale = 1 + Math.sin(breathingPhase * (2 * Math.PI / MOTION.DURATIONS.breathing)) * 0.02;
+  const breathingGlow = 0.045 + Math.sin(breathingPhase * (2 * Math.PI / MOTION.DURATIONS.breathing)) * 0.025;
+  const shimmerPhase = (breathingPhase % 35) / 35;
 
   return (
     <motion.div 
-      className="relative flex items-center justify-center mx-auto mb-8"
-      style={{ width: '240px', height: '240px' }}
-      initial={{ scale: 0.80, opacity: 0 }}
+      ref={orbRef}
+      className="relative flex items-center justify-center mx-auto mb-1"
+      style={{ width: '210px', height: '210px', x: parallaxX, y: parallaxY }}
+      initial={{ scale: 0.88, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
-      transition={{ duration: 0.80, ease: MOTION.CURVES.liquid }}
+      transition={{ duration: 0.65, ease: MOTION.CURVES.silk }}
     >
-      <motion.div style={{
-        position: 'absolute',
-        width: '640px',
-        height: '200px',
-        top: '-25%',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        borderRadius: '50%',
-        background: `radial-gradient(ellipse, ${color}04 0%, transparent 84%)`,
-        filter: 'blur(76px)',
-        pointerEvents: 'none'
-      }} />
+      {/* Outer Halo Diffusion (Enhanced 5% spread, 260px diameter) */}
+      <motion.div
+        className="absolute"
+        style={{
+          width: '380px',
+          height: '380px',
+          borderRadius: '50%',
+          background: `radial-gradient(circle, ${color}${Math.round(breathingGlow * 255).toString(16).padStart(2, '0')} 0%, ${color}03 50%, transparent 76%)`,
+          filter: 'blur(52px)',
+          pointerEvents: 'none'
+        }}
+        animate={{ scale: breathingScale * 1.32, opacity: breathingGlow }}
+        transition={{ duration: MOTION.DURATIONS.breathing, ease: MOTION.CURVES.breathe }}
+      />
 
-      <motion.div style={{
-        position: 'absolute',
-        width: '360px',
-        height: '360px',
-        borderRadius: '50%',
-        background: `radial-gradient(circle, ${color}07 0%, transparent 88%)`,
-        filter: 'blur(52px)',
-        pointerEvents: 'none'
-      }}
-      animate={{ scale: pulse * 1.24, opacity: 0.026 }}
-      transition={{ duration: 3.6, ease: MOTION.CURVES.breathe }} />
-
-      <motion.div style={{
-        position: 'absolute',
-        width: '235px',
-        height: '235px',
-        borderRadius: '50%',
-        background: `radial-gradient(circle, ${color}0E 0%, transparent 90%)`,
-        filter: 'blur(38px)',
-        pointerEvents: 'none'
-      }}
-      animate={{ scale: pulse * 1.10, opacity: 0.036 }}
-      transition={{ duration: 3.6, ease: MOTION.CURVES.breathe }} />
-
+      {/* Directional Inner Halo (Top-Left) */}
       <div style={{
         position: 'absolute',
-        width: '185px',
-        height: '10px',
-        top: '195px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        background: 'rgba(0,0,0,0.16)',
-        filter: 'blur(9px)',
+        top: '-20%',
+        left: '-20%',
+        width: '70%',
+        height: '70%',
+        borderRadius: '50%',
+        background: `radial-gradient(circle at 35% 35%, ${color}06 0%, transparent 68%)`,
+        filter: 'blur(36px)',
         pointerEvents: 'none'
       }} />
 
-      <motion.div style={{
-        position: 'absolute',
-        width: '185px',
-        height: '185px',
-        borderRadius: '50%',
-        background: 'linear-gradient(145deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.05) 100%)',
-        backdropFilter: 'blur(44px) saturate(168%)',
-        WebkitBackdropFilter: 'blur(44px) saturate(168%)',
-        border: '1px solid rgba(255,255,255,0.22)',
-        boxShadow: `
-          inset 0 3.5px 24px rgba(255,255,255,0.18),
-          inset 0 -3.5px 20px rgba(0,0,0,0.28),
-          0 0 76px ${color}26,
-          0 0 0 1px rgba(255,255,255,0.11)
-        `
-      }}
-      animate={{ scale: pulse, filter: `brightness(${luminance})` }}
-      transition={{ duration: 3.6, ease: MOTION.CURVES.breathe }}>
+      {/* Liquid Glass Orb (15% larger = 161px) */}
+      <motion.div
+        className="absolute"
+        style={{
+          width: '161px',
+          height: '161px',
+          borderRadius: '50%',
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.11) 0%, rgba(255, 255, 255, 0.04) 100%)',
+          backdropFilter: 'blur(36px) saturate(155%)',
+          WebkitBackdropFilter: 'blur(36px) saturate(155%)',
+          border: '1px solid rgba(255,255,255,0.18)',
+          boxShadow: `
+            inset 0 2px 18px rgba(255,255,255,0.15),
+            inset 0 -2px 14px rgba(0,0,0,0.22),
+            0 0 60px ${color}20,
+            0 0 0 0.5px rgba(255,255,255,0.08)
+          `
+        }}
+        animate={{ scale: breathingScale }}
+        transition={{ duration: MOTION.DURATIONS.breathing, ease: MOTION.CURVES.breathe }}
+      >
+        {/* Subsurface Shimmer (30-45s cycle) */}
         <motion.div style={{
           position: 'absolute',
           inset: 0,
           borderRadius: '50%',
-          background: `radial-gradient(circle at ${52 + Math.sin(phase * 0.15) * 12}% ${44 + Math.cos(phase * 0.15) * 9}%, ${color}18 0%, transparent 74%)`,
+          background: `
+            radial-gradient(
+              circle at ${45 + Math.sin(shimmerPhase * Math.PI * 2) * 8}% ${38 + Math.cos(shimmerPhase * Math.PI * 2) * 6}%, 
+              ${color}12 0%, 
+              transparent 68%
+            )
+          `,
           pointerEvents: 'none'
         }} />
 
+        {/* Top Rim Highlight */}
         <div style={{
           position: 'absolute',
-          top: '13px',
-          left: '13px',
-          width: '84px',
-          height: '84px',
+          top: '9px',
+          left: '9px',
+          width: '68px',
+          height: '68px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle at 36% 36%, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.22) 52%, transparent 78%)',
-          filter: 'blur(21px)',
+          background: 'radial-gradient(circle at 32% 32%, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.16) 46%, transparent 72%)',
+          filter: 'blur(17px)',
           pointerEvents: 'none'
         }} />
 
+        {/* Luminous Edge Highlight */}
         <div style={{
           position: 'absolute',
           inset: 0,
           borderRadius: '50%',
-          boxShadow: 'inset 0 0 2px 1px rgba(255,255,255,0.18)',
+          boxShadow: 'inset 0 0 1px 0.5px rgba(255,255,255,0.14)',
           pointerEvents: 'none'
         }} />
       </motion.div>
 
+      {/* Text Stack */}
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <motion.span
-          className="text-[9px] font-medium uppercase tracking-widest mb-4"
-          style={{ color: 'rgba(255,255,255,0.76)', letterSpacing: '0.24em' }}
+          className="text-[10px] font-medium uppercase tracking-widest mb-3"
+          style={{ color: 'rgba(255,255,255,0.68)', letterSpacing: '0.18em' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.42, duration: 0.48 }}
+          transition={{ delay: 0.3, duration: 0.4 }}
         >
           Alignment
         </motion.span>
         
         <motion.span
-          className="text-[64px] mb-3"
+          className="text-[56px] mb-1.5"
           style={{ 
             color,
-            textShadow: `0 0 42px ${color}54, 0 5px 20px rgba(0,0,0,0.38), 0 1px 3px rgba(255,255,255,0.22)`,
-            filter: 'brightness(1.20) contrast(1.16)',
-            letterSpacing: '-0.058em',
-            fontWeight: 580
+            textShadow: `0 0 32px ${color}45, 0 3px 14px rgba(0,0,0,0.32)`,
+            filter: 'brightness(1.14) contrast(1.11)',
+            letterSpacing: '-0.045em',
+            fontWeight: 560
           }}
-          initial={{ opacity: 0, scale: 0.78 }}
+          initial={{ opacity: 0, scale: 0.84 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.54, duration: 0.64, ease: MOTION.CURVES.liquid }}
+          transition={{ delay: 0.4, duration: 0.5, ease: MOTION.CURVES.silk }}
         >
           {score}
         </motion.span>
         
         <motion.div
-          className="text-[10px] font-medium"
-          style={{ color: 'rgba(255,255,255,0.70)' }}
+          className="text-[11px] font-medium"
+          style={{ color: 'rgba(255,255,255,0.62)' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.80, duration: 0.42 }}
+          transition={{ delay: 0.65, duration: 0.35 }}
         >
           Medium Weight
         </motion.div>
@@ -301,437 +285,529 @@ const TahoeOrb = ({ score }) => {
 };
 
 // ============================================================================
-// HERO SEGMENT CARD (130-150% Scale, Enhanced Depth)
+// FLOATING SUMMARY CHIP (70% width, inner shadow, top highlight, micro-lift)
 // ============================================================================
-const HeroSegmentCard = ({ segment, weight, onClick, delay, orbColor }) => {
+const FloatingSummaryChip = ({ segments, delay }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const info = SEGMENTS[segment.name] || {};
-  const Icon = Icons[segment.name] || Globe;
+
+  const generateStory = () => {
+    const hasPolicyRising = segments.find(s => s.name === 'Policy')?.trend === '+';
+    const hasCreditStress = segments.find(s => s.name === 'Credit')?.stress_level === 'high';
+    if (hasPolicyRising && hasCreditStress) {
+      return "Markets show mild upward pressure driven by policy tightening and early credit stress signals.";
+    }
+    return "Markets show mixed sentiment across policy, credit, and global conditions.";
+  };
 
   return (
     <motion.div
-      className="relative cursor-pointer"
-      onClick={onClick}
+      className="relative rounded-2xl overflow-hidden mb-4 mx-auto"
+      style={{
+        padding: '16px 26px',
+        maxWidth: '72%',
+        background: 'rgba(255, 255, 255, 0.048)',
+        backdropFilter: 'blur(38px) saturate(148%)',
+        WebkitBackdropFilter: 'blur(38px) saturate(148%)',
+        border: '1px solid rgba(255,255,255,0.11)',
+        boxShadow: `
+          inset 0 1px 0 rgba(255,255,255,0.12),
+          inset 0 -2px 6px rgba(0,0,0,0.08),
+          0 8px 22px rgba(0,0,0,0.14)
+        `
+      }}
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: isHovered ? -1.5 : 0 }}
+      transition={{ delay, duration: 0.4, ease: MOTION.CURVES.silk }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      initial={{ opacity: 0, y: 12, scale: 0.96 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ delay, duration: MOTION.DURATIONS.hero, ease: MOTION.CURVES.liquid }}
+      whileHover={{ 
+        boxShadow: `
+          inset 0 1px 0 rgba(255,255,255,0.14),
+          inset 0 -2px 6px rgba(0,0,0,0.08),
+          0 10px 26px rgba(0,0,0,0.18)
+        `
+      }}
     >
-      <motion.div
-        className="relative overflow-hidden rounded-[24px]"
-        style={{
-          padding: '32px 28px',
-          background: `
-            radial-gradient(ellipse at 50% -42%, ${info.tint} 0%, transparent 100%),
-            rgba(255, 255, 255, 0.038)
-          `,
-          backdropFilter: 'blur(38px) saturate(152%)',
-          WebkitBackdropFilter: 'blur(38px) saturate(152%)',
-          boxShadow: `
-            0 0 0 5px ${info.color}06,
-            0 0 32px ${orbColor}08,
-            inset 0 2px 0 rgba(255,255,255,0.15),
-            inset 0 0 28px rgba(255,255,255,0.014),
-            0 10px 28px rgba(0,0,0,0.16),
-            0 0 0 0.5px rgba(255,255,255,0.10)
-          `
+      {/* Top Highlight */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '18%',
+        right: '18%',
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent)',
+        pointerEvents: 'none'
+      }} />
+
+      <p 
+        className="text-[14px] font-medium leading-relaxed text-center"
+        style={{ 
+          color: 'rgba(255,255,255,0.94)',
+          letterSpacing: '-0.012em',
+          lineHeight: '1.52'
         }}
-        animate={{
-          scale: isHovered ? 1.015 : 1,
-          y: isHovered ? -2 : 0,
-          filter: `brightness(${isHovered ? 1.04 : 1})`,
-          boxShadow: isHovered
-            ? `
-              0 0 0 6px ${info.color}10,
-              0 0 42px ${orbColor}14,
-              inset 0 2px 0 rgba(255,255,255,0.18),
-              inset 0 0 32px rgba(255,255,255,0.018),
-              0 14px 36px rgba(0,0,0,0.20),
-              0 0 0 0.5px rgba(255,255,255,0.10)
-            `
-            : `
-              0 0 0 5px ${info.color}06,
-              0 0 32px ${orbColor}08,
-              inset 0 2px 0 rgba(255,255,255,0.15),
-              inset 0 0 28px rgba(255,255,255,0.014),
-              0 10px 28px rgba(0,0,0,0.16),
-              0 0 0 0.5px rgba(255,255,255,0.10)
-            `
-        }}
-        transition={{ duration: 0.20, ease: MOTION.CURVES.silk }}
       >
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.024) 0%, rgba(0,0,0,0.020) 100%)',
-          borderRadius: '24px',
-          pointerEvents: 'none'
-        }} />
+        {generateStory()}
+      </p>
+    </motion.div>
+  );
+};
 
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          borderRadius: '24px',
-          boxShadow: 'inset 0 0 2px 1.5px rgba(255,255,255,0.11)',
-          pointerEvents: 'none'
-        }} />
+// ============================================================================
+// 2×2 GRID (Micro-Identity Glows, Subsurface Gradients, Enhanced Bars)
+// ============================================================================
+const SegmentGrid = ({ segments, delay, onOpenDetail }) => {
+  const [hoveredSegment, setHoveredSegment] = useState(null);
 
-        <div className="relative z-10">
-          <motion.div 
-            className="inline-block px-3 py-1.5 rounded-lg text-[9px] font-semibold uppercase tracking-wider mb-5"
-            style={{
-              background: `${info.color}16`,
-              color: info.color,
-              letterSpacing: '0.10em',
-              boxShadow: `0 0 14px ${info.color}14, inset 0 1px 0 rgba(255,255,255,0.10)`
-            }}
-            animate={{ boxShadow: isHovered ? `0 0 20px ${info.color}20, inset 0 1px 0 rgba(255,255,255,0.12)` : `0 0 14px ${info.color}14, inset 0 1px 0 rgba(255,255,255,0.10)` }}
-          >
-            Primary Market Force Today
-          </motion.div>
+  return (
+    <div>
+      {/* Section Label */}
+      <motion.h3 
+        className="text-[11px] font-semibold uppercase tracking-wider mb-4 text-center"
+        style={{ color: 'rgba(255,255,255,0.56)', letterSpacing: '0.14em' }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: delay - 0.1, duration: 0.35 }}
+      >
+        Macro Forces Contribution
+      </motion.h3>
 
-          <div className="flex items-start justify-between mb-5">
-            <div className="flex items-center gap-3">
-              <div 
-                className="w-12 h-12 rounded-[16px] flex items-center justify-center relative"
+      <motion.div
+        className="grid grid-cols-2 gap-4 mb-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay, duration: 0.5 }}
+      >
+        {segments.map((segment, idx) => {
+          const insight = SEGMENT_INSIGHTS[segment.name] || {};
+          const weight = (segment?.weight || 0) * 100;
+          const Icon = OutlineIcons[segment.name] || OutlineIcons.Global;
+          const isHovered = hoveredSegment === segment.name;
+
+          return (
+            <motion.div
+              key={segment.name}
+              className="relative cursor-pointer"
+              onHoverStart={() => setHoveredSegment(segment.name)}
+              onHoverEnd={() => setHoveredSegment(null)}
+              onClick={() => onOpenDetail?.(segment)}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: delay + 0.09 * idx, duration: 0.38, ease: MOTION.CURVES.silk }}
+            >
+              <motion.div
+                className="relative rounded-[22px] overflow-hidden"
                 style={{
-                  background: `${info.color}12`,
-                  boxShadow: `0 0 0 0.5px ${info.color}18, inset 0 1px 0 rgba(255,255,255,0.10)`
+                  padding: '20px 18px',
+                  background: 'rgba(255, 255, 255, 0.036)',
+                  backdropFilter: 'blur(32px) saturate(145%)',
+                  WebkitBackdropFilter: 'blur(32px) saturate(145%)',
+                  border: '1px solid rgba(255,255,255,0.09)',
+                  boxShadow: `
+                    inset 0 1px 0 rgba(255,255,255,0.08), 
+                    0 4px 12px rgba(0,0,0,0.06),
+                    0 0 0 0.5px rgba(255,255,255,0.04)
+                  `,
+                  minHeight: '168px'
                 }}
+                animate={{
+                  y: isHovered ? -2 : 0,
+                  boxShadow: isHovered
+                    ? `
+                      inset 0 1px 0 rgba(255,255,255,0.12), 
+                      0 7px 20px rgba(0,0,0,0.12), 
+                      0 0 32px ${insight.color}10,
+                      0 0 0 0.5px rgba(255,255,255,0.04)
+                    `
+                    : `
+                      inset 0 1px 0 rgba(255,255,255,0.08), 
+                      0 4px 12px rgba(0,0,0,0.06),
+                      0 0 0 0.5px rgba(255,255,255,0.04)
+                    `,
+                  borderColor: isHovered ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.09)'
+                }}
+                whileHover={{ scale: 1.008 }}
+                whileTap={{ scale: 0.995 }}
+                transition={{ duration: 0.18, ease: MOTION.CURVES.lift }}
               >
+                {/* Top Rim Light */}
                 <div style={{
                   position: 'absolute',
-                  inset: -8,
-                  borderRadius: '18px',
-                  background: `radial-gradient(circle, ${info.color}18 0%, transparent 78%)`,
-                  filter: 'blur(12px)',
+                  top: 0,
+                  left: '20%',
+                  right: '20%',
+                  height: '1px',
+                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
                   pointerEvents: 'none'
                 }} />
-                <Icon className="w-7 h-7 relative z-10" style={{ color: info.color, filter: 'brightness(1.26)' }} strokeWidth={2} />
-              </div>
-              <div>
-                <h3 className="text-[19px] font-bold mb-1" style={{ color: 'rgba(255,255,255,0.98)', letterSpacing: '-0.018em' }}>
+
+                {/* Micro-Identity Glow (Unique per segment) */}
+                <div style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: `
+                    radial-gradient(ellipse at 50% -35%, ${insight.color}05 0%, transparent 100%),
+                    linear-gradient(135deg, ${insight.color}02 0%, transparent 60%)
+                  `,
+                  borderRadius: '22px',
+                  pointerEvents: 'none'
+                }} />
+
+                {/* Icon + Title */}
+                <div className="flex items-start justify-between mb-2.5">
+                  <div className="relative">
+                    {/* Icon Halo */}
+                    <div style={{
+                      position: 'absolute',
+                      inset: -4,
+                      borderRadius: '14px',
+                      background: `radial-gradient(circle, ${insight.color}10 0%, transparent 72%)`,
+                      filter: 'blur(8px)',
+                      pointerEvents: 'none'
+                    }} />
+                    
+                    <div 
+                      className="w-11 h-11 rounded-[14px] flex items-center justify-center relative"
+                      style={{
+                        background: `${insight.color}07`,
+                        border: `1px solid ${insight.color}16`,
+                        boxShadow: `inset 0 1px 0 rgba(255,255,255,0.08), 0 0 0 0.5px ${insight.color}06`
+                      }}
+                    >
+                      <Icon style={{ color: insight.color, filter: 'brightness(1.18)' }} />
+                    </div>
+                  </div>
+                  <span className="text-[18px] font-bold" style={{ color: insight.color, filter: 'brightness(1.16)', marginRight: '1px' }}>
+                    {Math.round(weight)}%
+                  </span>
+                </div>
+
+                {/* Title */}
+                <h4 className="text-[15px] font-semibold mb-2.5" style={{ color: 'rgba(255,255,255,0.98)', letterSpacing: '-0.01em' }}>
                   {segment.name}
-                </h3>
-                <p className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.74)' }}>
-                  Driving {Math.round(weight)}% of consensus
+                </h4>
+
+                {/* Summary */}
+                <p 
+                  className="text-[12px] mb-3"
+                  style={{ 
+                    color: 'rgba(255,255,255,0.84)',
+                    lineHeight: '1.48',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden'
+                  }}
+                >
+                  {insight.summary}
                 </p>
-              </div>
-            </div>
-            <span className="text-[22px] font-bold" style={{ color: info.color, filter: 'brightness(1.24) contrast(1.12)' }}>
-              {Math.round(weight)}%
-            </span>
-          </div>
 
-          <p className="text-[14px] mb-6" style={{ color: 'rgba(255,255,255,0.92)', lineHeight: '1.58', letterSpacing: '0.001em' }}>
-            {segment.note}
-          </p>
+                {/* Status Badge */}
+                <div
+                  className="inline-block px-3 py-1.5 rounded-lg text-[10px] font-semibold mb-3.5"
+                  style={{
+                    background: `${insight.color}09`,
+                    border: `1px solid ${insight.color}18`,
+                    color: insight.color,
+                    letterSpacing: '0.025em',
+                    boxShadow: `inset 0 1px 0 rgba(255,255,255,0.06)`
+                  }}
+                >
+                  {insight.trend}
+                </div>
 
-          <div className="relative">
-            <div style={{
-              position: 'absolute',
-              bottom: '-7px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '115%',
-              height: '18px',
-              background: `radial-gradient(ellipse, ${info.color}0C 0%, transparent 90%)`,
-              filter: 'blur(9px)',
-              pointerEvents: 'none'
-            }} />
-            
-            <div className="w-full h-[5px] rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.28)' }}>
-              <motion.div
-                className="h-full rounded-full"
-                style={{ 
-                  background: `linear-gradient(90deg, ${info.color}A0, ${info.color}FF)`,
-                  boxShadow: `0 0 16px ${info.color}40, inset 0 1px 0 rgba(255,255,255,0.18)`
-                }}
-                initial={{ width: '0%' }}
-                animate={{ width: `${weight}%` }}
-                transition={{ duration: 0.40, delay: delay + 0.35, ease: MOTION.CURVES.liquid }}
-              />
-            </div>
-          </div>
-        </div>
+                {/* Enhanced Progress Bar (5px thick, subsurface glow baseline) */}
+                <div className="relative">
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '-3px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    width: '102%',
+                    height: '10px',
+                    background: `radial-gradient(ellipse, ${insight.color}07 0%, transparent 82%)`,
+                    filter: 'blur(5px)',
+                    pointerEvents: 'none'
+                  }} />
+                  
+                  <div 
+                    className="w-full h-[5px] rounded-full overflow-hidden" 
+                    style={{ background: 'rgba(0,0,0,0.20)' }}
+                  >
+                    <motion.div
+                      className="h-full rounded-full relative"
+                      style={{ 
+                        background: `linear-gradient(90deg, ${insight.color}98, ${insight.color}f8)`,
+                        boxShadow: `0 0 11px ${insight.color}32, inset 0 1px 0 rgba(255,255,255,0.12)`
+                      }}
+                      initial={{ width: '0%' }}
+                      animate={{ width: `${weight}%` }}
+                      transition={{ 
+                        duration: 0.305, 
+                        delay: delay + 0.22 + (idx * 0.09), 
+                        ease: [0.25, 0.1, 0, 1.0]
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Micro-Glow on Hover */}
+                <motion.div
+                  className="absolute inset-0 rounded-[22px] pointer-events-none"
+                  style={{
+                    background: `radial-gradient(circle at 50% 50%, ${insight.color}09 0%, transparent 72%)`,
+                    opacity: 0
+                  }}
+                  animate={{ opacity: isHovered ? 1 : 0 }}
+                  transition={{ duration: 0.2 }}
+                />
+              </motion.div>
+            </motion.div>
+          );
+        })}
       </motion.div>
-    </motion.div>
+    </div>
   );
 };
 
 // ============================================================================
-// SECONDARY SEGMENT CARD (85-90% Scale, Staggered)
+// SEGMENT DETAILS ACCORDION (Enhanced Padding, Inner Depth, Luminous Divider)
 // ============================================================================
-const SecondaryCard = ({ segment, weight, onClick, delay, offset = 0 }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const info = SEGMENTS[segment.name] || {};
-  const Icon = Icons[segment.name] || Globe;
+const SegmentDetails = ({ segments, delay, scrollToSegment }) => {
+  const [expandedSegment, setExpandedSegment] = useState(null);
+
+  useEffect(() => {
+    if (scrollToSegment) {
+      setExpandedSegment(scrollToSegment);
+    }
+  }, [scrollToSegment]);
 
   return (
     <motion.div
-      className="relative cursor-pointer"
-      onClick={onClick}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      initial={{ opacity: 0, y: 10 + offset }}
-      animate={{ opacity: 1, y: offset }}
-      transition={{ delay, duration: MOTION.DURATIONS.card, ease: MOTION.CURVES.liquid }}
-      style={{ marginLeft: `${offset * 2}px` }}
+      className="mb-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: delay + 0.3, duration: 0.4 }}
     >
-      <motion.div
-        className="relative overflow-hidden rounded-[18px]"
-        style={{
-          padding: '22px 20px',
-          background: `
-            radial-gradient(ellipse at 50% -40%, ${info.tint} 0%, transparent 100%),
-            rgba(255, 255, 255, 0.026)
-          `,
-          backdropFilter: 'blur(34px) saturate(148%)',
-          WebkitBackdropFilter: 'blur(34px) saturate(148%)',
-          boxShadow: `
-            0 0 0 4px ${info.color}04,
-            inset 0 1.5px 0 rgba(255,255,255,0.14),
-            inset 0 0 24px rgba(255,255,255,0.012),
-            0 6px 18px rgba(0,0,0,0.10),
-            0 0 0 0.5px rgba(255,255,255,0.09)
-          `,
-          transform: 'scale(0.88)'
-        }}
-        animate={{
-          scale: isHovered ? 0.90 : 0.88,
-          y: isHovered ? -1.5 : 0,
-          filter: `brightness(${isHovered ? 1.03 : 1})`,
-          boxShadow: isHovered
-            ? `
-              0 0 0 6px ${info.color}07,
-              inset 0 1.5px 0 rgba(255,255,255,0.16),
-              inset 0 0 28px rgba(255,255,255,0.016),
-              0 8px 24px rgba(0,0,0,0.14),
-              0 0 0 0.5px rgba(255,255,255,0.09)
-            `
-            : `
-              0 0 0 4px ${info.color}04,
-              inset 0 1.5px 0 rgba(255,255,255,0.14),
-              inset 0 0 24px rgba(255,255,255,0.012),
-              0 6px 18px rgba(0,0,0,0.10),
-              0 0 0 0.5px rgba(255,255,255,0.09)
-            `
-        }}
-        transition={{ duration: 0.19, ease: MOTION.CURVES.silk }}
-      >
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.022) 0%, rgba(0,0,0,0.018) 100%)',
-          borderRadius: '18px',
-          pointerEvents: 'none'
-        }} />
+      <h3 className="text-[12px] font-semibold uppercase tracking-wider mb-4" style={{ color: 'rgba(255,255,255,0.58)', letterSpacing: '0.13em' }}>
+        Segment Details
+      </h3>
 
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          borderRadius: '18px',
-          boxShadow: 'inset 0 0 1px 1px rgba(255,255,255,0.10)',
-          pointerEvents: 'none'
-        }} />
+      <div className="space-y-2.5">
+        {segments.map((segment, idx) => {
+          const insight = SEGMENT_INSIGHTS[segment.name] || {};
+          const weight = (segment?.weight || 0) * 100;
+          const isExpanded = expandedSegment === segment.name;
 
-        <div className="flex items-center justify-between mb-3.5 relative z-10">
-          <div className="flex items-center gap-2.5">
-            <div 
-              className="w-9 h-9 rounded-[13px] flex items-center justify-center relative"
+          return (
+            <motion.div
+              key={segment.name}
+              id={`segment-${segment.name.toLowerCase()}`}
+              className="relative rounded-[16px] overflow-hidden cursor-pointer"
               style={{
-                background: `${info.color}10`,
-                boxShadow: `0 0 0 0.5px ${info.color}16`
+                background: 'rgba(255, 255, 255, 0.035)',
+                backdropFilter: 'blur(32px) saturate(142%)',
+                WebkitBackdropFilter: 'blur(32px) saturate(142%)',
+                border: '1px solid rgba(255,255,255,0.09)',
+                boxShadow: `inset 0 1px 0 rgba(255,255,255,0.08), 0 3px 10px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(255,255,255,0.03)`
+              }}
+              onClick={() => setExpandedSegment(isExpanded ? null : segment.name)}
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: delay + 0.38 + (idx * 0.06), duration: 0.32 }}
+              whileHover={{ 
+                boxShadow: `inset 0 1px 0 rgba(255,255,255,0.11), 0 5px 14px rgba(0,0,0,0.10), 0 0 26px ${insight.color}07, 0 0 0 0.5px rgba(255,255,255,0.03)`,
+                y: -1
               }}
             >
-              <div style={{
-                position: 'absolute',
-                inset: -6,
-                borderRadius: '15px',
-                background: `radial-gradient(circle, ${info.color}16 0%, transparent 78%)`,
-                filter: 'blur(10px)',
-                pointerEvents: 'none'
-              }} />
-              <Icon className="w-5 h-5 relative z-10" style={{ color: info.color, filter: 'brightness(1.24)' }} strokeWidth={2} />
-            </div>
-            <span className="text-[13px] font-semibold" style={{ color: 'rgba(255,255,255,0.98)' }}>
-              {segment.name}
-            </span>
-          </div>
-          <span className="text-[16px] font-bold" style={{ color: info.color, filter: 'brightness(1.22) contrast(1.10)' }}>
-            {Math.round(weight)}%
-          </span>
-        </div>
+              {/* Collapsed State */}
+              <div className="flex items-center justify-between px-5 py-3.5">
+                <div className="flex items-center gap-3">
+                  <div 
+                    className="w-2 h-2 rounded-full"
+                    style={{ background: insight.color, boxShadow: `0 0 10px ${insight.color}52` }}
+                  />
+                  <span className="text-[13px] font-semibold" style={{ color: 'rgba(255,255,255,0.96)' }}>
+                    {segment.name}
+                  </span>
+                </div>
+                <div className="flex items-center gap-3.5">
+                  <span className="text-[14px] font-bold" style={{ color: insight.color, filter: 'brightness(1.12)' }}>
+                    {Math.round(weight)}%
+                  </span>
+                  {isExpanded ? (
+                    <ChevronUp className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.62)' }} />
+                  ) : (
+                    <ChevronDown className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.62)' }} />
+                  )}
+                </div>
+              </div>
 
-        <p className="text-[12px] mb-4 relative z-10" style={{ color: 'rgba(255,255,255,0.88)', lineHeight: '1.50' }}>
-          {segment.note}
-        </p>
+              {/* Expanded State */}
+              <AnimatePresence>
+                {isExpanded && (
+                  <motion.div
+                    className="border-t px-8 py-6"
+                    style={{ 
+                      borderColor: 'rgba(255,255,255,0.08)',
+                      background: `
+                        linear-gradient(180deg, rgba(255,255,255,0.022) 0%, rgba(255,255,255,0.015) 100%)
+                      `,
+                      boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.06)'
+                    }}
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.24, ease: MOTION.CURVES.silk }}
+                  >
+                    {/* Luminous Top Divider */}
+                    <div style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: '14%',
+                      right: '14%',
+                      height: '0.5px',
+                      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
+                      filter: 'blur(0.5px)',
+                      pointerEvents: 'none'
+                    }} />
 
-        <div className="relative">
-          <div style={{
-            position: 'absolute',
-            bottom: '-6px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '112%',
-            height: '16px',
-            background: `radial-gradient(ellipse, ${info.color}0A 0%, transparent 88%)`,
-            filter: 'blur(8px)',
-            pointerEvents: 'none'
-          }} />
-          
-          <div className="w-full h-[4px] rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.26)' }}>
-            <motion.div
-              className="h-full rounded-full"
-              style={{ 
-                background: `linear-gradient(90deg, ${info.color}9E, ${info.color}FE)`,
-                boxShadow: `0 0 14px ${info.color}38, inset 0 1px 0 rgba(255,255,255,0.16)`
-              }}
-              initial={{ width: '0%' }}
-              animate={{ width: `${weight}%` }}
-              transition={{ duration: 0.36, delay: delay + 0.32, ease: MOTION.CURVES.liquid }}
-            />
-          </div>
-        </div>
-      </motion.div>
+                    {/* TL;DR Chip */}
+                    <div 
+                      className="inline-block px-3 py-1.5 rounded-lg text-[10px] font-semibold mb-3.5"
+                      style={{
+                        background: 'rgba(255,255,255,0.07)',
+                        border: '1px solid rgba(255,255,255,0.12)',
+                        color: 'rgba(255,255,255,0.74)',
+                        letterSpacing: '0.04em'
+                      }}
+                    >
+                      TL;DR
+                    </div>
+
+                    <p className="text-[13px] mb-4" style={{ color: 'rgba(255,255,255,0.90)', lineHeight: '1.58', maxWidth: '92%' }}>
+                      <strong style={{ fontWeight: 600, color: 'rgba(255,255,255,0.98)' }}>
+                        {insight.detail.split('.')[0]}.
+                      </strong>
+                      {insight.detail.substring(insight.detail.indexOf('.') + 1)}
+                    </p>
+
+                    <div className="flex items-center gap-3.5 mb-4">
+                      <div
+                        className="px-3 py-1.5 rounded-lg text-[10px] font-semibold"
+                        style={{
+                          background: `${insight.color}09`,
+                          border: `1px solid ${insight.color}18`,
+                          color: insight.color,
+                          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.06)`
+                        }}
+                      >
+                        {insight.trend}
+                      </div>
+                      <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.62)' }}>
+                        Contribution: {Math.round(weight)}%
+                      </span>
+                    </div>
+
+                    {/* Animated Bar */}
+                    <div className="relative">
+                      <div 
+                        className="w-full h-[3px] rounded-full overflow-hidden" 
+                        style={{ background: 'rgba(0,0,0,0.22)' }}
+                      >
+                        <motion.div
+                          className="h-full rounded-full"
+                          style={{ 
+                            background: `linear-gradient(90deg, ${insight.color}94, ${insight.color}f4)`,
+                            boxShadow: `0 0 10px ${insight.color}30, inset 0 1px 0 rgba(255,255,255,0.10)`
+                          }}
+                          initial={{ width: '0%' }}
+                          animate={{ width: `${weight}%` }}
+                          transition={{ duration: 0.32, ease: MOTION.CURVES.silk }}
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          );
+        })}
+      </div>
     </motion.div>
   );
 };
 
 // ============================================================================
-// NARRATIVE CHAPTER COMPONENTS
+// STICKY BOTTOM PILLS BAR (Rim Light, Enhanced Blur, Micro-Lift + Glow Ring)
 // ============================================================================
-const ChapterHeader = ({ icon: Icon, title, iconColor }) => (
-  <div className="mb-6">
-    <div className="flex items-center space-x-2.5 mb-3">
-      <div 
-        className="p-2.5 rounded-[14px] relative"
-        style={{ 
-          background: `${iconColor}14`,
-          boxShadow: `0 0 0 0.5px ${iconColor}18, inset 0 1px 0 rgba(255,255,255,0.10)`
-        }}
-      >
-        <div style={{
-          position: 'absolute',
-          inset: -5,
-          borderRadius: '16px',
-          background: `radial-gradient(circle, ${iconColor}18 0%, transparent 76%)`,
-          filter: 'blur(9px)',
-          pointerEvents: 'none'
-        }} />
-        <Icon className="w-4 h-4 relative z-10" style={{ color: iconColor, filter: 'brightness(1.16)' }} strokeWidth={2.5} />
-      </div>
-      <h3 className="text-[16px] font-semibold" style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.016em' }}>
-        {title}
-      </h3>
-    </div>
-    
-    <div style={{
-      height: '1px',
-      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)',
-      filter: 'blur(0.6px)'
-    }} />
-  </div>
-);
+const BottomPillsBar = ({ segments, onPillClick }) => {
+  const [activePill, setActivePill] = useState(null);
 
-const LiquidGlassChapter = ({ children, delay = 0 }) => (
-  <motion.div
-    className="relative rounded-[20px] overflow-hidden"
-    style={{
-      padding: '24px',
-      background: 'rgba(255,255,255,0.036)',
-      backdropFilter: 'blur(34px) saturate(148%)',
-      WebkitBackdropFilter: 'blur(34px) saturate(148%)',
-      boxShadow: `
-        0 0 0 4px rgba(142, 187, 255, 0.04),
-        inset 0 1.5px 0 rgba(255,255,255,0.14),
-        inset 0 0 24px rgba(255,255,255,0.012),
-        0 6px 18px rgba(0,0,0,0.10),
-        0 0 0 0.5px rgba(255,255,255,0.09)
-      `
-    }}
-    initial={{ opacity: 0, y: 8 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay, duration: MOTION.DURATIONS.card, ease: MOTION.CURVES.liquid }}
-    whileHover={{ 
-      scale: 1.008,
-      y: -1,
-      boxShadow: `
-        0 0 0 6px rgba(142, 187, 255, 0.06),
-        inset 0 1.5px 0 rgba(255,255,255,0.16),
-        inset 0 0 28px rgba(255,255,255,0.016),
-        0 8px 24px rgba(0,0,0,0.14),
-        0 0 0 0.5px rgba(255,255,255,0.09)
-      `
-    }}
-  >
-    <div style={{
-      position: 'absolute',
-      inset: 0,
-      background: 'linear-gradient(180deg, rgba(255,255,255,0.022) 0%, rgba(0,0,0,0.018) 100%)',
-      borderRadius: '20px',
-      pointerEvents: 'none'
-    }} />
-    
-    <div style={{
-      position: 'absolute',
-      inset: 0,
-      borderRadius: '20px',
-      boxShadow: 'inset 0 0 1px 1px rgba(255,255,255,0.10)',
-      pointerEvents: 'none'
-    }} />
+  const handlePillClick = (segmentName) => {
+    setActivePill(segmentName);
+    onPillClick?.(segmentName);
+  };
 
-    {children}
-  </motion.div>
-);
-
-// ============================================================================
-// FLOATING GLASS PILL BAR
-// ============================================================================
-const FloatingPillBar = ({ segments, activeSegment, onPillClick }) => {
   return (
     <motion.div
-      className="absolute bottom-6 left-1/2 z-20"
+      className="sticky bottom-0 left-0 right-0 z-10 relative"
       style={{
-        transform: 'translateX(-50%)',
-        padding: '10px 18px',
-        background: 'rgba(18, 20, 28, 0.42)',
-        backdropFilter: 'blur(68px) saturate(198%)',
-        WebkitBackdropFilter: 'blur(68px) saturate(198%)',
-        borderRadius: '22px',
-        border: '1px solid rgba(255,255,255,0.10)',
-        boxShadow: '0 10px 28px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.10)'
+        padding: '14px 18px',
+        background: 'rgba(18, 20, 28, 0.82)',
+        backdropFilter: 'blur(44px) saturate(172%)',
+        WebkitBackdropFilter: 'blur(44px) saturate(172%)',
+        borderTop: '1px solid rgba(255,255,255,0.10)',
+        boxShadow: '0 -10px 28px rgba(0,0,0,0.24)'
       }}
-      initial={{ y: 32, opacity: 0 }}
+      initial={{ y: 20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ delay: 1.4, duration: 0.56, ease: MOTION.CURVES.liquid }}
+      transition={{ delay: 1.0, duration: 0.42, ease: MOTION.CURVES.silk }}
     >
-      <div className="flex items-center gap-3">
-        {segments.map((seg) => {
-          const info = SEGMENTS[seg.name] || {};
-          const isActive = activeSegment === seg.name;
+      {/* Top Rim Light */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '16%',
+        right: '16%',
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.24), transparent)',
+        filter: 'blur(0.8px)',
+        pointerEvents: 'none'
+      }} />
+
+      <div className="flex items-center justify-around gap-2.5">
+        {segments.map((segment) => {
+          const insight = SEGMENT_INSIGHTS[segment.name] || {};
+          const isActive = activePill === segment.name;
 
           return (
             <motion.button
-              key={seg.name}
-              className="px-4 py-2 rounded-full text-[10px] font-semibold relative"
+              key={segment.name}
+              className="flex-1 px-4 py-2.5 rounded-full text-[12px] font-semibold relative"
               style={{
-                background: isActive ? `${info.color}24` : 'rgba(255,255,255,0.042)',
-                color: isActive ? info.color : 'rgba(255,255,255,0.78)',
-                opacity: isActive ? 1 : 0.72,
-                boxShadow: isActive ? `0 0 22px ${info.color}20, inset 0 1px 0 rgba(255,255,255,0.11)` : 'inset 0 -1px 2px rgba(0,0,0,0.10)'
+                background: isActive ? `${insight.color}16` : 'rgba(255, 255, 255, 0.048)',
+                border: `1px solid ${isActive ? `${insight.color}30` : 'rgba(255,255,255,0.09)'}`,
+                color: isActive ? insight.color : 'rgba(255,255,255,0.78)',
+                boxShadow: isActive 
+                  ? `
+                    0 6px 16px ${insight.color}18, 
+                    0 0 0 2.5px ${insight.color}14,
+                    inset 0 1px 0 rgba(255,255,255,0.10)
+                  `
+                  : `
+                    0 2px 7px rgba(0,0,0,0.10),
+                    inset 0 -1px 2px rgba(0,0,0,0.08)
+                  `,
+                opacity: isActive ? 1 : 0.85
               }}
-              onClick={() => onPillClick(seg.name)}
-              animate={{ 
-                y: isActive ? -1 : 0,
-                filter: `brightness(${isActive ? 1.02 : 1})`
-              }}
-              whileHover={{ scale: 1.08, opacity: 1, y: -0.5 }}
-              whileTap={{ scale: 0.93 }}
-              transition={{ duration: 0.17 }}
+              onClick={() => handlePillClick(segment.name)}
+              animate={{ y: isActive ? -2 : 0 }}
+              whileHover={{ scale: 1.05, y: -1, opacity: 1 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ duration: 0.16 }}
             >
-              {seg.name}
+              {segment.name}
             </motion.button>
           );
         })}
@@ -741,21 +817,10 @@ const FloatingPillBar = ({ segments, activeSegment, onPillClick }) => {
 };
 
 // ============================================================================
-// MAIN DRAWER — TAHOE NARRATIVE CANVAS
+// MAIN DRAWER — FULL OS HORIZON TAHOE COMPLIANCE
 // ============================================================================
 const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) => {
-  const [selectedSegment, setSelectedSegment] = useState(null);
-  const consensusScore = useMemo(() => (typeof score === 'number' ? score : 0), [score]);
-  const segments = useMemo(() => (Array.isArray(breakdown?.segments) ? breakdown.segments : []), [breakdown]);
-
-  const orbColor = consensusScore < 40 ? '#E86565' : consensusScore < 70 ? '#5E91D4' : '#2BB578';
-
-  const sortedSegments = useMemo(() => {
-    return [...segments].sort((a, b) => (b.weight || 0) - (a.weight || 0));
-  }, [segments]);
-
-  const heroSegment = sortedSegments[0];
-  const secondarySegments = sortedSegments.slice(1);
+  const [scrollToSegment, setScrollToSegment] = useState(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -771,14 +836,21 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
     }
   }, [isOpen, onClose]);
 
-  const handleSegmentClick = (seg) => {
-    setSelectedSegment(seg.name);
-    onOpenDetail?.(seg);
+  const consensusScore = useMemo(() => (typeof score === 'number' ? score : 0), [score]);
+  const segments = useMemo(() => (Array.isArray(breakdown?.segments) ? breakdown.segments : []), [breakdown]);
+
+  const handlePillClick = (segmentName) => {
+    setScrollToSegment(segmentName);
+    const element = document.getElementById(`segment-${segmentName.toLowerCase()}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => {
+        setScrollToSegment(null);
+      }, 350);
+    }
   };
 
   if (!isOpen) return null;
-
-  const heroInfo = SEGMENTS[heroSegment?.name] || {};
 
   return (
     <AnimatePresence>
@@ -786,386 +858,178 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
         className="fixed inset-0 z-[200] flex items-center justify-center p-4"
         style={{ paddingTop: '80px' }}
         initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-        animate={{ opacity: 1, backdropFilter: 'blur(32px)' }}
+        animate={{ opacity: 1, backdropFilter: 'blur(26px)' }}
         exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-        transition={{ duration: 0.40, ease: MOTION.CURVES.liquid }}
+        transition={{ duration: 0.34, ease: MOTION.CURVES.silk }}
       >
+        {/* Backdrop */}
         <div
           className="absolute inset-0"
-          style={{ background: 'rgba(0,0,0,0.76)' }}
+          style={{ background: 'rgba(0,0,0,0.70)' }}
           onClick={onClose}
         />
 
+        {/* Drawer Panel */}
         <motion.div
-          className="relative w-full max-w-4xl rounded-[32px] overflow-hidden flex flex-col"
+          className="relative w-full max-w-4xl rounded-[32px] overflow-hidden border flex flex-col"
           style={{
-            background: `linear-gradient(180deg, rgba(18, 20, 28, 0.96) 0%, rgba(16, 18, 26, 0.98) 100%)`,
-            backdropFilter: 'blur(76px) saturate(228%)',
-            WebkitBackdropFilter: 'blur(76px) saturate(228%)',
+            background: `
+              linear-gradient(180deg, 
+                rgba(18, 20, 28, 0.90) 0%,
+                rgba(16, 18, 26, 0.94) 100%
+              )
+            `,
+            backdropFilter: 'blur(64px) saturate(205%)',
+            WebkitBackdropFilter: 'blur(64px) saturate(205%)',
+            borderColor: 'rgba(255,255,255,0.15)',
             boxShadow: `
-              0 50px 100px -28px rgba(0, 0, 0, 0.92),
-              0 0 76px rgba(142, 187, 255, 0.13),
-              inset 0 2.5px 0 rgba(255, 255, 255, 0.17),
-              inset 0 0 52px rgba(255,255,255,0.020),
-              0 0 0 0.5px rgba(255,255,255,0.08)
+              0 38px 76px -18px rgba(0, 0, 0, 0.85),
+              0 0 62px rgba(142, 187, 255, 0.10),
+              inset 0 1px 0 rgba(255, 255, 255, 0.14),
+              inset 0 0 0 1px rgba(255, 255, 255, 0.04)
             `,
             maxHeight: 'calc(100vh - 100px)',
             height: '90vh'
           }}
-          initial={{ opacity: 0, scale: 0.88, y: 40 }}
+          initial={{ opacity: 0, scale: 0.93, y: 30 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.93, y: 28 }}
-          transition={{ duration: MOTION.DURATIONS.drawer, ease: MOTION.CURVES.liquid }}
+          exit={{ opacity: 0, scale: 0.96, y: 22 }}
+          transition={{ duration: 0.30, ease: MOTION.CURVES.silk }}
         >
-          {/* Tahoe Environmental Layers */}
+          {/* Top-Down Ambient Light Gradient (6% brighter at top) */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 45%, rgba(0, 0, 0, 0.025) 100%)',
+            pointerEvents: 'none',
+            borderRadius: '32px'
+          }} />
+
+          {/* Blue-Tinted Atmospheric Fog (Top 20%) */}
           <div style={{
             position: 'absolute',
             top: 0,
             left: 0,
             right: 0,
-            height: '25%',
-            background: 'linear-gradient(180deg, rgba(142, 187, 255, 0.030) 0%, transparent 100%)',
+            height: '20%',
+            background: 'linear-gradient(180deg, rgba(142, 187, 255, 0.018) 0%, transparent 100%)',
             pointerEvents: 'none',
             borderRadius: '32px 32px 0 0'
           }} />
 
+          {/* Tahoe Environmental Fog (Ultra-Soft Radial) */}
           <div style={{
             position: 'absolute',
-            inset: 0,
-            background: 'linear-gradient(180deg, rgba(255,255,255,0.072) 0%, transparent 54%, rgba(0,0,0,0.036) 100%)',
+            top: '-12%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '88%',
+            height: '75%',
+            background: 'radial-gradient(ellipse at 50% 18%, rgba(142, 187, 255, 0.028) 0%, transparent 88%)',
             pointerEvents: 'none',
             borderRadius: '32px'
           }} />
 
+          {/* Faint Bokeh Texture (1% opacity) */}
           <div style={{
             position: 'absolute',
             inset: 0,
-            backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cdefs%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence baseFrequency=\'0.65\' numOctaves=\'2\'/%3E%3C/filter%3E%3C/defs%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")',
-            backgroundSize: '140px 140px',
-            opacity: 0.008,
+            backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 300 300\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.75\' numOctaves=\'2\' /%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\' /%3E%3C/svg%3E")',
+            backgroundSize: '150px 150px',
+            opacity: 0.01,
             mixBlendMode: 'soft-light',
             pointerEvents: 'none',
             borderRadius: '32px'
           }} />
 
+          {/* Top Rim Light */}
           <div style={{
             position: 'absolute',
-            inset: 0,
-            borderRadius: '32px',
-            boxShadow: 'inset 0 0 2.5px 0.5px rgba(255,255,255,0.11)',
+            top: 0,
+            left: '14%',
+            right: '14%',
+            height: '1.5px',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent)',
+            filter: 'blur(1.2px)',
             pointerEvents: 'none'
           }} />
 
           {/* Header */}
           <div 
-            className="relative flex-shrink-0" 
+            className="relative border-b flex-shrink-0" 
             style={{ 
-              padding: '22px 30px 18px 30px',
-              borderBottom: '1px solid rgba(255,255,255,0.07)'
+              borderColor: 'rgba(255,255,255,0.10)',
+              padding: '20px 28px 16px 28px',
+              background: 'rgba(255, 255, 255, 0.015)'
             }}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3.5">
                 <div 
-                  className="w-11 h-11 rounded-[14px] flex items-center justify-center relative"
+                  className="w-12 h-12 rounded-[14px] border flex items-center justify-center relative overflow-hidden"
                   style={{
-                    background: 'rgba(142, 187, 255, 0.13)',
-                    boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.16), 0 4px 22px rgba(142, 187, 255, 0.26)'
+                    background: 'rgba(142, 187, 255, 0.10)',
+                    borderColor: 'rgba(142, 187, 255, 0.24)',
+                    backdropFilter: 'blur(20px)',
+                    boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.13), 0 4px 16px rgba(142, 187, 255, 0.20)'
                   }}
                 >
-                  <Activity className="w-6 h-6 relative z-10" style={{ color: '#8EBBFF', filter: 'brightness(1.20)' }} strokeWidth={1.6} />
+                  <Activity className="w-6 h-6 relative z-10" style={{ color: '#8EBBFF', filter: 'brightness(1.14)' }} strokeWidth={1.7} />
                 </div>
                 <div>
-                  <h2 className="text-[17px] font-bold tracking-tight" style={{ color: 'rgba(255,255,255,0.98)', letterSpacing: '-0.022em' }}>
+                  <h2 className="text-lg font-bold tracking-tight" style={{ color: 'rgba(255,255,255,0.98)', letterSpacing: '-0.015em' }}>
                     Street Alignment
                   </h2>
-                  <p className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.80)' }}>
-                    Intelligence Narrative
+                  <p className="text-[12px] font-medium" style={{ color: 'rgba(255,255,255,0.74)' }}>
+                    Consensus & Segment Breakdown
                   </p>
                 </div>
               </div>
               <motion.button
                 onClick={onClose}
-                className="w-9 h-9 rounded-[14px] flex items-center justify-center"
+                className="w-10 h-10 rounded-[14px] flex items-center justify-center"
                 style={{
-                  background: 'rgba(255,255,255,0.13)',
-                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.11)'
+                  background: 'rgba(255,255,255,0.10)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)'
                 }}
-                whileHover={{ scale: 1.10, background: 'rgba(255,255,255,0.18)' }}
-                whileTap={{ scale: 0.92 }}
-                transition={{ duration: 0.16 }}
+                whileHover={{ scale: 1.07, background: 'rgba(255,255,255,0.15)' }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.14 }}
               >
-                <X className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.88)' }} />
+                <X className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.82)' }} />
               </motion.button>
             </div>
           </div>
 
-          {/* NARRATIVE CANVAS */}
-          <div className="flex-1 overflow-y-auto px-12 pt-10 pb-28" style={{ scrollBehavior: 'smooth' }}>
-            {/* Alignment Orb */}
-            <TahoeOrb score={consensusScore} />
+          {/* Scrollable Body */}
+          <div className="flex-1 overflow-y-auto px-8 pt-5 pb-2" style={{ scrollBehavior: 'smooth' }}>
+            {/* Orb */}
+            <LuminousAlignmentOrb score={consensusScore} />
             
+            {/* Metadata (Pulled closer by 6px) */}
             <motion.p
-              className="text-[9px] text-center mb-12"
-              style={{ color: 'rgba(255,255,255,0.56)' }}
+              className="text-[10px] text-center"
+              style={{ color: 'rgba(255,255,255,0.50)', marginBottom: '12px' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.90, duration: 0.38 }}
+              transition={{ delay: 0.75, duration: 0.3 }}
             >
               Based on 5 sources • Updated 2m ago
             </motion.p>
 
-            {/* Breathing Space */}
-            <div style={{ height: '48px' }} />
+            {/* Floating Summary Chip */}
+            <FloatingSummaryChip segments={segments} delay={0.80} />
 
-            {/* HERO SEGMENT */}
-            {heroSegment && (
-              <HeroSegmentCard
-                segment={heroSegment}
-                weight={(heroSegment.weight || 0) * 100}
-                onClick={() => handleSegmentClick(heroSegment)}
-                delay={1.0}
-                orbColor={orbColor}
-              />
-            )}
+            {/* 2×2 Grid */}
+            <SegmentGrid segments={segments} delay={0.92} onOpenDetail={onOpenDetail} />
 
-            {/* Atmospheric Gap */}
-            <div style={{ height: '36px' }} />
-
-            {/* SECONDARY SEGMENTS (Staggered Asymmetry) */}
-            <div className="space-y-5">
-              {secondarySegments.map((seg, idx) => (
-                <SecondaryCard
-                  key={seg.name}
-                  segment={seg}
-                  weight={(seg.weight || 0) * 100}
-                  onClick={() => handleSegmentClick(seg)}
-                  delay={1.1 + idx * MOTION.DURATIONS.cascade}
-                  offset={idx % 2 === 0 ? 0 : 8}
-                />
-              ))}
-            </div>
-
-            {/* Chapter Breathing */}
-            <div style={{ height: '52px' }} />
-
-            {/* NARRATIVE CHAPTERS */}
-            {selectedSegment && SEGMENTS[selectedSegment] && (
-              <>
-                {/* Key Drivers */}
-                <div className="mb-10">
-                  <ChapterHeader icon={Target} title="Key Drivers" iconColor={SEGMENTS[selectedSegment].color} />
-                  <LiquidGlassChapter delay={0.12}>
-                    <div className="space-y-4 relative z-10">
-                      {SEGMENTS[selectedSegment].drivers.map((driver, i) => {
-                        const weightConfig = {
-                          high: { color: '#E86565', label: 'HIGH' },
-                          medium: { color: '#D9A851', label: 'MED' },
-                          low: { color: '#2BB578', label: 'LOW' }
-                        };
-                        const config = weightConfig[driver.weight];
-
-                        return (
-                          <motion.div
-                            key={i}
-                            className="flex items-start p-5 rounded-[16px]"
-                            style={{
-                              background: 'rgba(255,255,255,0.026)',
-                              backdropFilter: 'blur(28px)',
-                              WebkitBackdropFilter: 'blur(28px)',
-                              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10)'
-                            }}
-                            initial={{ opacity: 0, x: -6 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.18 + i * 0.06, duration: 0.18 }}
-                          >
-                            {i > 0 && (
-                              <div style={{
-                                position: 'absolute',
-                                top: 0,
-                                left: '10%',
-                                right: '10%',
-                                height: '1px',
-                                background: 'rgba(255,255,255,0.06)',
-                                pointerEvents: 'none'
-                              }} />
-                            )}
-
-                            <div className="flex items-center gap-2.5 mr-4 mt-0.5 min-w-[52px]">
-                              <div className="w-1.5 h-1.5 rounded-full" style={{ background: config.color, boxShadow: `0 0 8px ${config.color}42` }} />
-                              <span className="text-[9px] font-semibold uppercase" style={{ color: config.color, letterSpacing: '0.08em' }}>
-                                {config.label}
-                              </span>
-                            </div>
-                            
-                            <driver.icon className="w-4 h-4 mr-3 mt-0.5 flex-shrink-0" style={{ color: SEGMENTS[selectedSegment].color }} strokeWidth={2} />
-                            
-                            <span className="text-[13px]" style={{ color: 'rgba(255,255,255,0.92)', lineHeight: '1.62' }}>
-                              {driver.text}
-                            </span>
-                          </motion.div>
-                        );
-                      })}
-                    </div>
-                  </LiquidGlassChapter>
-                </div>
-
-                {/* Cross-Asset Impact */}
-                <div className="mb-10">
-                  <ChapterHeader icon={Target} title="Cross-Asset Impact" iconColor="#C4B5FD" />
-                  <LiquidGlassChapter delay={0.16}>
-                    <div style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      height: '60px',
-                      background: `linear-gradient(180deg, ${SEGMENTS[selectedSegment].color}03 0%, transparent 100%)`,
-                      borderRadius: '20px 20px 0 0',
-                      pointerEvents: 'none'
-                    }} />
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
-                      {Object.entries(SEGMENTS[selectedSegment].impact).map(([group, items], i) => (
-                        <React.Fragment key={group}>
-                          <motion.div
-                            className="space-y-3"
-                            initial={{ opacity: 0, y: 6 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.22 + i * 0.08, duration: 0.18 }}
-                          >
-                            <h4 className="text-[13px] font-semibold pb-2" style={{ color: 'rgba(255,255,255,0.92)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-                              {group}
-                            </h4>
-                            
-                            <div className="space-y-2 pl-1">
-                              {items.map((item, j) => {
-                                const color = item.direction === '-' ? '#E86565' : item.direction === '+' ? '#2BB578' : '#AAB1B8';
-                                const DirIcon = DirectionIcons[item.direction] || ArrowRight;
-                                
-                                return (
-                                  <div key={j} className="flex items-center gap-2.5 text-sm">
-                                    <DirIcon className="w-3.5 h-3.5 flex-shrink-0" style={{ color }} strokeWidth={2.5} />
-                                    <span style={{ color: 'rgba(255,255,255,0.90)', lineHeight: '1.58' }}>{item.detail}</span>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </motion.div>
-                          {i === 1 && (
-                            <div className="hidden md:block absolute top-0 bottom-0 left-1/2 w-px" style={{ background: 'rgba(255,255,255,0.08)' }} />
-                          )}
-                        </React.Fragment>
-                      ))}
-                    </div>
-                  </LiquidGlassChapter>
-                </div>
-
-                {/* Sentiment Rationale */}
-                <div className="mb-10">
-                  <ChapterHeader icon={Eye} title="Sentiment Rationale" iconColor="#FBCFE8" />
-                  <LiquidGlassChapter delay={0.20}>
-                    <div className="space-y-6 relative z-10">
-                      {SEGMENTS[selectedSegment].rationale.map((point, i) => {
-                        const words = point.split(' ');
-                        const first = words.slice(0, 4).join(' ');
-                        const rest = words.slice(4).join(' ');
-
-                        return (
-                          <motion.div
-                            key={i}
-                            className="flex items-start"
-                            initial={{ opacity: 0, x: -6 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.26 + i * 0.08, duration: 0.18 }}
-                          >
-                            <div 
-                              className="w-1.5 h-1.5 rounded-full mr-3.5 mt-2 flex-shrink-0"
-                              style={{ background: SEGMENTS[selectedSegment].color, boxShadow: `0 0 9px ${SEGMENTS[selectedSegment].color}50` }}
-                            />
-                            <span 
-                              className="text-[13px] leading-relaxed"
-                              style={{ 
-                                color: 'rgba(255,255,255,0.92)',
-                                lineHeight: '1.72',
-                                letterSpacing: '0.001em'
-                              }}
-                            >
-                              <strong style={{ fontWeight: 600, color: 'rgba(255,255,255,0.98)' }}>
-                                {first}
-                              </strong>
-                              {' '}{rest}
-                            </span>
-                          </motion.div>
-                        );
-                      })}
-                    </div>
-                  </LiquidGlassChapter>
-                </div>
-
-                {/* Forward Outlook */}
-                <div>
-                  <ChapterHeader icon={TrendingUp} title="Forward Outlook" iconColor="#A7F3D0" />
-                  <LiquidGlassChapter delay={0.24}>
-                    <div style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      height: '72px',
-                      background: `linear-gradient(180deg, ${SEGMENTS[selectedSegment].color}04 0%, transparent 100%)`,
-                      borderRadius: '20px 20px 0 0',
-                      pointerEvents: 'none'
-                    }} />
-
-                    <div style={{
-                      position: 'absolute',
-                      top: '1px',
-                      left: '20%',
-                      right: '20%',
-                      height: '1px',
-                      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
-                      filter: 'blur(1px)',
-                      pointerEvents: 'none'
-                    }} />
-
-                    <div className="relative z-10">
-                      <div 
-                        className="inline-block px-3.5 py-1.5 rounded-lg text-[10px] font-semibold mb-6"
-                        style={{
-                          background: `${SEGMENTS[selectedSegment].color}14`,
-                          color: SEGMENTS[selectedSegment].color,
-                          letterSpacing: '0.04em',
-                          boxShadow: `0 0 16px ${SEGMENTS[selectedSegment].color}12, inset 0 1px 0 rgba(255,255,255,0.10)`
-                        }}
-                      >
-                        Next 1–3 Months
-                      </div>
-
-                      <p className="text-[14px] leading-relaxed" style={{ 
-                        color: 'rgba(255,255,255,0.94)', 
-                        lineHeight: '1.72',
-                        letterSpacing: '0.002em'
-                      }}>
-                        {SEGMENTS[selectedSegment].outlook}
-                      </p>
-                    </div>
-                  </LiquidGlassChapter>
-                </div>
-              </>
-            )}
+            {/* Segment Details */}
+            <SegmentDetails segments={segments} delay={1.02} scrollToSegment={scrollToSegment} />
           </div>
 
-          {/* Floating Glass Pill Bar */}
-          <FloatingPillBar 
-            segments={segments} 
-            activeSegment={selectedSegment}
-            onPillClick={(name) => {
-              setSelectedSegment(name);
-              const seg = segments.find(s => s.name === name);
-              if (seg) onOpenDetail?.(seg);
-            }}
-          />
+          {/* Sticky Bottom Pills Bar */}
+          <BottomPillsBar segments={segments} onPillClick={handlePillClick} />
         </motion.div>
       </motion.div>
     </AnimatePresence>
