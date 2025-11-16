@@ -6,18 +6,20 @@
 
 import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
-import { X, TrendingUp, TrendingDown, Activity } from 'lucide-react';
+import { X, TrendingUp, TrendingDown, Activity, ChevronRight } from 'lucide-react';
 
 // OS Horizon Motion DNA
 const MOTION = {
   CURVES: {
     primary: [0.22, 0.61, 0.36, 1],
     secondary: [0.25, 0.46, 0.45, 0.94],
-    breathe: [0.33, 0, 0.4, 1]
+    breathe: [0.33, 0, 0.4, 1],
+    expand: [0.25, 0.1, 0, 1.0]
   },
   DURATIONS: {
     fast: 0.08,
-    base: 0.12,
+    base: 0.14,
+    expand: 0.20,
     slow: 0.18,
     breathing: 9
   }
@@ -368,7 +370,7 @@ const StoryInsight = ({ segments }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1, duration: 0.35, ease: MOTION.CURVES.primary }}
     >
-      {/* Tahoe Spotlight Lighting */}
+      {/* Tahoe Spotlight */}
       <div style={{
         position: 'absolute',
         top: '-30%',
@@ -408,7 +410,7 @@ const StoryInsight = ({ segments }) => {
 // ============================================================================
 // STRATUM 2 — FORCE GROUP (Macro Forces / Market Conditions)
 // ============================================================================
-const ForceGroup = ({ title, segments, delay }) => {
+const ForceGroup = ({ title, segments, delay, onOpenDetail }) => {
   const [hoveredSegment, setHoveredSegment] = useState(null);
 
   const getIconColor = (n) => {
@@ -482,20 +484,53 @@ const ForceGroup = ({ title, segments, delay }) => {
           return (
             <motion.div
               key={segment.name}
-              className="relative"
+              className="relative cursor-pointer"
               onHoverStart={() => setHoveredSegment(segment.name)}
               onHoverEnd={() => setHoveredSegment(null)}
+              onClick={() => onOpenDetail?.(segment)}
               initial={{ opacity: 0, x: -6 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: delay + 0.2 + (idx * 0.06), duration: 0.32, ease: MOTION.CURVES.secondary }}
             >
               <motion.div
-                className="relative"
-                animate={{
-                  y: isHovered ? -1 : 0
+                className="relative rounded-2xl overflow-hidden"
+                style={{
+                  padding: '20px 22px',
+                  background: 'rgba(255, 255, 255, 0.025)',
+                  backdropFilter: 'blur(22px)',
+                  WebkitBackdropFilter: 'blur(22px)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 2px 8px rgba(0,0,0,0.04)'
                 }}
-                transition={{ duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.primary }}
+                animate={{
+                  y: isHovered ? -1.5 : 0,
+                  boxShadow: isHovered
+                    ? `inset 0 1px 0 rgba(255,255,255,0.09), 0 4px 14px rgba(0,0,0,0.08), 0 0 20px ${iconColor}06`
+                    : 'inset 0 1px 0 rgba(255,255,255,0.06), 0 2px 8px rgba(0,0,0,0.04)',
+                  borderColor: isHovered ? 'rgba(255,255,255,0.13)' : 'rgba(255,255,255,0.08)'
+                }}
+                transition={{ duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.secondary }}
               >
+                {/* Top Edge Rim */}
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: '14%',
+                  right: '14%',
+                  height: '1px',
+                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
+                  pointerEvents: 'none'
+                }} />
+
+                {/* Subsurface Tint */}
+                <div style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: `radial-gradient(circle at 50% -25%, ${iconColor}03 0%, transparent 100%)`,
+                  borderRadius: '16px',
+                  pointerEvents: 'none'
+                }} />
+
                 {/* Icon + Name + Weight */}
                 <div className="flex items-center justify-between mb-2.5">
                   <div className="flex items-center gap-2.5">
@@ -517,7 +552,7 @@ const ForceGroup = ({ title, segments, delay }) => {
                   </span>
                 </div>
 
-                {/* Narrative Summary */}
+                {/* Narrative */}
                 <p 
                   className="text-[13px] mb-2.5"
                   style={{ 
@@ -530,7 +565,7 @@ const ForceGroup = ({ title, segments, delay }) => {
                 </p>
 
                 {/* Trend Pill */}
-                <div className="flex items-center mb-2.5">
+                <div className="flex items-center justify-between mb-2.5">
                   <div
                     className="px-2.5 py-1 rounded-lg text-[10px] font-semibold"
                     style={{
@@ -542,6 +577,19 @@ const ForceGroup = ({ title, segments, delay }) => {
                   >
                     {narrative.trend}
                   </div>
+                  
+                  <motion.div
+                    className="flex items-center gap-1 text-[11px] font-medium"
+                    style={{ color: 'rgba(255,255,255,0.52)' }}
+                    animate={{
+                      opacity: isHovered ? 1 : 0,
+                      x: isHovered ? 0 : -3
+                    }}
+                    transition={{ duration: MOTION.DURATIONS.base }}
+                  >
+                    <span>Details</span>
+                    <ChevronRight className="w-3 h-3" />
+                  </motion.div>
                 </div>
 
                 {/* Signal Bar */}
@@ -588,7 +636,7 @@ const ForceGroup = ({ title, segments, delay }) => {
 };
 
 // ============================================================================
-// STRATUM 3 — SIGNAL TRAJECTORY BAR (Unified Brainstem Output)
+// STRATUM 3 — SIGNAL TRAJECTORY BAR (Unified Brainstem)
 // ============================================================================
 const SignalTrajectoryBar = ({ segments, delay }) => {
   const getIconColor = (n) => {
@@ -820,12 +868,12 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
           </div>
 
           {/* Body */}
-          <div className="px-10 pt-8 pb-10 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 280px)' }}>
-            {/* STRATUM 1: Orb + Story */}
+          <div className="px-10 pt-6 pb-10 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 280px)' }}>
+            {/* STRATUM 1: Orb */}
             <LuminousAlignmentOrb score={consensusScore} />
             
             <motion.p
-              className="text-xs text-center mb-10"
+              className="text-xs text-center mb-8"
               style={{ color: 'rgba(255,255,255,0.54)' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -839,14 +887,24 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
             {/* STRATUM 2: Force Groups */}
             <div className="mb-8">
               {macroForces.length > 0 && (
-                <ForceGroup title="Macro Forces" segments={macroForces} delay={0.65} />
+                <ForceGroup 
+                  title="Macro Forces" 
+                  segments={macroForces} 
+                  delay={0.65}
+                  onOpenDetail={onOpenDetail}
+                />
               )}
               {marketConditions.length > 0 && (
-                <ForceGroup title="Market Conditions" segments={marketConditions} delay={0.75} />
+                <ForceGroup 
+                  title="Market Conditions" 
+                  segments={marketConditions} 
+                  delay={0.75}
+                  onOpenDetail={onOpenDetail}
+                />
               )}
             </div>
 
-            {/* STRATUM 3: Signal Trajectory Bar */}
+            {/* STRATUM 3: Trajectory Bar */}
             <SignalTrajectoryBar segments={segments} delay={0.9} />
           </div>
         </motion.div>
