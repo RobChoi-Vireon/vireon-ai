@@ -274,25 +274,14 @@ export default function EquilibriumPulse({
         }
       }}
     >
-      {/* Subsurface Horizon Lighting */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: '32px',
-        right: '32px',
-        height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
-        borderRadius: '999px',
-        pointerEvents: 'none'
-      }} />
-
+      {/* Unified Hover Radiance (replaces separate subsurface lighting) */}
       <motion.div
         className="absolute inset-0 rounded-[24px] pointer-events-none"
         style={{
-          background: 'radial-gradient(circle at 50% 0%, rgba(255,255,255,0.06) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.08) 0%, transparent 65%)',
           opacity: 0
         }}
-        animate={{ opacity: isHovered ? 0.7 : 0 }}
+        animate={{ opacity: isHovered ? 0.5 : 0 }}
         transition={{ duration: 0.3 }}
       />
 
