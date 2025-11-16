@@ -18,11 +18,11 @@ const MOTION = {
     fast: 0.11,
     base: 0.15,
     slow: 0.22,
-    breathing: 6.5
+    breathing: 7
   }
 };
 
-// Enhanced Radial Gauge with Full Cinematic Motion
+// Enhanced Radial Gauge with Full Cinematic Motion + Parallax
 const RadialGauge = ({ score }) => {
   const [breathingPhase, setBreathingPhase] = useState(0);
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
@@ -34,6 +34,9 @@ const RadialGauge = ({ score }) => {
   const springConfig = { stiffness: 150, damping: 30, mass: 0.5 };
   const rotateX = useSpring(useTransform(mouseY, [-50, 50], [1, -1]), springConfig);
   const rotateY = useSpring(useTransform(mouseX, [-50, 50], [-1, 1]), springConfig);
+  
+  const gradientShiftX = useTransform(mouseX, [-50, 50], [-2, 2]);
+  const gradientShiftY = useTransform(mouseY, [-50, 50], [-2, 2]);
 
   const radius = 58;
   const circumference = 2 * Math.PI * radius;
@@ -102,25 +105,28 @@ const RadialGauge = ({ score }) => {
     };
   }, [shouldReduceMotion, mouseX, mouseY]);
 
-  const breathingScale = 1 + Math.sin(breathingPhase * (2 * Math.PI / MOTION.DURATIONS.breathing)) * 0.01;
-  const breathingOpacity = 0.03 + Math.sin(breathingPhase * (2 * Math.PI / MOTION.DURATIONS.breathing)) * 0.02;
+  const breathingScale = 1 + Math.sin(breathingPhase * (2 * Math.PI / MOTION.DURATIONS.breathing)) * 0.015;
+  const breathingOpacity = 0.025 + Math.sin(breathingPhase * (2 * Math.PI / MOTION.DURATIONS.breathing)) * 0.015;
   const internalGradientShift = Math.sin(breathingPhase * (2 * Math.PI / 7)) * 2;
 
   return (
-    <div ref={gaugeRef} className="relative flex items-center justify-center w-[136px] h-[136px] mx-auto">
-      {/* Subsurface halo layer with breathing */}
+    <div ref={gaugeRef} className="relative flex items-center justify-center w-[136px] h-[136px] mx-auto" style={{
+      perspective: '1000px',
+      transformStyle: 'preserve-3d'
+    }}>
+      {/* Subsurface halo layer with breathing (2-3% intensity) */}
       <motion.div
         className="absolute"
         style={{
           width: '160px',
           height: '160px',
           borderRadius: '50%',
-          background: `radial-gradient(circle, ${color}18 0%, transparent 70%)`,
+          background: `radial-gradient(circle, ${color}16 0%, transparent 70%)`,
           filter: 'blur(28px)',
           pointerEvents: 'none'
         }}
         animate={{
-          opacity: breathingOpacity + 0.03,
+          opacity: breathingOpacity + 0.025,
           scale: breathingScale * 1.1
         }}
         transition={{
@@ -138,8 +144,8 @@ const RadialGauge = ({ score }) => {
           borderRadius: '50%',
           background: `
             radial-gradient(circle at ${50 + internalGradientShift}% ${48 + internalGradientShift * 0.5}%, 
-              ${color}12 0%, 
-              ${color}06 45%,
+              ${color}10 0%, 
+              ${color}05 45%,
               transparent 68%)
           `,
           filter: 'blur(18px)',
@@ -152,6 +158,30 @@ const RadialGauge = ({ score }) => {
         }}
         transition={{
           scale: { duration: MOTION.DURATIONS.breathing, ease: 'easeInOut' }
+        }}
+      />
+
+      {/* Light bloom effect */}
+      <motion.div
+        className="absolute"
+        style={{
+          width: '120px',
+          height: '120px',
+          borderRadius: '50%',
+          background: `radial-gradient(circle, ${color}06 0%, transparent 75%)`,
+          filter: 'blur(16px)',
+          pointerEvents: 'none',
+          x: gradientShiftX,
+          y: gradientShiftY
+        }}
+        animate={{
+          opacity: [0.5, 0.7, 0.5],
+          scale: [1, 1.06, 1]
+        }}
+        transition={{
+          duration: MOTION.DURATIONS.breathing,
+          repeat: Infinity,
+          ease: 'easeInOut'
         }}
       />
 
@@ -197,28 +227,10 @@ const RadialGauge = ({ score }) => {
       </svg>
       
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        {/* Light bloom effect */}
-        <motion.div
-          className="absolute inset-0 rounded-full"
-          style={{
-            background: `radial-gradient(circle, ${color}08 0%, transparent 70%)`,
-            pointerEvents: 'none'
-          }}
-          animate={{
-            opacity: [0.5, 0.7, 0.5],
-            scale: [1, 1.08, 1]
-          }}
-          transition={{
-            duration: MOTION.DURATIONS.breathing,
-            repeat: Infinity,
-            ease: 'easeInOut'
-          }}
-        />
-
         <motion.span
           className="text-[10px] font-medium uppercase tracking-wide mb-1 relative z-10"
           style={{ 
-            color: 'rgba(255,255,255,0.78)',
+            color: 'rgba(255,255,255,0.82)',
             letterSpacing: '0.08em'
           }}
           initial={{ opacity: 0, y: -3 }}
@@ -247,10 +259,10 @@ const RadialGauge = ({ score }) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.7, duration: 0.3, ease: MOTION.CURVES.secondary }}
         >
-          <div className="text-[13px] font-semibold" style={{ color: 'rgba(255,255,255,0.96)' }}>
+          <div className="text-[13px] font-semibold" style={{ color: 'rgba(255,255,255,0.98)' }}>
             {label}
           </div>
-          <div className="text-[11px] font-medium mt-0.5" style={{ color: 'rgba(255,255,255,0.72)' }}>
+          <div className="text-[11px] font-medium mt-0.5" style={{ color: 'rgba(255,255,255,0.76)' }}>
             Weight: Medium
           </div>
         </motion.div>
@@ -261,6 +273,8 @@ const RadialGauge = ({ score }) => {
 
 const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) => {
   const [hoveredCard, setHoveredCard] = useState(null);
+  const [backgroundDrift, setBackgroundDrift] = useState(0);
+  const cardRefs = useRef({});
 
   useEffect(() => {
     if (isOpen) {
@@ -278,6 +292,26 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
     }
   }, [isOpen, onClose]);
 
+  // Vertical luminance drift (2% change)
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    let rafId;
+    let startTime = Date.now();
+    
+    const animate = () => {
+      const elapsed = (Date.now() - startTime) / 1000;
+      const drift = Math.sin(elapsed * (2 * Math.PI / 10)) * 0.02;
+      setBackgroundDrift(drift);
+      rafId = requestAnimationFrame(animate);
+    };
+    
+    rafId = requestAnimationFrame(animate);
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [isOpen]);
+
   const consensusScore = useMemo(() => (typeof score === 'number' ? score : 0), [score]);
   const segments = useMemo(() => (Array.isArray(breakdown?.segments) ? breakdown.segments : []), [breakdown]);
 
@@ -293,9 +327,9 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
 
   const getStressChip = (level) => {
     const config = {
-      high: { label: 'High Stress', bg: 'rgba(239, 68, 68, 0.10)', border: 'rgba(239, 68, 68, 0.28)', text: '#F26A6A' },
-      moderate: { label: 'Moderate', bg: 'rgba(251, 191, 36, 0.10)', border: 'rgba(251, 191, 36, 0.28)', text: '#FFB020' },
-      stable: { label: 'Stable', bg: 'rgba(46, 207, 141, 0.10)', border: 'rgba(46, 207, 141, 0.28)', text: '#2ECF8D' }
+      high: { label: 'High Stress', bg: 'rgba(239, 68, 68, 0.09)', border: 'rgba(239, 68, 68, 0.25)', text: '#F26A6A' },
+      moderate: { label: 'Moderate', bg: 'rgba(251, 191, 36, 0.09)', border: 'rgba(251, 191, 36, 0.25)', text: '#FFB020' },
+      stable: { label: 'Stable', bg: 'rgba(46, 207, 141, 0.09)', border: 'rgba(46, 207, 141, 0.25)', text: '#2ECF8D' }
     };
     return config[level] || config.stable;
   };
@@ -327,11 +361,11 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
 
   const getSegmentTint = (name) => {
     switch (name) {
-      case 'Policy': return 'rgba(94, 167, 255, 0.03)';
-      case 'Credit': return 'rgba(192, 132, 252, 0.03)';
-      case 'Equities': return 'rgba(46, 207, 141, 0.03)';
-      case 'Global': return 'rgba(255, 176, 32, 0.03)';
-      default: return 'rgba(170, 177, 184, 0.03)';
+      case 'Policy': return 'rgba(94, 167, 255, 0.04)';
+      case 'Credit': return 'rgba(192, 132, 252, 0.04)';
+      case 'Equities': return 'rgba(46, 207, 141, 0.04)';
+      case 'Global': return 'rgba(255, 176, 32, 0.04)';
+      default: return 'rgba(170, 177, 184, 0.04)';
     }
   };
 
@@ -368,7 +402,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
       scale: 1, 
       y: 0,
       transition: { 
-        duration: 0.4,
+        duration: 0.22,
         ease: MOTION.CURVES.primary
       }
     },
@@ -399,12 +433,21 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
         exit="hidden"
         style={{ paddingTop: '80px' }}
       >
+        {/* Backdrop with choreographed dimming */}
         <motion.div
           className="absolute left-0 right-0 bottom-0"
           style={{ 
             top: '80px',
-            background: 'rgba(0,0,0,0.55)'
+            background: hoveredCard 
+              ? 'linear-gradient(180deg, rgba(0,0,0,0.58) 0%, rgba(0,0,0,0.60) 100%)'
+              : 'rgba(0,0,0,0.55)'
           }}
+          animate={{
+            background: hoveredCard 
+              ? 'linear-gradient(180deg, rgba(0,0,0,0.58) 0%, rgba(0,0,0,0.60) 100%)'
+              : 'rgba(0,0,0,0.55)'
+          }}
+          transition={{ duration: 0.3, ease: MOTION.CURVES.primary }}
           onClick={onClose}
         />
 
@@ -413,13 +456,13 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
           style={{
             background: `
               linear-gradient(180deg, 
-                rgba(15, 18, 25, 0.92) 0%,
-                rgba(14, 17, 24, 0.94) 45%,
-                rgba(13, 16, 23, 0.96) 100%
+                rgba(15, 18, 25, ${0.90 + backgroundDrift}) 0%,
+                rgba(14, 17, 24, ${0.92 + backgroundDrift}) 45%,
+                rgba(13, 16, 23, ${0.94 + backgroundDrift}) 100%
               )
             `,
-            backdropFilter: 'blur(32px) saturate(165%)',
-            WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+            backdropFilter: 'blur(32px) saturate(168%)',
+            WebkitBackdropFilter: 'blur(32px) saturate(168%)',
             borderColor: 'rgba(255,255,255,0.14)',
             boxShadow: `
               0 25px 50px -12px rgba(0, 0, 0, 0.75),
@@ -435,47 +478,57 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
         >
           {/* 3-LAYER LIQUID GLASS SYSTEM */}
           
-          {/* Layer 1: Subsurface Gradient */}
+          {/* Layer 1: Subsurface Gradient (top→bottom, 3% intensity) */}
           <div style={{
             position: 'absolute',
             top: 0,
             left: 0,
             right: 0,
-            height: '35%',
-            background: 'linear-gradient(180deg, rgba(255,255,255,0.022) 0%, transparent 100%)',
+            height: '40%',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.028) 0%, transparent 100%)',
             pointerEvents: 'none',
             borderRadius: '28px 28px 0 0'
           }} />
 
-          {/* Layer 2: Soft Haze */}
+          {/* Layer 2: Ambient Haze (1.5% opacity) */}
           <div style={{
             position: 'absolute',
             inset: 0,
-            background: 'radial-gradient(ellipse at 50% 0%, rgba(94, 167, 255, 0.015) 0%, transparent 60%)',
+            background: 'radial-gradient(ellipse at 50% 0%, rgba(94, 167, 255, 0.018) 0%, transparent 65%)',
             pointerEvents: 'none',
-            opacity: 0.6,
+            opacity: 0.7,
             borderRadius: '28px'
           }} />
 
-          {/* Layer 3: Surface Reflection */}
+          {/* Layer 3: Surface Reflection Highlight (6-8% strength) */}
           <div style={{
             position: 'absolute',
             top: 0,
-            left: '10%',
-            right: '10%',
-            height: '1px',
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent)',
+            left: '8%',
+            right: '8%',
+            height: '1.5px',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.24), transparent)',
+            filter: 'blur(0.8px)',
             pointerEvents: 'none'
           }} />
 
-          {/* Internal Depth Shadows (Premium Corners) */}
+          {/* Calm Corner Glow (1-2px inner bloom) */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            borderRadius: '28px',
+            boxShadow: 'inset 0 0 2px rgba(94, 167, 255, 0.08)',
+            pointerEvents: 'none'
+          }} />
+
+          {/* Internal Depth Shadows */}
           <div style={{
             position: 'absolute',
             top: 0,
             left: 0,
             right: 0,
-            height: '60px',
-            background: 'linear-gradient(180deg, rgba(0,0,0,0.15) 0%, transparent 100%)',
+            height: '65px',
+            background: 'linear-gradient(180deg, rgba(0,0,0,0.14) 0%, transparent 100%)',
             pointerEvents: 'none',
             borderRadius: '28px 28px 0 0'
           }} />
@@ -484,22 +537,31 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
             bottom: 0,
             left: 0,
             right: 0,
-            height: '60px',
-            background: 'linear-gradient(0deg, rgba(0,0,0,0.15) 0%, transparent 100%)',
+            height: '65px',
+            background: 'linear-gradient(0deg, rgba(0,0,0,0.14) 0%, transparent 100%)',
             pointerEvents: 'none',
             borderRadius: '0 0 28px 28px'
           }} />
 
-          {/* 1% Digital Grain (OS Horizon Texture) */}
+          {/* 1-2% Digital Grain (OS Horizon Texture) */}
           <div style={{
             position: 'absolute',
             inset: 0,
             borderRadius: '28px',
-            backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'3\' /%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\' /%3E%3C/svg%3E")',
+            backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.92\' numOctaves=\'3\' /%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\' /%3E%3C/svg%3E")',
             backgroundSize: '150px 150px',
-            opacity: 0.01,
+            opacity: 0.015,
             mixBlendMode: 'overlay',
             pointerEvents: 'none'
+          }} />
+
+          {/* Ultra-soft background vignette (1% calmness) */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'radial-gradient(ellipse at 50% 30%, transparent 0%, rgba(0,0,0,0.12) 100%)',
+            pointerEvents: 'none',
+            borderRadius: '28px'
           }} />
 
           {/* Header */}
@@ -512,34 +574,34 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
                     background: 'rgba(94, 167, 255, 0.08)',
                     borderColor: 'rgba(94, 167, 255, 0.22)',
                     backdropFilter: 'blur(12px)',
-                    boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.08), 0 2px 8px rgba(94, 167, 255, 0.15)'
+                    boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.10), 0 2px 8px rgba(94, 167, 255, 0.15)'
                   }}
                 >
-                  {/* Micro-reflection inside icon */}
+                  {/* Micro-reflection inside icon (premium touch) */}
                   <div style={{
                     position: 'absolute',
                     top: '3px',
                     left: '3px',
-                    width: '16px',
-                    height: '16px',
+                    width: '18px',
+                    height: '18px',
                     borderRadius: '6px',
-                    background: 'linear-gradient(135deg, rgba(255,255,255,0.15), transparent)',
+                    background: 'linear-gradient(135deg, rgba(255,255,255,0.18), transparent)',
                     pointerEvents: 'none'
                   }} />
-                  <Activity className="w-6 h-6 relative z-10" style={{ color: '#5EA7FF' }} strokeWidth={2} />
+                  <Activity className="w-6 h-6 relative z-10" style={{ color: '#5EA7FF', filter: 'brightness(1.06)' }} strokeWidth={2} />
                 </div>
                 <div>
                   <h2 className="text-xl font-bold tracking-tight" style={{ color: 'rgba(255,255,255,0.98)' }}>
                     Street Alignment
                   </h2>
-                  <p className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.76)' }}>
+                  <p className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.80)' }}>
                     Consensus & Segment Breakdown
                   </p>
                 </div>
               </div>
               <motion.button
                 onClick={onClose}
-                className="w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200"
+                className="w-9 h-9 rounded-lg flex items-center justify-center"
                 style={{
                   background: 'rgba(255,255,255,0.08)',
                   border: '1px solid rgba(255,255,255,0.10)'
@@ -547,25 +609,31 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
                 whileHover={{ 
                   scale: 1.05, 
                   background: 'rgba(255,255,255,0.12)',
-                  transition: { duration: MOTION.DURATIONS.fast }
+                  transition: { duration: MOTION.DURATIONS.fast, ease: MOTION.CURVES.secondary }
                 }}
-                whileTap={{ scale: 0.95 }}
+                whileTap={{ 
+                  scale: 0.95,
+                  transition: { duration: 0.08 }
+                }}
               >
                 <X className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.76)' }} />
               </motion.button>
             </div>
           </motion.div>
 
-          {/* Body - Enhanced Spacing */}
+          {/* Body - Enhanced Spacing (+8px under gauge, +6px above grid) */}
           <div className="p-8 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 240px)' }}>
             {/* Top Section: Gauge with Enhanced Spacing (+12px from header) */}
-            <motion.div variants={itemVariants} className="flex flex-col items-center mb-10" style={{ marginTop: '12px' }}>
+            <motion.div variants={itemVariants} className="flex flex-col items-center" style={{ marginTop: '12px', marginBottom: '8px' }}>
               <RadialGauge score={consensusScore} />
               
-              {/* Source Footer with +6% Contrast */}
+              {/* Source Footer with +4% Brightness */}
               <motion.p
-                className="text-xs text-center mt-6"
-                style={{ color: 'rgba(255,255,255,0.76)' }}
+                className="text-xs text-center"
+                style={{ 
+                  color: 'rgba(255,255,255,0.80)',
+                  marginTop: '8px'
+                }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.9, ease: MOTION.CURVES.tertiary }}
@@ -574,267 +642,389 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
               </motion.p>
             </motion.div>
 
-            {/* Bottom Section: Segment Tiles with +10px Spacing */}
-            {segments.length > 0 ? (
-              <motion.div variants={containerVariants} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {segments.map((segment, index) => {
-                  const { Icon } = getTrendInfo(segment?.trend, segment?.name);
-                  const weight = (segment?.weight || 0) * 100;
-                  const iconColor = getSegmentIconColor(segment?.name);
-                  const segmentTint = getSegmentTint(segment?.name);
-                  const stressChip = getStressChip(segment?.stress_level);
-                  const trendChip = getTrendChip(segment?.trend_indicator);
-                  const isHovered = hoveredCard === segment.name;
+            {/* Bottom Section: Segment Tiles with +6px top spacing, +10px gap */}
+            <div style={{ marginTop: '14px' }}>
+              {segments.length > 0 ? (
+                <motion.div variants={containerVariants} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {segments.map((segment, index) => {
+                    const { Icon } = getTrendInfo(segment?.trend, segment?.name);
+                    const weight = (segment?.weight || 0) * 100;
+                    const iconColor = getSegmentIconColor(segment?.name);
+                    const segmentTint = getSegmentTint(segment?.name);
+                    const stressChip = getStressChip(segment?.stress_level);
+                    const trendChip = getTrendChip(segment?.trend_indicator);
+                    const isHovered = hoveredCard === segment.name;
+                    const isSibling = hoveredCard && hoveredCard !== segment.name;
 
-                  const handleOpenDetail = () => onOpenDetail && onOpenDetail(segment);
+                    const handleOpenDetail = () => onOpenDetail && onOpenDetail(segment);
 
-                  return (
-                    <motion.div
-                      key={segment.name}
-                      variants={itemVariants}
-                      className="relative p-6 rounded-[20px] border backdrop-blur-lg transition-all duration-300 cursor-pointer group overflow-hidden"
-                      style={{
-                        background: `
-                          linear-gradient(180deg, 
-                            rgba(255, 255, 255, 0.05) 0%, 
-                            rgba(255, 255, 255, 0.03) 100%
-                          )
-                        `,
-                        borderColor: 'rgba(255,255,255,0.12)',
-                        boxShadow: `
-                          inset 0 1px 0 rgba(255,255,255,0.08), 
-                          0 4px 16px rgba(0,0,0,0.12)
-                        `
-                      }}
-                      onHoverStart={() => setHoveredCard(segment.name)}
-                      onHoverEnd={() => setHoveredCard(null)}
-                      animate={{
-                        y: isHovered ? -2 : 0,
-                        borderColor: isHovered ? 'rgba(255,255,255,0.20)' : 'rgba(255,255,255,0.12)',
-                        boxShadow: isHovered
-                          ? `
-                            inset 0 1px 0 rgba(255,255,255,0.08), 
-                            0 8px 28px rgba(0,0,0,0.22)
-                          `
-                          : `
-                            inset 0 1px 0 rgba(255,255,255,0.08), 
-                            0 4px 16px rgba(0,0,0,0.12)
-                          `,
-                        backdropFilter: isHovered ? 'blur(24px)' : 'blur(22px)'
-                      }}
-                      transition={{
-                        duration: MOTION.DURATIONS.base,
-                        ease: MOTION.CURVES.secondary
-                      }}
-                      onClick={handleOpenDetail}
-                    >
-                      {/* Subtle Category Tint (3-5% strength) */}
+                    return (
                       <motion.div
-                        className="absolute inset-0 rounded-[20px] pointer-events-none"
+                        key={segment.name}
+                        ref={el => cardRefs.current[segment.name] = el}
+                        variants={itemVariants}
+                        className="relative rounded-[20px] border backdrop-blur-lg cursor-pointer group overflow-hidden"
                         style={{
+                          padding: '26px',
                           background: `
-                            radial-gradient(circle at 50% 0%, ${segmentTint} 0%, transparent 100%)
-                          `
+                            linear-gradient(180deg, 
+                              rgba(255, 255, 255, 0.048) 0%, 
+                              rgba(255, 255, 255, 0.028) 100%
+                            )
+                          `,
+                          borderColor: 'rgba(255,255,255,0.12)',
+                          boxShadow: `
+                            inset 0 1px 0 rgba(255,255,255,0.08), 
+                            0 4px 16px rgba(0,0,0,0.10)
+                          `,
+                          perspective: '1000px',
+                          transformStyle: 'preserve-3d'
                         }}
+                        onHoverStart={() => setHoveredCard(segment.name)}
+                        onHoverEnd={() => setHoveredCard(null)}
                         animate={{
-                          opacity: isHovered ? 1 : 0.6
+                          y: isHovered ? -2 : 0,
+                          rotateX: 0,
+                          rotateY: 0,
+                          borderColor: isHovered ? 'rgba(255,255,255,0.20)' : 'rgba(255,255,255,0.12)',
+                          boxShadow: isHovered
+                            ? `
+                              inset 0 1px 0 rgba(255,255,255,0.08), 
+                              0 8px 28px rgba(0,0,0,0.20),
+                              0 0 24px ${iconColor}12
+                            `
+                            : `
+                              inset 0 1px 0 rgba(255,255,255,0.08), 
+                              0 4px 16px rgba(0,0,0,0.10)
+                            `,
+                          backdropFilter: isHovered ? 'blur(26px)' : 'blur(24px)',
+                          filter: isSibling ? 'brightness(0.985) blur(0.5px)' : 'brightness(1)'
                         }}
-                        transition={{ duration: 0.3 }}
-                      />
-
-                      {/* Ambient Glow on Hover */}
-                      <motion.div
-                        className="absolute inset-0 rounded-[20px] pointer-events-none"
-                        style={{
-                          background: `radial-gradient(circle at 50% 0%, ${iconColor}12 0%, transparent 65%)`,
-                          opacity: 0
+                        transition={{
+                          duration: MOTION.DURATIONS.base,
+                          ease: MOTION.CURVES.secondary
                         }}
-                        animate={{ opacity: isHovered ? 1 : 0 }}
-                        transition={{ duration: 0.25 }}
-                      />
-
-                      {/* Micro-reflection inside card */}
-                      <div style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: '20%',
-                        right: '20%',
-                        height: '1px',
-                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
-                        pointerEvents: 'none'
-                      }} />
-
-                      {/* Row 1: Icon + Title + Weight */}
-                      <div className="flex items-center justify-between mb-3 relative z-10">
-                        <div className="flex items-center gap-2.5">
-                          <div 
-                            className="w-8 h-8 rounded-lg flex items-center justify-center relative"
-                            style={{
-                              background: `${iconColor}10`,
-                              border: `1px solid ${iconColor}25`,
-                              boxShadow: `inset 0 1px 1px rgba(255,255,255,0.08), 0 2px 6px ${iconColor}15`
-                            }}
-                          >
-                            {/* Icon micro-reflection */}
-                            <div style={{
-                              position: 'absolute',
-                              top: '2px',
-                              left: '2px',
-                              width: '12px',
-                              height: '12px',
-                              borderRadius: '4px',
-                              background: 'linear-gradient(135deg, rgba(255,255,255,0.12), transparent)',
-                              pointerEvents: 'none'
-                            }} />
-                            <Icon className="w-4 h-4 relative z-10" style={{ color: iconColor }} strokeWidth={2.5} />
-                          </div>
-                          <span className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.96)' }}>
-                            {String(segment?.name || 'Unknown')}
-                          </span>
-                        </div>
-                        <span className="text-lg font-bold" style={{ color: iconColor }}>
-                          {Math.round(weight)}%
-                        </span>
-                      </div>
-                      
-                      {/* Row 2: Short Description with Light Translucency */}
-                      <div 
-                        className="relative mb-3.5 p-2.5 rounded-lg"
-                        style={{
-                          background: 'rgba(255,255,255,0.025)',
-                          backdropFilter: 'blur(8px)'
-                        }}
+                        onClick={handleOpenDetail}
                       >
-                        <p className="text-sm" style={{ 
-                          color: 'rgba(255,255,255,0.88)', 
-                          lineHeight: '1.5',
-                          minHeight: '2.5em'
-                        }}>
-                          {String(segment?.note || 'No additional insights.')}
-                        </p>
-                      </div>
+                        {/* 3-LAYER GLASS SYSTEM FOR CARDS */}
+                        
+                        {/* Layer 1: Subsurface */}
+                        <div style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          height: '50%',
+                          background: 'linear-gradient(180deg, rgba(255,255,255,0.025) 0%, transparent 100%)',
+                          pointerEvents: 'none',
+                          borderRadius: '20px 20px 0 0'
+                        }} />
 
-                      {/* Row 3: Chips + Mini Bar */}
-                      <div className="space-y-2.5 relative z-10">
-                        {/* Chips Row with Premium Depth Shadows */}
-                        <div className="flex items-center gap-2 flex-wrap">
-                          {/* Stress Chip */}
+                        {/* Layer 2: Haze */}
+                        <div style={{
+                          position: 'absolute',
+                          inset: 0,
+                          background: `radial-gradient(ellipse at 50% 0%, ${segmentTint} 0%, transparent 100%)`,
+                          pointerEvents: 'none',
+                          opacity: 0.8
+                        }} />
+
+                        {/* Layer 3: Micro-edge highlight (2-3%) */}
+                        <div style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: '10%',
+                          right: '10%',
+                          height: '1px',
+                          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+                          pointerEvents: 'none'
+                        }} />
+
+                        {/* Subtle Category Tint (4% strength) */}
+                        <motion.div
+                          className="absolute inset-0 rounded-[20px] pointer-events-none"
+                          style={{
+                            background: `
+                              radial-gradient(circle at 50% 0%, ${segmentTint} 0%, transparent 100%)
+                            `
+                          }}
+                          animate={{
+                            opacity: isHovered ? 1 : 0.7
+                          }}
+                          transition={{ duration: 0.3 }}
+                        />
+
+                        {/* Ambient Glow on Hover (+6% edge glow) */}
+                        <motion.div
+                          className="absolute inset-0 rounded-[20px] pointer-events-none"
+                          style={{
+                            background: `radial-gradient(circle at 50% 0%, ${iconColor}15 0%, transparent 65%)`,
+                            opacity: 0
+                          }}
+                          animate={{ 
+                            opacity: isHovered ? 1 : 0,
+                            scale: isHovered ? 1.02 : 1
+                          }}
+                          transition={{ duration: 0.22, ease: MOTION.CURVES.primary }}
+                        />
+
+                        {/* Micro-refraction shimmer (left→right, 2% opacity, 300ms) */}
+                        {isHovered && (
                           <motion.div
-                            className="px-2.5 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-wide flex items-center gap-1.5"
+                            className="absolute inset-0 rounded-[20px]"
                             style={{
-                              background: stressChip.bg,
-                              border: `1px solid ${stressChip.border}`,
-                              color: stressChip.text,
-                              letterSpacing: '0.05em',
-                              boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.05), 0 2px 4px rgba(0,0,0,0.12)'
+                              background: `linear-gradient(90deg, transparent 0%, ${iconColor}18 50%, transparent 100%)`,
+                              opacity: 0
                             }}
-                            whileHover={{
-                              background: `${stressChip.bg}cc`,
-                              transition: { duration: MOTION.DURATIONS.fast }
+                            animate={{
+                              x: ['-100%', '100%'],
+                              opacity: [0, 0.02, 0]
                             }}
-                          >
-                            <AlertTriangle className="w-3 h-3" />
-                            <span>{stressChip.label}</span>
-                            
-                            {/* Micro-shimmer on hover */}
-                            {isHovered && (
-                              <motion.div
-                                className="absolute inset-0 rounded-lg"
-                                style={{
-                                  background: `linear-gradient(90deg, transparent 0%, ${stressChip.text}15 50%, transparent 100%)`,
-                                  opacity: 0
-                                }}
-                                animate={{
-                                  x: ['-100%', '100%'],
-                                  opacity: [0, 0.02, 0]
-                                }}
-                                transition={{
-                                  duration: 1.2,
-                                  ease: 'linear'
-                                }}
-                              />
-                            )}
-                          </motion.div>
-
-                          {/* Trend Chip (Directional Metaphor) */}
-                          <motion.div
-                            className="px-2.5 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-wide flex items-center gap-1.5"
-                            style={{
-                              background: `${trendChip.color}10`,
-                              border: `1px solid ${trendChip.color}28`,
-                              color: trendChip.color,
-                              letterSpacing: '0.05em',
-                              boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.05), 0 2px 4px rgba(0,0,0,0.12)'
-                            }}
-                            whileHover={{
-                              background: `${trendChip.color}15`,
-                              transition: { duration: MOTION.DURATIONS.fast }
-                            }}
-                          >
-                            {React.cloneElement(<trendChip.Icon />, { className: "w-3 h-3" })}
-                            <span>{trendChip.label}</span>
-                          </motion.div>
-                        </div>
-
-                        {/* Mini Status Bar (Thermal Gauge Metaphor) */}
-                        <div 
-                          className="w-full h-1.5 rounded-full overflow-hidden relative" 
-                          style={{ background: 'rgba(0,0,0,0.28)' }}
-                        >
-                          {/* Glass reflection on bar */}
-                          <div style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            height: '50%',
-                            background: 'linear-gradient(180deg, rgba(255,255,255,0.08), transparent)',
-                            pointerEvents: 'none'
-                          }} />
-                          
-                          <motion.div
-                            className="h-full rounded-full relative"
-                            style={{ 
-                              background: `linear-gradient(90deg, ${getScoreColor(weight)}aa, ${getScoreColor(weight)}ff)`,
-                              boxShadow: `0 0 8px ${getScoreColor(weight)}40`
-                            }}
-                            initial={{ width: '0%' }}
-                            animate={{ width: `${weight}%` }}
-                            transition={{ 
-                              duration: 0.6, 
-                              delay: 0.3 + index * 0.06, 
-                              ease: 'easeOut' 
+                            transition={{
+                              duration: 0.3,
+                              ease: 'linear'
                             }}
                           />
-                        </div>
-                      </div>
+                        )}
 
-                      {/* Hover CTA with Calm Fade */}
-                      <motion.div 
-                        className="flex items-center justify-end text-xs font-medium mt-3 relative z-10"
-                        style={{ color: 'rgba(255,255,255,0.60)' }}
-                        animate={{ 
-                          opacity: isHovered ? 1 : 0,
-                          y: isHovered ? 0 : 2
-                        }}
-                        transition={{ 
-                          duration: MOTION.DURATIONS.base,
-                          ease: MOTION.CURVES.tertiary
-                        }}
-                      >
-                        <span>View Analysis</span>
-                        <ArrowRight className="w-3 h-3 ml-1.5" />
+                        {/* Row 1: Icon + Title + Weight */}
+                        <div className="flex items-center justify-between mb-3 relative z-10">
+                          <div className="flex items-center gap-2.5">
+                            <div 
+                              className="w-8 h-8 rounded-lg flex items-center justify-center relative"
+                              style={{
+                                background: `${iconColor}12`,
+                                border: `1px solid ${iconColor}28`,
+                                boxShadow: `inset 0 1px 1px rgba(255,255,255,0.10), 0 2px 6px ${iconColor}18`
+                              }}
+                            >
+                              {/* Icon micro-reflection (premium touch) */}
+                              <div style={{
+                                position: 'absolute',
+                                top: '2px',
+                                left: '2px',
+                                width: '12px',
+                                height: '12px',
+                                borderRadius: '4px',
+                                background: 'linear-gradient(135deg, rgba(255,255,255,0.15), transparent)',
+                                pointerEvents: 'none'
+                              }} />
+                              {/* Reflective highlight on icon edges */}
+                              <div style={{
+                                position: 'absolute',
+                                bottom: '1px',
+                                right: '1px',
+                                width: '8px',
+                                height: '8px',
+                                borderRadius: '3px',
+                                background: 'linear-gradient(315deg, rgba(255,255,255,0.08), transparent)',
+                                pointerEvents: 'none'
+                              }} />
+                              <Icon className="w-4 h-4 relative z-10" style={{ color: iconColor, filter: 'brightness(1.07)' }} strokeWidth={2.5} />
+                            </div>
+                            <span className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.98)' }}>
+                              {String(segment?.name || 'Unknown')}
+                            </span>
+                          </div>
+                          <span className="text-lg font-bold" style={{ color: iconColor, filter: 'brightness(1.06)' }}>
+                            {Math.round(weight)}%
+                          </span>
+                        </div>
+                        
+                        {/* Row 2: Short Description with Light Translucency */}
+                        <div 
+                          className="relative mb-3.5 p-2.5 rounded-lg"
+                          style={{
+                            background: 'rgba(255,255,255,0.028)',
+                            backdropFilter: 'blur(10px)',
+                            border: '1px solid rgba(255,255,255,0.04)'
+                          }}
+                        >
+                          <p className="text-sm" style={{ 
+                            color: 'rgba(255,255,255,0.91)', 
+                            lineHeight: '1.5',
+                            minHeight: '2.5em'
+                          }}>
+                            {String(segment?.note || 'No additional insights.')}
+                          </p>
+                        </div>
+
+                        {/* Row 3: Chips + Mini Bar with +10px bottom breathing */}
+                        <div className="space-y-2.5 relative z-10" style={{ paddingBottom: '10px' }}>
+                          {/* Chips Row with Premium Depth Shadows */}
+                          <div className="flex items-center gap-2 flex-wrap">
+                            {/* Stress Chip with enhanced corners (+1.5px radius) */}
+                            <motion.div
+                              className="relative px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide flex items-center gap-1.5"
+                              style={{
+                                background: stressChip.bg,
+                                border: `1px solid ${stressChip.border}`,
+                                color: stressChip.text,
+                                letterSpacing: '0.05em',
+                                borderRadius: '8.5px',
+                                boxShadow: `inset 0 1px 1px rgba(255,255,255,0.06), 0 2px 4px rgba(0,0,0,0.12)`,
+                                overflow: 'hidden'
+                              }}
+                              whileHover={{
+                                background: `${stressChip.bg}dd`,
+                                transition: { duration: MOTION.DURATIONS.fast }
+                              }}
+                            >
+                              {/* 1px translucent frost */}
+                              <div style={{
+                                position: 'absolute',
+                                inset: 0,
+                                background: 'rgba(255,255,255,0.015)',
+                                backdropFilter: 'blur(4px)',
+                                pointerEvents: 'none'
+                              }} />
+                              
+                              {/* Soft inner glow (1-2%) */}
+                              <div style={{
+                                position: 'absolute',
+                                inset: 0,
+                                background: `radial-gradient(circle, ${stressChip.text}08 0%, transparent 70%)`,
+                                pointerEvents: 'none'
+                              }} />
+
+                              <AlertTriangle className="w-3 h-3 relative z-10" />
+                              <span className="relative z-10">{stressChip.label}</span>
+                              
+                              {/* Micro-shimmer on hover (1-2% horizontal shift) */}
+                              {isHovered && (
+                                <motion.div
+                                  className="absolute inset-0"
+                                  style={{
+                                    background: `linear-gradient(90deg, transparent 0%, ${stressChip.text}12 50%, transparent 100%)`,
+                                    borderRadius: '8.5px',
+                                    opacity: 0
+                                  }}
+                                  animate={{
+                                    x: ['-100%', '100%'],
+                                    opacity: [0, 0.015, 0]
+                                  }}
+                                  transition={{
+                                    duration: 1.2,
+                                    ease: 'linear'
+                                  }}
+                                />
+                              )}
+                            </motion.div>
+
+                            {/* Trend Chip with enhanced corners */}
+                            <motion.div
+                              className="relative px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide flex items-center gap-1.5"
+                              style={{
+                                background: `${trendChip.color}0E`,
+                                border: `1px solid ${trendChip.color}26`,
+                                color: trendChip.color,
+                                letterSpacing: '0.05em',
+                                borderRadius: '8.5px',
+                                boxShadow: `inset 0 1px 1px rgba(255,255,255,0.06), 0 2px 4px rgba(0,0,0,0.12)`,
+                                overflow: 'hidden'
+                              }}
+                              whileHover={{
+                                background: `${trendChip.color}14`,
+                                transition: { duration: MOTION.DURATIONS.fast }
+                              }}
+                            >
+                              {/* 1px translucent frost */}
+                              <div style={{
+                                position: 'absolute',
+                                inset: 0,
+                                background: 'rgba(255,255,255,0.015)',
+                                backdropFilter: 'blur(4px)',
+                                pointerEvents: 'none'
+                              }} />
+                              
+                              {/* Soft inner glow */}
+                              <div style={{
+                                position: 'absolute',
+                                inset: 0,
+                                background: `radial-gradient(circle, ${trendChip.color}06 0%, transparent 70%)`,
+                                pointerEvents: 'none'
+                              }} />
+
+                              {React.cloneElement(<trendChip.Icon />, { className: "w-3 h-3 relative z-10" })}
+                              <span className="relative z-10">{trendChip.label}</span>
+                            </motion.div>
+                          </div>
+
+                          {/* Mini Status Bar (Thermal Gauge Metaphor) with faint radial falloff */}
+                          <div className="relative">
+                            {/* Radial light falloff behind bar */}
+                            <div style={{
+                              position: 'absolute',
+                              top: '-8px',
+                              left: '50%',
+                              transform: 'translateX(-50%)',
+                              width: '120%',
+                              height: '24px',
+                              background: `radial-gradient(ellipse, ${getScoreColor(weight)}08 0%, transparent 70%)`,
+                              filter: 'blur(8px)',
+                              pointerEvents: 'none'
+                            }} />
+                            
+                            <div 
+                              className="w-full h-1.5 rounded-full overflow-hidden relative" 
+                              style={{ background: 'rgba(0,0,0,0.26)' }}
+                            >
+                              {/* Glass reflection on bar */}
+                              <div style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                height: '50%',
+                                background: 'linear-gradient(180deg, rgba(255,255,255,0.09), transparent)',
+                                pointerEvents: 'none'
+                              }} />
+                              
+                              <motion.div
+                                className="h-full rounded-full relative"
+                                style={{ 
+                                  background: `linear-gradient(90deg, ${getScoreColor(weight)}a8, ${getScoreColor(weight)}ff)`,
+                                  boxShadow: `0 0 10px ${getScoreColor(weight)}38`
+                                }}
+                                initial={{ width: '0%' }}
+                                animate={{ width: `${weight}%` }}
+                                transition={{ 
+                                  duration: 0.6, 
+                                  delay: 0.3 + index * 0.05, 
+                                  ease: 'easeOut' 
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Hover CTA with Calm Settle */}
+                        <motion.div 
+                          className="flex items-center justify-end text-xs font-medium mt-3 relative z-10"
+                          style={{ color: 'rgba(255,255,255,0.60)' }}
+                          animate={{ 
+                            opacity: isHovered ? 1 : 0,
+                            y: isHovered ? 0 : 2
+                          }}
+                          transition={{ 
+                            duration: MOTION.DURATIONS.base,
+                            ease: MOTION.CURVES.primary
+                          }}
+                        >
+                          <span>View Analysis</span>
+                          <ArrowRight className="w-3 h-3 ml-1.5" />
+                        </motion.div>
                       </motion.div>
-                    </motion.div>
-                  );
-                })}
-              </motion.div>
-            ) : (
-              <motion.div variants={itemVariants} className="text-center py-8">
-                <Zap className="w-8 h-8 mx-auto mb-2" style={{ color: 'rgba(255,255,255,0.30)' }} />
-                <p style={{ color: 'rgba(255,255,255,0.60)' }}>No segment data available</p>
-              </motion.div>
-            )}
+                    );
+                  })}
+                </motion.div>
+              ) : (
+                <motion.div variants={itemVariants} className="text-center py-8">
+                  <Zap className="w-8 h-8 mx-auto mb-2" style={{ color: 'rgba(255,255,255,0.30)' }} />
+                  <p style={{ color: 'rgba(255,255,255,0.60)' }}>No segment data available</p>
+                </motion.div>
+              )}
+            </div>
           </div>
         </motion.div>
       </motion.div>
