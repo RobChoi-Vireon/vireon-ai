@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Target, Activity, Sparkles, AlertCircle, ShieldCheck, Link2, ArrowRight, Clock, TrendingUp } from 'lucide-react';
@@ -277,7 +276,6 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
   // Handle liquid silk opening animation - responsive + luxurious
   useEffect(() => {
     if (isOpen) {
-      // Immediate start for responsiveness, silk easing for luxury
       requestAnimationFrame(() => {
         setIsAnimatingIn(true);
       });
@@ -369,13 +367,13 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
   const confOverall = 78;
 
   // Generate content
-  const whyItMatters = signal.why_it_matters || 'Regulatory shift implies rising costs and compressed valuations — focus: Technology.';
-  const translation = 'This suggests tech companies will need to spend more on compliance, potentially reducing their profit margins and making their stocks less attractive to investors.';
-  const rippleImpact = 'Watch tech sector margins and growth multiple compression for continued pressure.'; // NEW: Ripple Impact content
+  const morningTakeaway = `${signal.text} → compliance costs rise → downside for tech multiples; hawkish Fed bias reinforced.`;
+  const translation = 'Big tech companies will spend more on compliance, reducing profit margins and stock attractiveness.';
+  const rippleImpact = 'Watch tech sector margins and growth multiple compression for continued pressure.';
 
   const analysis = {
     what: `${signal.text}. This move signals a potential hardening of regulatory frameworks, affecting projections for the tech sector's compliance-related capital expenditures.`,
-    why: whyItMatters,
+    why: 'Regulatory shift implies rising costs and compressed valuations — focus: Technology.',
     impacts: [
       { text: 'Tech Equities', tone: 'risk' },
       { text: 'Treasuries', tone: 'opportunity' },
@@ -415,14 +413,14 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             ============================================================================ */
             
             :root {
-              --hzn-dur-open: 280ms;          /* +20ms sweet spot: luxurious but responsive */
+              --hzn-dur-open: 280ms;
               --hzn-dur-close: 200ms;
-              --hzn-dur-stagger: 60ms;        /* +10ms for smoother cascade */
-              --hzn-ease-silk: cubic-bezier(0.19, 1, 0.22, 1);  /* Ultra-smooth easing */
+              --hzn-dur-stagger: 60ms;
+              --hzn-ease-silk: cubic-bezier(0.19, 1, 0.22, 1);
               --hzn-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
               --hzn-ease-io: cubic-bezier(0.4, 0, 0.2, 1);
-              --hzn-open-scale: 0.96;         /* More pronounced lift */
-              --hzn-open-translate: 8px;      /* Subtler vertical motion */
+              --hzn-open-scale: 0.96;
+              --hzn-open-translate: 8px;
               
               --ri-gap-lg: 28px;
               --ri-gap-md: 14px;
@@ -447,7 +445,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               --mp-ease: cubic-bezier(0.4,0,0.2,1);
             }
             
-            /* Frosted Backdrop - Synchronized Timing */
+            /* Frosted Backdrop */
             .hzn-frosted-backdrop {
               position: fixed;
               inset: 0;
@@ -456,7 +454,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               backdrop-filter: blur(26px) saturate(1.3) brightness(1.15);
               -webkit-backdrop-filter: blur(26px) saturate(1.3) brightness(1.15);
               opacity: 0;
-              transition: opacity var(--hzn-dur-open) var(--hzn-ease-silk),  /* Match drawer timing */
+              transition: opacity var(--hzn-dur-open) var(--hzn-ease-silk),
                           filter var(--li-duration) var(--li-ease),
                           backdrop-filter var(--li-duration) var(--li-ease);
               will-change: opacity, filter, backdrop-filter;
@@ -467,19 +465,6 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             
             .hzn-frosted-backdrop--open {
               opacity: 1;
-            }
-            
-            /* Ambient hue drift based on sentiment */
-            [data-sentiment="risk"] .hzn-frosted-backdrop {
-              filter: blur(26px) saturate(1.15) brightness(1.03) hue-rotate(0deg);
-            }
-            
-            [data-sentiment="opportunity"] .hzn-frosted-backdrop {
-              filter: blur(26px) saturate(1.15) brightness(1.03) hue-rotate(150deg);
-            }
-            
-            [data-sentiment="neutral"] .hzn-frosted-backdrop {
-              filter: blur(26px) saturate(1.05) brightness(1.02) hue-rotate(220deg);
             }
             
             .hzn-frosted-backdrop::after {
@@ -493,13 +478,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               -webkit-mask-image: radial-gradient(circle at 50% 45%, rgba(0,0,0,0) 42%, black 100%);
             }
             
-            @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-              .hzn-frosted-backdrop {
-                background: rgba(24, 26, 29, 0.82);
-              }
-            }
-            
-            /* Header Scrim - Synchronized Timing */
+            /* Header Scrim */
             .hzn-header-scrim {
               position: fixed;
               inset-inline: 0;
@@ -511,7 +490,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.05);
               mix-blend-mode: normal;
               opacity: 0;
-              transition: opacity var(--hzn-dur-open) var(--hzn-ease-silk);  /* Match drawer timing */
+              transition: opacity var(--hzn-dur-open) var(--hzn-ease-silk);
               will-change: opacity;
             }
             
@@ -519,7 +498,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               opacity: 1;
             }
             
-            /* Priority Drawer - Liquid Silk Motion (Sweet Spot) */
+            /* Priority Drawer */
             .hzn-drawer {
               position: fixed;
               z-index: 90;
@@ -534,7 +513,6 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               border-radius: calc(var(--mp-radius) + 8px);
               overflow: visible;
               
-              /* Liquid Silk Initial State */
               transform: translateY(var(--hzn-open-translate)) scale(var(--hzn-open-scale));
               opacity: 0;
               will-change: transform, opacity;
@@ -575,7 +553,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               z-index: 1;
             }
             
-            /* Center Light Beam - Subtle & Stateful */
+            /* Center Light Beam */
             .li-beam {
               position: absolute;
               inset: 0;
@@ -602,7 +580,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               50% { opacity: 0.045; }
             }
             
-            /* Narrative Link - Animated Pulse Line */
+            /* Narrative Link */
             .li-link {
               animation: liPulseLine 3s ease-in-out infinite;
             }
@@ -612,7 +590,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               50% { opacity: 0.7; }
             }
             
-            /* Micro-Transitions for Thought Flow - Enhanced Cascade */
+            /* Micro-Transitions */
             .ri-section {
               margin-bottom: var(--ri-gap-lg);
               line-height: 1.55;
@@ -680,7 +658,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               50% { box-shadow: 0 0 0 8px currentColor; }
             }
             
-            /* Confidence Row Baseline Alignment */
+            /* Confidence Row */
             .ri-confidence-inline {
               display: flex;
               align-items: center;
@@ -689,7 +667,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               transform: translateY(-1px);
             }
             
-            /* Context Tags - Temporal Awareness */
+            /* Context Tags */
             .li-meta-tags {
               display: flex;
               align-items: center;
@@ -707,7 +685,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               align-items: center;
             }
             
-            /* AI Voice Tone - Enhanced Contrast */
+            /* AI Voice Tone */
             .ai-voice {
               color: var(--li-ai-voice);
               font-style: italic;
@@ -734,7 +712,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               50% { opacity: 1; }
             }
             
-            /* Grid for Risk/Upside Cards (with visible overflow) */
+            /* Grid for Risk/Upside Cards */
             .ri-grid {
               display: grid;
               grid-template-columns: 1fr 1fr;
@@ -742,7 +720,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               overflow: visible;
             }
             
-            /* Luminous Active Cards - Normalized Radii & Shadows */
+            /* Luminous Cards */
             .ri-card {
               border-radius: var(--mp-radius);
               padding: 20px;
@@ -769,14 +747,14 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               margin-bottom: 10px;
             }
             
-            /* Quote Block - Breathing & Crisp */
+            /* Quote Block */
             blockquote.ri-section-body {
               border-left: 2px solid rgba(90,150,255,0.50);
               padding-left: 12px;
               margin: 10px 0 6px;
             }
             
-            /* Correlated Signals Strip - Balanced Spacing */
+            /* Correlated Signals */
             .ri-next {
               display: flex;
               align-items: center;
@@ -820,13 +798,12 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               transform: translateY(-1px);
             }
             
-            /* Correlated Signal Preview */
             .li-preview {
               z-index: 100;
               pointer-events: none;
             }
             
-            /* Header Controls - Smoother Entrance */
+            /* Header Controls */
             .hzn-drawer .drawer-controls [data-icon] {
               opacity: 0;
               transform: scale(0.96);
@@ -840,7 +817,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               to { opacity: 1; transform: scale(1); }
             }
             
-            /* Confidence Ring Initial State */
+            /* Confidence Ring */
             .hzn-confidence-ring {
               opacity: 0;
               transform: scale(0.92);
@@ -854,7 +831,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               to { opacity: 1; transform: scale(1); }
             }
             
-            /* Typography - Section Headers & Body */
+            /* Typography */
             .ri-section-title {
               font-size: 13px;
               font-weight: 600;
@@ -881,25 +858,6 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               opacity: 0.92;
             }
             
-            .ri-translation {
-              margin-top: 8px;
-              color: rgba(255, 255, 255, 0.78);
-              opacity: 0.85;
-              font-size: 14px;
-              font-style: italic;
-              line-height: 1.5;
-            }
-            
-            /* Accessibility - Minimum Contrast */
-            .vireon-text-secondary {
-              color: rgba(255, 255, 255, 0.78);
-            }
-            
-            .vireon-text-tertiary {
-              color: rgba(255, 255, 255, 0.64);
-            }
-            
-            /* Icon hover */
             [data-icon]:hover {
               transform: translateY(-1px);
               filter: brightness(1.1);
@@ -954,7 +912,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             aria-hidden="true"
           />
 
-          {/* Sentiment-Aware Frosted Backdrop (Living Awareness) */}
+          {/* Frosted Backdrop */}
           <div
             data-sentiment={sentiment}
             className={`hzn-frosted-backdrop ${isAnimatingIn ? 'hzn-frosted-backdrop--open' : ''}`}
@@ -973,7 +931,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             aria-label="Priority Signal Analysis"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Center Light Beam - Subtle & Stateful */}
+            {/* Center Light Beam */}
             <div ref={beamRef} className="li-beam" aria-hidden="true" />
 
             <div className="relative w-full max-h-[88vh]" style={{ overflow: 'hidden' }}>
@@ -1035,7 +993,6 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                       Sector: {primarySector} • Source: {signal.source?.toUpperCase()}
                     </p>
                     
-                    {/* Temporal Awareness Tags */}
                     <ContextTags signalAge={ageLabel} durationBias={durationBias} />
                     
                     <SentimentChip sentiment={sentiment} />
@@ -1131,7 +1088,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                 </div>
               </div>
 
-              {/* BODY - Living Narrative Flow */}
+              {/* BODY */}
               <div
                 className="relative z-10 overflow-y-auto"
                 style={{
@@ -1158,6 +1115,47 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                 `}</style>
 
                 <div className="p-8 pt-6">
+                  {/* MORNING TAKEAWAY (Matches Policy Analysis Format) */}
+                  <section className="ri-section mb-6">
+                    <h3 className="ri-section-title">
+                      <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                      Morning Takeaway
+                    </h3>
+                    <p className="ri-section-body mb-5">{morningTakeaway}</p>
+
+                    {/* TRANSLATION BOX (Matching Screenshot Format) */}
+                    <div 
+                      className="p-5 rounded-[16px] border relative"
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.025)',
+                        borderColor: 'rgba(255, 255, 255, 0.08)',
+                        backdropFilter: 'blur(18px)',
+                      }}
+                    >
+                      <div className="flex items-center gap-2 mb-3">
+                        <Sparkles className="w-3.5 h-3.5" style={{ color: 'rgba(255, 255, 255, 0.55)' }} />
+                        <span 
+                          className="text-[11px] font-semibold uppercase tracking-wide"
+                          style={{ color: 'rgba(255, 255, 255, 0.55)' }}
+                        >
+                          Translation
+                        </span>
+                      </div>
+                      <p 
+                        className="text-[14px] font-normal leading-relaxed"
+                        style={{ 
+                          color: 'rgba(255, 255, 255, 0.82)',
+                          lineHeight: '1.55'
+                        }}
+                      >
+                        {translation}
+                      </p>
+                    </div>
+                  </section>
+
+                  {/* Narrative Link */}
+                  <NarrativeLink />
+
                   {/* WHAT HAPPENED */}
                   <section className="ri-section">
                     <h3 className="ri-section-title">
@@ -1170,7 +1168,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                   {/* Narrative Link */}
                   <NarrativeLink />
 
-                  {/* WHY IT MATTERS + Confidence + Translation */}
+                  {/* WHY IT MATTERS + Confidence */}
                   <section className="ri-section">
                     <h3 className="ri-section-title">
                       <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
@@ -1185,10 +1183,6 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                         Confidence
                       </span>
                       <ConfidenceRing value={confOverall} color={HORIZON.color.neutral} size={42} sentiment={sentiment} />
-                    </div>
-
-                    <div className="ri-translation">
-                      <strong>Translation:</strong> {translation}
                     </div>
                   </section>
 
@@ -1207,7 +1201,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                       ))}
                     </div>
 
-                    {/* RIPPLE IMPACT - ONLY IN DETAILED MODE (v1.4.1) */}
+                    {/* RIPPLE IMPACT - ONLY IN DETAILED MODE */}
                     {viewMode === 'detailed' && rippleImpact && (
                       <motion.div
                         className="mt-6 flex items-start gap-2"
@@ -1274,7 +1268,6 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                           "{analysis.quote}"
                         </blockquote>
                         
-                        {/* Narrative Link after quote for better spacing */}
                         <NarrativeLink />
                       </>
                     )}
@@ -1312,9 +1305,8 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
 
                     <NarrativeLink />
 
-                    {/* Luminous Risk/Opportunity Cards with Grid */}
+                    {/* Risk/Opportunity Cards */}
                     <div className="ri-grid mb-6">
-                      {/* Downside Risk */}
                       <div className={`ri-card ${sentiment === 'risk' ? 'active risk' : ''}`}>
                         <div className="flex items-center gap-3 mb-3">
                           <AlertCircle className="w-5 h-5" style={{ color: HORIZON.color.risk }} />
@@ -1332,7 +1324,6 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                         </div>
                       </div>
 
-                      {/* Potential Upside */}
                       <div className={`ri-card ${sentiment === 'opportunity' ? 'active oppty' : ''}`}>
                         <div className="flex items-center gap-3 mb-3">
                           <ShieldCheck className="w-5 h-5" style={{ color: HORIZON.color.opportunity }} />
@@ -1353,7 +1344,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
 
                     <NarrativeLink />
 
-                    {/* AI Strategy Lens with Voice */}
+                    {/* AI Strategy Lens */}
                     <div
                       className="ri-card mb-6"
                       style={{
@@ -1377,7 +1368,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                     </div>
                   </div>
 
-                  {/* CORRELATED SIGNALS (Story Continuation with Preview) */}
+                  {/* CORRELATED SIGNALS */}
                   <section className="ri-section">
                     <div className="ri-next">
                       <strong style={{ fontSize: 14, color: 'rgba(255, 255, 255, 0.88)' }}>
