@@ -60,14 +60,6 @@ const OutlineIcons = {
   )
 };
 
-// Category Colors (matching ConsensusMeter)
-const CATEGORY_COLORS = {
-  'Policy': { accent: 'rgba(242, 106, 106, 0.50)', glow: 'rgba(242, 106, 106, 0.15)', dot: '#F26A6A', tint: 'rgba(242, 106, 106, 0.02)' },
-  'Credit': { accent: 'rgba(94, 167, 255, 0.50)', glow: 'rgba(94, 167, 255, 0.15)', dot: '#5EA7FF', tint: 'rgba(94, 167, 255, 0.02)' },
-  'Equities': { accent: 'rgba(43, 198, 134, 0.50)', glow: 'rgba(43, 198, 134, 0.15)', dot: '#2BC686', tint: 'rgba(43, 198, 134, 0.02)' },
-  'Global': { accent: 'rgba(255, 176, 32, 0.50)', glow: 'rgba(255, 176, 32, 0.15)', dot: '#FFB020', tint: 'rgba(255, 176, 32, 0.02)' }
-};
-
 // Segment Narratives
 const SEGMENT_INSIGHTS = {
   Policy: {
@@ -356,136 +348,170 @@ const InsightChip = ({ segments }) => {
 };
 
 // ============================================================================
-// CATEGORY PILL (2×2 Grid Item - Matches ConsensusMeter)
+// COMPACT SEGMENT CARD (2×2 Grid Item)
 // ============================================================================
-const CategoryPill = ({ segment, delay, onOpenDetail }) => {
+const SegmentCard = ({ segment, delay, onOpenDetail }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
 
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setShouldReduceMotion(mediaQuery.matches);
-    const handler = (e) => setShouldReduceMotion(e.matches);
-    mediaQuery.addEventListener('change', handler);
-    return () => mediaQuery.removeEventListener('change', handler);
-  }, []);
-
-  const colors = CATEGORY_COLORS[segment.name] || { 
-    accent: 'rgba(170, 177, 184, 0.50)', 
-    glow: 'rgba(170, 177, 184, 0.15)', 
-    dot: '#AAB1B8',
-    tint: 'rgba(170, 177, 184, 0.02)'
+  const getIconColor = (n) => {
+    switch (n) {
+      case 'Policy': return '#70A8E8';
+      case 'Credit': return '#B88AED';
+      case 'Equities': return '#32C288';
+      case 'Global': return '#EDB859';
+      default: return '#A8B1BA';
+    }
   };
-  
-  const value = (segment.weight || 0) * 100;
+
+  const iconColor = getIconColor(segment.name);
+  const Icon = OutlineIcons[segment.name] || OutlineIcons.Global;
+  const weight = (segment?.weight || 0) * 100;
+  const narrative = SEGMENT_INSIGHTS[segment.name] || { summary: 'No insights', trend: 'Stable' };
 
   return (
     <motion.div
-      className="relative"
-      initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.28, ease: MOTION.CURVES.secondary }}
+      className="relative cursor-pointer"
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       onClick={() => onOpenDetail?.(segment)}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: 0.35, ease: MOTION.CURVES.primary }}
     >
       <motion.div
-        className="px-3.5 py-2 rounded-xl flex items-center gap-2 relative overflow-hidden cursor-pointer"
+        className="relative rounded-2xl overflow-hidden"
         style={{
-          background: 'rgba(255, 255, 255, 0.04)',
-          backdropFilter: 'blur(21px)',
-          WebkitBackdropFilter: 'blur(21px)',
-          border: '1px solid rgba(255, 255, 255, 0.085)',
-          boxShadow: `
-            inset 0 1px 2px rgba(255, 255, 255, 0.095),
-            inset 0 0 7px ${colors.glow}18,
-            0 2px 6px rgba(0, 0, 0, 0.04)
-          `
+          padding: '16px 18px',
+          background: 'rgba(255, 255, 255, 0.028)',
+          backdropFilter: 'blur(28px) saturate(142%)',
+          WebkitBackdropFilter: 'blur(28px) saturate(142%)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 2px 8px rgba(0,0,0,0.04)'
         }}
         animate={{
-          y: isHovered ? -1.5 : 0,
-          background: isHovered ? 'rgba(255, 255, 255, 0.065)' : 'rgba(255, 255, 255, 0.04)',
-          backdropFilter: isHovered ? 'blur(23px)' : 'blur(21px)',
+          y: isHovered ? -2 : 0,
           boxShadow: isHovered
-            ? `
-              inset 0 1px 2px rgba(255, 255, 255, 0.095),
-              inset 0 0 12px ${colors.glow}35,
-              0 5px 14px rgba(0, 0, 0, 0.08)
-            `
-            : `
-              inset 0 1px 2px rgba(255, 255, 255, 0.095),
-              inset 0 0 7px ${colors.glow}18,
-              0 2px 6px rgba(0, 0, 0, 0.04)
-            `
+            ? `inset 0 1px 0 rgba(255,255,255,0.09), 0 4px 12px rgba(0,0,0,0.08), 0 0 18px ${iconColor}05`
+            : 'inset 0 1px 0 rgba(255,255,255,0.06), 0 2px 8px rgba(0,0,0,0.04)',
+          borderColor: isHovered ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.08)'
         }}
-        transition={{
-          duration: 0.11,
-          ease: MOTION.CURVES.secondary
-        }}
+        transition={{ duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.secondary }}
       >
-        <div
-          className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-          style={{
-            background: colors.dot,
-            boxShadow: `0 0 10px ${colors.glow}, inset 0 0 3px rgba(255,255,255,0.35)`
-          }}
-        />
+        {/* Top Rim */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '12%',
+          right: '12%',
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
+          pointerEvents: 'none'
+        }} />
 
-        <span 
-          className="text-[11px] font-medium" 
+        {/* Subsurface Tint */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: `radial-gradient(circle at 50% -20%, ${iconColor}02 0%, transparent 100%)`,
+          borderRadius: '16px',
+          pointerEvents: 'none'
+        }} />
+
+        {/* Header: Icon + Name + Weight */}
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <div 
+              className="w-8 h-8 rounded-lg flex items-center justify-center"
+              style={{
+                background: `${iconColor}05`,
+                border: `1px solid ${iconColor}12`
+              }}
+            >
+              <Icon style={{ color: iconColor, filter: 'brightness(1.14)' }} />
+            </div>
+            <span className="text-[13px] font-semibold" style={{ color: 'rgba(255,255,255,0.98)' }}>
+              {segment.name}
+            </span>
+          </div>
+          <span className="text-[15px] font-bold" style={{ color: iconColor, filter: 'brightness(1.12)' }}>
+            {Math.round(weight)}%
+          </span>
+        </div>
+
+        {/* Narrative (One Sentence) */}
+        <p 
+          className="text-[12px] mb-2.5"
           style={{ 
-            color: 'rgba(255,255,255,0.75)',
-            letterSpacing: '0.01em'
+            color: 'rgba(255,255,255,0.86)',
+            letterSpacing: '-0.005em',
+            lineHeight: '1.4'
           }}
         >
-          {segment.name}
-        </span>
+          {narrative.summary}
+        </p>
 
-        <span 
-          className="text-[12px] font-bold ml-1" 
-          style={{ color: colors.dot }}
-        >
-          {Math.round(value)}%
-        </span>
-
-        {/* Moving highlight (left → right) */}
-        {isHovered && !shouldReduceMotion && (
-          <motion.div
-            className="absolute inset-0 rounded-xl"
+        {/* Bottom Row: State Pill + Details Link */}
+        <div className="flex items-center justify-between mb-2">
+          <div
+            className="px-2 py-0.5 rounded-md text-[10px] font-semibold"
             style={{
-              background: `linear-gradient(90deg, transparent 0%, ${colors.accent} 50%, transparent 100%)`,
-              opacity: 0
+              background: `${iconColor}06`,
+              border: `1px solid ${iconColor}12`,
+              color: iconColor,
+              letterSpacing: '0.01em'
             }}
-            animate={{
-              x: ['-100%', '100%'],
-              opacity: [0, 0.05, 0]
-            }}
-            transition={{
-              duration: 1,
-              ease: 'linear'
-            }}
-          />
-        )}
-
-        {/* Refraction shimmer */}
-        {isHovered && !shouldReduceMotion && (
+          >
+            {narrative.trend}
+          </div>
+          
           <motion.div
-            className="absolute inset-0 rounded-xl"
-            style={{
-              background: `linear-gradient(120deg, transparent 0%, ${colors.accent} 50%, transparent 100%)`,
-              opacity: 0
-            }}
+            className="flex items-center gap-0.5 text-[10px] font-medium"
+            style={{ color: 'rgba(255,255,255,0.48)' }}
             animate={{
-              x: ['-150%', '150%'],
-              opacity: [0, 0.15, 0]
+              opacity: isHovered ? 1 : 0,
+              x: isHovered ? 0 : -2
             }}
-            transition={{
-              duration: 0.9,
-              ease: 'easeOut',
-              delay: 0.1
-            }}
-          />
-        )}
+            transition={{ duration: MOTION.DURATIONS.base }}
+          >
+            <span>Details</span>
+            <ChevronRight className="w-3 h-3" />
+          </motion.div>
+        </div>
+
+        {/* Thin Signal Bar */}
+        <div className="relative">
+          <div style={{
+            position: 'absolute',
+            top: '-3px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '100%',
+            height: '10px',
+            background: `radial-gradient(ellipse, ${iconColor}03 0%, transparent 80%)`,
+            filter: 'blur(5px)',
+            pointerEvents: 'none'
+          }} />
+          
+          <div 
+            className="w-full h-[2px] rounded-full overflow-hidden relative" 
+            style={{ background: 'rgba(0,0,0,0.15)' }}
+          >
+            <motion.div
+              className="h-full rounded-full"
+              style={{ 
+                background: `linear-gradient(90deg, ${iconColor}90, ${iconColor}f0)`,
+                boxShadow: `0 0 6px ${iconColor}24`
+              }}
+              initial={{ width: '0%' }}
+              animate={{ width: `${weight}%` }}
+              transition={{ 
+                duration: 0.65, 
+                delay: delay + 0.15, 
+                ease: 'easeOut' 
+              }}
+            />
+          </div>
+        </div>
       </motion.div>
     </motion.div>
   );
@@ -497,13 +523,18 @@ const CategoryPill = ({ segment, delay, onOpenDetail }) => {
 const SegmentDetailOverlay = ({ segment, onClose }) => {
   if (!segment) return null;
 
-  const colors = CATEGORY_COLORS[segment.name] || { 
-    accent: 'rgba(170, 177, 184, 0.50)', 
-    glow: 'rgba(170, 177, 184, 0.15)', 
-    dot: '#AAB1B8',
-    tint: 'rgba(170, 177, 184, 0.02)'
+  const getIconColor = (n) => {
+    switch (n) {
+      case 'Policy': return '#70A8E8';
+      case 'Credit': return '#B88AED';
+      case 'Equities': return '#32C288';
+      case 'Global': return '#EDB859';
+      default: return '#A8B1BA';
+    }
   };
-  
+
+  const iconColor = getIconColor(segment.name);
+  const Icon = OutlineIcons[segment.name] || OutlineIcons.Global;
   const detail = SEGMENT_INSIGHTS[segment.name]?.detail || 'No additional details available.';
 
   useEffect(() => {
@@ -540,7 +571,7 @@ const SegmentDetailOverlay = ({ segment, onClose }) => {
             border: '1px solid rgba(255,255,255,0.14)',
             boxShadow: `
               0 24px 56px -12px rgba(0, 0, 0, 0.72),
-              0 0 40px ${colors.glow}35,
+              0 0 40px ${iconColor}08,
               inset 0 1px 0 rgba(255, 255, 255, 0.12)
             `,
             padding: '28px 32px'
@@ -568,18 +599,12 @@ const SegmentDetailOverlay = ({ segment, onClose }) => {
             <div 
               className="w-12 h-12 rounded-xl flex items-center justify-center"
               style={{
-                background: `${colors.dot}08`,
-                border: `1px solid ${colors.dot}18`,
-                boxShadow: `0 0 16px ${colors.glow}45`
+                background: `${iconColor}08`,
+                border: `1px solid ${iconColor}18`,
+                boxShadow: `0 0 16px ${iconColor}10`
               }}
             >
-              <div
-                className="w-2 h-2 rounded-full"
-                style={{
-                  background: colors.dot,
-                  boxShadow: `0 0 12px ${colors.glow}, inset 0 0 4px rgba(255,255,255,0.4)`
-                }}
-              />
+              <Icon style={{ color: iconColor, filter: 'brightness(1.16)', width: '22px', height: '22px' }} />
             </div>
             <div>
               <h3 className="text-lg font-bold" style={{ color: 'rgba(255,255,255,0.98)' }}>
@@ -636,8 +661,13 @@ const SegmentDetailOverlay = ({ segment, onClose }) => {
 // ============================================================================
 const BottomNavRow = ({ segments, delay }) => {
   const getIconColor = (n) => {
-    const colors = CATEGORY_COLORS[n];
-    return colors ? colors.dot : '#A8B1BA';
+    switch (n) {
+      case 'Policy': return '#70A8E8';
+      case 'Credit': return '#B88AED';
+      case 'Equities': return '#32C288';
+      case 'Global': return '#EDB859';
+      default: return '#A8B1BA';
+    }
   };
 
   return (
@@ -670,17 +700,20 @@ const BottomNavRow = ({ segments, delay }) => {
         {segments.map((segment, idx) => {
           const iconColor = getIconColor(segment.name);
           const weight = (segment?.weight || 0) * 100;
+          const Icon = OutlineIcons[segment.name] || OutlineIcons.Global;
 
           return (
             <div key={segment.name} className="flex-1">
               <div className="flex items-center gap-1.5 mb-1.5">
                 <div 
-                  className="w-1.5 h-1.5 rounded-full"
+                  className="w-6 h-6 rounded-lg flex items-center justify-center"
                   style={{
-                    background: iconColor,
-                    boxShadow: `0 0 8px ${iconColor}60`
+                    background: `${iconColor}04`,
+                    border: `1px solid ${iconColor}10`
                   }}
-                />
+                >
+                  <Icon style={{ color: iconColor, filter: 'brightness(1.14)', width: '14px', height: '14px' }} />
+                </div>
                 <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.84)' }}>
                   {segment.name}
                 </span>
@@ -738,9 +771,10 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
   const consensusScore = useMemo(() => (typeof score === 'number' ? score : 0), [score]);
   const segments = useMemo(() => (Array.isArray(breakdown?.segments) ? breakdown.segments : []), [breakdown]);
 
-  const orderedSegments = ['Policy', 'Credit', 'Equities', 'Global'].map(name => 
-    segments.find(s => s.name === name)
-  ).filter(Boolean);
+  const policy = segments.find(s => s.name === 'Policy');
+  const global = segments.find(s => s.name === 'Global');
+  const credit = segments.find(s => s.name === 'Credit');
+  const equities = segments.find(s => s.name === 'Equities');
 
   const handleSegmentClick = (segment) => {
     setActiveOverlay(segment);
@@ -879,26 +913,23 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
             </motion.p>
 
             {/* Insight Chip */}
-            <div className="flex justify-center mb-6">
+            <div className="flex justify-center mb-5">
               <InsightChip segments={segments} />
             </div>
 
-            {/* 2×2 Pill Grid: Policy/Credit | Equities/Global */}
-            <div className="flex justify-center mb-5">
-              <div className="grid grid-cols-2 gap-x-3 gap-y-3 w-auto">
-                {orderedSegments.map((segment, idx) => (
-                  <CategoryPill 
-                    key={segment.name} 
-                    segment={segment} 
-                    delay={0.65 + (idx * 0.05)} 
-                    onOpenDetail={handleSegmentClick} 
-                  />
-                ))}
-              </div>
+            {/* 2×2 Grid: Macro Forces + Market Conditions */}
+            <div className="grid grid-cols-2 gap-4 mb-5">
+              {/* Row 1: Policy + Global */}
+              {policy && <SegmentCard segment={policy} delay={0.68} onOpenDetail={handleSegmentClick} />}
+              {global && <SegmentCard segment={global} delay={0.73} onOpenDetail={handleSegmentClick} />}
+              
+              {/* Row 2: Credit + Equities */}
+              {credit && <SegmentCard segment={credit} delay={0.78} onOpenDetail={handleSegmentClick} />}
+              {equities && <SegmentCard segment={equities} delay={0.83} onOpenDetail={handleSegmentClick} />}
             </div>
 
             {/* Bottom Nav Row */}
-            <BottomNavRow segments={orderedSegments} delay={0.92} />
+            <BottomNavRow segments={segments} delay={0.92} />
           </div>
 
           {/* Segment Detail Overlay */}
