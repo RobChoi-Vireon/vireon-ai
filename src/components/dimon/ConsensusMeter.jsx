@@ -1,11 +1,10 @@
-
 // 🔒 DESIGN LOCKED — OS HORIZON V5.0 SIGNAL LENS REDESIGN
 // Last Updated: 2025-01-20
 // Complete redesign: Signal Lens Node + Mini Glass Chips + OS Horizon aesthetics
 // See: DESIGN_LOCKED_COMPONENTS.md
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, Activity } from 'lucide-react';
 
 // OS Horizon Motion Tokens
@@ -16,7 +15,7 @@ const MOTION = {
   },
   DURATIONS: {
     fast: 0.08,
-    base: 0.12,
+    base: 0.11,
     slow: 0.18
   }
 };
@@ -30,11 +29,18 @@ const CATEGORY_COLORS = {
 };
 
 // ============================================================================
-// SIGNAL LENS NODE — Central Visual Anchor
+// SIGNAL LENS NODE — Central Visual Anchor with Enhanced Lighting & Motion
 // ============================================================================
-const SignalLensNode = ({ score, isHovered }) => {
+const SignalLensNode = ({ score, isHovered, parentRef }) => {
   const [wavePhase, setWavePhase] = useState(0);
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
+  const [breathingPhase, setBreathingPhase] = useState(0);
+  
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  
+  const rotateX = useTransform(mouseY, [-100, 100], [1.5, -1.5]);
+  const rotateY = useTransform(mouseX, [-100, 100], [-1.5, 1.5]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -53,6 +59,7 @@ const SignalLensNode = ({ score, isHovered }) => {
     const animate = () => {
       const elapsed = (Date.now() - startTime) / 1000;
       setWavePhase(elapsed);
+      setBreathingPhase(elapsed);
       rafId = requestAnimationFrame(animate);
     };
     
@@ -60,7 +67,27 @@ const SignalLensNode = ({ score, isHovered }) => {
     return () => cancelAnimationFrame(rafId);
   }, [shouldReduceMotion]);
 
-  // Generate subtle wave paths
+  // Mouse parallax effect
+  useEffect(() => {
+    if (shouldReduceMotion || !parentRef?.current) return;
+
+    const handleMouseMove = (e) => {
+      const rect = parentRef.current.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      
+      mouseX.set(e.clientX - centerX);
+      mouseY.set(e.clientY - centerY);
+    };
+
+    const parent = parentRef.current;
+    parent.addEventListener('mousemove', handleMouseMove);
+    
+    return () => {
+      parent.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [shouldReduceMotion, parentRef, mouseX, mouseY]);
+
   const generateWavePath = (offset) => {
     const points = [];
     for (let i = 0; i <= 40; i++) {
@@ -85,13 +112,15 @@ const SignalLensNode = ({ score, isHovered }) => {
   };
 
   const getTrendIcon = (s) => {
-    if (s < 40) return <TrendingDown className="w-4 h-4" />;
-    if (s > 70) return <TrendingUp className="w-4 h-4" />;
-    return <Minus className="w-4 h-4" />;
+    if (s < 40) return <TrendingDown className="w-3.5 h-3.5" strokeWidth={2.5} />;
+    if (s > 70) return <TrendingUp className="w-3.5 h-3.5" strokeWidth={2.5} />;
+    return <div className="w-2 h-2 rounded-full" style={{ background: 'currentColor' }} />;
   };
 
   const scoreColor = getZoneColor(score);
   const scoreLabel = getZoneLabel(score);
+  
+  const breathingScale = 1 + Math.sin(breathingPhase * (2 * Math.PI / 3.5)) * 0.015;
 
   return (
     <div className="relative flex items-center justify-center" style={{ minHeight: '200px' }}>
@@ -102,7 +131,7 @@ const SignalLensNode = ({ score, isHovered }) => {
         viewBox="0 0 160 160"
         className="absolute"
         style={{
-          opacity: isHovered ? 0.08 : 0.06,
+          opacity: isHovered ? 0.09 : 0.07,
           transition: `opacity ${MOTION.DURATIONS.base}s ${MOTION.CURVES.horizonIn.join(',')}`
         }}
       >
@@ -146,74 +175,140 @@ const SignalLensNode = ({ score, isHovered }) => {
         ))}
       </svg>
 
-      {/* Signal Lens Glass Panel */}
+      {/* Subsurface Lighting Beneath Orb */}
       <motion.div
         className="absolute"
+        style={{
+          width: '200px',
+          height: '80px',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -30%)',
+          background: `radial-gradient(ellipse, rgba(123, 184, 255, 0.12) 0%, transparent 70%)`,
+          filter: 'blur(24px)',
+          pointerEvents: 'none'
+        }}
+        animate={{
+          opacity: isHovered ? 0.8 : 0.6,
+          scale: breathingScale
+        }}
+        transition={{
+          opacity: { duration: 0.2 },
+          scale: { duration: 3.5, ease: 'easeInOut' }
+        }}
+      />
+
+      {/* Signal Lens Glass Panel - Outer Layer */}
+      <motion.div
+        className="absolute signal-orb-outer"
         style={{
           width: '180px',
           height: '180px',
           borderRadius: '90px',
           background: `
             linear-gradient(145deg, 
-              rgba(123, 184, 255, 0.08) 0%, 
-              rgba(167, 209, 255, 0.12) 50%,
-              rgba(123, 184, 255, 0.08) 100%
+              rgba(123, 184, 255, 0.10) 0%, 
+              rgba(167, 209, 255, 0.14) 50%,
+              rgba(123, 184, 255, 0.10) 100%
             )
           `,
           backdropFilter: 'blur(18px) saturate(140%)',
           WebkitBackdropFilter: 'blur(18px) saturate(140%)',
-          border: '1px solid rgba(255, 255, 255, 0.10)',
+          border: '1px solid rgba(255, 255, 255, 0.14)',
           boxShadow: `
-            inset 0 2px 8px rgba(255, 255, 255, 0.08),
+            inset 0 2px 8px rgba(255, 255, 255, 0.10),
             inset 0 -2px 6px rgba(0, 0, 0, 0.12),
-            0 0 40px rgba(123, 184, 255, 0.06)
+            0 0 40px rgba(123, 184, 255, 0.08)
           `,
-          willChange: 'transform, filter'
+          willChange: 'transform, filter',
+          rotateX: 0,
+          rotateY: 0
         }}
         animate={{
-          scale: isHovered ? 1.025 : 1,
+          scale: isHovered ? 1.03 : breathingScale,
           filter: isHovered ? 'brightness(1.05)' : 'brightness(1)',
           boxShadow: isHovered
             ? `
-              inset 0 2px 8px rgba(255, 255, 255, 0.08),
+              inset 0 2px 8px rgba(255, 255, 255, 0.10),
               inset 0 -2px 6px rgba(0, 0, 0, 0.12),
-              0 0 48px rgba(123, 184, 255, 0.12)
+              0 0 52px rgba(123, 184, 255, 0.14)
             `
             : `
-              inset 0 2px 8px rgba(255, 255, 255, 0.08),
+              inset 0 2px 8px rgba(255, 255, 255, 0.10),
               inset 0 -2px 6px rgba(0, 0, 0, 0.12),
-              0 0 40px rgba(123, 184, 255, 0.06)
-            `
+              0 0 40px rgba(123, 184, 255, 0.08)
+            `,
+          rotateX: shouldReduceMotion ? 0 : rotateX,
+          rotateY: shouldReduceMotion ? 0 : rotateY
         }}
         transition={{
-          duration: MOTION.DURATIONS.base,
-          ease: MOTION.CURVES.horizonIn
+          scale: { duration: isHovered ? MOTION.DURATIONS.base : 3.5, ease: MOTION.CURVES.horizonIn },
+          filter: { duration: MOTION.DURATIONS.base },
+          boxShadow: { duration: MOTION.DURATIONS.base },
+          rotateX: { duration: 0.15, ease: 'easeOut' },
+          rotateY: { duration: 0.15, ease: 'easeOut' }
         }}
       >
+        {/* Inner Layer with Faint Blur */}
+        <div
+          className="absolute inset-[8px] rounded-full"
+          style={{
+            background: `
+              linear-gradient(145deg, 
+                rgba(167, 209, 255, 0.06) 0%, 
+                rgba(123, 184, 255, 0.08) 50%,
+                rgba(167, 209, 255, 0.06) 100%
+              )
+            `,
+            backdropFilter: 'blur(4px)',
+            WebkitBackdropFilter: 'blur(4px)'
+          }}
+        />
+
+        {/* Top-left Specular Highlight */}
+        <div 
+          className="absolute top-[14px] left-[14px] w-[52px] h-[52px] rounded-full"
+          style={{
+            background: 'radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.16) 0%, transparent 60%)',
+            filter: 'blur(8px)',
+            pointerEvents: 'none'
+          }}
+        />
+
+        {/* Bottom-right Specular Highlight */}
+        <div 
+          className="absolute bottom-[18px] right-[18px] w-[40px] h-[40px] rounded-full"
+          style={{
+            background: 'radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.10) 0%, transparent 60%)',
+            filter: 'blur(6px)',
+            pointerEvents: 'none'
+          }}
+        />
+
         {/* Top subsurface lighting */}
         <div 
           className="absolute top-0 left-[15%] right-[15%] h-[24px] rounded-full"
           style={{
-            background: 'linear-gradient(180deg, rgba(167, 209, 255, 0.12) 0%, transparent 100%)',
+            background: 'linear-gradient(180deg, rgba(167, 209, 255, 0.14) 0%, transparent 100%)',
             filter: 'blur(10px)'
           }}
         />
 
-        {/* Halo pulse on hover */}
+        {/* Halo pulse on hover with breathing */}
         <motion.div
           className="absolute inset-0 rounded-full"
           style={{
-            background: `radial-gradient(circle, ${scoreColor}20 0%, transparent 70%)`,
+            background: `radial-gradient(circle, ${scoreColor}22 0%, transparent 70%)`,
             filter: 'blur(20px)',
             opacity: 0
           }}
           animate={{
-            opacity: isHovered ? 0.6 : 0,
-            scale: isHovered ? 1.1 : 1
+            opacity: isHovered ? 0.7 : (breathingScale - 1) * 15,
+            scale: isHovered ? 1.12 : 1.05
           }}
           transition={{
-            duration: MOTION.DURATIONS.slow,
-            ease: MOTION.CURVES.horizonIn
+            opacity: { duration: isHovered ? MOTION.DURATIONS.slow : 3.5 },
+            scale: { duration: isHovered ? MOTION.DURATIONS.slow : 3.5, ease: 'easeInOut' }
           }}
         />
       </motion.div>
@@ -226,7 +321,7 @@ const SignalLensNode = ({ score, isHovered }) => {
           style={{
             width: '32px',
             height: '1px',
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
             borderRadius: '999px'
           }}
           initial={{ opacity: 0, scaleX: 0 }}
@@ -234,51 +329,87 @@ const SignalLensNode = ({ score, isHovered }) => {
           transition={{ delay: 0.3, duration: 0.3 }}
         />
 
-        {/* Trend Indicator */}
+        {/* Trend Indicator with Glass Chip */}
         <motion.div
-          className="mb-2"
-          style={{ color: scoreColor }}
+          className="mb-3 relative"
           initial={{ opacity: 0, y: -4 }}
-          animate={{ opacity: 0.75, y: 0 }}
+          animate={{ opacity: 0.65, y: 0 }}
           transition={{ delay: 0.35, duration: 0.25 }}
         >
-          {getTrendIcon(score)}
+          {/* Glass chip behind icon */}
+          <div
+            className="absolute inset-[-6px] rounded-lg"
+            style={{
+              background: 'rgba(255, 255, 255, 0.06)',
+              backdropFilter: 'blur(3px)',
+              WebkitBackdropFilter: 'blur(3px)',
+              opacity: 0.15
+            }}
+          />
+          
+          <div style={{ color: scoreColor, position: 'relative', zIndex: 1 }}>
+            {getTrendIcon(score)}
+          </div>
         </motion.div>
 
-        {/* Primary Score */}
-        <motion.span
-          className="text-[52px] font-bold mb-2"
-          style={{ 
-            color: scoreColor,
-            textShadow: isHovered 
-              ? `0 0 20px ${scoreColor}30, 0 2px 4px rgba(0,0,0,0.20)` 
-              : `0 0 12px ${scoreColor}20, 0 2px 4px rgba(0,0,0,0.20)`,
-            letterSpacing: '-0.03em',
-            lineHeight: '1'
-          }}
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.4, duration: 0.35, ease: MOTION.CURVES.horizonSpring }}
-        >
-          {score}
-        </motion.span>
+        {/* Primary Score with Enhanced Contrast & Light Diffusion */}
+        <motion.div className="relative mb-3">
+          {/* Light diffusion behind score */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `radial-gradient(circle, ${scoreColor}18 0%, transparent 70%)`,
+              filter: 'blur(16px)',
+              transform: 'scale(1.3)'
+            }}
+          />
+          
+          <motion.span
+            className="text-[52px] font-bold relative z-10"
+            style={{ 
+              color: scoreColor,
+              textShadow: isHovered 
+                ? `0 0 20px ${scoreColor}35, 0 2px 4px rgba(0,0,0,0.22)` 
+                : `0 0 12px ${scoreColor}25, 0 2px 4px rgba(0,0,0,0.22)`,
+              letterSpacing: '-0.03em',
+              lineHeight: '1',
+              filter: 'brightness(1.08) contrast(1.06)'
+            }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.4, duration: 0.35, ease: MOTION.CURVES.horizonSpring }}
+          >
+            {score}
+          </motion.span>
+        </motion.div>
 
-        {/* Label */}
+        {/* Label with Glass Strip */}
         <motion.div
-          className="text-center mb-1"
+          className="text-center mb-1 relative"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.55, duration: 0.25 }}
         >
+          {/* Soft glass strip behind label */}
+          <div
+            className="absolute inset-x-[-12px] inset-y-[-4px] rounded-xl"
+            style={{
+              background: 'rgba(255, 255, 255, 0.03)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              opacity: 0.4
+            }}
+          />
+          
           <div 
-            className="text-[15px] font-semibold mb-1" 
-            style={{ color: 'rgba(255,255,255,0.92)', letterSpacing: '-0.01em' }}
+            className="text-[17px] font-semibold mb-1 relative z-10" 
+            style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.01em' }}
           >
             {scoreLabel} Consensus
           </div>
           <div 
-            className="text-[12px] font-medium" 
-            style={{ color: 'rgba(255,255,255,0.60)' }}
+            className="text-[12px] font-medium relative z-10" 
+            style={{ color: 'rgba(255,255,255,0.70)' }}
           >
             Conviction: Medium
           </div>
@@ -290,7 +421,7 @@ const SignalLensNode = ({ score, isHovered }) => {
           style={{
             width: '32px',
             height: '1px',
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
             borderRadius: '999px'
           }}
           initial={{ opacity: 0, scaleX: 0 }}
@@ -303,7 +434,7 @@ const SignalLensNode = ({ score, isHovered }) => {
 };
 
 // ============================================================================
-// MINI GLASS CHIPS — Category Weight Breakdown
+// MINI GLASS CHIPS — Category Weight Breakdown with Enhanced Polish
 // ============================================================================
 const CategoryGlassChips = ({ segments, isHovered }) => {
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
@@ -317,7 +448,7 @@ const CategoryGlassChips = ({ segments, isHovered }) => {
   }, []);
 
   return (
-    <div className="flex flex-wrap justify-center gap-2.5 mb-7">
+    <div className="flex flex-wrap justify-center gap-3 mb-8">
       {segments.map((segment, index) => {
         const colors = CATEGORY_COLORS[segment.name] || { 
           accent: 'rgba(170, 177, 184, 0.50)', 
@@ -342,37 +473,35 @@ const CategoryGlassChips = ({ segments, isHovered }) => {
             onHoverEnd={() => setIsChipHovered(false)}
           >
             <motion.div
-              className="px-3.5 py-2 rounded-xl flex items-center gap-2"
+              className="px-3.5 py-2 rounded-xl flex items-center gap-2 relative overflow-hidden"
               style={{
                 background: 'rgba(255, 255, 255, 0.04)',
-                backdropFilter: 'blur(14px)',
-                WebkitBackdropFilter: 'blur(14px)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
                 border: '1px solid rgba(255, 255, 255, 0.08)',
-                boxShadow: 'inset 0 1px 2px rgba(255, 255, 255, 0.06)',
+                boxShadow: 'inset 0 1px 2px rgba(255, 255, 255, 0.08), 0 2px 6px rgba(0, 0, 0, 0.08)',
                 cursor: 'default'
               }}
               animate={{
                 y: isChipHovered ? -2 : 0,
                 background: isChipHovered ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.04)',
                 boxShadow: isChipHovered
-                  ? `inset 0 1px 2px rgba(255, 255, 255, 0.06), 0 0 16px ${colors.glow}`
-                  : 'inset 0 1px 2px rgba(255, 255, 255, 0.06)'
+                  ? `inset 0 1px 2px rgba(255, 255, 255, 0.08), inset 0 0 8px ${colors.glow}, 0 4px 12px rgba(0, 0, 0, 0.12)`
+                  : 'inset 0 1px 2px rgba(255, 255, 255, 0.08), 0 2px 6px rgba(0, 0, 0, 0.08)'
               }}
               transition={{
-                duration: MOTION.DURATIONS.fast,
+                duration: 0.11,
                 ease: MOTION.CURVES.horizonIn
               }}
             >
-              {/* Color Dot */}
               <div
                 className="w-1.5 h-1.5 rounded-full flex-shrink-0"
                 style={{
                   background: colors.dot,
-                  boxShadow: `0 0 8px ${colors.glow}`
+                  boxShadow: `0 0 8px ${colors.glow}, inset 0 0 3px rgba(255,255,255,0.3)`
                 }}
               />
 
-              {/* Label */}
               <span 
                 className="text-[11px] font-medium" 
                 style={{ 
@@ -383,7 +512,6 @@ const CategoryGlassChips = ({ segments, isHovered }) => {
                 {segment.name}
               </span>
 
-              {/* Value */}
               <span 
                 className="text-[12px] font-bold ml-1" 
                 style={{ color: colors.dot }}
@@ -391,7 +519,7 @@ const CategoryGlassChips = ({ segments, isHovered }) => {
                 {Math.round(value)}%
               </span>
 
-              {/* Shimmer effect on hover */}
+              {/* Glass refraction shimmer on hover */}
               {isChipHovered && !shouldReduceMotion && (
                 <motion.div
                   className="absolute inset-0 rounded-xl"
@@ -401,7 +529,7 @@ const CategoryGlassChips = ({ segments, isHovered }) => {
                   }}
                   animate={{
                     x: ['-100%', '100%'],
-                    opacity: [0, 0.15, 0]
+                    opacity: [0, 0.2, 0]
                   }}
                   transition={{
                     duration: 0.8,
@@ -418,10 +546,11 @@ const CategoryGlassChips = ({ segments, isHovered }) => {
 };
 
 // ============================================================================
-// MAIN CONSENSUS COMPONENT
+// MAIN CONSENSUS COMPONENT with Enhanced Container & Polish
 // ============================================================================
 export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
   const [isHovered, setIsHovered] = useState(false);
+  const containerRef = useRef(null);
 
   if (typeof score !== 'number') {
     return null;
@@ -441,24 +570,27 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
 
   return (
     <motion.div
+      ref={containerRef}
       variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
       className="h-full rounded-[30px] flex flex-col cursor-pointer relative overflow-hidden consensus-lens"
       style={{
         padding: '32px 28px 28px 28px',
-        // Liquid glass with OS Horizon translucency
+        // Enhanced gradient with subtle depth
         background: `
           linear-gradient(180deg, 
             rgba(20, 24, 32, 0.88) 0%,
-            rgba(18, 22, 30, 0.92) 100%
+            rgba(18, 22, 30, 0.90) 50%,
+            rgba(18, 22, 30, 0.93) 100%
           )
         `,
         backdropFilter: 'blur(22px) saturate(150%)',
         WebkitBackdropFilter: 'blur(22px) saturate(150%)',
         border: '1px solid rgba(255, 255, 255, 0.12)',
         boxShadow: `
+          0 0 0 1px rgba(255, 255, 255, 0.03) inset,
           0 0 24px rgba(123, 184, 255, 0.06),
           0 20px 40px rgba(0, 0, 0, 0.18),
-          inset 0 1px 0 rgba(255, 255, 255, 0.06)
+          inset 0 1px 0 rgba(255, 255, 255, 0.08)
         `,
         willChange: 'transform, filter, box-shadow'
       }}
@@ -466,9 +598,10 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
         y: -1.5,
         filter: 'brightness(1.03)',
         boxShadow: `
+          0 0 0 1px rgba(255, 255, 255, 0.03) inset,
           0 0 28px rgba(123, 184, 255, 0.10),
           0 22px 48px rgba(0, 0, 0, 0.24),
-          inset 0 1px 0 rgba(255, 255, 255, 0.06)
+          inset 0 1px 0 rgba(255, 255, 255, 0.08)
         `,
         transition: { 
           duration: MOTION.DURATIONS.base, 
@@ -480,28 +613,37 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
       onHoverEnd={() => setIsHovered(false)}
       onClick={handleOpenDrawer}
     >
-      {/* Subsurface gradient lighting (top) */}
+      {/* Enhanced subsurface gradient lighting (top) */}
       <div style={{
         position: 'absolute',
         top: 0,
         left: 0,
         right: 0,
         height: '50%',
-        background: 'linear-gradient(180deg, rgba(255,255,255,0.025) 0%, transparent 100%)',
+        background: 'linear-gradient(180deg, rgba(255,255,255,0.028) 0%, transparent 100%)',
         pointerEvents: 'none',
         borderRadius: '30px 30px 0 0'
       }} />
 
-      {/* Subsurface gradient lighting (bottom) */}
+      {/* Enhanced subsurface gradient lighting (bottom) */}
       <div style={{
         position: 'absolute',
         bottom: 0,
         left: 0,
         right: 0,
         height: '50%',
-        background: 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.035) 100%)',
+        background: 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.038) 100%)',
         pointerEvents: 'none',
         borderRadius: '0 0 30px 30px'
+      }} />
+
+      {/* Enhanced edge inner-glow */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        borderRadius: '30px',
+        boxShadow: 'inset 0 0 4px rgba(123, 184, 255, 0.08)',
+        pointerEvents: 'none'
       }} />
 
       {/* Soft edge bloom */}
@@ -511,18 +653,18 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
         left: '20%',
         right: '20%',
         height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
         filter: 'blur(1.5px)',
         pointerEvents: 'none'
       }} />
 
-      {/* Gradient noise texture */}
+      {/* Enhanced gradient noise texture */}
       <div 
         className="absolute inset-0 rounded-[30px] pointer-events-none"
         style={{
           backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'3\' /%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\' /%3E%3C/svg%3E")',
           backgroundSize: '200px 200px',
-          opacity: 0.045,
+          opacity: 0.03,
           mixBlendMode: 'overlay'
         }}
       />
@@ -559,7 +701,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
 
       {/* MIDDLE: Signal Lens Node */}
       <div className="mb-8" style={{ position: 'relative', zIndex: 10 }}>
-        <SignalLensNode score={score} isHovered={isHovered} />
+        <SignalLensNode score={score} isHovered={isHovered} parentRef={containerRef} />
       </div>
 
       {/* LOWER: Category Glass Chips */}
@@ -567,18 +709,20 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
         <CategoryGlassChips segments={segments} isHovered={isHovered} />
       </div>
 
-      {/* FOOTER: Metadata */}
+      {/* FOOTER: Enhanced Metadata */}
       <motion.p
         className="text-xs text-center"
         style={{ 
           color: 'rgba(255,255,255,0.60)', 
-          opacity: 0.85, 
+          opacity: 0.62, 
           position: 'relative', 
           zIndex: 10,
-          fontSize: '11px'
+          fontSize: '11px',
+          letterSpacing: '0.01em',
+          marginTop: '10px'
         }}
         initial={{ opacity: 0 }}
-        animate={{ opacity: 0.85 }}
+        animate={{ opacity: 0.62 }}
         transition={{ delay: 1.0 }}
       >
         Based on {sourcesCount} sources • Updated {updatedAgo}
@@ -606,6 +750,11 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
+        }
+
+        .signal-orb-outer {
+          perspective: 1000px;
+          transform-style: preserve-3d;
         }
 
         @media (prefers-reduced-motion: reduce) {
