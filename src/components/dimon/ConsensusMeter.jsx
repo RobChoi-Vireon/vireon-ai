@@ -1,3 +1,4 @@
+
 // 🔒 DESIGN LOCKED — OS HORIZON V5.0 SIGNAL LENS REDESIGN
 // Last Updated: 2025-01-20
 // Complete redesign: Signal Lens Node + Mini Glass Chips + OS Horizon aesthetics
@@ -305,6 +306,16 @@ const SignalLensNode = ({ score, isHovered }) => {
 // MINI GLASS CHIPS — Category Weight Breakdown
 // ============================================================================
 const CategoryGlassChips = ({ segments, isHovered }) => {
+  const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setShouldReduceMotion(mediaQuery.matches);
+    const handler = (e) => setShouldReduceMotion(e.matches);
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
+
   return (
     <div className="flex flex-wrap justify-center gap-2.5 mb-7">
       {segments.map((segment, index) => {
