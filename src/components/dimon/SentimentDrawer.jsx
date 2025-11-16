@@ -302,7 +302,6 @@ const RadialGauge = ({ score }) => {
 
 const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) => {
   const [hoveredCard, setHoveredCard] = useState(null);
-  const [backgroundDrift, setBackgroundDrift] = useState(0);
   const cardRefs = useRef({});
 
   useEffect(() => {
@@ -320,26 +319,6 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
       };
     }
   }, [isOpen, onClose]);
-
-  // Vertical luminance drift (2% change)
-  useEffect(() => {
-    if (!isOpen) return;
-    
-    let rafId;
-    let startTime = Date.now();
-    
-    const animate = () => {
-      const elapsed = (Date.now() - startTime) / 1000;
-      const drift = Math.sin(elapsed * (2 * Math.PI / 10)) * 0.02;
-      setBackgroundDrift(drift);
-      rafId = requestAnimationFrame(animate);
-    };
-    
-    rafId = requestAnimationFrame(animate);
-    return () => {
-      if (rafId) cancelAnimationFrame(rafId);
-    };
-  }, [isOpen]);
 
   const consensusScore = useMemo(() => (typeof score === 'number' ? score : 0), [score]);
   const segments = useMemo(() => (Array.isArray(breakdown?.segments) ? breakdown.segments : []), [breakdown]);
@@ -462,21 +441,18 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
         exit="hidden"
         style={{ paddingTop: '80px' }}
       >
-        {/* Backdrop with choreographed dimming */}
+        {/* STABILIZED: Static background overlay - only opacity changes */}
         <motion.div
           className="absolute left-0 right-0 bottom-0"
           style={{ 
             top: '80px',
-            background: hoveredCard 
-              ? 'linear-gradient(180deg, rgba(0,0,0,0.58) 0%, rgba(0,0,0,0.60) 100%)'
-              : 'rgba(0,0,0,0.55)'
+            background: 'rgba(0,0,0,0.55)',
+            willChange: 'opacity'
           }}
           animate={{
-            background: hoveredCard 
-              ? 'linear-gradient(180deg, rgba(0,0,0,0.58) 0%, rgba(0,0,0,0.60) 100%)'
-              : 'rgba(0,0,0,0.55)'
+            opacity: hoveredCard ? 0.98 : 1
           }}
-          transition={{ duration: 0.3, ease: MOTION.CURVES.primary }}
+          transition={{ duration: 0.25, ease: MOTION.CURVES.primary }}
           onClick={onClose}
         />
 
@@ -485,9 +461,9 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
           style={{
             background: `
               linear-gradient(180deg, 
-                rgba(18, 20, 28, ${0.88 + backgroundDrift}) 0%,
-                rgba(19, 23, 31, ${0.90 + backgroundDrift}) 45%,
-                rgba(18, 22, 30, ${0.92 + backgroundDrift}) 100%
+                rgba(18, 20, 28, 0.88) 0%,
+                rgba(19, 23, 31, 0.90) 45%,
+                rgba(18, 22, 30, 0.92) 100%
               )
             `,
             backdropFilter: 'blur(36px) saturate(170%)',
@@ -499,16 +475,17 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
               inset 0 1px 0 rgba(255, 255, 255, 0.10),
               inset 0 0 3px rgba(142, 187, 255, 0.05),
               inset 0 0 0 1px rgba(255, 255, 255, 0.032)
-            `
+            `,
+            willChange: 'transform'
           }}
           variants={drawerVariants}
           initial="hidden"
           animate="visible"
           exit="exit"
         >
-          {/* 3-LAYER LIQUID GLASS SYSTEM (Unified with Consensus Panel) */}
+          {/* 3-LAYER LIQUID GLASS SYSTEM (STABILIZED - No Dynamic Updates) */}
           
-          {/* Layer 1: Subsurface Lighting from Top Center */}
+          {/* Layer 1: Subsurface Lighting from Top Center (STATIC) */}
           <div style={{
             position: 'absolute',
             top: 0,
@@ -521,7 +498,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
             borderRadius: '30px 30px 0 0'
           }} />
 
-          {/* Layer 2: Ambient Haze */}
+          {/* Layer 2: Ambient Haze (STATIC) */}
           <div style={{
             position: 'absolute',
             inset: 0,
@@ -531,7 +508,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
             borderRadius: '30px'
           }} />
 
-          {/* Layer 3: Surface Reflection Highlight */}
+          {/* Layer 3: Surface Reflection Highlight (STATIC) */}
           <div style={{
             position: 'absolute',
             top: 0,
@@ -543,7 +520,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
             pointerEvents: 'none'
           }} />
 
-          {/* 1-2px Inner Glow for Depth */}
+          {/* 1-2px Inner Glow for Depth (STATIC) */}
           <div style={{
             position: 'absolute',
             inset: 0,
@@ -552,7 +529,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
             pointerEvents: 'none'
           }} />
 
-          {/* 2% Noise Texture */}
+          {/* 2% Noise Texture (STATIC) */}
           <div style={{
             position: 'absolute',
             inset: 0,
@@ -645,7 +622,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
             <motion.div variants={itemVariants} className="flex flex-col items-center mb-6">
               <RadialGauge score={consensusScore} />
               
-              {/* Metadata with reduced opacity (58-60%) and +6-8px spacing */}
+              {/* Metadata with reduced opacity (58%) and +8px spacing */}
               <motion.p
                 className="text-xs text-center"
                 style={{ 
@@ -681,7 +658,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
                         key={segment.name}
                         ref={el => cardRefs.current[segment.name] = el}
                         variants={itemVariants}
-                        className="relative cursor-pointer group overflow-hidden"
+                        className="relative cursor-pointer group overflow-hidden segment-card"
                         style={{
                           padding: '26px',
                           borderRadius: '22px',
@@ -698,25 +675,14 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
                           `,
                           backdropFilter: 'blur(24px)',
                           WebkitBackdropFilter: 'blur(24px)',
-                          perspective: '1000px',
-                          transformStyle: 'preserve-3d'
+                          willChange: 'transform, opacity, filter'
                         }}
+                        data-hovered={isHovered ? 'true' : 'false'}
                         onHoverStart={() => setHoveredCard(segment.name)}
                         onHoverEnd={() => setHoveredCard(null)}
                         animate={{
                           y: isHovered ? -1.2 : 0,
-                          borderColor: isHovered ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.12)',
-                          boxShadow: isHovered
-                            ? `
-                              inset 0 1px 0 rgba(255,255,255,0.08), 
-                              0 8px 24px rgba(0,0,0,0.14),
-                              0 0 20px ${iconColor}10
-                            `
-                            : `
-                              inset 0 1px 0 rgba(255,255,255,0.08), 
-                              0 4px 14px rgba(0,0,0,0.08)
-                            `,
-                          backdropFilter: isHovered ? 'blur(28px)' : 'blur(24px)',
+                          opacity: isSibling ? 0.97 : 1,
                           filter: isSibling ? 'brightness(0.985) blur(0.5px)' : 'brightness(1)',
                           scale: isHovered ? 1.005 : 1
                         }}
@@ -726,7 +692,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
                         }}
                         onClick={handleOpenDetail}
                       >
-                        {/* Rim-light at Top Edge (Horizon Light Model) */}
+                        {/* Rim-light at Top Edge (STATIC) */}
                         <div style={{
                           position: 'absolute',
                           top: 0,
@@ -737,32 +703,28 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
                           pointerEvents: 'none'
                         }} />
 
-                        {/* Subtle Category Tint */}
-                        <motion.div
+                        {/* Subtle Category Tint (STATIC BASE) */}
+                        <div
                           className="absolute inset-0 pointer-events-none"
                           style={{
                             background: `
                               radial-gradient(circle at 50% 0%, ${segmentTint} 0%, transparent 100%)
                             `,
-                            borderRadius: '22px'
+                            borderRadius: '22px',
+                            opacity: 0.7
                           }}
-                          animate={{
-                            opacity: isHovered ? 1 : 0.7
-                          }}
-                          transition={{ duration: 0.3 }}
                         />
 
-                        {/* Slow Shadow Bloom on Hover */}
+                        {/* Slow Shadow Bloom on Hover (GPU-Friendly) */}
                         <motion.div
                           className="absolute inset-0 pointer-events-none"
                           style={{
                             background: `radial-gradient(circle at 50% 0%, ${iconColor}12 0%, transparent 65%)`,
-                            opacity: 0,
-                            borderRadius: '22px'
+                            borderRadius: '22px',
+                            willChange: 'opacity'
                           }}
                           animate={{ 
-                            opacity: isHovered ? 0.85 : 0,
-                            scale: isHovered ? 1.015 : 1
+                            opacity: isHovered ? 0.85 : 0
                           }}
                           transition={{ duration: 0.35, ease: MOTION.CURVES.primary }}
                         />
@@ -818,7 +780,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
 
                         <div className="space-y-2.5 relative z-10" style={{ paddingBottom: '10px' }}>
                           <div className="flex items-center gap-2 flex-wrap">
-                            <motion.div
+                            <div
                               className="relative px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide flex items-center gap-1.5"
                               style={{
                                 background: stressChip.bg,
@@ -839,9 +801,9 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
                               }} />
                               <AlertTriangle className="w-3 h-3 relative z-10" />
                               <span className="relative z-10">{stressChip.label}</span>
-                            </motion.div>
+                            </div>
 
-                            <motion.div
+                            <div
                               className="relative px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide flex items-center gap-1.5"
                               style={{
                                 background: `${trendChip.color}0E`,
@@ -862,7 +824,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
                               }} />
                               {React.cloneElement(<trendChip.Icon />, { className: "w-3 h-3 relative z-10" })}
                               <span className="relative z-10">{trendChip.label}</span>
-                            </motion.div>
+                            </div>
                           </div>
 
                           <div className="relative">
