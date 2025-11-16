@@ -1413,7 +1413,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           }}
           onHoverStart={() => setIsPillHovered(true)}
           onHoverEnd={() => setIsPillHovered(false)}
-          whileTap={{
+          whileTap={shouldReduceMotion ? {} : {
             scale: 0.98,
             y: 0,
             filter: 'brightness(0.94)',
@@ -1539,7 +1539,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             transition: 'opacity 0.2s ease-out, filter 0.2s ease-out'
           }}
         >
-          {/* UNIFIED ATMOSPHERIC BACKGROUND — SINGLE RADIAL GRADIENT */}
+          {/* UNIFIED SMOOTH BACKGROUND — Single seamless gradient */}
           <div
             className="equilibrium-unified-background"
             style={{
@@ -1548,29 +1548,19 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               left: 0,
               width: '100%',
               height: '100%',
-              background: `radial-gradient(ellipse 900px 550px at 50% 48%, rgba(18, 24, 35, 0.65) 0%, rgba(11, 14, 19, 0.45) 42%, rgba(7, 10, 15, 0.25) 70%, transparent 100%)`,
+              background: `
+                radial-gradient(
+                  ellipse 850px 520px at 50% 46%, 
+                  rgba(18, 24, 35, 0.68) 0%, 
+                  rgba(14, 18, 26, 0.52) 35%, 
+                  rgba(11, 14, 19, 0.35) 58%, 
+                  rgba(7, 10, 15, 0.18) 75%, 
+                  transparent 100%
+                )
+              `,
               borderRadius: '24px',
               pointerEvents: 'none',
               zIndex: 1
-            }}
-            aria-hidden="true"
-          />
-
-          {/* SUBSURFACE CENTER GLOW — SINGLE PSEUDO-ELEMENT */}
-          <div
-            className="equilibrium-subsurface-glow"
-            style={{
-              position: 'absolute',
-              left: '50%',
-              top: '48%',
-              transform: 'translate(-50%, -50%)',
-              width: '420px',
-              height: '420px',
-              background: 'radial-gradient(circle, rgba(160, 191, 255, 0.08) 0%, transparent 65%)',
-              filter: 'blur(60px)',
-              pointerEvents: 'none',
-              zIndex: 2,
-              opacity: 0.75
             }}
             aria-hidden="true"
           />
@@ -2521,7 +2511,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     letterSpacing: '0.01em'
                   }}
                   aria-label={selectedDomain.footer.primary_cta.label}
-                  whileHover={{
+                  whileHover={shouldReduceMotion ? {} : {
                     y: -1,
                     background: 'rgba(90,160,255,0.18)',
                     boxShadow: '0 0 16px rgba(90,160,255,0.25)',
@@ -2531,7 +2521,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       ease: MOTION_TOKENS.CURVES.horizonIn
                     }
                   }}
-                  whileTap={{
+                  whileTap={shouldReduceMotion ? {} : {
                     y: 1,
                     scale: 0.99,
                     transition: { duration: MOTION_TOKENS.DURATIONS.microPulse }
@@ -2551,7 +2541,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     fontSize: '12.5px',
                     fontWeight: 500
                   }}
-                  whileHover={{
+                  whileHover={shouldReduceMotion ? {} : {
                     background: 'rgba(255, 255, 255, 0.08)',
                     y: -1,
                     transition: {
@@ -2559,7 +2549,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       ease: MOTION_TOKENS.CURVES.horizonIn
                     }
                   }}
-                  whileTap={{
+                  whileTap={shouldReduceMotion ? {} : {
                     y: 1,
                     scale: 0.99,
                     transition: { duration: MOTION_TOKENS.DURATIONS.microPulse }
