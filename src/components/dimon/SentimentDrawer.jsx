@@ -25,39 +25,49 @@ const MOTION = {
   }
 };
 
-// SF Symbol-Style Outline Icons
-const OutlineIcons = {
-  Policy: ({ style }) => (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" style={style}>
-      <path 
-        d="M10 3.5L5 5.5V9C5 12 7.5 14.5 10 15.5C12.5 14.5 15 12 15 9V5.5L10 3.5Z" 
-        stroke="currentColor" 
-        strokeWidth="1.2" 
-        strokeLinecap="round" 
-        strokeLinejoin="round"
-      />
-    </svg>
-  ),
-  Credit: ({ style }) => (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" style={style}>
-      <rect x="4.5" y="5.5" width="11" height="3" rx="0.6" stroke="currentColor" strokeWidth="1.2" />
-      <rect x="4.5" y="11.5" width="11" height="3" rx="0.6" stroke="currentColor" strokeWidth="1.2" />
-    </svg>
-  ),
-  Equities: ({ style }) => (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" style={style}>
-      <path d="M6 14V11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M10 14V8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M14 14V6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-    </svg>
-  ),
-  Global: ({ style }) => (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" style={style}>
-      <circle cx="10" cy="10" r="6.5" stroke="currentColor" strokeWidth="1.2" />
-      <path d="M10 3.5C10 3.5 12.5 6 12.5 10C12.5 14 10 16.5 10 16.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M4 10H16" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-    </svg>
-  )
+// Dot Icon Component (Unified Global Signals Visual Language)
+const DotIcon = ({ color, style }) => (
+  <div 
+    style={{
+      position: 'relative',
+      width: '8px',
+      height: '8px',
+      ...style
+    }}
+  >
+    {/* Soft Ambient Glow (2-4%) */}
+    <div
+      style={{
+        position: 'absolute',
+        inset: '-4px',
+        borderRadius: '50%',
+        background: `radial-gradient(circle, ${color}26 0%, transparent 70%)`,
+        filter: 'blur(4px)',
+        opacity: 0.35
+      }}
+    />
+    {/* Solid Dot */}
+    <div
+      style={{
+        position: 'absolute',
+        inset: 0,
+        borderRadius: '50%',
+        background: color,
+        boxShadow: `0 0 8px ${color}28, inset 0 0 2px rgba(255,255,255,0.25)`
+      }}
+    />
+  </div>
+);
+
+// Icon Colors (Unified Across Global Signals)
+const getIconColor = (name) => {
+  switch (name) {
+    case 'Policy': return '#F26A6A'; // Red
+    case 'Credit': return '#5EA7FF'; // Blue
+    case 'Equities': return '#2BC686'; // Green
+    case 'Global': return '#FFB020'; // Yellow/Amber
+    default: return '#A8B1BA';
+  }
 };
 
 // Segment Narratives
@@ -353,18 +363,7 @@ const InsightChip = ({ segments }) => {
 const SegmentCard = ({ segment, delay, onOpenDetail }) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  const getIconColor = (n) => {
-    switch (n) {
-      case 'Policy': return '#70A8E8';
-      case 'Credit': return '#B88AED';
-      case 'Equities': return '#32C288';
-      case 'Global': return '#EDB859';
-      default: return '#A8B1BA';
-    }
-  };
-
   const iconColor = getIconColor(segment.name);
-  const Icon = OutlineIcons[segment.name] || OutlineIcons.Global;
   const weight = (segment?.weight || 0) * 100;
   const narrative = SEGMENT_INSIGHTS[segment.name] || { summary: 'No insights', trend: 'Stable' };
 
@@ -417,18 +416,10 @@ const SegmentCard = ({ segment, delay, onOpenDetail }) => {
           pointerEvents: 'none'
         }} />
 
-        {/* Header: Icon + Name + Weight */}
+        {/* Header: Dot Icon + Name + Weight */}
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <div 
-              className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{
-                background: `${iconColor}05`,
-                border: `1px solid ${iconColor}12`
-              }}
-            >
-              <Icon style={{ color: iconColor, filter: 'brightness(1.14)' }} />
-            </div>
+            <DotIcon color={iconColor} />
             <span className="text-[13px] font-semibold" style={{ color: 'rgba(255,255,255,0.98)' }}>
               {segment.name}
             </span>
@@ -523,18 +514,7 @@ const SegmentCard = ({ segment, delay, onOpenDetail }) => {
 const SegmentDetailOverlay = ({ segment, onClose }) => {
   if (!segment) return null;
 
-  const getIconColor = (n) => {
-    switch (n) {
-      case 'Policy': return '#70A8E8';
-      case 'Credit': return '#B88AED';
-      case 'Equities': return '#32C288';
-      case 'Global': return '#EDB859';
-      default: return '#A8B1BA';
-    }
-  };
-
   const iconColor = getIconColor(segment.name);
-  const Icon = OutlineIcons[segment.name] || OutlineIcons.Global;
   const detail = SEGMENT_INSIGHTS[segment.name]?.detail || 'No additional details available.';
 
   useEffect(() => {
@@ -596,16 +576,7 @@ const SegmentDetailOverlay = ({ segment, onClose }) => {
 
           {/* Header */}
           <div className="flex items-center gap-3 mb-5">
-            <div 
-              className="w-12 h-12 rounded-xl flex items-center justify-center"
-              style={{
-                background: `${iconColor}08`,
-                border: `1px solid ${iconColor}18`,
-                boxShadow: `0 0 16px ${iconColor}10`
-              }}
-            >
-              <Icon style={{ color: iconColor, filter: 'brightness(1.16)', width: '22px', height: '22px' }} />
-            </div>
+            <DotIcon color={iconColor} style={{ width: '12px', height: '12px' }} />
             <div>
               <h3 className="text-lg font-bold" style={{ color: 'rgba(255,255,255,0.98)' }}>
                 {segment.name}
@@ -660,16 +631,6 @@ const SegmentDetailOverlay = ({ segment, onClose }) => {
 // BOTTOM NAV ROW (4-Segment Trajectory)
 // ============================================================================
 const BottomNavRow = ({ segments, delay }) => {
-  const getIconColor = (n) => {
-    switch (n) {
-      case 'Policy': return '#70A8E8';
-      case 'Credit': return '#B88AED';
-      case 'Equities': return '#32C288';
-      case 'Global': return '#EDB859';
-      default: return '#A8B1BA';
-    }
-  };
-
   return (
     <motion.div
       className="relative rounded-2xl overflow-hidden"
@@ -700,20 +661,11 @@ const BottomNavRow = ({ segments, delay }) => {
         {segments.map((segment, idx) => {
           const iconColor = getIconColor(segment.name);
           const weight = (segment?.weight || 0) * 100;
-          const Icon = OutlineIcons[segment.name] || OutlineIcons.Global;
 
           return (
             <div key={segment.name} className="flex-1">
               <div className="flex items-center gap-1.5 mb-1.5">
-                <div 
-                  className="w-6 h-6 rounded-lg flex items-center justify-center"
-                  style={{
-                    background: `${iconColor}04`,
-                    border: `1px solid ${iconColor}10`
-                  }}
-                >
-                  <Icon style={{ color: iconColor, filter: 'brightness(1.14)', width: '14px', height: '14px' }} />
-                </div>
+                <DotIcon color={iconColor} style={{ width: '6px', height: '6px' }} />
                 <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.84)' }}>
                   {segment.name}
                 </span>
