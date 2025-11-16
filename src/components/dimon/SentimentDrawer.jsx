@@ -1,238 +1,257 @@
-// 🔒 DESIGN LOCKED — OS HORIZON TAHOE UNIFIED CANVAS V6.0
+// 🔒 DESIGN LOCKED — TAHOE UNIFIED LIGHTFIELD PANEL V7.0
 // Last Updated: 2025-01-20
-// VIREON CERTIFIED — Atmospheric Canvas, Zero-Box Philosophy, Light Zones
-// Apple macOS Tahoe + VisionOS Unified Surface Design
+// Pure macOS Tahoe + VisionOS Unified Surface Design
+// Zero-Box Philosophy • Atmospheric Canvas • Morphing Light Zones
 // See: DESIGN_LOCKED_COMPONENTS.md
 
 import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { X, Activity } from 'lucide-react';
 
-// OS Horizon Motion DNA (Liquid Silk + Morphing)
-const MOTION = {
+// Tahoe Motion DNA (Liquid Physics)
+const TAHOE = {
   CURVES: {
-    silk: [0.25, 0.1, 0, 1.0],
+    liquid: [0.25, 0.1, 0, 1.0],
     breathe: [0.33, 0, 0.4, 1],
     morph: [0.22, 0.61, 0.36, 1]
   },
   DURATIONS: {
     fast: 0.18,
-    base: 0.24,
-    morph: 0.26,
-    breathing: 42
+    base: 0.22,
+    morph: 0.24,
+    breath: 50
   }
 };
 
-// SF Symbol-Style Outline Icons
-const OutlineIcons = {
+// Minimal SF Symbol Icons
+const Icons = {
   Policy: ({ style }) => (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={style}>
+    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" style={style}>
       <path d="M10 3.5L5 5.5V9C5 12 7.5 14.5 10 15.5C12.5 14.5 15 12 15 9V5.5L10 3.5Z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   ),
   Credit: ({ style }) => (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={style}>
+    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" style={style}>
       <rect x="4.5" y="5.5" width="11" height="3" rx="0.6" stroke="currentColor" strokeWidth="1.2" />
       <rect x="4.5" y="11.5" width="11" height="3" rx="0.6" stroke="currentColor" strokeWidth="1.2" />
     </svg>
   ),
   Equities: ({ style }) => (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={style}>
+    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" style={style}>
       <path d="M6 14V11M10 14V8M14 14V6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
     </svg>
   ),
   Global: ({ style }) => (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={style}>
+    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" style={style}>
       <circle cx="10" cy="10" r="6.5" stroke="currentColor" strokeWidth="1.2" />
       <path d="M10 3.5C10 3.5 12.5 6 12.5 10C12.5 14 10 16.5 10 16.5M4 10H16" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
     </svg>
   )
 };
 
-// Segment Data
-const SEGMENTS = {
-  Policy: { summary: "Regulators tightening oversight in medium-term policy environment.", detail: "Bipartisan push on content/privacy expands audit scope Y/Y. Capex guidance reflects regulatory friction across major platforms.", trend: "Rising", color: '#70A8E8', lightTint: 'rgba(112, 168, 232, 0.035)' },
-  Credit: { summary: "Spreads widening as stress pockets form in credit markets.", detail: "EM HY spreads widen 35bps WoW. Issuance windows shorten. Banks tighten underwriting standards.", trend: "Moderate", color: '#B88AED', lightTint: 'rgba(184, 138, 237, 0.035)' },
-  Equities: { summary: "Market breadth remains flat with limited participation.", detail: "Recent gains concentrated in large-cap. Underlying fragility despite headline resilience.", trend: "Moderate", color: '#32C288', lightTint: 'rgba(50, 194, 136, 0.035)' },
-  Global: { summary: "China slowdown weighing on global momentum and trade flows.", detail: "Exports normalize. Household confidence lags. Local infra offsets narrow in 2H.", trend: "Softening", color: '#EDB859', lightTint: 'rgba(237, 184, 89, 0.035)' }
+// Lightfield Zone Data
+const ZONES = {
+  Policy: { summary: "Regulatory tightening intensifies.", color: '#6B9FE8', tint: 'rgba(107, 159, 232, 0.028)' },
+  Credit: { summary: "Spreads widening in high-yield.", color: '#B88AED', tint: 'rgba(184, 138, 237, 0.028)' },
+  Equities: { summary: "Concentration risk in mega-cap.", color: '#32C288', tint: 'rgba(50, 194, 136, 0.028)' },
+  Global: { summary: "China slowdown weighs on trade.", color: '#EDB859', tint: 'rgba(237, 184, 89, 0.028)' }
 };
 
 // ============================================================================
-// LUMINOUS ALIGNMENT ORB (18% Larger, Layered Halos, Subsurface Shimmer)
+// TAHOE LUMINOUS ORB (Multi-Layer Halos, Refraction Shimmer)
 // ============================================================================
-const LuminousAlignmentOrb = ({ score }) => {
-  const [breathingPhase, setBreathingPhase] = useState(0);
-  const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
+const TahoeOrb = ({ score }) => {
+  const [phase, setPhase] = useState(0);
+  const [shouldReduce, setShouldReduce] = useState(false);
   const orbRef = useRef(null);
   
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const springConfig = { stiffness: 70, damping: 28, mass: 1 };
-  const parallaxX = useSpring(useTransform(mouseX, [-100, 100], [-1.5, 1.5]), springConfig);
-  const parallaxY = useSpring(useTransform(mouseY, [-100, 100], [-1.5, 1.5]), springConfig);
+  const spring = { stiffness: 65, damping: 30, mass: 1.2 };
+  const parallaxX = useSpring(useTransform(mouseX, [-100, 100], [-1, 1]), spring);
+  const parallaxY = useSpring(useTransform(mouseY, [-100, 100], [-1, 1]), spring);
 
-  const getZoneColor = (s) => s < 40 ? '#E86565' : s < 70 ? '#70A8E8' : '#32C288';
-  const color = getZoneColor(score);
+  const color = score < 40 ? '#E86565' : score < 70 ? '#6B9FE8' : '#32C288';
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setShouldReduceMotion(mediaQuery.matches);
-    const handler = (e) => setShouldReduceMotion(e.matches);
-    mediaQuery.addEventListener('change', handler);
-    return () => mediaQuery.removeEventListener('change', handler);
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setShouldReduce(mq.matches);
+    const h = (e) => setShouldReduce(e.matches);
+    mq.addEventListener('change', h);
+    return () => mq.removeEventListener('change', h);
   }, []);
 
   useEffect(() => {
-    if (shouldReduceMotion) return;
-    let rafId, startTime = Date.now();
-    const animate = () => {
-      setBreathingPhase((Date.now() - startTime) / 1000);
-      rafId = requestAnimationFrame(animate);
+    if (shouldReduce) return;
+    let raf, t = Date.now();
+    const loop = () => {
+      setPhase((Date.now() - t) / 1000);
+      raf = requestAnimationFrame(loop);
     };
-    rafId = requestAnimationFrame(animate);
-    return () => rafId && cancelAnimationFrame(rafId);
-  }, [shouldReduceMotion]);
+    raf = requestAnimationFrame(loop);
+    return () => raf && cancelAnimationFrame(raf);
+  }, [shouldReduce]);
 
   useEffect(() => {
-    if (shouldReduceMotion || !orbRef?.current) return;
-    const handleMouseMove = (e) => {
-      const rect = orbRef.current.getBoundingClientRect();
-      mouseX.set(e.clientX - (rect.left + rect.width / 2));
-      mouseY.set(e.clientY - (rect.top + rect.height / 2));
+    if (shouldReduce || !orbRef?.current) return;
+    const move = (e) => {
+      const r = orbRef.current.getBoundingClientRect();
+      mouseX.set(e.clientX - (r.left + r.width / 2));
+      mouseY.set(e.clientY - (r.top + r.height / 2));
     };
-    const parent = orbRef.current.parentElement;
-    if (parent) {
-      parent.addEventListener('mousemove', handleMouseMove);
-      return () => parent.removeEventListener('mousemove', handleMouseMove);
+    const p = orbRef.current.parentElement;
+    if (p) {
+      p.addEventListener('mousemove', move);
+      return () => p.removeEventListener('mousemove', move);
     }
-  }, [shouldReduceMotion, mouseX, mouseY]);
+  }, [shouldReduce, mouseX, mouseY]);
 
-  const breathingScale = 1 + Math.sin(breathingPhase * (2 * Math.PI / MOTION.DURATIONS.breathing)) * 0.022;
-  const shimmerPhase = (breathingPhase % 38) / 38;
+  const breathe = 1 + Math.sin(phase * (2 * Math.PI / TAHOE.DURATIONS.breath)) * 0.024;
+  const shimmer = (phase % 52) / 52;
 
   return (
     <motion.div 
       ref={orbRef}
       className="relative flex items-center justify-center mx-auto"
-      style={{ width: '225px', height: '225px', x: parallaxX, y: parallaxY }}
-      initial={{ scale: 0.86, opacity: 0 }}
+      style={{ width: '240px', height: '240px', x: parallaxX, y: parallaxY }}
+      initial={{ scale: 0.84, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
-      transition={{ duration: 0.7, ease: MOTION.CURVES.silk }}
+      transition={{ duration: 0.75, ease: TAHOE.CURVES.liquid }}
     >
-      {/* Outer Halo (Wide radius, 1-2% opacity) */}
+      {/* Environmental Halo (1-2% spread across top) */}
       <motion.div
         style={{
           position: 'absolute',
-          width: '420px',
-          height: '420px',
+          width: '600px',
+          height: '180px',
+          top: '-30%',
+          left: '50%',
+          transform: 'translateX(-50%)',
           borderRadius: '50%',
-          background: `radial-gradient(circle, ${color}05 0%, ${color}02 52%, transparent 78%)`,
-          filter: 'blur(58px)',
+          background: `radial-gradient(ellipse, ${color}04 0%, ${color}01 55%, transparent 82%)`,
+          filter: 'blur(72px)',
           pointerEvents: 'none'
         }}
-        animate={{ scale: breathingScale * 1.35, opacity: 0.015 + Math.sin(breathingPhase * 0.5) * 0.008 }}
-        transition={{ duration: MOTION.DURATIONS.breathing, ease: MOTION.CURVES.breathe }}
+        animate={{ opacity: 0.012 + Math.sin(phase * 0.4) * 0.006 }}
       />
 
-      {/* Inner Halo (Small radius, 3-4% opacity) */}
+      {/* Secondary Bloom (2-3%) */}
       <motion.div
         style={{
           position: 'absolute',
-          width: '290px',
-          height: '290px',
+          width: '340px',
+          height: '340px',
           borderRadius: '50%',
-          background: `radial-gradient(circle, ${color}0A 0%, ${color}04 58%, transparent 82%)`,
-          filter: 'blur(42px)',
+          background: `radial-gradient(circle, ${color}06 0%, ${color}02 60%, transparent 85%)`,
+          filter: 'blur(48px)',
           pointerEvents: 'none'
         }}
-        animate={{ scale: breathingScale * 1.18, opacity: 0.038 + Math.sin(breathingPhase * 0.8) * 0.015 }}
-        transition={{ duration: MOTION.DURATIONS.breathing, ease: MOTION.CURVES.breathe }}
+        animate={{ scale: breathe * 1.22, opacity: 0.024 + Math.sin(phase * 0.6) * 0.012 }}
+        transition={{ duration: TAHOE.DURATIONS.breath, ease: TAHOE.CURVES.breathe }}
       />
 
-      {/* Liquid Glass Orb (18% larger = 177px) */}
+      {/* Inner Core Glow (3-4%) */}
       <motion.div
         style={{
           position: 'absolute',
-          width: '177px',
-          height: '177px',
+          width: '220px',
+          height: '220px',
           borderRadius: '50%',
-          background: 'linear-gradient(138deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 100%)',
-          backdropFilter: 'blur(40px) saturate(160%)',
-          WebkitBackdropFilter: 'blur(40px) saturate(160%)',
-          border: '1px solid rgba(255,255,255,0.19)',
+          background: `radial-gradient(circle, ${color}0C 0%, ${color}05 62%, transparent 88%)`,
+          filter: 'blur(36px)',
+          pointerEvents: 'none'
+        }}
+        animate={{ scale: breathe * 1.08, opacity: 0.038 + Math.sin(phase * 0.9) * 0.018 }}
+        transition={{ duration: TAHOE.DURATIONS.breath, ease: TAHOE.CURVES.breathe }}
+      />
+
+      {/* Liquid Glass Orb */}
+      <motion.div
+        style={{
+          position: 'absolute',
+          width: '185px',
+          height: '185px',
+          borderRadius: '50%',
+          background: 'linear-gradient(142deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.04) 100%)',
+          backdropFilter: 'blur(42px) saturate(165%)',
+          WebkitBackdropFilter: 'blur(42px) saturate(165%)',
+          border: '1px solid rgba(255,255,255,0.20)',
           boxShadow: `
-            inset 0 2.5px 20px rgba(255,255,255,0.16),
-            inset 0 -2.5px 16px rgba(0,0,0,0.24),
-            0 0 68px ${color}22,
-            0 0 0 0.8px rgba(255,255,255,0.09)
+            inset 0 3px 22px rgba(255,255,255,0.17),
+            inset 0 -3px 18px rgba(0,0,0,0.26),
+            0 0 72px ${color}24,
+            0 0 0 1px rgba(255,255,255,0.10)
           `
         }}
-        animate={{ scale: breathingScale }}
-        transition={{ duration: MOTION.DURATIONS.breathing, ease: MOTION.CURVES.breathe }}
+        animate={{ scale: breathe }}
+        transition={{ duration: TAHOE.DURATIONS.breath, ease: TAHOE.CURVES.breathe }}
       >
-        {/* Shallow Subsurface Refraction Shimmer */}
+        {/* Refraction Shimmer (40-60s loop) */}
         <motion.div style={{
           position: 'absolute',
           inset: 0,
           borderRadius: '50%',
-          background: `radial-gradient(circle at ${48 + Math.sin(shimmerPhase * Math.PI * 2) * 9}% ${40 + Math.cos(shimmerPhase * Math.PI * 2) * 7}%, ${color}14 0%, transparent 70%)`,
+          background: `radial-gradient(circle at ${50 + Math.sin(shimmer * Math.PI * 2) * 10}% ${42 + Math.cos(shimmer * Math.PI * 2) * 8}%, ${color}16 0%, transparent 72%)`,
           pointerEvents: 'none'
         }} />
 
+        {/* Soft Color Separation */}
         <div style={{
           position: 'absolute',
-          top: '10px',
-          left: '10px',
-          width: '75px',
-          height: '75px',
+          top: '12px',
+          left: '12px',
+          width: '80px',
+          height: '80px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle at 32% 32%, rgba(255,255,255,0.38) 0%, rgba(255,255,255,0.18) 48%, transparent 74%)',
-          filter: 'blur(19px)',
+          background: 'radial-gradient(circle at 34% 34%, rgba(255,255,255,0.40) 0%, rgba(255,255,255,0.20) 50%, transparent 76%)',
+          filter: 'blur(20px)',
           pointerEvents: 'none'
         }} />
 
+        {/* Inner Highlight Ring */}
         <div style={{
           position: 'absolute',
           inset: 0,
           borderRadius: '50%',
-          boxShadow: 'inset 0 0 1.5px 0.8px rgba(255,255,255,0.16)',
+          boxShadow: 'inset 0 0 2px 1px rgba(255,255,255,0.17)',
           pointerEvents: 'none'
         }} />
       </motion.div>
 
+      {/* Text Stack */}
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <motion.span
-          className="text-[10px] font-medium uppercase tracking-widest mb-3.5"
-          style={{ color: 'rgba(255,255,255,0.70)', letterSpacing: '0.20em' }}
+          className="text-[9px] font-medium uppercase tracking-widest mb-4"
+          style={{ color: 'rgba(255,255,255,0.72)', letterSpacing: '0.22em' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.35, duration: 0.4 }}
+          transition={{ delay: 0.40, duration: 0.45 }}
         >
           Alignment
         </motion.span>
         
         <motion.span
-          className="text-[60px] mb-2"
+          className="text-[64px] mb-2.5"
           style={{ 
             color,
-            textShadow: `0 0 36px ${color}48, 0 4px 16px rgba(0,0,0,0.34)`,
-            filter: 'brightness(1.16) contrast(1.12)',
-            letterSpacing: '-0.05em',
+            textShadow: `0 0 40px ${color}50, 0 5px 18px rgba(0,0,0,0.36)`,
+            filter: 'brightness(1.18) contrast(1.14)',
+            letterSpacing: '-0.055em',
             fontWeight: 560
           }}
-          initial={{ opacity: 0, scale: 0.82 }}
+          initial={{ opacity: 0, scale: 0.80 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.45, duration: 0.55, ease: MOTION.CURVES.silk }}
+          transition={{ delay: 0.50, duration: 0.60, ease: TAHOE.CURVES.liquid }}
         >
           {score}
         </motion.span>
         
         <motion.div
-          className="text-[11px] font-medium"
-          style={{ color: 'rgba(255,255,255,0.64)' }}
+          className="text-[10px] font-medium"
+          style={{ color: 'rgba(255,255,255,0.66)' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.7, duration: 0.35 }}
+          transition={{ delay: 0.75, duration: 0.40 }}
         >
           Medium Weight
         </motion.div>
@@ -242,12 +261,12 @@ const LuminousAlignmentOrb = ({ score }) => {
 };
 
 // ============================================================================
-// LIGHT ZONE (Replaces Cards with Illuminated Regions)
+// LIGHTFIELD ZONE (Illuminated Patch, No Borders)
 // ============================================================================
-const LightZone = ({ segment, weight, isExpanded, onToggle, delay }) => {
+const LightfieldZone = ({ segment, weight, isExpanded, onToggle, delay }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const info = SEGMENTS[segment.name] || {};
-  const Icon = OutlineIcons[segment.name] || OutlineIcons.Global;
+  const info = ZONES[segment.name] || {};
+  const Icon = Icons[segment.name] || Icons.Global;
 
   return (
     <motion.div
@@ -255,164 +274,147 @@ const LightZone = ({ segment, weight, isExpanded, onToggle, delay }) => {
       onClick={onToggle}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.42, ease: MOTION.CURVES.silk }}
+      transition={{ delay, duration: 0.48, ease: TAHOE.CURVES.liquid }}
       layout
     >
       <motion.div
         className="relative overflow-hidden"
         style={{
-          padding: isExpanded ? '26px 24px' : '22px 20px',
+          padding: isExpanded ? '28px 24px' : '24px 20px',
           borderRadius: '20px',
           background: `
-            radial-gradient(ellipse at 50% -30%, ${info.lightTint} 0%, transparent 100%),
-            rgba(255, 255, 255, 0.022)
+            radial-gradient(ellipse at 50% -35%, ${info.tint} 0%, transparent 100%),
+            rgba(255, 255, 255, 0.018)
           `
         }}
         animate={{
-          y: isHovered ? -2 : 0,
-          background: isHovered 
-            ? `radial-gradient(ellipse at 50% -30%, ${info.color}06 0%, transparent 100%), rgba(255, 255, 255, 0.030)`
-            : `radial-gradient(ellipse at 50% -30%, ${info.lightTint} 0%, transparent 100%), rgba(255, 255, 255, 0.022)`
+          y: isHovered ? -1.5 : 0,
+          background: isHovered || isExpanded
+            ? `radial-gradient(ellipse at 50% -35%, ${info.color}05 0%, transparent 100%), rgba(255, 255, 255, 0.026)`
+            : `radial-gradient(ellipse at 50% -35%, ${info.tint} 0%, transparent 100%), rgba(255, 255, 255, 0.018)`
         }}
-        transition={{ duration: 0.20, ease: MOTION.CURVES.morph }}
+        transition={{ duration: 0.22, ease: TAHOE.CURVES.morph }}
         layout
       >
-        {/* Soft Glow on Hover */}
+        {/* Ambient Glow (Intensifies on Expand) */}
         <motion.div
           style={{
             position: 'absolute',
             inset: 0,
             borderRadius: '20px',
-            background: `radial-gradient(circle at 50% 50%, ${info.color}08 0%, transparent 75%)`,
+            background: `radial-gradient(circle at 50% 50%, ${info.color}10 0%, transparent 78%)`,
             opacity: 0,
             pointerEvents: 'none'
           }}
-          animate={{ opacity: isHovered ? 1 : 0 }}
-          transition={{ duration: 0.18 }}
+          animate={{ opacity: isExpanded ? 0.48 : isHovered ? 0.32 : 0 }}
+          transition={{ duration: 0.22 }}
         />
 
-        {/* Header Row */}
-        <div className="flex items-center justify-between mb-3">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-3.5">
           <div className="flex items-center gap-2.5">
             <div 
-              className="w-10 h-10 rounded-[14px] flex items-center justify-center relative"
+              className="w-9 h-9 rounded-[12px] flex items-center justify-center relative"
               style={{
                 background: `${info.color}08`,
-                boxShadow: `0 0 0 0.5px ${info.color}12, inset 0 1px 0 rgba(255,255,255,0.06)`
+                boxShadow: `0 0 0 0.5px ${info.color}14`
               }}
             >
               <div style={{
                 position: 'absolute',
-                inset: -5,
-                borderRadius: '16px',
-                background: `radial-gradient(circle, ${info.color}12 0%, transparent 74%)`,
-                filter: 'blur(9px)',
+                inset: -6,
+                borderRadius: '14px',
+                background: `radial-gradient(circle, ${info.color}14 0%, transparent 76%)`,
+                filter: 'blur(10px)',
                 pointerEvents: 'none'
               }} />
-              <Icon style={{ color: info.color, filter: 'brightness(1.20)' }} />
+              <Icon style={{ color: info.color, filter: 'brightness(1.22)' }} />
             </div>
-            <span className="text-[15px] font-semibold" style={{ color: 'rgba(255,255,255,0.98)' }}>
+            <span className="text-[14px] font-semibold" style={{ color: 'rgba(255,255,255,0.98)', letterSpacing: '-0.008em' }}>
               {segment.name}
             </span>
           </div>
-          <span className="text-[17px] font-bold" style={{ color: info.color, filter: 'brightness(1.18)' }}>
+          <span className="text-[16px] font-bold" style={{ color: info.color, filter: 'brightness(1.20)' }}>
             {Math.round(weight)}%
           </span>
         </div>
 
         {/* Summary */}
-        <p className="text-[13px] mb-3.5" style={{ color: 'rgba(255,255,255,0.86)', lineHeight: '1.50' }}>
+        <p className="text-[12px] mb-4" style={{ color: 'rgba(255,255,255,0.88)', lineHeight: '1.48' }}>
           {info.summary}
         </p>
 
-        {/* Trend Pill */}
-        <div className="flex items-center justify-between mb-4">
-          <div
-            className="px-3 py-1.5 rounded-lg text-[10px] font-semibold"
-            style={{
-              background: `${info.color}10`,
-              color: info.color,
-              letterSpacing: '0.03em'
-            }}
-          >
-            {info.trend}
-          </div>
-        </div>
-
-        {/* Bar with Subsurface Glow */}
+        {/* Subsurface-Lit Bar */}
         <div className="relative">
           <div style={{
             position: 'absolute',
-            bottom: '-4px',
+            bottom: '-5px',
             left: '50%',
             transform: 'translateX(-50%)',
-            width: '105%',
-            height: '12px',
-            background: `radial-gradient(ellipse, ${info.color}08 0%, transparent 84%)`,
-            filter: 'blur(6px)',
+            width: '108%',
+            height: '14px',
+            background: `radial-gradient(ellipse, ${info.color}09 0%, transparent 86%)`,
+            filter: 'blur(7px)',
             pointerEvents: 'none'
           }} />
           
-          <div className="w-full h-[5px] rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.22)' }}>
+          <div className="w-full h-[4px] rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.24)' }}>
             <motion.div
-              className="h-full rounded-full"
+              className="h-full rounded-full relative"
               style={{ 
-                background: `linear-gradient(90deg, ${info.color}9A, ${info.color}FA)`,
-                boxShadow: `0 0 12px ${info.color}34, inset 0 1px 0 rgba(255,255,255,0.14)`
+                background: `linear-gradient(90deg, ${info.color}9C, ${info.color}FC)`,
+                boxShadow: `0 0 13px ${info.color}36`
               }}
               initial={{ width: '0%' }}
-              animate={{ width: `${weight}%` }}
-              transition={{ duration: 0.32, delay: delay + 0.25, ease: MOTION.CURVES.silk }}
+              animate={{ 
+                width: `${weight}%`,
+                boxShadow: isHovered ? `0 0 18px ${info.color}46` : `0 0 13px ${info.color}36`
+              }}
+              transition={{ duration: 0.34, delay: delay + 0.28, ease: TAHOE.CURVES.liquid }}
             />
           </div>
         </div>
 
-        {/* Expanded Details (Morphing In Place) */}
+        {/* Expanded Details (Morph In Place) */}
         <AnimatePresence>
           {isExpanded && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: MOTION.DURATIONS.morph, ease: MOTION.CURVES.morph }}
+              transition={{ duration: TAHOE.DURATIONS.morph, ease: TAHOE.CURVES.morph }}
               style={{ overflow: 'hidden' }}
             >
-              <div style={{
-                marginTop: '20px',
-                paddingTop: '20px',
-                borderTop: '1px solid rgba(255,255,255,0.06)'
-              }}>
-                {/* Luminous Top Separator */}
+              <div style={{ marginTop: '28px', paddingTop: '28px' }}>
+                {/* Luminous Separator */}
                 <div style={{
                   position: 'absolute',
-                  top: '20px',
-                  left: '16%',
-                  right: '16%',
+                  left: '14%',
+                  right: '14%',
                   height: '1px',
-                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-                  filter: 'blur(0.8px)',
-                  pointerEvents: 'none'
+                  background: `linear-gradient(90deg, transparent, ${info.color}18, transparent)`,
+                  filter: 'blur(1px)',
+                  pointerEvents: 'none',
+                  marginTop: '-28px'
                 }} />
 
                 <div className="px-2">
                   <div 
-                    className="inline-block px-3 py-1.5 rounded-lg text-[10px] font-semibold mb-3.5"
+                    className="inline-block px-3 py-1.5 rounded-xl text-[9px] font-semibold mb-4"
                     style={{
-                      background: 'rgba(255,255,255,0.08)',
-                      color: 'rgba(255,255,255,0.76)',
-                      letterSpacing: '0.05em'
+                      background: `${info.color}12`,
+                      color: info.color,
+                      letterSpacing: '0.06em',
+                      boxShadow: `0 0 16px ${info.color}10`
                     }}
                   >
                     TL;DR
                   </div>
 
-                  <p className="text-[13px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.92)', lineHeight: '1.60' }}>
-                    <strong style={{ fontWeight: 600, color: 'rgba(255,255,255,0.98)' }}>
-                      {info.detail.split('.')[0]}.
-                    </strong>
-                    {info.detail.substring(info.detail.indexOf('.') + 1)}
+                  <p className="text-[13px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.94)', lineHeight: '1.64' }}>
+                    Regulatory tightening raises compliance costs → downside for Big Tech multiples. Margins pressured as capex shifts from innovation to compliance.
                   </p>
                 </div>
               </div>
@@ -425,55 +427,47 @@ const LightZone = ({ segment, weight, isExpanded, onToggle, delay }) => {
 };
 
 // ============================================================================
-// FEATHER-LIGHT PILL BAR (40% Height Reduction, 30% More Blur)
+// FLOATING PILL BAR (Barely-There Accessory)
 // ============================================================================
-const FeatherPillBar = ({ segments, activeSegment, onPillClick }) => {
+const FloatingPillBar = ({ segments, activeSegment, onPillClick }) => {
   return (
     <motion.div
-      className="sticky bottom-0 left-0 right-0 z-10 relative"
+      className="absolute bottom-4 left-1/2 z-20"
       style={{
-        padding: '8px 16px',
-        background: 'rgba(18, 20, 28, 0.68)',
-        backdropFilter: 'blur(54px) saturate(180%)',
-        WebkitBackdropFilter: 'blur(54px) saturate(180%)',
-        borderTop: '1px solid rgba(255,255,255,0.08)'
+        transform: 'translateX(-50%)',
+        padding: '6px 14px',
+        background: 'rgba(18, 20, 28, 0.52)',
+        backdropFilter: 'blur(58px) saturate(185%)',
+        WebkitBackdropFilter: 'blur(58px) saturate(185%)',
+        borderRadius: '18px',
+        border: '1px solid rgba(255,255,255,0.08)',
+        boxShadow: '0 6px 18px rgba(0,0,0,0.24)'
       }}
-      initial={{ y: 20, opacity: 0 }}
+      initial={{ y: 24, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ delay: 1.1, duration: 0.45, ease: MOTION.CURVES.silk }}
+      transition={{ delay: 1.2, duration: 0.48, ease: TAHOE.CURVES.liquid }}
     >
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: '18%',
-        right: '18%',
-        height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
-        filter: 'blur(1px)',
-        pointerEvents: 'none'
-      }} />
-
-      <div className="flex items-center justify-around gap-2">
+      <div className="flex items-center gap-2">
         {segments.map((seg) => {
-          const info = SEGMENTS[seg.name] || {};
+          const info = ZONES[seg.name] || {};
           const isActive = activeSegment === seg.name;
 
           return (
             <motion.button
               key={seg.name}
-              className="flex-1 px-3 py-2 rounded-full text-[11px] font-semibold relative"
+              className="px-3 py-1.5 rounded-full text-[10px] font-semibold relative"
               style={{
-                background: isActive ? `${info.color}18` : 'rgba(255,255,255,0.04)',
-                color: isActive ? info.color : 'rgba(255,255,255,0.76)',
-                opacity: isActive ? 1 : 0.72
+                background: isActive ? `${info.color}20` : 'transparent',
+                color: isActive ? info.color : 'rgba(255,255,255,0.74)',
+                opacity: isActive ? 1 : 0.68
               }}
               onClick={() => onPillClick(seg.name)}
               animate={{ 
-                y: isActive ? -2 : 0,
-                boxShadow: isActive ? `0 0 16px ${info.color}14` : 'none'
+                y: isActive ? -1 : 0,
+                boxShadow: isActive ? `0 0 18px ${info.color}16` : 'none'
               }}
-              whileHover={{ scale: 1.05, y: -1, opacity: 1 }}
-              whileTap={{ scale: 0.96 }}
+              whileHover={{ scale: 1.06, opacity: 1 }}
+              whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.16 }}
             >
               {seg.name}
@@ -486,7 +480,7 @@ const FeatherPillBar = ({ segments, activeSegment, onPillClick }) => {
 };
 
 // ============================================================================
-// MAIN DRAWER — UNIFIED ATMOSPHERIC CANVAS
+// MAIN DRAWER — TAHOE UNIFIED LIGHTFIELD PANEL
 // ============================================================================
 const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) => {
   const [expandedSegment, setExpandedSegment] = useState(null);
@@ -511,15 +505,6 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
     setExpandedSegment(expandedSegment === segmentName ? null : segmentName);
   };
 
-  const generateStory = () => {
-    const hasPolicyRising = segments.find(s => s.name === 'Policy')?.trend === '+';
-    const hasCreditStress = segments.find(s => s.name === 'Credit')?.stress_level === 'high';
-    if (hasPolicyRising && hasCreditStress) {
-      return "Markets show mild upward pressure driven by policy tightening and early credit stress signals.";
-    }
-    return "Markets show mixed sentiment across policy, credit, and global conditions.";
-  };
-
   if (!isOpen) return null;
 
   return (
@@ -528,250 +513,197 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
         className="fixed inset-0 z-[200] flex items-center justify-center p-4"
         style={{ paddingTop: '80px' }}
         initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-        animate={{ opacity: 1, backdropFilter: 'blur(28px)' }}
+        animate={{ opacity: 1, backdropFilter: 'blur(30px)' }}
         exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-        transition={{ duration: 0.36, ease: MOTION.CURVES.silk }}
+        transition={{ duration: 0.38, ease: TAHOE.CURVES.liquid }}
       >
         <div
           className="absolute inset-0"
-          style={{ background: 'rgba(0,0,0,0.72)' }}
+          style={{ background: 'rgba(0,0,0,0.74)' }}
           onClick={onClose}
         />
 
         <motion.div
-          className="relative w-full max-w-4xl rounded-[32px] overflow-hidden border flex flex-col"
+          className="relative w-full max-w-4xl rounded-[32px] overflow-hidden flex flex-col"
           style={{
             background: `
               linear-gradient(180deg, 
-                rgba(18, 20, 28, 0.92) 0%,
-                rgba(16, 18, 26, 0.96) 100%
+                rgba(18, 20, 28, 0.94) 0%,
+                rgba(16, 18, 26, 0.98) 100%
               )
             `,
-            backdropFilter: 'blur(68px) saturate(212%)',
-            WebkitBackdropFilter: 'blur(68px) saturate(212%)',
-            borderColor: 'rgba(255,255,255,0.16)',
+            backdropFilter: 'blur(72px) saturate(220%)',
+            WebkikBackdropFilter: 'blur(72px) saturate(220%)',
+            border: 'none',
             boxShadow: `
-              0 42px 84px -20px rgba(0, 0, 0, 0.88),
-              0 0 68px rgba(142, 187, 255, 0.11),
-              inset 0 1.5px 0 rgba(255, 255, 255, 0.15),
-              inset 0 0 0 1px rgba(255, 255, 255, 0.045)
+              0 46px 92px -24px rgba(0, 0, 0, 0.90),
+              0 0 72px rgba(142, 187, 255, 0.12),
+              inset 0 2px 0 rgba(255, 255, 255, 0.16),
+              inset 0 0 48px rgba(142, 187, 255, 0.018)
             `,
             maxHeight: 'calc(100vh - 100px)',
             height: '90vh'
           }}
-          initial={{ opacity: 0, scale: 0.92, y: 32 }}
+          initial={{ opacity: 0, scale: 0.90, y: 36 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 24 }}
-          transition={{ duration: 0.32, ease: MOTION.CURVES.silk }}
+          exit={{ opacity: 0, scale: 0.94, y: 26 }}
+          transition={{ duration: 0.34, ease: TAHOE.CURVES.liquid }}
         >
-          {/* Ambient Light Beam (Top → Bottom) */}
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'linear-gradient(180deg, rgba(255,255,255,0.065) 0%, transparent 48%, rgba(0,0,0,0.028) 100%)',
-            pointerEvents: 'none',
-            borderRadius: '32px'
-          }} />
-
-          {/* Atmospheric Fog (Top 25%) */}
+          {/* Tahoe Environmental Fog (Top 25%) */}
           <div style={{
             position: 'absolute',
             top: 0,
             left: 0,
             right: 0,
             height: '25%',
-            background: 'linear-gradient(180deg, rgba(142, 187, 255, 0.022) 0%, transparent 100%)',
+            background: 'linear-gradient(180deg, rgba(142, 187, 255, 0.026) 0%, transparent 100%)',
             pointerEvents: 'none',
             borderRadius: '32px 32px 0 0'
           }} />
 
-          {/* Faint Bokeh Particles (1% opacity) */}
+          {/* Top-Down Luminance Gradient */}
           <div style={{
             position: 'absolute',
             inset: 0,
-            backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cdefs%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence baseFrequency=\'0.65\' numOctaves=\'2\'/%3E%3C/filter%3E%3C/defs%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")',
-            backgroundSize: '140px 140px',
-            opacity: 0.008,
-            mixBlendMode: 'soft-light',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.068) 0%, transparent 52%, rgba(0,0,0,0.032) 100%)',
             pointerEvents: 'none',
             borderRadius: '32px'
           }} />
 
-          {/* Depth-Field Gradient */}
+          {/* Ambient Light Bleed */}
           <div style={{
             position: 'absolute',
-            inset: 0,
-            background: 'radial-gradient(ellipse at 50% 20%, rgba(142, 187, 255, 0.015) 0%, transparent 88%)',
-            pointerEvents: 'none',
-            borderRadius: '32px'
-          }} />
-
-          {/* Top Rim Light */}
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: '14%',
-            right: '14%',
-            height: '1.8px',
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.30), transparent)',
-            filter: 'blur(1.5px)',
+            top: '-10%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '85%',
+            height: '72%',
+            background: 'radial-gradient(ellipse at 50% 22%, rgba(142, 187, 255, 0.018) 0%, transparent 90%)',
             pointerEvents: 'none'
           }} />
 
-          {/* Header */}
+          {/* Soft Inner Glow */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            borderRadius: '32px',
+            boxShadow: 'inset 0 0 2px 0.5px rgba(255,255,255,0.10)',
+            pointerEvents: 'none'
+          }} />
+
+          {/* Header (Minimal) */}
           <div 
-            className="relative border-b flex-shrink-0" 
+            className="relative flex-shrink-0" 
             style={{ 
-              borderColor: 'rgba(255,255,255,0.10)',
-              padding: '20px 28px 16px 28px',
-              background: 'rgba(255, 255, 255, 0.018)'
+              padding: '22px 30px 18px 30px',
+              borderBottom: '1px solid rgba(255,255,255,0.06)'
             }}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3.5">
                 <div 
-                  className="w-12 h-12 rounded-[14px] border flex items-center justify-center relative overflow-hidden"
+                  className="w-11 h-11 rounded-[13px] flex items-center justify-center relative overflow-hidden"
                   style={{
-                    background: 'rgba(142, 187, 255, 0.11)',
-                    borderColor: 'rgba(142, 187, 255, 0.26)',
-                    backdropFilter: 'blur(22px)',
-                    boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.14), 0 4px 18px rgba(142, 187, 255, 0.22)'
+                    background: 'rgba(142, 187, 255, 0.12)',
+                    boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.15), 0 4px 20px rgba(142, 187, 255, 0.24)'
                   }}
                 >
-                  <Activity className="w-6 h-6 relative z-10" style={{ color: '#8EBBFF', filter: 'brightness(1.16)' }} strokeWidth={1.7} />
+                  <Activity className="w-6 h-6 relative z-10" style={{ color: '#8EBBFF', filter: 'brightness(1.18)' }} strokeWidth={1.6} />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold tracking-tight" style={{ color: 'rgba(255,255,255,0.98)', letterSpacing: '-0.018em' }}>
+                  <h2 className="text-[17px] font-bold tracking-tight" style={{ color: 'rgba(255,255,255,0.98)', letterSpacing: '-0.020em' }}>
                     Street Alignment
                   </h2>
-                  <p className="text-[12px] font-medium" style={{ color: 'rgba(255,255,255,0.76)' }}>
+                  <p className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.78)' }}>
                     Consensus & Segment Breakdown
                   </p>
                 </div>
               </div>
               <motion.button
                 onClick={onClose}
-                className="w-10 h-10 rounded-[14px] flex items-center justify-center"
+                className="w-9 h-9 rounded-[13px] flex items-center justify-center"
                 style={{
-                  background: 'rgba(255,255,255,0.11)',
-                  border: '1px solid rgba(255,255,255,0.13)',
-                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.09)'
+                  background: 'rgba(255,255,255,0.12)',
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10)'
                 }}
-                whileHover={{ scale: 1.08, background: 'rgba(255,255,255,0.16)' }}
-                whileTap={{ scale: 0.94 }}
-                transition={{ duration: 0.15 }}
+                whileHover={{ scale: 1.09, background: 'rgba(255,255,255,0.17)' }}
+                whileTap={{ scale: 0.93 }}
+                transition={{ duration: 0.16 }}
               >
-                <X className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.84)' }} />
+                <X className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.86)' }} />
               </motion.button>
             </div>
           </div>
 
-          {/* UNIFIED ATMOSPHERIC CANVAS */}
+          {/* UNIFIED TAHOE GLASS CANVAS */}
           <div 
-            className="flex-1 overflow-y-auto px-10 pt-6 pb-3"
-            style={{
-              scrollBehavior: 'smooth',
-              background: `
-                linear-gradient(180deg, 
-                  rgba(255,255,255,0.008) 0%, 
-                  transparent 100%
-                )
-              `
-            }}
+            className="flex-1 overflow-y-auto px-12 pt-8 pb-20"
+            style={{ scrollBehavior: 'smooth' }}
           >
-            {/* ONE CONTINUOUS GLASS PANEL */}
             <motion.div
-              className="relative rounded-[24px] overflow-hidden"
+              className="relative rounded-[26px] overflow-hidden"
               style={{
-                padding: '32px 28px',
+                padding: '48px 36px',
                 background: `
-                  radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.038) 0%, rgba(255,255,255,0.022) 100%)
+                  radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.042) 0%, rgba(255,255,255,0.024) 100%)
                 `,
-                backdropFilter: 'blur(36px) saturate(148%)',
-                WebkitBackdropFilter: 'blur(36px) saturate(148%)',
-                border: '1px solid rgba(255,255,255,0.11)',
+                backdropFilter: 'blur(38px) saturate(152%)',
+                WebkitBackdropFilter: 'blur(38px) saturate(152%)',
                 boxShadow: `
-                  inset 0 1.5px 0 rgba(255,255,255,0.12),
-                  inset 0 0 32px rgba(142, 187, 255, 0.015),
-                  0 6px 22px rgba(0,0,0,0.12),
-                  0 0 0 0.8px rgba(255,255,255,0.045)
+                  inset 0 2px 0 rgba(255,255,255,0.13),
+                  inset 0 0 36px rgba(142, 187, 255, 0.018),
+                  0 8px 26px rgba(0,0,0,0.14),
+                  0 0 0 0.5px rgba(255,255,255,0.08)
                 `
               }}
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15, duration: 0.5, ease: MOTION.CURVES.silk }}
+              transition={{ delay: 0.18, duration: 0.56, ease: TAHOE.CURVES.liquid }}
             >
-              {/* Ambient Edge Highlights */}
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                borderRadius: '24px',
-                boxShadow: 'inset 0 0 1.5px 0.8px rgba(255,255,255,0.08)',
-                pointerEvents: 'none'
-              }} />
-
-              {/* Hero: Orb */}
-              <LuminousAlignmentOrb score={consensusScore} />
+              {/* Tahoe Orb */}
+              <TahoeOrb score={consensusScore} />
               
               <motion.p
-                className="text-[10px] text-center mb-5"
-                style={{ color: 'rgba(255,255,255,0.52)' }}
+                className="text-[9px] text-center mb-14"
+                style={{ color: 'rgba(255,255,255,0.54)' }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.8, duration: 0.3 }}
+                transition={{ delay: 0.85, duration: 0.35 }}
               >
                 Based on 5 sources • Updated 2m ago
               </motion.p>
 
-              {/* Summary (Inside Canvas) */}
+              {/* Summary */}
               <motion.div
-                className="relative rounded-[16px] overflow-hidden mb-8 mx-auto"
+                className="relative rounded-[16px] overflow-hidden mb-12 mx-auto"
                 style={{
-                  padding: '16px 26px',
-                  maxWidth: '74%',
-                  background: 'rgba(255, 255, 255, 0.032)'
+                  padding: '16px 28px',
+                  maxWidth: '76%',
+                  background: 'rgba(255, 255, 255, 0.028)'
                 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.85, duration: 0.4 }}
+                transition={{ delay: 0.92, duration: 0.42 }}
               >
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: '20%',
-                  right: '20%',
-                  height: '1px',
-                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
-                  pointerEvents: 'none'
-                }} />
-
                 <p 
-                  className="text-[14px] font-medium leading-relaxed text-center"
+                  className="text-[13px] font-medium leading-relaxed text-center"
                   style={{ 
                     color: 'rgba(255,255,255,0.94)',
-                    letterSpacing: '-0.014em',
-                    lineHeight: '1.52'
+                    letterSpacing: '-0.016em',
+                    lineHeight: '1.56'
                   }}
                 >
-                  {generateStory()}
+                  Markets show mixed sentiment across policy, credit, and global conditions.
                 </p>
               </motion.div>
 
-              {/* Section Label */}
-              <motion.h3 
-                className="text-[11px] font-semibold uppercase tracking-wider mb-6 text-center"
-                style={{ color: 'rgba(255,255,255,0.58)', letterSpacing: '0.15em' }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.95, duration: 0.35 }}
-              >
-                Macro Forces Contribution
-              </motion.h3>
+              {/* Atmospheric Spacing */}
+              <div style={{ height: '32px' }} />
 
-              {/* Light Zones Grid (Illuminated Pockets, Not Cards) */}
-              <div className="grid grid-cols-2 gap-5">
+              {/* Lightfield Zones (2x2 Grid) */}
+              <div className="grid grid-cols-2 gap-6">
                 {segments.map((segment, idx) => (
-                  <LightZone
+                  <LightfieldZone
                     key={segment.name}
                     segment={segment}
                     weight={(segment?.weight || 0) * 100}
@@ -780,15 +712,15 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
                       setExpandedSegment(expandedSegment === segment.name ? null : segment.name);
                       onOpenDetail?.(segment);
                     }}
-                    delay={1.05 + idx * 0.10}
+                    delay={1.08 + idx * 0.12}
                   />
                 ))}
               </div>
             </motion.div>
           </div>
 
-          {/* Feather-Light Pill Bar */}
-          <FeatherPillBar 
+          {/* Floating Pill Bar */}
+          <FloatingPillBar 
             segments={segments} 
             activeSegment={expandedSegment}
             onPillClick={handlePillClick}
