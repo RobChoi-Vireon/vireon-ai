@@ -1,12 +1,12 @@
 // 🔒 DESIGN LOCKED — OS HORIZON TAHOE V5.1 STREET ALIGNMENT REFINEMENT
-// Last Updated: 2025-01-20
+// Last Updated: 2025-01-20 | V2.1 Polish Patch Applied
 // VIREON CERTIFIED — OS Horizon Hybrid Identity (Cinematic Intelligence + Tahoe Serenity)
 // Full atmospheric rebuild with depth field, living orb, asymmetric tiles, insight rows
 // See: DESIGN_LOCKED_COMPONENTS.md
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
-import { X, Activity, Shield, Briefcase, BarChart3, Globe, ChevronDown } from 'lucide-react';
+import { X, Activity, Shield, Briefcase, BarChart3, Globe, ChevronDown, ArrowRight } from 'lucide-react';
 
 // OS Horizon Motion DNA
 const MOTION = {
@@ -91,7 +91,7 @@ const LivingAlignmentOrb = ({ score, delay }) => {
 
   return (
     <motion.div
-      className="relative flex items-center justify-center mx-auto mb-6"
+      className="relative flex items-center justify-center mx-auto mb-4"
       style={{ width: '168px', height: '168px', x: parallaxX, y: parallaxY }}
       initial={{ opacity: 0, scale: 0.88, y: 10 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -236,7 +236,7 @@ const LivingAlignmentOrb = ({ score, delay }) => {
 };
 
 // ============================================================================
-// FRACTIONS-OF-GLASS INSIGHT PANEL (Replaces Grey Banner)
+// FRACTIONS-OF-GLASS INSIGHT PANEL (Enhanced V2.1)
 // ============================================================================
 const InsightRevealPanel = ({ segments, delay }) => {
   return (
@@ -245,15 +245,17 @@ const InsightRevealPanel = ({ segments, delay }) => {
       style={{
         maxWidth: '84%',
         padding: '18px 28px',
-        background: 'rgba(255, 255, 255, 0.06)',
+        background: 'rgba(255, 255, 255, 0.07)',
         backdropFilter: 'blur(22px) saturate(158%)',
         WebkitBackdropFilter: 'blur(22px) saturate(158%)',
         border: '1px solid rgba(255,255,255,0.12)',
         boxShadow: `
-          inset 0 1px 0 rgba(255,255,255,0.16),
+          inset 0 2px 0 rgba(255,255,255,0.18),
+          inset 0 0 16px rgba(0,0,0,0.35),
+          0 0 28px rgba(120,160,255,0.15),
           0 4px 32px rgba(0,0,0,0.35)
         `,
-        marginBottom: '32px'
+        marginBottom: '20px'
       }}
       initial={{ opacity: 0, y: 8, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -261,7 +263,9 @@ const InsightRevealPanel = ({ segments, delay }) => {
       whileHover={{ 
         y: -2,
         boxShadow: `
-          inset 0 1px 0 rgba(255,255,255,0.20),
+          inset 0 2px 0 rgba(255,255,255,0.22),
+          inset 0 0 16px rgba(0,0,0,0.35),
+          0 0 32px rgba(120,160,255,0.20),
           0 6px 40px rgba(0,0,0,0.42)
         `,
         transition: { duration: 0.15 }
@@ -307,22 +311,22 @@ const InsightRevealPanel = ({ segments, delay }) => {
 };
 
 // ============================================================================
-// OS HORIZON INTELLIGENCE BLOCKS (Asymmetric Cinematic Tiles)
+// OS HORIZON INTELLIGENCE BLOCKS (V2.1 Primary Driver Hierarchy)
 // ============================================================================
 const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
   const sortedSegments = [...segments].sort((a, b) => (b.weight || 0) - (a.weight || 0));
   
   const tiles = [
-    { segment: sortedSegments[0], height: '152px', isTop: true },
-    { segment: sortedSegments[1], height: '152px', isTop: true },
-    { segment: sortedSegments[2], height: '128px', isTop: false },
-    { segment: sortedSegments[3], height: '128px', isTop: false }
+    { segment: sortedSegments[0], height: '158px', isPrimary: true },
+    { segment: sortedSegments[1], height: '152px', isPrimary: false },
+    { segment: sortedSegments[2], height: '128px', isPrimary: false },
+    { segment: sortedSegments[3], height: '128px', isPrimary: false }
   ];
 
   return (
     <div style={{ marginBottom: '40px' }}>
       <motion.h3 
-        className="text-[12px] font-medium uppercase tracking-wider mb-5"
+        className="text-[12px] font-medium uppercase tracking-wider mb-4"
         style={{ color: 'rgba(255,255,255,0.50)', letterSpacing: '0.12em' }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -336,7 +340,6 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
           if (!tile.segment) return null;
           const config = SEGMENT_CONFIG[tile.segment.name];
           const weight = (tile.segment?.weight || 0) * 100;
-          const isHighest = idx === 0;
 
           return (
             <motion.div
@@ -344,23 +347,22 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
               className="relative rounded-[20px] overflow-hidden cursor-pointer"
               style={{
                 height: tile.height,
-                background: `
-                  linear-gradient(180deg, 
-                    rgba(255, 255, 255, 0.045) 0%, 
-                    rgba(255, 255, 255, 0.028) 100%
-                  )
-                `,
+                background: tile.isPrimary 
+                  ? `linear-gradient(180deg, rgba(255, 255, 255, 0.052) 0%, rgba(255, 255, 255, 0.032) 100%)`
+                  : `linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)`,
                 backdropFilter: 'blur(24px) saturate(152%)',
                 WebkitBackdropFilter: 'blur(24px) saturate(152%)',
-                border: '1px solid rgba(255,255,255,0.06)',
+                border: tile.isPrimary 
+                  ? `1px solid rgba(255,255,255,0.08)` 
+                  : '1px solid rgba(255,255,255,0.06)',
                 padding: '22px 26px',
-                boxShadow: isHighest 
-                  ? `0 10px 42px rgba(0,0,0,0.42), 0 0 28px ${config.glow}`
+                boxShadow: tile.isPrimary 
+                  ? `inset 0 0 0 1px rgba(255,255,255,0.02), 0 12px 44px rgba(0,0,0,0.44), 0 0 30px ${config.glow}`
                   : '0 8px 38px rgba(0,0,0,0.38)',
-                transform: isHighest ? 'translateY(-2px)' : 'none'
+                transform: tile.isPrimary ? 'translateY(-2px)' : 'none'
               }}
               initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: isHighest ? -2 : 0 }}
+              animate={{ opacity: 1, y: tile.isPrimary ? -2 : 0 }}
               transition={{ 
                 delay: delay + (idx * MOTION.DURATIONS.cardStagger), 
                 duration: 0.32, 
@@ -368,8 +370,11 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
               }}
               onClick={() => onOpenDetail?.(tile.segment)}
               whileHover={{ 
-                y: isHighest ? -4 : -3,
+                y: tile.isPrimary ? -4 : -2,
                 scale: 1.008,
+                background: tile.isPrimary 
+                  ? `linear-gradient(180deg, rgba(255, 255, 255, 0.062) 0%, rgba(255, 255, 255, 0.042) 100%)`
+                  : `linear-gradient(180deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.038) 100%)`,
                 boxShadow: `0 14px 50px rgba(0,0,0,0.48), 0 0 36px ${config.glow}`,
                 borderColor: 'rgba(255,255,255,0.12)',
                 transition: { duration: 0.16 }
@@ -387,14 +392,6 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
                 borderRadius: '20px',
                 pointerEvents: 'none'
               }} />
-
-              {/* Micro Section Label */}
-              <div 
-                className="text-[10px] font-medium uppercase tracking-wider mb-3"
-                style={{ color: 'rgba(255,255,255,0.42)', letterSpacing: '0.10em' }}
-              >
-                Force Contribution
-              </div>
 
               {/* Icon + Weight */}
               <div className="flex items-start justify-between mb-3">
@@ -449,10 +446,19 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
 };
 
 // ============================================================================
-// INSIGHT ROWS (Glass Strip Expandable)
+// INSIGHT ROWS (V2.1 Sleeker + Separated Navigation)
 // ============================================================================
 const InsightRows = ({ segments, delay, onOpenDetail }) => {
   const [expandedRow, setExpandedRow] = useState(null);
+
+  const handleRowClick = (segmentName) => {
+    setExpandedRow(expandedRow === segmentName ? null : segmentName);
+  };
+
+  const handleViewFullAnalysis = (e, segment) => {
+    e.stopPropagation();
+    onOpenDetail?.(segment);
+  };
 
   return (
     <motion.div
@@ -483,21 +489,13 @@ const InsightRows = ({ segments, delay, onOpenDetail }) => {
               initial={{ opacity: 0, x: -12 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: delay + 0.32 + (idx * 0.045), duration: 0.26 }}
-              onClick={() => {
-                setExpandedRow(isExpanded ? null : segment.name);
-                onOpenDetail?.(segment);
-              }}
+              onClick={() => handleRowClick(segment.name)}
               whileHover={{ 
-                y: -2,
-                background: 'rgba(255, 255, 255, 0.055)',
+                y: -1,
+                background: 'rgba(255, 255, 255, 0.048)',
                 borderColor: 'rgba(255,255,255,0.10)',
-                boxShadow: `0 6px 26px rgba(0,0,0,0.30), 0 0 24px ${config.glow}`,
+                boxShadow: `0 4px 22px rgba(0,0,0,0.28), 0 0 22px ${config.glow}`,
                 transition: { duration: 0.14 }
-              }}
-              whileTap={{ 
-                scale: 0.988,
-                boxShadow: `0 3px 18px rgba(0,0,0,0.36), 0 0 16px ${config.glow}`,
-                transition: { duration: 0.08 }
               }}
             >
               {/* Icon Gradient Highlight */}
@@ -528,7 +526,7 @@ const InsightRows = ({ segments, delay, onOpenDetail }) => {
               {/* Content */}
               <div 
                 className="flex items-center justify-between"
-                style={{ padding: '20px 22px', minHeight: '66px' }}
+                style={{ padding: '17px 22px', minHeight: '58px' }}
               >
                 <div className="flex items-center gap-4">
                   <div 
@@ -547,7 +545,7 @@ const InsightRows = ({ segments, delay, onOpenDetail }) => {
                   </span>
                   <motion.div
                     animate={{ rotate: isExpanded ? 180 : 0 }}
-                    transition={{ duration: 0.2 }}
+                    transition={{ duration: 0.18 }}
                   >
                     <ChevronDown className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.52)' }} />
                   </motion.div>
@@ -569,17 +567,17 @@ const InsightRows = ({ segments, delay, onOpenDetail }) => {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: MOTION.DURATIONS.rowExpand, ease: MOTION.CURVES.bloom }}
+                    transition={{ duration: 0.18, ease: MOTION.CURVES.bloom }}
                   >
-                    {/* Luminous Top Divider */}
+                    {/* Luminous Top Divider (Connection Element) */}
                     <div style={{
                       position: 'absolute',
                       top: 0,
                       left: '16%',
                       right: '16%',
-                      height: '0.5px',
-                      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
-                      filter: 'blur(0.5px)',
+                      height: '1px',
+                      background: `linear-gradient(90deg, transparent, ${config.color}28, transparent)`,
+                      filter: 'blur(1px)',
                       pointerEvents: 'none'
                     }} />
 
@@ -632,7 +630,7 @@ const InsightRows = ({ segments, delay, onOpenDetail }) => {
                     </p>
 
                     {/* Contribution Bar */}
-                    <div className="relative">
+                    <div className="relative mb-5">
                       <div 
                         className="w-full h-[4px] rounded-full overflow-hidden" 
                         style={{ background: 'rgba(0,0,0,0.22)' }}
@@ -649,6 +647,25 @@ const InsightRows = ({ segments, delay, onOpenDetail }) => {
                         />
                       </div>
                     </div>
+
+                    {/* View Full Analysis Button */}
+                    <motion.button
+                      onClick={(e) => handleViewFullAnalysis(e, segment)}
+                      className="flex items-center gap-2 text-[13px] font-medium"
+                      style={{ 
+                        color: config.color,
+                        filter: 'brightness(1.12)'
+                      }}
+                      whileHover={{ 
+                        x: 2,
+                        filter: 'brightness(1.25)',
+                        transition: { duration: 0.12 }
+                      }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      View full {segment.name} Analysis
+                      <ArrowRight className="w-3.5 h-3.5" strokeWidth={2.5} />
+                    </motion.button>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -842,7 +859,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
             
             {/* Metadata */}
             <motion.p
-              className="text-[11px] text-center mb-8"
+              className="text-[11px] text-center mb-6"
               style={{ color: 'rgba(255,255,255,0.46)' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
