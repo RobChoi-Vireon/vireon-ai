@@ -1,61 +1,85 @@
 // 🔒 DESIGN LOCKED — OS HORIZON TAHOE V5.1 STREET ALIGNMENT REFINEMENT
 // Last Updated: 2025-01-20
-// VIREON CERTIFIED — OS Horizon Liquid Glass 4.0 + Cinematic Intelligence
-// Full Apple-grade rebuild with atmospheric lightfield and asymmetric tiles
+// VIREON CERTIFIED — OS Horizon Hybrid Identity (Cinematic Intelligence + Tahoe Serenity)
+// Full atmospheric rebuild with depth field, living orb, asymmetric tiles, insight rows
 // See: DESIGN_LOCKED_COMPONENTS.md
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Activity, Shield, Briefcase, BarChart3, Globe } from 'lucide-react';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
+import { X, Activity, Shield, Briefcase, BarChart3, Globe, ChevronDown } from 'lucide-react';
 
 // OS Horizon Motion DNA
 const MOTION = {
   CURVES: {
     easeOutQuint: [0.22, 1, 0.36, 1],
     silk: [0.25, 0.1, 0, 1.0],
-    spring: [0.22, 0.61, 0.36, 1]
+    spring: [0.22, 0.61, 0.36, 1],
+    bloom: [0.18, 0.82, 0.23, 1]
   },
   DURATIONS: {
     drawerEntry: 0.42,
-    orbArrival: 0.35,
+    orbArrival: 0.38,
     cardStagger: 0.05,
-    breathe: 6.8
+    breathe: 6.8,
+    rowExpand: 0.18
   }
 };
 
-// Segment Icon Map
-const SEGMENT_ICONS = {
-  Policy: Shield,
-  Credit: Briefcase,
-  Equities: BarChart3,
-  Global: Globe
-};
-
-// Segment Theme Colors
-const SEGMENT_THEMES = {
-  Policy: { color: '#70A8E8', glow: 'rgba(112, 168, 232, 0.12)' },
-  Credit: { color: '#B88AED', glow: 'rgba(184, 138, 237, 0.12)' },
-  Equities: { color: '#32C288', glow: 'rgba(50, 194, 136, 0.12)' },
-  Global: { color: '#EDB859', glow: 'rgba(237, 184, 89, 0.12)' }
+// Segment Configuration
+const SEGMENT_CONFIG = {
+  Policy: { 
+    Icon: Shield, 
+    color: '#70A8E8', 
+    glow: 'rgba(112, 168, 232, 0.15)',
+    ambient: 'rgba(112, 168, 232, 0.08)'
+  },
+  Credit: { 
+    Icon: Briefcase, 
+    color: '#B88AED', 
+    glow: 'rgba(184, 138, 237, 0.15)',
+    ambient: 'rgba(184, 138, 237, 0.08)'
+  },
+  Equities: { 
+    Icon: BarChart3, 
+    color: '#32C288', 
+    glow: 'rgba(50, 194, 136, 0.15)',
+    ambient: 'rgba(50, 194, 136, 0.08)'
+  },
+  Global: { 
+    Icon: Globe, 
+    color: '#EDB859', 
+    glow: 'rgba(237, 184, 89, 0.15)',
+    ambient: 'rgba(237, 184, 89, 0.08)'
+  }
 };
 
 // ============================================================================
-// OS HORIZON 2.0 ALIGNMENT ORB (Multi-Layered Living Orb)
+// OS HORIZON 2.0 LIVING ALIGNMENT ORB (Multi-Layer Depth)
 // ============================================================================
-const AlignmentOrb = ({ score, delay }) => {
+const LivingAlignmentOrb = ({ score, delay }) => {
   const [breathingPhase, setBreathingPhase] = useState(0);
+  const [particlePhase, setParticlePhase] = useState(0);
+  
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  
+  const parallaxX = useTransform(mouseX, [-100, 100], [-3, 3]);
+  const parallaxY = useTransform(mouseY, [-100, 100], [-3, 3]);
 
   useEffect(() => {
     let rafId, startTime = Date.now();
     const animate = () => {
-      setBreathingPhase((Date.now() - startTime) / 1000);
+      const elapsed = (Date.now() - startTime) / 1000;
+      setBreathingPhase(elapsed);
+      setParticlePhase(elapsed * 0.3);
       rafId = requestAnimationFrame(animate);
     };
     rafId = requestAnimationFrame(animate);
     return () => rafId && cancelAnimationFrame(rafId);
   }, []);
 
-  const breathingScale = 1 + Math.sin(breathingPhase * (2 * Math.PI / MOTION.DURATIONS.breathe)) * 0.015;
+  const breathingScale = 1 + Math.sin(breathingPhase * (2 * Math.PI / MOTION.DURATIONS.breathe)) * 0.018;
+  const particleOffset = Math.sin(particlePhase * Math.PI * 2) * 8;
 
   const getZoneColor = (s) => {
     if (s < 40) return '#E86565';
@@ -67,52 +91,79 @@ const AlignmentOrb = ({ score, delay }) => {
 
   return (
     <motion.div
-      className="relative flex items-center justify-center mx-auto mb-8"
-      style={{ width: '168px', height: '168px' }}
+      className="relative flex items-center justify-center mx-auto mb-6"
+      style={{ width: '168px', height: '168px', x: parallaxX, y: parallaxY }}
       initial={{ opacity: 0, scale: 0.88, y: 10 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ delay: delay + 0.08, duration: MOTION.DURATIONS.orbArrival, ease: MOTION.CURVES.easeOutQuint }}
+      onMouseMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        mouseX.set(e.clientX - (rect.left + rect.width / 2));
+        mouseY.set(e.clientY - (rect.top + rect.height / 2));
+      }}
+      onMouseLeave={() => {
+        mouseX.set(0);
+        mouseY.set(0);
+      }}
     >
-      {/* Outer Glow Diffusion */}
+      {/* Outer Halo (Breathing) */}
       <motion.div
         className="absolute"
         style={{
-          width: '220px',
-          height: '220px',
+          width: '240px',
+          height: '240px',
           borderRadius: '50%',
           background: `radial-gradient(circle, rgba(120,160,255,0.10) 0%, transparent 72%)`,
-          filter: 'blur(48px)',
+          filter: 'blur(52px)',
           pointerEvents: 'none'
         }}
-        animate={{ scale: breathingScale * 1.15 }}
+        animate={{ scale: breathingScale * 1.2 }}
         transition={{ duration: MOTION.DURATIONS.breathe, ease: 'easeInOut' }}
       />
 
-      {/* Inner Glow */}
+      {/* Core Ring Glow */}
       <div style={{
         position: 'absolute',
         width: '190px',
         height: '190px',
         borderRadius: '50%',
         background: `radial-gradient(circle, rgba(140,160,255,0.20) 0%, transparent 68%)`,
-        filter: 'blur(32px)',
+        filter: 'blur(36px)',
         pointerEvents: 'none'
       }} />
 
-      {/* Glass Orb */}
+      {/* Particle Shimmer Orbit */}
+      <motion.div
+        className="absolute"
+        style={{
+          width: '4px',
+          height: '4px',
+          borderRadius: '50%',
+          background: 'rgba(255,255,255,0.45)',
+          boxShadow: '0 0 12px rgba(255,255,255,0.6)',
+          left: `calc(50% + ${84 * Math.cos(particlePhase * Math.PI * 2)}px)`,
+          top: `calc(50% + ${84 * Math.sin(particlePhase * Math.PI * 2)}px)`,
+          transform: 'translate(-50%, -50%)',
+          pointerEvents: 'none'
+        }}
+        animate={{ opacity: [0.3, 0.7, 0.3] }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      {/* Glass Orb (Multi-Layer) */}
       <motion.div
         className="absolute"
         style={{
           width: '168px',
           height: '168px',
           borderRadius: '50%',
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.06) 100%)',
-          backdropFilter: 'blur(36px) saturate(160%)',
-          WebkitBackdropFilter: 'blur(36px) saturate(160%)',
-          border: '1px solid rgba(255,255,255,0.20)',
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.07) 100%)',
+          backdropFilter: 'blur(38px) saturate(165%)',
+          WebkitBackdropFilter: 'blur(38px) saturate(165%)',
+          border: '1px solid rgba(255,255,255,0.22)',
           boxShadow: `
-            inset 0 2px 22px rgba(255,255,255,0.18),
-            inset 0 -2px 16px rgba(0,0,0,0.25),
+            inset 0 2px 24px rgba(255,255,255,0.20),
+            inset 0 -2px 18px rgba(0,0,0,0.28),
             0 12px 48px rgba(120,160,255,0.20)
           `
         }}
@@ -122,13 +173,22 @@ const AlignmentOrb = ({ score, delay }) => {
         {/* Top Rim Highlight */}
         <div style={{
           position: 'absolute',
-          top: '12px',
-          left: '12px',
-          width: '72px',
-          height: '72px',
+          top: '14px',
+          left: '14px',
+          width: '76px',
+          height: '76px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.38) 0%, rgba(255,255,255,0.18) 42%, transparent 70%)',
-          filter: 'blur(18px)',
+          background: 'radial-gradient(circle at 28% 28%, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.20) 40%, transparent 68%)',
+          filter: 'blur(20px)',
+          pointerEvents: 'none'
+        }} />
+
+        {/* Inner Depth Layer */}
+        <div style={{
+          position: 'absolute',
+          inset: '8px',
+          borderRadius: '50%',
+          background: `radial-gradient(circle at 35% 35%, ${color}06 0%, transparent 100%)`,
           pointerEvents: 'none'
         }} />
       </motion.div>
@@ -136,11 +196,11 @@ const AlignmentOrb = ({ score, delay }) => {
       {/* Text Stack */}
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <motion.span
-          className="text-[11px] font-medium uppercase tracking-widest mb-2"
-          style={{ color: 'rgba(255,255,255,0.68)', letterSpacing: '0.16em' }}
+          className="text-[11px] font-medium uppercase tracking-widest mb-2.5"
+          style={{ color: 'rgba(255,255,255,0.66)', letterSpacing: '0.18em' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: delay + 0.25, duration: 0.3 }}
+          transition={{ delay: delay + 0.28, duration: 0.3 }}
         >
           Alignment
         </motion.span>
@@ -150,13 +210,13 @@ const AlignmentOrb = ({ score, delay }) => {
             fontSize: '42px',
             fontWeight: 600,
             color: 'rgba(255,255,255,0.95)',
-            textShadow: `0 0 28px ${color}42, 0 2px 12px rgba(0,0,0,0.30)`,
-            letterSpacing: '-0.04em',
-            marginBottom: '4px'
+            textShadow: `0 0 32px ${color}48, 0 3px 14px rgba(0,0,0,0.32)`,
+            letterSpacing: '-0.045em',
+            marginBottom: '6px'
           }}
-          initial={{ opacity: 0, scale: 0.86 }}
+          initial={{ opacity: 0, scale: 0.84 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: delay + 0.35, duration: 0.4, ease: MOTION.CURVES.easeOutQuint }}
+          transition={{ delay: delay + 0.38, duration: 0.42, ease: MOTION.CURVES.easeOutQuint }}
         >
           {score}
         </motion.span>
@@ -166,7 +226,7 @@ const AlignmentOrb = ({ score, delay }) => {
           style={{ color: 'rgba(255,255,255,0.58)' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: delay + 0.55, duration: 0.25 }}
+          transition={{ delay: delay + 0.62, duration: 0.28 }}
         >
           Medium Weight
         </motion.div>
@@ -176,43 +236,68 @@ const AlignmentOrb = ({ score, delay }) => {
 };
 
 // ============================================================================
-// FLOATING GLASS CAPSULE (Intelligence Insight)
+// FRACTIONS-OF-GLASS INSIGHT PANEL (Replaces Grey Banner)
 // ============================================================================
-const InsightCapsule = ({ segments, delay }) => {
+const InsightRevealPanel = ({ segments, delay }) => {
   return (
     <motion.div
-      className="relative rounded-[22px] overflow-hidden mx-auto mb-10"
+      className="relative rounded-[22px] overflow-hidden mx-auto"
       style={{
-        maxWidth: '82%',
-        padding: '18px 26px',
+        maxWidth: '84%',
+        padding: '18px 28px',
         background: 'rgba(255, 255, 255, 0.06)',
-        backdropFilter: 'blur(22px) saturate(155%)',
-        WebkitBackdropFilter: 'blur(22px) saturate(155%)',
-        border: '1px solid rgba(255,255,255,0.10)',
+        backdropFilter: 'blur(22px) saturate(158%)',
+        WebkitBackdropFilter: 'blur(22px) saturate(158%)',
+        border: '1px solid rgba(255,255,255,0.12)',
         boxShadow: `
-          inset 0 1px 0 rgba(255,255,255,0.14),
+          inset 0 1px 0 rgba(255,255,255,0.16),
           0 4px 32px rgba(0,0,0,0.35)
-        `
+        `,
+        marginBottom: '32px'
       }}
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: delay, duration: 0.35, ease: MOTION.CURVES.silk }}
+      initial={{ opacity: 0, y: 8, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ delay, duration: 0.35, ease: MOTION.CURVES.silk }}
       whileHover={{ 
         y: -2,
         boxShadow: `
-          inset 0 1px 0 rgba(255,255,255,0.18),
-          0 6px 38px rgba(0,0,0,0.42)
+          inset 0 1px 0 rgba(255,255,255,0.20),
+          0 6px 40px rgba(0,0,0,0.42)
         `,
         transition: { duration: 0.15 }
       }}
     >
+      {/* Ambient Glow Behind */}
+      <div style={{
+        position: 'absolute',
+        inset: '-12px',
+        background: 'radial-gradient(ellipse at 50% 50%, rgba(155,185,255,0.06) 0%, transparent 70%)',
+        filter: 'blur(24px)',
+        pointerEvents: 'none',
+        zIndex: -1
+      }} />
+
+      {/* Horizontal Pulse (Initial Load) */}
+      <motion.div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
+          borderRadius: '22px',
+          pointerEvents: 'none'
+        }}
+        initial={{ x: '-100%' }}
+        animate={{ x: '100%' }}
+        transition={{ delay: delay + 0.1, duration: 1.2, ease: 'easeOut' }}
+      />
+
       <p 
         className="text-center"
         style={{ 
           fontSize: '15.5px',
           lineHeight: '1.55',
           color: 'rgba(255,255,255,0.85)',
-          letterSpacing: '-0.008em'
+          letterSpacing: '-0.01em'
         }}
       >
         Markets show mild upward pressure driven by policy tightening and early credit stress signals.
@@ -222,34 +307,36 @@ const InsightCapsule = ({ segments, delay }) => {
 };
 
 // ============================================================================
-// ASYMMETRIC CINEMATIC TILES (Macro Forces Contribution)
+// OS HORIZON INTELLIGENCE BLOCKS (Asymmetric Cinematic Tiles)
 // ============================================================================
-const MacroForcesTiles = ({ segments, delay, onOpenDetail }) => {
+const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
+  const sortedSegments = [...segments].sort((a, b) => (b.weight || 0) - (a.weight || 0));
+  
   const tiles = [
-    { segment: segments.find(s => s.name === 'Policy'), height: '152px' },
-    { segment: segments.find(s => s.name === 'Credit'), height: '152px' },
-    { segment: segments.find(s => s.name === 'Equities'), height: '128px' },
-    { segment: segments.find(s => s.name === 'Global'), height: '128px' }
+    { segment: sortedSegments[0], height: '152px', isTop: true },
+    { segment: sortedSegments[1], height: '152px', isTop: true },
+    { segment: sortedSegments[2], height: '128px', isTop: false },
+    { segment: sortedSegments[3], height: '128px', isTop: false }
   ];
 
   return (
-    <div>
+    <div style={{ marginBottom: '40px' }}>
       <motion.h3 
-        className="text-[12px] font-semibold uppercase tracking-wider mb-5 text-center"
-        style={{ color: 'rgba(255,255,255,0.52)', letterSpacing: '0.13em' }}
+        className="text-[12px] font-medium uppercase tracking-wider mb-5"
+        style={{ color: 'rgba(255,255,255,0.50)', letterSpacing: '0.12em' }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: delay - 0.05, duration: 0.3 }}
       >
-        Macro Forces Contribution
+        Force Contribution
       </motion.h3>
 
-      <div className="grid grid-cols-2 gap-5 mb-8">
+      <div className="grid grid-cols-2 gap-4">
         {tiles.map((tile, idx) => {
           if (!tile.segment) return null;
-          const theme = SEGMENT_THEMES[tile.segment.name];
-          const Icon = SEGMENT_ICONS[tile.segment.name];
+          const config = SEGMENT_CONFIG[tile.segment.name];
           const weight = (tile.segment?.weight || 0) * 100;
+          const isHighest = idx === 0;
 
           return (
             <motion.div
@@ -257,15 +344,23 @@ const MacroForcesTiles = ({ segments, delay, onOpenDetail }) => {
               className="relative rounded-[20px] overflow-hidden cursor-pointer"
               style={{
                 height: tile.height,
-                background: 'rgba(255, 255, 255, 0.04)',
-                backdropFilter: 'blur(24px) saturate(148%)',
-                WebkitBackdropFilter: 'blur(24px) saturate(148%)',
+                background: `
+                  linear-gradient(180deg, 
+                    rgba(255, 255, 255, 0.045) 0%, 
+                    rgba(255, 255, 255, 0.028) 100%
+                  )
+                `,
+                backdropFilter: 'blur(24px) saturate(152%)',
+                WebkitBackdropFilter: 'blur(24px) saturate(152%)',
                 border: '1px solid rgba(255,255,255,0.06)',
                 padding: '22px 26px',
-                boxShadow: '0 8px 38px rgba(0,0,0,0.38)'
+                boxShadow: isHighest 
+                  ? `0 10px 42px rgba(0,0,0,0.42), 0 0 28px ${config.glow}`
+                  : '0 8px 38px rgba(0,0,0,0.38)',
+                transform: isHighest ? 'translateY(-2px)' : 'none'
               }}
               initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
+              animate={{ opacity: 1, y: isHighest ? -2 : 0 }}
               transition={{ 
                 delay: delay + (idx * MOTION.DURATIONS.cardStagger), 
                 duration: 0.32, 
@@ -273,59 +368,77 @@ const MacroForcesTiles = ({ segments, delay, onOpenDetail }) => {
               }}
               onClick={() => onOpenDetail?.(tile.segment)}
               whileHover={{ 
-                y: -3,
-                boxShadow: `0 12px 46px rgba(0,0,0,0.45), 0 0 32px ${theme.glow}`,
-                borderColor: 'rgba(255,255,255,0.10)',
-                transition: { duration: 0.18 }
+                y: isHighest ? -4 : -3,
+                scale: 1.008,
+                boxShadow: `0 14px 50px rgba(0,0,0,0.48), 0 0 36px ${config.glow}`,
+                borderColor: 'rgba(255,255,255,0.12)',
+                transition: { duration: 0.16 }
               }}
-              whileTap={{ scale: 0.98 }}
+              whileTap={{ scale: 0.995 }}
             >
-              {/* Micro-Identity Glow */}
+              {/* Ambient Color Glow */}
               <div style={{
                 position: 'absolute',
                 inset: 0,
                 background: `
-                  radial-gradient(ellipse at 50% -30%, ${theme.glow} 0%, transparent 100%),
-                  linear-gradient(135deg, ${theme.glow}08 0%, transparent 65%)
+                  radial-gradient(ellipse at 50% -35%, ${config.ambient} 0%, transparent 100%),
+                  linear-gradient(135deg, ${config.ambient}05 0%, transparent 70%)
                 `,
                 borderRadius: '20px',
                 pointerEvents: 'none'
               }} />
 
-              {/* Icon */}
+              {/* Micro Section Label */}
+              <div 
+                className="text-[10px] font-medium uppercase tracking-wider mb-3"
+                style={{ color: 'rgba(255,255,255,0.42)', letterSpacing: '0.10em' }}
+              >
+                Force Contribution
+              </div>
+
+              {/* Icon + Weight */}
               <div className="flex items-start justify-between mb-3">
                 <div 
-                  className="w-11 h-11 rounded-[14px] flex items-center justify-center relative"
+                  className="w-12 h-12 rounded-[15px] flex items-center justify-center relative"
                   style={{
-                    background: `${theme.color}08`,
-                    border: `1px solid ${theme.color}18`,
-                    boxShadow: `inset 0 1px 0 rgba(255,255,255,0.08), 0 0 0 0.5px ${theme.color}06`
+                    background: `${config.color}10`,
+                    border: `1px solid ${config.color}20`,
+                    boxShadow: `inset 0 1px 0 rgba(255,255,255,0.10), 0 0 0 0.5px ${config.color}08`
                   }}
                 >
-                  <Icon style={{ color: theme.color, filter: 'brightness(1.16)' }} className="w-5 h-5" strokeWidth={2} />
+                  <config.Icon style={{ color: config.color, filter: 'brightness(1.18)' }} className="w-5.5 h-5.5" strokeWidth={2} />
                 </div>
-                <span className="text-[19px] font-bold" style={{ color: theme.color, filter: 'brightness(1.14)' }}>
+                <span className="text-[20px] font-bold" style={{ color: config.color, filter: 'brightness(1.16)' }}>
                   {Math.round(weight)}%
                 </span>
               </div>
 
               {/* Title */}
-              <h4 className="text-[16px] font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.008em' }}>
+              <h4 className="text-[16px] font-semibold mb-3" style={{ color: 'rgba(255,255,255,0.94)', letterSpacing: '-0.01em' }}>
                 {tile.segment.name}
               </h4>
 
-              {/* Trend Badge */}
-              <div
-                className="inline-block px-3 py-1.5 rounded-lg text-[11px] font-semibold"
-                style={{
-                  background: `${theme.color}09`,
-                  border: `1px solid ${theme.color}18`,
-                  color: theme.color,
-                  letterSpacing: '0.02em',
-                  boxShadow: `inset 0 1px 0 rgba(255,255,255,0.06)`
-                }}
-              >
-                {tile.segment.name === 'Policy' ? 'Rising' : tile.segment.name === 'Credit' ? 'Moderate' : tile.segment.name === 'Equities' ? 'Moderate' : 'Softening'}
+              {/* Smooth Contribution Bar */}
+              <div className="relative">
+                <div 
+                  className="w-full h-[4px] rounded-full overflow-hidden" 
+                  style={{ background: 'rgba(0,0,0,0.24)' }}
+                >
+                  <motion.div
+                    className="h-full rounded-full"
+                    style={{ 
+                      background: `linear-gradient(90deg, ${config.color}96, ${config.color}f8)`,
+                      boxShadow: `0 0 12px ${config.color}34, inset 0 1px 0 rgba(255,255,255,0.14)`
+                    }}
+                    initial={{ width: '0%' }}
+                    animate={{ width: `${weight}%` }}
+                    transition={{ 
+                      duration: 0.36, 
+                      delay: delay + 0.25 + (idx * MOTION.DURATIONS.cardStagger), 
+                      ease: MOTION.CURVES.easeOutQuint
+                    }}
+                  />
+                </div>
               </div>
             </motion.div>
           );
@@ -336,92 +449,209 @@ const MacroForcesTiles = ({ segments, delay, onOpenDetail }) => {
 };
 
 // ============================================================================
-// INTERACTIVE OS-LEVEL SEGMENT LIST
+// INSIGHT ROWS (Glass Strip Expandable)
 // ============================================================================
-const SegmentDetailsList = ({ segments, delay, onOpenDetail }) => {
-  const [hoveredSegment, setHoveredSegment] = useState(null);
+const InsightRows = ({ segments, delay, onOpenDetail }) => {
+  const [expandedRow, setExpandedRow] = useState(null);
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ delay: delay + 0.25, duration: 0.35 }}
+      transition={{ delay: delay + 0.3, duration: 0.35 }}
     >
-      <h3 className="text-[12px] font-semibold uppercase tracking-wider mb-5" style={{ color: 'rgba(255,255,255,0.50)', letterSpacing: '0.12em' }}>
+      <h3 className="text-[12px] font-medium uppercase tracking-wider mb-5" style={{ color: 'rgba(255,255,255,0.48)', letterSpacing: '0.11em' }}>
         Segment Details
       </h3>
 
       <div className="space-y-3">
         {segments.map((segment, idx) => {
-          const theme = SEGMENT_THEMES[segment.name];
-          const Icon = SEGMENT_ICONS[segment.name];
+          const config = SEGMENT_CONFIG[segment.name];
           const weight = (segment?.weight || 0) * 100;
-          const isHovered = hoveredSegment === segment.name;
+          const isExpanded = expandedRow === segment.name;
 
           return (
             <motion.div
               key={segment.name}
               className="relative rounded-[18px] overflow-hidden cursor-pointer"
               style={{
-                height: '66px',
                 background: 'rgba(255, 255, 255, 0.035)',
                 backdropFilter: 'blur(20px)',
                 WebkitBackdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255,255,255,0.05)',
-                padding: '0 22px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between'
+                border: '1px solid rgba(255,255,255,0.05)'
               }}
-              initial={{ opacity: 0, x: -10 }}
+              initial={{ opacity: 0, x: -12 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: delay + 0.28 + (idx * 0.045), duration: 0.28 }}
-              onClick={() => onOpenDetail?.(segment)}
-              onHoverStart={() => setHoveredSegment(segment.name)}
-              onHoverEnd={() => setHoveredSegment(null)}
+              transition={{ delay: delay + 0.32 + (idx * 0.045), duration: 0.26 }}
+              onClick={() => {
+                setExpandedRow(isExpanded ? null : segment.name);
+                onOpenDetail?.(segment);
+              }}
               whileHover={{ 
                 y: -2,
                 background: 'rgba(255, 255, 255, 0.055)',
                 borderColor: 'rgba(255,255,255,0.10)',
-                boxShadow: `0 6px 24px rgba(0,0,0,0.28), 0 0 28px ${theme.glow}`,
-                transition: { duration: 0.15 }
+                boxShadow: `0 6px 26px rgba(0,0,0,0.30), 0 0 24px ${config.glow}`,
+                transition: { duration: 0.14 }
               }}
               whileTap={{ 
-                scale: 0.985,
-                boxShadow: `0 3px 16px rgba(0,0,0,0.35), 0 0 18px ${theme.glow}`,
+                scale: 0.988,
+                boxShadow: `0 3px 18px rgba(0,0,0,0.36), 0 0 16px ${config.glow}`,
                 transition: { duration: 0.08 }
               }}
             >
-              {/* Icon Glow Effect */}
-              {isHovered && (
-                <div style={{
-                  position: 'absolute',
-                  left: '18px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '50%',
-                  background: `radial-gradient(circle, ${theme.glow} 0%, transparent 70%)`,
-                  filter: 'blur(14px)',
-                  pointerEvents: 'none'
-                }} />
-              )}
+              {/* Icon Gradient Highlight */}
+              <div style={{
+                position: 'absolute',
+                top: '50%',
+                left: '16px',
+                transform: 'translateY(-50%)',
+                width: '54px',
+                height: '54px',
+                borderRadius: '50%',
+                background: `radial-gradient(circle, ${config.ambient} 0%, transparent 68%)`,
+                filter: 'blur(18px)',
+                pointerEvents: 'none',
+                opacity: isExpanded ? 1 : 0.6,
+                transition: 'opacity 0.2s ease'
+              }} />
 
-              <div className="flex items-center gap-3.5">
-                <div 
-                  className="w-2.5 h-2.5 rounded-full"
-                  style={{ background: theme.color, boxShadow: `0 0 12px ${theme.color}58` }}
-                />
-                <Icon className="w-4.5 h-4.5" style={{ color: theme.color }} strokeWidth={2} />
-                <span className="text-[15px] font-semibold" style={{ color: 'rgba(255,255,255,0.82)' }}>
-                  {segment.name}
-                </span>
+              {/* Internal Edge Light */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                borderRadius: '18px',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)',
+                pointerEvents: 'none'
+              }} />
+
+              {/* Content */}
+              <div 
+                className="flex items-center justify-between"
+                style={{ padding: '20px 22px', minHeight: '66px' }}
+              >
+                <div className="flex items-center gap-4">
+                  <div 
+                    className="w-2.5 h-2.5 rounded-full"
+                    style={{ background: config.color, boxShadow: `0 0 14px ${config.color}60` }}
+                  />
+                  <config.Icon className="w-4.5 h-4.5" style={{ color: config.color }} strokeWidth={2.2} />
+                  <span className="text-[15px] font-semibold" style={{ color: 'rgba(255,255,255,0.82)' }}>
+                    {segment.name}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <span className="text-[16px] font-bold" style={{ color: 'rgba(255,255,255,0.40)' }}>
+                    {Math.round(weight)}%
+                  </span>
+                  <motion.div
+                    animate={{ rotate: isExpanded ? 180 : 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <ChevronDown className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.52)' }} />
+                  </motion.div>
+                </div>
               </div>
 
-              <span className="text-[16px] font-bold" style={{ color: 'rgba(255,255,255,0.40)' }}>
-                {Math.round(weight)}%
-              </span>
+              {/* Expanded Panel */}
+              <AnimatePresence>
+                {isExpanded && (
+                  <motion.div
+                    className="border-t px-8 py-7"
+                    style={{ 
+                      borderColor: 'rgba(255,255,255,0.08)',
+                      background: `
+                        linear-gradient(180deg, rgba(255,255,255,0.024) 0%, rgba(255,255,255,0.016) 100%)
+                      `,
+                      boxShadow: 'inset 0 2px 10px rgba(0,0,0,0.08)'
+                    }}
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: MOTION.DURATIONS.rowExpand, ease: MOTION.CURVES.bloom }}
+                  >
+                    {/* Luminous Top Divider */}
+                    <div style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: '16%',
+                      right: '16%',
+                      height: '0.5px',
+                      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+                      filter: 'blur(0.5px)',
+                      pointerEvents: 'none'
+                    }} />
+
+                    {/* TL;DR Chip */}
+                    <div 
+                      className="inline-block px-3 py-1.5 rounded-lg text-[10px] font-semibold mb-4"
+                      style={{
+                        background: 'rgba(255,255,255,0.08)',
+                        border: '1px solid rgba(255,255,255,0.14)',
+                        color: 'rgba(255,255,255,0.74)',
+                        letterSpacing: '0.04em'
+                      }}
+                    >
+                      TL;DR
+                    </div>
+
+                    <p className="text-[14px] mb-5" style={{ color: 'rgba(255,255,255,0.88)', lineHeight: '1.62', maxWidth: '92%' }}>
+                      {segment.name === 'Policy' && (
+                        <>
+                          <strong style={{ fontWeight: 600, color: 'rgba(255,255,255,0.96)' }}>
+                            Regulators tightening oversight in medium-term policy environment.
+                          </strong>
+                          {' '}Bipartisan push on content/privacy expands audit scope Y/Y.
+                        </>
+                      )}
+                      {segment.name === 'Credit' && (
+                        <>
+                          <strong style={{ fontWeight: 600, color: 'rgba(255,255,255,0.96)' }}>
+                            Spreads widening as stress pockets form in credit markets.
+                          </strong>
+                          {' '}EM HY spreads widen 35bps WoW.
+                        </>
+                      )}
+                      {segment.name === 'Equities' && (
+                        <>
+                          <strong style={{ fontWeight: 600, color: 'rgba(255,255,255,0.96)' }}>
+                            Market breadth remains flat with limited participation.
+                          </strong>
+                          {' '}Recent gains concentrated in large-cap.
+                        </>
+                      )}
+                      {segment.name === 'Global' && (
+                        <>
+                          <strong style={{ fontWeight: 600, color: 'rgba(255,255,255,0.96)' }}>
+                            China slowdown weighing on global momentum and trade flows.
+                          </strong>
+                          {' '}Exports normalize.
+                        </>
+                      )}
+                    </p>
+
+                    {/* Contribution Bar */}
+                    <div className="relative">
+                      <div 
+                        className="w-full h-[4px] rounded-full overflow-hidden" 
+                        style={{ background: 'rgba(0,0,0,0.22)' }}
+                      >
+                        <motion.div
+                          className="h-full rounded-full"
+                          style={{ 
+                            background: `linear-gradient(90deg, ${config.color}94, ${config.color}f8)`,
+                            boxShadow: `0 0 10px ${config.color}32, inset 0 1px 0 rgba(255,255,255,0.12)`
+                          }}
+                          initial={{ width: '0%' }}
+                          animate={{ width: `${weight}%` }}
+                          transition={{ duration: 0.32, ease: MOTION.CURVES.silk }}
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           );
         })}
@@ -475,8 +705,8 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
           className="relative w-full max-w-4xl rounded-[32px] overflow-hidden border flex flex-col"
           style={{
             background: 'rgba(7, 10, 16, 0.72)',
-            backdropFilter: 'blur(48px) saturate(210%)',
-            WebkitBackdropFilter: 'blur(48px) saturate(210%)',
+            backdropFilter: 'blur(48px) saturate(215%)',
+            WebkitBackdropFilter: 'blur(48px) saturate(215%)',
             borderColor: 'rgba(255,255,255,0.08)',
             boxShadow: `
               0 28px 78px rgba(0,0,0,0.55),
@@ -490,17 +720,35 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
           exit={{ opacity: 0, scale: 0.99, y: 12 }}
           transition={{ duration: MOTION.DURATIONS.drawerEntry, ease: MOTION.CURVES.easeOutQuint }}
         >
-          {/* Atmospheric Lightfield */}
+          {/* Atmospheric Lightfield (Magic Layer) */}
           <div style={{
             position: 'absolute',
-            zIndex: -1,
+            zIndex: 0,
             top: 0,
-            left: 0,
-            right: 0,
+            left: '50%',
+            transform: 'translateX(-50%)',
             width: '100%',
             height: '540px',
-            background: 'radial-gradient(circle at 50% 15%, rgba(155, 185, 255, 0.11) 0%, rgba(0, 0, 0, 0) 72%)',
+            background: 'radial-gradient(circle at 50% 18%, rgba(155, 185, 255, 0.11) 0%, rgba(0, 0, 0, 0) 72%)',
             mixBlendMode: 'screen',
+            pointerEvents: 'none'
+          }} />
+
+          {/* Vertical Glass Gradient */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 35%, rgba(0,0,0,0.02) 100%)',
+            pointerEvents: 'none',
+            borderRadius: '32px'
+          }} />
+
+          {/* Edge Bloom (3-4% Opacity) */}
+          <div style={{
+            position: 'absolute',
+            inset: '-2px',
+            borderRadius: '32px',
+            background: 'radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.035) 0%, transparent 65%)',
             pointerEvents: 'none'
           }} />
 
@@ -508,35 +756,39 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
           <div style={{
             position: 'absolute',
             top: 0,
-            left: '14%',
-            right: '14%',
+            left: '16%',
+            right: '16%',
             height: '1.5px',
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.30), transparent)',
-            filter: 'blur(1.5px)',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.32), transparent)',
+            filter: 'blur(1.3px)',
             pointerEvents: 'none'
           }} />
 
           {/* Header */}
-          <div 
+          <motion.div 
             className="relative border-b flex-shrink-0" 
             style={{ 
               borderColor: 'rgba(255,255,255,0.10)',
-              padding: '22px 32px 18px 32px',
-              background: 'rgba(255, 255, 255, 0.018)'
+              padding: '22px 34px 18px 34px',
+              background: 'rgba(255, 255, 255, 0.020)',
+              zIndex: 1
             }}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.08, duration: 0.24 }}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <div 
                   className="w-13 h-13 rounded-[16px] border flex items-center justify-center relative overflow-hidden"
                   style={{
-                    background: 'rgba(142, 187, 255, 0.12)',
-                    borderColor: 'rgba(142, 187, 255, 0.26)',
-                    backdropFilter: 'blur(22px)',
-                    boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.14), 0 4px 18px rgba(142, 187, 255, 0.22)'
+                    background: 'rgba(142, 187, 255, 0.13)',
+                    borderColor: 'rgba(142, 187, 255, 0.28)',
+                    backdropFilter: 'blur(24px)',
+                    boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.16), 0 4px 20px rgba(142, 187, 255, 0.24)'
                   }}
                 >
-                  <Activity className="w-7 h-7 relative z-10" style={{ color: '#8EBBFF', filter: 'brightness(1.16)' }} strokeWidth={1.8} />
+                  <Activity className="w-7 h-7 relative z-10" style={{ color: '#8EBBFF', filter: 'brightness(1.18)' }} strokeWidth={1.9} />
                 </div>
                 <div>
                   <h2 style={{ 
@@ -564,7 +816,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
                 style={{
                   background: 'rgba(255,255,255,0.08)',
                   border: '1px solid rgba(255,255,255,0.12)',
-                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)'
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10)'
                 }}
                 whileHover={{ scale: 1.06, background: 'rgba(255,255,255,0.14)' }}
                 whileTap={{ scale: 0.96 }}
@@ -573,38 +825,40 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
                 <X className="w-5.5 h-5.5" style={{ color: 'rgba(255,255,255,0.84)' }} strokeWidth={2} />
               </motion.button>
             </div>
-          </div>
+          </motion.div>
 
           {/* Scrollable Body */}
           <div 
             className="flex-1 overflow-y-auto" 
             style={{ 
               scrollBehavior: 'smooth',
-              padding: '44px 52px 56px 52px'
+              padding: '44px 52px 56px 52px',
+              position: 'relative',
+              zIndex: 1
             }}
           >
-            {/* Orb */}
-            <AlignmentOrb score={consensusScore} delay={0.02} />
+            {/* Living Orb */}
+            <LivingAlignmentOrb score={consensusScore} delay={0.02} />
             
             {/* Metadata */}
             <motion.p
-              className="text-[11px] text-center mb-4"
-              style={{ color: 'rgba(255,255,255,0.48)' }}
+              className="text-[11px] text-center mb-8"
+              style={{ color: 'rgba(255,255,255,0.46)' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.68, duration: 0.25 }}
+              transition={{ delay: 0.72, duration: 0.25 }}
             >
               Based on 5 sources • Updated 2m ago
             </motion.p>
 
-            {/* Floating Glass Capsule */}
-            <InsightCapsule segments={segments} delay={0.75} />
+            {/* Insight Reveal Panel */}
+            <InsightRevealPanel segments={segments} delay={0.78} />
 
-            {/* Asymmetric Tiles */}
-            <MacroForcesTiles segments={segments} delay={0.85} onOpenDetail={onOpenDetail} />
+            {/* Macro Forces Grid */}
+            <MacroForceGrid segments={segments} delay={0.88} onOpenDetail={onOpenDetail} />
 
-            {/* Segment Details List */}
-            <SegmentDetailsList segments={segments} delay={0.95} onOpenDetail={onOpenDetail} />
+            {/* Insight Rows */}
+            <InsightRows segments={segments} delay={0.98} onOpenDetail={onOpenDetail} />
           </div>
         </motion.div>
       </motion.div>
