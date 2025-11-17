@@ -1,6 +1,6 @@
 // 🔒 DESIGN LOCKED — OS HORIZON TAHOE V5.1 SEGMENT ANALYSIS REFINEMENT
 // Last Updated: 2025-01-20
-// Policy Drawer: OS HORIZON PATCH V3 — LIQUID GLASS 4.0 + KINETIC V3
+// Policy Drawer: OS HORIZON PATCH V4 — CINEMATIC HERO FULL REBUILD
 // Credit, Equities, Global: Standard format (to be upgraded next)
 // See: DESIGN_LOCKED_COMPONENTS.md
 
@@ -21,8 +21,9 @@ const MOTION = {
     fast: 0.13,
     base: 0.18,
     slow: 0.24,
-    drawerOpen: 0.34,
-    tldrPop: 0.11
+    drawerOpen: 0.36,
+    tldrPop: 0.14,
+    stagger: 0.06
   }
 };
 
@@ -125,7 +126,7 @@ const getTheme = (name) => {
 };
 
 // ============================================================================
-// POLICY DRAWER CONTENT (OS HORIZON PATCH V3 — LIQUID GLASS 4.0 + KINETIC V3)
+// POLICY DRAWER — CINEMATIC HERO FULL REBUILD (OS HORIZON PATCH V4)
 // ============================================================================
 const PolicyDrawerContent = ({ segment, delay }) => {
   const theme = getTheme(segment.name);
@@ -133,121 +134,133 @@ const PolicyDrawerContent = ({ segment, delay }) => {
 
   return (
     <motion.div
-      className="relative"
-      variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.05, delayChildren: 0.12 } } }}
+      className="relative w-full"
+      style={{ 
+        minHeight: '85vh',
+        padding: '44px 48px 64px 48px'
+      }}
+      variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: MOTION.DURATIONS.stagger, delayChildren: 0.18 } } }}
       initial="hidden"
       animate="visible"
     >
-      {/* Atmospheric Lightfield (Behind Header) */}
+      {/* Cinematic Hero Lightfield */}
       <div style={{
         position: 'absolute',
-        top: '-12%',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        width: '720px',
-        height: '720px',
-        background: 'radial-gradient(ellipse at 50% 50%, rgba(207, 232, 255, 0.026) 0%, transparent 70%)',
-        pointerEvents: 'none',
-        borderRadius: '50%',
-        filter: 'blur(110px)'
-      }} />
-
-      {/* Subsurface Warm Light Bloom */}
-      <div style={{
-        position: 'absolute',
-        top: '5%',
-        left: '25%',
-        right: '25%',
-        height: '280px',
-        background: 'radial-gradient(ellipse at 50% 0%, rgba(255, 248, 235, 0.032) 0%, transparent 68%)',
-        filter: 'blur(70px)',
+        zIndex: -1,
+        top: 0,
+        left: 0,
+        right: 0,
+        width: '100%',
+        height: '490px',
+        background: 'radial-gradient(circle at 50% 20%, rgba(205, 230, 255, 0.06) 0%, rgba(0, 0, 0, 0) 70%)',
         pointerEvents: 'none'
       }} />
 
-      {/* Emotional Purpose Header */}
+      {/* Hero Header Block */}
       <motion.div
-        variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
-        transition={{ delay: delay, duration: 0.24, ease: MOTION.CURVES.easeOutQuint }}
-        style={{ marginTop: '33px', marginBottom: '26px' }}
-      >
-        <h3 
-          className="text-[14px] font-medium"
-          style={{ 
-            color: 'rgba(255,255,255,0.64)',
-            letterSpacing: '0.018em',
-            lineHeight: '1.5'
-          }}
-        >
-          Policy Pressure Lens — The Forces Shaping Street Alignment
-        </h3>
-      </motion.div>
-
-      {/* TL;DR Capsule */}
-      <motion.div
-        variants={{ hidden: { opacity: 0, y: 10, scale: 0.97 }, visible: { opacity: 1, y: 0, scale: 1 } }}
-        transition={{ delay: delay + 0.12, duration: MOTION.DURATIONS.tldrPop, ease: MOTION.CURVES.easeOutCubic }}
-        style={{ marginBottom: '16px' }}
-      >
-        <div 
-          className="inline-block rounded-full"
-          style={{
-            background: 'rgba(255,255,255,0.10)',
-            border: '1px solid rgba(255,255,255,0.15)',
-            padding: '6px 12px',
-            fontSize: '12px',
-            fontWeight: 600,
-            color: 'rgba(255,255,255,0.76)',
-            letterSpacing: '0.028em'
-          }}
-        >
-          TL;DR
-        </div>
-      </motion.div>
-
-      {/* TL;DR Headline (Emotional Summary) */}
-      <motion.h4
         variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
-        transition={{ delay: delay + 0.21, duration: 0.20, ease: MOTION.CURVES.easeOutQuint }}
-        style={{
-          fontSize: '18.5px',
-          fontWeight: 600,
-          color: 'rgba(255,255,255,0.96)',
-          letterSpacing: '-0.014em',
-          lineHeight: '1.44',
-          filter: 'brightness(1.06)',
-          marginBottom: '28px',
-          maxWidth: '90%'
-        }}
+        transition={{ duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.easeOutQuint }}
+        style={{ marginBottom: '36px' }}
       >
-        Regulatory hardening raises compliance costs → downside for Big Tech multiples; hawkish Fed bias reinforced.
-      </motion.h4>
+        <h1 
+          style={{
+            fontSize: '22px',
+            fontWeight: 600,
+            color: 'rgba(255,255,255,0.92)',
+            letterSpacing: '0.01em',
+            marginBottom: '6px'
+          }}
+        >
+          Policy Analysis
+        </h1>
+        <p 
+          style={{
+            fontSize: '15px',
+            fontWeight: 400,
+            color: 'rgba(255,255,255,0.62)',
+            lineHeight: '1.52'
+          }}
+        >
+          Market Pressure Lens — What's Driving Street Alignment
+        </p>
+      </motion.div>
 
-      {/* Insight Blocks Container */}
+      {/* TL;DR Block */}
       <motion.div
-        className="space-y-[18px]"
-        variants={{ hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } }}
-        transition={{ delay: delay + 0.28, duration: 0.18, ease: MOTION.CURVES.easeOutQuint }}
-        style={{ marginBottom: '34px' }}
+        variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
+        style={{ marginBottom: '32px' }}
+      >
+        {/* TL;DR Capsule */}
+        <motion.div
+          variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
+          transition={{ duration: MOTION.DURATIONS.tldrPop, ease: MOTION.CURVES.easeOutCubic }}
+          style={{ marginBottom: '16px' }}
+        >
+          <div 
+            className="inline-block rounded-full"
+            style={{
+              fontSize: '12px',
+              fontWeight: 600,
+              color: 'rgba(255,255,255,0.78)',
+              padding: '6px 12px',
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              borderRadius: '24px'
+            }}
+          >
+            TL;DR
+          </div>
+        </motion.div>
+
+        {/* TL;DR Headline */}
+        <motion.h2
+          variants={{ hidden: { opacity: 0, y: 7 }, visible: { opacity: 1, y: 0 } }}
+          transition={{ duration: 0.16, ease: MOTION.CURVES.easeOutQuint }}
+          style={{
+            fontSize: '19px',
+            fontWeight: 600,
+            color: 'rgba(255,255,255,0.88)',
+            maxWidth: '92%',
+            lineHeight: '1.45'
+          }}
+        >
+          Regulatory hardening raises compliance costs → downside for Big Tech multiples; hawkish Fed bias reinforced.
+        </motion.h2>
+      </motion.div>
+
+      {/* Micro-Insight Grid */}
+      <motion.div
+        variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
+        style={{ 
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '28px',
+          marginTop: '32px',
+          marginBottom: '40px'
+        }}
       >
         {/* Key Driver */}
         <motion.div
           variants={{ hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } }}
-          transition={{ delay: delay + 0.33, duration: 0.16 }}
+          transition={{ duration: 0.16 }}
+          style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
         >
           <div 
-            className="text-[12px] font-medium uppercase mb-2.5"
-            style={{ 
-              color: 'rgba(255,255,255,0.56)',
-              letterSpacing: '0.08em'
+            style={{
+              fontSize: '12px',
+              fontWeight: 500,
+              letterSpacing: '0.08em',
+              color: 'rgba(255,255,255,0.58)',
+              textTransform: 'uppercase'
             }}
           >
             Key Driver
           </div>
           <p 
-            className="text-[15px]"
-            style={{ 
-              color: 'rgba(255,255,255,0.66)',
-              lineHeight: '1.60',
+            style={{
+              fontSize: '15px',
+              color: 'rgba(255,255,255,0.68)',
+              lineHeight: '1.58',
               maxWidth: '90%'
             }}
           >
@@ -258,22 +271,25 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         {/* Pressure Direction */}
         <motion.div
           variants={{ hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } }}
-          transition={{ delay: delay + 0.38, duration: 0.16 }}
+          transition={{ duration: 0.16 }}
+          style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
         >
           <div 
-            className="text-[12px] font-medium uppercase mb-2.5"
-            style={{ 
-              color: 'rgba(255,255,255,0.56)',
-              letterSpacing: '0.08em'
+            style={{
+              fontSize: '12px',
+              fontWeight: 500,
+              letterSpacing: '0.08em',
+              color: 'rgba(255,255,255,0.58)',
+              textTransform: 'uppercase'
             }}
           >
             Pressure Direction
           </div>
           <p 
-            className="text-[15px]"
-            style={{ 
-              color: 'rgba(255,255,255,0.66)',
-              lineHeight: '1.60',
+            style={{
+              fontSize: '15px',
+              color: 'rgba(255,255,255,0.68)',
+              lineHeight: '1.58',
               maxWidth: '90%'
             }}
           >
@@ -284,22 +300,25 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         {/* Market Impact Level */}
         <motion.div
           variants={{ hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } }}
-          transition={{ delay: delay + 0.43, duration: 0.16 }}
+          transition={{ duration: 0.16 }}
+          style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
         >
           <div 
-            className="text-[12px] font-medium uppercase mb-2.5"
-            style={{ 
-              color: 'rgba(255,255,255,0.56)',
-              letterSpacing: '0.08em'
+            style={{
+              fontSize: '12px',
+              fontWeight: 500,
+              letterSpacing: '0.08em',
+              color: 'rgba(255,255,255,0.58)',
+              textTransform: 'uppercase'
             }}
           >
             Market Impact Level
           </div>
           <p 
-            className="text-[15px]"
-            style={{ 
-              color: 'rgba(255,255,255,0.66)',
-              lineHeight: '1.60',
+            style={{
+              fontSize: '15px',
+              color: 'rgba(255,255,255,0.68)',
+              lineHeight: '1.58',
               maxWidth: '90%'
             }}
           >
@@ -308,157 +327,106 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         </motion.div>
       </motion.div>
 
-      {/* What This Means (Enlightenment Moment) */}
+      {/* What This Means — Enlightenment Block */}
       <motion.div
-        variants={{ hidden: { opacity: 0, y: 4 }, visible: { opacity: 1, y: 0 } }}
-        transition={{ delay: delay + 0.48, duration: 0.18, ease: MOTION.CURVES.easeOutQuint }}
+        variants={{ hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } }}
+        transition={{ duration: MOTION.DURATIONS.tldrPop, ease: MOTION.CURVES.easeOutQuint }}
         style={{ 
-          marginTop: '34px',
-          marginBottom: '38px'
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px',
+          marginTop: '40px',
+          marginBottom: '44px'
         }}
       >
         <div 
-          className="text-[12px] font-medium uppercase mb-3"
-          style={{ 
+          style={{
+            fontSize: '12px',
+            fontWeight: 500,
+            letterSpacing: '0.08em',
             color: 'rgba(255,255,255,0.58)',
-            letterSpacing: '0.08em'
+            textTransform: 'uppercase'
           }}
         >
           What This Means
         </div>
         <p 
-          className="text-[15.5px] font-medium"
-          style={{ 
-            color: 'rgba(255,255,255,0.88)',
-            lineHeight: '1.58',
-            maxWidth: '90%',
-            filter: 'brightness(1.04)'
+          style={{
+            fontSize: '16px',
+            fontWeight: 500,
+            color: 'rgba(255,255,255,0.82)',
+            lineHeight: '1.54',
+            maxWidth: '92%'
           }}
         >
           Net effect: Policy tightening is elevating medium-term pressure on Street Alignment, reinforcing upward momentum with growing consistency.
         </p>
       </motion.div>
 
-      {/* Status + Contribution */}
+      {/* Status + Contribution Bar */}
       <motion.div
         variants={{ hidden: { opacity: 0, y: 3 }, visible: { opacity: 1, y: 0 } }}
-        transition={{ delay: delay + 0.54, duration: 0.16, ease: MOTION.CURVES.easeOutQuint }}
-        style={{ marginTop: '38px' }}
+        transition={{ duration: 0.14, ease: MOTION.CURVES.easeOutQuint }}
       >
-        <div className="flex items-center gap-3.5 mb-6">
+        {/* Status Chip */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px' }}>
           <div
-            className="px-3 py-1.5 rounded-lg text-[10px] font-semibold"
+            className="inline-block rounded-full"
             style={{
-              background: `${theme.color}09`,
-              border: `1px solid ${theme.color}18`,
-              color: theme.color,
-              boxShadow: `inset 0 1px 0 rgba(255,255,255,0.06)`
+              fontSize: '13px',
+              fontWeight: 500,
+              color: '#7BB1FF',
+              background: 'rgba(80, 140, 255, 0.12)',
+              padding: '6px 12px',
+              borderRadius: '20px'
             }}
           >
             Rising
           </div>
-          <span 
-            className="text-[13px] font-medium" 
-            style={{ 
-              color: 'rgba(255,255,255,0.54)',
-              filter: 'brightness(0.94)'
-            }}
-          >
-            Contribution: {Math.round(weight)}%
-          </span>
         </div>
 
-        {/* Liquid Radiance 2.0 Contribution Bar */}
-        <div className="relative">
-          <div 
-            className="w-full h-[6px] rounded-full overflow-hidden relative" 
+        {/* Contribution Bar */}
+        <div 
+          className="w-full rounded-full overflow-hidden relative"
+          style={{ 
+            height: '8px',
+            background: 'rgba(255,255,255,0.06)',
+            borderRadius: '12px'
+          }}
+        >
+          <motion.div
+            className="h-full rounded-full relative"
             style={{ 
-              background: 'rgba(0,0,0,0.26)',
-              transform: 'translateY(1px)'
+              background: 'linear-gradient(90deg, #79C2FF 0%, #4F8EF8 100%)',
+              boxShadow: 'inset 0 0 3px rgba(255,255,255,0.25)',
+              borderRadius: '12px'
             }}
-          >
-            {/* Subsurface glow */}
-            <div style={{
-              position: 'absolute',
-              bottom: '-6px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '106%',
-              height: '16px',
-              background: `radial-gradient(ellipse, rgba(121, 194, 255, 0.16) 0%, transparent 78%)`,
-              filter: 'blur(8px)',
-              pointerEvents: 'none'
-            }} />
-            
-            <motion.div
-              className="h-full rounded-full relative overflow-hidden group"
-              style={{ 
-                background: `linear-gradient(90deg, #79C2FF 0%, #4F8EF8 100%)`,
-                boxShadow: `
-                  0 0 16px rgba(121, 194, 255, 0.40), 
-                  inset 0 1px 0.5px rgba(255,255,255,0.24),
-                  inset 0 -1px 1.5px rgba(0,30,80,0.20)
-                `
-              }}
-              initial={{ width: '0%' }}
-              animate={{ width: `${weight}%` }}
-              transition={{ 
-                duration: 0.36, 
-                delay: delay + 0.60, 
-                ease: MOTION.CURVES.easeOutQuint
-              }}
-              whileHover={{
-                filter: 'brightness(1.12)',
-                boxShadow: `
-                  0 0 20px rgba(121, 194, 255, 0.52), 
-                  inset 0 1px 0.5px rgba(255,255,255,0.30),
-                  inset 0 -1px 1.5px rgba(0,30,80,0.20)
-                `,
-                transition: { duration: 0.2 }
-              }}
-            >
-              {/* Micro gloss layer (top edge) */}
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: '20%',
-                right: '20%',
-                height: '1.5px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.48), transparent)',
-                filter: 'blur(0.7px)'
-              }} />
-              
-              {/* Directional lighting (north-west) */}
-              <div style={{
-                position: 'absolute',
-                top: '-18%',
-                left: '-10%',
-                width: '48%',
-                height: '140%',
-                background: 'radial-gradient(ellipse at 32% 28%, rgba(255,255,255,0.18) 0%, transparent 66%)',
-                pointerEvents: 'none'
-              }} />
+            initial={{ width: '0%' }}
+            animate={{ 
+              width: `${weight}%`,
+              boxShadow: [
+                'inset 0 0 3px rgba(255,255,255,0.25)',
+                'inset 0 0 6px rgba(255,255,255,0.35), 0 0 12px rgba(121, 194, 255, 0.3)',
+                'inset 0 0 3px rgba(255,255,255,0.25)'
+              ]
+            }}
+            transition={{ 
+              width: { duration: 0.36, delay: 0.6, ease: MOTION.CURVES.easeOutQuint },
+              boxShadow: { duration: 2, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }
+            }}
+          />
+        </div>
 
-              {/* Value Bubble */}
-              <motion.div 
-                className="absolute right-[-3px] top-1/2 -translate-y-1/2 px-2 py-0.5 rounded-md"
-                style={{
-                  background: 'rgba(255,255,255,0.20)',
-                  backdropFilter: 'blur(10px)',
-                  fontSize: '9.5px',
-                  fontWeight: 700,
-                  color: '#0D1825',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
-                  border: '0.5px solid rgba(255,255,255,0.25)'
-                }}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: delay + 0.75, duration: 0.15 }}
-              >
-                {Math.round(weight)}%
-              </motion.div>
-            </motion.div>
-          </div>
+        {/* Contribution Label */}
+        <div 
+          style={{ 
+            fontSize: '13px', 
+            fontWeight: 500,
+            color: 'rgba(255,255,255,0.54)',
+            marginTop: '12px'
+          }}
+        >
+          Contribution: {Math.round(weight)}%
         </div>
       </motion.div>
     </motion.div>
@@ -830,7 +798,7 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.05, delayChildren: 0.12 } }
+    visible: { opacity: 1, transition: { staggerChildren: 0.06, delayChildren: 0.18 } }
   };
 
   return (
@@ -854,15 +822,15 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
         
         <motion.div
           key={segment.name}
-          className="relative w-full max-w-4xl max-h-[90vh] overflow-hidden border shadow-2xl"
+          className="relative w-full max-w-4xl max-h-[92vh] overflow-hidden border shadow-2xl"
           style={{
-            borderRadius: isPolicyDrawer ? '24px' : '32px',
+            borderRadius: isPolicyDrawer ? '26px' : '32px',
             background: isPolicyDrawer 
               ? `
                 linear-gradient(180deg, 
-                  rgba(255, 255, 255, 0.09) 0%,
-                  rgba(4, 9, 15, 0.82) 5%,
-                  rgba(4, 9, 15, 0.86) 100%
+                  rgba(255, 255, 255, 0.07) 0%,
+                  rgba(4, 9, 15, 0.84) 4%,
+                  rgba(4, 9, 15, 0.84) 100%
                 )
               `
               : `
@@ -871,15 +839,14 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
                   rgba(16, 18, 26, 0.94) 100%
                 )
               `,
-            backdropFilter: isPolicyDrawer ? 'blur(39px) saturate(205%)' : 'blur(62px) saturate(195%)',
-            WebkitBackdropFilter: isPolicyDrawer ? 'blur(39px) saturate(205%)' : 'blur(62px) saturate(195%)',
+            backdropFilter: isPolicyDrawer ? 'blur(43px) saturate(210%)' : 'blur(62px) saturate(195%)',
+            WebkitBackdropFilter: isPolicyDrawer ? 'blur(43px) saturate(210%)' : 'blur(62px) saturate(195%)',
             borderColor: theme.borderColor,
             boxShadow: isPolicyDrawer
               ? `
-                0 50px 88px -22px rgba(0, 0, 0, 0.90), 
-                0 0 74px ${theme.glowColor}, 
-                inset 0 1.5px 0 rgba(255, 255, 255, 0.16),
-                inset 0 0 0 0.8px rgba(255,255,255,0.012)
+                0px 5px 58px rgba(0, 0, 0, 0.22),
+                0 0 78px ${theme.glowColor}, 
+                inset 0 0 0 1px rgba(140, 180, 255, 0.015)
               `
               : `
                 0 36px 72px -16px rgba(0, 0, 0, 0.84), 
@@ -888,47 +855,35 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
                 inset 0 0 0 1px rgba(255,255,255,0.04)
               `
           }}
-          initial={{ opacity: 0.88, scale: 0.94, y: 26 }}
+          initial={{ opacity: 0.9, scale: 0.985, y: 20 }}
           animate={{ 
             opacity: 1, 
-            scale: isAnimatingIn ? [0.96, 1.015, 1.0] : 1, 
+            scale: 1, 
             y: 0 
           }}
           exit={{ opacity: 0, scale: 0.97, y: 18 }}
           transition={{ 
             duration: isPolicyDrawer ? MOTION.DURATIONS.drawerOpen : 0.30, 
-            ease: isPolicyDrawer ? MOTION.CURVES.easeOutQuint : MOTION.CURVES.silk,
-            scale: isPolicyDrawer ? { times: [0, 0.27, 1], duration: 0.34 } : {}
+            ease: isPolicyDrawer ? MOTION.CURVES.easeOutQuint : MOTION.CURVES.silk
           }}
         >
-          {/* Policy: Edge Bloom (Blue-White Radiance) */}
-          {isPolicyDrawer && (
-            <div style={{
-              position: 'absolute',
-              inset: '-1px',
-              borderRadius: '24px',
-              background: 'radial-gradient(ellipse at 50% 0%, rgba(175, 215, 255, 0.010) 0%, transparent 70%)',
-              pointerEvents: 'none'
-            }} />
-          )}
-
-          {/* Policy: Internal Glow Layer */}
+          {/* Policy: Subsurface Scatter */}
           {isPolicyDrawer && (
             <div style={{
               position: 'absolute',
               inset: 0,
-              background: 'radial-gradient(ellipse at 50% 22%, rgba(255, 255, 255, 0.022) 0%, transparent 72%)',
+              background: 'radial-gradient(ellipse at 50% 18%, rgba(255, 255, 255, 0.03) 0%, transparent 70%)',
               pointerEvents: 'none',
-              borderRadius: '24px'
+              borderRadius: '26px'
             }} />
           )}
 
-          {/* Policy: Micro Inner Bevel */}
+          {/* Policy: Inner Bevel */}
           {isPolicyDrawer && (
             <div style={{
               position: 'absolute',
               inset: '1px',
-              borderRadius: '23px',
+              borderRadius: '25px',
               boxShadow: 'inset 0 0 1px rgba(255,255,255,0.09)',
               pointerEvents: 'none'
             }} />
@@ -1058,20 +1013,20 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
           {/* Body */}
           <motion.div 
             key={`${segment.name}-content`}
-            className="overflow-y-auto max-h-[calc(90vh-140px)]" 
+            className="overflow-y-auto max-h-[calc(92vh-140px)]" 
             variants={containerVariants} 
             initial="hidden" 
             animate="visible"
             style={{ 
-              scrollBehavior: 'smooth',
-              padding: '32px',
-              paddingBottom: isPolicyDrawer ? '60px' : '32px'
+              scrollBehavior: 'smooth'
             }}
           >
             {isPolicyDrawer ? (
               <PolicyDrawerContent segment={segment} delay={0.05} />
             ) : (
-              <StandardDrawerContent segment={segment} delay={0.05} />
+              <div style={{ padding: '32px' }}>
+                <StandardDrawerContent segment={segment} delay={0.05} />
+              </div>
             )}
           </motion.div>
         </motion.div>
