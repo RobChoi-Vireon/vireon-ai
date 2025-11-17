@@ -1,3 +1,4 @@
+
 // 🔒 DESIGN LOCKED — OS HORIZON TAHOE V5.0 REFINEMENT
 // Last Updated: 2025-01-20
 // VIREON CERTIFIED — Full 16-Pillar Compliance + macOS Tahoe Atmosphere
@@ -359,6 +360,11 @@ const FloatingSummaryChip = ({ segments, delay }) => {
 const SegmentGrid = ({ segments, delay, onOpenDetail }) => {
   const [hoveredSegment, setHoveredSegment] = useState(null);
 
+  // Ensure proper order: Policy, Credit, Equities, Global
+  const orderedSegments = ['Policy', 'Credit', 'Equities', 'Global']
+    .map(name => segments.find(s => s.name === name))
+    .filter(Boolean);
+
   return (
     <div>
       {/* Section Label */}
@@ -378,7 +384,7 @@ const SegmentGrid = ({ segments, delay, onOpenDetail }) => {
         animate={{ opacity: 1 }}
         transition={{ delay, duration: 0.5 }}
       >
-        {segments.map((segment, idx) => {
+        {orderedSegments.map((segment, idx) => {
           const insight = SEGMENT_INSIGHTS[segment.name] || {};
           const weight = (segment?.weight || 0) * 100;
           const Icon = OutlineIcons[segment.name] || OutlineIcons.Global;
