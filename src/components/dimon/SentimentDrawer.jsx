@@ -1,7 +1,7 @@
 // 🔒 DESIGN LOCKED — OS HORIZON TAHOE V5.1 STREET ALIGNMENT REFINEMENT
-// Last Updated: 2025-01-20 | V2.1 Polish Patch Applied
+// Last Updated: 2025-01-20 | V3 Emotion Engine + Apple Glass Applied
 // VIREON CERTIFIED — OS Horizon Hybrid Identity (Cinematic Intelligence + Tahoe Serenity)
-// Full atmospheric rebuild with depth field, living orb, asymmetric tiles, insight rows
+// Full atmospheric rebuild with depth field, living orb, emotion engine, insight layers
 // See: DESIGN_LOCKED_COMPONENTS.md
 
 import React, { useEffect, useMemo, useState } from 'react';
@@ -14,14 +14,16 @@ const MOTION = {
     easeOutQuint: [0.22, 1, 0.36, 1],
     silk: [0.25, 0.1, 0, 1.0],
     spring: [0.22, 0.61, 0.36, 1],
-    bloom: [0.18, 0.82, 0.23, 1]
+    bloom: [0.18, 0.82, 0.23, 1],
+    bounce: [0.68, -0.55, 0.27, 1.55]
   },
   DURATIONS: {
     drawerEntry: 0.42,
-    orbArrival: 0.38,
-    cardStagger: 0.05,
-    breathe: 6.8,
-    rowExpand: 0.18
+    orbArrival: 0.22,
+    cardStagger: 0.06,
+    breathe: 9.0,
+    rowExpand: 0.2,
+    glowCycle: 8.5
   }
 };
 
@@ -54,11 +56,12 @@ const SEGMENT_CONFIG = {
 };
 
 // ============================================================================
-// OS HORIZON 2.0 LIVING ALIGNMENT ORB (Multi-Layer Depth)
+// OS HORIZON 2.0 LIVING ALIGNMENT ORB (Emotion Engine V3)
 // ============================================================================
 const LivingAlignmentOrb = ({ score, delay }) => {
   const [breathingPhase, setBreathingPhase] = useState(0);
   const [particlePhase, setParticlePhase] = useState(0);
+  const [glowPhase, setGlowPhase] = useState(0);
   
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -72,6 +75,7 @@ const LivingAlignmentOrb = ({ score, delay }) => {
       const elapsed = (Date.now() - startTime) / 1000;
       setBreathingPhase(elapsed);
       setParticlePhase(elapsed * 0.3);
+      setGlowPhase(elapsed);
       rafId = requestAnimationFrame(animate);
     };
     rafId = requestAnimationFrame(animate);
@@ -79,7 +83,7 @@ const LivingAlignmentOrb = ({ score, delay }) => {
   }, []);
 
   const breathingScale = 1 + Math.sin(breathingPhase * (2 * Math.PI / MOTION.DURATIONS.breathe)) * 0.018;
-  const particleOffset = Math.sin(particlePhase * Math.PI * 2) * 8;
+  const glowOpacity = 0.05 + Math.sin(glowPhase * (2 * Math.PI / MOTION.DURATIONS.glowCycle)) * 0.07;
 
   const getZoneColor = (s) => {
     if (s < 40) return '#E86565';
@@ -93,7 +97,7 @@ const LivingAlignmentOrb = ({ score, delay }) => {
     <motion.div
       className="relative flex items-center justify-center mx-auto mb-4"
       style={{ width: '168px', height: '168px', x: parallaxX, y: parallaxY }}
-      initial={{ opacity: 0, scale: 0.88, y: 10 }}
+      initial={{ opacity: 0, scale: 0.96, y: 0 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ delay: delay + 0.08, duration: MOTION.DURATIONS.orbArrival, ease: MOTION.CURVES.easeOutQuint }}
       onMouseMove={(e) => {
@@ -106,19 +110,36 @@ const LivingAlignmentOrb = ({ score, delay }) => {
         mouseY.set(0);
       }}
     >
-      {/* Outer Halo (Breathing) */}
+      {/* Breathing Glow Cycle */}
       <motion.div
         className="absolute"
         style={{
           width: '240px',
           height: '240px',
           borderRadius: '50%',
-          background: `radial-gradient(circle, rgba(120,160,255,0.10) 0%, transparent 72%)`,
+          background: `radial-gradient(circle, ${color} 0%, transparent 72%)`,
           filter: 'blur(52px)',
-          pointerEvents: 'none'
+          pointerEvents: 'none',
+          opacity: glowOpacity
         }}
         animate={{ scale: breathingScale * 1.2 }}
         transition={{ duration: MOTION.DURATIONS.breathe, ease: 'easeInOut' }}
+      />
+
+      {/* Halo Bloom (On Open) */}
+      <motion.div
+        className="absolute"
+        style={{
+          width: '220px',
+          height: '220px',
+          borderRadius: '50%',
+          background: `radial-gradient(circle, rgba(120,160,255,0.12) 0%, transparent 72%)`,
+          filter: 'blur(48px)',
+          pointerEvents: 'none'
+        }}
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: delay + 0.12, duration: 0.18, ease: 'easeOut' }}
       />
 
       {/* Core Ring Glow */}
@@ -150,6 +171,24 @@ const LivingAlignmentOrb = ({ score, delay }) => {
         transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
       />
 
+      {/* Radial Highlight Sweep (On Open) */}
+      <motion.div
+        style={{
+          position: 'absolute',
+          top: '10px',
+          left: '10px',
+          width: '90px',
+          height: '90px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle at 25% 25%, rgba(255,255,255,0.14) 0%, transparent 60%)',
+          filter: 'blur(18px)',
+          pointerEvents: 'none'
+        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0, 1, 0.7] }}
+        transition={{ delay: delay + 0.15, duration: 0.5, ease: 'easeOut' }}
+      />
+
       {/* Glass Orb (Multi-Layer) */}
       <motion.div
         className="absolute"
@@ -164,12 +203,22 @@ const LivingAlignmentOrb = ({ score, delay }) => {
           boxShadow: `
             inset 0 2px 24px rgba(255,255,255,0.20),
             inset 0 -2px 18px rgba(0,0,0,0.28),
-            0 12px 48px rgba(120,160,255,0.20)
+            0 16px 40px rgba(120,160,255,0.15)
           `
         }}
+        initial={{ scale: 0.96 }}
         animate={{ scale: breathingScale }}
         transition={{ duration: MOTION.DURATIONS.breathe, ease: 'easeInOut' }}
       >
+        {/* Micro-Highlight Ring */}
+        <div style={{
+          position: 'absolute',
+          inset: '6px',
+          borderRadius: '50%',
+          border: '1px solid rgba(255,255,255,0.06)',
+          pointerEvents: 'none'
+        }} />
+
         {/* Top Rim Highlight */}
         <div style={{
           position: 'absolute',
@@ -236,7 +285,7 @@ const LivingAlignmentOrb = ({ score, delay }) => {
 };
 
 // ============================================================================
-// FRACTIONS-OF-GLASS INSIGHT PANEL (Enhanced V2.1)
+// APPLE GLASS V3 TL;DR CAPSULE (Enhanced Insight Reveal)
 // ============================================================================
 const InsightRevealPanel = ({ segments, delay }) => {
   return (
@@ -245,32 +294,44 @@ const InsightRevealPanel = ({ segments, delay }) => {
       style={{
         maxWidth: '84%',
         padding: '18px 28px',
-        background: 'rgba(255, 255, 255, 0.07)',
+        background: 'rgba(255, 255, 255, 0.06)',
         backdropFilter: 'blur(22px) saturate(158%)',
         WebkitBackdropFilter: 'blur(22px) saturate(158%)',
-        border: '1px solid rgba(255,255,255,0.12)',
+        border: '0.75px solid rgba(255,255,255,0.12)',
         boxShadow: `
           inset 0 2px 0 rgba(255,255,255,0.18),
-          inset 0 0 16px rgba(0,0,0,0.35),
-          0 0 28px rgba(120,160,255,0.15),
+          inset 0 0 24px rgba(0,0,0,0.35),
+          0 0 32px rgba(140,180,255,0.18),
           0 4px 32px rgba(0,0,0,0.35)
         `,
         marginBottom: '20px'
       }}
       initial={{ opacity: 0, y: 8, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ delay, duration: 0.35, ease: MOTION.CURVES.silk }}
+      transition={{ delay: delay + 0.09, duration: 0.18, ease: MOTION.CURVES.silk }}
       whileHover={{ 
         y: -2,
         boxShadow: `
           inset 0 2px 0 rgba(255,255,255,0.22),
-          inset 0 0 16px rgba(0,0,0,0.35),
-          0 0 32px rgba(120,160,255,0.20),
+          inset 0 0 24px rgba(0,0,0,0.35),
+          0 0 36px rgba(140,180,255,0.22),
           0 6px 40px rgba(0,0,0,0.42)
         `,
         transition: { duration: 0.15 }
       }}
     >
+      {/* Top Glossy Streak */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '10%',
+        right: '10%',
+        height: '28px',
+        background: 'linear-gradient(to bottom, rgba(255,255,255,0.09) 0%, transparent 100%)',
+        borderRadius: '22px 22px 0 0',
+        pointerEvents: 'none'
+      }} />
+
       {/* Ambient Glow Behind */}
       <div style={{
         position: 'absolute',
@@ -292,15 +353,15 @@ const InsightRevealPanel = ({ segments, delay }) => {
         }}
         initial={{ x: '-100%' }}
         animate={{ x: '100%' }}
-        transition={{ delay: delay + 0.1, duration: 1.2, ease: 'easeOut' }}
+        transition={{ delay: delay + 0.2, duration: 1.2, ease: 'easeOut' }}
       />
 
       <p 
-        className="text-center"
+        className="text-center relative z-10"
         style={{ 
           fontSize: '15.5px',
-          lineHeight: '1.55',
-          color: 'rgba(255,255,255,0.85)',
+          lineHeight: '1.61',
+          color: 'rgba(255,255,255,0.90)',
           letterSpacing: '-0.01em'
         }}
       >
@@ -311,35 +372,36 @@ const InsightRevealPanel = ({ segments, delay }) => {
 };
 
 // ============================================================================
-// OS HORIZON INTELLIGENCE BLOCKS (V2.1 Primary Driver Hierarchy)
+// OS HORIZON INTELLIGENCE BLOCKS (V3 Primary Driver Hierarchy)
 // ============================================================================
 const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
   const sortedSegments = [...segments].sort((a, b) => (b.weight || 0) - (a.weight || 0));
   
-  const tiles = [
-    { segment: sortedSegments[0], height: '158px', isPrimary: true },
-    { segment: sortedSegments[1], height: '152px', isPrimary: false },
-    { segment: sortedSegments[2], height: '128px', isPrimary: false },
-    { segment: sortedSegments[3], height: '128px', isPrimary: false }
-  ];
+  const tiles = sortedSegments.map((seg, i) => ({
+    segment: seg,
+    isPrimary: i === 0,
+    height: i < 2 ? (i === 0 ? '166px' : '158px') : '128px'
+  }));
 
   return (
     <div style={{ marginBottom: '40px' }}>
-      <motion.h3 
-        className="text-[12px] font-medium uppercase tracking-wider mb-4"
-        style={{ color: 'rgba(255,255,255,0.50)', letterSpacing: '0.12em' }}
+      <motion.div
+        className="text-[11px] font-medium uppercase tracking-wider mb-4"
+        style={{ color: 'rgba(255,255,255,0.48)', letterSpacing: '0.11em' }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: delay - 0.05, duration: 0.3 }}
       >
-        Force Contribution
-      </motion.h3>
+        What's Driving This Alignment
+      </motion.div>
 
       <div className="grid grid-cols-2 gap-4">
         {tiles.map((tile, idx) => {
           if (!tile.segment) return null;
           const config = SEGMENT_CONFIG[tile.segment.name];
           const weight = (tile.segment?.weight || 0) * 100;
+          const isPrimary = tile.isPrimary;
+          const animDelay = delay + (isPrimary ? (tiles.length - 1) * MOTION.DURATIONS.cardStagger : idx * MOTION.DURATIONS.cardStagger);
 
           return (
             <motion.div
@@ -347,35 +409,37 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
               className="relative rounded-[20px] overflow-hidden cursor-pointer"
               style={{
                 height: tile.height,
-                background: tile.isPrimary 
-                  ? `linear-gradient(180deg, rgba(255, 255, 255, 0.052) 0%, rgba(255, 255, 255, 0.032) 100%)`
+                background: isPrimary
+                  ? `linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.034) 100%)`
                   : `linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)`,
                 backdropFilter: 'blur(24px) saturate(152%)',
                 WebkitBackdropFilter: 'blur(24px) saturate(152%)',
-                border: tile.isPrimary 
-                  ? `1px solid rgba(255,255,255,0.08)` 
+                border: isPrimary 
+                  ? `1px solid rgba(255,255,255,0.09)` 
                   : '1px solid rgba(255,255,255,0.06)',
                 padding: '22px 26px',
-                boxShadow: tile.isPrimary 
-                  ? `inset 0 0 0 1px rgba(255,255,255,0.02), 0 12px 44px rgba(0,0,0,0.44), 0 0 30px ${config.glow}`
-                  : '0 8px 38px rgba(0,0,0,0.38)',
-                transform: tile.isPrimary ? 'translateY(-2px)' : 'none'
+                boxShadow: isPrimary 
+                  ? `inset 0 0 0 1px rgba(255,255,255,0.06), 0 12px 24px ${config.color}20, 0 8px 42px rgba(0,0,0,0.44)`
+                  : '0 8px 36px rgba(0,0,0,0.36)',
+                transform: isPrimary ? 'translateY(-2px)' : 'none'
               }}
               initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: tile.isPrimary ? -2 : 0 }}
+              animate={{ opacity: 1, y: isPrimary ? -2 : 0 }}
               transition={{ 
-                delay: delay + (idx * MOTION.DURATIONS.cardStagger), 
+                delay: animDelay, 
                 duration: 0.32, 
-                ease: MOTION.CURVES.spring 
+                ease: isPrimary ? MOTION.CURVES.bounce : MOTION.CURVES.spring 
               }}
               onClick={() => onOpenDetail?.(tile.segment)}
               whileHover={{ 
-                y: tile.isPrimary ? -4 : -2,
+                y: isPrimary ? -4 : -2,
                 scale: 1.008,
-                background: tile.isPrimary 
-                  ? `linear-gradient(180deg, rgba(255, 255, 255, 0.062) 0%, rgba(255, 255, 255, 0.042) 100%)`
+                background: isPrimary 
+                  ? `linear-gradient(180deg, rgba(255, 255, 255, 0.068) 0%, rgba(255, 255, 255, 0.044) 100%)`
                   : `linear-gradient(180deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.038) 100%)`,
-                boxShadow: `0 14px 50px rgba(0,0,0,0.48), 0 0 36px ${config.glow}`,
+                boxShadow: isPrimary
+                  ? `0 14px 50px rgba(0,0,0,0.48), 0 0 40px ${config.glow}`
+                  : `0 12px 44px rgba(0,0,0,0.44), 0 0 32px ${config.glow}`,
                 borderColor: 'rgba(255,255,255,0.12)',
                 transition: { duration: 0.16 }
               }}
@@ -387,7 +451,7 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
                 inset: 0,
                 background: `
                   radial-gradient(ellipse at 50% -35%, ${config.ambient} 0%, transparent 100%),
-                  linear-gradient(135deg, ${config.ambient}05 0%, transparent 70%)
+                  linear-gradient(135deg, ${config.ambient}06 0%, transparent 70%)
                 `,
                 borderRadius: '20px',
                 pointerEvents: 'none'
@@ -398,14 +462,32 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
                 <div 
                   className="w-12 h-12 rounded-[15px] flex items-center justify-center relative"
                   style={{
-                    background: `${config.color}10`,
-                    border: `1px solid ${config.color}20`,
-                    boxShadow: `inset 0 1px 0 rgba(255,255,255,0.10), 0 0 0 0.5px ${config.color}08`
+                    background: `${config.color}${isPrimary ? '12' : '10'}`,
+                    border: `1px solid ${config.color}${isPrimary ? '24' : '20'}`,
+                    boxShadow: `inset 0 1px 0 rgba(255,255,255,0.10), 0 0 0 0.5px ${config.color}08`,
+                    filter: isPrimary ? 'brightness(1.04)' : 'none'
                   }}
                 >
-                  <config.Icon style={{ color: config.color, filter: 'brightness(1.18)' }} className="w-5.5 h-5.5" strokeWidth={2} />
+                  <config.Icon 
+                    style={{ 
+                      color: config.color, 
+                      filter: isPrimary ? 'brightness(1.22) saturate(1.1)' : 'brightness(1.18)',
+                      opacity: isPrimary ? 1 : 0.95
+                    }} 
+                    className="w-5.5 h-5.5" 
+                    strokeWidth={2} 
+                  />
                 </div>
-                <span className="text-[20px] font-bold" style={{ color: config.color, filter: 'brightness(1.16)' }}>
+                <span 
+                  className="text-[20px] font-bold" 
+                  style={{ 
+                    background: `linear-gradient(to bottom, ${config.color} 0%, ${config.color}dd 100%)`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    filter: 'brightness(1.16)'
+                  }}
+                >
                   {Math.round(weight)}%
                 </span>
               </div>
@@ -431,7 +513,7 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
                     animate={{ width: `${weight}%` }}
                     transition={{ 
                       duration: 0.36, 
-                      delay: delay + 0.25 + (idx * MOTION.DURATIONS.cardStagger), 
+                      delay: animDelay + 0.15, 
                       ease: MOTION.CURVES.easeOutQuint
                     }}
                   />
@@ -446,7 +528,7 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
 };
 
 // ============================================================================
-// INSIGHT ROWS (V2.1 Sleeker + Separated Navigation)
+// INSIGHT ROWS (V3 OS Horizon Layer System)
 // ============================================================================
 const InsightRows = ({ segments, delay, onOpenDetail }) => {
   const [expandedRow, setExpandedRow] = useState(null);
@@ -462,12 +544,12 @@ const InsightRows = ({ segments, delay, onOpenDetail }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ delay: delay + 0.3, duration: 0.35 }}
     >
-      <h3 className="text-[12px] font-medium uppercase tracking-wider mb-5" style={{ color: 'rgba(255,255,255,0.48)', letterSpacing: '0.11em' }}>
-        Segment Details
+      <h3 className="text-[11px] font-medium uppercase tracking-wider mb-5" style={{ color: 'rgba(255,255,255,0.46)', letterSpacing: '0.10em' }}>
+        Breakdown by Macro Forces
       </h3>
 
       <div className="space-y-3">
@@ -479,26 +561,34 @@ const InsightRows = ({ segments, delay, onOpenDetail }) => {
           return (
             <motion.div
               key={segment.name}
-              className="relative rounded-[18px] overflow-hidden cursor-pointer"
+              className="relative rounded-[16px] overflow-hidden cursor-pointer"
               style={{
-                background: 'rgba(255, 255, 255, 0.035)',
+                background: `linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.02) 100%)`,
                 backdropFilter: 'blur(20px)',
                 WebkitBackdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255,255,255,0.05)'
+                border: '1px solid rgba(255,255,255,0.05)',
+                boxShadow: `
+                  inset 0 0 12px rgba(0,0,0,0.45),
+                  0 0 16px rgba(80,80,120,0.10)
+                `
               }}
-              initial={{ opacity: 0, x: -12 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: delay + 0.32 + (idx * 0.045), duration: 0.26 }}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: delay + 0.32 + (idx * 0.08), duration: 0.26 }}
               onClick={() => handleRowClick(segment.name)}
               whileHover={{ 
                 y: -1,
-                background: 'rgba(255, 255, 255, 0.048)',
+                background: `linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.028) 100%)`,
                 borderColor: 'rgba(255,255,255,0.10)',
-                boxShadow: `0 4px 22px rgba(0,0,0,0.28), 0 0 22px ${config.glow}`,
+                boxShadow: `
+                  inset 0 0 12px rgba(0,0,0,0.45),
+                  0 4px 22px rgba(0,0,0,0.28), 
+                  0 0 22px ${config.glow}
+                `,
                 transition: { duration: 0.14 }
               }}
             >
-              {/* Icon Gradient Highlight */}
+              {/* Icon Gradient Highlight (Emissive +0.05) */}
               <div style={{
                 position: 'absolute',
                 top: '50%',
@@ -510,7 +600,7 @@ const InsightRows = ({ segments, delay, onOpenDetail }) => {
                 background: `radial-gradient(circle, ${config.ambient} 0%, transparent 68%)`,
                 filter: 'blur(18px)',
                 pointerEvents: 'none',
-                opacity: isExpanded ? 1 : 0.6,
+                opacity: isExpanded ? 1 : 0.65,
                 transition: 'opacity 0.2s ease'
               }} />
 
@@ -518,7 +608,7 @@ const InsightRows = ({ segments, delay, onOpenDetail }) => {
               <div style={{
                 position: 'absolute',
                 inset: 0,
-                borderRadius: '18px',
+                borderRadius: '16px',
                 boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)',
                 pointerEvents: 'none'
               }} />
@@ -552,7 +642,7 @@ const InsightRows = ({ segments, delay, onOpenDetail }) => {
                 </div>
               </div>
 
-              {/* Expanded Panel */}
+              {/* Expanded Panel (Bloom Effect) */}
               <AnimatePresence>
                 {isExpanded && (
                   <motion.div
@@ -560,22 +650,25 @@ const InsightRows = ({ segments, delay, onOpenDetail }) => {
                     style={{ 
                       borderColor: 'rgba(255,255,255,0.08)',
                       background: `
-                        linear-gradient(180deg, rgba(255,255,255,0.024) 0%, rgba(255,255,255,0.016) 100%)
+                        linear-gradient(180deg, rgba(255,255,255,0.026) 0%, rgba(255,255,255,0.018) 100%)
                       `,
-                      boxShadow: 'inset 0 2px 10px rgba(0,0,0,0.08)'
+                      boxShadow: `
+                        inset 0 2px 10px rgba(0,0,0,0.08),
+                        0 12px 32px rgba(0,0,0,0.35)
+                      `
                     }}
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.18, ease: MOTION.CURVES.bloom }}
+                    initial={{ height: 0, opacity: 0, y: -6 }}
+                    animate={{ height: 'auto', opacity: 1, y: 0 }}
+                    exit={{ height: 0, opacity: 0, y: -6 }}
+                    transition={{ duration: 0.2, ease: MOTION.CURVES.bloom }}
                   >
-                    {/* Luminous Top Divider (Connection Element) */}
+                    {/* Connecting Gradient Strip */}
                     <div style={{
                       position: 'absolute',
                       top: 0,
                       left: '16%',
                       right: '16%',
-                      height: '1px',
+                      height: '2px',
                       background: `linear-gradient(90deg, transparent, ${config.color}28, transparent)`,
                       filter: 'blur(1px)',
                       pointerEvents: 'none'
@@ -648,17 +741,25 @@ const InsightRows = ({ segments, delay, onOpenDetail }) => {
                       </div>
                     </div>
 
-                    {/* View Full Analysis Button */}
+                    {/* View Full Analysis CTA */}
                     <motion.button
                       onClick={(e) => handleViewFullAnalysis(e, segment)}
-                      className="flex items-center gap-2 text-[13px] font-medium"
+                      className="flex items-center gap-2 text-[13px] font-medium ml-auto"
                       style={{ 
                         color: config.color,
                         filter: 'brightness(1.12)'
                       }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.07, duration: 0.25 }}
                       whileHover={{ 
                         x: 2,
                         filter: 'brightness(1.25)',
+                        textDecoration: 'underline',
+                        textDecorationColor: `${config.color}60`,
+                        textDecorationThickness: '1px',
+                        textUnderlineOffset: '3px',
+                        textShadow: `0 0 12px ${config.color}40`,
                         transition: { duration: 0.12 }
                       }}
                       whileTap={{ scale: 0.98 }}
@@ -751,13 +852,48 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
             pointerEvents: 'none'
           }} />
 
-          {/* Vertical Glass Gradient */}
+          {/* Ambient Top-Down Soft Gradient */}
           <div style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 35%, rgba(0,0,0,0.02) 100%)',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 40%)',
             pointerEvents: 'none',
             borderRadius: '32px'
+          }} />
+
+          {/* Corner-Lens Lighting (Top-Left) */}
+          <div style={{
+            position: 'absolute',
+            top: '-5%',
+            left: '-5%',
+            width: '30%',
+            height: '30%',
+            background: 'radial-gradient(circle at 0% 0%, rgba(255,255,255,0.04) 0%, transparent 70%)',
+            filter: 'blur(32px)',
+            pointerEvents: 'none'
+          }} />
+
+          {/* Corner-Lens Lighting (Bottom-Right) */}
+          <div style={{
+            position: 'absolute',
+            bottom: '-5%',
+            right: '-5%',
+            width: '30%',
+            height: '30%',
+            background: 'radial-gradient(circle at 100% 100%, rgba(255,255,255,0.03) 0%, transparent 70%)',
+            filter: 'blur(32px)',
+            pointerEvents: 'none'
+          }} />
+
+          {/* Particle Noise (Premium Glass Depth) */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.015'/%3E%3C/svg%3E")`,
+            opacity: 0.015,
+            pointerEvents: 'none',
+            borderRadius: '32px',
+            mixBlendMode: 'overlay'
           }} />
 
           {/* Edge Bloom (3-4% Opacity) */}
