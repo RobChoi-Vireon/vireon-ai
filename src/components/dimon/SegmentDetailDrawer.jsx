@@ -10,7 +10,7 @@ import { X, Shield, Briefcase, BarChart3, Globe, Zap, Target, TrendingUp, Eye, C
 // OS Horizon Motion Tokens
 const MOTION = {
   CURVES: {
-    silk: [0.25, 0.1, 0, 1.0],
+    silk: [0.25, 0.1, 0.25, 1.0],
     horizonIn: [0.22, 0.61, 0.36, 1],
     horizonOut: [0.4, 0.0, 0.2, 1],
     easeOutQuint: [0.22, 1, 0.36, 1],
@@ -21,7 +21,7 @@ const MOTION = {
     base: 0.18,
     slow: 0.24,
     drawerOpen: 0.36,
-    tldrPop: 0.14,
+    tldrPop: 0.09,
     stagger: 0.05
   }
 };
@@ -43,87 +43,96 @@ const getTheme = (name) => {
   }
 };
 
+// Static Insight Panel Component (No Hover Scale, Reduced Glow)
+const InsightPanel = ({ icon: Icon, title, content, delay, iconColor }) => (
+  <motion.div
+    variants={{ hidden: { opacity: 0, y: 4 }, visible: { opacity: 1, y: 0 } }}
+    transition={{ delay, duration: 0.22, ease: MOTION.CURVES.silk }}
+    className="relative rounded-[20px]"
+    style={{
+      padding: '20px 24px',
+      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.028) 100%)',
+      backdropFilter: 'blur(20px) saturate(152%)',
+      WebkitBackdropFilter: 'blur(20px) saturate(152%)',
+      border: '1px solid rgba(255,255,255,0.12)',
+      boxShadow: `
+        inset 0 1px 2px rgba(255,255,255,0.10),
+        inset 0 -2px 4px rgba(0,0,0,0.08),
+        0 8px 24px rgba(0,0,0,0.12),
+        0 0 18px ${iconColor}08
+      `
+    }}
+  >
+    {/* Top Rim Light */}
+    <div style={{
+      position: 'absolute',
+      top: 0,
+      left: '18%',
+      right: '18%',
+      height: '1px',
+      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+      pointerEvents: 'none'
+    }} />
+
+    {/* Subsurface Glow */}
+    <div style={{
+      position: 'absolute',
+      inset: 0,
+      background: `radial-gradient(ellipse at 50% 30%, ${iconColor}06 0%, transparent 100%)`,
+      borderRadius: '20px',
+      pointerEvents: 'none'
+    }} />
+
+    <div className="flex items-start gap-4 relative">
+      <div 
+        className="w-10 h-10 rounded-[13px] flex items-center justify-center flex-shrink-0"
+        style={{
+          background: `${iconColor}14`,
+          border: `1px solid ${iconColor}28`,
+          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.12), 0 0 14px ${iconColor}18`
+        }}
+      >
+        <Icon className="w-5 h-5" style={{ color: iconColor, filter: 'brightness(1.18)' }} strokeWidth={2.2} />
+      </div>
+
+      <div className="flex-1">
+        <h3 
+          className="text-[14px] font-medium mb-3" 
+          style={{ 
+            color: 'rgba(255,255,255,0.72)',
+            letterSpacing: '0.015em'
+          }}
+        >
+          {title}
+        </h3>
+        
+        <p 
+          className="text-[13px]" 
+          style={{ 
+            color: 'rgba(255,255,255,0.88)',
+            lineHeight: '1.56',
+            letterSpacing: '-0.002em'
+          }}
+        >
+          {content}
+        </p>
+      </div>
+    </div>
+  </motion.div>
+);
+
 // ============================================================================
 // POLICY DRAWER — OS HORIZON V2.5 NARRATIVE ARCHITECTURE
 // ============================================================================
 const PolicyDrawerContent = ({ segment, delay }) => {
   const theme = getTheme(segment.name);
   const weight = (segment?.weight || 0) * 100;
+  const [haloPulse, setHaloPulse] = useState(0.03);
 
-  const InsightPanel = ({ icon: Icon, title, content, delay, iconColor }) => (
-    <motion.div
-      variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0 } }}
-      transition={{ delay, duration: 0.24, ease: MOTION.CURVES.easeOutQuint }}
-      className="relative rounded-[20px] p-6"
-      style={{
-        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.028) 100%)',
-        backdropFilter: 'blur(20px) saturate(152%)',
-        WebkitBackdropFilter: 'blur(20px) saturate(152%)',
-        border: '1px solid rgba(255,255,255,0.12)',
-        boxShadow: `
-          inset 0 1px 2px rgba(255,255,255,0.10),
-          0 8px 24px rgba(0,0,0,0.12),
-          0 0 18px ${iconColor}08
-        `
-      }}
-    >
-      {/* Top Rim Light */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: '18%',
-        right: '18%',
-        height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
-        pointerEvents: 'none'
-      }} />
-
-      {/* Subsurface Glow */}
-      <div style={{
-        position: 'absolute',
-        inset: 0,
-        background: `radial-gradient(ellipse at 50% 30%, ${iconColor}06 0%, transparent 100%)`,
-        borderRadius: '20px',
-        pointerEvents: 'none'
-      }} />
-
-      <div className="flex items-start gap-4 relative">
-        <div 
-          className="w-10 h-10 rounded-[13px] flex items-center justify-center flex-shrink-0"
-          style={{
-            background: `${iconColor}14`,
-            border: `1px solid ${iconColor}28`,
-            boxShadow: `inset 0 1px 0 rgba(255,255,255,0.12), 0 0 14px ${iconColor}18`
-          }}
-        >
-          <Icon className="w-5 h-5" style={{ color: iconColor, filter: 'brightness(1.18)' }} strokeWidth={2.2} />
-        </div>
-
-        <div className="flex-1">
-          <h3 
-            className="text-[14px] font-medium mb-3" 
-            style={{ 
-              color: 'rgba(255,255,255,0.72)',
-              letterSpacing: '0.005em'
-            }}
-          >
-            {title}
-          </h3>
-          
-          <p 
-            className="text-[13px]" 
-            style={{ 
-              color: 'rgba(255,255,255,0.88)',
-              lineHeight: '1.62',
-              letterSpacing: '-0.002em'
-            }}
-          >
-            {content}
-          </p>
-        </div>
-      </div>
-    </motion.div>
-  );
+  useEffect(() => {
+    const timer = setTimeout(() => setHaloPulse(0), 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <motion.div
@@ -198,10 +207,10 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         </p>
       </motion.div>
 
-      {/* Hero Insight Capsule */}
+      {/* Hero Insight Capsule - Enhanced with Float + Halo Pulse */}
       <motion.div
-        variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
-        transition={{ delay: 0.02, duration: 0.28, ease: MOTION.CURVES.easeOutQuint }}
+        variants={{ hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } }}
+        transition={{ delay: 0.02, duration: 0.09, ease: MOTION.CURVES.silk }}
         className="relative rounded-[24px] p-6 mb-12"
         style={{
           marginTop: '32px',
@@ -229,15 +238,24 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           pointerEvents: 'none'
         }} />
 
-        {/* Subsurface Blue Lighting */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: `radial-gradient(ellipse at 50% 40%, ${theme.ambient} 0%, transparent 100%)`,
-          borderRadius: '24px',
-          pointerEvents: 'none',
-          opacity: 0.6
-        }} />
+        {/* Subsurface Blue Lighting with Pulse */}
+        <motion.div 
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: `radial-gradient(ellipse at 50% 40%, ${theme.ambient} 0%, transparent 100%)`,
+            borderRadius: '24px',
+            pointerEvents: 'none',
+            opacity: 0.6
+          }}
+          animate={{
+            opacity: [0.6 + haloPulse, 0.6]
+          }}
+          transition={{
+            duration: 0.8,
+            ease: 'easeOut'
+          }}
+        />
 
         <div className="flex items-center justify-between gap-8 relative">
           {/* TL;DR Chip */}
@@ -305,7 +323,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         </div>
       </motion.div>
 
-      {/* Insight Panels Stack */}
+      {/* Insight Panels Stack - Staggered Float-In */}
       <motion.div
         variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
         style={{ 
@@ -320,7 +338,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           icon={Target} 
           title="Key Driver"
           content="Regulatory oversight expanding across content, privacy, and platform audits"
-          delay={0.08}
+          delay={0.06}
           iconColor={theme.color}
         />
 
@@ -329,7 +347,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           icon={Waves} 
           title="Pressure Direction"
           content="Tightening — medium-term environment trending more restrictive"
-          delay={0.13}
+          delay={0.11}
           iconColor={theme.color}
         />
 
@@ -338,24 +356,26 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           icon={BarChart3} 
           title="Market Impact Level"
           content="Moderate impact with pockets of friction emerging in affected sectors"
-          delay={0.18}
+          delay={0.16}
           iconColor={theme.color}
         />
       </motion.div>
 
       {/* What This Means — Final Insight Capsule */}
       <motion.div
-        variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0 } }}
-        transition={{ delay: 0.24, duration: 0.26, ease: MOTION.CURVES.easeOutQuint }}
-        className="relative rounded-[26px] p-8 mx-auto"
+        variants={{ hidden: { opacity: 0, y: 4 }, visible: { opacity: 1, y: 0 } }}
+        transition={{ delay: 0.22, duration: 0.24, ease: MOTION.CURVES.silk }}
+        className="relative rounded-[26px] mx-auto"
         style={{
           maxWidth: '88%',
+          padding: '28px 32px',
           background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.065) 0%, rgba(255, 255, 255, 0.035) 100%)',
           backdropFilter: 'blur(22px) saturate(158%)',
           WebkitBackdropFilter: 'blur(22px) saturate(158%)',
           border: '1px solid rgba(255,255,255,0.14)',
           boxShadow: `
             inset 0 2px 2px rgba(255,255,255,0.12),
+            inset 0 -2px 4px rgba(0,0,0,0.10),
             inset 0 0 24px rgba(142, 187, 255, 0.06),
             0 12px 36px rgba(0,0,0,0.16)
           `
@@ -391,7 +411,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
             className="text-[14px] font-medium mb-4 uppercase" 
             style={{ 
               color: 'rgba(255,255,255,0.68)',
-              letterSpacing: '0.08em'
+              letterSpacing: '0.09em'
             }}
           >
             What This Means
@@ -401,7 +421,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
             className="text-[14px]" 
             style={{ 
               color: 'rgba(255,255,255,0.92)',
-              lineHeight: '1.68',
+              lineHeight: '1.64',
               letterSpacing: '-0.003em',
               maxWidth: '620px',
               margin: '0 auto'
@@ -414,82 +434,6 @@ const PolicyDrawerContent = ({ segment, delay }) => {
     </motion.div>
   );
 };
-
-// Static Insight Panel Component (No Hover, No Expansion)
-const InsightPanel = ({ icon: Icon, title, content, delay, iconColor }) => (
-  <motion.div
-    variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0 } }}
-    transition={{ delay, duration: 0.24, ease: MOTION.CURVES.easeOutQuint }}
-    className="relative rounded-[20px] p-6"
-    style={{
-      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.028) 100%)',
-      backdropFilter: 'blur(20px) saturate(152%)',
-      WebkitBackdropFilter: 'blur(20px) saturate(152%)',
-      border: '1px solid rgba(255,255,255,0.12)',
-      boxShadow: `
-        inset 0 1px 2px rgba(255,255,255,0.10),
-        0 8px 24px rgba(0,0,0,0.12),
-        0 0 18px ${iconColor}08
-      `
-    }}
-  >
-    {/* Top Rim Light */}
-    <div style={{
-      position: 'absolute',
-      top: 0,
-      left: '18%',
-      right: '18%',
-      height: '1px',
-      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
-      pointerEvents: 'none'
-    }} />
-
-    {/* Subsurface Glow */}
-    <div style={{
-      position: 'absolute',
-      inset: 0,
-      background: `radial-gradient(ellipse at 50% 30%, ${iconColor}06 0%, transparent 100%)`,
-      borderRadius: '20px',
-      pointerEvents: 'none'
-    }} />
-
-    <div className="flex items-start gap-4 relative">
-      <div 
-        className="w-10 h-10 rounded-[13px] flex items-center justify-center flex-shrink-0"
-        style={{
-          background: `${iconColor}14`,
-          border: `1px solid ${iconColor}28`,
-          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.12), 0 0 14px ${iconColor}18`
-        }}
-      >
-        <Icon className="w-5 h-5" style={{ color: iconColor, filter: 'brightness(1.18)' }} strokeWidth={2.2} />
-      </div>
-
-      <div className="flex-1">
-        <h3 
-          className="text-[14px] font-medium mb-3" 
-          style={{ 
-            color: 'rgba(255,255,255,0.72)',
-            letterSpacing: '0.005em'
-          }}
-        >
-          {title}
-        </h3>
-        
-        <p 
-          className="text-[13px]" 
-          style={{ 
-            color: 'rgba(255,255,255,0.88)',
-            lineHeight: '1.62',
-            letterSpacing: '-0.002em'
-          }}
-        >
-          {content}
-        </p>
-      </div>
-    </div>
-  </motion.div>
-);
 
 // ============================================================================
 // STANDARD DRAWER CONTENT (Credit, Equities, Global)
@@ -519,7 +463,7 @@ const LuxurySection = ({ icon: Icon, title, children, iconColor = "#4F46E5", del
         whileHover={{ scale: 1.04, boxShadow: `inset 0 1px 0 rgba(255,255,255,0.12), 0 5px 14px ${iconColor}22` }}
         transition={{ duration: MOTION.DURATIONS.fast, ease: MOTION.CURVES.horizonIn }}
       >
-        <Icon className="w-4 h-4 relative z-10" style={{ color: iconColor, filter: 'brightness(1.12)' }} strokeWidth={2.5} />
+        <Icon className="w-4 h-4 relative z-10" style={{ color: iconColor, filter: 'brightness(1.12)' }} strokeWidth={2.2} />
       </motion.div>
       
       <div>
@@ -565,7 +509,7 @@ const AssetGroupImpact = ({ group, items, delay }) => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: delay + 0.05 + (i * 0.03), duration: MOTION.DURATIONS.fast }}
             >
-              <DirectionIcon className="w-3.5 h-3.5 flex-shrink-0" style={{ color }} strokeWidth={2.5} />
+              <DirectionIcon className="w-3.5 h-3.5 flex-shrink-0" style={{ color }} strokeWidth={2.2} />
               <span style={{ color: 'rgba(255,255,255,0.88)' }}>{item.detail}</span>
             </motion.div>
           );
@@ -727,7 +671,7 @@ const StandardDrawerContent = ({ segment, delay }) => {
             {config.label}
           </span>
         </div>
-        <item.icon className="w-4 h-4 mr-2.5 mt-0.5 flex-shrink-0" style={{ color: '#5EA7FF' }} strokeWidth={2} />
+        <item.icon className="w-4 h-4 mr-2.5 mt-0.5 flex-shrink-0" style={{ color: '#5EA7FF' }} strokeWidth={2.2} />
         <span className="text-[13px]" style={{ color: 'rgba(255,255,255,0.90)', lineHeight: '1.62', paddingLeft: '4px' }}>
           {item.text}
         </span>
@@ -1107,7 +1051,7 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
                     pointerEvents: 'none'
                   }} />
 
-                  <Icon className="w-6 h-6 relative z-10" style={{ color: theme.color, filter: 'brightness(1.15)' }} strokeWidth={2} />
+                  <Icon className="w-6 h-6 relative z-10" style={{ color: theme.color, filter: 'brightness(1.15)' }} strokeWidth={2.2} />
                 </motion.div>
                 <div>
                   <h2 
@@ -1153,7 +1097,7 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
                   whileTap={{ scale: 0.96 }}
                   aria-label="Previous Segment"
                 >
-                  <ChevronLeft className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.74)' }} strokeWidth={2} />
+                  <ChevronLeft className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.74)' }} strokeWidth={2.2} />
                 </motion.button>
                 <motion.button
                   onClick={() => onNavigate('next')}
@@ -1172,7 +1116,7 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
                   whileTap={{ scale: 0.96 }}
                   aria-label="Next Segment"
                 >
-                  <ChevronRight className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.74)' }} strokeWidth={2} />
+                  <ChevronRight className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.74)' }} strokeWidth={2.2} />
                 </motion.button>
                 <motion.button 
                   onClick={onClose} 
@@ -1190,7 +1134,7 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
                   }}
                   whileTap={{ scale: 0.96 }}
                 >
-                  <X className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.74)' }} />
+                  <X className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.74)' }} strokeWidth={2.2} />
                 </motion.button>
               </div>
             </div>
