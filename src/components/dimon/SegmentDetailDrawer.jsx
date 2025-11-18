@@ -1,6 +1,6 @@
 // 🔒 DESIGN LOCKED — OS HORIZON V2.5 NARRATIVE ARCHITECTURE
 // Last Updated: 2025-01-20 | Vireon OS Horizon Full Certification
-// Policy Drawer: 16-Pillar Audit Passed — Apple-Grade Glass Physics
+// Policy Drawer: Unified Glass Header — Apple-Grade Continuity
 // See: DESIGN_LOCKED_COMPONENTS.md
 
 import React, { useEffect, useState } from 'react';
@@ -927,14 +927,16 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
                 inset: 0,
                 background: 'radial-gradient(ellipse at 50% 18%, rgba(255, 255, 255, 0.03) 0%, transparent 70%)',
                 pointerEvents: 'none',
-                borderRadius: '26px'
+                borderRadius: '26px',
+                zIndex: 1
               }} />
               <div style={{
                 position: 'absolute',
                 inset: '1px',
                 borderRadius: '25px',
                 boxShadow: 'inset 0 0 1px rgba(255,255,255,0.09)',
-                pointerEvents: 'none'
+                pointerEvents: 'none',
+                zIndex: 1
               }} />
             </>
           )}
@@ -949,7 +951,8 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
               height: '68%',
               background: `radial-gradient(ellipse at 50% 12%, ${theme.color}04 0%, transparent 88%)`,
               pointerEvents: 'none',
-              borderRadius: '32px'
+              borderRadius: '32px',
+              zIndex: 1
             }} />
           )}
 
@@ -961,15 +964,18 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
             height: '1.5px',
             background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent)',
             filter: 'blur(1.2px)',
-            pointerEvents: 'none'
+            pointerEvents: 'none',
+            borderRadius: isPolicyDrawer ? '26px 26px 0 0' : '32px 32px 0 0',
+            zIndex: 2
           }} />
 
           <motion.div 
             className="relative p-6 flex-shrink-0" 
             style={{ 
-              background: isPolicyDrawer ? 'transparent' : 'rgba(255, 255, 255, 0.015)',
-              paddingTop: isPolicyDrawer ? '24px' : '20px',
-              paddingBottom: isPolicyDrawer ? '20px' : '20px'
+              background: 'transparent',
+              paddingTop: '24px',
+              paddingBottom: '24px',
+              zIndex: 3
             }}
             variants={{ hidden: { opacity: 0, y: -10 }, visible: { opacity: 1, y: 0 }}}
           >
@@ -1096,11 +1102,9 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
               scrollBehavior: 'smooth',
               WebkitOverflowScrolling: 'touch',
               scrollbarWidth: 'thin',
-              padding: isPolicyDrawer ? '0' : '32px 48px',
-              paddingLeft: isPolicyDrawer ? '48px' : '48px',
-              paddingRight: isPolicyDrawer ? '48px' : '48px',
-              paddingBottom: isPolicyDrawer ? '52px' : '48px',
-              willChange: 'transform'
+              padding: isPolicyDrawer ? '0 48px 52px 48px' : '0 48px 48px 48px',
+              willChange: 'transform',
+              zIndex: 2
             }}
           >
             {isPolicyDrawer ? (
