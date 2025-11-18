@@ -1,5 +1,5 @@
 // 🔒 DESIGN LOCKED — OS HORIZON TAHOE V5.1 SEGMENT ANALYSIS REFINEMENT
-// Last Updated: 2025-01-20
+// Last Updated: 2025-01-20 | Hierarchy + Clarity Enhancement Applied
 // Policy Drawer: OS HORIZON PATCH V4 — CINEMATIC HERO FULL REBUILD
 // Credit, Equities, Global: Standard format (to be upgraded next)
 // See: DESIGN_LOCKED_COMPONENTS.md
@@ -47,7 +47,7 @@ const LuxurySection = ({ icon: Icon, title, children, iconColor = "#4F46E5", del
       ease: MOTION.CURVES.horizonIn
     }}
   >
-    <div className="flex items-center space-x-2.5">
+    <div className="flex items-center space-x-2.5" style={{ marginTop: '24px', marginBottom: '6px' }}>
       <motion.div 
         className="relative p-2.5 rounded-[14px] border overflow-hidden"
         style={{ 
@@ -63,7 +63,7 @@ const LuxurySection = ({ icon: Icon, title, children, iconColor = "#4F46E5", del
       </motion.div>
       
       <div>
-        <h3 className="text-[15px] font-semibold" style={{ color: 'rgba(255,255,255,0.94)', letterSpacing: '-0.012em' }}>
+        <h3 className="text-[15px] font-semibold" style={{ color: 'rgba(255,255,255,0.65)', letterSpacing: '-0.012em' }}>
           {title}
         </h3>
       </div>
@@ -126,7 +126,7 @@ const getTheme = (name) => {
 };
 
 // ============================================================================
-// POLICY DRAWER — CINEMATIC HERO FULL REBUILD (OS HORIZON PATCH V4)
+// POLICY DRAWER — CINEMATIC HERO (OS HORIZON PATCH V4 + Hierarchy Polish)
 // ============================================================================
 const PolicyDrawerContent = ({ segment, delay }) => {
   const theme = getTheme(segment.name);
@@ -153,6 +153,15 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         width: '100%',
         height: '490px',
         background: 'radial-gradient(circle at 50% 20%, rgba(205, 230, 255, 0.06) 0%, rgba(0, 0, 0, 0) 70%)',
+        pointerEvents: 'none'
+      }} />
+
+      {/* Subtle Reading-Column Gradient */}
+      <div style={{
+        position: 'absolute',
+        zIndex: -1,
+        inset: 0,
+        background: 'linear-gradient(180deg, rgba(255,255,255,0.025) 0%, transparent 100%)',
         pointerEvents: 'none'
       }} />
 
@@ -188,20 +197,20 @@ const PolicyDrawerContent = ({ segment, delay }) => {
       {/* TL;DR Block */}
       <motion.div
         variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
-        style={{ marginBottom: '32px' }}
+        style={{ marginBottom: '32px', marginTop: '14px' }}
       >
         {/* TL;DR Capsule */}
         <motion.div
           variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
           transition={{ duration: MOTION.DURATIONS.tldrPop, ease: MOTION.CURVES.easeOutCubic }}
-          style={{ marginBottom: '16px' }}
+          style={{ marginBottom: '18px' }}
         >
           <div 
             className="inline-block rounded-full"
             style={{
               fontSize: '12px',
               fontWeight: 600,
-              color: 'rgba(255,255,255,0.78)',
+              color: 'rgba(255,255,255,0.82)',
               padding: '6px 12px',
               background: 'rgba(255,255,255,0.08)',
               border: '1px solid rgba(255,255,255,0.12)',
@@ -220,8 +229,8 @@ const PolicyDrawerContent = ({ segment, delay }) => {
             fontSize: '19px',
             fontWeight: 600,
             color: 'rgba(255,255,255,0.88)',
-            maxWidth: '92%',
-            lineHeight: '1.45'
+            maxWidth: '680px',
+            lineHeight: '1.42'
           }}
         >
           Regulatory hardening raises compliance costs → downside for Big Tech multiples; hawkish Fed bias reinforced.
@@ -243,15 +252,16 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         <motion.div
           variants={{ hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } }}
           transition={{ duration: 0.16 }}
-          style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
+          style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '24px' }}
         >
           <div 
             style={{
               fontSize: '12px',
               fontWeight: 500,
               letterSpacing: '0.08em',
-              color: 'rgba(255,255,255,0.58)',
-              textTransform: 'uppercase'
+              color: 'rgba(255,255,255,0.62)',
+              textTransform: 'uppercase',
+              marginBottom: '6px'
             }}
           >
             Key Driver
@@ -260,8 +270,8 @@ const PolicyDrawerContent = ({ segment, delay }) => {
             style={{
               fontSize: '15px',
               color: 'rgba(255,255,255,0.68)',
-              lineHeight: '1.58',
-              maxWidth: '90%'
+              lineHeight: '1.42',
+              maxWidth: '680px'
             }}
           >
             Regulatory oversight expanding across content, privacy, and platform audits.
@@ -272,15 +282,16 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         <motion.div
           variants={{ hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } }}
           transition={{ duration: 0.16 }}
-          style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
+          style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '24px' }}
         >
           <div 
             style={{
               fontSize: '12px',
               fontWeight: 500,
               letterSpacing: '0.08em',
-              color: 'rgba(255,255,255,0.58)',
-              textTransform: 'uppercase'
+              color: 'rgba(255,255,255,0.62)',
+              textTransform: 'uppercase',
+              marginBottom: '6px'
             }}
           >
             Pressure Direction
@@ -289,8 +300,8 @@ const PolicyDrawerContent = ({ segment, delay }) => {
             style={{
               fontSize: '15px',
               color: 'rgba(255,255,255,0.68)',
-              lineHeight: '1.58',
-              maxWidth: '90%'
+              lineHeight: '1.42',
+              maxWidth: '680px'
             }}
           >
             Tightening — medium-term environment trending more restrictive.
@@ -301,15 +312,16 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         <motion.div
           variants={{ hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } }}
           transition={{ duration: 0.16 }}
-          style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
+          style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '24px' }}
         >
           <div 
             style={{
               fontSize: '12px',
               fontWeight: 500,
               letterSpacing: '0.08em',
-              color: 'rgba(255,255,255,0.58)',
-              textTransform: 'uppercase'
+              color: 'rgba(255,255,255,0.62)',
+              textTransform: 'uppercase',
+              marginBottom: '6px'
             }}
           >
             Market Impact Level
@@ -318,8 +330,8 @@ const PolicyDrawerContent = ({ segment, delay }) => {
             style={{
               fontSize: '15px',
               color: 'rgba(255,255,255,0.68)',
-              lineHeight: '1.58',
-              maxWidth: '90%'
+              lineHeight: '1.42',
+              maxWidth: '680px'
             }}
           >
             Moderate impact with pockets of friction emerging in affected sectors.
@@ -335,7 +347,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           display: 'flex',
           flexDirection: 'column',
           gap: '10px',
-          marginTop: '40px',
+          marginTop: '28px',
           marginBottom: '44px'
         }}
       >
@@ -344,8 +356,9 @@ const PolicyDrawerContent = ({ segment, delay }) => {
             fontSize: '12px',
             fontWeight: 500,
             letterSpacing: '0.08em',
-            color: 'rgba(255,255,255,0.58)',
-            textTransform: 'uppercase'
+            color: 'rgba(255,255,255,0.67)',
+            textTransform: 'uppercase',
+            marginBottom: '6px'
           }}
         >
           What This Means
@@ -354,9 +367,9 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           style={{
             fontSize: '16px',
             fontWeight: 500,
-            color: 'rgba(255,255,255,0.82)',
-            lineHeight: '1.54',
-            maxWidth: '92%'
+            color: 'rgba(255,255,255,0.87)',
+            lineHeight: '1.42',
+            maxWidth: '680px'
           }}
         >
           Net effect: Policy tightening is elevating medium-term pressure on Street Alignment, reinforcing upward momentum with growing consistency.
@@ -367,9 +380,10 @@ const PolicyDrawerContent = ({ segment, delay }) => {
       <motion.div
         variants={{ hidden: { opacity: 0, y: 3 }, visible: { opacity: 1, y: 0 } }}
         transition={{ duration: 0.14, ease: MOTION.CURVES.easeOutQuint }}
+        style={{ marginTop: '16px' }}
       >
         {/* Status Chip */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '8px' }}>
           <div
             className="inline-block rounded-full"
             style={{
@@ -391,7 +405,8 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           style={{ 
             height: '8px',
             background: 'rgba(255,255,255,0.06)',
-            borderRadius: '12px'
+            borderRadius: '12px',
+            marginBottom: '6px'
           }}
         >
           <motion.div
@@ -423,7 +438,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
             fontSize: '13px', 
             fontWeight: 500,
             color: 'rgba(255,255,255,0.54)',
-            marginTop: '12px'
+            paddingBottom: '14px'
           }}
         >
           Contribution: {Math.round(weight)}%
@@ -434,7 +449,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
 };
 
 // ============================================================================
-// STANDARD DRAWER CONTENT (Credit, Equities, Global - To Be Upgraded)
+// STANDARD DRAWER CONTENT (Credit, Equities, Global - Hierarchy Enhanced)
 // ============================================================================
 const StandardDrawerContent = ({ segment, delay }) => {
   const getSegmentDetails = (segment) => {
@@ -603,19 +618,31 @@ const StandardDrawerContent = ({ segment, delay }) => {
       initial="hidden"
       animate="visible"
     >
-      <div 
-        className="inline-block px-3 py-1.5 rounded-lg text-[10px] font-semibold mb-3.5"
-        style={{
-          background: 'rgba(255,255,255,0.07)',
-          border: '1px solid rgba(255,255,255,0.12)',
-          color: 'rgba(255,255,255,0.74)',
-          letterSpacing: '0.04em'
-        }}
-      >
-        TL;DR
+      {/* Subtle Reading-Column Gradient */}
+      <div style={{
+        position: 'absolute',
+        zIndex: -1,
+        inset: 0,
+        background: 'linear-gradient(180deg, rgba(255,255,255,0.025) 0%, transparent 100%)',
+        pointerEvents: 'none'
+      }} />
+
+      {/* TL;DR Block */}
+      <div style={{ marginTop: '14px', marginBottom: '18px' }}>
+        <div 
+          className="inline-block px-3 py-1.5 rounded-lg text-[10px] font-semibold mb-4"
+          style={{
+            background: 'rgba(255,255,255,0.07)',
+            border: '1px solid rgba(255,255,255,0.12)',
+            color: 'rgba(255,255,255,0.78)',
+            letterSpacing: '0.04em'
+          }}
+        >
+          TL;DR
+        </div>
       </div>
 
-      <p className="text-[13px] mb-4" style={{ color: 'rgba(255,255,255,0.90)', lineHeight: '1.58', maxWidth: '92%' }}>
+      <p className="text-[13px] mb-4" style={{ color: 'rgba(255,255,255,0.90)', lineHeight: '1.42', maxWidth: '680px' }}>
         <strong style={{ fontWeight: 600, color: 'rgba(255,255,255,0.98)' }}>
           {details.morning_takeaway.split('.')[0]}.
         </strong>
@@ -717,50 +744,55 @@ const StandardDrawerContent = ({ segment, delay }) => {
           border: '1px solid rgba(255,255,255,0.12)',
           boxShadow: `inset 0 1px 0 rgba(255,255,255,0.11), inset 0 0 26px ${theme.color}05, 0 4px 16px rgba(0,0,0,0.10)`
         }}>
-          <p className="text-[14px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.90)', lineHeight: '1.68' }}>
+          <p className="text-[14px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.90)', lineHeight: '1.42', maxWidth: '680px' }}>
             {details.outlook.line1}
           </p>
           {details.outlook.line2 && (
-            <p className="text-[14px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.80)', lineHeight: '1.68' }}>
+            <p className="text-[14px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.80)', lineHeight: '1.42', maxWidth: '680px' }}>
               {details.outlook.line2}
             </p>
           )}
         </div>
       </LuxurySection>
 
-      <div className="flex items-center gap-3.5 mb-4">
-        <div
-          className="px-3 py-1.5 rounded-lg text-[10px] font-semibold"
-          style={{
-            background: `${theme.color}09`,
-            border: `1px solid ${theme.color}18`,
-            color: theme.color,
-            boxShadow: `inset 0 1px 0 rgba(255,255,255,0.06)`
-          }}
-        >
-          {segment.name === 'Credit' ? 'Moderate' : segment.name === 'Equities' ? 'Moderate' : 'Softening'}
-        </div>
-        <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.62)' }}>
-          Contribution: {Math.round(weight)}%
-        </span>
-      </div>
-
-      <div className="relative">
-        <div 
-          className="w-full h-[3px] rounded-full overflow-hidden" 
-          style={{ background: 'rgba(0,0,0,0.22)' }}
-        >
-          <motion.div
-            className="h-full rounded-full"
-            style={{ 
-              background: `linear-gradient(90deg, ${theme.color}94, ${theme.color}f4)`,
-              boxShadow: `0 0 10px ${theme.color}30, inset 0 1px 0 rgba(255,255,255,0.10)`
+      {/* Ending Cluster: Status + Contribution */}
+      <div style={{ marginTop: '16px' }}>
+        <div className="flex items-center gap-3.5 mb-2">
+          <div
+            className="px-3 py-1.5 rounded-lg text-[10px] font-semibold"
+            style={{
+              background: `${theme.color}09`,
+              border: `1px solid ${theme.color}18`,
+              color: theme.color,
+              boxShadow: `inset 0 1px 0 rgba(255,255,255,0.06)`
             }}
-            initial={{ width: '0%' }}
-            animate={{ width: `${weight}%` }}
-            transition={{ duration: 0.32, ease: MOTION.CURVES.silk }}
-          />
+          >
+            {segment.name === 'Credit' ? 'Moderate' : segment.name === 'Equities' ? 'Moderate' : 'Softening'}
+          </div>
+          <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.62)' }}>
+            Contribution: {Math.round(weight)}%
+          </span>
         </div>
+
+        <div className="relative" style={{ marginTop: '8px', marginBottom: '6px' }}>
+          <div 
+            className="w-full h-[3px] rounded-full overflow-hidden" 
+            style={{ background: 'rgba(255,255,255,0.06)' }}
+          >
+            <motion.div
+              className="h-full rounded-full"
+              style={{ 
+                background: `linear-gradient(90deg, ${theme.color}94, ${theme.color}f4)`,
+                boxShadow: `0 0 10px ${theme.color}30, inset 0 1px 0 rgba(255,255,255,0.10)`
+              }}
+              initial={{ width: '0%' }}
+              animate={{ width: `${weight}%` }}
+              transition={{ duration: 0.32, ease: MOTION.CURVES.silk }}
+            />
+          </div>
+        </div>
+
+        <div style={{ paddingBottom: '14px' }} />
       </div>
     </motion.div>
   );
@@ -1018,15 +1050,16 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
             initial="hidden" 
             animate="visible"
             style={{ 
-              scrollBehavior: 'smooth'
+              scrollBehavior: 'smooth',
+              padding: isPolicyDrawer ? '0' : '32px 48px',
+              paddingLeft: isPolicyDrawer ? '48px' : '48px',
+              paddingRight: isPolicyDrawer ? '48px' : '48px'
             }}
           >
             {isPolicyDrawer ? (
               <PolicyDrawerContent segment={segment} delay={0.05} />
             ) : (
-              <div style={{ padding: '32px' }}>
-                <StandardDrawerContent segment={segment} delay={0.05} />
-              </div>
+              <StandardDrawerContent segment={segment} delay={0.05} />
             )}
           </motion.div>
         </motion.div>
