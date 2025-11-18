@@ -1,5 +1,5 @@
 // 🔒 DESIGN LOCKED — OS HORIZON TAHOE V5.1 STREET ALIGNMENT REFINEMENT
-// Last Updated: 2025-01-20 | V5.3 Insight Capsules Final Polish
+// Last Updated: 2025-01-20 | V5.4 Insight Capsules Final OS Horizon Polish
 // VIREON CERTIFIED — OS Horizon Hybrid Identity (Cinematic Intelligence + Tahoe Serenity)
 // See: DESIGN_LOCKED_COMPONENTS.md
 
@@ -508,7 +508,7 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
 };
 
 // ============================================================================
-// INSIGHT CAPSULES — OS Horizon Final Polish
+// INSIGHT CAPSULES — Final OS Horizon Polish
 // ============================================================================
 const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
   const [hoveredCapsule, setHoveredCapsule] = useState(null);
@@ -557,15 +557,15 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
               key={segment.name}
               className="relative rounded-[20px] overflow-hidden cursor-pointer text-left w-full"
               style={{
-                background: `linear-gradient(135deg, rgba(255, 255, 255, 0.062) 0%, rgba(255, 255, 255, 0.034) 100%)`,
-                backdropFilter: 'blur(17px) saturate(148%)',
-                WebkitBackdropFilter: 'blur(17px) saturate(148%)',
+                background: `linear-gradient(135deg, rgba(255, 255, 255, 0.063) 0%, rgba(255, 255, 255, 0.032) 100%)`,
+                backdropFilter: 'blur(16.5px) saturate(145%)',
+                WebkitBackdropFilter: 'blur(16.5px) saturate(145%)',
                 border: '1px solid rgba(255,255,255,0.08)',
                 padding: '16px 30px',
                 boxShadow: `
-                  inset 0 1px 0 rgba(255,255,255,0.11),
+                  inset 0 1px 0 rgba(255,255,255,0.092),
                   0 4px 14px rgba(0,0,0,0.08),
-                  0 0 ${isHovered ? '12px' : '9px'} ${config.glow}
+                  0 0 ${isHovered ? '14px' : '10px'} ${config.glow}
                 `,
                 display: 'flex',
                 alignItems: 'center',
@@ -593,9 +593,9 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
                 scale: 1.02,
                 background: `linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%)`,
                 boxShadow: `
-                  inset 0 1px 0 rgba(255,255,255,0.12),
+                  inset 0 1px 0 rgba(255,255,255,0.10),
                   0 6px 20px rgba(0,0,0,0.12),
-                  0 0 15px ${config.glow},
+                  0 0 18px ${config.glow},
                   0 0 2px ${config.glow}
                 `,
                 borderColor: 'rgba(255,255,255,0.12)',
@@ -603,15 +603,14 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
               }}
               whileTap={{ scale: 0.985, transition: { duration: 0.08 } }}
             >
-              {/* Faint Top Edge Highlight */}
+              {/* Top-Edge Highlight */}
               <div style={{
                 position: 'absolute',
                 top: 0,
-                left: '15%',
-                right: '15%',
+                left: '20%',
+                right: '20%',
                 height: '1px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-                filter: 'blur(1px)',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
                 pointerEvents: 'none'
               }} />
 
@@ -625,9 +624,9 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
                 opacity: 0.75
               }} />
 
-              {/* Hover Halo - Reduced by 15% (from 0.08 to 0.068) */}
+              {/* Hover Halo - Reduced to 6.8% opacity */}
               <AnimatePresence>
-                {isHovered && !isClicked && (
+                {isHovered && (
                   <motion.div
                     className="absolute inset-[-2px] rounded-[22px]"
                     style={{
@@ -660,7 +659,7 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
               </div>
 
               {/* Text Column */}
-              <div className="flex-1" style={{ marginRight: '22px' }}>
+              <div className="flex-1" style={{ marginRight: '18px' }}>
                 <p 
                   className="text-[13px] font-medium leading-snug" 
                   style={{ 
@@ -674,7 +673,7 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
                 </p>
               </div>
 
-              {/* Status Tag - Reduced Height & Font */}
+              {/* Status Tag - Refined Sizing */}
               <div 
                 className="inline-flex items-center gap-1.5 rounded-md flex-shrink-0"
                 style={{
@@ -687,10 +686,11 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
                   borderRadius: '9px'
                 }}
               >
-                <StatusIcon className="w-2.5 h-2.5" style={{ color: config.statusColor }} strokeWidth={2.5} />
+                <StatusIcon className="w-3 h-3" style={{ color: config.statusColor }} strokeWidth={2.5} />
                 <span 
-                  className="text-[9.5px] uppercase whitespace-nowrap" 
+                  className="uppercase whitespace-nowrap" 
                   style={{ 
+                    fontSize: '9px',
                     color: config.statusColor,
                     letterSpacing: '0.04em',
                     fontWeight: 500,
