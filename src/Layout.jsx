@@ -19,71 +19,68 @@ import NetworkErrorBoundary from "./components/core/NetworkErrorBoundary";
 const HORIZON_SPRING = { type: "spring", stiffness: 320, damping: 82, mass: 1 };
 const HORIZON_EASE = [0.25, 0.1, 0.25, 1.0];
 
-const NavLink = ({ href, icon: Icon, title, isActive, theme }) => (
+const NavLink = ({ href, icon: Icon, title, isActive }) => (
   <Link
     to={href}
-    className="group relative flex items-center space-x-3.5 tap-highlight-transparent"
+    className="group relative flex items-center tap-highlight-transparent"
     style={{ textDecoration: 'none' }}
   >
     <motion.div
-      className="relative w-full rounded-[20px] overflow-hidden"
+      className="relative w-full rounded-[22px] overflow-hidden"
       style={{
-        padding: '12px 16px',
-        background: isActive 
-          ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.11) 0%, rgba(255, 255, 255, 0.08) 100%)'
-          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.02) 100%)',
-        backdropFilter: 'blur(28px) saturate(165%)',
-        WebkitBackdropFilter: 'blur(28px) saturate(165%)',
-        border: '1px solid rgba(255,255,255,0.09)',
-        boxShadow: isActive 
-          ? `
-            inset 0 1px 2px rgba(255,255,255,0.14),
-            inset 0 0 22px rgba(100, 180, 255, 0.12),
-            0 4px 14px rgba(0,0,0,0.10)
-          `
-          : `
-            inset 0 1px 1px rgba(255,255,255,0.05),
-            0 2px 8px rgba(0,0,0,0.04)
-          `
-      }}
-      whileHover={{
-        y: -1,
-        scale: 1.01,
+        padding: '13px 18px',
+        minHeight: '52px',
+        display: 'flex',
+        alignItems: 'center',
         background: isActive 
           ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.09) 100%)'
-          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.04) 100%)',
-        boxShadow: isActive
+          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.04) 100%)',
+        backdropFilter: 'blur(28px) saturate(165%)',
+        WebkitBackdropFilter: 'blur(28px) saturate(165%)',
+        border: '1px solid rgba(255,255,255,0.10)',
+        boxShadow: isActive 
           ? `
-            inset 0 1px 2px rgba(255,255,255,0.16),
-            inset 0 0 26px rgba(100, 180, 255, 0.16),
-            0 6px 18px rgba(0,0,0,0.12)
+            inset 0 1px 2px rgba(255,255,255,0.15),
+            inset 0 0 24px rgba(100, 180, 255, 0.14),
+            0 4px 16px rgba(0,0,0,0.12),
+            0 0 22px rgba(100, 180, 255, 0.06)
           `
           : `
-            inset 0 1px 2px rgba(255,255,255,0.08),
-            0 4px 12px rgba(0,0,0,0.08)
+            inset 0 1px 1px rgba(255,255,255,0.06),
+            0 2px 8px rgba(0,0,0,0.05)
           `
       }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={!isActive ? {
+        y: -1,
+        scale: 1.01,
+        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.06) 100%)',
+        boxShadow: `
+          inset 0 1px 2px rgba(255,255,255,0.10),
+          0 4px 14px rgba(0,0,0,0.10),
+          0 0 18px rgba(100, 180, 255, 0.04)
+        `,
+        transition: { duration: 0.18, ease: HORIZON_EASE }
+      } : {}}
+      whileTap={{ scale: 0.98, transition: { duration: 0.08 } }}
+      animate={isActive ? { scale: 1.01 } : { scale: 1 }}
       transition={HORIZON_SPRING}
     >
-      {/* Top edge gloss */}
       <div style={{
         position: 'absolute',
         top: 0,
-        left: '15%',
-        right: '15%',
+        left: '18%',
+        right: '18%',
         height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
         pointerEvents: 'none'
       }} />
 
-      {/* Active state inner glow */}
       {isActive && (
         <div style={{
           position: 'absolute',
           inset: 0,
-          background: 'radial-gradient(ellipse at 50% 30%, rgba(100, 180, 255, 0.08) 0%, transparent 70%)',
-          borderRadius: '20px',
+          background: 'radial-gradient(ellipse at 50% 35%, rgba(100, 180, 255, 0.09) 0%, transparent 72%)',
+          borderRadius: '22px',
           pointerEvents: 'none'
         }} />
       )}
@@ -92,16 +89,16 @@ const NavLink = ({ href, icon: Icon, title, isActive, theme }) => (
         <Icon 
           className="w-[18px] h-[18px]" 
           style={{ 
-            color: isActive ? '#D7E3FF' : '#9BA3B0',
+            color: isActive ? '#C4DAFF' : '#9BA3B0',
             strokeWidth: 1.5,
-            filter: isActive ? 'drop-shadow(0 0 8px rgba(100, 180, 255, 0.4))' : 'none'
+            filter: isActive ? 'drop-shadow(0 0 10px rgba(100, 180, 255, 0.45))' : 'none'
           }} 
         />
         <span 
           className="font-medium tracking-[-0.005em]"
           style={{
             fontSize: '15px',
-            color: isActive ? 'rgba(255,255,255,0.96)' : 'rgba(255,255,255,0.68)'
+            color: isActive ? 'rgba(255,255,255,0.98)' : 'rgba(255,255,255,0.70)'
           }}
         >
           {title}
@@ -343,7 +340,7 @@ const VireonBrainLogo = ({ className = "w-9 h-9" }) => (
       <circle cx="60" cy="45" r="1.2" />
       <circle cx="50" cy="48" r="1.2" />
       <circle cx="68" cy="35" r="1.2" />
-      <circle cx="58" cy="42" r="1.2" />
+      <circle cx="58" y1="42" r="1.2" />
     </g>
     
     <g stroke="url(#vireon-connection-gradient)" strokeWidth="1.2" fill="none">
@@ -748,8 +745,8 @@ function LayoutContent({ children, currentPageName }) {
       <NetworkErrorBoundary>
         <div className={`flex h-screen transition-all duration-500 ease-out elevation-0`}>
 
-          {/* Desktop Sidebar — OS Horizon Glass Redesign */}
-          <aside className="hidden md:flex flex-col w-[280px] p-8 space-y-10 relative">
+          {/* Desktop Sidebar — OS Horizon Production Glass */}
+          <aside className="hidden md:flex flex-col w-[280px] p-8 relative">
             {/* Sidebar Glass Background */}
             <div style={{
               position: 'absolute',
@@ -777,7 +774,7 @@ function LayoutContent({ children, currentPageName }) {
             }} />
 
             {/* Logo */}
-            <Link to={createPageUrl('MacroSignals')} className="flex items-center gap-3 px-1 group relative z-10">
+            <Link to={createPageUrl('MacroSignals')} className="flex items-center gap-3 px-1 group relative z-10 mb-4">
               <img 
                 src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68943f7eb0fb9393bf9a8069/ea91941d0_Asset61xtransparent.png" 
                 alt="Vireon Logo" 
@@ -800,108 +797,120 @@ function LayoutContent({ children, currentPageName }) {
             </Link>
 
             {/* Navigation */}
-            <nav className="flex flex-col space-y-2 px-1 relative z-10">
+            <nav className="flex flex-col space-y-2.5 px-1 relative z-10" style={{ marginTop: '18px' }}>
               {navItems.map(item => (
-                <NavLink key={item.id} {...item} isActive={location.pathname === item.href} theme="dark" />
+                <NavLink key={item.id} {...item} isActive={location.pathname === item.href} />
               ))}
             </nav>
 
-            {/* Status Pill — OS Horizon Glass */}
-            <motion.div 
-              className="relative rounded-[22px] overflow-hidden"
-              style={{
-                padding: '16px 20px',
-                background: 'linear-gradient(135deg, rgba(50, 194, 136, 0.12) 0%, rgba(40, 174, 116, 0.10) 100%)',
-                backdropFilter: 'blur(30px) saturate(165%)',
-                WebkitBackdropFilter: 'blur(30px) saturate(165%)',
-                border: '1px solid rgba(50, 194, 136, 0.22)',
-                boxShadow: `
-                  inset 0 1px 2px rgba(255,255,255,0.12),
-                  inset 0 0 24px rgba(50, 194, 136, 0.10),
-                  0 6px 20px rgba(0,0,0,0.10)
-                `
-              }}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, ...HORIZON_SPRING }}
-            >
-              {/* Top edge gloss */}
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: '15%',
-                right: '15%',
-                height: '1px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
-                pointerEvents: 'none'
-              }} />
-
-              {/* Subsurface green glow */}
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                background: 'radial-gradient(ellipse at 50% 30%, rgba(50, 194, 136, 0.08) 0%, transparent 70%)',
-                borderRadius: '22px',
-                pointerEvents: 'none'
-              }} />
-
-              <div className="flex items-center space-x-3 relative z-10">
-                <div className="relative">
-                  {/* Glowing sphere */}
-                  <motion.div 
-                    className="w-3 h-3 rounded-full relative"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(88, 227, 164, 1) 0%, rgba(50, 194, 136, 0.95) 100%)',
-                      boxShadow: `
-                        0 0 18px rgba(88, 227, 164, 0.65),
-                        inset 0 1px 1px rgba(255,255,255,0.40),
-                        inset 0 -1px 2px rgba(0,0,0,0.25)
-                      `
-                    }}
-                    animate={{ 
-                      boxShadow: [
-                        '0 0 18px rgba(88, 227, 164, 0.65), inset 0 1px 1px rgba(255,255,255,0.40), inset 0 -1px 2px rgba(0,0,0,0.25)',
-                        '0 0 24px rgba(88, 227, 164, 0.75), inset 0 1px 1px rgba(255,255,255,0.40), inset 0 -1px 2px rgba(0,0,0,0.25)',
-                        '0 0 18px rgba(88, 227, 164, 0.65), inset 0 1px 1px rgba(255,255,255,0.40), inset 0 -1px 2px rgba(0,0,0,0.25)'
-                      ]
-                    }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  >
-                    {/* Specular highlight */}
-                    <div style={{
-                      position: 'absolute',
-                      top: '1px',
-                      left: '1px',
-                      width: '4px',
-                      height: '4px',
-                      borderRadius: '50%',
-                      background: 'rgba(255,255,255,0.60)',
-                      filter: 'blur(0.5px)',
-                      pointerEvents: 'none'
-                    }} />
-                  </motion.div>
-
-                  {/* Pulse ring */}
-                  <motion.div 
-                    className="absolute inset-0 w-3 h-3 rounded-full"
-                    style={{
-                      background: 'rgba(88, 227, 164, 0.35)',
-                      boxShadow: '0 0 12px rgba(88, 227, 164, 0.50)'
-                    }}
-                    animate={{ scale: [1, 1.8, 1], opacity: [0.75, 0, 0.75] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  />
-                </div>
-                <div>
-                  <p className="text-xs font-semibold" style={{ color: '#58E3A4' }}>
-                    Market Open
-                  </p>
-                  <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.58)' }}>
-                    Live data streaming
-                  </p>
-                </div>
+            {/* Market Status Card — Separated Component */}
+            <div className="relative z-10" style={{ marginTop: 'auto' }}>
+              <div 
+                className="text-[10px] font-semibold uppercase tracking-wider mb-3 px-1"
+                style={{ 
+                  color: 'rgba(255,255,255,0.48)',
+                  letterSpacing: '0.06em'
+                }}
+              >
+                Market Status
               </div>
-            </motion.div>
+
+              <motion.div 
+                className="relative rounded-[20px] overflow-hidden"
+                style={{
+                  padding: '14px 18px',
+                  background: 'linear-gradient(135deg, rgba(50, 194, 136, 0.10) 0%, rgba(40, 174, 116, 0.08) 100%)',
+                  backdropFilter: 'blur(28px) saturate(165%)',
+                  WebkitBackdropFilter: 'blur(28px) saturate(165%)',
+                  border: '1px solid rgba(50, 194, 136, 0.18)',
+                  boxShadow: `
+                    inset 0 1px 2px rgba(255,255,255,0.10),
+                    inset 0 0 20px rgba(50, 194, 136, 0.08),
+                    0 4px 16px rgba(0,0,0,0.08)
+                  `
+                }}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.35, ...HORIZON_SPRING }}
+              >
+                {/* Top edge gloss */}
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: '15%',
+                  right: '15%',
+                  height: '1px',
+                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+                  pointerEvents: 'none'
+                }} />
+
+                {/* Subsurface green glow */}
+                <div style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'radial-gradient(ellipse at 50% 30%, rgba(50, 194, 136, 0.07) 0%, transparent 70%)',
+                  borderRadius: '20px',
+                  pointerEvents: 'none'
+                }} />
+
+                <div className="flex items-center space-x-3 relative z-10">
+                  <div className="relative">
+                    {/* Glowing sphere */}
+                    <motion.div 
+                      className="w-2.5 h-2.5 rounded-full relative"
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(88, 227, 164, 1) 0%, rgba(50, 194, 136, 0.95) 100%)',
+                        boxShadow: `
+                          0 0 16px rgba(88, 227, 164, 0.55),
+                          inset 0 1px 1px rgba(255,255,255,0.38),
+                          inset 0 -1px 2px rgba(0,0,0,0.22)
+                        `
+                      }}
+                      animate={{ 
+                        boxShadow: [
+                          '0 0 16px rgba(88, 227, 164, 0.55), inset 0 1px 1px rgba(255,255,255,0.38), inset 0 -1px 2px rgba(0,0,0,0.22)',
+                          '0 0 22px rgba(88, 227, 164, 0.65), inset 0 1px 1px rgba(255,255,255,0.38), inset 0 -1px 2px rgba(0,0,0,0.22)',
+                          '0 0 16px rgba(88, 227, 164, 0.55), inset 0 1px 1px rgba(255,255,255,0.38), inset 0 -1px 2px rgba(0,0,0,0.22)'
+                        ]
+                      }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                      {/* Specular highlight */}
+                      <div style={{
+                        position: 'absolute',
+                        top: '0.5px',
+                        left: '0.5px',
+                        width: '3.5px',
+                        height: '3.5px',
+                        borderRadius: '50%',
+                        background: 'rgba(255,255,255,0.58)',
+                        filter: 'blur(0.5px)',
+                        pointerEvents: 'none'
+                      }} />
+                    </motion.div>
+
+                    {/* Pulse ring */}
+                    <motion.div 
+                      className="absolute inset-0 w-2.5 h-2.5 rounded-full"
+                      style={{
+                        background: 'rgba(88, 227, 164, 0.30)',
+                        boxShadow: '0 0 10px rgba(88, 227, 164, 0.45)'
+                      }}
+                      animate={{ scale: [1, 1.8, 1], opacity: [0.7, 0, 0.7] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold" style={{ color: '#58E3A4' }}>
+                      Market Open
+                    </p>
+                    <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.56)', marginTop: '1px' }}>
+                      Live data streaming
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
           </aside>
 
           <div className="flex-1 flex flex-col overflow-hidden">
