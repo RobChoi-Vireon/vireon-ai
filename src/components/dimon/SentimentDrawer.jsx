@@ -1,5 +1,5 @@
 // 🔒 DESIGN LOCKED — OS HORIZON TAHOE V5.1 STREET ALIGNMENT REFINEMENT
-// Last Updated: 2025-01-20 | V5.2 Insight Capsules Apple-Grade Polish
+// Last Updated: 2025-01-20 | V5.3 Insight Capsules OS Horizon Micro-Motion
 // VIREON CERTIFIED — OS Horizon Hybrid Identity (Cinematic Intelligence + Tahoe Serenity)
 // See: DESIGN_LOCKED_COMPONENTS.md
 
@@ -22,7 +22,9 @@ const MOTION = {
     cardStagger: 0.06,
     breathe: 9.0,
     rowExpand: 0.2,
-    glowCycle: 8.5
+    glowCycle: 8.5,
+    capsuleStagger: 0.02,
+    capsuleHover: 0.12
   }
 };
 
@@ -506,7 +508,7 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
 };
 
 // ============================================================================
-// NEW: INSIGHT CAPSULES (Apple-Grade Polish)
+// INSIGHT CAPSULES — OS Horizon Micro-Motion + Apple-Grade Polish
 // ============================================================================
 const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
   const [hoveredCapsule, setHoveredCapsule] = useState(null);
@@ -522,23 +524,23 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: 4 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: delay + 0.18, duration: 0.26 }}
-      style={{ marginTop: '44px', marginBottom: '28px' }}
+      transition={{ delay: delay + 0.14, duration: 0.24, ease: MOTION.CURVES.silk }}
+      style={{ marginTop: '56px', marginBottom: '32px' }}
     >
       <h3 
-        className="text-[11px] uppercase tracking-wider mb-6" 
+        className="text-[11px] uppercase mb-8" 
         style={{ 
           color: 'rgba(255,255,255,0.72)', 
-          letterSpacing: '0.058em',
+          letterSpacing: '0.056em',
           fontWeight: 400
         }}
       >
         Insight Capsules
       </h3>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-[22px]">
         {segments.map((segment, idx) => {
           const config = SEGMENT_CONFIG[segment.name];
           if (!config) return null;
@@ -556,48 +558,52 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
               className="relative rounded-[20px] overflow-hidden cursor-pointer text-left w-full"
               style={{
                 background: `linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.03) 100%)`,
-                backdropFilter: 'blur(16px) saturate(145%)',
-                WebkitBackdropFilter: 'blur(16px) saturate(145%)',
+                backdropFilter: 'blur(16.5px) saturate(145%)',
+                WebkitBackdropFilter: 'blur(16.5px) saturate(145%)',
                 border: '1px solid rgba(255,255,255,0.08)',
-                padding: '16px 26px',
+                padding: '18px 30px',
                 boxShadow: `
-                  inset 0 1px 0 rgba(255,255,255,0.06),
+                  inset 0 1px 0 rgba(255,255,255,0.09),
                   0 4px 14px rgba(0,0,0,0.08),
-                  0 0 ${isHovered ? '16px' : '12px'} ${config.glow}
+                  0 0 ${isHovered ? '14px' : '10px'} ${config.glow}
                 `,
                 display: 'flex',
                 alignItems: 'center',
-                gap: '14px',
-                minHeight: '56px',
+                gap: '17px',
+                minHeight: '52px',
                 opacity: isClicked ? 0.96 : 1
               }}
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: isClicked ? 0.96 : 1, scale: 1 }}
+              initial={{ opacity: 0, y: 4, scale: 0.98 }}
+              animate={{ 
+                opacity: isClicked ? 0.96 : 1, 
+                y: 0, 
+                scale: 1 
+              }}
               transition={{ 
-                delay: delay + 0.22 + (idx * 0.04), 
-                duration: 0.22, 
+                delay: delay + 0.18 + (idx * MOTION.DURATIONS.capsuleStagger), 
+                duration: 0.20, 
                 ease: MOTION.CURVES.spring,
-                opacity: { duration: isClicked ? 0.08 : 0.22 }
+                opacity: { duration: isClicked ? 0.08 : 0.20 }
               }}
               onClick={() => handleClick(segment)}
               onMouseEnter={() => setHoveredCapsule(segment.name)}
               onMouseLeave={() => setHoveredCapsule(null)}
               whileHover={{ 
                 y: -3,
-                scale: 1.015,
+                scale: 1.02,
                 background: `linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%)`,
                 boxShadow: `
-                  inset 0 1px 0 rgba(255,255,255,0.09),
+                  inset 0 1px 0 rgba(255,255,255,0.10),
                   0 6px 20px rgba(0,0,0,0.12),
-                  0 0 22px ${config.glow},
+                  0 0 18px ${config.glow},
                   0 0 2px ${config.glow}
                 `,
                 borderColor: 'rgba(255,255,255,0.12)',
-                transition: { duration: 0.12, ease: 'easeOut' }
+                transition: { duration: MOTION.DURATIONS.capsuleHover, ease: 'easeOut' }
               }}
-              whileTap={{ scale: 0.995 }}
+              whileTap={{ scale: 0.985, transition: { duration: 0.08 } }}
             >
-              {/* Ambient Tint - Reduced 25% */}
+              {/* Ambient Tint - Reduced by 25% */}
               <div style={{
                 position: 'absolute',
                 inset: 0,
@@ -607,20 +613,23 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
                 opacity: 0.75
               }} />
 
-              {/* Hover Halo - Softer */}
-              {isHovered && (
-                <motion.div
-                  className="absolute inset-[-2px] rounded-[22px]"
-                  style={{
-                    background: `radial-gradient(circle, ${config.glow} 0%, transparent 70%)`,
-                    filter: 'blur(8px)',
-                    pointerEvents: 'none',
-                    opacity: 0
-                  }}
-                  animate={{ opacity: 0.15 }}
-                  transition={{ duration: 0.12 }}
-                />
-              )}
+              {/* Hover Halo - Softer 8% opacity */}
+              <AnimatePresence>
+                {isHovered && (
+                  <motion.div
+                    className="absolute inset-[-2px] rounded-[22px]"
+                    style={{
+                      background: `radial-gradient(circle, ${config.glow} 0%, transparent 70%)`,
+                      filter: 'blur(10px)',
+                      pointerEvents: 'none'
+                    }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.08 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: MOTION.DURATIONS.capsuleHover }}
+                  />
+                )}
+              </AnimatePresence>
 
               {/* Icon */}
               <div 
@@ -638,45 +647,46 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
                 />
               </div>
 
-              {/* Text */}
-              <div className="flex-1">
+              {/* Text Column */}
+              <div className="flex-1" style={{ marginRight: '18px' }}>
                 <p 
-                  className="text-[13px] font-medium leading-snug mb-1.5" 
+                  className="text-[13px] font-medium leading-snug" 
                   style={{ 
                     color: 'rgba(255,255,255,0.88)', 
                     letterSpacing: '-0.01em',
-                    lineHeight: '1.35'
+                    lineHeight: '1.35',
+                    marginBottom: '0'
                   }}
                 >
                   {config.insight}
                 </p>
+              </div>
 
-                {/* Status Tag - Apple-Grade Polish */}
-                <div 
-                  className="inline-flex items-center gap-1.5 rounded-md"
-                  style={{
-                    background: `${config.statusColor}14`,
-                    border: `1px solid ${config.statusColor}24`,
-                    paddingLeft: '8px',
-                    paddingRight: '8px',
-                    paddingTop: '4px',
-                    paddingBottom: '4px',
-                    borderRadius: '8px'
+              {/* Status Tag - Apple-Grade Polish */}
+              <div 
+                className="inline-flex items-center gap-1.5 rounded-md flex-shrink-0"
+                style={{
+                  background: `${config.statusColor}14`,
+                  border: `1px solid ${config.statusColor}24`,
+                  paddingLeft: '10px',
+                  paddingRight: '10px',
+                  paddingTop: '5px',
+                  paddingBottom: '5px',
+                  borderRadius: '9px'
+                }}
+              >
+                <StatusIcon className="w-3 h-3" style={{ color: config.statusColor }} strokeWidth={2.5} />
+                <span 
+                  className="text-[10px] uppercase whitespace-nowrap" 
+                  style={{ 
+                    color: config.statusColor,
+                    letterSpacing: '0.04em',
+                    fontWeight: 500,
+                    opacity: 0.78
                   }}
                 >
-                  <StatusIcon className="w-3 h-3" style={{ color: config.statusColor }} strokeWidth={2.5} />
-                  <span 
-                    className="text-[10px] uppercase" 
-                    style={{ 
-                      color: config.statusColor,
-                      letterSpacing: '0.04em',
-                      fontWeight: 500,
-                      opacity: 0.78
-                    }}
-                  >
-                    {config.status}
-                  </span>
-                </div>
+                  {config.status}
+                </span>
               </div>
             </motion.button>
           );
@@ -878,7 +888,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
             {/* Macro Forces Grid */}
             <MacroForceGrid segments={segments} delay={0.88} onOpenDetail={onOpenDetail} />
 
-            {/* NEW: Insight Capsules */}
+            {/* Insight Capsules */}
             <InsightCapsules segments={segments} delay={0.95} onOpenDetail={onOpenDetail} />
           </div>
         </motion.div>
