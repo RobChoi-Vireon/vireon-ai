@@ -540,7 +540,7 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
         Insight Capsules
       </h3>
 
-      <div className="flex flex-col gap-[18px]">
+      <div className="flex flex-col gap-[14px]">
         {segments.map((segment, idx) => {
           const config = SEGMENT_CONFIG[segment.name];
           if (!config) return null;
