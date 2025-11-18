@@ -22,7 +22,7 @@ const MOTION = {
     slow: 0.24,
     drawerOpen: 0.36,
     tldrPop: 0.14,
-    stagger: 0.02
+    stagger: 0.05
   }
 };
 
@@ -50,66 +50,103 @@ const PolicyDrawerContent = ({ segment, delay }) => {
   const theme = getTheme(segment.name);
   const weight = (segment?.weight || 0) * 100;
 
-  const InfoSection = ({ icon: Icon, label, content, delay }) => (
-    <motion.div
-      variants={{ hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } }}
-      transition={{ delay, duration: 0.18, ease: MOTION.CURVES.easeOutQuint }}
-      className="relative group"
-    >
-      {/* Hover Glow */}
-      <motion.div
-        className="absolute inset-0 rounded-[18px]"
-        style={{
-          background: `radial-gradient(circle at 30% 30%, ${theme.ambient} 0%, transparent 100%)`,
-          opacity: 0,
-          pointerEvents: 'none'
-        }}
-        whileHover={{ opacity: 0.005 }}
-        transition={{ duration: 0.2 }}
-      />
+  const EvidenceCard = ({ icon: Icon, label, headline, fullText, delay }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
 
-      <div className="flex items-start gap-3 mb-3 relative">
-        <div 
-          className="w-8 h-8 rounded-[11px] flex items-center justify-center flex-shrink-0"
+    return (
+      <motion.div
+        variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
+        transition={{ delay, duration: 0.18, ease: MOTION.CURVES.easeOutQuint }}
+        className="relative group cursor-pointer"
+        onClick={() => setIsExpanded(!isExpanded)}
+        onMouseEnter={() => setIsExpanded(true)}
+        onMouseLeave={() => setIsExpanded(false)}
+      >
+        <motion.div
+          className="relative rounded-[18px] p-5 border"
           style={{
-            background: `${theme.color}12`,
-            border: `1px solid ${theme.color}24`,
-            boxShadow: `inset 0 0.5px 0 rgba(255,255,255,0.08)`
+            background: 'rgba(255, 255, 255, 0.042)',
+            backdropFilter: 'blur(18px) saturate(148%)',
+            WebkitBackdropFilter: 'blur(18px) saturate(148%)',
+            borderColor: 'rgba(255,255,255,0.10)',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 2px 8px rgba(0,0,0,0.06)'
+          }}
+          whileHover={{
+            y: -2,
+            boxShadow: `inset 0 1px 0 rgba(255,255,255,0.10), 0 6px 16px rgba(0,0,0,0.12), 0 0 20px ${theme.glowColor}`,
+            borderColor: 'rgba(255,255,255,0.14)',
+            transition: { duration: 0.16 }
           }}
         >
-          <Icon className="w-4 h-4" style={{ color: theme.color, filter: 'brightness(1.12)' }} strokeWidth={2.2} />
-        </div>
-        <div className="flex-1">
-          <h3 
-            className="text-[11px] uppercase mb-2.5" 
-            style={{ 
-              color: 'rgba(255,255,255,0.68)',
-              letterSpacing: '0.08em',
-              fontWeight: 500
+          {/* Hover Glow */}
+          <motion.div
+            className="absolute inset-0 rounded-[18px]"
+            style={{
+              background: `radial-gradient(circle at 30% 30%, ${theme.ambient} 0%, transparent 100%)`,
+              opacity: 0,
+              pointerEvents: 'none'
             }}
-          >
-            {label}
-          </h3>
-          <p 
-            className="text-[14.5px]" 
-            style={{ 
-              color: 'rgba(255,255,255,0.88)',
-              lineHeight: '1.54',
-              maxWidth: '650px'
-            }}
-          >
-            {content}
-          </p>
-        </div>
-      </div>
-      
-      {/* Micro Separator */}
-      <div 
-        className="h-px mt-6"
-        style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.025), transparent)' }}
-      />
-    </motion.div>
-  );
+            animate={{ opacity: isExpanded ? 0.4 : 0 }}
+            transition={{ duration: 0.2 }}
+          />
+
+          <div className="flex items-start gap-4 relative">
+            <div 
+              className="w-9 h-9 rounded-[12px] flex items-center justify-center flex-shrink-0 mt-0.5"
+              style={{
+                background: `${theme.color}14`,
+                border: `1px solid ${theme.color}28`,
+                boxShadow: `inset 0 0.5px 0 rgba(255,255,255,0.10), 0 0 12px ${theme.glowColor}`
+              }}
+            >
+              <Icon className="w-4.5 h-4.5" style={{ color: theme.color, filter: 'brightness(1.15)' }} strokeWidth={2.2} />
+            </div>
+
+            <div className="flex-1">
+              <h3 
+                className="text-[11px] uppercase mb-2" 
+                style={{ 
+                  color: 'rgba(255,255,255,0.64)',
+                  letterSpacing: '0.08em',
+                  fontWeight: 500
+                }}
+              >
+                {label}
+              </h3>
+              
+              <p 
+                className="text-[15px] font-medium mb-1" 
+                style={{ 
+                  color: 'rgba(255,255,255,0.92)',
+                  lineHeight: '1.48',
+                  letterSpacing: '-0.005em'
+                }}
+              >
+                {headline}
+              </p>
+
+              <motion.p
+                className="text-[13.5px]"
+                style={{
+                  color: 'rgba(255,255,255,0.68)',
+                  lineHeight: '1.58',
+                  overflow: 'hidden'
+                }}
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ 
+                  height: isExpanded ? 'auto' : 0,
+                  opacity: isExpanded ? 1 : 0
+                }}
+                transition={{ duration: 0.2, ease: MOTION.CURVES.easeOutQuint }}
+              >
+                {fullText}
+              </motion.p>
+            </div>
+          </div>
+        </motion.div>
+      </motion.div>
+    );
+  };
 
   return (
     <motion.div
@@ -158,7 +195,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
       <motion.div
         variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
         transition={{ duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.easeOutQuint }}
-        style={{ marginBottom: '48px', paddingBottom: '4px' }}
+        style={{ marginBottom: '32px', paddingBottom: '4px' }}
       >
         <h1 
           style={{
@@ -184,199 +221,129 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         </p>
       </motion.div>
 
-      {/* TL;DR Block */}
+      {/* Signal Summary Strip */}
       <motion.div
-        variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
-        style={{ marginBottom: '38px', marginTop: '20px' }}
+        variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
+        transition={{ duration: 0.22, ease: MOTION.CURVES.easeOutQuint }}
+        className="relative rounded-[22px] p-6 border mb-10"
+        style={{
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.065) 0%, rgba(255, 255, 255, 0.038) 100%)',
+          backdropFilter: 'blur(22px) saturate(158%)',
+          WebkitBackdropFilter: 'blur(22px) saturate(158%)',
+          borderColor: 'rgba(255,255,255,0.14)',
+          boxShadow: `inset 0 1px 2px rgba(255,255,255,0.12), inset 0 0 20px ${theme.glowColor}, 0 6px 20px rgba(0,0,0,0.10)`
+        }}
       >
-        <motion.div
-          variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
-          transition={{ duration: MOTION.DURATIONS.tldrPop, ease: MOTION.CURVES.easeOutCubic }}
-          style={{ marginBottom: '24px' }}
-        >
+        {/* Top Inner Highlight */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '15%',
+          right: '15%',
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent)',
+          pointerEvents: 'none'
+        }} />
+
+        <div className="flex items-center justify-between gap-6">
+          {/* TL;DR Badge */}
           <div 
-            className="inline-block rounded-full"
+            className="inline-block rounded-full flex-shrink-0"
             style={{
               fontSize: '11px',
               fontWeight: 600,
               color: 'rgba(255,255,255,0.82)',
-              padding: '7px 14px',
-              background: 'rgba(255,255,255,0.08)',
-              border: '1px solid rgba(255,255,255,0.12)',
-              borderRadius: '24px'
+              padding: '6px 13px',
+              background: 'rgba(255,255,255,0.10)',
+              border: '1px solid rgba(255,255,255,0.16)',
+              borderRadius: '22px'
             }}
           >
             TL;DR
           </div>
-        </motion.div>
 
-        <motion.h2
-          variants={{ hidden: { opacity: 0, y: 7 }, visible: { opacity: 1, y: 0 } }}
-          transition={{ duration: 0.18, ease: MOTION.CURVES.easeOutQuint }}
-          style={{
-            fontSize: '18.5px',
-            fontWeight: 600,
-            color: 'rgba(255,255,255,0.90)',
-            maxWidth: '680px',
-            lineHeight: '1.48',
-            letterSpacing: '-0.005em'
-          }}
-        >
-          Regulatory hardening raises compliance costs → downside for Big Tech multiples; hawkish Fed bias reinforced.
-        </motion.h2>
+          {/* Net Effect Sentence - Primary */}
+          <p 
+            className="flex-1 text-center"
+            style={{
+              fontSize: '17px',
+              fontWeight: 600,
+              color: 'rgba(255,255,255,0.94)',
+              lineHeight: '1.42',
+              letterSpacing: '-0.005em'
+            }}
+          >
+            Policy tightening is elevating medium-term pressure on Street Alignment
+          </p>
+
+          {/* Right Side: State + Contribution */}
+          <div className="flex items-center gap-3.5 flex-shrink-0">
+            <div
+              className="inline-block rounded-full"
+              style={{
+                fontSize: '12px',
+                fontWeight: 500,
+                color: '#7BB1FF',
+                background: 'rgba(80, 140, 255, 0.16)',
+                padding: '6px 14px',
+                borderRadius: '22px',
+                border: '1px solid rgba(80, 140, 255, 0.28)',
+                boxShadow: `0 0 14px ${theme.glowColor}`
+              }}
+            >
+              Rising
+            </div>
+
+            <div style={{ textAlign: 'right' }}>
+              <div 
+                style={{ 
+                  fontSize: '12px', 
+                  fontWeight: 500,
+                  color: 'rgba(255,255,255,0.72)',
+                  letterSpacing: '0.004em'
+                }}
+              >
+                Contribution: {Math.round(weight)}%
+              </div>
+            </div>
+          </div>
+        </div>
       </motion.div>
 
-      {/* Micro-Insight Grid - Rebuilt */}
+      {/* Evidence Stack */}
       <motion.div
         variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
         style={{ 
           display: 'flex',
           flexDirection: 'column',
-          gap: '36px',
-          marginTop: '42px',
-          marginBottom: '44px'
+          gap: '16px',
+          marginTop: '8px',
+          marginBottom: '32px'
         }}
       >
-        <InfoSection 
+        <EvidenceCard 
           icon={Target} 
           label="Key Driver"
-          content="Regulatory oversight expanding across content, privacy, and platform audits."
-          delay={0.06}
-        />
-
-        <InfoSection 
-          icon={Activity} 
-          label="Pressure Direction"
-          content="Tightening — medium-term environment trending more restrictive."
+          headline="Regulatory oversight expanding"
+          fullText="Regulatory oversight expanding across content, privacy, and platform audits."
           delay={0.08}
         />
 
-        <InfoSection 
+        <EvidenceCard 
+          icon={Activity} 
+          label="Pressure Direction"
+          headline="Tightening environment"
+          fullText="Tightening — medium-term environment trending more restrictive."
+          delay={0.12}
+        />
+
+        <EvidenceCard 
           icon={BarChart3} 
           label="Market Impact Level"
-          content="Moderate impact with pockets of friction emerging in affected sectors."
-          delay={0.10}
+          headline="Moderate impact"
+          fullText="Moderate impact with pockets of friction emerging in affected sectors."
+          delay={0.16}
         />
-      </motion.div>
-
-      {/* What This Means — Enlightenment Block */}
-      <motion.div
-        variants={{ hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } }}
-        transition={{ duration: MOTION.DURATIONS.tldrPop, ease: MOTION.CURVES.easeOutQuint }}
-        style={{ 
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '12px',
-          marginTop: '38px',
-          marginBottom: '48px'
-        }}
-      >
-        <div 
-          style={{
-            fontSize: '11px',
-            fontWeight: 500,
-            letterSpacing: '0.08em',
-            color: 'rgba(255,255,255,0.70)',
-            textTransform: 'uppercase',
-            marginBottom: '8px'
-          }}
-        >
-          What This Means
-        </div>
-        <p 
-          style={{
-            fontSize: '16px',
-            fontWeight: 500,
-            color: 'rgba(255,255,255,0.90)',
-            lineHeight: '1.52',
-            maxWidth: '680px',
-            letterSpacing: '-0.005em'
-          }}
-        >
-          Net effect: Policy tightening is elevating medium-term pressure on Street Alignment, reinforcing upward momentum with growing consistency.
-        </p>
-      </motion.div>
-
-      {/* Status + Contribution Bar */}
-      <motion.div
-        variants={{ hidden: { opacity: 0, y: 3 }, visible: { opacity: 1, y: 0 } }}
-        transition={{ duration: 0.16, ease: MOTION.CURVES.easeOutQuint }}
-        style={{ marginTop: '32px' }}
-      >
-        {/* Status Chip */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '12px' }}>
-          <div
-            className="inline-block rounded-full"
-            style={{
-              fontSize: '12px',
-              fontWeight: 500,
-              color: '#7BB1FF',
-              background: 'rgba(80, 140, 255, 0.14)',
-              padding: '6px 13px',
-              borderRadius: '22px',
-              border: '1px solid rgba(80, 140, 255, 0.22)'
-            }}
-          >
-            Rising
-          </div>
-        </div>
-
-        {/* Contribution Bar with Halo */}
-        <div className="relative" style={{ marginBottom: '10px' }}>
-          {/* Bar Halo */}
-          <div 
-            className="absolute inset-0 rounded-[14px]"
-            style={{
-              background: `radial-gradient(ellipse, ${theme.glowColor} 0%, transparent 70%)`,
-              filter: 'blur(16px)',
-              opacity: 0.15,
-              pointerEvents: 'none'
-            }}
-          />
-
-          <div 
-            className="w-full rounded-full overflow-hidden relative"
-            style={{ 
-              height: '8px',
-              background: 'rgba(255,255,255,0.06)',
-              borderRadius: '14px'
-            }}
-          >
-            <motion.div
-              className="h-full rounded-full relative"
-              style={{ 
-                background: 'linear-gradient(90deg, #79C2FF 0%, #4F8EF8 100%)',
-                boxShadow: 'inset 0 0 4px rgba(255,255,255,0.28)',
-                borderRadius: '14px'
-              }}
-              initial={{ width: '0%' }}
-              animate={{ 
-                width: `${weight}%`,
-                boxShadow: [
-                  'inset 0 0 4px rgba(255,255,255,0.28)',
-                  'inset 0 0 6px rgba(255,255,255,0.35), 0 0 14px rgba(121, 194, 255, 0.32)',
-                  'inset 0 0 4px rgba(255,255,255,0.28)'
-                ]
-              }}
-              transition={{ 
-                width: { duration: 0.38, delay: 0.6, ease: MOTION.CURVES.easeOutQuint },
-                boxShadow: { duration: 2.2, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Contribution Label - Brightened */}
-        <div 
-          style={{ 
-            fontSize: '13px', 
-            fontWeight: 500,
-            color: 'rgba(255,255,255,0.68)',
-            paddingBottom: '8px'
-          }}
-        >
-          Contribution: {Math.round(weight)}%
-        </div>
       </motion.div>
     </motion.div>
   );
