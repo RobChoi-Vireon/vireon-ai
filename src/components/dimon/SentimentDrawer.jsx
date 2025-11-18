@@ -1,12 +1,11 @@
 // 🔒 DESIGN LOCKED — OS HORIZON TAHOE V5.1 STREET ALIGNMENT REFINEMENT
-// Last Updated: 2025-01-20 | V5.1 Micro-Polish + Layout Precision Applied
+// Last Updated: 2025-01-20 | V5.2 Insight Capsules Integration
 // VIREON CERTIFIED — OS Horizon Hybrid Identity (Cinematic Intelligence + Tahoe Serenity)
-// Layout precision: uniform block heights, spacing grid, consistent materials
 // See: DESIGN_LOCKED_COMPONENTS.md
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
-import { X, Activity, Shield, Briefcase, BarChart3, Globe, ChevronDown, ArrowRight } from 'lucide-react';
+import { X, Activity, Shield, Briefcase, BarChart3, Globe, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
 // OS Horizon Motion DNA
 const MOTION = {
@@ -33,25 +32,37 @@ const SEGMENT_CONFIG = {
     Icon: Shield, 
     color: '#70A8E8', 
     glow: 'rgba(112, 168, 232, 0.15)',
-    ambient: 'rgba(112, 168, 232, 0.08)'
+    ambient: 'rgba(112, 168, 232, 0.08)',
+    insight: 'Regulatory oversight expanding across multiple sectors',
+    status: 'Rising',
+    statusColor: '#FFB020'
   },
   Credit: { 
     Icon: Briefcase, 
     color: '#B88AED', 
     glow: 'rgba(184, 138, 237, 0.15)',
-    ambient: 'rgba(184, 138, 237, 0.08)'
+    ambient: 'rgba(184, 138, 237, 0.08)',
+    insight: 'EM spreads widening as credit markets show stress signals',
+    status: 'Moderate',
+    statusColor: '#FFB020'
   },
   Equities: { 
     Icon: BarChart3, 
     color: '#32C288', 
     glow: 'rgba(50, 194, 136, 0.15)',
-    ambient: 'rgba(50, 194, 136, 0.08)'
+    ambient: 'rgba(50, 194, 136, 0.08)',
+    insight: 'Flat breadth with concentrated gains in mega-cap names',
+    status: 'Stable',
+    statusColor: '#5EA7FF'
   },
   Global: { 
     Icon: Globe, 
     color: '#EDB859', 
     glow: 'rgba(237, 184, 89, 0.15)',
-    ambient: 'rgba(237, 184, 89, 0.08)'
+    ambient: 'rgba(237, 184, 89, 0.08)',
+    insight: 'China slowdown weighing on global growth outlook',
+    status: 'Softening',
+    statusColor: '#F26A6A'
   }
 };
 
@@ -340,7 +351,7 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
   const sortedSegments = [...segments].sort((a, b) => (b.weight || 0) - (a.weight || 0));
 
   return (
-    <div style={{ marginTop: '48px', marginBottom: '40px' }}>
+    <div style={{ marginTop: '48px', marginBottom: '28px' }}>
       <motion.div
         className="text-[11px] font-medium uppercase tracking-wider mb-5"
         style={{ 
@@ -495,217 +506,138 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
 };
 
 // ============================================================================
-// SEGMENT DETAILS (Refined Dropdown Styling)
+// NEW: INSIGHT CAPSULES (Replaces Breakdown by Macro Forces)
 // ============================================================================
-const InsightRows = ({ segments, delay, onOpenDetail }) => {
-  const [expandedRow, setExpandedRow] = useState(null);
-
-  const handleRowClick = (e, segmentName) => {
-    e.stopPropagation();
-    setExpandedRow(expandedRow === segmentName ? null : segmentName);
-  };
-
-  const handleViewFullAnalysis = (e, segment) => {
-    e.stopPropagation();
-    onOpenDetail?.(segment);
-  };
-
+const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: delay + 0.3, duration: 0.35 }}
-      style={{ marginTop: '36px' }}
+      transition={{ delay: delay + 0.2, duration: 0.28 }}
+      style={{ marginTop: '32px', marginBottom: '24px' }}
     >
       <h3 
-        className="text-[11px] uppercase tracking-wider mb-5" 
+        className="text-[11px] uppercase tracking-wider mb-4" 
         style={{ 
           color: 'rgba(255,255,255,0.58)', 
           letterSpacing: '0.06em',
           fontWeight: 500
         }}
       >
-        Breakdown by Macro Forces
+        Insight Capsules
       </h3>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+      <div className="flex flex-wrap gap-3">
         {segments.map((segment, idx) => {
           const config = SEGMENT_CONFIG[segment.name];
-          const weight = (segment?.weight || 0) * 100;
-          const isExpanded = expandedRow === segment.name;
+          if (!config) return null;
+
+          const StatusIcon = config.status === 'Rising' || config.status === 'Softening' 
+            ? (config.status === 'Rising' ? TrendingUp : TrendingDown)
+            : Minus;
 
           return (
-            <motion.div
+            <motion.button
               key={segment.name}
-              className="relative rounded-[22px] overflow-hidden"
+              className="relative rounded-[18px] overflow-hidden cursor-pointer"
               style={{
-                background: `linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)`,
-                backdropFilter: 'blur(14px)',
-                WebkitBackdropFilter: 'blur(14px)',
-                border: isExpanded ? `1px solid ${config.color}40` : '1px solid rgba(255,255,255,0.06)',
+                background: `linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.03) 100%)`,
+                backdropFilter: 'blur(16px) saturate(145%)',
+                WebkitBackdropFilter: 'blur(16px) saturate(145%)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                padding: '14px 18px',
                 boxShadow: `
-                  inset 0 0 12px rgba(0,0,0,0.45),
-                  0 6px 18px rgba(0,0,0,0.08)
-                `
+                  inset 0 1px 0 rgba(255,255,255,0.06),
+                  0 4px 14px rgba(0,0,0,0.08),
+                  0 0 18px ${config.glow}
+                `,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                minHeight: '62px'
               }}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: delay + 0.32 + (idx * 0.08), duration: 0.26 }}
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ 
+                delay: delay + 0.25 + (idx * 0.05), 
+                duration: 0.24, 
+                ease: MOTION.CURVES.spring 
+              }}
+              onClick={() => onOpenDetail?.(segment)}
+              whileHover={{ 
+                y: -3,
+                scale: 1.02,
+                background: `linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%)`,
+                boxShadow: `
+                  inset 0 1px 0 rgba(255,255,255,0.09),
+                  0 8px 22px rgba(0,0,0,0.12),
+                  0 0 28px ${config.glow},
+                  0 0 42px ${config.glow}
+                `,
+                borderColor: 'rgba(255,255,255,0.12)',
+                transition: { duration: 0.15 }
+              }}
+              whileTap={{ scale: 0.985 }}
             >
-              {/* Clickable Header */}
-              <motion.div
-                onClick={(e) => handleRowClick(e, segment.name)}
-                className="cursor-pointer"
+              {/* Ambient Tint */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                background: `radial-gradient(ellipse at 30% 30%, ${config.ambient} 0%, transparent 100%)`,
+                borderRadius: '18px',
+                pointerEvents: 'none'
+              }} />
+
+              {/* Icon */}
+              <div 
+                className="w-9 h-9 rounded-[12px] flex items-center justify-center flex-shrink-0"
                 style={{
-                  padding: '17px 22px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  minHeight: '58px'
-                }}
-                whileHover={{
-                  y: -0.5,
-                  boxShadow: `0 0 8px ${config.glow}`,
-                  transition: { duration: 0.15 }
+                  background: `${config.color}12`,
+                  border: `1px solid ${config.color}24`,
+                  boxShadow: `inset 0 1px 0 rgba(255,255,255,0.08)`
                 }}
               >
-                <div className="flex items-center gap-4">
-                  <div 
-                    className="w-2.5 h-2.5 rounded-full"
-                    style={{ background: config.color, boxShadow: `0 0 14px ${config.color}60` }}
-                  />
-                  <config.Icon className="w-4.5 h-4.5" style={{ color: config.color }} strokeWidth={2.2} />
-                  <span className="text-[15px] font-semibold" style={{ color: 'rgba(255,255,255,0.82)', lineHeight: '1.35' }}>
-                    {segment.name}
-                  </span>
-                </div>
+                <config.Icon 
+                  style={{ color: config.color, filter: 'brightness(1.15)' }} 
+                  className="w-4.5 h-4.5" 
+                  strokeWidth={2.2} 
+                />
+              </div>
 
-                <div className="flex items-center gap-3">
-                  <span className="text-[16px] font-medium" style={{ color: 'rgba(255,255,255,0.40)' }}>
-                    {Math.round(weight)}%
-                  </span>
-                  <motion.div
-                    animate={{ rotate: isExpanded ? 180 : 0 }}
-                    transition={{ duration: 0.2, ease: 'easeOut' }}
-                  >
-                    <ChevronDown className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.52)' }} />
-                  </motion.div>
-                </div>
-              </motion.div>
+              {/* Text */}
+              <div className="flex-1 text-left">
+                <p 
+                  className="text-[13px] font-medium leading-snug mb-1.5" 
+                  style={{ 
+                    color: 'rgba(255,255,255,0.90)', 
+                    letterSpacing: '-0.01em',
+                    lineHeight: '1.35'
+                  }}
+                >
+                  {config.insight}
+                </p>
 
-              {/* Expanded Panel - Symmetrical Padding */}
-              <AnimatePresence>
-                {isExpanded && (
-                  <motion.div
-                    className="border-t"
+                {/* Status Tag */}
+                <div 
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md"
+                  style={{
+                    background: `${config.statusColor}14`,
+                    border: `1px solid ${config.statusColor}24`
+                  }}
+                >
+                  <StatusIcon className="w-3 h-3" style={{ color: config.statusColor }} strokeWidth={2.5} />
+                  <span 
+                    className="text-[10px] font-semibold uppercase" 
                     style={{ 
-                      borderColor: 'rgba(255,255,255,0.06)',
-                      background: `linear-gradient(180deg, rgba(255,255,255,0.045) 0%, rgba(255,255,255,0.028) 100%)`,
-                      boxShadow: `
-                        inset 0 1px 0 rgba(255,255,255,0.01),
-                        inset 0 2px 10px rgba(0,0,0,0.08),
-                        0 6px 18px rgba(0,0,0,0.08)
-                      `,
-                      padding: '20px 22px',
-                      borderRadius: '0 0 22px 22px'
+                      color: config.statusColor,
+                      letterSpacing: '0.04em'
                     }}
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2, ease: 'easeOut' }}
                   >
-                    {/* TL;DR Chip */}
-                    <div 
-                      className="inline-block px-3 py-1.5 rounded-lg text-[10px] font-semibold mb-4"
-                      style={{
-                        background: 'rgba(255,255,255,0.08)',
-                        border: '1px solid rgba(255,255,255,0.14)',
-                        color: 'rgba(255,255,255,0.74)',
-                        letterSpacing: '0.04em'
-                      }}
-                    >
-                      TL;DR
-                    </div>
-
-                    <p className="text-[14px] mb-5" style={{ color: 'rgba(255,255,255,0.88)', lineHeight: '1.35', maxWidth: '92%' }}>
-                      {segment.name === 'Policy' && (
-                        <>
-                          <strong style={{ fontWeight: 600, color: 'rgba(255,255,255,0.96)' }}>
-                            Regulators tightening oversight in medium-term policy environment.
-                          </strong>
-                          {' '}Bipartisan push on content/privacy expands audit scope Y/Y.
-                        </>
-                      )}
-                      {segment.name === 'Credit' && (
-                        <>
-                          <strong style={{ fontWeight: 600, color: 'rgba(255,255,255,0.96)' }}>
-                            Spreads widening as stress pockets form in credit markets.
-                          </strong>
-                          {' '}EM HY spreads widen 35bps WoW.
-                        </>
-                      )}
-                      {segment.name === 'Equities' && (
-                        <>
-                          <strong style={{ fontWeight: 600, color: 'rgba(255,255,255,0.96)' }}>
-                            Market breadth remains flat with limited participation.
-                          </strong>
-                          {' '}Recent gains concentrated in large-cap.
-                        </>
-                      )}
-                      {segment.name === 'Global' && (
-                        <>
-                          <strong style={{ fontWeight: 600, color: 'rgba(255,255,255,0.96)' }}>
-                            China slowdown weighing on global momentum and trade flows.
-                          </strong>
-                          {' '}Exports normalize.
-                        </>
-                      )}
-                    </p>
-
-                    {/* Contribution Bar - Unified Track Color */}
-                    <div className="relative mb-5">
-                      <div 
-                        className="w-full h-[4px] rounded-full overflow-hidden" 
-                        style={{ background: 'rgba(255,255,255,0.06)' }}
-                      >
-                        <motion.div
-                          className="h-full rounded-full"
-                          style={{ 
-                            background: `linear-gradient(90deg, ${config.color}88, ${config.color}e8)`,
-                            boxShadow: `0 0 10px ${config.color}28, inset 0 1px 0 rgba(255,255,255,0.12)`
-                          }}
-                          initial={{ width: '0%' }}
-                          animate={{ width: `${weight}%` }}
-                          transition={{ duration: 0.32, ease: MOTION.CURVES.silk }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* View Full Analysis CTA */}
-                    <motion.button
-                      onClick={(e) => handleViewFullAnalysis(e, segment)}
-                      className="flex items-center gap-2 text-[13px] font-medium ml-auto"
-                      style={{ 
-                        color: config.color,
-                        filter: 'brightness(1.12)'
-                      }}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.07, duration: 0.25 }}
-                      whileHover={{ 
-                        x: 2,
-                        filter: 'brightness(1.25)',
-                        transition: { duration: 0.12 }
-                      }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      View full {segment.name} Analysis
-                      <ArrowRight className="w-3.5 h-3.5" strokeWidth={2.5} />
-                    </motion.button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
+                    {config.status}
+                  </span>
+                </div>
+              </div>
+            </motion.button>
           );
         })}
       </div>
@@ -905,8 +837,8 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
             {/* Macro Forces Grid */}
             <MacroForceGrid segments={segments} delay={0.88} onOpenDetail={onOpenDetail} />
 
-            {/* Insight Rows */}
-            <InsightRows segments={segments} delay={0.98} onOpenDetail={onOpenDetail} />
+            {/* NEW: Insight Capsules (Replaces old rows) */}
+            <InsightCapsules segments={segments} delay={0.95} onOpenDetail={onOpenDetail} />
           </div>
         </motion.div>
       </motion.div>
