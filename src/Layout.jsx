@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Home, Eye, TrendingUp, Bell, AlertCircle, Plus, Download, Newspaper, Search, MessageSquare, X, Calendar, BookOpen, Brain, Globe, Activity, Sparkles } from "lucide-react";
+import { Home, Eye, TrendingUp, Bell, AlertCircle, Plus, Download, Newspaper, Search, MessageSquare, X, Calendar, BookOpen, Brain, Globe, Activity } from "lucide-react";
 import { FeatureFlagsProvider, useFeatureFlags } from "./components/core/FeatureFlags";
 import { MiniSheetProvider, useMiniSheet } from './components/core/MiniSheetProvider';
 import { AccessibilityProvider } from "./components/core/AccessibilityProvider";
@@ -16,202 +16,6 @@ import NetworkErrorBoundary from "./components/core/NetworkErrorBoundary";
 
 const HORIZON_SPRING = { type: "spring", stiffness: 320, damping: 82, mass: 1 };
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
-
-// Spotlight Search Bar Component
-const SpotlightSearchBar = ({ onSearchClick, onNotificationsClick, onCommentaryClick, onLabsClick, isEnabled }) => {
-  const [isFocused, setIsFocused] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  return (
-    <motion.div
-      className="relative"
-      initial={{ opacity: 0, y: -8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: HORIZON_EASE }}
-      style={{
-        width: '100%',
-        maxWidth: '580px',
-        margin: '0 auto'
-      }}
-    >
-      <motion.div
-        className="relative rounded-[20px] overflow-visible"
-        style={{
-          height: '44px',
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.095) 0%, rgba(255, 255, 255, 0.075) 100%)',
-          backdropFilter: 'blur(32px) saturate(165%)',
-          WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-          border: '1px solid rgba(255,255,255,0.12)',
-          boxShadow: isFocused
-            ? `
-              inset 0 1px 2px rgba(255,255,255,0.14),
-              inset 0 0 24px rgba(110, 180, 255, 0.16),
-              0 6px 28px rgba(0,0,0,0.14),
-              0 0 32px rgba(110, 180, 255, 0.10)
-            `
-            : `
-              inset 0 1px 1px rgba(255,255,255,0.10),
-              0 4px 20px rgba(0,0,0,0.10)
-            `
-        }}
-        animate={{
-          width: isFocused ? 'calc(100% + 8px)' : '100%',
-          y: isHovered && !isFocused ? -1 : 0
-        }}
-        transition={{ duration: 0.18, ease: HORIZON_EASE }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        {/* Outer Glow */}
-        <div style={{
-          position: 'absolute',
-          inset: '-24px',
-          background: 'radial-gradient(ellipse at 50% 50%, rgba(110, 180, 255, 0.06) 0%, transparent 70%)',
-          opacity: isFocused ? 1 : 0.4,
-          pointerEvents: 'none',
-          transition: 'opacity 0.18s ease-out'
-        }} />
-
-        {/* Top Edge Gloss */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: '12%',
-          right: '12%',
-          height: '1px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.20), transparent)',
-          pointerEvents: 'none'
-        }} />
-
-        <div className="flex items-center h-full px-4 relative z-10">
-          {/* Search Icon */}
-          <Search 
-            className="w-[18px] h-[18px] mr-3 flex-shrink-0" 
-            style={{ 
-              color: '#9BA3B0',
-              strokeWidth: 1.8
-            }} 
-          />
-
-          {/* Input Field */}
-          <input
-            type="text"
-            placeholder="Spotlight Search"
-            className="flex-1 bg-transparent outline-none text-[15px] placeholder-gray-500"
-            style={{
-              color: 'rgba(255,255,255,0.92)',
-              fontWeight: 500,
-              letterSpacing: '-0.01em'
-            }}
-            onFocus={() => {
-              setIsFocused(true);
-              onSearchClick();
-            }}
-            onBlur={() => setIsFocused(false)}
-            readOnly
-          />
-
-          {/* Action Icons */}
-          <div className="flex items-center space-x-1.5 ml-3">
-            {/* Notifications */}
-            <motion.button
-              onClick={onNotificationsClick}
-              className="relative rounded-[12px] flex items-center justify-center"
-              style={{
-                width: '28px',
-                height: '28px',
-                background: 'rgba(255, 255, 255, 0.06)',
-                backdropFilter: 'blur(12px)',
-                border: '1px solid rgba(255,255,255,0.08)'
-              }}
-              whileHover={{
-                scale: 1.08,
-                background: 'rgba(255, 255, 255, 0.10)',
-                boxShadow: '0 0 12px rgba(110, 180, 255, 0.08)'
-              }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.13 }}
-            >
-              <Bell className="w-3.5 h-3.5" style={{ color: '#9BA3B0', strokeWidth: 2 }} />
-              <div style={{
-                position: 'absolute',
-                top: '-2px',
-                right: '-2px',
-                width: '8px',
-                height: '8px',
-                borderRadius: '50%',
-                background: '#FF505F',
-                border: '1.5px solid rgba(0,0,0,0.4)',
-                boxShadow: '0 0 8px rgba(255, 80, 95, 0.5)'
-              }} />
-            </motion.button>
-
-            {/* Commentary */}
-            {isEnabled('labs_modules') && (
-              <motion.button
-                onClick={onCommentaryClick}
-                className="relative rounded-[12px] flex items-center justify-center"
-                style={{
-                  width: '28px',
-                  height: '28px',
-                  background: 'rgba(255, 255, 255, 0.06)',
-                  backdropFilter: 'blur(12px)',
-                  border: '1px solid rgba(255,255,255,0.08)'
-                }}
-                whileHover={{
-                  scale: 1.08,
-                  background: 'rgba(255, 255, 255, 0.10)',
-                  boxShadow: '0 0 12px rgba(110, 180, 255, 0.08)'
-                }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ duration: 0.13 }}
-              >
-                <MessageSquare className="w-3.5 h-3.5" style={{ color: '#9BA3B0', strokeWidth: 2 }} />
-              </motion.button>
-            )}
-
-            {/* Labs */}
-            {isEnabled('labs_modules') && (
-              <motion.button
-                onClick={onLabsClick}
-                className="relative rounded-[12px] flex items-center justify-center"
-                style={{
-                  width: '28px',
-                  height: '28px',
-                  background: 'rgba(255, 255, 255, 0.06)',
-                  backdropFilter: 'blur(12px)',
-                  border: '1px solid rgba(255,255,255,0.08)'
-                }}
-                whileHover={{
-                  scale: 1.08,
-                  background: 'rgba(255, 255, 255, 0.10)',
-                  boxShadow: '0 0 12px rgba(110, 180, 255, 0.08)'
-                }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ duration: 0.13 }}
-              >
-                <Sparkles className="w-3.5 h-3.5" style={{ color: '#9BA3B0', strokeWidth: 2 }} />
-              </motion.button>
-            )}
-          </div>
-
-          {/* Keyboard Shortcut */}
-          <div 
-            className="ml-3 px-2 py-0.5 rounded-md text-[11px] font-medium flex-shrink-0"
-            style={{
-              background: 'rgba(255, 255, 255, 0.08)',
-              color: 'rgba(255,255,255,0.50)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              letterSpacing: '0.02em'
-            }}
-          >
-            ⌘K
-          </div>
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-};
 
 const NavLink = ({ href, icon: Icon, title, isActive }) => (
   <Link
@@ -321,13 +125,121 @@ const NavLink = ({ href, icon: Icon, title, isActive }) => (
   </Link>
 );
 
+const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNotification = false, className = "" }) => (
+  <motion.button
+    onClick={onClick}
+    className={`relative rounded-[16px] flex items-center justify-center group ${className}`}
+    style={{
+      width: '44px',
+      height: '44px',
+      background: isActive
+        ? 'linear-gradient(135deg, rgba(80, 140, 255, 0.18) 0%, rgba(60, 120, 235, 0.14) 100%)'
+        : 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%)',
+      backdropFilter: 'blur(32px) saturate(155%)',
+      WebkitBackdropFilter: 'blur(32px) saturate(155%)',
+      border: '1px solid rgba(255,255,255,0.12)',
+      boxShadow: isActive
+        ? `
+          inset 0 1px 2px rgba(255,255,255,0.14),
+          inset 0 0 18px rgba(80, 140, 255, 0.16),
+          0 4px 12px rgba(0,0,0,0.12)
+        `
+        : `
+          inset 0 1px 1px rgba(255,255,255,0.08),
+          0 2px 8px rgba(0,0,0,0.06)
+        `
+    }}
+    whileHover={{
+      scale: 1.04,
+      y: -1,
+      background: isActive
+        ? 'linear-gradient(135deg, rgba(80, 140, 255, 0.22) 0%, rgba(60, 120, 235, 0.18) 100%)'
+        : 'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.07) 100%)',
+      boxShadow: isActive
+        ? `
+          inset 0 1px 2px rgba(255,255,255,0.16),
+          inset 0 0 22px rgba(80, 140, 255, 0.20),
+          0 6px 16px rgba(0,0,0,0.14)
+        `
+        : `
+          inset 0 1px 2px rgba(255,255,255,0.12),
+          0 4px 12px rgba(0,0,0,0.10)
+        `
+    }}
+    whileTap={{ scale: 0.96 }}
+    transition={HORIZON_SPRING}
+    aria-label={label}
+  >
+    <div style={{
+      position: 'absolute',
+      top: 0,
+      left: '20%',
+      right: '20%',
+      height: '1px',
+      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.20), transparent)',
+      pointerEvents: 'none'
+    }} />
+
+    {isActive && (
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: 'radial-gradient(circle, rgba(80, 140, 255, 0.10) 0%, transparent 70%)',
+        borderRadius: '16px',
+        pointerEvents: 'none'
+      }} />
+    )}
+
+    <Icon 
+      className="w-5 h-5 relative z-10" 
+      style={{ 
+        color: isActive ? '#A0C4FF' : '#9BA3B0',
+        strokeWidth: 1.5,
+        filter: isActive ? 'drop-shadow(0 0 6px rgba(100, 180, 255, 0.5))' : 'none'
+      }} 
+    />
+
+    {hasNotification && (
+      <motion.div
+        className="absolute -top-1 -right-1"
+        style={{
+          width: '14px',
+          height: '14px',
+          borderRadius: '50%',
+          background: 'linear-gradient(135deg, rgba(255, 80, 95, 0.95) 0%, rgba(235, 60, 75, 0.90) 100%)',
+          border: '1.5px solid rgba(0, 0, 0, 0.25)',
+          boxShadow: `
+            0 0 14px rgba(255, 80, 95, 0.55),
+            inset 0 1px 0 rgba(255,255,255,0.30),
+            inset 0 -1px 2px rgba(0,0,0,0.20)
+          `
+        }}
+        initial={{ scale: 0 }}
+        animate={{ scale: [0, 1.15, 1] }}
+        transition={{ duration: 0.32, ease: HORIZON_EASE }}
+      >
+        <div style={{
+          position: 'absolute',
+          top: '2px',
+          left: '2px',
+          width: '4px',
+          height: '4px',
+          borderRadius: '50%',
+          background: 'rgba(255,255,255,0.50)',
+          filter: 'blur(1px)',
+          pointerEvents: 'none'
+        }} />
+      </motion.div>
+    )}
+  </motion.button>
+);
+
 function LayoutContent({ children, currentPageName }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [isAlertsOpen, setIsAlertsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCommentaryOpen, setIsCommentaryOpen] = useState(false);
-  const [isLabsOpen, setIsLabsOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { isEnabled } = useFeatureFlags();
 
@@ -367,12 +279,6 @@ function LayoutContent({ children, currentPageName }) {
         } else if (isCommentaryOpen) {
           setIsCommentaryOpen(false);
         }
-      }
-      
-      // Cmd+K / Ctrl+K for search
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setIsSearchOpen(true);
       }
     };
 
@@ -882,8 +788,7 @@ function LayoutContent({ children, currentPageName }) {
           </aside>
 
           <div className="flex-1 flex flex-col overflow-hidden">
-            {/* Header with Spotlight Search Bar */}
-            <header className="flex-shrink-0 sticky top-0 z-[250] h-[60px] md:h-[72px] px-4 sm:px-6 md:px-8 relative">
+            <header className="flex-shrink-0 sticky top-0 z-[250] flex items-center justify-between h-[60px] md:h-[72px] px-4 sm:px-6 md:px-8 relative">
               <div style={{
                 position: 'absolute',
                 inset: 0,
@@ -905,42 +810,62 @@ function LayoutContent({ children, currentPageName }) {
                 pointerEvents: 'none'
               }} />
 
-              {/* 3-Region Layout */}
-              <div className="flex items-center justify-between h-full relative z-10">
-                {/* LEFT: Page Title */}
-                <div className="hidden md:block flex-shrink-0" style={{ minWidth: '180px' }}>
-                  <h1 className="text-2xl font-bold tracking-[-0.02em]" style={{ color: 'var(--text-primary)' }}>
-                    {pageTitle}
-                  </h1>
+              <Link to={createPageUrl('MacroSignals')} className="flex md:hidden items-center gap-2.5 group relative z-10">
+                <img 
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68943f7eb0fb9393bf9a8069/ea91941d0_Asset61xtransparent.png" 
+                  alt="Vireon Logo"
+                  className="w-9 h-9 rounded-lg transition-transform duration-200 ease-out group-hover:scale-105"
+                  style={{ boxShadow: '0 0 12px rgba(86, 180, 255, 0.4)' }}
+                />
+                <span 
+                  className="font-semibold text-xl tracking-tight"
+                  style={{
+                    background: 'linear-gradient(to right, #A774FF, #4EC8FF)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}
+                >
+                  Vireon
+                </span>
+              </Link>
+
+              <div className="hidden md:block relative z-10">
+                <h1 className="text-2xl font-bold tracking-[-0.02em]" style={{ color: 'var(--text-primary)' }}>
+                  {pageTitle}
+                </h1>
+              </div>
+
+              <div className="flex items-center space-x-2 relative z-[260]">
+                {isEnabled('labs_modules') && (
+                  <GlassIconButton
+                    onClick={() => setIsSearchOpen(true)}
+                    icon={Search}
+                    label="Search stocks and market data"
+                  />
+                )}
+
+                {isEnabled('labs_modules') && (
+                  <GlassIconButton
+                    onClick={() => setIsCommentaryOpen(!isCommentaryOpen)}
+                    icon={MessageSquare}
+                    label={`${isCommentaryOpen ? 'Close' : 'Open'} live commentary`}
+                    isActive={isCommentaryOpen}
+                  />
+                )}
+
+                <div className="relative z-[260] group">
+                  <LabsToggle />
                 </div>
 
-                {/* Mobile Logo (hidden on desktop) */}
-                <Link to={createPageUrl('MacroSignals')} className="flex md:hidden items-center gap-2.5 group">
-                  <img 
-                    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68943f7eb0fb9393bf9a8069/ea91941d0_Asset61xtransparent.png" 
-                    alt="Vireon Logo"
-                    className="w-9 h-9 rounded-lg transition-transform duration-200 ease-out group-hover:scale-105"
-                    style={{ boxShadow: '0 0 12px rgba(86, 180, 255, 0.4)' }}
-                  />
-                </Link>
+                <GlassIconButton
+                  onClick={() => setIsAlertsOpen(true)}
+                  icon={Bell}
+                  label="View alerts"
+                  hasNotification={true}
+                />
 
-                {/* CENTER: Spotlight Search Bar */}
-                <div className="hidden md:block flex-1 px-8">
-                  <SpotlightSearchBar
-                    onSearchClick={() => setIsSearchOpen(true)}
-                    onNotificationsClick={() => setIsAlertsOpen(true)}
-                    onCommentaryClick={() => setIsCommentaryOpen(!isCommentaryOpen)}
-                    onLabsClick={() => {
-                      // Toggle labs panel - integrate with existing LabsToggle if needed
-                      const labsButton = document.querySelector('[aria-label="Open Labs"]');
-                      if (labsButton) labsButton.click();
-                    }}
-                    isEnabled={isEnabled}
-                  />
-                </div>
-
-                {/* RIGHT: Profile Avatar Only */}
-                <div className="flex-shrink-0">
+                <div className="relative z-[260] group">
                   <UserMenu theme="dark" toggleTheme={() => {}} />
                 </div>
               </div>
@@ -1074,11 +999,6 @@ function LayoutContent({ children, currentPageName }) {
           {isEnabled('labs_modules') && (
             <SearchOmni isOpen={isSearchOpen} setIsOpen={setIsSearchOpen} theme="dark" />
           )}
-
-          {/* Hidden LabsToggle for functionality */}
-          <div style={{ display: 'none' }}>
-            <LabsToggle />
-          </div>
         </div>
 
         <LyraChatbot />
