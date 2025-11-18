@@ -249,7 +249,7 @@ const LivingAlignmentOrb = ({ score, delay }) => {
 };
 
 // ============================================================================
-// NARRATIVE CAPSULE (Tightened Spacing)
+// NARRATIVE CAPSULE (Optically Centered)
 // ============================================================================
 const InsightRevealPanel = ({ segments, delay }) => {
   return (
@@ -257,8 +257,8 @@ const InsightRevealPanel = ({ segments, delay }) => {
       className="relative rounded-[18px] overflow-hidden mx-auto"
       style={{
         maxWidth: '84%',
-        paddingTop: '8px',
-        paddingBottom: '24px',
+        paddingTop: '2px',
+        paddingBottom: '30px',
         paddingLeft: '22px',
         paddingRight: '22px',
         background: 'rgba(255, 255, 255, 0.04)',
@@ -278,15 +278,27 @@ const InsightRevealPanel = ({ segments, delay }) => {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay: delay + 0.09, duration: 0.18, ease: MOTION.CURVES.silk }}
     >
-      {/* Top Rim-Light */}
+      {/* Top Rim-Light (Reduced Opacity) */}
       <div style={{
         position: 'absolute',
         top: 0,
         left: '10%',
         right: '10%',
         height: '24px',
-        background: 'linear-gradient(to bottom, rgba(255,255,255,0.03) 0%, transparent 100%)',
+        background: 'linear-gradient(to bottom, rgba(255,255,255,0.025) 0%, transparent 100%)',
         borderRadius: '18px 18px 0 0',
+        pointerEvents: 'none'
+      }} />
+
+      {/* Bottom Glow (Enhanced) */}
+      <div style={{
+        position: 'absolute',
+        bottom: 0,
+        left: '10%',
+        right: '10%',
+        height: '32px',
+        background: 'linear-gradient(to top, rgba(140,180,255,0.045) 0%, transparent 100%)',
+        borderRadius: '0 0 18px 18px',
         pointerEvents: 'none'
       }} />
 
@@ -294,9 +306,10 @@ const InsightRevealPanel = ({ segments, delay }) => {
         className="text-center relative z-10"
         style={{ 
           fontSize: '15.5px',
-          lineHeight: '1.35',
+          lineHeight: '1.40',
           color: 'rgba(255,255,255,0.92)',
-          letterSpacing: '-0.01em'
+          letterSpacing: '-0.01em',
+          transform: 'translateY(2px)'
         }}
       >
         Markets show mild upward pressure driven by policy tightening and early credit stress signals.
