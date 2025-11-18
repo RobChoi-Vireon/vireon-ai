@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -15,9 +14,8 @@ import UserMenu from "./components/core/UserMenu";
 import { motion, AnimatePresence } from 'framer-motion';
 import NetworkErrorBoundary from "./components/core/NetworkErrorBoundary";
 
-// OS Horizon Motion Physics
 const HORIZON_SPRING = { type: "spring", stiffness: 320, damping: 82, mass: 1 };
-const HORIZON_EASE = [0.25, 0.1, 0.25, 1.0];
+const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
 
 const NavLink = ({ href, icon: Icon, title, isActive }) => (
   <Link
@@ -33,53 +31,73 @@ const NavLink = ({ href, icon: Icon, title, isActive }) => (
         display: 'flex',
         alignItems: 'center',
         background: isActive 
-          ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.11) 100%)'
-          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.04) 100%)',
-        backdropFilter: 'blur(28px) saturate(165%)',
-        WebkitBackdropFilter: 'blur(28px) saturate(165%)',
-        border: '1px solid rgba(255,255,255,0.10)',
+          ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.12) 100%)'
+          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.068) 0%, rgba(255, 255, 255, 0.045) 100%)',
+        backdropFilter: isActive ? 'blur(32px) saturate(168%)' : 'blur(28px) saturate(165%)',
+        WebkitBackdropFilter: isActive ? 'blur(32px) saturate(168%)' : 'blur(28px) saturate(165%)',
+        border: isActive ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(255,255,255,0.08)',
         boxShadow: isActive 
           ? `
-            inset 0 1px 2px rgba(255,255,255,0.18),
-            inset 0 0 28px rgba(100, 180, 255, 0.20),
+            inset 0 1.5px 0 rgba(255,255,255,0.20),
+            inset 0 0 32px rgba(110, 185, 255, 0.22),
             0 4px 16px rgba(0,0,0,0.12),
-            0 0 28px rgba(100, 180, 255, 0.12)
+            0 0 34px rgba(110, 185, 255, 0.14)
           `
           : `
-            inset 0 1px 1px rgba(255,255,255,0.06),
+            inset 0 0.5px 1px rgba(255,255,255,0.05),
             0 2px 8px rgba(0,0,0,0.05)
           `
       }}
       whileHover={!isActive ? {
         y: -1,
         scale: 1.008,
-        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.06) 100%)',
+        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.095) 0%, rgba(255, 255, 255, 0.065) 100%)',
         boxShadow: `
           inset 0 1px 2px rgba(255,255,255,0.10),
           0 4px 14px rgba(0,0,0,0.10),
-          0 0 18px rgba(100, 180, 255, 0.04)
+          0 0 20px rgba(100, 180, 255, 0.05)
         `,
-        transition: { duration: 0.18, ease: HORIZON_EASE }
+        transition: { duration: 0.13, ease: 'easeOut' }
       } : {}}
       whileTap={{ scale: 0.98, transition: { duration: 0.08 } }}
-      animate={isActive ? { scale: 1.01 } : { scale: 1 }}
-      transition={{ duration: 0.16, ease: HORIZON_EASE }}
+      animate={isActive ? { 
+        scale: 1.01,
+        transition: { duration: 0.2, ease: HORIZON_EASE }
+      } : { scale: 1 }}
     >
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: '18%',
-        right: '18%',
-        height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
-        pointerEvents: 'none'
-      }} />
+      {/* Top Edge Sheen (Active Only) */}
+      {isActive && (
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '16%',
+          right: '16%',
+          height: '1.5px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.24), transparent)',
+          pointerEvents: 'none',
+          zIndex: 10
+        }} />
+      )}
 
+      {/* Inactive Subtle Top Glow */}
+      {!isActive && (
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '18%',
+          right: '18%',
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+          pointerEvents: 'none'
+        }} />
+      )}
+
+      {/* Active Inner Glow */}
       {isActive && (
         <div style={{
           position: 'absolute',
           inset: 0,
-          background: 'radial-gradient(ellipse at 50% 35%, rgba(100, 180, 255, 0.11) 0%, transparent 72%)',
+          background: 'radial-gradient(ellipse at 50% 35%, rgba(110, 185, 255, 0.12) 0%, transparent 72%)',
           borderRadius: '22px',
           pointerEvents: 'none'
         }} />
@@ -91,14 +109,16 @@ const NavLink = ({ href, icon: Icon, title, isActive }) => (
           style={{ 
             color: isActive ? '#D7E3FF' : '#9BA3B0',
             strokeWidth: 1.5,
-            filter: isActive ? 'drop-shadow(0 0 12px rgba(100, 180, 255, 0.52)) brightness(1.12)' : 'none'
+            filter: isActive ? 'drop-shadow(0 0 12px rgba(110, 185, 255, 0.55)) brightness(1.12)' : 'none',
+            transition: 'filter 0.13s ease-out'
           }} 
         />
         <span 
           className="font-medium tracking-[-0.005em]"
           style={{
             fontSize: '15px',
-            color: isActive ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.70)'
+            color: isActive ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.70)',
+            transition: 'color 0.13s ease-out'
           }}
         >
           {title}
@@ -108,7 +128,6 @@ const NavLink = ({ href, icon: Icon, title, isActive }) => (
   </Link>
 );
 
-// OS Horizon Glass Icon Button
 const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNotification = false, className = "" }) => (
   <motion.button
     onClick={onClick}
@@ -154,7 +173,6 @@ const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNoti
     transition={HORIZON_SPRING}
     aria-label={label}
   >
-    {/* Top edge gloss */}
     <div style={{
       position: 'absolute',
       top: 0,
@@ -165,7 +183,6 @@ const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNoti
       pointerEvents: 'none'
     }} />
 
-    {/* Icon glow when active */}
     {isActive && (
       <div style={{
         position: 'absolute',
@@ -185,7 +202,6 @@ const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNoti
       }} 
     />
 
-    {/* Glass Notification Orb */}
     {hasNotification && (
       <motion.div
         className="absolute -top-1 -right-1"
@@ -221,168 +237,25 @@ const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNoti
   </motion.button>
 );
 
-// Official Vireon Brain Logo Component - Updated with accurate brain shape
-// This component is no longer used for the main logos, but kept in case other parts of the app use it.
-const VireonBrainLogo = ({ className = "w-9 h-9" }) => (
-  <svg 
-    viewBox="0 0 80 80" 
-    fill="none" 
-    className={className}
-  >
-    <defs>
-      <linearGradient id="vireon-left-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#00E5FF" />
-        <stop offset="40%" stopColor="#40E0D0" />
-        <stop offset="80%" stopColor="#4A90E2" />
-        <stop offset="100%" stopColor="#6B73FF" />
-      </linearGradient>
-      
-      <linearGradient id="vireon-right-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#6B73FF" />
-        <stop offset="30%" stopColor="#9932CC" />
-        <stop offset="70%" stopColor="#BA55D3" />
-        <stop offset="100%" stopColor="#FF6EC7" />
-      </linearGradient>
-      
-      <linearGradient id="vireon-connection-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#40E0D0" stopOpacity="0.9" />
-        <stop offset="50%" stopColor="#7B68EE" stopOpacity="1" />
-        <stop offset="100%" stopColor="#BA55D3" stopOpacity="0.9" />
-      </linearGradient>
-    </defs>
-    
-    <path 
-      d="M 8 35 Q 8 20 18 15 Q 25 12 32 15 Q 38 18 40 25 Q 40 30 38 35 Q 40 40 40 45 Q 38 50 35 55 Q 32 62 25 65 Q 18 68 12 62 Q 8 55 10 48 Q 12 40 8 35 Z" 
-      stroke="url(#vireon-left-gradient)" 
-      strokeWidth="1.5" 
-      fill="none"
-    />
-    
-    <path 
-      d="M 72 35 Q 72 20 62 15 Q 55 12 48 15 Q 42 18 40 25 Q 40 30 42 35 Q 40 40 40 45 Q 42 50 45 55 Q 48 62 55 65 Q 62 68 68 62 Q 72 55 70 48 Q 68 40 72 35 Z" 
-      stroke="url(#vireon-right-gradient)" 
-      strokeWidth="1.5" 
-      fill="none"
-    />
-    
-    <g stroke="url(#vireon-left-gradient)" strokeWidth="1" fill="none">
-      <line x1="25" y1="35" x2="18" y2="25" />
-      <line x1="25" y1="35" x2="32" y2="25" />
-      <line x1="25" y1="35" x2="35" y2="32" />
-      <line x1="25" y1="35" x2="35" y2="45" />
-      <line x1="25" y1="35" x2="30" y2="55" />
-      <line x1="25" y1="35" x2="18" y2="50" />
-      <line x1="25" y1="35" x2="15" y2="40" />
-      
-      <line x1="18" y1="25" x2="32" y2="25" />
-      <line x1="32" y1="25" x2="35" y2="32" />
-      <line x1="35" y1="32" x2="35" y2="45" />
-      <line x1="35" y1="45" x2="30" y2="55" />
-      <line x1="30" y1="55" x2="18" y2="50" />
-      <line x1="18" y1="50" x2="15" y2="40" />
-      <line x1="15" y1="40" x2="18" y2="25" />
-      
-      <line x1="22" y1="30" x2="28" y2="40" />
-      <line x1="20" y1="45" x2="30" y2="48" />
-      <line x1="12" y1="35" x2="22" y2="42" />
-    </g>
-    
-    <g stroke="url(#vireon-right-gradient)" strokeWidth="1" fill="none">
-      <line x1="55" y1="35" x2="62" y2="25" />
-      <line x1="55" y1="35" x2="48" y2="25" />
-      <line x1="55" y1="35" x2="45" y2="32" />
-      <line x1="55" y1="35" x2="45" y2="45" />
-      <line x1="55" y1="35" x2="50" y2="55" />
-      <line x1="55" y1="35" x2="62" y2="50" />
-      <line x1="55" y1="35" x2="65" y2="40" />
-      
-      <line x1="62" y1="25" x2="48" y2="25" />
-      <line x1="48" y1="25" x2="45" y2="32" />
-      <line x1="45" y1="32" x2="45" y2="45" />
-      <line x1="45" y1="45" x2="50" y2="55" />
-      <line x1="50" y1="55" x2="62" y2="50" />
-      <line x1="62" y1="50" x2="65" y2="40" />
-      <line x1="65" y1="40" x2="62" y2="25" />
-      
-      <line x1="58" y1="30" x2="52" y2="40" />
-      <line x1="60" y1="45" x2="50" y2="48" />
-      <line x1="68" y1="35" x2="58" y2="42" />
-    </g>
-    
-    <g fill="url(#vireon-left-gradient)">
-      <circle cx="25" cy="35" r="2.5" />
-      <circle cx="18" cy="25" r="1.8" />
-      <circle cx="32" cy="25" r="1.8" />
-      <circle cx="35" cy="32" r="1.8" />
-      <circle cx="35" cy="45" r="1.8" />
-      <circle cx="30" cy="55" r="1.8" />
-      <circle cx="18" cy="50" r="1.8" />
-      <circle cx="15" cy="40" r="1.8" />
-      <circle cx="22" cy="30" r="1.2" />
-      <circle cx="28" cy="40" r="1.2" />
-      <circle cx="20" cy="45" r="1.2" />
-      <circle cx="30" cy="48" r="1.2" />
-      <circle cx="12" cy="35" r="1.2" />
-      <circle cx="22" cy="42" r="1.2" />
-    </g>
-    
-    <g fill="url(#vireon-right-gradient)">
-      <circle cx="55" cy="35" r="2.5" />
-      <circle cx="62" cy="25" r="1.8" />
-      <circle cx="48" cy="25" r="1.8" />
-      <circle cx="45" cy="32" r="1.8" />
-      <circle cx="45" cy="45" r="1.8" />
-      <circle cx="50" cy="55" r="1.8" />
-      <circle cx="62" cy="50" r="1.8" />
-      <circle cx="65" cy="40" r="1.8" />
-      <circle cx="58" y1="30" r="1.2" />
-      <circle cx="52" y1="40" r="1.2" />
-      <circle cx="60" y1="45" r="1.2" />
-      <circle cx="50" y1="48" r="1.2" />
-      <circle cx="68" y1="35" r="1.2" />
-      <circle cx="58" y1="42" r="1.2" />
-    </g>
-    
-    <g stroke="url(#vireon-connection-gradient)" strokeWidth="1.2" fill="none">
-      <line x1="38" y1="32" x2="42" y2="32" />
-      <line x1="38" y1="38" x2="42" y2="38" />
-      <line x1="38" y1="45" x2="42" y2="45" />
-      <line x1="35" y1="40" x2="45" y2="40" />
-    </g>
-    
-    <g fill="url(#vireon-connection-gradient)">
-      <circle cx="40" cy="32" r="1" />
-      <circle cx="40" cy="38" r="1" />
-      <circle cx="40" cy="45" r="1" />
-      <circle cx="40" cy="40" r="1.5" />
-    </g>
-  </svg>
-);
-
 function LayoutContent({ children, currentPageName }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [isAlertsOpen, setIsAlertsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCommentaryOpen, setIsCommentaryOpen] = useState(false);
-  const { theme, toggleTheme } = useTheme(); // Use theme hook (though theme is fixed to 'dark' for UI)
+  const { theme, toggleTheme } = useTheme();
   const { isEnabled } = useFeatureFlags();
 
-  // State for the new disclaimer
   const [isDisclaimerVisible, setIsDisclaimerVisible] = useState(false);
-
-  // Pinch-to-close gesture state for alerts and other modals
   const [initialPinchDistance, setInitialPinchDistance] = useState(null);
   const [isPinching, setIsPinching] = useState(false);
 
   useEffect(() => {
-    // If the user is at the root path, redirect them to Macro Signals as the primary landing page.
     if (location.pathname === '/') {
       navigate(createPageUrl('MacroSignals'), { replace: true });
     }
   }, [location.pathname, navigate]);
   
-  // Check localStorage to see if disclaimer was dismissed
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const dismissed = localStorage.getItem('vireon-disclaimer-dismissed');
@@ -392,7 +265,6 @@ function LayoutContent({ children, currentPageName }) {
     }
   }, []);
 
-  // Apply transitions class after initial render
   useEffect(() => {
     const timer = setTimeout(() => {
       document.documentElement.classList.add('transitions-enabled');
@@ -400,7 +272,6 @@ function LayoutContent({ children, currentPageName }) {
     return () => clearTimeout(timer);
   }, []);
 
-  // Keyboard shortcuts for alerts drawer, search, and commentary
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
@@ -418,7 +289,6 @@ function LayoutContent({ children, currentPageName }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isAlertsOpen, isSearchOpen, isCommentaryOpen]);
 
-  // Pinch-to-close gesture handler for any open modal
   useEffect(() => {
     const isAnyModalOpen = isAlertsOpen || isSearchOpen || isCommentaryOpen;
     if (!isAnyModalOpen) return;
@@ -438,7 +308,7 @@ function LayoutContent({ children, currentPageName }) {
 
     const handleTouchMove = (e) => {
       if (e.touches.length === 2 && isPinching && initialPinchDistance) {
-        e.preventDefault(); // Prevent scrolling/zooming while pinching
+        e.preventDefault();
         
         const touch1 = e.touches[0];
         const touch2 = e.touches[1];
@@ -453,7 +323,6 @@ function LayoutContent({ children, currentPageName }) {
           if (navigator.vibrate) {
             navigator.vibrate([25, 50, 25]);
           }
-          // Close whichever modal is currently open
           if (isAlertsOpen) setIsAlertsOpen(false);
           if (isSearchOpen) setIsSearchOpen(false);
           if (isCommentaryOpen) setIsCommentaryOpen(false);
@@ -465,7 +334,6 @@ function LayoutContent({ children, currentPageName }) {
     };
 
     const handleTouchEnd = (e) => {
-      // If the number of touches drops below 2, stop pinching
       if (e.touches.length < 2) {
         setIsPinching(false);
         setInitialPinchDistance(null);
@@ -490,7 +358,6 @@ function LayoutContent({ children, currentPageName }) {
     setIsDisclaimerVisible(false);
   };
 
-  // Reorganized navigation following investor's top-down workflow
   const navItems = [
     { id: 'macrosignals', title: 'Macro Signals', href: createPageUrl('MacroSignals'), icon: Globe },
     { id: 'home', title: 'Market Pulse', href: createPageUrl('Home'), icon: Activity },
@@ -500,7 +367,6 @@ function LayoutContent({ children, currentPageName }) {
     { id: 'capitalvault', title: 'Capital Vault', href: createPageUrl('CapitalVault'), icon: BookOpen },
   ];
 
-  // Ensure the current tab detection works properly with the new order
   const currentTab = navItems.find(item => location.pathname === item.href);
   const pageTitle = currentPageName === 'Me' ? 'My Profile' : (currentTab?.title || 'Vireon');
 
@@ -510,7 +376,6 @@ function LayoutContent({ children, currentPageName }) {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         
-        /* Global Z-Index Scale */
         :root {
           --z-app: 10;
           --z-popover: 40;
@@ -519,11 +384,10 @@ function LayoutContent({ children, currentPageName }) {
           --z-toast: 60;
           --z-devtools: 70;
           --header-h: 72px;
-          /* Premium OLED Dark Mode - Only Theme */
           --bg: #0B0E13;
-          --card: rgba(18, 20, 25, 0.92);
-          --border: rgba(255, 255, 255, 0.08);
-          --shadow: rgba(0, 0, 0, 0.55);
+          --card: rgba(18, 20, 28, 0.65);
+          --border: #2C2F36;
+          --shadow: rgba(0, 0, 0, 0.45);
           --text-primary: #F3F5F7;
           --text-secondary: #B6BDCB;
           --text-tertiary: #7E8798;
@@ -538,26 +402,21 @@ function LayoutContent({ children, currentPageName }) {
           --scrim: rgba(0, 0, 0, 0.55);
         }
         
-        /* Disable transitions on all elements initially to prevent flashes */
         html:not(.transitions-enabled) * {
           transition: none !important;
         }
         
-        /* Once the app is ready, enable transitions on specific, animatable properties */
         html.transitions-enabled * {
           transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, opacity 200ms ease, transform 200ms ease, box-shadow 200ms ease !important;
         }
         
-        /* Base background color set on html */
         html { background-color: #0B0E13; }
         
-        /* Portal container styles */
         .vireon-portal-container {
           position: relative;
           z-index: var(--z-modal);
         }
         
-        /* Drawer overlay styles */
         .drawer-overlay {
           position: fixed;
           inset: 0;
@@ -567,50 +426,42 @@ function LayoutContent({ children, currentPageName }) {
           -webkit-backdrop-filter: blur(8px);
         }
         
-        /* Drawer panel styles */
         .drawer-panel {
           position: fixed;
           z-index: calc(var(--z-modal) + 1);
-          background: linear-gradient(180deg, rgba(17, 18, 22, 0.88) 0%, rgba(13, 14, 16, 0.92) 100%);
+          background: rgba(18, 20, 25, 0.95);
           backdrop-filter: blur(16px);
           -webkit-backdrop-filter: blur(16px);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          box-shadow: inset 0 0 1px rgba(255,255,255,0.04), -2px 0 24px rgba(0,0,0,0.18);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
           overscroll-behavior: contain;
         }
         
-        /* Prevent background scroll when drawer is open */
         body.drawer-open {
           overflow: hidden;
           position: fixed;
           width: 100%;
         }
         
-        /* Elevation tokens */
-        .elevation-0 {
-          background: var(--bg);
-        }
-        
+        .elevation-0 { background: var(--bg); }
         .elevation-1 {
-          background: linear-gradient(180deg, rgba(17, 18, 22, 0.88) 0%, rgba(13, 14, 16, 0.92) 100%);
-          border: 1px solid rgba(255,255,255,0.08);
-          box-shadow: inset 0 0 1px rgba(255,255,255,0.04), 0 2px 16px rgba(0,0,0,0.12);
+          background: var(--card);
+          border: 1px solid var(--border);
+          box-shadow: 0 2px 12px var(--shadow);
           backdrop-filter: blur(8px);
           -webkit-backdrop-filter: blur(8px);
         }
-        
         .elevation-2 {
-          background: linear-gradient(180deg, rgba(17, 18, 22, 0.88) 0%, rgba(13, 14, 16, 0.92) 100%);
-          border: 1px solid rgba(255,255,255,0.08);
-          box-shadow: inset 0 0 1px rgba(255,255,255,0.04), 0 8px 32px rgba(0,0,0,0.24);
+          background: var(--card);
+          border: 1px solid var(--border);
+          box-shadow: 0 8px 32px var(--shadow);
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
         }
-        
         .elevation-3 {
-          background: linear-gradient(180deg, rgba(17, 18, 22, 0.88) 0%, rgba(13, 14, 16, 0.92) 100%);
-          border: 1px solid rgba(255,255,255,0.08);
-          box-shadow: inset 0 0 1px rgba(255,255,255,0.04), 0 16px 64px rgba(0,0,0,0.32);
+          background: var(--card);
+          border: 1px solid var(--border);
+          box-shadow: 0 16px 64px var(--shadow);
           backdrop-filter: blur(16px);
           -webkit-backdrop-filter: blur(16px);
         }
@@ -621,7 +472,6 @@ function LayoutContent({ children, currentPageName }) {
           -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Accessibility: Respect reduced motion */
         @media (prefers-reduced-motion: reduce) {
           *, *::before, *::after {
             animation-duration: 0.01ms !important;
@@ -631,27 +481,20 @@ function LayoutContent({ children, currentPageName }) {
           }
         }
 
-        /* Enhanced focus styles for keyboard navigation */
         *:focus-visible {
           outline: 2px solid var(--accent);
           outline-offset: 2px;
           z-index: calc(var(--z-modal) + 2);
         }
 
-        /* High contrast mode support */
         @media (prefers-contrast: high) {
           * {
             border-color: currentColor !important;
           }
         }
 
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { 
-          width: 6px; 
-        }
-        ::-webkit-scrollbar-track { 
-          background: transparent; 
-        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb {
           background: var(--muted);
           border-radius: 3px;
@@ -660,25 +503,17 @@ function LayoutContent({ children, currentPageName }) {
           background: var(--text-tertiary);
         }
 
-        /* Safe area handling for iOS */
         @supports (padding: max(0px)) {
           .drawer-panel-bottom {
             padding-bottom: max(env(safe-area-inset-bottom), 16px);
           }
-          
           .drawer-panel-top {
             top: max(var(--header-h), env(safe-area-inset-top));
           }
         }
 
-        /* PWA optimizations */
         .animate-shimmer {
-          background: linear-gradient(
-            90deg,
-            var(--card) 0%,
-            var(--border) 50%,
-            var(--card) 100%
-          );
+          background: linear-gradient(90deg, var(--card) 0%, var(--border) 50%, var(--card) 100%);
           background-size: 200% 100%;
           animation: shimmer 1.3s infinite;
         }
@@ -688,53 +523,41 @@ function LayoutContent({ children, currentPageName }) {
           100% { background-position: 200% 0; }
         }
 
-        /* Card hover effects */
         .card-hover {
           transition: transform 150ms ease-out, box-shadow 150ms ease-out;
         }
-        
         .card-hover:hover {
           transform: translateY(-2px);
-          box-shadow: 0 16px 48px var(--shadow);
+          box-shadow: 0 12px 40px var(--shadow);
         }
-        
         @media (prefers-reduced-motion: reduce) {
-          .card-hover:hover {
-            transform: none;
-          }
+          .card-hover:hover { transform: none; }
         }
 
-        /* Tap highlight removal for better mobile experience */
         .tap-highlight-transparent {
           -webkit-tap-highlight-color: transparent;
         }
         
-        /* Text sizing for readability */
         body {
           font-size: 15px;
           line-height: 1.5;
           color: var(--text-primary);
-          background: #0B0E13;
+          background: var(--bg);
         }
         
         @media (max-width: 768px) {
-          :root {
-            --header-h: 60px;
-          }
-          
+          :root { --header-h: 60px; }
           body {
             font-size: 14px;
             line-height: 1.55;
           }
         }
         
-        /* Success/error toast styling */
         .toast-success {
           background: rgba(43, 190, 118, 0.08);
           border: 1px solid rgba(43, 190, 118, 0.15);
           color: var(--bull);
         }
-        
         .toast-error {
           background: rgba(227, 63, 95, 0.08);
           border: 1px solid rgba(227, 63, 95, 0.15);
@@ -743,46 +566,76 @@ function LayoutContent({ children, currentPageName }) {
       `}</style>
 
       <NetworkErrorBoundary>
-        <div className={`flex h-screen transition-all duration-500 ease-out elevation-0`}>
+        <div className="flex h-screen transition-all duration-500 ease-out elevation-0">
 
-          {/* Desktop Sidebar — OS Horizon Production Glass */}
+          {/* Desktop Sidebar — OS Horizon Atmospheric Glass */}
           <aside className="hidden md:flex flex-col w-[280px] p-8 relative">
-            {/* Sidebar Glass Background */}
+            {/* Ambient Vertical Gradient Background */}
             <div style={{
               position: 'absolute',
               inset: 0,
-              background: 'linear-gradient(180deg, rgba(17, 18, 22, 0.88) 0%, rgba(13, 14, 16, 0.92) 100%)',
+              background: `
+                linear-gradient(180deg, 
+                  rgba(19, 21, 26, 0.90) 0%, 
+                  rgba(15, 17, 21, 0.94) 50%,
+                  rgba(11, 13, 17, 0.96) 100%)
+              `,
               backdropFilter: 'blur(32px) saturate(165%)',
               WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-              borderRight: '1px solid rgba(255,255,255,0.06)',
+              borderRight: '1px solid rgba(255,255,255,0.05)',
               boxShadow: `
                 inset 0 0 1px rgba(255,255,255,0.04),
-                2px 0 24px rgba(0,0,0,0.18)
+                2px 0 50px rgba(0,0,0,0.22)
               `,
               pointerEvents: 'none'
             }} />
 
-            {/* Subsurface Lighting */}
+            {/* Top Lavender Atmospheric Tint */}
             <div style={{
               position: 'absolute',
               top: 0,
               left: 0,
               right: 0,
-              height: '40%',
-              background: 'linear-gradient(180deg, rgba(255,255,255,0.025) 0%, transparent 100%)',
+              height: '35%',
+              background: 'linear-gradient(180deg, rgba(155, 140, 200, 0.020) 0%, transparent 100%)',
               pointerEvents: 'none'
             }} />
 
-            {/* Logo Tile — Enhanced Anchor Weight */}
+            {/* Bottom Blue-Charcoal Atmospheric Tint */}
+            <div style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: '35%',
+              background: 'linear-gradient(0deg, rgba(90, 115, 145, 0.020) 0%, transparent 100%)',
+              pointerEvents: 'none'
+            }} />
+
+            {/* Logo Tile Environmental Bloom */}
+            <div style={{
+              position: 'absolute',
+              top: '20px',
+              left: '20px',
+              width: '140px',
+              height: '80px',
+              background: 'radial-gradient(ellipse at 50% 50%, rgba(130, 150, 255, 0.035) 0%, transparent 70%)',
+              filter: 'blur(35px)',
+              pointerEvents: 'none',
+              mixBlendMode: 'soft-light',
+              zIndex: 1
+            }} />
+
+            {/* Logo Tile */}
             <motion.div
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, ease: HORIZON_EASE }}
-              style={{ marginBottom: '28px' }}
+              style={{ marginBottom: '28px', position: 'relative', zIndex: 10 }}
             >
               <Link 
                 to={createPageUrl('MacroSignals')} 
-                className="flex items-center gap-3 px-1 group relative z-10"
+                className="flex items-center gap-3 px-1 group relative"
                 style={{
                   paddingTop: '6px',
                   paddingBottom: '6px',
@@ -794,7 +647,7 @@ function LayoutContent({ children, currentPageName }) {
                   alt="Vireon Logo" 
                   className="w-10 h-10 rounded-lg transition-transform duration-200 ease-out group-hover:scale-105"
                   style={{ 
-                    boxShadow: '0 0 16px rgba(86, 180, 255, 0.44), 0 0 8px rgba(86, 180, 255, 0.28)'
+                    boxShadow: '0 0 18px rgba(110, 150, 255, 0.46), 0 0 9px rgba(110, 150, 255, 0.30)'
                   }}
                 />
                 <span 
@@ -821,56 +674,76 @@ function LayoutContent({ children, currentPageName }) {
             {/* Market Status Card */}
             <div className="relative z-10" style={{ marginTop: 'auto' }}>
               <div 
-                className="text-[10px] font-semibold uppercase tracking-wider mb-3 px-1"
+                className="text-[10px] font-medium uppercase tracking-wider mb-3 px-1"
                 style={{ 
                   color: 'rgba(255,255,255,0.48)',
-                  letterSpacing: '0.06em'
+                  letterSpacing: '0.06em',
+                  fontWeight: 500
                 }}
               >
                 Market Status
               </div>
 
+              {/* Ambient Reflection Above Capsule */}
+              <div style={{
+                position: 'absolute',
+                top: '-16px',
+                left: '10%',
+                right: '10%',
+                height: '12px',
+                background: 'linear-gradient(to bottom, rgba(50, 194, 136, 0.04) 0%, transparent 100%)',
+                filter: 'blur(8px)',
+                pointerEvents: 'none'
+              }} />
+
               <motion.div 
                 className="relative rounded-[20px] overflow-hidden"
                 style={{
                   padding: '14px 18px',
-                  background: 'linear-gradient(135deg, rgba(50, 194, 136, 0.10) 0%, rgba(40, 174, 116, 0.08) 100%)',
-                  backdropFilter: 'blur(28px) saturate(165%)',
-                  WebkitBackdropFilter: 'blur(28px) saturate(165%)',
+                  background: 'linear-gradient(135deg, rgba(50, 194, 136, 0.11) 0%, rgba(40, 174, 116, 0.09) 100%)',
+                  backdropFilter: 'blur(32px) saturate(168%)',
+                  WebkitBackdropFilter: 'blur(32px) saturate(168%)',
                   border: '1px solid rgba(50, 194, 136, 0.18)',
                   boxShadow: `
-                    inset 0 1px 2px rgba(255,255,255,0.10),
-                    inset 0 0 20px rgba(50, 194, 136, 0.08),
-                    0 4px 16px rgba(0,0,0,0.08)
+                    inset 0 1.5px 0 rgba(255,255,255,0.12),
+                    inset 0 0 22px rgba(50, 194, 136, 0.09),
+                    0 4px 16px rgba(0,0,0,0.08),
+                    0 26px 30px -8px rgba(0,0,0,0.08)
                   `
                 }}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.35, ...HORIZON_SPRING }}
               >
-                {/* Top edge gloss */}
+                {/* Internal Gradient (Top Brighter, Bottom Darker) */}
+                <div style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'linear-gradient(180deg, rgba(255,255,255,0.030) 0%, rgba(0,0,0,0.030) 100%)',
+                  borderRadius: '20px',
+                  pointerEvents: 'none'
+                }} />
+
                 <div style={{
                   position: 'absolute',
                   top: 0,
                   left: '15%',
                   right: '15%',
                   height: '1px',
-                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
                   pointerEvents: 'none'
                 }} />
 
-                {/* Subsurface green glow */}
                 <div style={{
                   position: 'absolute',
                   inset: 0,
-                  background: 'radial-gradient(ellipse at 50% 30%, rgba(50, 194, 136, 0.07) 0%, transparent 70%)',
+                  background: 'radial-gradient(ellipse at 50% 30%, rgba(50, 194, 136, 0.08) 0%, transparent 70%)',
                   borderRadius: '20px',
                   pointerEvents: 'none'
                 }} />
 
                 <div className="flex items-center space-x-3 relative z-10">
                   <div className="relative">
-                    {/* Glowing sphere */}
                     <motion.div 
                       className="w-2.5 h-2.5 rounded-full relative"
                       style={{
@@ -890,7 +763,6 @@ function LayoutContent({ children, currentPageName }) {
                       }}
                       transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                     >
-                      {/* Specular highlight */}
                       <div style={{
                         position: 'absolute',
                         top: '0.5px',
@@ -904,7 +776,6 @@ function LayoutContent({ children, currentPageName }) {
                       }} />
                     </motion.div>
 
-                    {/* Pulse ring */}
                     <motion.div 
                       className="absolute inset-0 w-2.5 h-2.5 rounded-full"
                       style={{
@@ -929,9 +800,7 @@ function LayoutContent({ children, currentPageName }) {
           </aside>
 
           <div className="flex-1 flex flex-col overflow-hidden">
-            {/* Header — OS Horizon Glass Redesign */}
             <header className="flex-shrink-0 sticky top-0 z-[250] flex items-center justify-between h-[60px] md:h-[72px] px-4 sm:px-6 md:px-8 relative">
-              {/* Header Glass Background */}
               <div style={{
                 position: 'absolute',
                 inset: 0,
@@ -939,14 +808,10 @@ function LayoutContent({ children, currentPageName }) {
                 backdropFilter: 'blur(32px) saturate(165%)',
                 WebkitBackdropFilter: 'blur(32px) saturate(165%)',
                 borderBottom: '1px solid rgba(255,255,255,0.06)',
-                boxShadow: `
-                  inset 0 0 1px rgba(255,255,255,0.04),
-                  0 2px 16px rgba(0,0,0,0.12)
-                `,
+                boxShadow: `inset 0 0 1px rgba(255,255,255,0.04), 0 2px 16px rgba(0,0,0,0.12)`,
                 pointerEvents: 'none'
               }} />
 
-              {/* Top edge lighting */}
               <div style={{
                 position: 'absolute',
                 top: 0,
@@ -957,7 +822,6 @@ function LayoutContent({ children, currentPageName }) {
                 pointerEvents: 'none'
               }} />
 
-              {/* Mobile Logo */}
               <Link to={createPageUrl('MacroSignals')} className="flex md:hidden items-center gap-2.5 group relative z-10">
                 <img 
                   src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68943f7eb0fb9393bf9a8069/ea91941d0_Asset61xtransparent.png" 
@@ -978,16 +842,13 @@ function LayoutContent({ children, currentPageName }) {
                 </span>
               </Link>
 
-              {/* Desktop Page Title */}
               <div className="hidden md:block relative z-10">
                 <h1 className="text-2xl font-bold tracking-[-0.02em]" style={{ color: 'var(--text-primary)' }}>
                   {pageTitle}
                 </h1>
               </div>
 
-              {/* Utility Icon Row — OS Horizon Glass Redesign */}
               <div className="flex items-center space-x-2 relative z-[260]">
-                {/* Search Button - Labs Module */}
                 {isEnabled('labs_modules') && (
                   <GlassIconButton
                     onClick={() => setIsSearchOpen(true)}
@@ -996,7 +857,6 @@ function LayoutContent({ children, currentPageName }) {
                   />
                 )}
 
-                {/* Live Commentary Toggle - Labs Module */}
                 {isEnabled('labs_modules') && (
                   <GlassIconButton
                     onClick={() => setIsCommentaryOpen(!isCommentaryOpen)}
@@ -1006,33 +866,28 @@ function LayoutContent({ children, currentPageName }) {
                   />
                 )}
 
-                {/* Labs Toggle */}
                 <div className="relative z-[260] group">
                   <LabsToggle />
                 </div>
 
-                {/* Alerts Button */}
                 <GlassIconButton
                   onClick={() => setIsAlertsOpen(true)}
                   icon={Bell}
                   label="View alerts"
-                  hasNotification={true} // Assuming alerts always have a notification or we could pass a state prop
+                  hasNotification={true}
                 />
 
-                {/* User Menu */}
                 <div className="relative z-[260] group">
                   <UserMenu theme="dark" toggleTheme={() => {}} />
                 </div>
               </div>
             </header>
 
-            {/* Main Content - Mobile Optimized */}
             <main className={`
               flex-1 overflow-y-auto px-4 sm:px-6 md:px-8 py-6 md:py-8 pb-24 md:pb-8 
               relative
               ${isCommentaryOpen && isEnabled('labs_modules') ? 'md:pr-[340px]' : ''}
             `}>
-              {/* Disclaimer Banner */}
               <AnimatePresence>
                 {isDisclaimerVisible && (
                   <motion.div
@@ -1069,11 +924,7 @@ function LayoutContent({ children, currentPageName }) {
             </main>
           </div>
 
-          {/* Mobile Bottom Nav - Updated with new order */}
-          <nav className={`
-            md:hidden fixed bottom-0 left-0 right-0 z-50
-            elevation-1 px-2 py-2 border-t border-white/[0.08]
-          `}>
+          <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 px-2 py-2 border-t border-white/[0.08] elevation-1">
             <div className="flex justify-around items-center">
               {navItems.map(item => (
                 <Link
@@ -1083,10 +934,7 @@ function LayoutContent({ children, currentPageName }) {
                     flex flex-col items-center space-y-1 p-2 rounded-xl w-16 min-h-[52px]
                     transition-all duration-300
                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2
-                    ${location.pathname === item.href
-                      ? 'text-white bg-white/10 scale-105'
-                      : ''
-                    }
+                    ${location.pathname === item.href ? 'text-white bg-white/10 scale-105' : ''}
                   `}
                   style={{ 
                     color: location.pathname === item.href 
@@ -1104,17 +952,14 @@ function LayoutContent({ children, currentPageName }) {
             </div>
           </nav>
 
-          {/* Alerts Drawer */}
           {isAlertsOpen && (
             <div 
-              className={`fixed inset-0 z-50 backdrop-blur-sm`}
+              className="fixed inset-0 z-50 backdrop-blur-sm"
               style={{ backgroundColor: 'var(--scrim)' }}
               onClick={() => setIsAlertsOpen(false)}
             >
               <div
-                className={`
-                  fixed top-0 right-0 h-full w-full max-w-md elevation-3 p-8 flex flex-col
-                `}
+                className="fixed top-0 right-0 h-full w-full max-w-md elevation-3 p-8 flex flex-col"
                 style={{ 
                   transform: isPinching && initialPinchDistance ? 'scale(0.95)' : 'scale(1)',
                   transition: 'transform 0.1s ease-out',
@@ -1123,15 +968,14 @@ function LayoutContent({ children, currentPageName }) {
                 onClick={e => e.stopPropagation()}
               >
                 <div className="flex justify-between items-center mb-8">
-                  <h2 className={`text-2xl font-bold tracking-[-0.02em]`} style={{ color: 'var(--text-primary)' }}>
+                  <h2 className="text-2xl font-bold tracking-[-0.02em]" style={{ color: 'var(--text-primary)' }}>
                     Alerts
                   </h2>
                   <div className="flex items-center space-x-2">
-                    {/* Pinch hint for mobile */}
                     <div className="md:hidden text-xs text-gray-500">👌</div>
                     <button
                       onClick={() => setIsAlertsOpen(false)}
-                      className={`min-w-[44px] min-h-[44px] rounded-xl flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 hover:bg-white/10`}
+                      className="min-w-[44px] min-h-[44px] rounded-xl flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 hover:bg-white/10"
                       aria-label="Close alerts"
                     >
                       <X className="w-6 h-6" style={{ color: 'var(--text-tertiary)' }} />
@@ -1139,17 +983,14 @@ function LayoutContent({ children, currentPageName }) {
                   </div>
                 </div>
 
-                <div className={`
-                  flex-1 rounded-2xl flex items-center justify-center text-center
-                  border-2 border-dashed elevation-1
-                `}>
+                <div className="flex-1 rounded-2xl flex items-center justify-center text-center border-2 border-dashed elevation-1">
                   <div className="space-y-4">
-                    <Bell className={`w-12 h-12 mx-auto`} style={{ color: 'var(--text-tertiary)' }} strokeWidth={1.5} />
+                    <Bell className="w-12 h-12 mx-auto" style={{ color: 'var(--text-tertiary)' }} strokeWidth={1.5} />
                     <div>
-                      <p className={`text-lg font-semibold`} style={{ color: 'var(--text-primary)' }}>
+                      <p className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
                         No New Alerts
                       </p>
-                      <p className={`text-sm mt-1`} style={{ color: 'var(--text-secondary)' }}>
+                      <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
                         Your market alerts will appear here
                       </p>
                     </div>
@@ -1159,22 +1000,19 @@ function LayoutContent({ children, currentPageName }) {
             </div>
           )}
 
-          {/* Live Commentary Panel - Labs Module */}
           {isEnabled('labs_modules') && (
             <LiveCommentary
               isOpen={isCommentaryOpen}
               onClose={() => setIsCommentaryOpen(false)}
-              theme="dark" // Always pass dark theme
+              theme="dark"
             />
           )}
 
-          {/* Omni Search Modal - Labs Module */}
           {isEnabled('labs_modules') && (
             <SearchOmni isOpen={isSearchOpen} setIsOpen={setIsSearchOpen} theme="dark" />
           )}
         </div>
 
-        {/* Lyra Chatbot */}
         <LyraChatbot />
       </NetworkErrorBoundary>
     </>
@@ -1182,16 +1020,14 @@ function LayoutContent({ children, currentPageName }) {
 }
 
 export default function Layout({ children, currentPageName }) {
-  // Inject theme script immediately to prevent flash
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
     const themeScript = document.createElement('script');
-    themeScript.id = 'vireon-theme-script'; // Add an ID to prevent re-injection
+    themeScript.id = 'vireon-theme-script';
     themeScript.innerHTML = `
       (function() {
         try {
-          // Always apply dark theme
           document.documentElement.classList.add('dark');
         } catch (e) {
           console.error("Failed to apply initial theme:", e);
@@ -1203,7 +1039,6 @@ export default function Layout({ children, currentPageName }) {
       document.head.prepend(themeScript);
     }
     
-    // PWA registration could go here
     if ('serviceWorker' in navigator) {
       console.log('PWA features enabled.');
     }
