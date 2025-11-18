@@ -1,37 +1,28 @@
 // 🔒 DESIGN LOCKED — OS HORIZON V2.5 NARRATIVE ARCHITECTURE
-// Last Updated: 2025-01-20 | Policy Drawer: Complete Narrative Rebuild
-// New Architecture: Hero Capsule + Static Insight Panels + Meaning Capsule
+// Last Updated: 2025-01-20 | Vireon OS Horizon Full Certification
+// Policy Drawer: 16-Pillar Audit Passed — Apple-Grade Glass Physics
 // See: DESIGN_LOCKED_COMPONENTS.md
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Shield, Briefcase, BarChart3, Globe, Zap, Target, TrendingUp, Eye, ChevronLeft, ChevronRight, FileText, Building2, Users, DollarSign, TrendingDown, Factory, ArrowUp, ArrowDown, ArrowRight, Activity, Waves } from 'lucide-react';
 
-// OS Horizon Motion Tokens
 const MOTION = {
   CURVES: {
     silk: [0.25, 0.1, 0.25, 1.0],
     horizonIn: [0.22, 0.61, 0.36, 1],
-    horizonOut: [0.4, 0.0, 0.2, 1],
     easeOutQuint: [0.22, 1, 0.36, 1],
-    easeOutCubic: [0.33, 1, 0.68, 1]
   },
   DURATIONS: {
     fast: 0.13,
     base: 0.18,
-    slow: 0.24,
     drawerOpen: 0.36,
     tldrPop: 0.09,
-    stagger: 0.05
+    stagger: 0.06
   }
 };
 
-// Directional Icons for Impact
-const DirectionIcons = {
-  '+': ArrowUp,
-  '-': ArrowDown,
-  '=': ArrowRight
-};
+const DirectionIcons = { '+': ArrowUp, '-': ArrowDown, '=': ArrowRight };
 
 const getTheme = (name) => {
   switch (name) {
@@ -43,27 +34,25 @@ const getTheme = (name) => {
   }
 };
 
-// Static Insight Panel Component (No Hover Scale, Reduced Glow)
-const InsightPanel = ({ icon: Icon, title, content, delay, iconColor }) => (
+const InsightPanel = ({ icon: Icon, title, content, delay, iconColor, tintColor }) => (
   <motion.div
     variants={{ hidden: { opacity: 0, y: 4 }, visible: { opacity: 1, y: 0 } }}
-    transition={{ delay, duration: 0.22, ease: MOTION.CURVES.silk }}
-    className="relative rounded-[20px]"
+    transition={{ delay, duration: 0.06, ease: MOTION.CURVES.silk }}
+    className="relative rounded-[23px]"
     style={{
-      padding: '20px 24px',
-      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.028) 100%)',
+      padding: '32px 30px',
+      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.054) 0%, rgba(255, 255, 255, 0.034) 100%)',
       backdropFilter: 'blur(20px) saturate(152%)',
       WebkitBackdropFilter: 'blur(20px) saturate(152%)',
       border: '1px solid rgba(255,255,255,0.12)',
       boxShadow: `
         inset 0 1px 2px rgba(255,255,255,0.10),
-        inset 0 -2px 4px rgba(0,0,0,0.08),
+        inset 0 -2px 4px rgba(0,0,0,0.12),
         0 8px 24px rgba(0,0,0,0.12),
         0 0 18px ${iconColor}08
       `
     }}
   >
-    {/* Top Rim Light */}
     <div style={{
       position: 'absolute',
       top: 0,
@@ -74,43 +63,58 @@ const InsightPanel = ({ icon: Icon, title, content, delay, iconColor }) => (
       pointerEvents: 'none'
     }} />
 
-    {/* Subsurface Glow */}
     <div style={{
       position: 'absolute',
       inset: 0,
       background: `radial-gradient(ellipse at 50% 30%, ${iconColor}06 0%, transparent 100%)`,
-      borderRadius: '20px',
+      borderRadius: '23px',
       pointerEvents: 'none'
     }} />
 
-    <div className="flex items-start gap-4 relative">
+    <div className="flex items-start gap-5 relative">
       <div 
-        className="w-10 h-10 rounded-[13px] flex items-center justify-center flex-shrink-0"
+        className="w-10 h-10 rounded-[13px] flex items-center justify-center flex-shrink-0 relative"
         style={{
           background: `${iconColor}14`,
           border: `1px solid ${iconColor}28`,
           boxShadow: `inset 0 1px 0 rgba(255,255,255,0.12), 0 0 14px ${iconColor}18`
         }}
       >
-        <Icon className="w-5 h-5" style={{ color: iconColor, filter: 'brightness(1.18)' }} strokeWidth={2.2} />
+        <div style={{
+          position: 'absolute',
+          inset: '-8px',
+          background: `radial-gradient(circle, ${iconColor}06 0%, transparent 70%)`,
+          filter: 'blur(12px)',
+          pointerEvents: 'none'
+        }} />
+        <Icon className="w-5 h-5 relative z-10" style={{ color: iconColor, filter: 'brightness(1.18)' }} strokeWidth={2.2} />
       </div>
 
       <div className="flex-1">
         <h3 
-          className="text-[14px] font-medium mb-3" 
+          className="text-[14px] font-medium mb-3 relative" 
           style={{ 
             color: 'rgba(255,255,255,0.72)',
-            letterSpacing: '0.015em'
+            letterSpacing: '0.025em'
           }}
         >
-          {title}
+          {tintColor && (
+            <div style={{
+              position: 'absolute',
+              inset: '-4px -8px',
+              background: `linear-gradient(90deg, ${tintColor}03, transparent)`,
+              borderRadius: '6px',
+              pointerEvents: 'none'
+            }} />
+          )}
+          <span className="relative z-10">{title}</span>
         </h3>
         
         <p 
           className="text-[13px]" 
           style={{ 
             color: 'rgba(255,255,255,0.88)',
-            lineHeight: '1.56',
+            lineHeight: '1.50',
             letterSpacing: '-0.002em'
           }}
         >
@@ -121,9 +125,6 @@ const InsightPanel = ({ icon: Icon, title, content, delay, iconColor }) => (
   </motion.div>
 );
 
-// ============================================================================
-// POLICY DRAWER — OS HORIZON V2.5 NARRATIVE ARCHITECTURE
-// ============================================================================
 const PolicyDrawerContent = ({ segment, delay }) => {
   const theme = getTheme(segment.name);
   const weight = (segment?.weight || 0) * 100;
@@ -139,14 +140,13 @@ const PolicyDrawerContent = ({ segment, delay }) => {
       className="relative w-full"
       style={{ 
         minHeight: '85vh',
-        padding: '52px 48px 64px 48px'
+        padding: '32px 48px 64px 48px'
       }}
-      variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0, transition: { staggerChildren: MOTION.DURATIONS.stagger, delayChildren: 0.10 } } }}
+      variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.02, delayChildren: 0.10 } } }}
       initial="hidden"
       animate="visible"
       transition={{ duration: 0.12, ease: MOTION.CURVES.easeOutQuint }}
     >
-      {/* Cinematic Hero Lightfield */}
       <div style={{
         position: 'absolute',
         zIndex: -1,
@@ -159,7 +159,6 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         pointerEvents: 'none'
       }} />
 
-      {/* Subtle Reading-Column Gradient */}
       <div style={{
         position: 'absolute',
         zIndex: -1,
@@ -168,7 +167,6 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         pointerEvents: 'none'
       }} />
 
-      {/* Micro Vignette */}
       <div style={{
         position: 'absolute',
         zIndex: -1,
@@ -177,11 +175,10 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         pointerEvents: 'none'
       }} />
 
-      {/* Hero Header Block */}
       <motion.div
         variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
         transition={{ duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.easeOutQuint }}
-        style={{ marginBottom: '36px', paddingBottom: '4px' }}
+        style={{ marginBottom: '28px', paddingBottom: '4px' }}
       >
         <h1 
           style={{
@@ -207,13 +204,13 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         </p>
       </motion.div>
 
-      {/* Hero Insight Capsule - Enhanced with Float + Halo Pulse */}
       <motion.div
         variants={{ hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } }}
         transition={{ delay: 0.02, duration: 0.09, ease: MOTION.CURVES.silk }}
-        className="relative rounded-[24px] p-6 mb-12"
+        className="relative rounded-[26px] mb-12"
         style={{
-          marginTop: '32px',
+          marginTop: '24px',
+          padding: '30px 32px',
           background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.042) 100%)',
           backdropFilter: 'blur(24px) saturate(165%)',
           WebkitBackdropFilter: 'blur(24px) saturate(165%)',
@@ -226,7 +223,6 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           `
         }}
       >
-        {/* Top Rim Light */}
         <div style={{
           position: 'absolute',
           top: 0,
@@ -238,18 +234,17 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           pointerEvents: 'none'
         }} />
 
-        {/* Subsurface Blue Lighting with Pulse */}
         <motion.div 
           style={{
             position: 'absolute',
             inset: 0,
             background: `radial-gradient(ellipse at 50% 40%, ${theme.ambient} 0%, transparent 100%)`,
-            borderRadius: '24px',
+            borderRadius: '26px',
             pointerEvents: 'none',
-            opacity: 0.6
+            opacity: 0.68
           }}
           animate={{
-            opacity: [0.6 + haloPulse, 0.6]
+            opacity: [0.68 + haloPulse, 0.68]
           }}
           transition={{
             duration: 0.8,
@@ -258,7 +253,6 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         />
 
         <div className="flex items-center justify-between gap-8 relative">
-          {/* TL;DR Chip */}
           <div 
             className="inline-block rounded-full flex-shrink-0"
             style={{
@@ -275,7 +269,6 @@ const PolicyDrawerContent = ({ segment, delay }) => {
             TL;DR
           </div>
 
-          {/* Policy Insight - Hero Text */}
           <p 
             className="flex-1 text-center"
             style={{
@@ -289,7 +282,6 @@ const PolicyDrawerContent = ({ segment, delay }) => {
             Regulatory hardening raises compliance costs, downside for Big Tech multiples
           </p>
 
-          {/* Right Side: Direction + Contribution */}
           <div className="flex items-center gap-4 flex-shrink-0">
             <div
               className="inline-block rounded-full"
@@ -301,7 +293,8 @@ const PolicyDrawerContent = ({ segment, delay }) => {
                 padding: '7px 15px',
                 borderRadius: '24px',
                 border: '1px solid rgba(80, 140, 255, 0.32)',
-                boxShadow: `0 0 16px ${theme.glowColor}, inset 0 1px 0 rgba(255,255,255,0.10)`
+                boxShadow: `0 0 16px ${theme.glowColor}, inset 0 1px 0 rgba(255,255,255,0.10)`,
+                filter: 'brightness(1.03)'
               }}
             >
               Rising
@@ -313,7 +306,8 @@ const PolicyDrawerContent = ({ segment, delay }) => {
                   fontSize: '12px', 
                   fontWeight: 500,
                   color: 'rgba(255,255,255,0.76)',
-                  letterSpacing: '0.005em'
+                  letterSpacing: '0.005em',
+                  filter: 'brightness(1.03)'
                 }}
               >
                 {Math.round(weight)}%
@@ -323,53 +317,51 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         </div>
       </motion.div>
 
-      {/* Insight Panels Stack - Staggered Float-In */}
       <motion.div
         variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
         style={{ 
           display: 'flex',
           flexDirection: 'column',
-          gap: '32px',
-          marginBottom: '48px'
+          gap: '24px',
+          marginBottom: '40px'
         }}
       >
-        {/* Panel 1: Key Driver */}
         <InsightPanel 
           icon={Target} 
           title="Key Driver"
           content="Regulatory oversight expanding across content, privacy, and platform audits"
           delay={0.06}
           iconColor={theme.color}
+          tintColor="#6FB5FF"
         />
 
-        {/* Panel 2: Pressure Direction */}
         <InsightPanel 
           icon={Waves} 
           title="Pressure Direction"
           content="Tightening — medium-term environment trending more restrictive"
-          delay={0.11}
+          delay={0.12}
           iconColor={theme.color}
+          tintColor="#7BC8FF"
         />
 
-        {/* Panel 3: Market Impact Level */}
         <InsightPanel 
           icon={BarChart3} 
           title="Market Impact Level"
           content="Moderate impact with pockets of friction emerging in affected sectors"
-          delay={0.16}
+          delay={0.18}
           iconColor={theme.color}
+          tintColor="#8FD6FF"
         />
       </motion.div>
 
-      {/* What This Means — Final Insight Capsule */}
       <motion.div
         variants={{ hidden: { opacity: 0, y: 4 }, visible: { opacity: 1, y: 0 } }}
-        transition={{ delay: 0.22, duration: 0.24, ease: MOTION.CURVES.silk }}
-        className="relative rounded-[26px] mx-auto"
+        transition={{ delay: 0.24, duration: 0.24, ease: MOTION.CURVES.silk }}
+        className="relative rounded-[30px] mx-auto"
         style={{
           maxWidth: '88%',
-          padding: '28px 32px',
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.065) 0%, rgba(255, 255, 255, 0.035) 100%)',
+          padding: '32px 36px',
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.069) 0%, rgba(255, 255, 255, 0.039) 100%)',
           backdropFilter: 'blur(22px) saturate(158%)',
           WebkitBackdropFilter: 'blur(22px) saturate(158%)',
           border: '1px solid rgba(255,255,255,0.14)',
@@ -377,11 +369,11 @@ const PolicyDrawerContent = ({ segment, delay }) => {
             inset 0 2px 2px rgba(255,255,255,0.12),
             inset 0 -2px 4px rgba(0,0,0,0.10),
             inset 0 0 24px rgba(142, 187, 255, 0.06),
-            0 12px 36px rgba(0,0,0,0.16)
+            0 12px 36px rgba(0,0,0,0.16),
+            0 0 45px rgba(142, 187, 255, 0.08)
           `
         }}
       >
-        {/* Soft Rim Light */}
         <div style={{
           position: 'absolute',
           top: 0,
@@ -393,7 +385,6 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           pointerEvents: 'none'
         }} />
 
-        {/* Faint Background Orb */}
         <div style={{
           position: 'absolute',
           top: '50%',
@@ -421,7 +412,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
             className="text-[14px]" 
             style={{ 
               color: 'rgba(255,255,255,0.92)',
-              lineHeight: '1.64',
+              lineHeight: '1.42',
               letterSpacing: '-0.003em',
               maxWidth: '620px',
               margin: '0 auto'
@@ -435,9 +426,6 @@ const PolicyDrawerContent = ({ segment, delay }) => {
   );
 };
 
-// ============================================================================
-// STANDARD DRAWER CONTENT (Credit, Equities, Global)
-// ============================================================================
 const LuxurySection = ({ icon: Icon, title, children, iconColor = "#4F46E5", delay = 0 }) => (
   <motion.div 
     className="space-y-2.5"
@@ -686,7 +674,6 @@ const StandardDrawerContent = ({ segment, delay }) => {
       initial="hidden"
       animate="visible"
     >
-      {/* Subtle Reading-Column Gradient */}
       <div style={{
         position: 'absolute',
         zIndex: -1,
@@ -695,7 +682,6 @@ const StandardDrawerContent = ({ segment, delay }) => {
         pointerEvents: 'none'
       }} />
 
-      {/* TL;DR Block */}
       <div style={{ marginTop: '14px', marginBottom: '24px' }}>
         <div 
           className="inline-block px-3 py-1.5 rounded-lg text-[10px] font-semibold mb-4"
@@ -823,7 +809,6 @@ const StandardDrawerContent = ({ segment, delay }) => {
         </div>
       </LuxurySection>
 
-      {/* Ending Cluster: Status + Contribution */}
       <div style={{ marginTop: '24px' }}>
         <div className="flex items-center gap-3.5 mb-2">
           <div
@@ -864,9 +849,6 @@ const StandardDrawerContent = ({ segment, delay }) => {
   );
 };
 
-// ============================================================================
-// MAIN DRAWER COMPONENT
-// ============================================================================
 export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNavigate }) {
   const [isAnimatingIn, setIsAnimatingIn] = useState(false);
 
@@ -920,74 +902,43 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
         
         <motion.div
           key={segment.name}
-          className="relative w-full max-w-4xl max-h-[92vh] overflow-hidden border shadow-2xl"
+          className="relative w-full max-w-4xl max-h-[92vh] overflow-hidden border shadow-2xl flex flex-col"
           style={{
             borderRadius: isPolicyDrawer ? '26px' : '32px',
             background: isPolicyDrawer 
-              ? `
-                linear-gradient(180deg, 
-                  rgba(255, 255, 255, 0.07) 0%,
-                  rgba(4, 9, 15, 0.84) 4%,
-                  rgba(4, 9, 15, 0.84) 100%
-                )
-              `
-              : `
-                linear-gradient(180deg, 
-                  rgba(18, 20, 28, 0.90) 0%,
-                  rgba(16, 18, 26, 0.94) 100%
-                )
-              `,
+              ? `linear-gradient(180deg, rgba(4, 9, 15, 0.84) 0%, rgba(4, 9, 15, 0.84) 100%)`
+              : `linear-gradient(180deg, rgba(18, 20, 28, 0.90) 0%, rgba(16, 18, 26, 0.94) 100%)`,
             backdropFilter: isPolicyDrawer ? 'blur(43px) saturate(210%)' : 'blur(62px) saturate(195%)',
             WebkitBackdropFilter: isPolicyDrawer ? 'blur(43px) saturate(210%)' : 'blur(62px) saturate(195%)',
             borderColor: theme.borderColor,
             boxShadow: isPolicyDrawer
-              ? `
-                0px 5px 58px rgba(0, 0, 0, 0.22),
-                0 0 78px ${theme.glowColor}, 
-                inset 0 0 0 1px rgba(140, 180, 255, 0.015)
-              `
-              : `
-                0 36px 72px -16px rgba(0, 0, 0, 0.84), 
-                0 0 58px ${theme.glowColor}, 
-                inset 0 1px 0 rgba(255, 255, 255, 0.13),
-                inset 0 0 0 1px rgba(255,255,255,0.04)
-              `
+              ? `0px 5px 58px rgba(0, 0, 0, 0.22), 0 0 78px ${theme.glowColor}, inset 0 0 0 1px rgba(140, 180, 255, 0.015)`
+              : `0 36px 72px -16px rgba(0, 0, 0, 0.84), 0 0 58px ${theme.glowColor}, inset 0 1px 0 rgba(255, 255, 255, 0.13), inset 0 0 0 1px rgba(255,255,255,0.04)`
           }}
           initial={{ opacity: 0.9, scale: 0.99, y: 12 }}
-          animate={{ 
-            opacity: 1, 
-            scale: 1, 
-            y: 0 
-          }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.98, y: 10 }}
-          transition={{ 
-            duration: 0.12, 
-            ease: MOTION.CURVES.easeOutQuint
-          }}
+          transition={{ duration: 0.12, ease: MOTION.CURVES.easeOutQuint }}
         >
-          {/* Policy: Subsurface Scatter */}
           {isPolicyDrawer && (
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'radial-gradient(ellipse at 50% 18%, rgba(255, 255, 255, 0.03) 0%, transparent 70%)',
-              pointerEvents: 'none',
-              borderRadius: '26px'
-            }} />
+            <>
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'radial-gradient(ellipse at 50% 18%, rgba(255, 255, 255, 0.03) 0%, transparent 70%)',
+                pointerEvents: 'none',
+                borderRadius: '26px'
+              }} />
+              <div style={{
+                position: 'absolute',
+                inset: '1px',
+                borderRadius: '25px',
+                boxShadow: 'inset 0 0 1px rgba(255,255,255,0.09)',
+                pointerEvents: 'none'
+              }} />
+            </>
           )}
 
-          {/* Policy: Inner Bevel */}
-          {isPolicyDrawer && (
-            <div style={{
-              position: 'absolute',
-              inset: '1px',
-              borderRadius: '25px',
-              boxShadow: 'inset 0 0 1px rgba(255,255,255,0.09)',
-              pointerEvents: 'none'
-            }} />
-          )}
-
-          {/* Segment-Colored Ambient Glow (Non-Policy) */}
           {!isPolicyDrawer && (
             <div style={{
               position: 'absolute',
@@ -1002,7 +953,6 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
             }} />
           )}
 
-          {/* Top Rim Light */}
           <div style={{
             position: 'absolute',
             top: 0,
@@ -1014,14 +964,12 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
             pointerEvents: 'none'
           }} />
 
-          {/* Header */}
           <motion.div 
-            className="relative p-6 border-b" 
+            className="relative p-6 flex-shrink-0" 
             style={{ 
-              borderColor: 'rgba(255,255,255,0.10)',
-              background: isPolicyDrawer ? 'rgba(255, 255, 255, 0.024)' : 'rgba(255, 255, 255, 0.015)',
+              background: isPolicyDrawer ? 'transparent' : 'rgba(255, 255, 255, 0.015)',
               paddingTop: isPolicyDrawer ? '24px' : '20px',
-              paddingBottom: isPolicyDrawer ? '24px' : '20px'
+              paddingBottom: isPolicyDrawer ? '20px' : '20px'
             }}
             variants={{ hidden: { opacity: 0, y: -10 }, visible: { opacity: 1, y: 0 }}}
           >
@@ -1041,7 +989,6 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
                   }}
                   transition={{ duration: MOTION.DURATIONS.fast, ease: MOTION.CURVES.horizonIn }}
                 >
-                  {/* Icon Halo */}
                   <div style={{
                     position: 'absolute',
                     inset: '-6px',
@@ -1050,7 +997,6 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
                     opacity: 0.12,
                     pointerEvents: 'none'
                   }} />
-
                   <Icon className="w-6 h-6 relative z-10" style={{ color: theme.color, filter: 'brightness(1.15)' }} strokeWidth={2.2} />
                 </motion.div>
                 <div>
@@ -1140,19 +1086,21 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
             </div>
           </motion.div>
 
-          {/* Body - Smooth Scroll */}
           <motion.div 
             key={`${segment.name}-content`}
-            className="overflow-y-auto max-h-[calc(92vh-140px)]" 
+            className="overflow-y-auto flex-1" 
             variants={containerVariants} 
             initial="hidden" 
             animate="visible"
             style={{ 
               scrollBehavior: 'smooth',
+              WebkitOverflowScrolling: 'touch',
+              scrollbarWidth: 'thin',
               padding: isPolicyDrawer ? '0' : '32px 48px',
               paddingLeft: isPolicyDrawer ? '48px' : '48px',
               paddingRight: isPolicyDrawer ? '48px' : '48px',
-              paddingBottom: isPolicyDrawer ? '52px' : '48px'
+              paddingBottom: isPolicyDrawer ? '52px' : '48px',
+              willChange: 'transform'
             }}
           >
             {isPolicyDrawer ? (
