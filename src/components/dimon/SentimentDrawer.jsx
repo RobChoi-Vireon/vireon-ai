@@ -1,7 +1,7 @@
 // 🔒 DESIGN LOCKED — OS HORIZON TAHOE V5.1 STREET ALIGNMENT REFINEMENT
-// Last Updated: 2025-01-20 | V5.1 Micro-Polish Applied (Horizon Glass Depth + Spacing)
+// Last Updated: 2025-01-20 | V5.1 Micro-Polish + Layout Precision Applied
 // VIREON CERTIFIED — OS Horizon Hybrid Identity (Cinematic Intelligence + Tahoe Serenity)
-// Micro-polish: orb positioning, glass diffusion, inner shadows, rim-lights, hover states
+// Layout precision: uniform block heights, spacing grid, consistent materials
 // See: DESIGN_LOCKED_COMPONENTS.md
 
 import React, { useEffect, useMemo, useState } from 'react';
@@ -56,7 +56,7 @@ const SEGMENT_CONFIG = {
 };
 
 // ============================================================================
-// OS HORIZON 2.0 LIVING ALIGNMENT ORB (Moved Up + Enhanced Inner Glow)
+// OS HORIZON 2.0 LIVING ALIGNMENT ORB
 // ============================================================================
 const LivingAlignmentOrb = ({ score, delay }) => {
   const [breathingPhase, setBreathingPhase] = useState(0);
@@ -93,7 +93,7 @@ const LivingAlignmentOrb = ({ score, delay }) => {
   return (
     <motion.div
       className="relative flex items-center justify-center mx-auto"
-      style={{ width: '168px', height: '168px', x: parallaxX, y: parallaxY, marginBottom: '12px' }}
+      style={{ width: '168px', height: '168px', x: parallaxX, y: parallaxY, marginBottom: '0px' }}
       initial={{ opacity: 0, scale: 0.96, y: 0 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ delay: delay + 0.08, duration: MOTION.DURATIONS.orbArrival, ease: MOTION.CURVES.easeOutQuint }}
@@ -249,7 +249,7 @@ const LivingAlignmentOrb = ({ score, delay }) => {
 };
 
 // ============================================================================
-// NARRATIVE CAPSULE (Enhanced Glass + Adjusted Padding + Rim-Light)
+// NARRATIVE CAPSULE (Tightened Spacing)
 // ============================================================================
 const InsightRevealPanel = ({ segments, delay }) => {
   return (
@@ -271,6 +271,7 @@ const InsightRevealPanel = ({ segments, delay }) => {
           0 0 22px rgba(140,180,255,0.06),
           0 4px 32px rgba(0,0,0,0.35)
         `,
+        marginTop: '12px',
         marginBottom: '32px'
       }}
       initial={{ opacity: 0, y: 8, scale: 0.98 }}
@@ -305,18 +306,18 @@ const InsightRevealPanel = ({ segments, delay }) => {
 };
 
 // ============================================================================
-// UNIFORM CARD GRID (2×2, Enhanced Micro-Effects)
+// UNIFORM CARD GRID (2×2, Perfect Uniformity)
 // ============================================================================
 const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
   const sortedSegments = [...segments].sort((a, b) => (b.weight || 0) - (a.weight || 0));
 
   return (
-    <div style={{ marginTop: '40px', marginBottom: '40px' }}>
+    <div style={{ marginTop: '48px', marginBottom: '40px' }}>
       <motion.div
         className="text-[11px] font-medium uppercase tracking-wider mb-5"
         style={{ 
-          color: 'rgba(255,255,255,0.90)', 
-          letterSpacing: '0.09em',
+          color: 'rgba(255,255,255,0.58)', 
+          letterSpacing: '0.06em',
           fontWeight: 500
         }}
         initial={{ opacity: 0 }}
@@ -394,7 +395,7 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
                 pointerEvents: 'none'
               }} />
 
-              {/* Inset Highlight (3%) */}
+              {/* Inset Highlight */}
               <div style={{
                 position: 'absolute',
                 inset: 0,
@@ -436,10 +437,10 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
                   {segment.name}
                 </h4>
 
-                {/* Contribution Bar */}
+                {/* Contribution Bar - Unified Track Color */}
                 <div 
                   className="w-full h-[4px] rounded-full overflow-hidden" 
-                  style={{ background: 'rgba(0,0,0,0.24)' }}
+                  style={{ background: 'rgba(255,255,255,0.06)' }}
                 >
                   <motion.div
                     className="h-full rounded-full"
@@ -466,7 +467,7 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
 };
 
 // ============================================================================
-// SEGMENT DETAILS (Enhanced Hover/Active States)
+// SEGMENT DETAILS (Refined Dropdown Styling)
 // ============================================================================
 const InsightRows = ({ segments, delay, onOpenDetail }) => {
   const [expandedRow, setExpandedRow] = useState(null);
@@ -486,13 +487,13 @@ const InsightRows = ({ segments, delay, onOpenDetail }) => {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: delay + 0.3, duration: 0.35 }}
-      style={{ marginTop: '28px' }}
+      style={{ marginTop: '36px' }}
     >
       <h3 
         className="text-[11px] uppercase tracking-wider mb-5" 
         style={{ 
-          color: 'rgba(255,255,255,0.90)', 
-          letterSpacing: '0.08em',
+          color: 'rgba(255,255,255,0.58)', 
+          letterSpacing: '0.06em',
           fontWeight: 500
         }}
       >
@@ -536,7 +537,7 @@ const InsightRows = ({ segments, delay, onOpenDetail }) => {
                 }}
                 whileHover={{
                   y: -0.5,
-                  boxShadow: `0 0 16px ${config.glow}`,
+                  boxShadow: `0 0 8px ${config.glow}`,
                   transition: { duration: 0.15 }
                 }}
               >
@@ -564,7 +565,7 @@ const InsightRows = ({ segments, delay, onOpenDetail }) => {
                 </div>
               </motion.div>
 
-              {/* Expanded Panel */}
+              {/* Expanded Panel - Symmetrical Padding */}
               <AnimatePresence>
                 {isExpanded && (
                   <motion.div
@@ -577,7 +578,7 @@ const InsightRows = ({ segments, delay, onOpenDetail }) => {
                         inset 0 2px 10px rgba(0,0,0,0.08),
                         0 6px 18px rgba(0,0,0,0.08)
                       `,
-                      padding: '20px',
+                      padding: '20px 22px',
                       borderRadius: '0 0 22px 22px'
                     }}
                     initial={{ height: 0, opacity: 0 }}
@@ -633,11 +634,11 @@ const InsightRows = ({ segments, delay, onOpenDetail }) => {
                       )}
                     </p>
 
-                    {/* Contribution Bar */}
+                    {/* Contribution Bar - Unified Track Color */}
                     <div className="relative mb-5">
                       <div 
                         className="w-full h-[4px] rounded-full overflow-hidden" 
-                        style={{ background: 'rgba(0,0,0,0.22)' }}
+                        style={{ background: 'rgba(255,255,255,0.06)' }}
                       >
                         <motion.div
                           className="h-full rounded-full"
@@ -685,7 +686,7 @@ const InsightRows = ({ segments, delay, onOpenDetail }) => {
 };
 
 // ============================================================================
-// MAIN STREET ALIGNMENT DRAWER (Enhanced Glass + Rim-Light + Gradient)
+// MAIN STREET ALIGNMENT DRAWER
 // ============================================================================
 const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) => {
   useEffect(() => {
@@ -856,7 +857,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
               zIndex: 1
             }}
           >
-            {/* Living Orb (Moved Up 10px) */}
+            {/* Living Orb */}
             <LivingAlignmentOrb score={consensusScore} delay={0.02} />
             
             {/* Metadata */}
