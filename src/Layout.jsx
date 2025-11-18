@@ -15,30 +15,213 @@ import UserMenu from "./components/core/UserMenu";
 import { motion, AnimatePresence } from 'framer-motion';
 import NetworkErrorBoundary from "./components/core/NetworkErrorBoundary";
 
+// OS Horizon Motion Physics
+const HORIZON_SPRING = { type: "spring", stiffness: 320, damping: 82, mass: 1 };
+const HORIZON_EASE = [0.25, 0.1, 0.25, 1.0];
+
 const NavLink = ({ href, icon: Icon, title, isActive, theme }) => (
   <Link
     to={href}
-    className={`
-      group relative flex items-center space-x-3.5
-      px-4 py-3.5 rounded-2xl
-      text-[15px] font-medium tracking-[-0.01em]
-      transition-all duration-300 ease-out
-      min-h-[44px]
-      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2
-      ${isActive
-        ? 'bg-gradient-to-r from-white/[0.12] to-white/[0.08] text-white shadow-lg shadow-black/20 border border-white/10'
-        : 'text-gray-400 hover:text-white hover:bg-white/[0.06]'
-      }
-      ${!isActive && 'hover:scale-[1.02]'}
-      body.reduce-motion:hover:scale-100
-    `}
+    className="group relative flex items-center space-x-3.5 tap-highlight-transparent"
+    style={{ textDecoration: 'none' }}
   >
-    <Icon className={`w-[18px] h-[18px] transition-all duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-105'}`} />
-    <span className="font-semibold tracking-[-0.005em]">{title}</span>
-    {isActive && (
-      <div className="absolute right-3 w-1.5 h-1.5 rounded-full bg-blue-400" />
-    )}
+    <motion.div
+      className="relative w-full rounded-[20px] overflow-hidden"
+      style={{
+        padding: '12px 16px',
+        background: isActive 
+          ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.11) 0%, rgba(255, 255, 255, 0.08) 100%)'
+          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.02) 100%)',
+        backdropFilter: 'blur(28px) saturate(165%)',
+        WebkitBackdropFilter: 'blur(28px) saturate(165%)',
+        border: '1px solid rgba(255,255,255,0.09)',
+        boxShadow: isActive 
+          ? `
+            inset 0 1px 2px rgba(255,255,255,0.14),
+            inset 0 0 22px rgba(100, 180, 255, 0.12),
+            0 4px 14px rgba(0,0,0,0.10)
+          `
+          : `
+            inset 0 1px 1px rgba(255,255,255,0.05),
+            0 2px 8px rgba(0,0,0,0.04)
+          `
+      }}
+      whileHover={{
+        y: -1,
+        scale: 1.01,
+        background: isActive 
+          ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.09) 100%)'
+          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.04) 100%)',
+        boxShadow: isActive
+          ? `
+            inset 0 1px 2px rgba(255,255,255,0.16),
+            inset 0 0 26px rgba(100, 180, 255, 0.16),
+            0 6px 18px rgba(0,0,0,0.12)
+          `
+          : `
+            inset 0 1px 2px rgba(255,255,255,0.08),
+            0 4px 12px rgba(0,0,0,0.08)
+          `
+      }}
+      whileTap={{ scale: 0.98 }}
+      transition={HORIZON_SPRING}
+    >
+      {/* Top edge gloss */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '15%',
+        right: '15%',
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+        pointerEvents: 'none'
+      }} />
+
+      {/* Active state inner glow */}
+      {isActive && (
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'radial-gradient(ellipse at 50% 30%, rgba(100, 180, 255, 0.08) 0%, transparent 70%)',
+          borderRadius: '20px',
+          pointerEvents: 'none'
+        }} />
+      )}
+
+      <div className="flex items-center space-x-3.5 relative z-10">
+        <Icon 
+          className="w-[18px] h-[18px]" 
+          style={{ 
+            color: isActive ? '#D7E3FF' : '#9BA3B0',
+            strokeWidth: 1.5,
+            filter: isActive ? 'drop-shadow(0 0 8px rgba(100, 180, 255, 0.4))' : 'none'
+          }} 
+        />
+        <span 
+          className="font-medium tracking-[-0.005em]"
+          style={{
+            fontSize: '15px',
+            color: isActive ? 'rgba(255,255,255,0.96)' : 'rgba(255,255,255,0.68)'
+          }}
+        >
+          {title}
+        </span>
+      </div>
+    </motion.div>
   </Link>
+);
+
+// OS Horizon Glass Icon Button
+const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNotification = false, className = "" }) => (
+  <motion.button
+    onClick={onClick}
+    className={`relative rounded-[16px] flex items-center justify-center group ${className}`}
+    style={{
+      width: '44px',
+      height: '44px',
+      background: isActive
+        ? 'linear-gradient(135deg, rgba(80, 140, 255, 0.18) 0%, rgba(60, 120, 235, 0.14) 100%)'
+        : 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%)',
+      backdropFilter: 'blur(32px) saturate(155%)',
+      WebkitBackdropFilter: 'blur(32px) saturate(155%)',
+      border: '1px solid rgba(255,255,255,0.12)',
+      boxShadow: isActive
+        ? `
+          inset 0 1px 2px rgba(255,255,255,0.14),
+          inset 0 0 18px rgba(80, 140, 255, 0.16),
+          0 4px 12px rgba(0,0,0,0.12)
+        `
+        : `
+          inset 0 1px 1px rgba(255,255,255,0.08),
+          0 2px 8px rgba(0,0,0,0.06)
+        `
+    }}
+    whileHover={{
+      scale: 1.04,
+      y: -1,
+      background: isActive
+        ? 'linear-gradient(135deg, rgba(80, 140, 255, 0.22) 0%, rgba(60, 120, 235, 0.18) 100%)'
+        : 'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.07) 100%)',
+      boxShadow: isActive
+        ? `
+          inset 0 1px 2px rgba(255,255,255,0.16),
+          inset 0 0 22px rgba(80, 140, 255, 0.20),
+          0 6px 16px rgba(0,0,0,0.14)
+        `
+        : `
+          inset 0 1px 2px rgba(255,255,255,0.12),
+          0 4px 12px rgba(0,0,0,0.10)
+        `
+    }}
+    whileTap={{ scale: 0.96 }}
+    transition={HORIZON_SPRING}
+    aria-label={label}
+  >
+    {/* Top edge gloss */}
+    <div style={{
+      position: 'absolute',
+      top: 0,
+      left: '20%',
+      right: '20%',
+      height: '1px',
+      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.20), transparent)',
+      pointerEvents: 'none'
+    }} />
+
+    {/* Icon glow when active */}
+    {isActive && (
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: 'radial-gradient(circle, rgba(80, 140, 255, 0.10) 0%, transparent 70%)',
+        borderRadius: '16px',
+        pointerEvents: 'none'
+      }} />
+    )}
+
+    <Icon 
+      className="w-5 h-5 relative z-10" 
+      style={{ 
+        color: isActive ? '#A0C4FF' : '#9BA3B0',
+        strokeWidth: 1.5,
+        filter: isActive ? 'drop-shadow(0 0 6px rgba(100, 180, 255, 0.5))' : 'none'
+      }} 
+    />
+
+    {/* Glass Notification Orb */}
+    {hasNotification && (
+      <motion.div
+        className="absolute -top-1 -right-1"
+        style={{
+          width: '14px',
+          height: '14px',
+          borderRadius: '50%',
+          background: 'linear-gradient(135deg, rgba(255, 80, 95, 0.95) 0%, rgba(235, 60, 75, 0.90) 100%)',
+          border: '1.5px solid rgba(0, 0, 0, 0.25)',
+          boxShadow: `
+            0 0 14px rgba(255, 80, 95, 0.55),
+            inset 0 1px 0 rgba(255,255,255,0.30),
+            inset 0 -1px 2px rgba(0,0,0,0.20)
+          `
+        }}
+        initial={{ scale: 0 }}
+        animate={{ scale: [0, 1.15, 1] }}
+        transition={{ duration: 0.32, ease: HORIZON_EASE }}
+      >
+        <div style={{
+          position: 'absolute',
+          top: '2px',
+          left: '2px',
+          width: '4px',
+          height: '4px',
+          borderRadius: '50%',
+          background: 'rgba(255,255,255,0.50)',
+          filter: 'blur(1px)',
+          pointerEvents: 'none'
+        }} />
+      </motion.div>
+    )}
+  </motion.button>
 );
 
 // Official Vireon Brain Logo Component - Updated with accurate brain shape
@@ -565,13 +748,36 @@ function LayoutContent({ children, currentPageName }) {
       <NetworkErrorBoundary>
         <div className={`flex h-screen transition-all duration-500 ease-out elevation-0`}>
 
-          {/* Desktop Sidebar */}
-          <aside className={`
-            hidden md:flex flex-col w-[280px] elevation-1 p-8 space-y-10
-          `}>
+          {/* Desktop Sidebar — OS Horizon Glass Redesign */}
+          <aside className="hidden md:flex flex-col w-[280px] p-8 space-y-10 relative">
+            {/* Sidebar Glass Background */}
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(180deg, rgba(17, 18, 22, 0.88) 0%, rgba(13, 14, 16, 0.92) 100%)',
+              backdropFilter: 'blur(32px) saturate(165%)',
+              WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+              borderRight: '1px solid rgba(255,255,255,0.06)',
+              boxShadow: `
+                inset 0 0 1px rgba(255,255,255,0.04),
+                2px 0 24px rgba(0,0,0,0.18)
+              `,
+              pointerEvents: 'none'
+            }} />
 
-            {/* Logo - ENHANCED SIZE FOR PROMINENCE */}
-            <Link to={createPageUrl('MacroSignals')} className="flex items-center gap-3 px-1 group">
+            {/* Subsurface Lighting */}
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: '40%',
+              background: 'linear-gradient(180deg, rgba(255,255,255,0.025) 0%, transparent 100%)',
+              pointerEvents: 'none'
+            }} />
+
+            {/* Logo */}
+            <Link to={createPageUrl('MacroSignals')} className="flex items-center gap-3 px-1 group relative z-10">
               <img 
                 src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68943f7eb0fb9393bf9a8069/ea91941d0_Asset61xtransparent.png" 
                 alt="Vireon Logo" 
@@ -594,40 +800,141 @@ function LayoutContent({ children, currentPageName }) {
             </Link>
 
             {/* Navigation */}
-            <nav className="flex flex-col space-y-2 px-1">
+            <nav className="flex flex-col space-y-2 px-1 relative z-10">
               {navItems.map(item => (
                 <NavLink key={item.id} {...item} isActive={location.pathname === item.href} theme="dark" />
               ))}
             </nav>
 
-            {/* Status Indicator */}
-            <div className="px-5 py-4 rounded-2xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20">
-              <div className="flex items-center space-x-3">
+            {/* Status Pill — OS Horizon Glass */}
+            <motion.div 
+              className="relative rounded-[22px] overflow-hidden"
+              style={{
+                padding: '16px 20px',
+                background: 'linear-gradient(135deg, rgba(50, 194, 136, 0.12) 0%, rgba(40, 174, 116, 0.10) 100%)',
+                backdropFilter: 'blur(30px) saturate(165%)',
+                WebkitBackdropFilter: 'blur(30px) saturate(165%)',
+                border: '1px solid rgba(50, 194, 136, 0.22)',
+                boxShadow: `
+                  inset 0 1px 2px rgba(255,255,255,0.12),
+                  inset 0 0 24px rgba(50, 194, 136, 0.10),
+                  0 6px 20px rgba(0,0,0,0.10)
+                `
+              }}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, ...HORIZON_SPRING }}
+            >
+              {/* Top edge gloss */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: '15%',
+                right: '15%',
+                height: '1px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+                pointerEvents: 'none'
+              }} />
+
+              {/* Subsurface green glow */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'radial-gradient(ellipse at 50% 30%, rgba(50, 194, 136, 0.08) 0%, transparent 70%)',
+                borderRadius: '22px',
+                pointerEvents: 'none'
+              }} />
+
+              <div className="flex items-center space-x-3 relative z-10">
                 <div className="relative">
-                  <div className="w-2.5 h-2.5 rounded-full bg-green-500" />
-                  <div className="absolute inset-0 w-2.5 h-2.5 rounded-full bg-green-500 animate-ping opacity-75" />
+                  {/* Glowing sphere */}
+                  <motion.div 
+                    className="w-3 h-3 rounded-full relative"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(88, 227, 164, 1) 0%, rgba(50, 194, 136, 0.95) 100%)',
+                      boxShadow: `
+                        0 0 18px rgba(88, 227, 164, 0.65),
+                        inset 0 1px 1px rgba(255,255,255,0.40),
+                        inset 0 -1px 2px rgba(0,0,0,0.25)
+                      `
+                    }}
+                    animate={{ 
+                      boxShadow: [
+                        '0 0 18px rgba(88, 227, 164, 0.65), inset 0 1px 1px rgba(255,255,255,0.40), inset 0 -1px 2px rgba(0,0,0,0.25)',
+                        '0 0 24px rgba(88, 227, 164, 0.75), inset 0 1px 1px rgba(255,255,255,0.40), inset 0 -1px 2px rgba(0,0,0,0.25)',
+                        '0 0 18px rgba(88, 227, 164, 0.65), inset 0 1px 1px rgba(255,255,255,0.40), inset 0 -1px 2px rgba(0,0,0,0.25)'
+                      ]
+                    }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    {/* Specular highlight */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '1px',
+                      left: '1px',
+                      width: '4px',
+                      height: '4px',
+                      borderRadius: '50%',
+                      background: 'rgba(255,255,255,0.60)',
+                      filter: 'blur(0.5px)',
+                      pointerEvents: 'none'
+                    }} />
+                  </motion.div>
+
+                  {/* Pulse ring */}
+                  <motion.div 
+                    className="absolute inset-0 w-3 h-3 rounded-full"
+                    style={{
+                      background: 'rgba(88, 227, 164, 0.35)',
+                      boxShadow: '0 0 12px rgba(88, 227, 164, 0.50)'
+                    }}
+                    animate={{ scale: [1, 1.8, 1], opacity: [0.75, 0, 0.75] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  />
                 </div>
                 <div>
-                  <p className={`text-xs font-semibold`} style={{ color: 'var(--bull)' }}>
+                  <p className="text-xs font-semibold" style={{ color: '#58E3A4' }}>
                     Market Open
                   </p>
-                  <p className={`text-[11px]`} style={{ color: 'var(--text-tertiary)' }}>
+                  <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.58)' }}>
                     Live data streaming
                   </p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </aside>
 
           <div className="flex-1 flex flex-col overflow-hidden">
-            {/* Header - Mobile Optimized - ENHANCED Z-INDEX */}
-            <header className={`
-              flex-shrink-0 sticky top-0 z-[250] flex items-center justify-between h-[60px] md:h-[72px] px-4 sm:px-6 md:px-8
-              elevation-1 relative
-            `}>
+            {/* Header — OS Horizon Glass Redesign */}
+            <header className="flex-shrink-0 sticky top-0 z-[250] flex items-center justify-between h-[60px] md:h-[72px] px-4 sm:px-6 md:px-8 relative">
+              {/* Header Glass Background */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(180deg, rgba(17, 18, 22, 0.88) 0%, rgba(13, 14, 16, 0.90) 100%)',
+                backdropFilter: 'blur(32px) saturate(165%)',
+                WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+                borderBottom: '1px solid rgba(255,255,255,0.06)',
+                boxShadow: `
+                  inset 0 0 1px rgba(255,255,255,0.04),
+                  0 2px 16px rgba(0,0,0,0.12)
+                `,
+                pointerEvents: 'none'
+              }} />
 
-              {/* Mobile Logo - ENHANCED SIZE FOR PROMINENCE */}
-              <Link to={createPageUrl('MacroSignals')} className="flex md:hidden items-center gap-2.5 group">
+              {/* Top edge lighting */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '40%',
+                background: 'linear-gradient(180deg, rgba(255,255,255,0.022) 0%, transparent 100%)',
+                pointerEvents: 'none'
+              }} />
+
+              {/* Mobile Logo */}
+              <Link to={createPageUrl('MacroSignals')} className="flex md:hidden items-center gap-2.5 group relative z-10">
                 <img 
                   src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68943f7eb0fb9393bf9a8069/ea91941d0_Asset61xtransparent.png" 
                   alt="Vireon Logo"
@@ -650,51 +957,31 @@ function LayoutContent({ children, currentPageName }) {
               </Link>
 
               {/* Desktop Page Title */}
-              <div className="hidden md:block">
-                <h1 className={`text-2xl font-bold tracking-[-0.02em]`} style={{ color: 'var(--text-primary)' }}>
+              <div className="hidden md:block relative z-10">
+                <h1 className="text-2xl font-bold tracking-[-0.02em]" style={{ color: 'var(--text-primary)' }}>
                   {pageTitle}
                 </h1>
               </div>
 
-              {/* Actions - Mobile Optimized - ENHANCED POSITIONING */}
+              {/* Utility Icon Row — OS Horizon Glass Redesign */}
               <div className="flex items-center space-x-2 relative z-[260]">
                 {/* Search Button - Labs Module */}
                 {isEnabled('labs_modules') && (
-                  <button
+                  <GlassIconButton
                     onClick={() => setIsSearchOpen(true)}
-                    className={`
-                      relative group w-9 h-9 md:min-w-[44px] md:min-h-[44px] rounded-lg md:rounded-xl flex items-center justify-center
-                      transition-all duration-200 hover:scale-105 elevation-1 hover:elevation-2 card-hover
-                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2
-                      z-[260]
-                    `}
-                    aria-label="Search stocks and market data"
-                  >
-                    <Search className="relative z-10 w-4 h-4 md:w-5 md:h-5 text-[var(--text-secondary)] group-hover:text-white transition-colors" strokeWidth={2} />
-                  </button>
+                    icon={Search}
+                    label="Search stocks and market data"
+                  />
                 )}
 
                 {/* Live Commentary Toggle - Labs Module */}
                 {isEnabled('labs_modules') && (
-                  <button
+                  <GlassIconButton
                     onClick={() => setIsCommentaryOpen(!isCommentaryOpen)}
-                    className={`
-                      relative group w-9 h-9 md:min-w-[44px] md:min-h-[44px] rounded-lg md:rounded-xl flex items-center justify-center
-                      transition-all duration-200 hover:scale-105 card-hover
-                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2
-                      z-[260]
-                      ${isCommentaryOpen
-                        ? 'bg-blue-500 text-white'
-                        : 'elevation-1 hover:elevation-2'
-                      }
-                    `}
-                    aria-label={`${isCommentaryOpen ? 'Close' : 'Open'} live commentary`}
-                  >
-                    <MessageSquare className={`relative z-10 w-4 h-4 md:w-5 md:h-5 transition-colors ${isCommentaryOpen ? 'text-white' : 'text-[var(--text-secondary)] group-hover:text-white'}`} strokeWidth={2} />
-                    {isCommentaryOpen && (
-                      <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border border-white dark:border-gray-900" />
-                    )}
-                  </button>
+                    icon={MessageSquare}
+                    label={`${isCommentaryOpen ? 'Close' : 'Open'} live commentary`}
+                    isActive={isCommentaryOpen}
+                  />
                 )}
 
                 {/* Labs Toggle */}
@@ -702,19 +989,13 @@ function LayoutContent({ children, currentPageName }) {
                   <LabsToggle />
                 </div>
 
-                <button
+                {/* Alerts Button */}
+                <GlassIconButton
                   onClick={() => setIsAlertsOpen(true)}
-                  className={`
-                    relative group w-9 h-9 md:min-w-[44px] md:min-h-[44px] rounded-lg md:rounded-xl flex items-center justify-center
-                    transition-all duration-200 hover:scale-105 elevation-1 hover:elevation-2 card-hover
-                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2
-                    z-[260]
-                  `}
-                  aria-label="View alerts"
-                >
-                  <Bell className="relative z-10 w-4 h-4 md:w-5 h-5 text-[var(--text-secondary)] group-hover:text-white transition-colors" strokeWidth={2} />
-                  <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border border-white dark:border-gray-900" />
-                </button>
+                  icon={Bell}
+                  label="View alerts"
+                  hasNotification={true} // Assuming alerts always have a notification or we could pass a state prop
+                />
 
                 {/* User Menu */}
                 <div className="relative z-[260] group">
@@ -737,27 +1018,24 @@ function LayoutContent({ children, currentPageName }) {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -20, scale: 0.95, transition: { duration: 0.2 } }}
                     transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-                    className={`
-                      flex items-center justify-between gap-4 p-4 mb-6 rounded-2xl
-                      border backdrop-blur-xl
-                      ${theme === 'dark' 
-                        ? 'bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-blue-500/20' 
-                        : 'bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200'
-                      }
-                    `}
+                    className="flex items-center justify-between gap-4 p-4 mb-6 rounded-2xl border backdrop-blur-xl"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(80, 140, 255, 0.10) 0%, rgba(120, 90, 255, 0.08) 100%)',
+                      borderColor: 'rgba(80, 140, 255, 0.20)'
+                    }}
                   >
                     <div className="flex items-center space-x-3">
-                      <AlertCircle className={`w-5 h-5 flex-shrink-0 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
-                      <p className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <AlertCircle className="w-5 h-5 flex-shrink-0 text-blue-400" />
+                      <p className="text-sm font-medium text-gray-300">
                         Welcome to Vireon. Please note this is a prototype using mock data for demonstration purposes.
                       </p>
                     </div>
                     <button
                       onClick={handleDismissDisclaimer}
-                      className={`p-2 rounded-lg transition-colors ${theme === 'dark' ? 'hover:bg-white/10' : 'hover:bg-black/5'}`}
+                      className="p-2 rounded-lg transition-colors hover:bg-white/10"
                       aria-label="Dismiss disclaimer"
                     >
-                      <X className={`w-4 h-4 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`} />
+                      <X className="w-4 h-4 text-gray-400" />
                     </button>
                   </motion.div>
                 )}
