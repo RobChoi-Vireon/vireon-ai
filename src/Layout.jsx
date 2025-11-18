@@ -33,17 +33,17 @@ const NavLink = ({ href, icon: Icon, title, isActive }) => (
         display: 'flex',
         alignItems: 'center',
         background: isActive 
-          ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.09) 100%)'
+          ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.11) 100%)'
           : 'linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.04) 100%)',
         backdropFilter: 'blur(28px) saturate(165%)',
         WebkitBackdropFilter: 'blur(28px) saturate(165%)',
         border: '1px solid rgba(255,255,255,0.10)',
         boxShadow: isActive 
           ? `
-            inset 0 1px 2px rgba(255,255,255,0.15),
-            inset 0 0 24px rgba(100, 180, 255, 0.14),
+            inset 0 1px 2px rgba(255,255,255,0.18),
+            inset 0 0 28px rgba(100, 180, 255, 0.20),
             0 4px 16px rgba(0,0,0,0.12),
-            0 0 22px rgba(100, 180, 255, 0.06)
+            0 0 28px rgba(100, 180, 255, 0.12)
           `
           : `
             inset 0 1px 1px rgba(255,255,255,0.06),
@@ -52,7 +52,7 @@ const NavLink = ({ href, icon: Icon, title, isActive }) => (
       }}
       whileHover={!isActive ? {
         y: -1,
-        scale: 1.01,
+        scale: 1.008,
         background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.06) 100%)',
         boxShadow: `
           inset 0 1px 2px rgba(255,255,255,0.10),
@@ -63,7 +63,7 @@ const NavLink = ({ href, icon: Icon, title, isActive }) => (
       } : {}}
       whileTap={{ scale: 0.98, transition: { duration: 0.08 } }}
       animate={isActive ? { scale: 1.01 } : { scale: 1 }}
-      transition={HORIZON_SPRING}
+      transition={{ duration: 0.16, ease: HORIZON_EASE }}
     >
       <div style={{
         position: 'absolute',
@@ -79,7 +79,7 @@ const NavLink = ({ href, icon: Icon, title, isActive }) => (
         <div style={{
           position: 'absolute',
           inset: 0,
-          background: 'radial-gradient(ellipse at 50% 35%, rgba(100, 180, 255, 0.09) 0%, transparent 72%)',
+          background: 'radial-gradient(ellipse at 50% 35%, rgba(100, 180, 255, 0.11) 0%, transparent 72%)',
           borderRadius: '22px',
           pointerEvents: 'none'
         }} />
@@ -89,16 +89,16 @@ const NavLink = ({ href, icon: Icon, title, isActive }) => (
         <Icon 
           className="w-[18px] h-[18px]" 
           style={{ 
-            color: isActive ? '#C4DAFF' : '#9BA3B0',
+            color: isActive ? '#D7E3FF' : '#9BA3B0',
             strokeWidth: 1.5,
-            filter: isActive ? 'drop-shadow(0 0 10px rgba(100, 180, 255, 0.45))' : 'none'
+            filter: isActive ? 'drop-shadow(0 0 12px rgba(100, 180, 255, 0.52)) brightness(1.12)' : 'none'
           }} 
         />
         <span 
           className="font-medium tracking-[-0.005em]"
           style={{
             fontSize: '15px',
-            color: isActive ? 'rgba(255,255,255,0.98)' : 'rgba(255,255,255,0.70)'
+            color: isActive ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.70)'
           }}
         >
           {title}
@@ -335,11 +335,11 @@ const VireonBrainLogo = ({ className = "w-9 h-9" }) => (
       <circle cx="50" cy="55" r="1.8" />
       <circle cx="62" cy="50" r="1.8" />
       <circle cx="65" cy="40" r="1.8" />
-      <circle cx="58" cy="30" r="1.2" />
-      <circle cx="52" cy="40" r="1.2" />
-      <circle cx="60" cy="45" r="1.2" />
-      <circle cx="50" cy="48" r="1.2" />
-      <circle cx="68" cy="35" r="1.2" />
+      <circle cx="58" y1="30" r="1.2" />
+      <circle cx="52" y1="40" r="1.2" />
+      <circle cx="60" y1="45" r="1.2" />
+      <circle cx="50" y1="48" r="1.2" />
+      <circle cx="68" y1="35" r="1.2" />
       <circle cx="58" y1="42" r="1.2" />
     </g>
     
@@ -521,9 +521,9 @@ function LayoutContent({ children, currentPageName }) {
           --header-h: 72px;
           /* Premium OLED Dark Mode - Only Theme */
           --bg: #0B0E13;
-          --card: rgba(18, 20, 28, 0.65);
-          --border: #2C2F36;
-          --shadow: rgba(0, 0, 0, 0.45);
+          --card: rgba(18, 20, 25, 0.92);
+          --border: rgba(255, 255, 255, 0.08);
+          --shadow: rgba(0, 0, 0, 0.55);
           --text-primary: #F3F5F7;
           --text-secondary: #B6BDCB;
           --text-tertiary: #7E8798;
@@ -571,11 +571,11 @@ function LayoutContent({ children, currentPageName }) {
         .drawer-panel {
           position: fixed;
           z-index: calc(var(--z-modal) + 1);
-          background: rgba(18, 20, 25, 0.95);
+          background: linear-gradient(180deg, rgba(17, 18, 22, 0.88) 0%, rgba(13, 14, 16, 0.92) 100%);
           backdrop-filter: blur(16px);
           -webkit-backdrop-filter: blur(16px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          box-shadow: inset 0 0 1px rgba(255,255,255,0.04), -2px 0 24px rgba(0,0,0,0.18);
           overscroll-behavior: contain;
         }
         
@@ -592,25 +592,25 @@ function LayoutContent({ children, currentPageName }) {
         }
         
         .elevation-1 {
-          background: var(--card);
-          border: 1px solid var(--border);
-          box-shadow: 0 2px 12px var(--shadow);
+          background: linear-gradient(180deg, rgba(17, 18, 22, 0.88) 0%, rgba(13, 14, 16, 0.92) 100%);
+          border: 1px solid rgba(255,255,255,0.08);
+          box-shadow: inset 0 0 1px rgba(255,255,255,0.04), 0 2px 16px rgba(0,0,0,0.12);
           backdrop-filter: blur(8px);
           -webkit-backdrop-filter: blur(8px);
         }
         
         .elevation-2 {
-          background: var(--card);
-          border: 1px solid var(--border);
-          box-shadow: 0 8px 32px var(--shadow);
+          background: linear-gradient(180deg, rgba(17, 18, 22, 0.88) 0%, rgba(13, 14, 16, 0.92) 100%);
+          border: 1px solid rgba(255,255,255,0.08);
+          box-shadow: inset 0 0 1px rgba(255,255,255,0.04), 0 8px 32px rgba(0,0,0,0.24);
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
         }
         
         .elevation-3 {
-          background: var(--card);
-          border: 1px solid var(--border);
-          box-shadow: 0 16px 64px var(--shadow);
+          background: linear-gradient(180deg, rgba(17, 18, 22, 0.88) 0%, rgba(13, 14, 16, 0.92) 100%);
+          border: 1px solid rgba(255,255,255,0.08);
+          box-shadow: inset 0 0 1px rgba(255,255,255,0.04), 0 16px 64px rgba(0,0,0,0.32);
           backdrop-filter: blur(16px);
           -webkit-backdrop-filter: blur(16px);
         }
@@ -695,7 +695,7 @@ function LayoutContent({ children, currentPageName }) {
         
         .card-hover:hover {
           transform: translateY(-2px);
-          box-shadow: 0 12px 40px var(--shadow);
+          box-shadow: 0 16px 48px var(--shadow);
         }
         
         @media (prefers-reduced-motion: reduce) {
@@ -714,7 +714,7 @@ function LayoutContent({ children, currentPageName }) {
           font-size: 15px;
           line-height: 1.5;
           color: var(--text-primary);
-          background: var(--bg);
+          background: #0B0E13;
         }
         
         @media (max-width: 768px) {
@@ -773,37 +773,52 @@ function LayoutContent({ children, currentPageName }) {
               pointerEvents: 'none'
             }} />
 
-            {/* Logo */}
-            <Link to={createPageUrl('MacroSignals')} className="flex items-center gap-3 px-1 group relative z-10 mb-4">
-              <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68943f7eb0fb9393bf9a8069/ea91941d0_Asset61xtransparent.png" 
-                alt="Vireon Logo" 
-                className="w-10 h-10 rounded-lg transition-transform duration-200 ease-out group-hover:scale-105"
-                style={{ 
-                  boxShadow: '0 0 12px rgba(86, 180, 255, 0.4)'
-                }}
-              />
-              <span 
-                className="font-semibold text-xl tracking-tight"
+            {/* Logo Tile — Enhanced Anchor Weight */}
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: HORIZON_EASE }}
+              style={{ marginBottom: '28px' }}
+            >
+              <Link 
+                to={createPageUrl('MacroSignals')} 
+                className="flex items-center gap-3 px-1 group relative z-10"
                 style={{
-                  background: 'linear-gradient(to right, #A774FF, #4EC8FF)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text'
+                  paddingTop: '6px',
+                  paddingBottom: '6px',
+                  minHeight: '56px'
                 }}
               >
-                Vireon
-              </span>
-            </Link>
+                <img 
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68943f7eb0fb9393bf9a8069/ea91941d0_Asset61xtransparent.png" 
+                  alt="Vireon Logo" 
+                  className="w-10 h-10 rounded-lg transition-transform duration-200 ease-out group-hover:scale-105"
+                  style={{ 
+                    boxShadow: '0 0 16px rgba(86, 180, 255, 0.44), 0 0 8px rgba(86, 180, 255, 0.28)'
+                  }}
+                />
+                <span 
+                  className="font-semibold text-xl tracking-tight"
+                  style={{
+                    background: 'linear-gradient(to right, #A774FF, #4EC8FF)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}
+                >
+                  Vireon
+                </span>
+              </Link>
+            </motion.div>
 
             {/* Navigation */}
-            <nav className="flex flex-col space-y-2.5 px-1 relative z-10" style={{ marginTop: '18px' }}>
+            <nav className="flex flex-col space-y-2.5 px-1 relative z-10">
               {navItems.map(item => (
                 <NavLink key={item.id} {...item} isActive={location.pathname === item.href} />
               ))}
             </nav>
 
-            {/* Market Status Card — Separated Component */}
+            {/* Market Status Card */}
             <div className="relative z-10" style={{ marginTop: 'auto' }}>
               <div 
                 className="text-[10px] font-semibold uppercase tracking-wider mb-3 px-1"
@@ -948,9 +963,7 @@ function LayoutContent({ children, currentPageName }) {
                   src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68943f7eb0fb9393bf9a8069/ea91941d0_Asset61xtransparent.png" 
                   alt="Vireon Logo"
                   className="w-9 h-9 rounded-lg transition-transform duration-200 ease-out group-hover:scale-105"
-                  style={{ 
-                    boxShadow: '0 0 12px rgba(86, 180, 255, 0.4)'
-                  }}
+                  style={{ boxShadow: '0 0 12px rgba(86, 180, 255, 0.4)' }}
                 />
                 <span 
                   className="font-semibold text-xl tracking-tight"
