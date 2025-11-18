@@ -249,25 +249,25 @@ const LivingAlignmentOrb = ({ score, delay }) => {
 };
 
 // ============================================================================
-// NARRATIVE CAPSULE (Optically Centered)
+// NARRATIVE CAPSULE (Apple-Grade Optical Centering)
 // ============================================================================
 const InsightRevealPanel = ({ segments, delay }) => {
   return (
     <motion.div
-      className="relative rounded-[18px] overflow-hidden mx-auto"
+      className="relative rounded-[28px] overflow-hidden mx-auto"
       style={{
         maxWidth: '84%',
-        paddingTop: '2px',
-        paddingBottom: '30px',
-        paddingLeft: '22px',
-        paddingRight: '22px',
+        paddingTop: '20px',
+        paddingBottom: '20px',
+        paddingLeft: '32px',
+        paddingRight: '32px',
         background: 'rgba(255, 255, 255, 0.04)',
-        backdropFilter: 'blur(16px) saturate(158%)',
-        WebkitBackdropFilter: 'blur(16px) saturate(158%)',
+        backdropFilter: 'blur(16px) saturate(165%)',
+        WebkitBackdropFilter: 'blur(16px) saturate(165%)',
         border: '1px solid rgba(255,255,255,0.14)',
         boxShadow: `
-          inset 0 2px 0 rgba(255,255,255,0.03),
-          inset 0 0 24px rgba(0,0,0,0.35),
+          inset 0 2px 0 rgba(255,255,255,0.06),
+          inset 0 0 24px rgba(0,0,0,0.24),
           0 0 22px rgba(140,180,255,0.06),
           0 4px 32px rgba(0,0,0,0.35)
         `,
@@ -278,38 +278,53 @@ const InsightRevealPanel = ({ segments, delay }) => {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay: delay + 0.09, duration: 0.18, ease: MOTION.CURVES.silk }}
     >
-      {/* Top Rim-Light (Reduced Opacity) */}
+      {/* Top Inner Highlight */}
       <div style={{
         position: 'absolute',
         top: 0,
-        left: '10%',
-        right: '10%',
-        height: '24px',
-        background: 'linear-gradient(to bottom, rgba(255,255,255,0.025) 0%, transparent 100%)',
-        borderRadius: '18px 18px 0 0',
+        left: 0,
+        right: 0,
+        height: '28px',
+        background: 'linear-gradient(to bottom, rgba(255,255,255,0.06) 0%, transparent 100%)',
+        borderRadius: '28px 28px 0 0',
         pointerEvents: 'none'
       }} />
 
-      {/* Bottom Glow (Enhanced) */}
+      {/* Bottom Inner Shadow */}
       <div style={{
         position: 'absolute',
         bottom: 0,
-        left: '10%',
-        right: '10%',
-        height: '32px',
-        background: 'linear-gradient(to top, rgba(140,180,255,0.045) 0%, transparent 100%)',
-        borderRadius: '0 0 18px 18px',
+        left: 0,
+        right: 0,
+        height: '28px',
+        background: 'linear-gradient(to top, rgba(0,0,0,0.24) 0%, transparent 100%)',
+        borderRadius: '0 0 28px 28px',
         pointerEvents: 'none'
+      }} />
+
+      {/* Enhanced Glass Surface Glow */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: 'radial-gradient(ellipse at 50% 50%, rgba(140,180,255,0.08) 0%, transparent 70%)',
+        pointerEvents: 'none',
+        borderRadius: '28px'
       }} />
 
       <p 
         className="text-center relative z-10"
         style={{ 
           fontSize: '15.5px',
-          lineHeight: '1.40',
+          lineHeight: '1.42',
           color: 'rgba(255,255,255,0.92)',
-          letterSpacing: '-0.01em',
-          transform: 'translateY(2px)'
+          letterSpacing: '-0.15px',
+          textShadow: '0px 1.2px 2.4px rgba(0,0,0,0.28)',
+          maxWidth: '82%',
+          margin: '0 auto',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100%'
         }}
       >
         Markets show mild upward pressure driven by policy tightening and early credit stress signals.
