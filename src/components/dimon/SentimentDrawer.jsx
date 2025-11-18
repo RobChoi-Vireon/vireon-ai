@@ -249,18 +249,18 @@ const LivingAlignmentOrb = ({ score, delay }) => {
 };
 
 // ============================================================================
-// NARRATIVE CAPSULE (Balanced Text Layout)
+// NARRATIVE CAPSULE (Optically Centered)
 // ============================================================================
 const InsightRevealPanel = ({ segments, delay }) => {
   return (
     <motion.div
       className="relative rounded-[18px] overflow-hidden mx-auto"
       style={{
-        maxWidth: '90%',
+        maxWidth: '84%',
         paddingTop: '2px',
         paddingBottom: '30px',
-        paddingLeft: '28px',
-        paddingRight: '28px',
+        paddingLeft: '22px',
+        paddingRight: '22px',
         background: 'rgba(255, 255, 255, 0.04)',
         backdropFilter: 'blur(16px) saturate(158%)',
         WebkitBackdropFilter: 'blur(16px) saturate(158%)',
@@ -309,8 +309,7 @@ const InsightRevealPanel = ({ segments, delay }) => {
           lineHeight: '1.40',
           color: 'rgba(255,255,255,0.92)',
           letterSpacing: '-0.01em',
-          transform: 'translateY(2px)',
-          textWrap: 'balance'
+          transform: 'translateY(2px)'
         }}
       >
         Markets show mild upward pressure driven by policy tightening and early credit stress signals.
