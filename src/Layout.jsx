@@ -128,46 +128,43 @@ const NavLink = ({ href, icon: Icon, title, isActive }) => (
 const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNotification = false, className = "" }) => (
   <motion.button
     onClick={onClick}
-    className={`relative rounded-[15px] flex items-center justify-center group ${className}`}
+    className={`relative rounded-[16px] flex items-center justify-center group ${className}`}
     style={{
       width: '44px',
       height: '44px',
       background: isActive
-        ? 'linear-gradient(135deg, rgba(80, 140, 255, 0.16) 0%, rgba(60, 120, 235, 0.12) 100%)'
-        : 'linear-gradient(180deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.045) 100%)',
-      backdropFilter: 'blur(28px) saturate(158%)',
-      WebkitBackdropFilter: 'blur(28px) saturate(158%)',
-      border: '1px solid rgba(255,255,255,0.10)',
-      boxShadow: isActive
-        ? `
-          inset 0 1px 1.5px rgba(255,255,255,0.12),
-          inset 0 0 18px rgba(80, 140, 255, 0.14),
-          0 3px 10px rgba(0,0,0,0.10)
-        `
-        : `
-          inset 0 0.5px 1px rgba(255,255,255,0.07),
-          0 2px 6px rgba(0,0,0,0.06)
-        `
-    }}
-    whileHover={{
-      scale: 1.05,
-      y: -1,
-      background: isActive
-        ? 'linear-gradient(135deg, rgba(80, 140, 255, 0.20) 0%, rgba(60, 120, 235, 0.16) 100%)'
-        : 'linear-gradient(180deg, rgba(255, 255, 255, 0.11) 0%, rgba(255, 255, 255, 0.07) 100%)',
+        ? 'linear-gradient(135deg, rgba(80, 140, 255, 0.18) 0%, rgba(60, 120, 235, 0.14) 100%)'
+        : 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%)',
+      backdropFilter: 'blur(32px) saturate(155%)',
+      WebkitBackdropFilter: 'blur(32px) saturate(155%)',
+      border: '1px solid rgba(255,255,255,0.12)',
       boxShadow: isActive
         ? `
           inset 0 1px 2px rgba(255,255,255,0.14),
-          inset 0 0 22px rgba(80, 140, 255, 0.18),
-          0 5px 14px rgba(0,0,0,0.12),
-          0 0 20px rgba(80, 140, 255, 0.08)
+          inset 0 0 18px rgba(80, 140, 255, 0.16),
+          0 4px 12px rgba(0,0,0,0.12)
         `
         : `
-          inset 0 1px 1.5px rgba(255,255,255,0.10),
-          0 4px 12px rgba(0,0,0,0.10),
-          0 0 16px rgba(110, 180, 255, 0.04)
-        `,
-      transition: { duration: 0.13, ease: 'easeOut' }
+          inset 0 1px 1px rgba(255,255,255,0.08),
+          0 2px 8px rgba(0,0,0,0.06)
+        `
+    }}
+    whileHover={{
+      scale: 1.04,
+      y: -1,
+      background: isActive
+        ? 'linear-gradient(135deg, rgba(80, 140, 255, 0.22) 0%, rgba(60, 120, 235, 0.18) 100%)'
+        : 'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.07) 100%)',
+      boxShadow: isActive
+        ? `
+          inset 0 1px 2px rgba(255,255,255,0.16),
+          inset 0 0 22px rgba(80, 140, 255, 0.20),
+          0 6px 16px rgba(0,0,0,0.14)
+        `
+        : `
+          inset 0 1px 2px rgba(255,255,255,0.12),
+          0 4px 12px rgba(0,0,0,0.10)
+        `
     }}
     whileTap={{ scale: 0.96 }}
     transition={HORIZON_SPRING}
@@ -179,7 +176,7 @@ const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNoti
       left: '20%',
       right: '20%',
       height: '1px',
-      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.20), transparent)',
       pointerEvents: 'none'
     }} />
 
@@ -187,8 +184,8 @@ const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNoti
       <div style={{
         position: 'absolute',
         inset: 0,
-        background: 'radial-gradient(circle, rgba(80, 140, 255, 0.09) 0%, transparent 70%)',
-        borderRadius: '15px',
+        background: 'radial-gradient(circle, rgba(80, 140, 255, 0.10) 0%, transparent 70%)',
+        borderRadius: '16px',
         pointerEvents: 'none'
       }} />
     )}
@@ -196,10 +193,9 @@ const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNoti
     <Icon 
       className="w-5 h-5 relative z-10" 
       style={{ 
-        color: isActive ? '#A0C4FF' : 'rgba(255,255,255,0.70)',
-        strokeWidth: 1.6,
-        filter: isActive ? 'drop-shadow(0 0 6px rgba(100, 180, 255, 0.5))' : 'none',
-        transition: 'all 0.13s ease-out'
+        color: isActive ? '#A0C4FF' : '#9BA3B0',
+        strokeWidth: 1.5,
+        filter: isActive ? 'drop-shadow(0 0 6px rgba(100, 180, 255, 0.5))' : 'none'
       }} 
     />
 
@@ -207,30 +203,30 @@ const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNoti
       <motion.div
         className="absolute -top-1 -right-1"
         style={{
-          width: '13px',
-          height: '13px',
+          width: '14px',
+          height: '14px',
           borderRadius: '50%',
           background: 'linear-gradient(135deg, rgba(255, 80, 95, 0.95) 0%, rgba(235, 60, 75, 0.90) 100%)',
-          border: '1.5px solid rgba(0, 0, 0, 0.30)',
+          border: '1.5px solid rgba(0, 0, 0, 0.25)',
           boxShadow: `
-            0 0 12px rgba(255, 80, 95, 0.50),
-            inset 0 1px 0 rgba(255,255,255,0.28),
+            0 0 14px rgba(255, 80, 95, 0.55),
+            inset 0 1px 0 rgba(255,255,255,0.30),
             inset 0 -1px 2px rgba(0,0,0,0.20)
           `
         }}
         initial={{ scale: 0 }}
-        animate={{ scale: [0, 1.12, 1] }}
-        transition={{ duration: 0.28, ease: HORIZON_EASE }}
+        animate={{ scale: [0, 1.15, 1] }}
+        transition={{ duration: 0.32, ease: HORIZON_EASE }}
       >
         <div style={{
           position: 'absolute',
           top: '2px',
           left: '2px',
-          width: '3.5px',
-          height: '3.5px',
+          width: '4px',
+          height: '4px',
           borderRadius: '50%',
-          background: 'rgba(255,255,255,0.45)',
-          filter: 'blur(0.8px)',
+          background: 'rgba(255,255,255,0.50)',
+          filter: 'blur(1px)',
           pointerEvents: 'none'
         }} />
       </motion.div>
@@ -244,7 +240,6 @@ function LayoutContent({ children, currentPageName }) {
   const [isAlertsOpen, setIsAlertsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCommentaryOpen, setIsCommentaryOpen] = useState(false);
-  const [isSpotlightFocused, setIsSpotlightFocused] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { isEnabled } = useFeatureFlags();
 
@@ -284,11 +279,6 @@ function LayoutContent({ children, currentPageName }) {
         } else if (isCommentaryOpen) {
           setIsCommentaryOpen(false);
         }
-      }
-      
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setIsSearchOpen(true);
       }
     };
 
@@ -798,173 +788,88 @@ function LayoutContent({ children, currentPageName }) {
           </aside>
 
           <div className="flex-1 flex flex-col overflow-hidden">
-            {/* Header — OS Horizon Spotlight Rail */}
-            <motion.header 
-              className="flex-shrink-0 sticky top-0 z-[250] h-[60px] md:h-[72px] px-4 sm:px-6 md:px-8 relative"
-              initial={{ opacity: 0, y: -2 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.08, delay: 0.02 }}
-            >
-              {/* OS Horizon Glass Background */}
+            <header className="flex-shrink-0 sticky top-0 z-[250] flex items-center justify-between h-[60px] md:h-[72px] px-4 sm:px-6 md:px-8 relative">
               <div style={{
                 position: 'absolute',
                 inset: 0,
-                background: `
-                  linear-gradient(180deg, 
-                    rgba(18, 20, 26, 0.88) 0%, 
-                    rgba(14, 16, 20, 0.92) 100%)
-                `,
+                background: 'linear-gradient(180deg, rgba(17, 18, 22, 0.88) 0%, rgba(13, 14, 16, 0.90) 100%)',
                 backdropFilter: 'blur(32px) saturate(165%)',
                 WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-                boxShadow: `
-                  inset 0 0 1px rgba(255,255,255,0.04),
-                  0 2px 16px rgba(0,0,0,0.12)
-                `,
+                borderBottom: '1px solid rgba(255,255,255,0.06)',
+                boxShadow: `inset 0 0 1px rgba(255,255,255,0.04), 0 2px 16px rgba(0,0,0,0.12)`,
                 pointerEvents: 'none'
               }} />
 
-              {/* Top Reflection Sheen */}
               <div style={{
                 position: 'absolute',
                 top: 0,
                 left: 0,
                 right: 0,
-                height: '5px',
-                background: 'linear-gradient(180deg, rgba(255,255,255,0.032) 0%, transparent 100%)',
+                height: '40%',
+                background: 'linear-gradient(180deg, rgba(255,255,255,0.022) 0%, transparent 100%)',
                 pointerEvents: 'none'
               }} />
 
-              {/* Bottom Edge Feather */}
-              <div style={{
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: '1px',
-                background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%)',
-                pointerEvents: 'none'
-              }} />
+              <Link to={createPageUrl('MacroSignals')} className="flex md:hidden items-center gap-2.5 group relative z-10">
+                <img 
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68943f7eb0fb9393bf9a8069/ea91941d0_Asset61xtransparent.png" 
+                  alt="Vireon Logo"
+                  className="w-9 h-9 rounded-lg transition-transform duration-200 ease-out group-hover:scale-105"
+                  style={{ boxShadow: '0 0 12px rgba(86, 180, 255, 0.4)' }}
+                />
+                <span 
+                  className="font-semibold text-xl tracking-tight"
+                  style={{
+                    background: 'linear-gradient(to right, #A774FF, #4EC8FF)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}
+                >
+                  Vireon
+                </span>
+              </Link>
 
-              {/* 3-Region Layout */}
-              <div className="flex items-center h-full relative z-10">
-                {/* LEFT: Mobile Logo / Desktop Page Title */}
-                <div className="flex-shrink-0">
-                  <Link to={createPageUrl('MacroSignals')} className="flex md:hidden items-center gap-2.5 group">
-                    <img 
-                      src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68943f7eb0fb9393bf9a8069/ea91941d0_Asset61xtransparent.png" 
-                      alt="Vireon Logo"
-                      className="w-9 h-9 rounded-lg transition-transform duration-200 ease-out group-hover:scale-105"
-                      style={{ boxShadow: '0 0 12px rgba(86, 180, 255, 0.4)' }}
-                    />
-                  </Link>
-                  
-                  <h1 className="hidden md:block text-2xl font-bold tracking-[-0.02em]" style={{ color: 'var(--text-primary)' }}>
-                    {pageTitle}
-                  </h1>
-                </div>
+              <div className="hidden md:block relative z-10">
+                <h1 className="text-2xl font-bold tracking-[-0.02em]" style={{ color: 'var(--text-primary)' }}>
+                  {pageTitle}
+                </h1>
+              </div>
 
-                {/* CENTER: Spotlight Search Bar */}
-                <div className="hidden md:block flex-1 px-8 max-w-2xl mx-auto">
-                  <motion.div
-                    className="relative rounded-[18px] overflow-hidden cursor-text"
-                    style={{
-                      height: '46px',
-                      background: isSpotlightFocused
-                        ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.075) 100%)'
-                        : 'linear-gradient(180deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.05) 100%)',
-                      backdropFilter: isSpotlightFocused ? 'blur(32px) saturate(170%)' : 'blur(28px) saturate(165%)',
-                      WebkitBackdropFilter: isSpotlightFocused ? 'blur(32px) saturate(170%)' : 'blur(28px) saturate(165%)',
-                      border: '1px solid rgba(255,255,255,0.09)',
-                      boxShadow: isSpotlightFocused
-                        ? `
-                          inset 0 1px 2px rgba(255,255,255,0.12),
-                          inset 0 0 24px rgba(110, 180, 255, 0.10),
-                          0 4px 18px rgba(0,0,0,0.10)
-                        `
-                        : `
-                          inset 0 0.5px 1px rgba(255,255,255,0.07),
-                          0 2px 10px rgba(0,0,0,0.06)
-                        `
-                    }}
-                    animate={{
-                      scale: isSpotlightFocused ? 1.012 : 1
-                    }}
-                    transition={{ duration: 0.14, ease: 'easeOut' }}
-                    onClick={() => setIsSearchOpen(true)}
-                  >
-                    {/* Top Edge Highlight */}
-                    <div style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: '12%',
-                      right: '12%',
-                      height: '1px',
-                      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-                      pointerEvents: 'none'
-                    }} />
-
-                    <div className="flex items-center h-full px-5 relative z-10">
-                      <Search 
-                        className="w-[17px] h-[17px] mr-3 flex-shrink-0" 
-                        style={{ 
-                          color: 'rgba(255,255,255,0.62)',
-                          strokeWidth: 1.7
-                        }} 
-                      />
-                      <span 
-                        className="text-[15px] font-medium"
-                        style={{
-                          color: 'rgba(255,255,255,0.58)',
-                          letterSpacing: '-0.01em'
-                        }}
-                      >
-                        Spotlight Search
-                      </span>
-                      <div className="ml-auto flex items-center space-x-1.5">
-                        <div 
-                          className="px-2 py-0.5 rounded-md text-[11px] font-medium"
-                          style={{
-                            background: 'rgba(255, 255, 255, 0.06)',
-                            color: 'rgba(255,255,255,0.48)',
-                            border: '1px solid rgba(255,255,255,0.07)',
-                            letterSpacing: '0.02em'
-                          }}
-                        >
-                          ⌘K
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                </div>
-
-                {/* RIGHT: Utility Buttons */}
-                <div className="flex items-center space-x-2 flex-shrink-0">
-                  {isEnabled('labs_modules') && (
-                    <GlassIconButton
-                      onClick={() => setIsCommentaryOpen(!isCommentaryOpen)}
-                      icon={MessageSquare}
-                      label={`${isCommentaryOpen ? 'Close' : 'Open'} live commentary`}
-                      isActive={isCommentaryOpen}
-                    />
-                  )}
-
-                  <div className="relative z-[260] group">
-                    <LabsToggle />
-                  </div>
-
+              <div className="flex items-center space-x-2 relative z-[260]">
+                {isEnabled('labs_modules') && (
                   <GlassIconButton
-                    onClick={() => setIsAlertsOpen(true)}
-                    icon={Bell}
-                    label="View alerts"
-                    hasNotification={true}
+                    onClick={() => setIsSearchOpen(true)}
+                    icon={Search}
+                    label="Search stocks and market data"
                   />
+                )}
 
-                  <div className="relative z-[260] group">
-                    <UserMenu theme="dark" toggleTheme={() => {}} />
-                  </div>
+                {isEnabled('labs_modules') && (
+                  <GlassIconButton
+                    onClick={() => setIsCommentaryOpen(!isCommentaryOpen)}
+                    icon={MessageSquare}
+                    label={`${isCommentaryOpen ? 'Close' : 'Open'} live commentary`}
+                    isActive={isCommentaryOpen}
+                  />
+                )}
+
+                <div className="relative z-[260] group">
+                  <LabsToggle />
+                </div>
+
+                <GlassIconButton
+                  onClick={() => setIsAlertsOpen(true)}
+                  icon={Bell}
+                  label="View alerts"
+                  hasNotification={true}
+                />
+
+                <div className="relative z-[260] group">
+                  <UserMenu theme="dark" toggleTheme={() => {}} />
                 </div>
               </div>
-            </motion.header>
+            </header>
 
             <main className={`
               flex-1 overflow-y-auto px-4 sm:px-6 md:px-8 py-6 md:py-8 pb-24 md:pb-8 
