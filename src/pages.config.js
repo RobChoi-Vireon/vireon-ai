@@ -15,7 +15,7 @@ import CapitalVault from './pages/CapitalVault';
 import MacroSignals from './pages/MacroSignals';
 import Me from './pages/Me';
 import AscensionDemo from './pages/AscensionDemo';
-import Layout from './Layout.jsx';
+import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
@@ -41,5 +41,5 @@ export const PAGES = {
 export const pagesConfig = {
     mainPage: "MacroSignals",
     Pages: PAGES,
-    Layout: Layout,
+    Layout: __Layout,
 };
