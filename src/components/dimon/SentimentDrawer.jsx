@@ -1,5 +1,5 @@
 // 🔒 DESIGN LOCKED — OS HORIZON TAHOE V5.1 STREET ALIGNMENT REFINEMENT
-// Last Updated: 2025-01-20 | V5.3 Insight Capsules OS Horizon Micro-Motion
+// Last Updated: 2025-01-20 | V5.3 Insight Capsules Final Polish
 // VIREON CERTIFIED — OS Horizon Hybrid Identity (Cinematic Intelligence + Tahoe Serenity)
 // See: DESIGN_LOCKED_COMPONENTS.md
 
@@ -508,7 +508,7 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
 };
 
 // ============================================================================
-// INSIGHT CAPSULES — OS Horizon Micro-Motion + Apple-Grade Polish
+// INSIGHT CAPSULES — OS Horizon Final Polish
 // ============================================================================
 const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
   const [hoveredCapsule, setHoveredCapsule] = useState(null);
@@ -540,7 +540,7 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
         Insight Capsules
       </h3>
 
-      <div className="flex flex-col gap-[22px]">
+      <div className="flex flex-col gap-[18px]">
         {segments.map((segment, idx) => {
           const config = SEGMENT_CONFIG[segment.name];
           if (!config) return null;
@@ -557,20 +557,20 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
               key={segment.name}
               className="relative rounded-[20px] overflow-hidden cursor-pointer text-left w-full"
               style={{
-                background: `linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.03) 100%)`,
-                backdropFilter: 'blur(16.5px) saturate(145%)',
-                WebkitBackdropFilter: 'blur(16.5px) saturate(145%)',
+                background: `linear-gradient(135deg, rgba(255, 255, 255, 0.062) 0%, rgba(255, 255, 255, 0.034) 100%)`,
+                backdropFilter: 'blur(17px) saturate(148%)',
+                WebkitBackdropFilter: 'blur(17px) saturate(148%)',
                 border: '1px solid rgba(255,255,255,0.08)',
-                padding: '18px 30px',
+                padding: '16px 30px',
                 boxShadow: `
-                  inset 0 1px 0 rgba(255,255,255,0.09),
+                  inset 0 1px 0 rgba(255,255,255,0.11),
                   0 4px 14px rgba(0,0,0,0.08),
-                  0 0 ${isHovered ? '14px' : '10px'} ${config.glow}
+                  0 0 ${isHovered ? '12px' : '9px'} ${config.glow}
                 `,
                 display: 'flex',
                 alignItems: 'center',
                 gap: '17px',
-                minHeight: '52px',
+                minHeight: '50px',
                 opacity: isClicked ? 0.96 : 1
               }}
               initial={{ opacity: 0, y: 4, scale: 0.98 }}
@@ -593,9 +593,9 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
                 scale: 1.02,
                 background: `linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%)`,
                 boxShadow: `
-                  inset 0 1px 0 rgba(255,255,255,0.10),
+                  inset 0 1px 0 rgba(255,255,255,0.12),
                   0 6px 20px rgba(0,0,0,0.12),
-                  0 0 18px ${config.glow},
+                  0 0 15px ${config.glow},
                   0 0 2px ${config.glow}
                 `,
                 borderColor: 'rgba(255,255,255,0.12)',
@@ -603,6 +603,18 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
               }}
               whileTap={{ scale: 0.985, transition: { duration: 0.08 } }}
             >
+              {/* Faint Top Edge Highlight */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: '15%',
+                right: '15%',
+                height: '1px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
+                filter: 'blur(1px)',
+                pointerEvents: 'none'
+              }} />
+
               {/* Ambient Tint - Reduced by 25% */}
               <div style={{
                 position: 'absolute',
@@ -613,9 +625,9 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
                 opacity: 0.75
               }} />
 
-              {/* Hover Halo - Softer 8% opacity */}
+              {/* Hover Halo - Reduced by 15% (from 0.08 to 0.068) */}
               <AnimatePresence>
-                {isHovered && (
+                {isHovered && !isClicked && (
                   <motion.div
                     className="absolute inset-[-2px] rounded-[22px]"
                     style={{
@@ -624,7 +636,7 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
                       pointerEvents: 'none'
                     }}
                     initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.08 }}
+                    animate={{ opacity: 0.068 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: MOTION.DURATIONS.capsuleHover }}
                   />
@@ -648,7 +660,7 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
               </div>
 
               {/* Text Column */}
-              <div className="flex-1" style={{ marginRight: '18px' }}>
+              <div className="flex-1" style={{ marginRight: '22px' }}>
                 <p 
                   className="text-[13px] font-medium leading-snug" 
                   style={{ 
@@ -662,22 +674,22 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
                 </p>
               </div>
 
-              {/* Status Tag - Apple-Grade Polish */}
+              {/* Status Tag - Reduced Height & Font */}
               <div 
                 className="inline-flex items-center gap-1.5 rounded-md flex-shrink-0"
                 style={{
                   background: `${config.statusColor}14`,
                   border: `1px solid ${config.statusColor}24`,
-                  paddingLeft: '10px',
-                  paddingRight: '10px',
-                  paddingTop: '5px',
-                  paddingBottom: '5px',
+                  paddingLeft: '8px',
+                  paddingRight: '8px',
+                  paddingTop: '4px',
+                  paddingBottom: '4px',
                   borderRadius: '9px'
                 }}
               >
-                <StatusIcon className="w-3 h-3" style={{ color: config.statusColor }} strokeWidth={2.5} />
+                <StatusIcon className="w-2.5 h-2.5" style={{ color: config.statusColor }} strokeWidth={2.5} />
                 <span 
-                  className="text-[10px] uppercase whitespace-nowrap" 
+                  className="text-[9.5px] uppercase whitespace-nowrap" 
                   style={{ 
                     color: config.statusColor,
                     letterSpacing: '0.04em',
