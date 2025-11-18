@@ -511,7 +511,7 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
 };
 
 // ============================================================================
-// MINI GLASS CHIPS — Choreographed Micro-Lift & Shimmer
+// MINI GLASS CHIPS — 2×2 Grid Layout (Apple-Grade Spatial Balance)
 // ============================================================================
 const CategoryGlassChips = ({ segments, isHovered, onChipHover, onChipLeave }) => {
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
@@ -536,7 +536,13 @@ const CategoryGlassChips = ({ segments, isHovered, onChipHover, onChipLeave }) =
   };
 
   return (
-    <div className="flex flex-wrap justify-center gap-4 mb-10">
+    <div 
+      className="grid grid-cols-2 gap-x-5 gap-y-4 max-w-[380px] mx-auto mb-10"
+      style={{
+        rowGap: '16px',
+        columnGap: '20px'
+      }}
+    >
       {segments.map((segment, index) => {
         const colors = CATEGORY_COLORS[segment.name] || { 
           accent: 'rgba(170, 177, 184, 0.50)', 
@@ -579,7 +585,8 @@ const CategoryGlassChips = ({ segments, isHovered, onChipHover, onChipLeave }) =
                   inset 0 0 7px ${colors.glow}18,
                   0 2px 6px rgba(0, 0, 0, 0.04)
                 `,
-                cursor: 'default'
+                cursor: 'default',
+                justifyContent: 'center'
               }}
               animate={{
                 y: isChipHovered ? -2 : 0,
@@ -1008,7 +1015,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
           }
         }
 
-        /* Mobile adaptations: 50% parallax, 30% breathing */
+        /* Mobile adaptations: reduced gaps */
         @media (max-width: 768px) {
           .consensus-lens {
             padding: 28px 24px 24px 24px;
