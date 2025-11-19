@@ -1067,7 +1067,7 @@ function LayoutContent({ children, currentPageName }) {
                   <UserMenu theme="dark" toggleTheme={() => {}} />
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Mobile Logo Header — Not Sticky */}
             <div className="md:hidden flex items-center justify-between px-4 py-4">
