@@ -128,55 +128,80 @@ const NavLink = ({ href, icon: Icon, title, isActive }) => (
 const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNotification = false, className = "" }) => (
   <motion.button
     onClick={onClick}
-    className={`relative rounded-[16px] flex items-center justify-center group ${className}`}
+    className={`relative rounded-[22px] flex items-center justify-center group ${className}`}
     style={{
       width: '44px',
       height: '44px',
       background: isActive
-        ? 'linear-gradient(135deg, rgba(80, 140, 255, 0.18) 0%, rgba(60, 120, 235, 0.14) 100%)'
-        : 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%)',
-      backdropFilter: 'blur(32px) saturate(155%)',
-      WebkitBackdropFilter: 'blur(32px) saturate(155%)',
-      border: '1px solid rgba(255,255,255,0.12)',
+        ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.095) 0%, rgba(255, 255, 255, 0.072) 100%)'
+        : 'linear-gradient(180deg, rgba(255, 255, 255, 0.068) 0%, rgba(255, 255, 255, 0.048) 100%)',
+      backdropFilter: 'blur(38px) saturate(165%)',
+      WebkitBackdropFilter: 'blur(38px) saturate(165%)',
+      border: '1px solid rgba(255,255,255,0.08)',
       boxShadow: isActive
         ? `
-          inset 0 1px 2px rgba(255,255,255,0.14),
-          inset 0 0 18px rgba(80, 140, 255, 0.16),
-          0 4px 12px rgba(0,0,0,0.12)
+          inset 0 1px 1.5px rgba(255,255,255,0.12),
+          inset 0 0 24px rgba(110, 180, 255, 0.06),
+          0 6px 24px rgba(0,0,0,0.12),
+          0 0 28px rgba(110, 180, 255, 0.04)
         `
         : `
-          inset 0 1px 1px rgba(255,255,255,0.08),
-          0 2px 8px rgba(0,0,0,0.06)
+          inset 0 0.5px 1px rgba(255,255,255,0.06),
+          0 4px 22px rgba(0,0,0,0.10),
+          0 0 18px rgba(0,0,0,0.05)
         `
     }}
     whileHover={{
-      scale: 1.04,
-      y: -1,
+      scale: 1.02,
+      y: -0.5,
       background: isActive
-        ? 'linear-gradient(135deg, rgba(80, 140, 255, 0.22) 0%, rgba(60, 120, 235, 0.18) 100%)'
-        : 'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.07) 100%)',
+        ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.105) 0%, rgba(255, 255, 255, 0.082) 100%)'
+        : 'linear-gradient(180deg, rgba(255, 255, 255, 0.078) 0%, rgba(255, 255, 255, 0.058) 100%)',
       boxShadow: isActive
         ? `
-          inset 0 1px 2px rgba(255,255,255,0.16),
-          inset 0 0 22px rgba(80, 140, 255, 0.20),
-          0 6px 16px rgba(0,0,0,0.14)
+          inset 0 1px 2px rgba(255,255,255,0.14),
+          inset 0 0 28px rgba(110, 180, 255, 0.08),
+          0 8px 28px rgba(0,0,0,0.14),
+          0 0 32px rgba(110, 180, 255, 0.05)
         `
         : `
-          inset 0 1px 2px rgba(255,255,255,0.12),
-          0 4px 12px rgba(0,0,0,0.10)
+          inset 0 1px 1.5px rgba(255,255,255,0.08),
+          0 6px 26px rgba(0,0,0,0.12),
+          0 0 22px rgba(100, 180, 255, 0.03)
         `
     }}
-    whileTap={{ scale: 0.96 }}
-    transition={HORIZON_SPRING}
+    whileTap={{ 
+      scale: 0.98,
+      boxShadow: isActive
+        ? `
+          inset 0 1px 3px rgba(0,0,0,0.14),
+          inset 0 0 18px rgba(110, 180, 255, 0.05),
+          0 2px 12px rgba(0,0,0,0.10)
+        `
+        : `
+          inset 0 1px 2px rgba(0,0,0,0.12),
+          0 2px 10px rgba(0,0,0,0.08)
+        `
+    }}
+    transition={{ duration: 0.18, ease: HORIZON_EASE }}
     aria-label={label}
   >
     <div style={{
       position: 'absolute',
       top: 0,
-      left: '20%',
-      right: '20%',
+      left: '16%',
+      right: '16%',
       height: '1px',
-      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.20), transparent)',
+      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+      pointerEvents: 'none',
+      filter: 'blur(0.5px)'
+    }} />
+
+    <div style={{
+      position: 'absolute',
+      inset: 0,
+      background: 'radial-gradient(ellipse at 50% 30%, rgba(255, 255, 255, 0.04) 0%, transparent 68%)',
+      borderRadius: '22px',
       pointerEvents: 'none'
     }} />
 
@@ -184,8 +209,8 @@ const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNoti
       <div style={{
         position: 'absolute',
         inset: 0,
-        background: 'radial-gradient(circle, rgba(80, 140, 255, 0.10) 0%, transparent 70%)',
-        borderRadius: '16px',
+        background: 'radial-gradient(ellipse at 50% 35%, rgba(110, 180, 255, 0.05) 0%, transparent 70%)',
+        borderRadius: '22px',
         pointerEvents: 'none'
       }} />
     )}
@@ -193,40 +218,52 @@ const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNoti
     <Icon 
       className="w-5 h-5 relative z-10" 
       style={{ 
-        color: isActive ? '#A0C4FF' : '#9BA3B0',
-        strokeWidth: 1.5,
-        filter: isActive ? 'drop-shadow(0 0 6px rgba(100, 180, 255, 0.5))' : 'none'
+        color: isActive ? '#B8D4FF' : '#9BA3B0',
+        strokeWidth: 2.0,
+        filter: isActive ? 'drop-shadow(0 0 8px rgba(110, 180, 255, 0.35))' : 'none'
       }} 
     />
 
     {hasNotification && (
       <motion.div
-        className="absolute -top-1 -right-1"
+        className="absolute -top-0.5 -right-0.5"
         style={{
-          width: '14px',
-          height: '14px',
+          width: '11px',
+          height: '11px',
           borderRadius: '50%',
-          background: 'linear-gradient(135deg, rgba(255, 80, 95, 0.95) 0%, rgba(235, 60, 75, 0.90) 100%)',
-          border: '1.5px solid rgba(0, 0, 0, 0.25)',
+          background: 'linear-gradient(135deg, rgba(138, 92, 255, 0.88) 0%, rgba(98, 70, 234, 0.85) 100%)',
+          border: '1px solid rgba(0, 0, 0, 0.18)',
           boxShadow: `
-            0 0 14px rgba(255, 80, 95, 0.55),
-            inset 0 1px 0 rgba(255,255,255,0.30),
-            inset 0 -1px 2px rgba(0,0,0,0.20)
+            0 0 16px rgba(138, 92, 255, 0.36),
+            inset 0 1px 0 rgba(255,255,255,0.22),
+            inset 0 -1px 1px rgba(0,0,0,0.16)
           `
         }}
-        initial={{ scale: 0 }}
-        animate={{ scale: [0, 1.15, 1] }}
-        transition={{ duration: 0.32, ease: HORIZON_EASE }}
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ 
+          scale: 1, 
+          opacity: [0.85, 1, 0.85],
+          boxShadow: [
+            '0 0 16px rgba(138, 92, 255, 0.36), inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 1px rgba(0,0,0,0.16)',
+            '0 0 20px rgba(138, 92, 255, 0.42), inset 0 1px 0 rgba(255,255,255,0.24), inset 0 -1px 1px rgba(0,0,0,0.16)',
+            '0 0 16px rgba(138, 92, 255, 0.36), inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 1px rgba(0,0,0,0.16)'
+          ]
+        }}
+        transition={{ 
+          scale: { duration: 0.28, ease: HORIZON_EASE },
+          opacity: { duration: 0.8, repeat: Infinity, ease: "easeInOut" },
+          boxShadow: { duration: 0.8, repeat: Infinity, ease: "easeInOut" }
+        }}
       >
         <div style={{
           position: 'absolute',
-          top: '2px',
-          left: '2px',
-          width: '4px',
-          height: '4px',
+          top: '1.5px',
+          left: '1.5px',
+          width: '3px',
+          height: '3px',
           borderRadius: '50%',
-          background: 'rgba(255,255,255,0.50)',
-          filter: 'blur(1px)',
+          background: 'rgba(255,255,255,0.45)',
+          filter: 'blur(0.8px)',
           pointerEvents: 'none'
         }} />
       </motion.div>
@@ -792,11 +829,15 @@ function LayoutContent({ children, currentPageName }) {
               <div style={{
                 position: 'absolute',
                 inset: 0,
-                background: 'linear-gradient(180deg, rgba(17, 18, 22, 0.88) 0%, rgba(13, 14, 16, 0.90) 100%)',
-                backdropFilter: 'blur(32px) saturate(165%)',
-                WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-                borderBottom: '1px solid rgba(255,255,255,0.06)',
-                boxShadow: `inset 0 0 1px rgba(255,255,255,0.04), 0 2px 16px rgba(0,0,0,0.12)`,
+                background: 'linear-gradient(180deg, rgba(15, 16, 19, 0.92) 0%, rgba(17, 18, 22, 0.90) 100%)',
+                backdropFilter: 'blur(42px) saturate(168%)',
+                WebkitBackdropFilter: 'blur(42px) saturate(168%)',
+                borderBottom: '1px solid rgba(255,255,255,0.08)',
+                boxShadow: `
+                  inset 0 0 1px rgba(255,255,255,0.06),
+                  0 2px 18px rgba(0,0,0,0.14),
+                  0 0 24px rgba(0,0,0,0.08)
+                `,
                 pointerEvents: 'none'
               }} />
 
@@ -805,8 +846,18 @@ function LayoutContent({ children, currentPageName }) {
                 top: 0,
                 left: 0,
                 right: 0,
-                height: '40%',
-                background: 'linear-gradient(180deg, rgba(255,255,255,0.022) 0%, transparent 100%)',
+                height: '38%',
+                background: 'linear-gradient(180deg, rgba(255,255,255,0.026) 0%, transparent 100%)',
+                pointerEvents: 'none'
+              }} />
+
+              <div style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: '38%',
+                background: 'linear-gradient(0deg, rgba(0,0,0,0.028) 0%, transparent 100%)',
                 pointerEvents: 'none'
               }} />
 
@@ -836,35 +887,40 @@ function LayoutContent({ children, currentPageName }) {
                 </h1>
               </div>
 
-              <div className="flex items-center space-x-2 relative z-[260]">
+              <div className="flex items-center relative z-[260]">
+                {/* Group A: Search + Commentary */}
                 {isEnabled('labs_modules') && (
-                  <GlassIconButton
-                    onClick={() => setIsSearchOpen(true)}
-                    icon={Search}
-                    label="Search stocks and market data"
-                  />
+                  <div className="flex items-center space-x-3 mr-8">
+                    <GlassIconButton
+                      onClick={() => setIsSearchOpen(true)}
+                      icon={Search}
+                      label="Search stocks and market data"
+                    />
+
+                    <GlassIconButton
+                      onClick={() => setIsCommentaryOpen(!isCommentaryOpen)}
+                      icon={MessageSquare}
+                      label={`${isCommentaryOpen ? 'Close' : 'Open'} live commentary`}
+                      isActive={isCommentaryOpen}
+                    />
+                  </div>
                 )}
 
-                {isEnabled('labs_modules') && (
-                  <GlassIconButton
-                    onClick={() => setIsCommentaryOpen(!isCommentaryOpen)}
-                    icon={MessageSquare}
-                    label={`${isCommentaryOpen ? 'Close' : 'Open'} live commentary`}
-                    isActive={isCommentaryOpen}
-                  />
-                )}
+                {/* Group B: Labs + Notifications */}
+                <div className="flex items-center space-x-3 mr-8">
+                  <div className="relative z-[260] group">
+                    <LabsToggle />
+                  </div>
 
-                <div className="relative z-[260] group">
-                  <LabsToggle />
+                  <GlassIconButton
+                    onClick={() => setIsAlertsOpen(true)}
+                    icon={Bell}
+                    label="View alerts"
+                    hasNotification={true}
+                  />
                 </div>
 
-                <GlassIconButton
-                  onClick={() => setIsAlertsOpen(true)}
-                  icon={Bell}
-                  label="View alerts"
-                  hasNotification={true}
-                />
-
+                {/* Profile Avatar */}
                 <div className="relative z-[260] group">
                   <UserMenu theme="dark" toggleTheme={() => {}} />
                 </div>
