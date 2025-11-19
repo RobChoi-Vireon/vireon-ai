@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DimonDigestRun } from '@/entities/DimonDigestRun';
@@ -564,12 +563,39 @@ export default function MacroSignalsPage() {
       background: '#0B0E13',
       color: '#F8FAFC'
     }}>
-      {/* Subtle Vignette - Replaces Grid */}
-      <div className="fixed inset-0 pointer-events-none opacity-25">
+      {/* OS Horizon V2 Canvas Atmosphere */}
+      <div className="fixed inset-0 pointer-events-none">
+        {/* Large-Scale Atmospheric Gradient */}
         <div 
           className="absolute inset-0"
           style={{
-            background: 'radial-gradient(ellipse at center, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.0) 100%)'
+            background: 'linear-gradient(180deg, rgba(12, 14, 18, 1) 0%, rgba(11, 14, 19, 1) 50%, rgba(10, 12, 16, 1) 100%)'
+          }}
+        />
+
+        {/* Subtle Cyan-Lavender Palette Hint */}
+        <div 
+          className="absolute inset-0"
+          style={{
+            background: 'radial-gradient(ellipse at 50% 20%, rgba(110, 180, 255, 0.015) 0%, transparent 60%)'
+          }}
+        />
+
+        {/* Textural Noise Layer */}
+        <div 
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+            opacity: 0.012,
+            mixBlendMode: 'overlay'
+          }}
+        />
+
+        {/* Vignette Depth */}
+        <div 
+          className="absolute inset-0"
+          style={{
+            background: 'radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.18) 100%)'
           }}
         />
       </div>

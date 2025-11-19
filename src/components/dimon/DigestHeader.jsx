@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, useMotionValue, useTransform, AnimatePresence, useSpring } from 'framer-motion';
 import { Calendar, Share, Info, Clock, Database, Zap, AlertCircle } from 'lucide-react';
@@ -640,12 +639,13 @@ export default function DigestHeader({
             className="flex-1 space-y-3 w-full"
           >
 
-            {/* Enhanced Typography - FINAL POLISH */}
+            {/* OS Horizon V2 Typography — System-Level Hero */}
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 8 }}
               transition={{ duration: 0.36, delay: 0.12, ease: [0.22, 0.61, 0.36, 1] }}
-              className="relative mb-6"
+              className="relative"
+              style={{ marginBottom: '28px', marginTop: '4px' }}
             >
               <h1
                 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight"
@@ -663,11 +663,12 @@ export default function DigestHeader({
                 <span
                   className="halo-gradient-text"
                   style={{
-                    background: 'linear-gradient(90deg, #B1E4FF 0%, #C6B2FF 50%, #F0C9FF 100%)',
+                    background: 'linear-gradient(90deg, #7DC4F5 0%, #B8A8FF 50%, #D8B8FF 100%)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     backgroundClip: 'text',
-                    backgroundSize: '200% auto'
+                    backgroundSize: '200% auto',
+                    filter: 'brightness(1.05)'
                   }}
                 >
                   Signals
@@ -675,14 +676,14 @@ export default function DigestHeader({
               </h1>
             </motion.div>
 
-            {/* Tagline - FINAL POLISH */}
+            {/* OS Horizon V2 Tagline — Improved Contrast */}
             <motion.p
-              className="text-sm italic mb-4"
+              className="text-sm italic"
               style={{
-                color: 'rgba(255,255,255,0.72)',
+                color: 'rgba(255,255,255,0.78)',
                 fontWeight: 500,
                 letterSpacing: '0.01em',
-                marginBottom: '16px'
+                marginBottom: '20px'
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
@@ -691,124 +692,123 @@ export default function DigestHeader({
               Global posture, distilled in real time.
             </motion.p>
 
-            {/* Info Capsules - FINAL POLISH */}
+            {/* OS Horizon V2 Info Capsules — Refined Glass Pills */}
             <motion.div
               className="flex flex-wrap items-center gap-3"
-              style={{ marginBottom: '18px' }}
+              style={{ marginBottom: '22px' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
               transition={{ duration: 0.22, delay: 0.28, ease: [0.22, 0.61, 0.36, 1] }}
             >
-              {/* Updated Capsule - Perfect Polish */}
+              {/* Updated Capsule — OS Horizon Glass */}
               <motion.div
-                className="glass-info-capsule flex items-center gap-2 px-3 py-1.5 rounded-xl"
+                className="glass-info-capsule flex items-center gap-2 px-4 py-2 rounded-[20px]"
                 style={{
-                  background: 'rgba(255, 255, 255, 0.04)',
-                  backdropFilter: 'blur(14px)',
-                  WebkitBackdropFilter: 'blur(14px)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  boxShadow: 'inset 0 1px 0 rgba(0,0,0,0.25)'
+                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.042) 100%)',
+                  backdropFilter: 'blur(32px) saturate(165%)',
+                  WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+                  border: '1px solid rgba(255, 255, 255, 0.06)',
+                  boxShadow: `
+                    0 4px 26px rgba(0,0,0,0.08),
+                    0 0 18px rgba(0,0,0,0.04),
+                    inset 0 1px 1.5px rgba(255,255,255,0.05)
+                  `
                 }}
                 initial={{ scale: 0.96, opacity: 0 }}
-                animate={shouldReduceMotion ? {} : {
-                  scale: isLoaded ? [0.96, 1] : 0.96,
-                  opacity: isLoaded ? [0, 0.6, 0.8] : 0
-                }}
-                transition={{
-                  scale: { duration: 0.22, delay: 0.28, ease: [0.22, 0.61, 0.36, 1] },
-                  opacity: {
-                    duration: 4,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 0.5
-                  }
-                }}
+                animate={{ scale: isLoaded ? 1 : 0.96, opacity: isLoaded ? 1 : 0 }}
+                transition={{ duration: 0.22, delay: 0.32, ease: [0.22, 0.61, 0.36, 1] }}
                 whileHover={shouldReduceMotion ? {} : {
-                  y: -2,
-                  background: 'rgba(255, 255, 255, 0.08)',
-                  borderColor: 'rgba(255, 255, 255, 0.12)',
-                  boxShadow: 'inset 0 1px 0 rgba(0,0,0,0.25), 0 0 8px rgba(255,255,255,0.06)'
+                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.068) 0%, rgba(255, 255, 255, 0.052) 100%)',
+                  borderColor: 'rgba(255, 255, 255, 0.08)',
+                  boxShadow: `
+                    0 6px 28px rgba(0,0,0,0.10),
+                    0 0 22px rgba(110, 180, 255, 0.02),
+                    inset 0 1px 2px rgba(255,255,255,0.07)
+                  `
                 }}
                 tabIndex={0}
                 role="button"
                 aria-label={`Updated ${lastUpdated}`}
               >
-                <motion.div
-                  animate={shouldReduceMotion ? {} : {
-                    scale: [1, 1.03, 1]
-                  }}
-                  transition={{
-                    duration: 4,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                >
-                  <Clock className="w-3.5 h-3.5" style={{ color: sentimentProps.baseHue, opacity: 0.9 }} />
-                </motion.div>
-                <span className="text-[13px] font-medium text-white/80">
-                  Updated <span className="text-white/95 font-semibold">{lastUpdated}</span>
+                <Clock className="w-3.5 h-3.5" style={{ color: sentimentProps.baseHue, opacity: 0.92, strokeWidth: 2.0 }} />
+                <span className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.82)' }}>
+                  Updated <span style={{ color: 'rgba(255,255,255,0.96)', fontWeight: 600 }}>{lastUpdated}</span>
                 </span>
               </motion.div>
 
-              <span style={{ color: 'rgba(255,255,255,0.3)' }}>•</span>
+              <span style={{ color: 'rgba(255,255,255,0.28)' }}>•</span>
 
-              {/* Sources Capsule - Perfect Polish */}
+              {/* Sources Capsule — OS Horizon Glass */}
               <motion.div
-                className="glass-info-capsule flex items-center gap-2 px-3 py-1.5 rounded-xl"
+                className="glass-info-capsule flex items-center gap-2 px-4 py-2 rounded-[20px]"
                 style={{
-                  background: 'rgba(255, 255, 255, 0.04)',
-                  backdropFilter: 'blur(14px)',
-                  WebkitBackdropFilter: 'blur(14px)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  boxShadow: 'inset 0 1px 0 rgba(0,0,0,0.25)'
+                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.042) 100%)',
+                  backdropFilter: 'blur(32px) saturate(165%)',
+                  WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+                  border: '1px solid rgba(255, 255, 255, 0.06)',
+                  boxShadow: `
+                    0 4px 26px rgba(0,0,0,0.08),
+                    0 0 18px rgba(0,0,0,0.04),
+                    inset 0 1px 1.5px rgba(255,255,255,0.05)
+                  `
                 }}
                 initial={{ scale: 0.96, opacity: 0 }}
                 animate={{ scale: isLoaded ? 1 : 0.96, opacity: isLoaded ? 1 : 0 }}
-                transition={{ duration: 0.22, delay: 0.34, ease: [0.22, 0.61, 0.36, 1] }}
+                transition={{ duration: 0.22, delay: 0.38, ease: [0.22, 0.61, 0.36, 1] }}
                 whileHover={shouldReduceMotion ? {} : {
-                  y: -2,
-                  background: 'rgba(255, 255, 255, 0.08)',
-                  borderColor: 'rgba(255, 255, 255, 0.12)',
-                  boxShadow: 'inset 0 1px 0 rgba(0,0,0,0.25), 0 0 8px rgba(255,255,255,0.06)'
+                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.068) 0%, rgba(255, 255, 255, 0.052) 100%)',
+                  borderColor: 'rgba(255, 255, 255, 0.08)',
+                  boxShadow: `
+                    0 6px 28px rgba(0,0,0,0.10),
+                    0 0 22px rgba(110, 180, 255, 0.02),
+                    inset 0 1px 2px rgba(255,255,255,0.07)
+                  `
                 }}
                 tabIndex={0}
                 role="button"
                 aria-label={`${stats.sources} sources`}
               >
-                <Database className="w-3.5 h-3.5" style={{ color: sentimentProps.baseHue, opacity: 0.9 }} />
-                <span className="text-[13px] font-medium text-white/80">
-                  Sources <span className="text-white/95 font-semibold">{stats.sources}</span>
+                <Database className="w-3.5 h-3.5" style={{ color: sentimentProps.baseHue, opacity: 0.92, strokeWidth: 2.0 }} />
+                <span className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.82)' }}>
+                  Sources <span style={{ color: 'rgba(255,255,255,0.96)', fontWeight: 600 }}>{stats.sources}</span>
                 </span>
               </motion.div>
 
-              <span style={{ color: 'rgba(255,255,255,0.3)' }}>•</span>
+              <span style={{ color: 'rgba(255,255,255,0.28)' }}>•</span>
 
-              {/* Signals Capsule - Perfect Polish */}
+              {/* Signals Capsule — OS Horizon Glass */}
               <motion.div
-                className="glass-info-capsule flex items-center gap-2 px-3 py-1.5 rounded-xl"
+                className="glass-info-capsule flex items-center gap-2 px-4 py-2 rounded-[20px]"
                 style={{
-                  background: 'rgba(255, 255, 255, 0.04)',
-                  backdropFilter: 'blur(14px)',
-                  WebkitBackdropFilter: 'blur(14px)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  boxShadow: 'inset 0 1px 0 rgba(0,0,0,0.25)'
+                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.042) 100%)',
+                  backdropFilter: 'blur(32px) saturate(165%)',
+                  WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+                  border: '1px solid rgba(255, 255, 255, 0.06)',
+                  boxShadow: `
+                    0 4px 26px rgba(0,0,0,0.08),
+                    0 0 18px rgba(0,0,0,0.04),
+                    inset 0 1px 1.5px rgba(255,255,255,0.05)
+                  `
                 }}
                 initial={{ scale: 0.96, opacity: 0 }}
                 animate={{ scale: isLoaded ? 1 : 0.96, opacity: isLoaded ? 1 : 0 }}
-                transition={{ duration: 0.22, delay: 0.40, ease: [0.22, 0.61, 0.36, 1] }}
+                transition={{ duration: 0.22, delay: 0.44, ease: [0.22, 0.61, 0.36, 1] }}
                 whileHover={shouldReduceMotion ? {} : {
-                  y: -2,
-                  background: 'rgba(255, 255, 255, 0.08)',
-                  borderColor: 'rgba(255, 255, 255, 0.12)',
-                  boxShadow: 'inset 0 1px 0 rgba(0,0,0,0.25), 0 0 8px rgba(255,255,255,0.06)'
+                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.068) 0%, rgba(255, 255, 255, 0.052) 100%)',
+                  borderColor: 'rgba(255, 255, 255, 0.08)',
+                  boxShadow: `
+                    0 6px 28px rgba(0,0,0,0.10),
+                    0 0 22px rgba(110, 180, 255, 0.02),
+                    inset 0 1px 2px rgba(255,255,255,0.07)
+                  `
                 }}
                 tabIndex={0}
                 role="button"
                 aria-label={`${stats.signals} signals`}
               >
-                <Zap className="w-3.5 h-3.5" style={{ color: sentimentProps.baseHue, opacity: 0.9 }} />
-                <span className="text-[13px] font-medium text-white/80">
-                  Signals <span style={{ color: sentimentProps.baseHue, fontWeight: 700 }}>{stats.signals}</span>
+                <Zap className="w-3.5 h-3.5" style={{ color: sentimentProps.baseHue, opacity: 0.92, strokeWidth: 2.0 }} />
+                <span className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.82)' }}>
+                  Signals <span style={{ color: sentimentProps.baseHue, fontWeight: 700, filter: 'brightness(1.08)' }}>{stats.signals}</span>
                 </span>
               </motion.div>
             </motion.div>
@@ -1176,17 +1176,40 @@ export default function DigestHeader({
                     />
                   )}
 
-                  {/* Arc Labels - PROPER SPACING */}
-                  <div className="flex justify-between mt-10 text-sm px-1 arc-labels" style={{
-                    color: 'rgba(255,255,255,0.70)',
+                  {/* OS Horizon V2 Arc Context Labels — Refined Positioning */}
+                  <div className="flex justify-between text-[11px] px-1 arc-labels" style={{
+                    color: 'rgba(255,255,255,0.56)',
                     fontWeight: 500,
-                    letterSpacing: '0.01em',
+                    letterSpacing: '0.04em',
+                    textTransform: 'uppercase',
+                    marginTop: '48px',
                     transition: 'color 160ms ease'
                   }}>
-                    <span>Opportunity</span>
+                    <span>Risk-On</span>
                     <span>Neutral</span>
-                    <span>Risk</span>
+                    <span>Risk-Off</span>
                   </div>
+
+                  {/* Current Macro Posture Label */}
+                  <motion.div
+                    className="text-center"
+                    style={{ marginTop: '12px' }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: isLoaded ? 1 : 0 }}
+                    transition={{ duration: 0.28, delay: 1.2 }}
+                  >
+                    <span 
+                      className="inline-block px-3 py-1 rounded-full text-[10px] font-semibold uppercase"
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.04)',
+                        border: '1px solid rgba(255, 255, 255, 0.06)',
+                        color: 'rgba(255,255,255,0.65)',
+                        letterSpacing: '0.06em'
+                      }}
+                    >
+                      {getDominantSentiment() === 'opportunity' ? 'Moderately Risk-On' : getDominantSentiment() === 'risk' ? 'Moderately Risk-Off' : 'Market Neutral'}
+                    </span>
+                  </motion.div>
                 </div>
 
                 {/* Macro Insight Capsule - Responsive Positioning */}
@@ -1226,33 +1249,52 @@ export default function DigestHeader({
             </motion.p>
           </motion.div>
 
-          {/* Floating Frosted-Glass Date Tile - Enhanced Depth Field */}
+          {/* OS Horizon V2 Analysis Panel — Unified Glass Stack */}
           <motion.div
             className="flex flex-col gap-3 flex-shrink-0"
-            style={{ marginRight: '32px' }}
+            style={{ marginRight: '28px' }}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: isLoaded ? 1 : 0, x: isLoaded ? 0 : 20 }}
             transition={{ duration: 0.4, delay: 1.3, ease: [0.22, 0.61, 0.36, 1] }}
           >
-            {/* Date Container - Depth Field Anchoring */}
+            {/* Date Container — Refined OS Horizon Glass */}
             <motion.div
-              className="date-glass flex flex-col items-end gap-2 px-5 py-3"
+              className="date-glass flex flex-col items-end gap-2.5 px-5 py-4 rounded-[20px]"
               style={{
-                background: 'rgba(255, 255, 255, 0.08)',
-                backdropFilter: 'blur(18px)',
-                WebkitBackdropFilter: 'blur(18px)',
-                borderRadius: '16px',
-                border: '1px solid rgba(255, 255, 255, 0.10)',
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04), 0 10px 40px rgba(0, 0, 0, 0.25)'
+                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.065) 0%, rgba(255, 255, 255, 0.048) 100%)',
+                backdropFilter: 'blur(38px) saturate(168%)',
+                WebkitBackdropFilter: 'blur(38px) saturate(168%)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                boxShadow: `
+                  0 6px 28px rgba(0,0,0,0.09),
+                  0 0 20px rgba(0,0,0,0.05),
+                  inset 0 1px 2px rgba(255,255,255,0.06)
+                `
               }}
               whileHover={shouldReduceMotion ? {} : {
-                scale: 1.01,
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04), 0 10px 40px rgba(0, 0, 0, 0.30), 0 8px 24px rgba(115, 230, 210, 0.15)',
-                transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }
+                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.058) 100%)',
+                boxShadow: `
+                  0 8px 32px rgba(0,0,0,0.11),
+                  0 0 24px rgba(115, 230, 210, 0.04),
+                  inset 0 1px 2px rgba(255,255,255,0.08)
+                `,
+                transition: { duration: 0.18, ease: HORIZON_EASE }
               }}
-              transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+              transition={{ duration: 0.18, ease: HORIZON_EASE }}
             >
-              <label className="text-xs font-semibold" style={{ color: '#9FA8B4', opacity: 0.9 }}>
+              {/* Inner Top Highlight */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: '18%',
+                right: '18%',
+                height: '1.5px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)',
+                filter: 'blur(0.8px)',
+                pointerEvents: 'none'
+              }} />
+
+              <label className="text-[11px] font-medium uppercase tracking-wide" style={{ color: 'rgba(255,255,255,0.60)', letterSpacing: '0.05em' }}>
                 Analysis Date
               </label>
               <input
@@ -1262,32 +1304,18 @@ export default function DigestHeader({
                 disabled={isLoading}
                 className="horizon-date-input text-sm rounded-lg border-none outline-none transition-all"
                 style={{
-                  background: 'rgba(255, 255, 255, 0.06)',
-                  color: 'rgba(255, 255, 255, 0.92)',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  color: 'rgba(255, 255, 255, 0.94)',
                   colorScheme: 'dark',
-                  padding: '6px 10px',
-                  filter: 'none'
+                  padding: '7px 11px',
+                  fontWeight: 500
                 }}
               />
             </motion.div>
 
-            {/* Icon Capsule Group - Depth Field Enhancement */}
+            {/* Control Tiles — Unified Vertical Glass Stack */}
             <motion.div
-              className="date-glass flex items-center gap-2 px-3 py-2"
-              style={{
-                background: 'rgba(255, 255, 255, 0.08)',
-                backdropFilter: 'blur(18px)',
-                WebkitBackdropFilter: 'blur(18px)',
-                borderRadius: '16px',
-                border: '1px solid rgba(255, 255, 255, 0.10)',
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04), 0 8px 32px rgba(0, 0, 0, 0.22)'
-              }}
-              whileHover={shouldReduceMotion ? {} : {
-                scale: 1.01,
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04), 0 8px 32px rgba(0, 0, 0, 0.28), 0 8px 24px rgba(236, 165, 255, 0.15)',
-                transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }
-              }}
-              transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+              className="flex flex-col gap-2.5"
             >
               <TooltipProvider>
                 {[
@@ -1297,18 +1325,52 @@ export default function DigestHeader({
                 ].map((item, idx) => (
                   <Tooltip key={idx}>
                     <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="horizon-icon-btn w-9 h-9 rounded-xl transition-all"
+                      <motion.button
+                        className="horizon-control-tile w-full flex items-center justify-center rounded-[18px]"
                         style={{
-                          background: 'rgba(255, 255, 255, 0.04)',
-                          color: '#B0B8C4'
+                          height: '42px',
+                          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.042) 100%)',
+                          backdropFilter: 'blur(32px) saturate(165%)',
+                          WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+                          border: '1px solid rgba(255, 255, 255, 0.06)',
+                          boxShadow: `
+                            0 4px 24px rgba(0,0,0,0.08),
+                            0 0 16px rgba(0,0,0,0.04),
+                            inset 0 1px 1.5px rgba(255,255,255,0.05)
+                          `
                         }}
+                        whileHover={{
+                          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.068) 0%, rgba(255, 255, 255, 0.052) 100%)',
+                          boxShadow: `
+                            0 6px 26px rgba(0,0,0,0.10),
+                            0 0 20px rgba(110, 180, 255, 0.02),
+                            inset 0 1px 2px rgba(255,255,255,0.07)
+                          `
+                        }}
+                        whileTap={{
+                          y: 1,
+                          boxShadow: `
+                            0 2px 12px rgba(0,0,0,0.06),
+                            inset 0 1.5px 3px rgba(0,0,0,0.08)
+                          `
+                        }}
+                        transition={{ duration: 0.18, ease: HORIZON_EASE }}
                         aria-label={item.label}
                       >
-                        <item.icon className="w-4 h-4" strokeWidth={2} />
-                      </Button>
+                        {/* Inner Top Highlight */}
+                        <div style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: '16%',
+                          right: '16%',
+                          height: '1px',
+                          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)',
+                          filter: 'blur(0.6px)',
+                          pointerEvents: 'none'
+                        }} />
+
+                        <item.icon className="w-4 h-4" style={{ color: '#9BA3B0', strokeWidth: 2.0 }} />
+                      </motion.button>
                     </TooltipTrigger>
                     <TooltipContent>{item.label}</TooltipContent>
                   </Tooltip>
