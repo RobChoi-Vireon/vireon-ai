@@ -1027,10 +1027,10 @@ export default function SearchOmni({ isOpen, setIsOpen, theme }) {
                     ))}
                   </div>
                 </motion.div>
-              )}
-            </div>
-            
-            {/* Footer with macOS-style keycaps */}
+                )}
+                </motion.div>
+
+                {/* Footer with macOS-style keycaps */}
             <div 
               className="px-6 py-3.5 text-xs flex items-center justify-between relative"
               style={{
