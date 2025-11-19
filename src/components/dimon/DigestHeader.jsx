@@ -818,7 +818,7 @@ export default function DigestHeader({
             {/* Halo Spectrum Arc with Macro Insight Capsule */}
             <motion.div
               className="relative pt-8 pb-4 w-full"
-              style={{ transform: 'translateY(32px)' }}
+              style={{ transform: 'translateY(42px)' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
               transition={{ duration: 0.22, delay: 0.42, ease: [0.22, 0.61, 0.36, 1] }}
@@ -827,7 +827,7 @@ export default function DigestHeader({
                 className="text-sm font-semibold tracking-wide block"
                 style={{
                   color: 'rgba(255,255,255,0.63)',
-                  marginBottom: '48px'
+                  marginBottom: '56px'
                 }}
               >
                 24-hour macro sentiment, synthesized from {stats.sources} sources
@@ -1214,13 +1214,13 @@ export default function DigestHeader({
                   </motion.div>
                 </div>
 
-                {/* Macro Insight Capsule - Responsive Positioning */}
+                {/* Macro Insight Capsule - OS Horizon V2 Positioning */}
                 {!isLoading && !error && sentimentFlow && (
                   <div
                     className="hidden lg:block absolute"
                     style={{
-                      top: '12px', // Align with subheading baseline + 12px
-                      right: 0,
+                      top: '20px',
+                      right: '16px',
                       zIndex: 20
                     }}
                   >
@@ -1234,14 +1234,15 @@ export default function DigestHeader({
               </div>
             </motion.div>
 
-            {/* Summary Line - PROPER SPACING */}
+            {/* Summary Line - OS Horizon V2 Spacing */}
             <motion.p
-              className="text-lg leading-relaxed pt-12"
+              className="text-lg leading-relaxed"
               style={{
                 color: 'rgba(255,255,255,0.88)',
                 fontWeight: 550,
                 letterSpacing: '-0.01em',
-                maxWidth: '700px'
+                maxWidth: '700px',
+                marginTop: '56px'
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
