@@ -314,9 +314,9 @@ const NewsResult = ({ article }) => {
                     +{article.tickers_mentioned.length - 3} More
                   </span>
                 )}
-              </motion.div>
-              )}
-              </motion.div>
+              </div>
+            )}
+          </div>
         </div>
         <motion.a 
           href={article.source_url} 
@@ -918,7 +918,7 @@ export default function SearchOmni({ isOpen, setIsOpen, theme }) {
                       </motion.div>
                     </div>
                   )}
-                </div>
+                </motion.div>
               ) : (
                 <motion.div 
                   className="text-center py-14"
@@ -1027,10 +1027,10 @@ export default function SearchOmni({ isOpen, setIsOpen, theme }) {
                     ))}
                   </div>
                 </motion.div>
-                )}
-                </motion.div>
+              )}
+            </motion.div>
 
-                {/* Footer with macOS-style keycaps */}
+            {/* Footer with macOS-style keycaps */}
             <div 
               className="px-6 py-3.5 text-xs flex items-center justify-between relative"
               style={{
