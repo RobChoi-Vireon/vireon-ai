@@ -600,7 +600,7 @@ export default function MacroSignalsPage() {
         />
       </div>
 
-      <main className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-10 pb-8 md:pb-12">
+      <main className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pb-8 md:pb-12" style={{ paddingTop: '28px' }}>
         <DigestHeader 
           targetDate={targetDate}
           setTargetDate={setTargetDate}

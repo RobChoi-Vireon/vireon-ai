@@ -938,12 +938,6 @@ function LayoutContent({ children, currentPageName }) {
                 </span>
               </Link>
 
-              <div className="hidden md:block relative z-10">
-                <h1 className="text-2xl font-bold tracking-[-0.02em]" style={{ color: 'var(--text-primary)' }}>
-                  {pageTitle}
-                </h1>
-              </div>
-
               <div className="flex items-center relative z-[260]">
                 {/* OS Horizon V2 Semantic Grouping: Cluster A (Search + Commentary) */}
                 {isEnabled('labs_modules') && (
