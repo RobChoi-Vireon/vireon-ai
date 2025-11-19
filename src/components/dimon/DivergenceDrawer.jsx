@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, AlertCircle, Eye, GitMerge, Target, BrainCircuit, Users, CheckCircle, XCircle, ChevronLeft, ChevronRight, Sparkles, TrendingUp, Newspaper, Zap } from 'lucide-react';
@@ -289,7 +288,11 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
             />
 
             <motion.div 
-              className="relative p-8 border-b border-white/10"
+              className="relative p-8 pb-6"
+              style={{
+                borderBottom: 'none',
+                boxShadow: '0 1px 0 rgba(0,0,0,0.02), inset 0 -1px 0 rgba(255,255,255,0.03)'
+              }}
               variants={{
                 hidden: { opacity: 0, y: -20 },
                 visible: { opacity: 1, y: 0 }
@@ -322,13 +325,14 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-4">
-                  {/* Divergence Type Badge (moved from confidence spot) */}
+                <div className="flex items-center space-x-3">
+                  {/* Divergence Type Badge */}
                   <motion.span 
-                    className={`px-4 py-2 text-sm font-bold rounded-full capitalize ${theme.textColor}`}
+                    className={`px-3.5 py-1.5 text-xs font-bold rounded-full capitalize ${theme.textColor}`}
                     style={{ 
-                      background: `linear-gradient(135deg, ${theme.primaryColor}25, ${theme.primaryColor}15)`,
-                      border: `1px solid ${theme.primaryColor}40`
+                      background: `linear-gradient(135deg, ${theme.primaryColor}18, ${theme.primaryColor}10)`,
+                      border: `1px solid ${theme.primaryColor}28`,
+                      boxShadow: `inset 0 1px 0 rgba(255,255,255,0.06)`
                     }}
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
@@ -337,32 +341,77 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                     {theme.label}
                   </motion.span>
 
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-1.5">
                     <motion.button
                       onClick={() => onNavigate('prev')}
-                      className="relative p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-all duration-300"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
+                      className="relative p-2 rounded-xl border backdrop-blur-sm"
+                      style={{
+                        background: 'rgba(255,255,255,0.04)',
+                        borderColor: 'rgba(255,255,255,0.06)',
+                        color: 'rgba(255,255,255,0.68)'
+                      }}
+                      whileHover={{ 
+                        y: -1,
+                        background: 'rgba(255,255,255,0.08)', 
+                        color: 'rgba(255,255,255,0.88)',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                        transition: { duration: 0.12 }
+                      }}
+                      whileTap={{ 
+                        scale: 0.97, 
+                        y: 0.5,
+                        transition: { duration: 0.08 }
+                      }}
                       aria-label="Previous Divergence"
                     >
-                      <ChevronLeft className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors" strokeWidth={2} />
+                      <ChevronLeft className="w-5 h-5" strokeWidth={2.2} />
                     </motion.button>
                     <motion.button
                       onClick={() => onNavigate('next')}
-                      className="relative p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-all duration-300"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
+                      className="relative p-2 rounded-xl border backdrop-blur-sm"
+                      style={{
+                        background: 'rgba(255,255,255,0.04)',
+                        borderColor: 'rgba(255,255,255,0.06)',
+                        color: 'rgba(255,255,255,0.68)'
+                      }}
+                      whileHover={{ 
+                        y: -1,
+                        background: 'rgba(255,255,255,0.08)', 
+                        color: 'rgba(255,255,255,0.88)',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                        transition: { duration: 0.12 }
+                      }}
+                      whileTap={{ 
+                        scale: 0.97, 
+                        y: 0.5,
+                        transition: { duration: 0.08 }
+                      }}
                       aria-label="Next Divergence"
                     >
-                      <ChevronRight className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors" strokeWidth={2} />
+                      <ChevronRight className="w-5 h-5" strokeWidth={2.2} />
                     </motion.button>
                     <motion.button
                       onClick={onClose}
-                      className="relative p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-all duration-300"
-                      whileHover={{ scale: 1.1, rotate: 90 }}
-                      whileTap={{ scale: 0.9 }}
+                      className="relative p-2 rounded-xl border backdrop-blur-sm"
+                      style={{
+                        background: 'rgba(255,255,255,0.04)',
+                        borderColor: 'rgba(255,255,255,0.06)',
+                        color: 'rgba(255,255,255,0.68)'
+                      }}
+                      whileHover={{ 
+                        y: -1,
+                        background: 'rgba(255,255,255,0.08)', 
+                        color: 'rgba(255,255,255,0.88)',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                        transition: { duration: 0.12 }
+                      }}
+                      whileTap={{ 
+                        scale: 0.97, 
+                        y: 0.5,
+                        transition: { duration: 0.08 }
+                      }}
                     >
-                      <X className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors" strokeWidth={2} />
+                      <X className="w-5 h-5" strokeWidth={2.2} />
                     </motion.button>
                   </div>
                 </div>
