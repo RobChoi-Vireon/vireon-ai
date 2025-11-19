@@ -1258,67 +1258,149 @@ export default function DigestHeader({
             animate={{ opacity: isLoaded ? 1 : 0, x: isLoaded ? 0 : 20 }}
             transition={{ duration: 0.4, delay: 1.3, ease: [0.22, 0.61, 0.36, 1] }}
           >
-            {/* Date Container — Refined OS Horizon Glass */}
+            {/* OS Horizon V4 Liquid-Glass Analysis Date Capsule */}
             <motion.div
-              className="date-glass flex flex-col items-end rounded-[20px] relative"
+              className="date-glass flex flex-col items-end rounded-[30px] relative overflow-hidden"
               style={{
-                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.035) 100%)',
-                backdropFilter: 'blur(32px) saturate(165%)',
-                WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-                border: 'none',
+                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.030) 100%)',
+                backdropFilter: 'blur(36px) saturate(168%)',
+                WebkitBackdropFilter: 'blur(36px) saturate(168%)',
+                border: '1px solid rgba(255,255,255,0.08)',
                 boxShadow: `
-                  0 4px 28px rgba(0,0,0,0.08),
-                  0 0 18px rgba(0,0,0,0.04),
-                  inset 0 1px 1.5px rgba(255,255,255,0.05)
+                  0 4px 22px rgba(0,0,0,0.09),
+                  inset 0 1.5px 0 rgba(255,255,255,0.06),
+                  inset 0 -1px 1px rgba(0,0,0,0.04)
                 `,
-                padding: '18px 20px'
+                padding: '20px 22px'
+              }}
+              animate={{
+                opacity: [1, 0.97, 1]
+              }}
+              transition={{
+                opacity: { duration: 5.5, repeat: Infinity, ease: "easeInOut" }
               }}
               whileHover={shouldReduceMotion ? {} : {
-                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.045) 100%)',
+                scale: 1.01,
+                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.050) 0%, rgba(255, 255, 255, 0.038) 100%)',
                 boxShadow: `
-                  0 6px 28px rgba(0,0,0,0.10),
-                  0 0 22px rgba(115, 230, 210, 0.03),
-                  inset 0 1px 2px rgba(255,255,255,0.07)
+                  0 5px 24px rgba(0,0,0,0.11),
+                  inset 0 1.5px 0 rgba(255,255,255,0.08),
+                  inset 0 -1px 1px rgba(0,0,0,0.04)
                 `,
-                transition: { duration: 0.18, ease: HORIZON_EASE }
+                transition: { type: "spring", stiffness: 290, damping: 28 }
               }}
-              transition={{ duration: 0.18, ease: HORIZON_EASE }}
             >
+              {/* Subsurface top gradient +4% white */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '45%',
+                background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 100%)',
+                borderRadius: '30px 30px 0 0',
+                pointerEvents: 'none'
+              }} />
+
+              {/* Bottom gradient +6% ultramarine */}
+              <div style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: '45%',
+                background: 'linear-gradient(0deg, rgba(90, 120, 180, 0.06) 0%, transparent 100%)',
+                borderRadius: '0 0 30px 30px',
+                pointerEvents: 'none'
+              }} />
+
+              {/* Micro-grain texture */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+                opacity: 0.012,
+                mixBlendMode: 'overlay',
+                borderRadius: '30px',
+                pointerEvents: 'none'
+              }} />
+
               {/* Inner Top Highlight */}
               <div style={{
                 position: 'absolute',
                 top: 0,
-                left: '18%',
-                right: '18%',
-                height: '1.5px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)',
+                left: '16%',
+                right: '16%',
+                height: '2px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
                 filter: 'blur(0.8px)',
                 pointerEvents: 'none'
               }} />
 
-              <label className="text-[11px] font-medium uppercase tracking-wide" style={{ color: 'rgba(255,255,255,0.60)', letterSpacing: '0.05em', marginBottom: '8px' }}>
+              {/* Soft internal glow */}
+              <div style={{
+                position: 'absolute',
+                top: '20%',
+                left: '20%',
+                right: '20%',
+                height: '30%',
+                background: 'radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 70%)',
+                filter: 'blur(8px)',
+                pointerEvents: 'none'
+              }} />
+
+              <label 
+                className="text-[10px] font-semibold uppercase tracking-wider relative z-10" 
+                style={{ 
+                  color: 'rgba(255,255,255,0.60)', 
+                  letterSpacing: '0.08em', 
+                  marginBottom: '10px'
+                }}
+              >
                 Analysis Date
               </label>
-              <input
-                type="date"
-                value={targetDate}
-                onChange={(e) => setTargetDate(e.target.value)}
-                disabled={isLoading}
-                className="horizon-date-input text-sm rounded-lg border-none outline-none transition-all"
+
+              {/* Date Input in Glass Pocket */}
+              <div 
+                className="relative rounded-[14px] overflow-hidden"
                 style={{
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  color: 'rgba(255, 255, 255, 0.94)',
-                  colorScheme: 'dark',
-                  padding: '8px 12px',
-                  fontWeight: 500
+                  background: 'rgba(255, 255, 255, 0.06)',
+                  border: '1px solid rgba(255,255,255,0.06)',
+                  boxShadow: 'inset 0 1.5px 3px rgba(0,0,0,0.10), inset 0 0 8px rgba(0,0,0,0.04)'
                 }}
-              />
+              >
+                <input
+                  type="date"
+                  value={targetDate}
+                  onChange={(e) => setTargetDate(e.target.value)}
+                  disabled={isLoading}
+                  className="horizon-date-input text-sm border-none outline-none w-full transition-all"
+                  style={{
+                    background: 'transparent',
+                    color: 'rgba(255, 255, 255, 0.94)',
+                    colorScheme: 'dark',
+                    padding: '10px 14px',
+                    fontWeight: 500
+                  }}
+                />
+              </div>
             </motion.div>
 
-            {/* Control Tiles — Unified Vertical Glass Stack */}
+            {/* OS Horizon V4 Matte-Silk Floating Buttons */}
             <motion.div
-              className="flex flex-col gap-2.5"
+              className="flex flex-col gap-3 relative"
+              style={{ marginTop: '8px' }}
             >
+              {/* Faint cursor proximity halo */}
+              <div style={{
+                position: 'absolute',
+                inset: '-12px',
+                background: 'radial-gradient(circle at 50% 50%, rgba(110, 180, 255, 0.02) 0%, transparent 70%)',
+                filter: 'blur(12px)',
+                pointerEvents: 'none',
+                opacity: 0.5
+              }} />
+
               <TooltipProvider>
                 {[
                   { icon: Calendar, label: "Set analysis date" },
@@ -1328,50 +1410,91 @@ export default function DigestHeader({
                   <Tooltip key={idx}>
                     <TooltipTrigger asChild>
                       <motion.button
-                        className="horizon-control-tile w-full flex items-center justify-center rounded-[18px] relative"
+                        className="horizon-control-tile w-full flex items-center justify-center rounded-[25px] relative overflow-hidden"
                         style={{
-                          height: '42px',
-                          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.035) 100%)',
+                          height: '44px',
+                          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.12) 100%)',
                           backdropFilter: 'blur(32px) saturate(165%)',
                           WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-                          border: 'none',
+                          border: '1px solid rgba(255,255,255,0.08)',
                           boxShadow: `
-                            0 4px 28px rgba(0,0,0,0.08),
-                            0 0 18px rgba(0,0,0,0.04),
-                            inset 0 1px 1.5px rgba(255,255,255,0.05)
+                            0 3px 16px rgba(0,0,0,0.08),
+                            inset 0 1.5px 0 rgba(255,255,255,0.06),
+                            inset 0 -1px 1px rgba(0,0,0,0.04)
                           `
+                        }}
+                        animate={{
+                          opacity: [1, 0.97, 1]
+                        }}
+                        transition={{
+                          opacity: { duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: idx * 0.3 }
                         }}
                         whileHover={{
-                          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.045) 100%)',
+                          y: -2,
+                          scale: 1.03,
+                          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.14) 100%)',
                           boxShadow: `
-                            0 6px 28px rgba(0,0,0,0.10),
-                            0 0 22px rgba(110, 180, 255, 0.03),
-                            inset 0 1px 2px rgba(255,255,255,0.07)
-                          `
+                            0 6px 24px rgba(0,0,0,0.11),
+                            inset 0 1.5px 0 rgba(255,255,255,0.09),
+                            inset 0 -1px 1px rgba(0,0,0,0.04),
+                            0 0 18px rgba(110, 180, 255, 0.04)
+                          `,
+                          transition: { type: "spring", stiffness: 290, damping: 28, mass: 1 }
                         }}
                         whileTap={{
-                          y: 1,
+                          y: 2,
+                          scale: 0.98,
+                          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.08) 100%)',
                           boxShadow: `
-                            0 2px 14px rgba(0,0,0,0.06),
-                            inset 0 1.5px 3px rgba(0,0,0,0.08)
-                          `
+                            0 1px 8px rgba(0,0,0,0.06),
+                            inset 0 2px 4px rgba(0,0,0,0.10)
+                          `,
+                          transition: { duration: 0.13, ease: [0.26, 0.11, 0.26, 1.0] }
                         }}
-                        transition={{ duration: 0.18, ease: HORIZON_EASE }}
                         aria-label={item.label}
                       >
-                        {/* Inner Top Highlight */}
+                        {/* Subsurface top gradient */}
                         <div style={{
                           position: 'absolute',
                           top: 0,
-                          left: '16%',
-                          right: '16%',
-                          height: '1px',
-                          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)',
-                          filter: 'blur(0.6px)',
+                          left: '18%',
+                          right: '18%',
+                          height: '1.5px',
+                          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+                          filter: 'blur(0.7px)',
                           pointerEvents: 'none'
                         }} />
 
-                        <item.icon className="w-4 h-4" style={{ color: '#9BA3B0', strokeWidth: 2.0, filter: 'brightness(1.03)', opacity: 0.94 }} />
+                        {/* Refractive shimmer on hover */}
+                        <motion.div
+                          className="absolute inset-0 pointer-events-none"
+                          style={{
+                            background: 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.03) 50%, transparent 100%)',
+                            borderRadius: '25px'
+                          }}
+                          initial={{ x: '-110%', opacity: 0 }}
+                          whileHover={{ x: '110%', opacity: [0, 0.06, 0] }}
+                          transition={{ duration: 0.9, ease: 'easeInOut' }}
+                        />
+
+                        <motion.div
+                          animate={{
+                            scale: 1,
+                            filter: 'brightness(1.02)'
+                          }}
+                          whileHover={{
+                            filter: 'brightness(1.08) drop-shadow(0 0 6px rgba(110, 180, 255, 0.16))'
+                          }}
+                          transition={{ type: "spring", stiffness: 300, damping: 28 }}
+                        >
+                          <item.icon 
+                            className="w-4 h-4 relative z-10" 
+                            style={{ 
+                              color: 'rgba(180, 190, 205, 0.68)', 
+                              strokeWidth: 2.1
+                            }} 
+                          />
+                        </motion.div>
                       </motion.button>
                     </TooltipTrigger>
                     <TooltipContent>{item.label}</TooltipContent>
@@ -1432,33 +1555,33 @@ export default function DigestHeader({
 
         .horizon-date-input:focus {
           background: rgba(255, 255, 255, 0.08) !important;
-          box-shadow: 0 0 0 2px rgba(125, 182, 255, 0.5), 0 4px 12px rgba(125, 182, 255, 0.2);
-          transition: all 0.16s var(--ease-horizon);
+          box-shadow: 0 0 0 1.5px rgba(110, 180, 255, 0.32);
+          transition: all 0.18s var(--ease-horizon);
+        }
+
+        .horizon-date-input:hover {
+          background: rgba(255, 255, 255, 0.08) !important;
         }
         
         /* Depth Field Shadow Fade - Seamless Integration */
+        /* OS Horizon V4 Analysis Panel Atmosphere */
         .date-glass {
           position: relative;
         }
-        
-        .date-glass::after {
+
+        .date-glass::before {
           content: '';
           position: absolute;
-          inset: -10px;
-          border-radius: 16px;
-          background: radial-gradient(
-            ellipse 120% 120% at 50% 50%, 
-            rgba(0, 0, 0, 0.15) 0%, 
-            transparent 60%
+          inset: -16px;
+          border-radius: 32px;
+          background: linear-gradient(
+            180deg, 
+            rgba(13, 15, 18, 0.04) 0%, 
+            rgba(21, 27, 34, 0.05) 100%
           );
           z-index: -1;
           pointer-events: none;
-          opacity: 0.5;
-          transition: opacity 0.6s var(--ease-depth-breathe);
-        }
-        
-        .date-glass:hover::after {
-          opacity: 0.7;
+          opacity: 1;
         }
 
         /* Arc Segment Focus Enhancement */
