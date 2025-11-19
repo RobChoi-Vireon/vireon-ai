@@ -125,62 +125,210 @@ const NavLink = ({ href, icon: Icon, title, isActive }) => (
   </Link>
 );
 
-const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNotification = false, className = "" }) => (
-  <motion.button
-    onClick={onClick}
-    className={`relative rounded-[24px] flex items-center justify-center group ${className}`}
-    style={{
-      width: '44px',
-      height: '44px',
-      padding: '12px',
-      background: isActive
-        ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.095) 0%, rgba(255, 255, 255, 0.072) 100%)'
-        : 'linear-gradient(180deg, rgba(255, 255, 255, 0.068) 0%, rgba(255, 255, 255, 0.048) 100%)',
-      backdropFilter: 'blur(48px) saturate(175%)',
-      WebkitBackdropFilter: 'blur(48px) saturate(175%)',
-      border: '1px solid rgba(255,255,255,0.08)',
-      boxShadow: isActive
-        ? `
-          0 4px 20px rgba(0,0,0,0.07),
-          inset 0 1.5px 0 rgba(255,255,255,0.10),
-          inset 0 0 22px rgba(110, 180, 255, 0.05)
-        `
-        : `
-          0 4px 20px rgba(0,0,0,0.06),
-          inset 0 1px 0 rgba(255,255,255,0.06)
-        `
-    }}
-    whileHover={{
-      background: isActive
-        ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.108) 0%, rgba(255, 255, 255, 0.085) 100%)'
-        : 'linear-gradient(180deg, rgba(255, 255, 255, 0.082) 0%, rgba(255, 255, 255, 0.062) 100%)',
-      boxShadow: isActive
-        ? `
-          0 6px 24px rgba(0,0,0,0.08),
-          inset 0 1.5px 0 rgba(255,255,255,0.12),
-          inset 0 0 26px rgba(110, 180, 255, 0.06)
-        `
-        : `
-          0 6px 22px rgba(0,0,0,0.07),
-          inset 0 1px 0 rgba(255,255,255,0.08)
-        `
-    }}
-    whileTap={{ 
-      scale: 0.96,
-      boxShadow: isActive
-        ? `
-          0 2px 12px rgba(0,0,0,0.05),
-          inset 0 2px 4px rgba(0,0,0,0.06),
-          inset 0 0 18px rgba(110, 180, 255, 0.04)
-        `
-        : `
-          0 2px 10px rgba(0,0,0,0.04),
-          inset 0 1.5px 3px rgba(0,0,0,0.05)
-        `
-    }}
-    transition={{ duration: 0.18, ease: HORIZON_EASE }}
-    aria-label={label}
-  >
+const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNotification = false, className = "" }) => {
+  const [isFocused, setIsFocused] = React.useState(false);
+
+  return (
+    <motion.button
+      onClick={onClick}
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setIsFocused(false)}
+      className={`relative rounded-[24px] flex items-center justify-center group ${className}`}
+      style={{
+        width: '44px',
+        height: '44px',
+        padding: '12px',
+        background: isActive
+          ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.105) 0%, rgba(255, 255, 255, 0.082) 100%)'
+          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.078) 0%, rgba(255, 255, 255, 0.058) 100%)',
+        backdropFilter: 'blur(48px) saturate(175%)',
+        WebkitBackdropFilter: 'blur(48px) saturate(175%)',
+        border: '1px solid rgba(255,255,255,0.10)',
+        boxShadow: isActive
+          ? `
+            0 3px 16px rgba(0,0,0,0.05),
+            inset 0 1.5px 0 rgba(255,255,255,0.12),
+            inset 0 0 22px rgba(110, 180, 255, 0.06)
+          `
+          : `
+            0 3px 16px rgba(0,0,0,0.04),
+            inset 0 1px 0 rgba(255,255,255,0.08)
+          `
+      }}
+      whileHover={{
+        scale: 1.02,
+        background: isActive
+          ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.118) 0%, rgba(255, 255, 255, 0.095) 100%)'
+          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.092) 0%, rgba(255, 255, 255, 0.072) 100%)',
+        boxShadow: isActive
+          ? `
+            0 5px 20px rgba(0,0,0,0.06),
+            inset 0 1.5px 0 rgba(255,255,255,0.14),
+            inset 0 0 26px rgba(110, 180, 255, 0.07)
+          `
+          : `
+            0 5px 20px rgba(0,0,0,0.05),
+            inset 0 1px 0 rgba(255,255,255,0.10)
+          `,
+        transition: { duration: 0.18, ease: [0.25, 0.46, 0.45, 0.94] }
+      }}
+      whileTap={{ 
+        scale: 0.97,
+        background: isActive
+          ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.055) 100%)'
+          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.038) 100%)',
+        boxShadow: isActive
+          ? `
+            0 1px 8px rgba(0,0,0,0.04),
+            inset 0 2px 4px rgba(0,0,0,0.08),
+            inset 0 0 18px rgba(110, 180, 255, 0.04)
+          `
+          : `
+            0 1px 8px rgba(0,0,0,0.03),
+            inset 0 1.5px 3px rgba(0,0,0,0.06)
+          `,
+        transition: { duration: 0.12, ease: [0.42, 0, 0.58, 1] }
+      }}
+      aria-label={label}
+    >
+      {/* Focus Ring */}
+      <AnimatePresence>
+        {isFocused && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            style={{
+              position: 'absolute',
+              inset: '-4px',
+              borderRadius: '28px',
+              background: 'radial-gradient(circle, rgba(77, 143, 251, 0.10) 0%, transparent 70%)',
+              filter: 'blur(5px)',
+              pointerEvents: 'none'
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Edge Refraction Highlight */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '12%',
+        right: '12%',
+        height: '1.5px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+        pointerEvents: 'none',
+        filter: 'blur(0.5px)'
+      }} />
+
+      {/* Subtle Internal Haze */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: 'radial-gradient(ellipse at 50% 20%, rgba(255, 255, 255, 0.07) 0%, transparent 70%)',
+        borderRadius: '24px',
+        pointerEvents: 'none',
+        opacity: 0.5
+      }} />
+
+      {/* Active State Ambient Glow */}
+      {isActive && (
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'radial-gradient(ellipse at 50% 35%, rgba(110, 180, 255, 0.07) 0%, transparent 75%)',
+          borderRadius: '24px',
+          pointerEvents: 'none'
+        }} />
+      )}
+
+      {/* Photonic Icon with Inner Light */}
+      <div className="relative z-10 flex items-center justify-center">
+        <div style={{
+          position: 'absolute',
+          inset: '-3px',
+          background: isActive 
+            ? 'radial-gradient(circle, rgba(110, 180, 255, 0.04) 0%, transparent 65%)'
+            : 'radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 65%)',
+          pointerEvents: 'none'
+        }} />
+
+        <Icon 
+          className="w-5 h-5 relative" 
+          style={{ 
+            color: isActive ? '#D2E3FF' : '#B2BDC7',
+            strokeWidth: 2.0,
+            filter: isActive 
+              ? 'drop-shadow(0 0 8px rgba(110, 180, 255, 0.32)) brightness(1.10)'
+              : 'brightness(1.06)',
+            opacity: isActive ? 1 : 0.98
+          }} 
+        />
+      </div>
+
+      {/* OS Horizon Photonic Badge */}
+      {hasNotification && (
+        <motion.div
+          className="absolute"
+          style={{
+            top: '-2px',
+            right: '-2px',
+            width: '9px',
+            height: '9px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, rgba(138, 100, 223, 0.92) 0%, rgba(108, 80, 200, 0.88) 100%)',
+            border: '0.5px solid rgba(0, 0, 0, 0.16)'
+          }}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ 
+            scale: 1, 
+            opacity: [0.88, 1, 0.88]
+          }}
+          transition={{ 
+            scale: { duration: 0.32, ease: HORIZON_EASE },
+            opacity: { duration: 1.8, repeat: Infinity, ease: "easeInOut" }
+          }}
+        >
+          {/* Inner Photonic Core */}
+          <div style={{
+            position: 'absolute',
+            top: '0.5px',
+            left: '0.5px',
+            width: '2px',
+            height: '2px',
+            borderRadius: '50%',
+            background: 'rgba(255,255,255,0.50)',
+            filter: 'blur(0.5px)',
+            pointerEvents: 'none'
+          }} />
+
+          {/* Breathing Outer Bloom */}
+          <motion.div 
+            style={{
+              position: 'absolute',
+              inset: '-4px',
+              background: 'radial-gradient(circle, rgba(138, 100, 223, 0.30) 0%, transparent 75%)',
+              borderRadius: '50%',
+              filter: 'blur(5px)',
+              pointerEvents: 'none'
+            }}
+            animate={{
+              opacity: [0.20, 0.35, 0.20],
+              scale: [1.0, 1.05, 1.0]
+            }}
+            transition={{
+              duration: 1.8,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+        </motion.div>
+      )}
+    </motion.button>
+  );
+};
     {/* Edge Refraction Highlight */}
     <div style={{
       position: 'absolute',
@@ -854,16 +1002,16 @@ function LayoutContent({ children, currentPageName }) {
               style={{
                 top: '18px',
                 right: '20px',
-                padding: '11px 18px',
-                background: 'linear-gradient(180deg, rgba(28, 32, 38, 0.86) 0%, rgba(22, 26, 32, 0.82) 100%)',
-                backdropFilter: 'blur(52px) saturate(180%)',
-                WebkitBackdropFilter: 'blur(52px) saturate(180%)',
+                padding: '16px 20px',
+                background: 'linear-gradient(180deg, rgba(35, 40, 48, 0.78) 0%, rgba(28, 33, 40, 0.74) 100%)',
+                backdropFilter: 'blur(56px) saturate(185%)',
+                WebkitBackdropFilter: 'blur(56px) saturate(185%)',
                 borderRadius: '44px',
-                border: '1px solid rgba(255,255,255,0.10)',
+                border: '1px solid rgba(255,255,255,0.12)',
                 boxShadow: `
-                  inset 0 1.5px 0 rgba(255,255,255,0.08),
-                  inset 0 -1px 0 rgba(0,0,0,0.12),
-                  0 6px 24px rgba(0,0,0,0.08)
+                  inset 0 1.5px 0 rgba(255,255,255,0.10),
+                  inset 0 -1px 0 rgba(0,0,0,0.10),
+                  0 5px 20px rgba(0,0,0,0.06)
                 `
               }}
             >
