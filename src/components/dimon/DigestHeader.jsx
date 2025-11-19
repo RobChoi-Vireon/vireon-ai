@@ -574,7 +574,7 @@ export default function DigestHeader({
       transition={{ duration: 0.26, ease: [0.22, 0.61, 0.36, 1] }}
       onMouseEnter={handlePointerEnter}
       onMouseLeave={handlePointerLeave}
-      className="halo-spectrum-header sticky top-0 z-30 overflow-hidden mb-12"
+      className="halo-spectrum-header overflow-hidden mb-12"
       style={{
         borderRadius: '28px',
         border: '1px solid rgba(255, 255, 255, 0.06)',

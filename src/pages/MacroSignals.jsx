@@ -600,15 +600,14 @@ export default function MacroSignalsPage() {
         />
       </div>
 
-      <DigestHeader 
-        targetDate={targetDate}
-        setTargetDate={setTargetDate}
-        isLoading={isLoading}
-        sentimentFlow={digest?.sentiment_flow}
-        insightLine={digest?.insight_line}
-      />
-
-      <main className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <main className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-10 pb-8 md:pb-12">
+        <DigestHeader 
+          targetDate={targetDate}
+          setTargetDate={setTargetDate}
+          isLoading={isLoading}
+          sentimentFlow={digest?.sentiment_flow}
+          insightLine={digest?.insight_line}
+        />
         <RetryWrapper 
           error={error} 
           isLoading={isLoading} 
