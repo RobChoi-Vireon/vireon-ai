@@ -193,11 +193,15 @@ export default function MacroInsightCapsule({
               position: 'relative',
               width: '280px',
               borderRadius: '18px',
-              background: 'rgba(20, 20, 20, 0.55)',
-              backdropFilter: 'blur(18px)',
-              WebkitBackdropFilter: 'blur(18px)',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
-              boxShadow: '0px 8px 40px rgba(0, 0, 0, 0.25)',
+              background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.035) 100%)',
+              backdropFilter: 'blur(32px) saturate(165%)',
+              WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+              border: '1px solid rgba(255, 255, 255, 0.06)',
+              boxShadow: `
+                0 4px 28px rgba(0,0,0,0.10),
+                0 0 20px rgba(0,0,0,0.05),
+                inset 0 1px 1.5px rgba(255,255,255,0.05)
+              `,
               padding: '20px',
               cursor: 'pointer',
               overflow: 'hidden',
@@ -205,7 +209,12 @@ export default function MacroInsightCapsule({
             }}
             whileHover={shouldReduceMotion ? {} : {
               y: -2,
-              boxShadow: '0px 12px 48px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.16)',
+              background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.045) 100%)',
+              boxShadow: `
+                0 6px 32px rgba(0,0,0,0.12),
+                0 0 24px rgba(110, 180, 255, 0.04),
+                inset 0 1px 2px rgba(255,255,255,0.07)
+              `,
               transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }
             }}
             whileTap={shouldReduceMotion ? {} : {
@@ -223,17 +232,29 @@ export default function MacroInsightCapsule({
               }
             }}
           >
-            {/* Gradient Border Overlay */}
+            {/* Inner Top Highlight */}
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: '18%',
+              right: '18%',
+              height: '1.5px',
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)',
+              filter: 'blur(0.8px)',
+              pointerEvents: 'none'
+            }} />
+
+            {/* Subtle Edge Glow */}
             <motion.div
               className="absolute inset-0 pointer-events-none"
               style={{
                 borderRadius: '18px',
-                background: 'linear-gradient(135deg, rgba(115, 230, 210, 0.12) 0%, rgba(236, 165, 255, 0.12) 100%)',
-                opacity: 0.5,
+                background: 'radial-gradient(ellipse at 50% 30%, rgba(110, 180, 255, 0.04) 0%, transparent 70%)',
+                opacity: 0.4,
                 mixBlendMode: 'screen'
               }}
               animate={shouldReduceMotion ? {} : {
-                opacity: showPulse ? [0.5, 1, 0.5] : 0.5
+                opacity: showPulse ? [0.4, 0.7, 0.4] : 0.4
               }}
               transition={showPulse ? {
                 duration: 1.2,
@@ -265,7 +286,7 @@ export default function MacroInsightCapsule({
 
             {/* Content */}
             <div className="relative z-10">
-              {/* Label */}
+              {/* Label — Enhanced Brightness */}
               <motion.div 
                 className="flex items-center gap-2 mb-3"
                 animate={{
@@ -276,7 +297,9 @@ export default function MacroInsightCapsule({
                   className="w-4 h-4" 
                   style={{ 
                     color: '#73E6D2',
-                    opacity: 0.9
+                    opacity: 0.95,
+                    strokeWidth: 2.0,
+                    filter: 'brightness(1.08)'
                   }}
                 />
                 <span
@@ -284,8 +307,8 @@ export default function MacroInsightCapsule({
                     fontFamily: 'Inter, system-ui, sans-serif',
                     fontSize: '13px',
                     fontWeight: 600,
-                    color: '#A9ACB2',
-                    letterSpacing: '0.02em',
+                    color: 'rgba(255,255,255,0.80)',
+                    letterSpacing: '0.04em',
                     textTransform: 'uppercase'
                   }}
                 >
