@@ -127,12 +127,34 @@ const NavLink = ({ href, icon: Icon, title, isActive }) => (
 
 const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNotification = false, className = "" }) => {
   const [isFocused, setIsFocused] = React.useState(false);
+  const [isHovered, setIsHovered] = React.useState(false);
+  const [showSweep, setShowSweep] = React.useState(false);
+  const sweepTimeoutRef = React.useRef(null);
+
+  const handleHoverStart = () => {
+    setIsHovered(true);
+    sweepTimeoutRef.current = setTimeout(() => setShowSweep(true), 350);
+  };
+
+  const handleHoverEnd = () => {
+    setIsHovered(false);
+    setShowSweep(false);
+    if (sweepTimeoutRef.current) clearTimeout(sweepTimeoutRef.current);
+  };
+
+  React.useEffect(() => {
+    return () => {
+      if (sweepTimeoutRef.current) clearTimeout(sweepTimeoutRef.current);
+    };
+  }, []);
 
   return (
     <motion.button
       onClick={onClick}
       onFocus={() => setIsFocused(true)}
       onBlur={() => setIsFocused(false)}
+      onMouseEnter={handleHoverStart}
+      onMouseLeave={handleHoverEnd}
       className={`relative rounded-[24px] flex items-center justify-center group ${className}`}
       style={{
         width: '44px',
@@ -156,38 +178,43 @@ const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNoti
           `
       }}
       whileHover={{
-        scale: 1.02,
+        width: '47px',
+        height: '47px',
+        backdropFilter: 'blur(52px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(52px) saturate(180%)',
         background: isActive
-          ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.118) 0%, rgba(255, 255, 255, 0.095) 100%)'
-          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.092) 0%, rgba(255, 255, 255, 0.072) 100%)',
+          ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.10) 100%)'
+          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.11) 0%, rgba(255, 255, 255, 0.08) 100%)',
         boxShadow: isActive
           ? `
-            0 5px 20px rgba(0,0,0,0.06),
-            inset 0 1.5px 0 rgba(255,255,255,0.14),
-            inset 0 0 26px rgba(110, 180, 255, 0.07)
+            0 6px 22px rgba(0,0,0,0.08),
+            inset 0 2px 0 rgba(255,255,255,0.16),
+            inset 0 0 28px rgba(110, 180, 255, 0.09)
           `
           : `
-            0 5px 20px rgba(0,0,0,0.05),
-            inset 0 1px 0 rgba(255,255,255,0.10)
+            0 6px 22px rgba(0,0,0,0.07),
+            inset 0 1.5px 0 rgba(255,255,255,0.12)
           `,
-        transition: { duration: 0.18, ease: [0.25, 0.46, 0.45, 0.94] }
+        transition: { duration: 0.12, ease: [0.25, 0.8, 0.25, 1] }
       }}
       whileTap={{ 
-        scale: 0.97,
+        width: '43px',
+        height: '43px',
+        y: 1.5,
         background: isActive
-          ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.055) 100%)'
-          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.038) 100%)',
+          ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.06) 100%)'
+          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.04) 100%)',
         boxShadow: isActive
           ? `
-            0 1px 8px rgba(0,0,0,0.04),
-            inset 0 2px 4px rgba(0,0,0,0.08),
-            inset 0 0 18px rgba(110, 180, 255, 0.04)
+            0 1px 6px rgba(0,0,0,0.04),
+            inset 0 2px 5px rgba(0,0,0,0.12),
+            inset 0 0 20px rgba(110, 180, 255, 0.05)
           `
           : `
-            0 1px 8px rgba(0,0,0,0.03),
-            inset 0 1.5px 3px rgba(0,0,0,0.06)
+            0 1px 6px rgba(0,0,0,0.03),
+            inset 0 2px 4px rgba(0,0,0,0.10)
           `,
-        transition: { duration: 0.12, ease: [0.42, 0, 0.58, 1] }
+        transition: { duration: 0.09, ease: [0.2, 0.7, 0.4, 1] }
       }}
       aria-label={label}
     >
@@ -211,27 +238,51 @@ const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNoti
         )}
       </AnimatePresence>
 
-      {/* Edge Refraction Highlight */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: '12%',
-        right: '12%',
-        height: '1.5px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
-        pointerEvents: 'none',
-        filter: 'blur(0.5px)'
-      }} />
+      {/* Specular Highlight - shifts on hover */}
+      <motion.div 
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: '12%',
+          right: '12%',
+          height: '1.5px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+          pointerEvents: 'none',
+          filter: 'blur(0.5px)'
+        }}
+        animate={isHovered ? { y: 1 } : { y: 0 }}
+        transition={{ duration: 0.14, ease: [0.25, 0.8, 0.25, 1] }}
+      />
 
-      {/* Subtle Internal Haze */}
-      <div style={{
-        position: 'absolute',
-        inset: 0,
-        background: 'radial-gradient(ellipse at 50% 20%, rgba(255, 255, 255, 0.07) 0%, transparent 70%)',
-        borderRadius: '24px',
-        pointerEvents: 'none',
-        opacity: 0.5
-      }} />
+      {/* Internal Haze */}
+      <motion.div 
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'radial-gradient(ellipse at 50% 20%, rgba(255, 255, 255, 0.07) 0%, transparent 70%)',
+          borderRadius: '24px',
+          pointerEvents: 'none',
+          opacity: 0.5
+        }}
+        animate={isHovered ? { opacity: 0.62 } : { opacity: 0.5 }}
+        transition={{ duration: 0.12 }}
+      />
+
+      {/* Luminance Sweep - Tahoe Spotlight */}
+      <AnimatePresence>
+        {showSweep && (
+          <motion.div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%)',
+              borderRadius: '24px'
+            }}
+            initial={{ x: '-100%', opacity: 0 }}
+            animate={{ x: '100%', opacity: [0, 0.06, 0] }}
+            transition={{ duration: 0.75, ease: 'easeInOut' }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Active State Ambient Glow */}
       {isActive && (
@@ -244,8 +295,12 @@ const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNoti
         }} />
       )}
 
-      {/* Photonic Icon with Inner Light */}
-      <div className="relative z-10 flex items-center justify-center">
+      {/* Icon with Micro-Parallax Drift */}
+      <motion.div 
+        className="relative z-10 flex items-center justify-center"
+        animate={isHovered ? { y: -0.75 } : { y: 0 }}
+        transition={{ duration: 0.14, ease: 'easeOut' }}
+      >
         <div style={{
           position: 'absolute',
           inset: '-3px',
@@ -255,20 +310,30 @@ const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNoti
           pointerEvents: 'none'
         }} />
 
-        <Icon 
-          className="w-5 h-5 relative" 
-          style={{ 
-            color: isActive ? '#D2E3FF' : '#B2BDC7',
-            strokeWidth: 2.0,
+        <motion.div
+          animate={isHovered ? { 
+            filter: isActive 
+              ? 'drop-shadow(0 0 10px rgba(110, 180, 255, 0.38)) brightness(1.13)'
+              : 'brightness(1.09)'
+          } : {
             filter: isActive 
               ? 'drop-shadow(0 0 8px rgba(110, 180, 255, 0.32)) brightness(1.10)'
-              : 'brightness(1.06)',
-            opacity: isActive ? 1 : 0.98
-          }} 
-        />
-      </div>
+              : 'brightness(1.06)'
+          }}
+          transition={{ duration: 0.12 }}
+        >
+          <Icon 
+            className="w-5 h-5 relative" 
+            style={{ 
+              color: isActive ? '#D2E3FF' : '#B2BDC7',
+              strokeWidth: 2.0,
+              opacity: isActive ? 1 : 0.98
+            }} 
+          />
+        </motion.div>
+      </motion.div>
 
-      {/* OS Horizon Photonic Badge */}
+      {/* OS Horizon Photonic Badge with Kinetic Rebound */}
       {hasNotification && (
         <motion.div
           className="absolute"
@@ -279,16 +344,35 @@ const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNoti
             height: '9px',
             borderRadius: '50%',
             background: 'linear-gradient(135deg, rgba(138, 100, 223, 0.92) 0%, rgba(108, 80, 200, 0.88) 100%)',
-            border: '0.5px solid rgba(0, 0, 0, 0.16)'
+            border: '0.5px solid rgba(0, 0, 0, 0.16)',
+            boxShadow: '0 0 10px rgba(138, 100, 223, 0.35), inset 0 0.5px 1px rgba(255,255,255,0.24)'
           }}
           initial={{ scale: 0, opacity: 0 }}
-          animate={{ 
+          animate={isHovered ? {
+            scale: [0.85, 1.15, 1.0],
+            opacity: [0.88, 1, 0.88],
+            boxShadow: [
+              '0 0 10px rgba(138, 100, 223, 0.35), inset 0 0.5px 1px rgba(255,255,255,0.24)',
+              '0 0 16px rgba(138, 100, 223, 0.60), inset 0 0.5px 1px rgba(255,255,255,0.28)',
+              '0 0 12px rgba(138, 100, 223, 0.45), inset 0 0.5px 1px rgba(255,255,255,0.26)'
+            ]
+          } : { 
             scale: 1, 
-            opacity: [0.88, 1, 0.88]
+            opacity: [0.88, 1, 0.88],
+            boxShadow: [
+              '0 0 10px rgba(138, 100, 223, 0.35), inset 0 0.5px 1px rgba(255,255,255,0.24)',
+              '0 0 14px rgba(138, 100, 223, 0.42), inset 0 0.5px 1px rgba(255,255,255,0.26)',
+              '0 0 10px rgba(138, 100, 223, 0.35), inset 0 0.5px 1px rgba(255,255,255,0.24)'
+            ]
           }}
-          transition={{ 
+          transition={isHovered ? { 
+            scale: { type: "spring", stiffness: 480, damping: 26, mass: 0.18 },
+            opacity: { duration: 0.2 },
+            boxShadow: { duration: 0.2 }
+          } : { 
             scale: { duration: 0.32, ease: HORIZON_EASE },
-            opacity: { duration: 1.8, repeat: Infinity, ease: "easeInOut" }
+            opacity: { duration: 1.8, repeat: Infinity, ease: "easeInOut" },
+            boxShadow: { duration: 1.8, repeat: Infinity, ease: "easeInOut" }
           }}
         >
           {/* Inner Photonic Core */}
@@ -315,7 +399,7 @@ const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNoti
               pointerEvents: 'none'
             }}
             animate={{
-              opacity: [0.20, 0.35, 0.20],
+              opacity: isHovered ? [0.25, 0.60, 0.25] : [0.20, 0.35, 0.20],
               scale: [1.0, 1.05, 1.0]
             }}
             transition={{
@@ -884,8 +968,8 @@ function LayoutContent({ children, currentPageName }) {
           </aside>
 
           <div className="flex-1 flex flex-col overflow-hidden">
-            {/* OS Horizon V2 Top-Right HUD — Luminous Glass */}
-            <div 
+            {/* OS Horizon V2 Top-Right HUD — Luminous Glass with Cursor-Aware Drift */}
+            <motion.div 
               className="fixed z-[250] flex items-center"
               style={{
                 top: '18px',
@@ -901,6 +985,15 @@ function LayoutContent({ children, currentPageName }) {
                   inset 0 -1px 0 rgba(0,0,0,0.10),
                   0 5px 20px rgba(0,0,0,0.06)
                 `
+              }}
+              onMouseMove={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width;
+                const gradientAngle = 180 + (x - 0.5) * 2;
+                e.currentTarget.style.background = `linear-gradient(${gradientAngle}deg, rgba(35, 40, 48, 0.78) 0%, rgba(28, 33, 40, 0.74) 100%)`;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(180deg, rgba(35, 40, 48, 0.78) 0%, rgba(28, 33, 40, 0.74) 100%)';
               }}
             >
               {/* Refined Noise Haze */}
