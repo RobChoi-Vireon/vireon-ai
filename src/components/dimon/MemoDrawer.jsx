@@ -1,3 +1,4 @@
+
 // 🔒 DESIGN LOCKED — OS HORIZON V4.0
 // Last Updated: 2025-01-20
 // Do not modify visual design without explicit assignment
@@ -1304,10 +1305,9 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
             <div className="relative w-full max-h-[88vh]" style={{ overflow: 'hidden' }}>
               {/* HEADER */}
               <div
-                className="relative z-10 p-8 pb-6"
+                className="relative z-10 p-8 pb-4" // Changed pb-6 to pb-4
                 style={{
-                  borderBottom: 'none',
-                  boxShadow: '0 1px 0 rgba(0,0,0,0.02), inset 0 -1px 0 rgba(255,255,255,0.03)'
+                  borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
                 }}
               >
                 <div className="flex items-start justify-between gap-6 mb-4">
@@ -1355,102 +1355,91 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
                   </div>
 
                   {/* Navigation Controls */}
-                  <div className="drawer-controls flex items-center gap-1.5">
-                    <motion.button
+                  <div className="drawer-controls flex items-center gap-2">
+                    <button
                       onClick={() => onNavigate?.('prev')}
-                      className="p-2 rounded-xl"
+                      className="p-2.5 rounded-xl transition-all duration-180"
                       style={{
-                        background: 'rgba(255, 255, 255, 0.04)',
-                        border: '1px solid rgba(255, 255, 255, 0.06)',
-                        color: 'rgba(255,255,255,0.68)',
+                        background: 'rgba(255, 255, 255, 0.06)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        color: '#D7DBE0',
                       }}
-                      whileHover={{
-                        y: -1,
-                        background: 'rgba(255, 255, 255, 0.08)',
-                        color: 'rgba(255,255,255,0.88)',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                        transition: { duration: 0.12 }
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
+                        e.currentTarget.style.transform = 'scale(1.03)';
                       }}
-                      whileTap={{ 
-                        scale: 0.97, 
-                        y: 0.5,
-                        transition: { duration: 0.08 }
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                        e.currentTarget.style.transform = 'scale(1)';
                       }}
                       aria-label="Previous takeaway"
                     >
                       <ChevronLeft className="w-5 h-5" data-icon />
-                    </motion.button>
+                    </button>
 
-                    <motion.button
+                    <button
                       onClick={() => onNavigate?.('next')}
-                      className="p-2 rounded-xl"
+                      className="p-2.5 rounded-xl transition-all duration-180"
                       style={{
-                        background: 'rgba(255, 255, 255, 0.04)',
-                        border: '1px solid rgba(255, 255, 255, 0.06)',
-                        color: 'rgba(255,255,255,0.68)',
+                        background: 'rgba(255, 255, 255, 0.06)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        color: '#D7DBE0',
                       }}
-                      whileHover={{
-                        y: -1,
-                        background: 'rgba(255, 255, 255, 0.08)',
-                        color: 'rgba(255,255,255,0.88)',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                        transition: { duration: 0.12 }
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
+                        e.currentTarget.style.transform = 'scale(1.03)';
                       }}
-                      whileTap={{ 
-                        scale: 0.97, 
-                        y: 0.5,
-                        transition: { duration: 0.08 }
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                        e.currentTarget.style.transform = 'scale(1)';
                       }}
                       aria-label="Next takeaway"
                     >
                       <ChevronRight className="w-5 h-5" data-icon />
-                    </motion.button>
+                    </button>
 
-                    <motion.button
+                    <button
                       onClick={onClose}
-                      className="p-2 rounded-xl ml-2"
+                      className="p-2.5 rounded-xl ml-2 transition-all duration-180"
                       style={{
-                        background: 'rgba(255, 255, 255, 0.04)',
-                        border: '1px solid rgba(255, 255, 255, 0.06)',
-                        color: 'rgba(255,255,255,0.68)',
+                        background: 'rgba(255, 255, 255, 0.06)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        color: '#D7DBE0',
                       }}
-                      whileHover={{
-                        y: -1,
-                        background: 'rgba(255, 255, 255, 0.08)',
-                        color: 'rgba(255,255,255,0.88)',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                        transition: { duration: 0.12 }
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
+                        e.currentTarget.style.transform = 'scale(1.03)';
                       }}
-                      whileTap={{ 
-                        scale: 0.97, 
-                        y: 0.5,
-                        transition: { duration: 0.08 }
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                        e.currentTarget.style.transform = 'scale(1)';
                       }}
                       aria-label="Close"
                     >
-                      <X className="w-5 h-5" data-icon />
-                    </motion.button>
+                      <X className="w-6 h-6" data-icon />
+                    </button>
 
-                    <motion.button
+                    <button
                       onClick={() => setViewMode(prev => prev === 'detailed' ? 'simplified' : 'detailed')}
-                      className="toggle-chip px-3.5 py-1.5 rounded-xl ml-2 text-xs font-semibold"
+                      className={`toggle-chip p-2.5 rounded-xl ml-2 transition-all duration-${HORIZON.motion.dur.toggle}`}
                       style={{
-                        background: viewMode === 'detailed' ? 'rgba(94, 167, 255, 0.12)' : 'rgba(255, 255, 255, 0.04)',
-                        border: viewMode === 'detailed' ? '1px solid rgba(94, 167, 255, 0.24)' : '1px solid rgba(255, 255, 255, 0.06)',
-                        color: viewMode === 'detailed' ? 'rgba(160, 200, 255, 0.95)' : 'rgba(255,255,255,0.68)',
-                        boxShadow: viewMode === 'detailed' ? 'inset 0 1px 0 rgba(255,255,255,0.08), 0 0 12px rgba(94, 167, 255, 0.12)' : 'none'
+                        background: viewMode === 'detailed' ? 'rgba(94, 167, 255, 0.15)' : 'rgba(255, 255, 255, 0.06)',
+                        border: viewMode === 'detailed' ? '1px solid rgba(94, 167, 255, 0.30)' : '1px solid rgba(255, 255, 255, 0.08)',
+                        color: viewMode === 'detailed' ? '#5EA7FF' : '#D7DBE0',
+                        fontSize: 12,
+                        fontWeight: 600,
+                        padding: '8px 14px',
                       }}
-                      whileHover={{
-                        y: -1,
-                        background: viewMode === 'detailed' ? 'rgba(94, 167, 255, 0.18)' : 'rgba(255, 255, 255, 0.08)',
-                        boxShadow: viewMode === 'detailed' ? 'inset 0 1px 0 rgba(255,255,255,0.10), 0 0 16px rgba(94, 167, 255, 0.18)' : '0 2px 8px rgba(0,0,0,0.08)',
-                        transition: { duration: 0.12 }
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = viewMode === 'detailed' ? 'rgba(94, 167, 255, 0.20)' : 'rgba(255, 255, 255, 0.10)';
                       }}
-                      whileTap={{ scale: 0.97 }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = viewMode === 'detailed' ? 'rgba(94, 167, 255, 0.15)' : 'rgba(255, 255, 255, 0.06)';
+                      }}
                       aria-label={viewMode === 'detailed' ? 'Switch to simplified view' : 'Switch to detailed view'}
                     >
                       {viewMode === 'detailed' ? 'Simplified' : 'Detailed'}
-                    </motion.button>
+                    </button>
                   </div>
                 </div>
               </div>

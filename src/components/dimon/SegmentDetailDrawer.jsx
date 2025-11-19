@@ -973,9 +973,8 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
             className="relative p-6 flex-shrink-0" 
             style={{ 
               background: 'transparent',
-              paddingTop: '28px',
-              paddingBottom: '20px',
-              boxShadow: '0 1px 0 rgba(0,0,0,0.02), inset 0 -1px 0 rgba(255,255,255,0.03)',
+              paddingTop: '24px',
+              paddingBottom: '24px',
               zIndex: 3
             }}
             variants={{ hidden: { opacity: 0, y: -10 }, visible: { opacity: 1, y: 0 }}}
@@ -1035,74 +1034,59 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
               <div className="flex items-center space-x-1.5">
                 <motion.button
                   onClick={() => onNavigate('prev')}
-                  className="relative p-2 rounded-[14px] border backdrop-blur-sm"
+                  className="relative p-2.5 rounded-[14px] border backdrop-blur-sm"
                   style={{
-                    background: 'rgba(255,255,255,0.04)',
-                    borderColor: 'rgba(255,255,255,0.06)',
-                    color: 'rgba(255,255,255,0.68)'
+                    background: 'rgba(255,255,255,0.042)',
+                    borderColor: 'rgba(255,255,255,0.09)',
+                    opacity: 0.88
                   }}
                   whileHover={{ 
-                    y: -1,
+                    scale: 1.05, 
                     background: 'rgba(255,255,255,0.08)', 
-                    color: 'rgba(255,255,255,0.88)',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                    transition: { duration: 0.12 }
+                    opacity: 1,
+                    boxShadow: `0 0 12px ${theme.glowColor}`
                   }}
-                  whileTap={{ 
-                    scale: 0.97, 
-                    y: 0.5,
-                    transition: { duration: 0.08 }
-                  }}
+                  whileTap={{ scale: 0.96 }}
                   aria-label="Previous Segment"
                 >
-                  <ChevronLeft className="w-5 h-5" strokeWidth={2.2} />
+                  <ChevronLeft className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.74)' }} strokeWidth={2.2} />
                 </motion.button>
                 <motion.button
                   onClick={() => onNavigate('next')}
-                  className="relative p-2 rounded-[14px] border backdrop-blur-sm"
+                  className="relative p-2.5 rounded-[14px] border backdrop-blur-sm"
                   style={{
-                    background: 'rgba(255,255,255,0.04)',
-                    borderColor: 'rgba(255,255,255,0.06)',
-                    color: 'rgba(255,255,255,0.68)'
+                    background: 'rgba(255,255,255,0.042)',
+                    borderColor: 'rgba(255,255,255,0.09)',
+                    opacity: 0.88
                   }}
                   whileHover={{ 
-                    y: -1,
+                    scale: 1.05, 
                     background: 'rgba(255,255,255,0.08)', 
-                    color: 'rgba(255,255,255,0.88)',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                    transition: { duration: 0.12 }
+                    opacity: 1,
+                    boxShadow: `0 0 12px ${theme.glowColor}`
                   }}
-                  whileTap={{ 
-                    scale: 0.97, 
-                    y: 0.5,
-                    transition: { duration: 0.08 }
-                  }}
+                  whileTap={{ scale: 0.96 }}
                   aria-label="Next Segment"
                 >
-                  <ChevronRight className="w-5 h-5" strokeWidth={2.2} />
+                  <ChevronRight className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.74)' }} strokeWidth={2.2} />
                 </motion.button>
                 <motion.button 
                   onClick={onClose} 
-                  className="relative p-2 rounded-[14px] border"
+                  className="relative p-2.5 rounded-[14px] border"
                   style={{
-                    background: 'rgba(255,255,255,0.04)',
-                    borderColor: 'rgba(255,255,255,0.06)',
-                    color: 'rgba(255,255,255,0.68)'
+                    background: 'rgba(255,255,255,0.042)',
+                    borderColor: 'rgba(255,255,255,0.09)',
+                    opacity: 0.88
                   }}
                   whileHover={{ 
-                    y: -1,
+                    scale: 1.05, 
                     background: 'rgba(255,255,255,0.08)', 
-                    color: 'rgba(255,255,255,0.88)',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                    transition: { duration: 0.12 }
+                    opacity: 1,
+                    boxShadow: `0 0 12px ${theme.glowColor}`
                   }}
-                  whileTap={{ 
-                    scale: 0.97, 
-                    y: 0.5,
-                    transition: { duration: 0.08 }
-                  }}
+                  whileTap={{ scale: 0.96 }}
                 >
-                  <X className="w-5 h-5" strokeWidth={2.2} />
+                  <X className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.74)' }} strokeWidth={2.2} />
                 </motion.button>
               </div>
             </div>
