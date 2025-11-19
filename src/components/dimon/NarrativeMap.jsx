@@ -169,6 +169,8 @@ const ConfidenceBar = ({ percentage, color, delay = 0, width = "w-16" }) => (
 
 const Node = ({ title, icon, color, delay, items = [], position, avgConfidence, onHoverChange }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isProximity, setIsProximity] = useState(false);
+  const nodeRef = useRef(null);
 
   const handleHoverStart = () => {
     setIsHovered(true);
@@ -177,8 +179,31 @@ const Node = ({ title, icon, color, delay, items = [], position, avgConfidence, 
 
   const handleHoverEnd = () => {
     setIsHovered(false);
+    setIsProximity(false);
     if (onHoverChange) onHoverChange(title, false);
   };
+
+  // Cursor proximity detection
+  useEffect(() => {
+    if (!nodeRef.current) return;
+
+    const handleMouseMove = (e) => {
+      const rect = nodeRef.current.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const distance = Math.sqrt(
+        Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2)
+      );
+
+      const proximityThreshold = 140;
+      setIsProximity(!isHovered && distance < proximityThreshold);
+    };
+
+    if (!isHovered) {
+      window.addEventListener('mousemove', handleMouseMove);
+      return () => window.removeEventListener('mousemove', handleMouseMove);
+    }
+  }, [isHovered]);
 
   const getPanelPosition = () => {
     switch (position) {
@@ -442,13 +467,22 @@ const Node = ({ title, icon, color, delay, items = [], position, avgConfidence, 
 
   return (
     <motion.div
+      ref={nodeRef}
       className="relative group"
       variants={{ hidden: { opacity: 0, scale: 0.9, y: 12 }, visible: { opacity: 1, scale: 1, y: 0 } }}
       transition={{ delay, duration: 0.5, ease: HORIZON_REBOUND }}
     >
+      {/* Expanded hover detection zone */}
+      <div
+        className="absolute -inset-5 rounded-full cursor-pointer"
+        onMouseEnter={handleHoverStart}
+        onMouseLeave={handleHoverEnd}
+        style={{ zIndex: 5 }}
+      />
+
       {/* OS Horizon V4 Liquid Glass Node */}
       <motion.div 
-        className="relative w-44 h-44 rounded-full flex flex-col items-center justify-center text-center p-4 cursor-pointer"
+        className="relative w-44 h-44 rounded-full flex flex-col items-center justify-center text-center p-4 pointer-events-none"
         style={{
           background: `linear-gradient(180deg, ${color.bgStart} 0%, ${color.bgEnd} 100%)`,
           backdropFilter: 'blur(28px) saturate(165%)',
@@ -460,26 +494,28 @@ const Node = ({ title, icon, color, delay, items = [], position, avgConfidence, 
             0 4px 18px rgba(0,0,0,0.12)
           `
         }}
-        whileHover={{ 
-          scale: 1.06,
-          y: -2,
-          backdropFilter: 'blur(32px) saturate(172%)',
-          WebkitBackdropFilter: 'blur(32px) saturate(172%)',
-          boxShadow: `
-            inset 0 1.5px 0 rgba(255,255,255,0.12),
-            inset 0 -1px 1px rgba(0,0,0,0.06),
-            0 8px 28px rgba(0,0,0,0.18),
-            0 0 32px ${color.glowHalo}
-          `,
-          transition: { duration: 0.12, ease: HORIZON_EASE }
+        animate={{
+          scale: isHovered ? 1.04 : isProximity ? 1.01 : 1,
+          y: isHovered ? -3 : 0,
+          backdropFilter: isHovered ? 'blur(32px) saturate(172%)' : 'blur(28px) saturate(165%)',
+          WebkitBackdropFilter: isHovered ? 'blur(32px) saturate(172%)' : 'blur(28px) saturate(165%)',
+          boxShadow: isHovered 
+            ? `
+              inset 0 1.5px 0 rgba(255,255,255,0.12),
+              inset 0 -1px 1px rgba(0,0,0,0.06),
+              0 8px 28px rgba(0,0,0,0.18),
+              0 0 32px ${color.glowHalo}
+            `
+            : `
+              inset 0 1.5px 0 rgba(255,255,255,0.08),
+              inset 0 -1px 1px rgba(0,0,0,0.06),
+              0 4px 18px rgba(0,0,0,0.12)
+            `
         }}
-        whileTap={{
-          scale: 1.02,
-          y: 0,
-          transition: { duration: 0.08, ease: HORIZON_EASE }
+        transition={{ 
+          duration: 0.16,
+          ease: [0.25, 0.46, 0.45, 0.94]
         }}
-        onHoverStart={handleHoverStart}
-        onHoverEnd={handleHoverEnd}
       >
         {/* Unified global overhead soft-light source */}
         <div style={{
@@ -494,17 +530,29 @@ const Node = ({ title, icon, color, delay, items = [], position, avgConfidence, 
           borderRadius: '2px'
         }} />
 
-        {/* Subsurface glow diffusion - 70% falloff */}
+        {/* Subsurface glow diffusion - 70% falloff with idle breathing */}
         <motion.div 
           className="absolute -inset-3 rounded-full blur-2xl pointer-events-none"
           style={{ 
             background: `radial-gradient(circle, ${color.primary} 0%, transparent 70%)`
           }}
           animate={{ 
-            opacity: isHovered ? [0.25, 0.35, 0.25] : [0.15, 0.22, 0.15],
-            scale: isHovered ? [1.05, 1.15, 1.05] : [1, 1.05, 1]
+            opacity: isHovered 
+              ? [0.28, 0.38, 0.28]
+              : isProximity 
+                ? 0.20
+                : [0.15, 0.18, 0.15],
+            scale: isHovered 
+              ? [1.08, 1.18, 1.08]
+              : isProximity
+                ? 1.03
+                : [1, 1.03, 1]
           }}
-          transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+          transition={{ 
+            duration: isHovered ? 2.5 : 5,
+            repeat: Infinity, 
+            ease: 'easeInOut'
+          }}
         />
 
         {/* 25% falloff layer */}
@@ -514,17 +562,24 @@ const Node = ({ title, icon, color, delay, items = [], position, avgConfidence, 
             background: `radial-gradient(circle, ${color.primary} 0%, transparent 60%)`
           }}
           animate={{ 
-            opacity: isHovered ? 0.12 : 0.08
+            opacity: isHovered ? 0.15 : isProximity ? 0.10 : 0.08
           }}
-          transition={{ duration: 0.15, ease: HORIZON_EASE }}
+          transition={{ duration: 0.18, ease: HORIZON_EASE }}
         />
 
-        {/* 6% outermost haze */}
-        <div 
+        {/* 6% outermost haze with breathing */}
+        <motion.div 
           className="absolute -inset-12 rounded-full blur-[50px] pointer-events-none"
           style={{ 
-            background: `radial-gradient(circle, ${color.primary} 0%, transparent 50%)`,
-            opacity: 0.06
+            background: `radial-gradient(circle, ${color.primary} 0%, transparent 50%)`
+          }}
+          animate={{
+            opacity: isHovered ? 0.09 : [0.05, 0.07, 0.05]
+          }}
+          transition={{
+            duration: 4.5,
+            repeat: Infinity,
+            ease: 'easeInOut'
           }}
         />
 
@@ -546,18 +601,25 @@ const Node = ({ title, icon, color, delay, items = [], position, avgConfidence, 
             animate={{
               boxShadow: isHovered 
                 ? `
-                  inset 0 1px 0 rgba(255,255,255,0.12),
+                  inset 0 1px 0 rgba(255,255,255,0.14),
                   inset 0 -1px 2px rgba(0,0,0,0.25),
                   0 4px 14px rgba(0,0,0,0.28),
-                  0 0 18px ${color.glowHalo}
+                  0 0 20px ${color.glowHalo}
                 `
-                : `
-                  inset 0 1px 0 rgba(255,255,255,0.08),
-                  inset 0 -1px 2px rgba(0,0,0,0.25),
-                  0 2px 8px rgba(0,0,0,0.20)
-                `
+                : isProximity
+                  ? `
+                    inset 0 1px 0 rgba(255,255,255,0.10),
+                    inset 0 -1px 2px rgba(0,0,0,0.25),
+                    0 3px 10px rgba(0,0,0,0.22),
+                    0 0 12px ${color.glowHalo}
+                  `
+                  : `
+                    inset 0 1px 0 rgba(255,255,255,0.08),
+                    inset 0 -1px 2px rgba(0,0,0,0.25),
+                    0 2px 8px rgba(0,0,0,0.20)
+                  `
             }}
-            transition={{ duration: 0.12, ease: HORIZON_EASE }}
+            transition={{ duration: 0.16, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             {/* Internal top-light */}
             <div style={{
@@ -571,14 +633,29 @@ const Node = ({ title, icon, color, delay, items = [], position, avgConfidence, 
               filter: 'blur(2px)'
             }} />
 
+            {/* Refraction highlight on hover */}
+            <motion.div
+              className="absolute inset-0 rounded-full pointer-events-none"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 50%)',
+                opacity: 0
+              }}
+              animate={{
+                opacity: isHovered ? 0.18 : 0
+              }}
+              transition={{ duration: 0.16, ease: HORIZON_EASE }}
+            />
+
             <motion.div
               animate={{
-                scale: isHovered ? 1.08 : 1,
+                scale: isHovered ? 1.08 : isProximity ? 1.02 : 1,
                 filter: isHovered 
-                  ? `drop-shadow(0 0 10px ${color.primary}) brightness(1.10)`
-                  : `drop-shadow(0 0 6px ${color.primary}) brightness(1.05)`
+                  ? `drop-shadow(0 0 12px ${color.primary}) brightness(1.12)`
+                  : isProximity
+                    ? `drop-shadow(0 0 8px ${color.primary}) brightness(1.07)`
+                    : `drop-shadow(0 0 6px ${color.primary}) brightness(1.05)`
               }}
-              transition={{ duration: 0.12, ease: HORIZON_EASE }}
+              transition={{ duration: 0.16, ease: [0.25, 0.46, 0.45, 0.94] }}
             >
               {React.createElement(icon, { 
                 className: `w-7 h-7 relative z-10`,
@@ -604,14 +681,17 @@ const Node = ({ title, icon, color, delay, items = [], position, avgConfidence, 
         {isHovered && (
           <motion.div 
             className={panelPosition.container}
-            initial={{ opacity: 0, scale: 0.94, y: 16 }}
+            initial={{ opacity: 0, scale: 0.96, y: 12 }}
             animate={{ 
               opacity: 1, 
               scale: 1,
               y: 0
             }}
-            exit={{ opacity: 0, scale: 0.94, y: 16 }}
-            transition={{ duration: 0.18, ease: HORIZON_REBOUND }}
+            exit={{ opacity: 0, scale: 0.96, y: 12 }}
+            transition={{ 
+              duration: 0.18, 
+              ease: [0.25, 0.46, 0.45, 0.94]
+            }}
             style={{ pointerEvents: 'none', zIndex: 100 }}
           >
             <div className="relative">
@@ -630,9 +710,9 @@ const Node = ({ title, icon, color, delay, items = [], position, avgConfidence, 
                     0 0 36px ${color.glowHalo}
                   `
                 }}
-                initial={{ scale: 0.96 }}
+                initial={{ scale: 0.98 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 0.12, ease: HORIZON_EASE }}
+                transition={{ duration: 0.16, ease: [0.25, 0.46, 0.45, 0.94] }}
               >
                 {/* Internal top-light (3% white) */}
                 <div style={{
@@ -655,16 +735,16 @@ const Node = ({ title, icon, color, delay, items = [], position, avgConfidence, 
                   pointerEvents: 'none'
                 }} />
 
-                {/* Shimmer animation */}
+                {/* Magnetic expansion shimmer */}
                 <motion.div
                   className="absolute inset-0 pointer-events-none"
                   style={{
-                    background: 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%)',
+                    background: 'linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%)',
                     borderRadius: '22px'
                   }}
-                  initial={{ x: '-100%', opacity: 0 }}
-                  animate={{ x: '100%', opacity: [0, 0.05, 0] }}
-                  transition={{ duration: 1.2, delay: 0.3, ease: 'easeInOut' }}
+                  initial={{ x: '-120%', opacity: 0 }}
+                  animate={{ x: '120%', opacity: [0, 0.06, 0] }}
+                  transition={{ duration: 1.4, delay: 0.25, ease: 'easeInOut' }}
                 />
 
                 <div className="relative z-10">
@@ -693,8 +773,6 @@ const Node = ({ title, icon, color, delay, items = [], position, avgConfidence, 
 };
 
 const Connector = ({ delay, isHighlighted }) => {
-  const [particleOffset, setParticleOffset] = useState(0);
-
   return (
     <motion.div 
       className="flex-1 h-0.5 relative"
@@ -706,7 +784,7 @@ const Connector = ({ delay, isHighlighted }) => {
       transition={{ duration: 1.0, delay, ease: HORIZON_EASE }}
     >
       {/* Liquid-light thread - 2px glowing filament */}
-      <div 
+      <motion.div 
         className="absolute inset-0 rounded-full"
         style={{
           background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%)',
@@ -714,43 +792,71 @@ const Connector = ({ delay, isHighlighted }) => {
           top: '-0.75px',
           filter: 'blur(0.5px)'
         }}
+        animate={{
+          opacity: isHighlighted ? 0.85 : 0.65
+        }}
+        transition={{ duration: 0.18, ease: HORIZON_EASE }}
       />
 
-      {/* Core filament */}
+      {/* Core filament with smooth brightness transition */}
       <motion.div
         className="absolute inset-0 rounded-full"
         style={{
-          background: `linear-gradient(90deg, transparent 0%, ${isHighlighted ? 'rgba(110, 180, 255, 0.38)' : 'rgba(110, 180, 255, 0.18)'} 50%, transparent 100%)`,
           height: '2px',
-          top: '-0.75px',
-          boxShadow: isHighlighted 
-            ? '0 0 12px rgba(110, 180, 255, 0.32), 0 0 6px rgba(110, 180, 255, 0.20)'
-            : '0 0 8px rgba(110, 180, 255, 0.18)'
+          top: '-0.75px'
         }}
         animate={{
-          opacity: isHighlighted ? [0.88, 1, 0.88] : 0.72
+          background: isHighlighted 
+            ? 'linear-gradient(90deg, transparent 0%, rgba(110, 180, 255, 0.42) 50%, transparent 100%)'
+            : 'linear-gradient(90deg, transparent 0%, rgba(110, 180, 255, 0.20) 50%, transparent 100%)',
+          boxShadow: isHighlighted 
+            ? '0 0 14px rgba(110, 180, 255, 0.35), 0 0 7px rgba(110, 180, 255, 0.22)'
+            : '0 0 8px rgba(110, 180, 255, 0.18)',
+          opacity: isHighlighted ? [0.92, 1, 0.92] : 0.78
         }}
         transition={{
-          opacity: { duration: 2, repeat: Infinity, ease: 'easeInOut' }
+          background: { duration: 0.18, ease: HORIZON_EASE },
+          boxShadow: { duration: 0.18, ease: HORIZON_EASE },
+          opacity: { duration: isHighlighted ? 2.2 : 0.3, repeat: isHighlighted ? Infinity : 0, ease: 'easeInOut' }
         }}
       />
 
       {/* Gentle particulate drift animation */}
       <motion.div
-        className="absolute top-[-1px] h-1 w-2 rounded-full"
+        className="absolute top-[-1px] h-1 w-2 rounded-full pointer-events-none"
         style={{
-          background: 'radial-gradient(circle, rgba(110, 180, 255, 0.55) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(110, 180, 255, 0.60) 0%, transparent 70%)',
           filter: 'blur(2px)'
         }}
         animate={{ 
           x: ['-10%', '110%'],
-          opacity: [0, 0.6, 0.8, 0.6, 0]
+          opacity: [0, 0.5, 0.75, 0.5, 0]
         }}
         transition={{ 
-          duration: 5, 
+          duration: 6, 
           repeat: Infinity, 
           ease: 'easeInOut',
           delay: delay + 1.2
+        }}
+      />
+
+      {/* Idle shimmer */}
+      <motion.div
+        className="absolute inset-0 rounded-full pointer-events-none"
+        style={{
+          background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%)',
+          height: '2px',
+          top: '-0.75px',
+          filter: 'blur(1px)'
+        }}
+        animate={{
+          x: ['-120%', '220%']
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: 'easeInOut',
+          delay: delay + 2
         }}
       />
     </motion.div>
