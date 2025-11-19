@@ -128,58 +128,54 @@ const NavLink = ({ href, icon: Icon, title, isActive }) => (
 const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNotification = false, className = "" }) => (
   <motion.button
     onClick={onClick}
-    className={`relative rounded-[23px] flex items-center justify-center group ${className}`}
+    className={`relative rounded-[24px] flex items-center justify-center group ${className}`}
     style={{
       width: '44px',
       height: '44px',
-      padding: '12px 17px',
+      padding: '12px',
       background: isActive
-        ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.055) 100%)'
-        : 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.032) 100%)',
-      backdropFilter: 'blur(42px) saturate(168%)',
-      WebkitBackdropFilter: 'blur(42px) saturate(168%)',
-      border: '1px solid rgba(255,255,255,0.05)',
+        ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.095) 0%, rgba(255, 255, 255, 0.072) 100%)'
+        : 'linear-gradient(180deg, rgba(255, 255, 255, 0.068) 0%, rgba(255, 255, 255, 0.048) 100%)',
+      backdropFilter: 'blur(48px) saturate(175%)',
+      WebkitBackdropFilter: 'blur(48px) saturate(175%)',
+      border: '1px solid rgba(255,255,255,0.08)',
       boxShadow: isActive
         ? `
-          0 4px 28px rgba(0,0,0,0.09),
-          0 0 20px rgba(110, 180, 255, 0.03),
-          inset 0 1px 2px rgba(255,255,255,0.08),
-          inset 0 0 18px rgba(110, 180, 255, 0.04)
+          0 4px 20px rgba(0,0,0,0.07),
+          inset 0 1.5px 0 rgba(255,255,255,0.10),
+          inset 0 0 22px rgba(110, 180, 255, 0.05)
         `
         : `
-          0 4px 28px rgba(0,0,0,0.08),
-          0 0 18px rgba(0,0,0,0.04),
-          inset 0 1px 1.5px rgba(255,255,255,0.04)
+          0 4px 20px rgba(0,0,0,0.06),
+          inset 0 1px 0 rgba(255,255,255,0.06)
         `
     }}
     whileHover={{
       background: isActive
-        ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.085) 0%, rgba(255, 255, 255, 0.065) 100%)'
-        : 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.042) 100%)',
+        ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.108) 0%, rgba(255, 255, 255, 0.085) 100%)'
+        : 'linear-gradient(180deg, rgba(255, 255, 255, 0.082) 0%, rgba(255, 255, 255, 0.062) 100%)',
       boxShadow: isActive
         ? `
-          0 6px 30px rgba(0,0,0,0.10),
-          0 0 24px rgba(110, 180, 255, 0.04),
-          inset 0 1px 2px rgba(255,255,255,0.10),
-          inset 0 0 22px rgba(110, 180, 255, 0.05)
+          0 6px 24px rgba(0,0,0,0.08),
+          inset 0 1.5px 0 rgba(255,255,255,0.12),
+          inset 0 0 26px rgba(110, 180, 255, 0.06)
         `
         : `
-          0 6px 28px rgba(0,0,0,0.10),
-          0 0 20px rgba(100, 180, 255, 0.03),
-          inset 0 1px 2px rgba(255,255,255,0.06)
+          0 6px 22px rgba(0,0,0,0.07),
+          inset 0 1px 0 rgba(255,255,255,0.08)
         `
     }}
     whileTap={{ 
-      y: 1,
+      scale: 0.96,
       boxShadow: isActive
         ? `
-          0 2px 14px rgba(0,0,0,0.04),
-          inset 0 2px 4px rgba(0,0,0,0.08),
-          inset 0 0 16px rgba(110, 180, 255, 0.03)
+          0 2px 12px rgba(0,0,0,0.05),
+          inset 0 2px 4px rgba(0,0,0,0.06),
+          inset 0 0 18px rgba(110, 180, 255, 0.04)
         `
         : `
-          0 2px 12px rgba(0,0,0,0.03),
-          inset 0 1.5px 3px rgba(0,0,0,0.06)
+          0 2px 10px rgba(0,0,0,0.04),
+          inset 0 1.5px 3px rgba(0,0,0,0.05)
         `
     }}
     transition={{ duration: 0.18, ease: HORIZON_EASE }}
@@ -189,22 +185,22 @@ const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNoti
     <div style={{
       position: 'absolute',
       top: 0,
-      left: '14%',
-      right: '14%',
-      height: '2px',
-      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+      left: '12%',
+      right: '12%',
+      height: '1.5px',
+      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
       pointerEvents: 'none',
-      filter: 'blur(1px)'
+      filter: 'blur(0.5px)'
     }} />
 
-    {/* Subsurface Bloom */}
+    {/* Subtle Internal Haze */}
     <div style={{
       position: 'absolute',
-      inset: '-1px',
-      background: 'radial-gradient(ellipse at 50% 25%, rgba(255, 255, 255, 0.05) 0%, transparent 65%)',
-      borderRadius: '23px',
+      inset: 0,
+      background: 'radial-gradient(ellipse at 50% 20%, rgba(255, 255, 255, 0.06) 0%, transparent 70%)',
+      borderRadius: '24px',
       pointerEvents: 'none',
-      opacity: 0.4
+      opacity: 0.5
     }} />
 
     {/* Active State Ambient Glow */}
@@ -212,84 +208,85 @@ const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNoti
       <div style={{
         position: 'absolute',
         inset: 0,
-        background: 'radial-gradient(ellipse at 50% 35%, rgba(110, 180, 255, 0.04) 0%, transparent 72%)',
-        borderRadius: '23px',
+        background: 'radial-gradient(ellipse at 50% 35%, rgba(110, 180, 255, 0.06) 0%, transparent 75%)',
+        borderRadius: '24px',
         pointerEvents: 'none'
       }} />
     )}
 
     {/* Photonic Icon with Inner Light */}
     <div className="relative z-10 flex items-center justify-center">
-    <div style={{
-      position: 'absolute',
-      inset: '-2px',
-      background: isActive 
-        ? 'radial-gradient(circle, rgba(110, 180, 255, 0.02) 0%, transparent 60%)'
-        : 'radial-gradient(circle, rgba(255, 255, 255, 0.01) 0%, transparent 60%)',
-      pointerEvents: 'none'
-    }} />
+      <div style={{
+        position: 'absolute',
+        inset: '-3px',
+        background: isActive 
+          ? 'radial-gradient(circle, rgba(110, 180, 255, 0.03) 0%, transparent 65%)'
+          : 'radial-gradient(circle, rgba(255, 255, 255, 0.02) 0%, transparent 65%)',
+        pointerEvents: 'none'
+      }} />
 
-    <Icon 
-      className="w-5 h-5 relative" 
-      style={{ 
-        color: isActive ? '#B8D4FF' : '#9BA3B0',
-        strokeWidth: 2.0,
-        filter: isActive 
-          ? 'drop-shadow(0 0 6px rgba(110, 180, 255, 0.25)) brightness(1.05)'
-          : 'brightness(1.03)',
-        opacity: isActive ? 0.98 : 0.94
-      }} 
-    />
+      <Icon 
+        className="w-5 h-5 relative" 
+        style={{ 
+          color: isActive ? '#C8DEFF' : '#A8B3C7',
+          strokeWidth: 2.0,
+          filter: isActive 
+            ? 'drop-shadow(0 0 8px rgba(110, 180, 255, 0.30)) brightness(1.08)'
+            : 'brightness(1.04)',
+          opacity: isActive ? 1 : 0.96
+        }} 
+      />
     </div>
 
-    {/* OS Horizon V2 Photon Badge — Refined Violet Gradient */}
+    {/* OS Horizon Photonic Badge */}
     {hasNotification && (
       <motion.div
-        className="absolute top-0 right-0"
+        className="absolute"
         style={{
-          width: '10px',
-          height: '10px',
+          top: '-2px',
+          right: '-2px',
+          width: '9px',
+          height: '9px',
           borderRadius: '50%',
-          background: 'linear-gradient(135deg, rgba(128, 90, 213, 0.88) 0%, rgba(98, 70, 190, 0.85) 100%)',
-          border: '0.5px solid rgba(0, 0, 0, 0.14)',
-          transform: 'translate(15%, -15%)'
+          background: 'linear-gradient(135deg, rgba(138, 100, 223, 0.92) 0%, rgba(108, 80, 200, 0.88) 100%)',
+          border: '0.5px solid rgba(0, 0, 0, 0.16)'
         }}
         initial={{ scale: 0, opacity: 0 }}
         animate={{ 
           scale: 1, 
-          opacity: [0.85, 1, 0.85],
+          opacity: [0.88, 1, 0.88],
           boxShadow: [
-            '0 0 14px rgba(128, 90, 213, 0.33), inset 0 0 6px rgba(255,255,255,0.18), inset 0 -1px 2px rgba(0,0,0,0.12)',
-            '0 0 18px rgba(128, 90, 213, 0.36), inset 0 0 8px rgba(255,255,255,0.22), inset 0 -1px 2px rgba(0,0,0,0.12)',
-            '0 0 14px rgba(128, 90, 213, 0.33), inset 0 0 6px rgba(255,255,255,0.18), inset 0 -1px 2px rgba(0,0,0,0.12)'
+            '0 0 10px rgba(138, 100, 223, 0.35), inset 0 0 5px rgba(255,255,255,0.22), inset 0 -1px 2px rgba(0,0,0,0.14)',
+            '0 0 14px rgba(138, 100, 223, 0.40), inset 0 0 6px rgba(255,255,255,0.26), inset 0 -1px 2px rgba(0,0,0,0.14)',
+            '0 0 10px rgba(138, 100, 223, 0.35), inset 0 0 5px rgba(255,255,255,0.22), inset 0 -1px 2px rgba(0,0,0,0.14)'
           ]
         }}
         transition={{ 
           scale: { duration: 0.32, ease: HORIZON_EASE },
-          opacity: { duration: 0.8, repeat: Infinity, ease: "easeInOut" },
-          boxShadow: { duration: 0.8, repeat: Infinity, ease: "easeInOut" }
+          opacity: { duration: 1.2, repeat: Infinity, ease: "easeInOut" },
+          boxShadow: { duration: 1.2, repeat: Infinity, ease: "easeInOut" }
         }}
       >
         {/* Inner Photonic Core */}
         <div style={{
           position: 'absolute',
-          top: '1px',
-          left: '1px',
-          width: '2.5px',
-          height: '2.5px',
+          top: '0.5px',
+          left: '0.5px',
+          width: '2px',
+          height: '2px',
           borderRadius: '50%',
-          background: 'rgba(255,255,255,0.45)',
-          filter: 'blur(0.6px)',
+          background: 'rgba(255,255,255,0.50)',
+          filter: 'blur(0.5px)',
           pointerEvents: 'none'
         }} />
 
-        {/* Enhanced Subsurface Bloom */}
+        {/* Subtle Outer Bloom */}
         <div style={{
           position: 'absolute',
-          inset: '-3px',
-          background: 'radial-gradient(circle, rgba(128, 90, 213, 0.32) 0%, transparent 70%)',
+          inset: '-4px',
+          background: 'radial-gradient(circle, rgba(138, 100, 223, 0.28) 0%, transparent 75%)',
           borderRadius: '50%',
-          filter: 'blur(4px)',
+          filter: 'blur(5px)',
           pointerEvents: 'none'
         }} />
       </motion.div>
@@ -851,34 +848,56 @@ function LayoutContent({ children, currentPageName }) {
           </aside>
 
           <div className="flex-1 flex flex-col overflow-hidden">
-            {/* Compact Top-Right HUD — Icon Cluster Only */}
+            {/* OS Horizon V2 Top-Right HUD — Luminous Glass */}
             <div 
               className="fixed z-[250] flex items-center"
               style={{
-                top: '20px',
+                top: '18px',
                 right: '20px',
-                padding: '10px 16px',
-                background: 'linear-gradient(180deg, rgba(11, 12, 15, 0.92) 0%, rgba(17, 18, 22, 0.90) 100%)',
-                backdropFilter: 'blur(48px) saturate(172%)',
-                WebkitBackdropFilter: 'blur(48px) saturate(172%)',
-                borderRadius: '28px',
-                border: '1px solid rgba(255,255,255,0.06)',
+                padding: '11px 18px',
+                background: 'linear-gradient(180deg, rgba(28, 32, 38, 0.86) 0%, rgba(22, 26, 32, 0.82) 100%)',
+                backdropFilter: 'blur(52px) saturate(180%)',
+                WebkitBackdropFilter: 'blur(52px) saturate(180%)',
+                borderRadius: '44px',
+                border: '1px solid rgba(255,255,255,0.10)',
                 boxShadow: `
-                  inset 0 1px 0 rgba(255,255,255,0.04),
-                  0 8px 32px rgba(0,0,0,0.20),
-                  0 0 40px rgba(0,0,0,0.12)
+                  inset 0 1.5px 0 rgba(255,255,255,0.08),
+                  inset 0 -1px 0 rgba(0,0,0,0.12),
+                  0 6px 24px rgba(0,0,0,0.08)
                 `
               }}
             >
-              {/* Noise Texture */}
+              {/* Refined Noise Haze */}
               <div style={{
                 position: 'absolute',
                 inset: 0,
-                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-                opacity: 0.018,
+                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+                opacity: 0.024,
                 mixBlendMode: 'overlay',
-                borderRadius: '28px',
+                borderRadius: '44px',
                 pointerEvents: 'none'
+              }} />
+
+              {/* Vertical Gradient Depth */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(180deg, rgba(0,0,0,0.05) 0%, transparent 35%, rgba(255,255,255,0.04) 100%)',
+                borderRadius: '44px',
+                pointerEvents: 'none'
+              }} />
+
+              {/* Glass Rim Edge Highlight */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: '10%',
+                right: '10%',
+                height: '1.5px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+                borderRadius: '44px 44px 0 0',
+                pointerEvents: 'none',
+                filter: 'blur(0.5px)'
               }} />
 
               <div className="flex items-center relative z-[260]">
