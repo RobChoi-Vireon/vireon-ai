@@ -1262,35 +1262,36 @@ export default function DigestHeader({
             <motion.div
               className="date-glass flex flex-col items-end rounded-[30px] relative overflow-hidden"
               style={{
-                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.030) 100%)',
+                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.034) 100%)',
                 backdropFilter: 'blur(36px) saturate(168%)',
                 WebkitBackdropFilter: 'blur(36px) saturate(168%)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: '1px solid rgba(255,255,255,0.09)',
                 boxShadow: `
-                  0 4px 22px rgba(0,0,0,0.09),
-                  inset 0 1.5px 0 rgba(255,255,255,0.06),
-                  inset 0 -1px 1px rgba(0,0,0,0.04)
+                  0 4px 22px rgba(0,0,0,0.08),
+                  inset 0 1.5px 0 rgba(255,255,255,0.07),
+                  inset 0 -1px 1px rgba(0,0,0,0.03)
                 `,
-                padding: '20px 22px'
+                padding: '20px 22px',
+                transform: 'perspective(800px) rotateY(0.8deg)'
               }}
               animate={{
                 opacity: [1, 0.97, 1]
               }}
               transition={{
-                opacity: { duration: 5.5, repeat: Infinity, ease: "easeInOut" }
+                opacity: { duration: 4.4, repeat: Infinity, ease: "easeInOut" }
               }}
               whileHover={shouldReduceMotion ? {} : {
                 scale: 1.01,
-                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.050) 0%, rgba(255, 255, 255, 0.038) 100%)',
+                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.056) 0%, rgba(255, 255, 255, 0.042) 100%)',
                 boxShadow: `
-                  0 5px 24px rgba(0,0,0,0.11),
-                  inset 0 1.5px 0 rgba(255,255,255,0.08),
-                  inset 0 -1px 1px rgba(0,0,0,0.04)
+                  0 5px 24px rgba(0,0,0,0.10),
+                  inset 0 1.5px 0 rgba(255,255,255,0.09),
+                  inset 0 -1px 1px rgba(0,0,0,0.03)
                 `,
                 transition: { type: "spring", stiffness: 290, damping: 28 }
               }}
             >
-              {/* Subsurface top gradient +4% white */}
+              {/* Enhanced vertical gradient: top 4% white → bottom 8% ultramarine */}
               <div style={{
                 position: 'absolute',
                 top: 0,
@@ -1302,19 +1303,30 @@ export default function DigestHeader({
                 pointerEvents: 'none'
               }} />
 
-              {/* Bottom gradient +6% ultramarine */}
               <div style={{
                 position: 'absolute',
                 bottom: 0,
                 left: 0,
                 right: 0,
                 height: '45%',
-                background: 'linear-gradient(0deg, rgba(90, 120, 180, 0.06) 0%, transparent 100%)',
+                background: 'linear-gradient(0deg, rgba(90, 120, 180, 0.08) 0%, transparent 100%)',
                 borderRadius: '0 0 30px 30px',
                 pointerEvents: 'none'
               }} />
 
-              {/* Micro-grain texture */}
+              {/* Subsurface bloom at bottom (5%) */}
+              <div style={{
+                position: 'absolute',
+                bottom: 0,
+                left: '15%',
+                right: '15%',
+                height: '35%',
+                background: 'radial-gradient(ellipse at 50% 100%, rgba(90, 120, 180, 0.05) 0%, transparent 70%)',
+                filter: 'blur(10px)',
+                pointerEvents: 'none'
+              }} />
+
+              {/* Micro-grain texture (1.2%) */}
               <div style={{
                 position: 'absolute',
                 inset: 0,
@@ -1332,20 +1344,20 @@ export default function DigestHeader({
                 left: '16%',
                 right: '16%',
                 height: '2px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.13), transparent)',
                 filter: 'blur(0.8px)',
                 pointerEvents: 'none'
               }} />
 
-              {/* Soft internal glow */}
+              {/* Enhanced internal glow (4-6% increase) */}
               <div style={{
                 position: 'absolute',
                 top: '20%',
                 left: '20%',
                 right: '20%',
                 height: '30%',
-                background: 'radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 70%)',
-                filter: 'blur(8px)',
+                background: 'radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.07) 0%, transparent 70%)',
+                filter: 'blur(10px)',
                 pointerEvents: 'none'
               }} />
 
@@ -1386,120 +1398,205 @@ export default function DigestHeader({
               </div>
             </motion.div>
 
-            {/* OS Horizon V4 Matte-Silk Floating Buttons */}
+            {/* OS Horizon V4 Enhanced Matte-Silk Capsule Buttons */}
             <motion.div
               className="flex flex-col gap-3 relative"
               style={{ marginTop: '8px' }}
             >
-              {/* Faint cursor proximity halo */}
-              <div style={{
-                position: 'absolute',
-                inset: '-12px',
-                background: 'radial-gradient(circle at 50% 50%, rgba(110, 180, 255, 0.02) 0%, transparent 70%)',
-                filter: 'blur(12px)',
-                pointerEvents: 'none',
-                opacity: 0.5
-              }} />
-
               <TooltipProvider>
                 {[
                   { icon: Calendar, label: "Set analysis date" },
                   { icon: Share, label: "Share snapshot" },
                   { icon: Info, label: "About Macro Signals" }
-                ].map((item, idx) => (
-                  <Tooltip key={idx}>
-                    <TooltipTrigger asChild>
-                      <motion.button
-                        className="horizon-control-tile w-full flex items-center justify-center rounded-[25px] relative overflow-hidden"
-                        style={{
-                          height: '44px',
-                          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.12) 100%)',
-                          backdropFilter: 'blur(32px) saturate(165%)',
-                          WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-                          border: '1px solid rgba(255,255,255,0.08)',
-                          boxShadow: `
-                            0 3px 16px rgba(0,0,0,0.08),
-                            inset 0 1.5px 0 rgba(255,255,255,0.06),
-                            inset 0 -1px 1px rgba(0,0,0,0.04)
-                          `
-                        }}
-                        animate={{
-                          opacity: [1, 0.97, 1]
-                        }}
-                        transition={{
-                          opacity: { duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: idx * 0.3 }
-                        }}
-                        whileHover={{
-                          y: -2,
-                          scale: 1.03,
-                          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.14) 100%)',
-                          boxShadow: `
-                            0 6px 24px rgba(0,0,0,0.11),
-                            inset 0 1.5px 0 rgba(255,255,255,0.09),
-                            inset 0 -1px 1px rgba(0,0,0,0.04),
-                            0 0 18px rgba(110, 180, 255, 0.04)
-                          `,
-                          transition: { type: "spring", stiffness: 290, damping: 28, mass: 1 }
-                        }}
-                        whileTap={{
-                          y: 2,
-                          scale: 0.98,
-                          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.08) 100%)',
-                          boxShadow: `
-                            0 1px 8px rgba(0,0,0,0.06),
-                            inset 0 2px 4px rgba(0,0,0,0.10)
-                          `,
-                          transition: { duration: 0.13, ease: [0.26, 0.11, 0.26, 1.0] }
-                        }}
-                        aria-label={item.label}
-                      >
-                        {/* Subsurface top gradient */}
-                        <div style={{
-                          position: 'absolute',
-                          top: 0,
-                          left: '18%',
-                          right: '18%',
-                          height: '1.5px',
-                          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
-                          filter: 'blur(0.7px)',
-                          pointerEvents: 'none'
-                        }} />
+                ].map((item, idx) => {
+                  const [isNearCursor, setIsNearCursor] = React.useState(false);
+                  const buttonRef = React.useRef(null);
 
-                        {/* Refractive shimmer on hover */}
-                        <motion.div
-                          className="absolute inset-0 pointer-events-none"
+                  React.useEffect(() => {
+                    const handleMouseMove = (e) => {
+                      if (buttonRef.current) {
+                        const rect = buttonRef.current.getBoundingClientRect();
+                        const centerX = rect.left + rect.width / 2;
+                        const centerY = rect.top + rect.height / 2;
+                        const distance = Math.sqrt(
+                          Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2)
+                        );
+                        setIsNearCursor(distance < 60);
+                      }
+                    };
+                    window.addEventListener('mousemove', handleMouseMove);
+                    return () => window.removeEventListener('mousemove', handleMouseMove);
+                  }, []);
+
+                  return (
+                    <Tooltip key={idx}>
+                      <TooltipTrigger asChild>
+                        <motion.button
+                          ref={buttonRef}
+                          className="horizon-control-tile w-full flex items-center justify-center rounded-[25px] relative overflow-hidden"
                           style={{
-                            background: 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.03) 50%, transparent 100%)',
-                            borderRadius: '25px'
+                            height: '44px',
+                            background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.15) 100%)',
+                            backdropFilter: 'blur(32px) saturate(165%)',
+                            WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+                            border: '1px solid rgba(255,255,255,0.09)',
+                            boxShadow: `
+                              0 3px 16px rgba(0,0,0,0.08),
+                              inset 0 1.5px 0 rgba(255,255,255,0.08),
+                              inset 0 -1px 1px rgba(0,0,0,0.04)
+                            `
                           }}
-                          initial={{ x: '-110%', opacity: 0 }}
-                          whileHover={{ x: '110%', opacity: [0, 0.06, 0] }}
-                          transition={{ duration: 0.9, ease: 'easeInOut' }}
-                        />
-
-                        <motion.div
                           animate={{
-                            scale: 1,
-                            filter: 'brightness(1.02)'
+                            opacity: [1, 0.97, 1]
+                          }}
+                          transition={{
+                            opacity: { duration: 4.4, repeat: Infinity, ease: "easeInOut", delay: idx * 0.3 }
                           }}
                           whileHover={{
-                            filter: 'brightness(1.08) drop-shadow(0 0 6px rgba(110, 180, 255, 0.16))'
+                            y: -2,
+                            scale: 1.03,
+                            background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.17) 100%)',
+                            boxShadow: `
+                              0 6px 24px rgba(0,0,0,0.11),
+                              inset 0 1.5px 0 rgba(255,255,255,0.10),
+                              inset 0 -1px 1px rgba(0,0,0,0.04),
+                              0 0 20px rgba(110, 180, 255, 0.05)
+                            `,
+                            transition: { type: "spring", stiffness: 290, damping: 28, mass: 1 }
                           }}
-                          transition={{ type: "spring", stiffness: 300, damping: 28 }}
+                          whileTap={{
+                            y: 2,
+                            scale: 0.98,
+                            background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.10) 100%)',
+                            boxShadow: `
+                              0 1px 8px rgba(0,0,0,0.06),
+                              inset 0 2px 4px rgba(0,0,0,0.10)
+                            `,
+                            transition: { duration: 0.13, ease: [0.26, 0.11, 0.26, 1.0] }
+                          }}
+                          aria-label={item.label}
                         >
-                          <item.icon 
-                            className="w-4 h-4 relative z-10" 
-                            style={{ 
-                              color: 'rgba(180, 190, 205, 0.68)', 
-                              strokeWidth: 2.1
-                            }} 
+                          {/* Inner glow (3%) */}
+                          <div style={{
+                            position: 'absolute',
+                            inset: 0,
+                            background: 'radial-gradient(ellipse at 50% 30%, rgba(255,255,255,0.03) 0%, transparent 70%)',
+                            borderRadius: '25px',
+                            pointerEvents: 'none'
+                          }} />
+
+                          {/* Soft outer halo (4-6%) */}
+                          <motion.div
+                            className="absolute -inset-1 rounded-[26px] pointer-events-none blur-md"
+                            style={{
+                              background: 'radial-gradient(ellipse at 50% 50%, rgba(110, 180, 255, 0.04) 0%, transparent 70%)'
+                            }}
+                            animate={{
+                              opacity: isNearCursor ? 0.06 : 0.02
+                            }}
+                            transition={{ duration: 0.2 }}
                           />
-                        </motion.div>
-                      </motion.button>
-                    </TooltipTrigger>
-                    <TooltipContent>{item.label}</TooltipContent>
-                  </Tooltip>
-                ))}
+
+                          {/* Subsurface top gradient */}
+                          <div style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: '18%',
+                            right: '18%',
+                            height: '1.5px',
+                            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
+                            filter: 'blur(0.7px)',
+                            pointerEvents: 'none'
+                          }} />
+
+                          {/* Diagonal glass sheen on hover */}
+                          <motion.div
+                            className="absolute inset-0 pointer-events-none"
+                            style={{
+                              background: 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%)',
+                              borderRadius: '25px'
+                            }}
+                            initial={{ x: '-110%', opacity: 0 }}
+                            whileHover={{ x: '110%', opacity: [0, 0.08, 0] }}
+                            transition={{ duration: 0.9, ease: 'easeInOut' }}
+                          />
+
+                          {/* Periodic shimmer line (every 10-14s) */}
+                          <motion.div
+                            className="absolute inset-0 pointer-events-none"
+                            style={{
+                              background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%)',
+                              borderRadius: '25px'
+                            }}
+                            animate={{
+                              x: ['-110%', '110%'],
+                              opacity: [0, 0.06, 0]
+                            }}
+                            transition={{
+                              duration: 1.2,
+                              ease: 'easeInOut',
+                              repeat: Infinity,
+                              repeatDelay: 11 + idx * 1.5
+                            }}
+                          />
+
+                          <motion.div
+                            animate={{
+                              scale: 1,
+                              filter: 'brightness(1.02)'
+                            }}
+                            whileHover={{
+                              filter: 'brightness(1.10) drop-shadow(0 0 8px rgba(110, 180, 255, 0.18))'
+                            }}
+                            transition={{ type: "spring", stiffness: 300, damping: 28 }}
+                          >
+                            {/* Enhanced iconography with refraction */}
+                            <div className="relative">
+                              {/* Faint neon haze (2%) */}
+                              <div style={{
+                                position: 'absolute',
+                                inset: '-3px',
+                                background: 'radial-gradient(circle, rgba(110, 180, 255, 0.02) 0%, transparent 70%)',
+                                borderRadius: '50%',
+                                filter: 'blur(4px)',
+                                pointerEvents: 'none'
+                              }} />
+
+                              {/* 2% refraction line at 1.5° */}
+                              <motion.div
+                                style={{
+                                  position: 'absolute',
+                                  top: '-1px',
+                                  left: '20%',
+                                  right: '20%',
+                                  height: '1px',
+                                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.02), transparent)',
+                                  transform: 'rotate(1.5deg)',
+                                  pointerEvents: 'none'
+                                }}
+                              />
+
+                              <motion.div
+                                animate={{ opacity: 0.80 }}
+                                whileHover={{ opacity: 0.92 }}
+                                transition={{ duration: 0.16 }}
+                              >
+                                <item.icon 
+                                  className="w-4 h-4 relative z-10" 
+                                  style={{ 
+                                    color: 'rgba(180, 190, 205, 1)', 
+                                    strokeWidth: 2.2
+                                  }} 
+                                />
+                              </motion.div>
+                            </div>
+                          </motion.div>
+                        </motion.button>
+                      </TooltipTrigger>
+                      <TooltipContent>{item.label}</TooltipContent>
+                    </Tooltip>
+                  );
+                })}
               </TooltipProvider>
             </motion.div>
           </motion.div>
@@ -1572,16 +1669,28 @@ export default function DigestHeader({
         .date-glass::before {
           content: '';
           position: absolute;
-          inset: -16px;
-          border-radius: 32px;
+          inset: -18px;
+          border-radius: 34px;
           background: linear-gradient(
             180deg, 
-            rgba(13, 15, 18, 0.04) 0%, 
+            rgba(13, 15, 18, 0.045) 0%, 
             rgba(21, 27, 34, 0.05) 100%
           );
           z-index: -1;
           pointer-events: none;
           opacity: 1;
+        }
+
+        .date-glass::after {
+          content: '';
+          position: absolute;
+          inset: -18px;
+          border-radius: 34px;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+          opacity: 0.012;
+          mix-blend-mode: overlay;
+          z-index: -1;
+          pointer-events: none;
         }
 
         /* Arc Segment Focus Enhancement */
