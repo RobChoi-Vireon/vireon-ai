@@ -647,7 +647,7 @@ export default function DigestHeader({
               animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 8 }}
               transition={{ duration: 0.36, delay: 0.12, ease: [0.22, 0.61, 0.36, 1] }}
               className="relative"
-              style={{ marginBottom: '28px', marginTop: '4px' }}
+              style={{ marginBottom: '32px', marginTop: '4px' }}
             >
               <h1
                 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight"
@@ -685,7 +685,7 @@ export default function DigestHeader({
                 color: 'rgba(255,255,255,0.78)',
                 fontWeight: 500,
                 letterSpacing: '0.01em',
-                marginBottom: '20px'
+                marginBottom: '24px'
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
@@ -694,10 +694,10 @@ export default function DigestHeader({
               Global posture, distilled in real time.
             </motion.p>
 
-            {/* OS Horizon V2 Info Capsules — Refined Glass Pills */}
+            {/* OS Horizon V2 Info Capsules — Unified Glass Pills */}
             <motion.div
               className="flex flex-wrap items-center gap-3"
-              style={{ marginBottom: '22px' }}
+              style={{ marginBottom: '28px' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
               transition={{ duration: 0.22, delay: 0.28, ease: [0.22, 0.61, 0.36, 1] }}
@@ -706,12 +706,12 @@ export default function DigestHeader({
               <motion.div
                 className="glass-info-capsule flex items-center gap-2 px-4 py-2 rounded-[20px]"
                 style={{
-                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.042) 100%)',
+                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.035) 100%)',
                   backdropFilter: 'blur(32px) saturate(165%)',
                   WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-                  border: '1px solid rgba(255, 255, 255, 0.06)',
+                  border: 'none',
                   boxShadow: `
-                    0 4px 26px rgba(0,0,0,0.08),
+                    0 4px 28px rgba(0,0,0,0.08),
                     0 0 18px rgba(0,0,0,0.04),
                     inset 0 1px 1.5px rgba(255,255,255,0.05)
                   `
@@ -720,11 +720,10 @@ export default function DigestHeader({
                 animate={{ scale: isLoaded ? 1 : 0.96, opacity: isLoaded ? 1 : 0 }}
                 transition={{ duration: 0.22, delay: 0.32, ease: [0.22, 0.61, 0.36, 1] }}
                 whileHover={shouldReduceMotion ? {} : {
-                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.068) 0%, rgba(255, 255, 255, 0.052) 100%)',
-                  borderColor: 'rgba(255, 255, 255, 0.08)',
+                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.045) 100%)',
                   boxShadow: `
                     0 6px 28px rgba(0,0,0,0.10),
-                    0 0 22px rgba(110, 180, 255, 0.02),
+                    0 0 22px rgba(110, 180, 255, 0.03),
                     inset 0 1px 2px rgba(255,255,255,0.07)
                   `
                 }}
@@ -732,7 +731,7 @@ export default function DigestHeader({
                 role="button"
                 aria-label={`Updated ${lastUpdated}`}
               >
-                <Clock className="w-3.5 h-3.5" style={{ color: sentimentProps.baseHue, opacity: 0.92, strokeWidth: 2.0 }} />
+                <Clock className="w-3.5 h-3.5" style={{ color: sentimentProps.baseHue, opacity: 0.92, strokeWidth: 2.0, filter: 'brightness(1.03)' }} />
                 <span className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.82)' }}>
                   Updated <span style={{ color: 'rgba(255,255,255,0.96)', fontWeight: 600 }}>{lastUpdated}</span>
                 </span>
@@ -744,12 +743,12 @@ export default function DigestHeader({
               <motion.div
                 className="glass-info-capsule flex items-center gap-2 px-4 py-2 rounded-[20px]"
                 style={{
-                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.042) 100%)',
+                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.035) 100%)',
                   backdropFilter: 'blur(32px) saturate(165%)',
                   WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-                  border: '1px solid rgba(255, 255, 255, 0.06)',
+                  border: 'none',
                   boxShadow: `
-                    0 4px 26px rgba(0,0,0,0.08),
+                    0 4px 28px rgba(0,0,0,0.08),
                     0 0 18px rgba(0,0,0,0.04),
                     inset 0 1px 1.5px rgba(255,255,255,0.05)
                   `
@@ -758,11 +757,10 @@ export default function DigestHeader({
                 animate={{ scale: isLoaded ? 1 : 0.96, opacity: isLoaded ? 1 : 0 }}
                 transition={{ duration: 0.22, delay: 0.38, ease: [0.22, 0.61, 0.36, 1] }}
                 whileHover={shouldReduceMotion ? {} : {
-                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.068) 0%, rgba(255, 255, 255, 0.052) 100%)',
-                  borderColor: 'rgba(255, 255, 255, 0.08)',
+                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.045) 100%)',
                   boxShadow: `
                     0 6px 28px rgba(0,0,0,0.10),
-                    0 0 22px rgba(110, 180, 255, 0.02),
+                    0 0 22px rgba(110, 180, 255, 0.03),
                     inset 0 1px 2px rgba(255,255,255,0.07)
                   `
                 }}
@@ -770,7 +768,7 @@ export default function DigestHeader({
                 role="button"
                 aria-label={`${stats.sources} sources`}
               >
-                <Database className="w-3.5 h-3.5" style={{ color: sentimentProps.baseHue, opacity: 0.92, strokeWidth: 2.0 }} />
+                <Database className="w-3.5 h-3.5" style={{ color: sentimentProps.baseHue, opacity: 0.92, strokeWidth: 2.0, filter: 'brightness(1.03)' }} />
                 <span className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.82)' }}>
                   Sources <span style={{ color: 'rgba(255,255,255,0.96)', fontWeight: 600 }}>{stats.sources}</span>
                 </span>
@@ -782,12 +780,12 @@ export default function DigestHeader({
               <motion.div
                 className="glass-info-capsule flex items-center gap-2 px-4 py-2 rounded-[20px]"
                 style={{
-                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.042) 100%)',
+                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.035) 100%)',
                   backdropFilter: 'blur(32px) saturate(165%)',
                   WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-                  border: '1px solid rgba(255, 255, 255, 0.06)',
+                  border: 'none',
                   boxShadow: `
-                    0 4px 26px rgba(0,0,0,0.08),
+                    0 4px 28px rgba(0,0,0,0.08),
                     0 0 18px rgba(0,0,0,0.04),
                     inset 0 1px 1.5px rgba(255,255,255,0.05)
                   `
@@ -796,11 +794,10 @@ export default function DigestHeader({
                 animate={{ scale: isLoaded ? 1 : 0.96, opacity: isLoaded ? 1 : 0 }}
                 transition={{ duration: 0.22, delay: 0.44, ease: [0.22, 0.61, 0.36, 1] }}
                 whileHover={shouldReduceMotion ? {} : {
-                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.068) 0%, rgba(255, 255, 255, 0.052) 100%)',
-                  borderColor: 'rgba(255, 255, 255, 0.08)',
+                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.045) 100%)',
                   boxShadow: `
                     0 6px 28px rgba(0,0,0,0.10),
-                    0 0 22px rgba(110, 180, 255, 0.02),
+                    0 0 22px rgba(110, 180, 255, 0.03),
                     inset 0 1px 2px rgba(255,255,255,0.07)
                   `
                 }}
@@ -808,7 +805,7 @@ export default function DigestHeader({
                 role="button"
                 aria-label={`${stats.signals} signals`}
               >
-                <Zap className="w-3.5 h-3.5" style={{ color: sentimentProps.baseHue, opacity: 0.92, strokeWidth: 2.0 }} />
+                <Zap className="w-3.5 h-3.5" style={{ color: sentimentProps.baseHue, opacity: 0.92, strokeWidth: 2.0, filter: 'brightness(1.03)' }} />
                 <span className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.82)' }}>
                   Signals <span style={{ color: sentimentProps.baseHue, fontWeight: 700, filter: 'brightness(1.08)' }}>{stats.signals}</span>
                 </span>
@@ -996,27 +993,28 @@ export default function DigestHeader({
                         style={{ mixBlendMode: 'screen' }}
                       />
 
-                      {/* Rim Light Layer */}
+                      {/* Rim Light Layer — Softened */}
                       <motion.path
                         d="M 10 110 A 110 110 0 0 1 230 110"
                         fill="none"
-                        stroke="rgba(255,255,255,0.06)"
+                        stroke="rgba(255,255,255,0.05)"
                         strokeWidth="18"
                         strokeLinecap="round"
                         filter="url(#rimLight)"
                         initial={{ opacity: 0 }}
-                        animate={{ opacity: isLoaded ? 1 : 0 }}
+                        animate={{ opacity: isLoaded ? 0.95 : 0 }}
                         transition={{ duration: 0.52, delay: 0.50, ease: [0.2, 0.8, 0.2, 1] }}
                         style={{ mixBlendMode: 'screen' }}
                       />
 
-                      {/* Core Stroke */}
+                      {/* Core Stroke — Refined Opacity */}
                       <motion.path
                         d="M 10 110 A 110 110 0 0 1 230 110"
                         fill="none"
                         stroke="url(#haloGradient)"
                         strokeWidth="15"
                         strokeLinecap="round"
+                        opacity="0.95"
                         initial={{ pathLength: 0 }}
                         animate={{ pathLength: shouldReduceMotion ? 1 : (isLoaded ? 1 : 0) }}
                         transition={shouldReduceMotion ? {} : {
@@ -1255,31 +1253,32 @@ export default function DigestHeader({
           {/* OS Horizon V2 Analysis Panel — Unified Glass Stack */}
           <motion.div
             className="flex flex-col gap-3 flex-shrink-0"
-            style={{ marginRight: '28px' }}
+            style={{ marginRight: '28px', marginTop: '14px' }}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: isLoaded ? 1 : 0, x: isLoaded ? 0 : 20 }}
             transition={{ duration: 0.4, delay: 1.3, ease: [0.22, 0.61, 0.36, 1] }}
           >
             {/* Date Container — Refined OS Horizon Glass */}
             <motion.div
-              className="date-glass flex flex-col items-end gap-2.5 px-5 py-4 rounded-[20px]"
+              className="date-glass flex flex-col items-end rounded-[20px] relative"
               style={{
-                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.065) 0%, rgba(255, 255, 255, 0.048) 100%)',
-                backdropFilter: 'blur(38px) saturate(168%)',
-                WebkitBackdropFilter: 'blur(38px) saturate(168%)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
+                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.035) 100%)',
+                backdropFilter: 'blur(32px) saturate(165%)',
+                WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+                border: 'none',
                 boxShadow: `
-                  0 6px 28px rgba(0,0,0,0.09),
-                  0 0 20px rgba(0,0,0,0.05),
-                  inset 0 1px 2px rgba(255,255,255,0.06)
-                `
+                  0 4px 28px rgba(0,0,0,0.08),
+                  0 0 18px rgba(0,0,0,0.04),
+                  inset 0 1px 1.5px rgba(255,255,255,0.05)
+                `,
+                padding: '18px 20px'
               }}
               whileHover={shouldReduceMotion ? {} : {
-                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.058) 100%)',
+                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.045) 100%)',
                 boxShadow: `
-                  0 8px 32px rgba(0,0,0,0.11),
-                  0 0 24px rgba(115, 230, 210, 0.04),
-                  inset 0 1px 2px rgba(255,255,255,0.08)
+                  0 6px 28px rgba(0,0,0,0.10),
+                  0 0 22px rgba(115, 230, 210, 0.03),
+                  inset 0 1px 2px rgba(255,255,255,0.07)
                 `,
                 transition: { duration: 0.18, ease: HORIZON_EASE }
               }}
@@ -1297,7 +1296,7 @@ export default function DigestHeader({
                 pointerEvents: 'none'
               }} />
 
-              <label className="text-[11px] font-medium uppercase tracking-wide" style={{ color: 'rgba(255,255,255,0.60)', letterSpacing: '0.05em' }}>
+              <label className="text-[11px] font-medium uppercase tracking-wide" style={{ color: 'rgba(255,255,255,0.60)', letterSpacing: '0.05em', marginBottom: '8px' }}>
                 Analysis Date
               </label>
               <input
@@ -1310,7 +1309,7 @@ export default function DigestHeader({
                   background: 'rgba(255, 255, 255, 0.05)',
                   color: 'rgba(255, 255, 255, 0.94)',
                   colorScheme: 'dark',
-                  padding: '7px 11px',
+                  padding: '8px 12px',
                   fontWeight: 500
                 }}
               />
@@ -1329,31 +1328,31 @@ export default function DigestHeader({
                   <Tooltip key={idx}>
                     <TooltipTrigger asChild>
                       <motion.button
-                        className="horizon-control-tile w-full flex items-center justify-center rounded-[18px]"
+                        className="horizon-control-tile w-full flex items-center justify-center rounded-[18px] relative"
                         style={{
                           height: '42px',
-                          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.042) 100%)',
+                          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.035) 100%)',
                           backdropFilter: 'blur(32px) saturate(165%)',
                           WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-                          border: '1px solid rgba(255, 255, 255, 0.06)',
+                          border: 'none',
                           boxShadow: `
-                            0 4px 24px rgba(0,0,0,0.08),
-                            0 0 16px rgba(0,0,0,0.04),
+                            0 4px 28px rgba(0,0,0,0.08),
+                            0 0 18px rgba(0,0,0,0.04),
                             inset 0 1px 1.5px rgba(255,255,255,0.05)
                           `
                         }}
                         whileHover={{
-                          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.068) 0%, rgba(255, 255, 255, 0.052) 100%)',
+                          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.045) 100%)',
                           boxShadow: `
-                            0 6px 26px rgba(0,0,0,0.10),
-                            0 0 20px rgba(110, 180, 255, 0.02),
+                            0 6px 28px rgba(0,0,0,0.10),
+                            0 0 22px rgba(110, 180, 255, 0.03),
                             inset 0 1px 2px rgba(255,255,255,0.07)
                           `
                         }}
                         whileTap={{
                           y: 1,
                           boxShadow: `
-                            0 2px 12px rgba(0,0,0,0.06),
+                            0 2px 14px rgba(0,0,0,0.06),
                             inset 0 1.5px 3px rgba(0,0,0,0.08)
                           `
                         }}
@@ -1372,7 +1371,7 @@ export default function DigestHeader({
                           pointerEvents: 'none'
                         }} />
 
-                        <item.icon className="w-4 h-4" style={{ color: '#9BA3B0', strokeWidth: 2.0 }} />
+                        <item.icon className="w-4 h-4" style={{ color: '#9BA3B0', strokeWidth: 2.0, filter: 'brightness(1.03)', opacity: 0.94 }} />
                       </motion.button>
                     </TooltipTrigger>
                     <TooltipContent>{item.label}</TooltipContent>
