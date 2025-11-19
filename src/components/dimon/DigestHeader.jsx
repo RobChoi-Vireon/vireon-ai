@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import MacroInsightCapsule from './MacroInsightCapsule';
 
+const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
+
 // Utility: Calculate relative luminance from hex color (WCAG standard)
 const getLuminance = (hex) => {
   // Handle 3-digit hex codes
