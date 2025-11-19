@@ -128,142 +128,168 @@ const NavLink = ({ href, icon: Icon, title, isActive }) => (
 const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNotification = false, className = "" }) => (
   <motion.button
     onClick={onClick}
-    className={`relative rounded-[22px] flex items-center justify-center group ${className}`}
+    className={`relative rounded-[23px] flex items-center justify-center group ${className}`}
     style={{
       width: '44px',
       height: '44px',
+      padding: '12px 17px',
       background: isActive
-        ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.095) 0%, rgba(255, 255, 255, 0.072) 100%)'
-        : 'linear-gradient(180deg, rgba(255, 255, 255, 0.068) 0%, rgba(255, 255, 255, 0.048) 100%)',
-      backdropFilter: 'blur(38px) saturate(165%)',
-      WebkitBackdropFilter: 'blur(38px) saturate(165%)',
-      border: '1px solid rgba(255,255,255,0.08)',
+        ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.088) 0%, rgba(255, 255, 255, 0.065) 100%)'
+        : 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.038) 100%)',
+      backdropFilter: 'blur(42px) saturate(168%)',
+      WebkitBackdropFilter: 'blur(42px) saturate(168%)',
+      border: '1px solid rgba(255,255,255,0.06)',
       boxShadow: isActive
         ? `
-          inset 0 1px 1.5px rgba(255,255,255,0.12),
-          inset 0 0 24px rgba(110, 180, 255, 0.06),
-          0 6px 24px rgba(0,0,0,0.12),
-          0 0 28px rgba(110, 180, 255, 0.04)
+          0 6px 28px rgba(0,0,0,0.04),
+          0 0 22px rgba(110, 180, 255, 0.03),
+          inset 0 1px 2px rgba(255,255,255,0.08),
+          inset 0 0 18px rgba(110, 180, 255, 0.04)
         `
         : `
-          inset 0 0.5px 1px rgba(255,255,255,0.06),
-          0 4px 22px rgba(0,0,0,0.10),
-          0 0 18px rgba(0,0,0,0.05)
+          0 4px 26px rgba(0,0,0,0.03),
+          0 0 16px rgba(0,0,0,0.02),
+          inset 0 0.5px 1px rgba(255,255,255,0.04)
         `
     }}
     whileHover={{
-      scale: 1.02,
-      y: -0.5,
       background: isActive
-        ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.105) 0%, rgba(255, 255, 255, 0.082) 100%)'
-        : 'linear-gradient(180deg, rgba(255, 255, 255, 0.078) 0%, rgba(255, 255, 255, 0.058) 100%)',
+        ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.098) 0%, rgba(255, 255, 255, 0.075) 100%)'
+        : 'linear-gradient(180deg, rgba(255, 255, 255, 0.068) 0%, rgba(255, 255, 255, 0.048) 100%)',
       boxShadow: isActive
         ? `
-          inset 0 1px 2px rgba(255,255,255,0.14),
-          inset 0 0 28px rgba(110, 180, 255, 0.08),
-          0 8px 28px rgba(0,0,0,0.14),
-          0 0 32px rgba(110, 180, 255, 0.05)
+          0 8px 30px rgba(0,0,0,0.05),
+          0 0 26px rgba(110, 180, 255, 0.04),
+          inset 0 1px 2px rgba(255,255,255,0.10),
+          inset 0 0 22px rgba(110, 180, 255, 0.05)
         `
         : `
-          inset 0 1px 1.5px rgba(255,255,255,0.08),
-          0 6px 26px rgba(0,0,0,0.12),
-          0 0 22px rgba(100, 180, 255, 0.03)
+          0 6px 28px rgba(0,0,0,0.04),
+          0 0 20px rgba(100, 180, 255, 0.02),
+          inset 0 1px 1.5px rgba(255,255,255,0.06)
         `
     }}
     whileTap={{ 
-      scale: 0.98,
+      y: 1,
       boxShadow: isActive
         ? `
-          inset 0 1px 3px rgba(0,0,0,0.14),
-          inset 0 0 18px rgba(110, 180, 255, 0.05),
-          0 2px 12px rgba(0,0,0,0.10)
+          0 2px 14px rgba(0,0,0,0.03),
+          inset 0 2px 4px rgba(0,0,0,0.08),
+          inset 0 0 16px rgba(110, 180, 255, 0.03)
         `
         : `
-          inset 0 1px 2px rgba(0,0,0,0.12),
-          0 2px 10px rgba(0,0,0,0.08)
+          0 2px 12px rgba(0,0,0,0.02),
+          inset 0 1.5px 3px rgba(0,0,0,0.06)
         `
     }}
     transition={{ duration: 0.18, ease: HORIZON_EASE }}
     aria-label={label}
   >
+    {/* Edge Refraction Highlight */}
     <div style={{
       position: 'absolute',
       top: 0,
-      left: '16%',
-      right: '16%',
-      height: '1px',
-      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+      left: '14%',
+      right: '14%',
+      height: '2px',
+      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
       pointerEvents: 'none',
-      filter: 'blur(0.5px)'
+      filter: 'blur(1px)'
     }} />
 
+    {/* Subsurface Bloom */}
     <div style={{
       position: 'absolute',
-      inset: 0,
-      background: 'radial-gradient(ellipse at 50% 30%, rgba(255, 255, 255, 0.04) 0%, transparent 68%)',
-      borderRadius: '22px',
-      pointerEvents: 'none'
+      inset: '-1px',
+      background: 'radial-gradient(ellipse at 50% 25%, rgba(255, 255, 255, 0.05) 0%, transparent 65%)',
+      borderRadius: '23px',
+      pointerEvents: 'none',
+      opacity: 0.4
     }} />
 
+    {/* Active State Ambient Glow */}
     {isActive && (
       <div style={{
         position: 'absolute',
         inset: 0,
-        background: 'radial-gradient(ellipse at 50% 35%, rgba(110, 180, 255, 0.05) 0%, transparent 70%)',
-        borderRadius: '22px',
+        background: 'radial-gradient(ellipse at 50% 35%, rgba(110, 180, 255, 0.04) 0%, transparent 72%)',
+        borderRadius: '23px',
         pointerEvents: 'none'
       }} />
     )}
 
-    <Icon 
-      className="w-5 h-5 relative z-10" 
-      style={{ 
-        color: isActive ? '#B8D4FF' : '#9BA3B0',
-        strokeWidth: 2.0,
-        filter: isActive ? 'drop-shadow(0 0 8px rgba(110, 180, 255, 0.35))' : 'none'
-      }} 
-    />
+    {/* Photonic Icon with Inner Light */}
+    <div className="relative z-10 flex items-center justify-center">
+      <div style={{
+        position: 'absolute',
+        inset: '-2px',
+        background: isActive 
+          ? 'radial-gradient(circle, rgba(110, 180, 255, 0.02) 0%, transparent 60%)'
+          : 'radial-gradient(circle, rgba(255, 255, 255, 0.01) 0%, transparent 60%)',
+        pointerEvents: 'none'
+      }} />
+      
+      <Icon 
+        className="w-5 h-5 relative" 
+        style={{ 
+          color: isActive ? '#B8D4FF' : '#9BA3B0',
+          strokeWidth: 2.0,
+          filter: isActive 
+            ? 'drop-shadow(0 0 6px rgba(110, 180, 255, 0.25)) brightness(1.03)'
+            : 'brightness(1.01)',
+          opacity: isActive ? 0.98 : 0.92
+        }} 
+      />
+    </div>
 
+    {/* OS Horizon V2 Photon Badge */}
     {hasNotification && (
       <motion.div
-        className="absolute -top-0.5 -right-0.5"
+        className="absolute top-0 right-0"
         style={{
-          width: '11px',
-          height: '11px',
+          width: '10px',
+          height: '10px',
           borderRadius: '50%',
-          background: 'linear-gradient(135deg, rgba(138, 92, 255, 0.88) 0%, rgba(98, 70, 234, 0.85) 100%)',
-          border: '1px solid rgba(0, 0, 0, 0.18)',
-          boxShadow: `
-            0 0 16px rgba(138, 92, 255, 0.36),
-            inset 0 1px 0 rgba(255,255,255,0.22),
-            inset 0 -1px 1px rgba(0,0,0,0.16)
-          `
+          background: 'linear-gradient(135deg, rgba(138, 92, 255, 0.85) 0%, rgba(98, 70, 234, 0.82) 100%)',
+          border: '0.5px solid rgba(0, 0, 0, 0.12)',
+          transform: 'translate(15%, -15%)'
         }}
         initial={{ scale: 0, opacity: 0 }}
         animate={{ 
           scale: 1, 
-          opacity: [0.85, 1, 0.85],
+          opacity: [0.82, 1, 0.82],
           boxShadow: [
-            '0 0 16px rgba(138, 92, 255, 0.36), inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 1px rgba(0,0,0,0.16)',
-            '0 0 20px rgba(138, 92, 255, 0.42), inset 0 1px 0 rgba(255,255,255,0.24), inset 0 -1px 1px rgba(0,0,0,0.16)',
-            '0 0 16px rgba(138, 92, 255, 0.36), inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 1px rgba(0,0,0,0.16)'
+            '0 0 14px rgba(138, 92, 255, 0.36), inset 0 0 6px rgba(255,255,255,0.18), inset 0 -1px 2px rgba(0,0,0,0.10)',
+            '0 0 18px rgba(138, 92, 255, 0.42), inset 0 0 8px rgba(255,255,255,0.22), inset 0 -1px 2px rgba(0,0,0,0.10)',
+            '0 0 14px rgba(138, 92, 255, 0.36), inset 0 0 6px rgba(255,255,255,0.18), inset 0 -1px 2px rgba(0,0,0,0.10)'
           ]
         }}
         transition={{ 
-          scale: { duration: 0.28, ease: HORIZON_EASE },
+          scale: { duration: 0.32, ease: HORIZON_EASE },
           opacity: { duration: 0.8, repeat: Infinity, ease: "easeInOut" },
           boxShadow: { duration: 0.8, repeat: Infinity, ease: "easeInOut" }
         }}
       >
+        {/* Inner Photonic Core */}
         <div style={{
           position: 'absolute',
-          top: '1.5px',
-          left: '1.5px',
-          width: '3px',
-          height: '3px',
+          top: '1px',
+          left: '1px',
+          width: '2.5px',
+          height: '2.5px',
           borderRadius: '50%',
-          background: 'rgba(255,255,255,0.45)',
-          filter: 'blur(0.8px)',
+          background: 'rgba(255,255,255,0.42)',
+          filter: 'blur(0.6px)',
+          pointerEvents: 'none'
+        }} />
+
+        {/* Subsurface Diffusion */}
+        <div style={{
+          position: 'absolute',
+          inset: '-3px',
+          background: 'radial-gradient(circle, rgba(138, 92, 255, 0.36) 0%, transparent 70%)',
+          borderRadius: '50%',
+          filter: 'blur(4px)',
           pointerEvents: 'none'
         }} />
       </motion.div>
@@ -826,38 +852,70 @@ function LayoutContent({ children, currentPageName }) {
 
           <div className="flex-1 flex flex-col overflow-hidden">
             <header className="flex-shrink-0 sticky top-0 z-[250] flex items-center justify-between h-[60px] md:h-[72px] px-4 sm:px-6 md:px-8 relative">
+              {/* OS Horizon V2 Liquid Glass Base */}
               <div style={{
                 position: 'absolute',
                 inset: 0,
-                background: 'linear-gradient(180deg, rgba(15, 16, 19, 0.92) 0%, rgba(17, 18, 22, 0.90) 100%)',
-                backdropFilter: 'blur(42px) saturate(168%)',
-                WebkitBackdropFilter: 'blur(42px) saturate(168%)',
-                borderBottom: '1px solid rgba(255,255,255,0.08)',
-                boxShadow: `
-                  inset 0 0 1px rgba(255,255,255,0.06),
-                  0 2px 18px rgba(0,0,0,0.14),
-                  0 0 24px rgba(0,0,0,0.08)
-                `,
+                background: 'linear-gradient(180deg, rgba(14, 15, 18, 0.94) 0%, rgba(16, 17, 21, 0.92) 100%)',
+                backdropFilter: 'blur(48px) saturate(172%)',
+                WebkitBackdropFilter: 'blur(48px) saturate(172%)',
                 pointerEvents: 'none'
               }} />
 
+              {/* Atmospheric Noise Texture */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+                opacity: 0.015,
+                mixBlendMode: 'overlay',
+                pointerEvents: 'none'
+              }} />
+
+              {/* Top Atmospheric Gradient (2% darker) */}
               <div style={{
                 position: 'absolute',
                 top: 0,
                 left: 0,
                 right: 0,
-                height: '38%',
-                background: 'linear-gradient(180deg, rgba(255,255,255,0.026) 0%, transparent 100%)',
+                height: '42%',
+                background: 'linear-gradient(180deg, rgba(0,0,0,0.020) 0%, transparent 100%)',
                 pointerEvents: 'none'
               }} />
 
+              {/* Bottom Atmospheric Gradient (2% lighter) */}
               <div style={{
                 position: 'absolute',
                 bottom: 0,
                 left: 0,
                 right: 0,
-                height: '38%',
-                background: 'linear-gradient(0deg, rgba(0,0,0,0.028) 0%, transparent 100%)',
+                height: '42%',
+                background: 'linear-gradient(0deg, rgba(255,255,255,0.020) 0%, transparent 100%)',
+                pointerEvents: 'none'
+              }} />
+
+              {/* Soft-Light Bottom Separator */}
+              <div style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: '1px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)',
+                mixBlendMode: 'soft-light',
+                pointerEvents: 'none'
+              }} />
+
+              {/* Glass Depth Layer */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                boxShadow: `
+                  inset 0 0.5px 0 rgba(255,255,255,0.05),
+                  inset 0 -0.5px 0 rgba(0,0,0,0.08),
+                  0 2px 20px rgba(0,0,0,0.12),
+                  0 0 32px rgba(0,0,0,0.06)
+                `,
                 pointerEvents: 'none'
               }} />
 
@@ -888,9 +946,9 @@ function LayoutContent({ children, currentPageName }) {
               </div>
 
               <div className="flex items-center relative z-[260]">
-                {/* Group A: Search + Commentary */}
+                {/* OS Horizon V2 Semantic Grouping: Cluster A (Search + Commentary) */}
                 {isEnabled('labs_modules') && (
-                  <div className="flex items-center space-x-3 mr-8">
+                  <div className="flex items-center gap-3" style={{ marginRight: '32px' }}>
                     <GlassIconButton
                       onClick={() => setIsSearchOpen(true)}
                       icon={Search}
@@ -906,8 +964,8 @@ function LayoutContent({ children, currentPageName }) {
                   </div>
                 )}
 
-                {/* Group B: Labs + Notifications */}
-                <div className="flex items-center space-x-3 mr-8">
+                {/* OS Horizon V2 Semantic Grouping: Cluster B (Labs + Notifications) */}
+                <div className="flex items-center gap-3" style={{ marginRight: '32px' }}>
                   <div className="relative z-[260] group">
                     <LabsToggle />
                   </div>
@@ -920,7 +978,7 @@ function LayoutContent({ children, currentPageName }) {
                   />
                 </div>
 
-                {/* Profile Avatar */}
+                {/* OS Horizon V2 Semantic Grouping: Cluster C (Profile Capsule) */}
                 <div className="relative z-[260] group">
                   <UserMenu theme="dark" toggleTheme={() => {}} />
                 </div>
