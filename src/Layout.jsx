@@ -968,32 +968,34 @@ function LayoutContent({ children, currentPageName }) {
           </aside>
 
           <div className="flex-1 flex flex-col overflow-hidden">
-            {/* OS Horizon V2 Top-Right HUD — Luminous Glass with Cursor-Aware Drift */}
+            {/* OS Horizon V2 Top-Right HUD — Unified Liquid Glass */}
             <motion.div 
               className="fixed z-[250] flex items-center"
               style={{
                 top: '18px',
                 right: '20px',
                 padding: '16px 20px',
-                background: 'linear-gradient(180deg, rgba(35, 40, 48, 0.78) 0%, rgba(28, 33, 40, 0.74) 100%)',
-                backdropFilter: 'blur(56px) saturate(185%)',
-                WebkitBackdropFilter: 'blur(56px) saturate(185%)',
+                background: 'linear-gradient(180deg, rgba(19, 21, 26, 0.68) 0%, rgba(15, 17, 21, 0.72) 100%)',
+                backdropFilter: 'blur(68px) saturate(178%)',
+                WebkitBackdropFilter: 'blur(68px) saturate(178%)',
                 borderRadius: '44px',
-                border: '1px solid rgba(255,255,255,0.12)',
+                border: '1px solid rgba(255,255,255,0.08)',
                 boxShadow: `
-                  inset 0 1.5px 0 rgba(255,255,255,0.10),
-                  inset 0 -1px 0 rgba(0,0,0,0.10),
-                  0 5px 20px rgba(0,0,0,0.06)
+                  inset 0 1.5px 0 rgba(255,255,255,0.08),
+                  inset 0 -1px 1px rgba(0,0,0,0.06),
+                  inset 0 0 0 1px rgba(255,255,255,0.02),
+                  0 6px 24px rgba(0,0,0,0.12),
+                  0 2px 8px rgba(0,0,0,0.08)
                 `
               }}
               onMouseMove={(e) => {
                 const rect = e.currentTarget.getBoundingClientRect();
                 const x = (e.clientX - rect.left) / rect.width;
                 const gradientAngle = 180 + (x - 0.5) * 2;
-                e.currentTarget.style.background = `linear-gradient(${gradientAngle}deg, rgba(35, 40, 48, 0.78) 0%, rgba(28, 33, 40, 0.74) 100%)`;
+                e.currentTarget.style.background = `linear-gradient(${gradientAngle}deg, rgba(19, 21, 26, 0.68) 0%, rgba(15, 17, 21, 0.72) 100%)`;
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(180deg, rgba(35, 40, 48, 0.78) 0%, rgba(28, 33, 40, 0.74) 100%)';
+                e.currentTarget.style.background = 'linear-gradient(180deg, rgba(19, 21, 26, 0.68) 0%, rgba(15, 17, 21, 0.72) 100%)';
               }}
             >
               {/* Refined Noise Haze */}
@@ -1001,7 +1003,7 @@ function LayoutContent({ children, currentPageName }) {
                 position: 'absolute',
                 inset: 0,
                 backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-                opacity: 0.024,
+                opacity: 0.018,
                 mixBlendMode: 'overlay',
                 borderRadius: '44px',
                 pointerEvents: 'none'
@@ -1011,7 +1013,7 @@ function LayoutContent({ children, currentPageName }) {
               <div style={{
                 position: 'absolute',
                 inset: 0,
-                background: 'linear-gradient(180deg, rgba(0,0,0,0.05) 0%, transparent 35%, rgba(255,255,255,0.04) 100%)',
+                background: 'linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 40%, rgba(0,0,0,0.03) 100%)',
                 borderRadius: '44px',
                 pointerEvents: 'none'
               }} />
@@ -1020,13 +1022,13 @@ function LayoutContent({ children, currentPageName }) {
               <div style={{
                 position: 'absolute',
                 top: 0,
-                left: '10%',
-                right: '10%',
+                left: '12%',
+                right: '12%',
                 height: '1.5px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
                 borderRadius: '44px 44px 0 0',
                 pointerEvents: 'none',
-                filter: 'blur(0.5px)'
+                filter: 'blur(0.6px)'
               }} />
 
               <div className="flex items-center relative z-[260]">
