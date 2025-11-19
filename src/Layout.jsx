@@ -851,92 +851,35 @@ function LayoutContent({ children, currentPageName }) {
           </aside>
 
           <div className="flex-1 flex flex-col overflow-hidden">
-            <header className="flex-shrink-0 sticky top-0 z-[250] flex items-center justify-between h-[60px] md:h-[72px] px-4 sm:px-6 md:px-8 relative">
-              {/* OS Horizon V2 Liquid Glass Base with Enhanced Atmosphere */}
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                background: 'linear-gradient(180deg, rgba(11, 12, 15, 0.96) 0%, rgba(17, 18, 22, 0.94) 100%)',
+            {/* Compact Top-Right HUD — Icon Cluster Only */}
+            <div 
+              className="fixed z-[250] flex items-center"
+              style={{
+                top: '20px',
+                right: '20px',
+                padding: '10px 16px',
+                background: 'linear-gradient(180deg, rgba(11, 12, 15, 0.92) 0%, rgba(17, 18, 22, 0.90) 100%)',
                 backdropFilter: 'blur(48px) saturate(172%)',
                 WebkitBackdropFilter: 'blur(48px) saturate(172%)',
-                pointerEvents: 'none'
-              }} />
-
-              {/* Enhanced Atmospheric Noise Haze */}
+                borderRadius: '28px',
+                border: '1px solid rgba(255,255,255,0.06)',
+                boxShadow: `
+                  inset 0 1px 0 rgba(255,255,255,0.04),
+                  0 8px 32px rgba(0,0,0,0.20),
+                  0 0 40px rgba(0,0,0,0.12)
+                `
+              }}
+            >
+              {/* Noise Texture */}
               <div style={{
                 position: 'absolute',
                 inset: 0,
                 backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-                opacity: 0.022,
+                opacity: 0.018,
                 mixBlendMode: 'overlay',
+                borderRadius: '28px',
                 pointerEvents: 'none'
               }} />
-
-              {/* Vertical Gradient Depth — 2–3% Variation */}
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                height: '50%',
-                background: 'linear-gradient(180deg, rgba(0,0,0,0.028) 0%, transparent 100%)',
-                pointerEvents: 'none'
-              }} />
-
-              <div style={{
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: '50%',
-                background: 'linear-gradient(0deg, rgba(255,255,255,0.025) 0%, transparent 100%)',
-                pointerEvents: 'none'
-              }} />
-
-              {/* Refined Bottom Separator — Soft-Light 1px */}
-              <div style={{
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: '1px',
-                background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 50%, transparent 100%)',
-                mixBlendMode: 'soft-light',
-                pointerEvents: 'none'
-              }} />
-
-              {/* Unified Depth Shadow */}
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                boxShadow: `
-                  inset 0 0.5px 0 rgba(255,255,255,0.04),
-                  inset 0 -0.5px 0 rgba(0,0,0,0.06),
-                  0 2px 28px rgba(0,0,0,0.09),
-                  0 0 30px rgba(0,0,0,0.05)
-                `,
-                pointerEvents: 'none'
-              }} />
-
-              <Link to={createPageUrl('MacroSignals')} className="flex md:hidden items-center gap-2.5 group relative z-10">
-                <img 
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68943f7eb0fb9393bf9a8069/ea91941d0_Asset61xtransparent.png" 
-                  alt="Vireon Logo"
-                  className="w-9 h-9 rounded-lg transition-transform duration-200 ease-out group-hover:scale-105"
-                  style={{ boxShadow: '0 0 12px rgba(86, 180, 255, 0.4)' }}
-                />
-                <span 
-                  className="font-semibold text-xl tracking-tight"
-                  style={{
-                    background: 'linear-gradient(to right, #A774FF, #4EC8FF)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text'
-                  }}
-                >
-                  Vireon
-                </span>
-              </Link>
 
               <div className="flex items-center relative z-[260]">
                 {/* OS Horizon V2 Semantic Grouping: Cluster A (Search + Commentary) */}
@@ -976,7 +919,30 @@ function LayoutContent({ children, currentPageName }) {
                   <UserMenu theme="dark" toggleTheme={() => {}} />
                 </div>
               </div>
-            </header>
+            </div>
+
+            {/* Mobile Logo Header — Not Sticky */}
+            <div className="md:hidden flex items-center justify-between px-4 py-4">
+              <Link to={createPageUrl('MacroSignals')} className="flex items-center gap-2.5 group">
+                <img 
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68943f7eb0fb9393bf9a8069/ea91941d0_Asset61xtransparent.png" 
+                  alt="Vireon Logo"
+                  className="w-9 h-9 rounded-lg transition-transform duration-200 ease-out group-hover:scale-105"
+                  style={{ boxShadow: '0 0 12px rgba(86, 180, 255, 0.4)' }}
+                />
+                <span 
+                  className="font-semibold text-xl tracking-tight"
+                  style={{
+                    background: 'linear-gradient(to right, #A774FF, #4EC8FF)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}
+                >
+                  Vireon
+                </span>
+              </Link>
+            </div>
 
             <main className={`
               flex-1 overflow-y-auto px-4 sm:px-6 md:px-8 py-6 md:py-8 pb-24 md:pb-8 
