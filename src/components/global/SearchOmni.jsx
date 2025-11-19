@@ -7,6 +7,7 @@ import { NewsArticle } from '@/entities/NewsArticle';
 // OS Horizon animation curves
 const HORIZON_EASE_OUT = [0.25, 0.46, 0.45, 0.94];
 const HORIZON_EASE_IN = [0.42, 0, 0.58, 1];
+const HORIZON_REBOUND = [0.25, 0.8, 0.25, 1];
 
 const mockTickerData = {
   'AAPL': { name: 'Apple Inc.', price: 189.25, change: 3.50, changePercent: 1.88, volume: '186.5M', sector: 'Technology' },
@@ -23,68 +24,122 @@ const mockTickerData = {
 
 const TickerResult = ({ ticker, data, onAdd, onAlert, onCompare }) => {
   const isPositive = data.change >= 0;
+  const [showSweep, setShowSweep] = useState(false);
   
   return (
     <motion.div 
-      className="relative rounded-[18px] overflow-hidden"
+      className="relative rounded-[22px] overflow-hidden"
       style={{
-        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.025) 100%)',
-        backdropFilter: 'blur(28px) saturate(165%)',
-        WebkitBackdropFilter: 'blur(28px) saturate(165%)',
-        border: '1px solid rgba(255,255,255,0.06)',
+        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
+        backdropFilter: 'blur(32px) saturate(168%)',
+        WebkitBackdropFilter: 'blur(32px) saturate(168%)',
+        border: '1px solid rgba(255,255,255,0.08)',
         boxShadow: `
-          inset 0 1px 0 rgba(255,255,255,0.04),
-          0 2px 12px rgba(0,0,0,0.08)
+          inset 0 1.5px 0 rgba(255,255,255,0.06),
+          inset 0 -1px 1px rgba(0,0,0,0.02),
+          0 3px 14px rgba(0,0,0,0.09)
         `
       }}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: HORIZON_REBOUND }}
+      onHoverStart={() => setTimeout(() => setShowSweep(true), 350)}
+      onHoverEnd={() => setShowSweep(false)}
       whileHover={{
-        y: -1,
-        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.032) 100%)',
+        y: -2,
+        backdropFilter: 'blur(36px) saturate(172%)',
+        WebkitBackdropFilter: 'blur(36px) saturate(172%)',
+        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.036) 100%)',
         boxShadow: `
-          inset 0 1px 0 rgba(255,255,255,0.06),
-          0 4px 16px rgba(0,0,0,0.12),
-          0 0 24px rgba(110, 180, 255, 0.04)
+          inset 0 1.5px 0 rgba(255,255,255,0.08),
+          inset 0 -1px 1px rgba(0,0,0,0.02),
+          0 6px 20px rgba(0,0,0,0.14),
+          0 0 28px rgba(110, 180, 255, 0.05)
         `,
-        transition: { duration: 0.1, ease: HORIZON_EASE_OUT }
+        transition: { duration: 0.15, ease: HORIZON_EASE_OUT }
+      }}
+      whileTap={{
+        y: 0,
+        scale: 0.995,
+        transition: { duration: 0.08, ease: HORIZON_EASE_IN }
       }}
     >
       {/* Crown glow */}
       <div style={{
         position: 'absolute',
         top: 0,
-        left: '18%',
-        right: '18%',
-        height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+        left: '16%',
+        right: '16%',
+        height: '1.5px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+        filter: 'blur(0.5px)',
         pointerEvents: 'none'
       }} />
+
+      {/* Corner ambient lighting */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '60px',
+        height: '60px',
+        background: 'radial-gradient(ellipse at 0% 0%, rgba(255,255,255,0.04) 0%, transparent 65%)',
+        borderRadius: '22px 0 0 0',
+        pointerEvents: 'none'
+      }} />
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        width: '60px',
+        height: '60px',
+        background: 'radial-gradient(ellipse at 100% 0%, rgba(255,255,255,0.04) 0%, transparent 65%)',
+        borderRadius: '0 22px 0 0',
+        pointerEvents: 'none'
+      }} />
+
+      {/* Luminance sweep */}
+      <AnimatePresence>
+        {showSweep && (
+          <motion.div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%)',
+              borderRadius: '22px'
+            }}
+            initial={{ x: '-100%', opacity: 0 }}
+            animate={{ x: '100%', opacity: [0, 0.06, 0] }}
+            transition={{ duration: 0.8, ease: 'easeInOut' }}
+          />
+        )}
+      </AnimatePresence>
 
       <div className="flex items-center justify-between p-5">
         <div className="flex-1">
           <div className="flex items-center space-x-3 mb-3">
-            <span className="text-lg font-bold" style={{ color: 'rgba(255,255,255,0.95)' }}>{ticker}</span>
-            <span className="text-sm" style={{ color: 'rgba(255,255,255,0.56)' }}>{data.name}</span>
+            <span className="text-lg font-extrabold tracking-tight" style={{ color: 'rgba(255,255,255,0.96)' }}>{ticker}</span>
+            <span className="text-sm" style={{ color: 'rgba(255,255,255,0.60)', lineHeight: '1.45' }}>{data.name}</span>
             <span 
-              className="text-xs px-2.5 py-1 rounded-full"
+              className="text-xs px-2.5 py-1 rounded-full font-medium"
               style={{
-                background: 'rgba(90, 150, 255, 0.14)',
-                color: 'rgba(130, 180, 255, 0.92)',
-                border: '1px solid rgba(90, 150, 255, 0.16)'
+                background: 'rgba(90, 150, 255, 0.10)',
+                color: 'rgba(120, 170, 255, 0.82)',
+                border: '1px solid rgba(90, 150, 255, 0.12)'
               }}
             >
               {data.sector}
             </span>
           </div>
           <div className="flex items-center space-x-5">
-            <span className="text-xl font-bold" style={{ color: 'rgba(255,255,255,0.98)' }}>${data.price.toFixed(2)}</span>
+            <span className="text-xl font-black tracking-tight" style={{ color: 'rgba(255,255,255,0.98)' }}>${data.price.toFixed(2)}</span>
             <span 
-              className="flex items-center space-x-1.5 text-sm font-semibold"
-              style={{ color: isPositive ? 'rgba(88, 227, 164, 0.95)' : 'rgba(255, 106, 122, 0.95)' }}
+              className="flex items-center space-x-1.5 text-sm font-bold"
+              style={{ color: isPositive ? 'rgba(88, 227, 164, 0.82)' : 'rgba(255, 106, 122, 0.82)' }}
             >
-              {isPositive ? <TrendingUp className="w-4 h-4" strokeWidth={2.5} /> : <TrendingDown className="w-4 h-4" strokeWidth={2.5} />}
+              {isPositive ? <TrendingUp className="w-4 h-4" strokeWidth={2.2} /> : <TrendingDown className="w-4 h-4" strokeWidth={2.2} />}
               <span>{isPositive ? '+' : ''}{data.change.toFixed(2)} ({isPositive ? '+' : ''}{data.changePercent.toFixed(2)}%)</span>
             </span>
-            <span className="text-xs" style={{ color: 'rgba(255,255,255,0.38)' }}>Vol: {data.volume}</span>
+            <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.40)' }}>Vol: {data.volume}</span>
           </div>
         </div>
         <div className="flex items-center space-x-2">
@@ -128,65 +183,98 @@ const TickerResult = ({ ticker, data, onAdd, onAlert, onCompare }) => {
 const NewsResult = ({ article }) => {
   const getSentimentColor = () => {
     switch (article.sentiment) {
-      case 'Bullish': return 'rgba(88, 227, 164, 0.88)';
-      case 'Bearish': return 'rgba(255, 106, 122, 0.88)';
-      default: return 'rgba(255,255,255,0.52)';
+      case 'Bullish': return 'rgba(88, 227, 164, 0.76)';
+      case 'Bearish': return 'rgba(255, 106, 122, 0.76)';
+      default: return 'rgba(255,255,255,0.48)';
     }
   };
 
+  const [showSweep, setShowSweep] = useState(false);
+
   return (
     <motion.div 
-      className="relative rounded-[16px] overflow-hidden"
+      className="relative rounded-[18px] overflow-hidden"
       style={{
-        background: 'rgba(255, 255, 255, 0.022)',
-        border: '1px solid rgba(255,255,255,0.04)',
-        boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.02)'
-      }}
-      whileHover={{
-        y: -0.5,
-        background: 'rgba(255, 255, 255, 0.032)',
-        border: '1px solid rgba(255,255,255,0.06)',
+        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.028) 0%, rgba(255, 255, 255, 0.018) 100%)',
+        backdropFilter: 'blur(24px) saturate(160%)',
+        WebkitBackdropFilter: 'blur(24px) saturate(160%)',
+        border: '1px solid rgba(255,255,255,0.05)',
         boxShadow: `
-          inset 0 0.5px 0 rgba(255,255,255,0.04),
+          inset 0 1px 0 rgba(255,255,255,0.03),
+          inset 0 -1px 1px rgba(0,0,0,0.015),
           0 2px 10px rgba(0,0,0,0.06)
+        `
+      }}
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.28, ease: HORIZON_REBOUND }}
+      onHoverStart={() => setTimeout(() => setShowSweep(true), 350)}
+      onHoverEnd={() => setShowSweep(false)}
+      whileHover={{
+        y: -1.5,
+        x: 0.75,
+        backdropFilter: 'blur(28px) saturate(165%)',
+        WebkitBackdropFilter: 'blur(28px) saturate(165%)',
+        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.038) 0%, rgba(255, 255, 255, 0.024) 100%)',
+        boxShadow: `
+          inset 0 1px 0 rgba(255,255,255,0.05),
+          inset 0 -1px 1px rgba(0,0,0,0.015),
+          0 4px 16px rgba(0,0,0,0.10)
         `,
-        transition: { duration: 0.1, ease: HORIZON_EASE_OUT }
+        transition: { duration: 0.14, ease: HORIZON_EASE_OUT }
       }}
     >
-      <div className="flex items-start justify-between p-4">
-        <div className="flex-1 pr-4">
+      {/* Luminance sweep */}
+      <AnimatePresence>
+        {showSweep && (
+          <motion.div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.03) 50%, transparent 100%)',
+              borderRadius: '18px'
+            }}
+            initial={{ x: '-100%', opacity: 0 }}
+            animate={{ x: '100%', opacity: [0, 0.05, 0] }}
+            transition={{ duration: 0.75, ease: 'easeInOut' }}
+          />
+        )}
+      </AnimatePresence>
+
+      <div className="flex items-start justify-between p-5">
+        <div className="flex-1 pr-5">
           <h3 
-            className="font-semibold leading-snug mb-2.5"
+            className="font-semibold leading-snug mb-3"
             style={{ 
-              color: 'rgba(255,255,255,0.92)',
+              color: 'rgba(255,255,255,0.94)',
               fontSize: '15px',
-              lineHeight: '1.4'
+              lineHeight: '1.45',
+              letterSpacing: '-0.01em'
             }}
           >
             {article.title}
           </h3>
           <p 
-            className="text-sm leading-relaxed mb-3"
+            className="text-sm leading-relaxed mb-4"
             style={{ 
-              color: 'rgba(255,255,255,0.62)',
-              lineHeight: '1.6'
+              color: 'rgba(255,255,255,0.64)',
+              lineHeight: '1.55'
             }}
           >
             {article.summary}
           </p>
           <div className="flex flex-wrap items-center gap-2 text-xs">
             <span 
-              className="px-2 py-0.5 rounded"
+              className="px-2.5 py-1 rounded-lg font-medium"
               style={{
                 background: 'rgba(255, 255, 255, 0.04)',
-                color: 'rgba(255,255,255,0.56)',
-                border: '1px solid rgba(255,255,255,0.04)'
+                color: 'rgba(255,255,255,0.58)',
+                border: '1px solid rgba(255,255,255,0.05)'
               }}
             >
               {article.source}
             </span>
             <span 
-              className="px-2 py-0.5 rounded font-medium"
+              className="px-2.5 py-1 rounded-lg font-semibold"
               style={{
                 color: getSentimentColor()
               }}
@@ -194,7 +282,8 @@ const NewsResult = ({ article }) => {
               {article.sentiment}
             </span>
             <span 
-              style={{ color: 'rgba(255,255,255,0.42)' }}
+              className="font-medium"
+              style={{ color: 'rgba(255,255,255,0.44)' }}
             >
               Impact: {article.impact_score}/10
             </span>
@@ -203,19 +292,31 @@ const NewsResult = ({ article }) => {
                 {article.tickers_mentioned.slice(0, 3).map(ticker => (
                   <span 
                     key={ticker} 
-                    className="px-2 py-0.5 rounded text-xs font-medium"
+                    className="px-2.5 py-1 rounded-lg text-xs font-semibold"
                     style={{
-                      background: 'rgba(138, 100, 223, 0.12)',
-                      color: 'rgba(180, 150, 255, 0.88)',
-                      border: '1px solid rgba(138, 100, 223, 0.14)'
+                      background: 'rgba(138, 100, 223, 0.10)',
+                      color: 'rgba(170, 140, 240, 0.78)',
+                      border: '1px solid rgba(138, 100, 223, 0.12)'
                     }}
                   >
                     {ticker}
                   </span>
                 ))}
-              </div>
-            )}
-          </div>
+                {article.tickers_mentioned.length > 3 && (
+                  <span 
+                    className="px-2.5 py-1 rounded-lg text-xs font-semibold"
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.04)',
+                      color: 'rgba(255,255,255,0.52)',
+                      border: '1px solid rgba(255,255,255,0.05)'
+                    }}
+                  >
+                    +{article.tickers_mentioned.length - 3} More
+                  </span>
+                )}
+              </motion.div>
+              )}
+              </motion.div>
         </div>
         <motion.a 
           href={article.source_url} 
@@ -438,16 +539,17 @@ export default function SearchOmni({ isOpen, setIsOpen, theme }) {
               ease: HORIZON_EASE_OUT,
               exit: { duration: 0.15, ease: HORIZON_EASE_IN }
             }}
-            className="relative w-full max-w-3xl rounded-[28px] max-h-[80vh] flex flex-col overflow-hidden"
+            className="relative w-full max-w-3xl rounded-[34px] max-h-[80vh] flex flex-col overflow-hidden"
             style={{ 
-              background: 'linear-gradient(180deg, rgba(31, 36, 48, 0.76) 0%, rgba(24, 28, 36, 0.82) 100%)',
-              backdropFilter: 'blur(62px) saturate(165%)',
-              WebkitBackdropFilter: 'blur(62px) saturate(165%)',
-              border: '1px solid rgba(255,255,255,0.08)',
+              background: 'linear-gradient(180deg, rgba(31, 36, 48, 0.78) 0%, rgba(24, 28, 36, 0.84) 100%)',
+              backdropFilter: 'blur(72px) saturate(172%)',
+              WebkitBackdropFilter: 'blur(72px) saturate(172%)',
+              border: '1px solid rgba(255,255,255,0.10)',
               boxShadow: `
-                inset 0 0 0 1px rgba(255,255,255,0.02),
-                0 24px 64px rgba(0,0,0,0.32),
-                0 8px 32px rgba(0,0,0,0.24)
+                inset 0 0 0 1.5px rgba(255,255,255,0.03),
+                inset 0 1px 0 rgba(255,255,255,0.06),
+                0 28px 72px rgba(0,0,0,0.36),
+                0 12px 38px rgba(0,0,0,0.26)
               `,
               transform: isPinching && initialPinchDistance ? 'scale(0.96)' : 'scale(1)',
               transition: 'transform 0.1s ease-out',
@@ -461,9 +563,19 @@ export default function SearchOmni({ isOpen, setIsOpen, theme }) {
               top: 0,
               left: '12%',
               right: '12%',
-              height: '2px',
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-              filter: 'blur(1px)',
+              height: '2.5px',
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+              filter: 'blur(1.2px)',
+              pointerEvents: 'none',
+              zIndex: 10
+            }} />
+
+            {/* Rim-light contour */}
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              borderRadius: '34px',
+              border: '1px solid rgba(255,255,255,0.06)',
               pointerEvents: 'none',
               zIndex: 10
             }} />
@@ -530,16 +642,34 @@ export default function SearchOmni({ isOpen, setIsOpen, theme }) {
 
             {/* Search Input */}
             <div 
-              className="flex items-center gap-4 px-6 py-5 relative"
+              className="flex items-center gap-4 px-7 py-6 relative"
               style={{
-                borderBottom: '1px solid rgba(255,255,255,0.06)'
+                borderBottom: '1px solid rgba(255,255,255,0.06)',
+                background: 'linear-gradient(180deg, rgba(255,255,255,0.012) 0%, transparent 100%)'
               }}
             >
-              <Search 
-                className="w-5 h-5" 
-                strokeWidth={2}
-                style={{ color: 'rgba(255,255,255,0.42)' }} 
-              />
+              {/* Inner curvature sheen */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: '10%',
+                right: '10%',
+                height: '2px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
+                filter: 'blur(1px)',
+                pointerEvents: 'none'
+              }} />
+
+              <motion.div
+                animate={query ? { scale: [1, 1.05, 1] } : {}}
+                transition={{ duration: 0.3, ease: HORIZON_EASE_OUT }}
+              >
+                <Search 
+                  className="w-5 h-5" 
+                  strokeWidth={2}
+                  style={{ color: 'rgba(255,255,255,0.48)' }} 
+                />
+              </motion.div>
               <input
                 type="text"
                 placeholder="Search tickers, companies, or news..."
@@ -547,8 +677,9 @@ export default function SearchOmni({ isOpen, setIsOpen, theme }) {
                 onChange={(e) => setQuery(e.target.value)}
                 className="w-full bg-transparent text-lg focus:outline-none"
                 style={{
-                  color: 'rgba(255,255,255,0.95)',
-                  caretColor: 'rgba(110, 180, 255, 0.88)'
+                  color: 'rgba(255,255,255,0.96)',
+                  caretColor: 'rgba(110, 180, 255, 0.88)',
+                  paddingLeft: '2px'
                 }}
                 autoFocus
               />
@@ -565,23 +696,35 @@ export default function SearchOmni({ isOpen, setIsOpen, theme }) {
               )}
 
               {/* Focus inner glow */}
-              <div 
+              <motion.div 
                 className="absolute inset-0 pointer-events-none"
                 style={{
-                  background: 'radial-gradient(ellipse at 20% 50%, rgba(110, 180, 255, 0.02) 0%, transparent 60%)',
-                  opacity: query ? 1 : 0,
-                  transition: 'opacity 0.3s ease'
+                  background: 'radial-gradient(ellipse at 20% 50%, rgba(110, 180, 255, 0.03) 0%, transparent 65%)'
                 }}
+                animate={{
+                  opacity: query ? 1 : 0
+                }}
+                transition={{ duration: 0.3, ease: HORIZON_EASE_OUT }}
               />
             </div>
 
             {/* Search Mode Tabs */}
             <div 
-              className="flex items-center gap-2 px-6 py-3.5 relative"
+              className="flex items-center gap-2.5 px-7 py-4 relative"
               style={{
-                borderBottom: '1px solid rgba(255,255,255,0.05)'
+                borderBottom: '1px solid rgba(255,255,255,0.04)'
               }}
             >
+              {/* Subtle divider line */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: '8%',
+                right: '8%',
+                height: '1px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)',
+                pointerEvents: 'none'
+              }} />
               {[
                 { id: 'all', label: 'All Results', icon: Search },
                 { id: 'tickers', label: 'Tickers', icon: TrendingUp },
@@ -592,24 +735,29 @@ export default function SearchOmni({ isOpen, setIsOpen, theme }) {
                   <motion.button
                     key={mode.id}
                     onClick={() => setSearchMode(mode.id)}
-                    className="relative flex items-center space-x-2 px-3.5 py-2 rounded-[14px] text-sm font-medium"
+                    className="relative flex items-center space-x-2 px-4 py-2.5 rounded-[16px] text-sm font-semibold"
                     style={{
                       background: isActive 
-                        ? 'linear-gradient(180deg, rgba(110, 180, 255, 0.15) 0%, rgba(90, 160, 255, 0.12) 100%)'
+                        ? 'linear-gradient(180deg, rgba(110, 180, 255, 0.14) 0%, rgba(90, 160, 255, 0.11) 100%)'
                         : 'transparent',
-                      color: isActive ? 'rgba(160, 200, 255, 0.95)' : 'rgba(255,255,255,0.52)',
-                      border: isActive ? '1px solid rgba(110, 180, 255, 0.22)' : '1px solid transparent',
-                      boxShadow: isActive ? 'inset 0 1px 0 rgba(255,255,255,0.08), 0 2px 8px rgba(110, 180, 255, 0.12)' : 'none'
+                      color: isActive ? 'rgba(160, 200, 255, 0.96)' : 'rgba(255,255,255,0.56)',
+                      border: isActive ? '1px solid rgba(110, 180, 255, 0.20)' : '1px solid transparent',
+                      boxShadow: isActive 
+                        ? 'inset 0 1.5px 0 rgba(255,255,255,0.10), 0 3px 10px rgba(110, 180, 255, 0.14)' 
+                        : 'none',
+                      letterSpacing: '0.01em'
                     }}
                     whileHover={!isActive ? {
-                      background: 'rgba(255, 255, 255, 0.04)',
-                      color: 'rgba(255,255,255,0.72)',
-                      transition: { duration: 0.08 }
+                      y: -1,
+                      background: 'rgba(255, 255, 255, 0.05)',
+                      color: 'rgba(255,255,255,0.76)',
+                      transition: { duration: 0.12, ease: HORIZON_EASE_OUT }
                     } : {}}
-                    whileTap={{ scale: 0.98 }}
+                    whileTap={{ scale: 0.97 }}
                     animate={isActive ? {
-                      scale: [1, 1.015, 1],
-                      transition: { duration: 0.22, ease: HORIZON_EASE_OUT }
+                      scale: [1, 1.02, 1],
+                      y: 1,
+                      transition: { duration: 0.18, ease: HORIZON_REBOUND }
                     } : {}}
                   >
                     {/* Liquid ripple effect */}
@@ -632,20 +780,54 @@ export default function SearchOmni({ isOpen, setIsOpen, theme }) {
             </div>
 
             {/* Results */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto px-2 py-2">
+            <motion.div 
+              ref={scrollRef} 
+              className="flex-1 overflow-y-auto px-3 py-3"
+              style={{
+                scrollbarWidth: 'thin',
+                scrollbarColor: 'rgba(255,255,255,0.12) transparent'
+              }}
+            >
               {query.trim() ? (
-                <div className="space-y-8">
+                <motion.div 
+                  className="space-y-10"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3, ease: HORIZON_EASE_OUT }}
+                >
                   {/* Ticker Results */}
                   {searchResults.tickers.length > 0 && (
                     <div>
-                      <h3 
-                        className="text-base font-semibold mb-4 px-4 flex items-center"
-                        style={{ color: 'rgba(255,255,255,0.88)' }}
+                      <div 
+                        className="flex items-center mb-5 px-4 relative"
+                        style={{
+                          paddingLeft: '24px'
+                        }}
                       >
-                        <TrendingUp className="w-5 h-5 mr-2" strokeWidth={2} style={{ color: 'rgba(255,255,255,0.68)' }} />
-                        Market Data ({searchResults.tickers.length})
-                      </h3>
-                      <div className="space-y-2.5 px-2">
+                        {/* Left anchor line */}
+                        <div style={{
+                          position: 'absolute',
+                          left: '12px',
+                          top: '50%',
+                          width: '3px',
+                          height: '20px',
+                          transform: 'translateY(-50%)',
+                          background: 'linear-gradient(180deg, rgba(110, 180, 255, 0.32) 0%, transparent 100%)',
+                          borderRadius: '2px'
+                        }} />
+                        
+                        <h3 
+                          className="text-base font-bold flex items-center"
+                          style={{ 
+                            color: 'rgba(255,255,255,0.92)',
+                            letterSpacing: '0.03em'
+                          }}
+                        >
+                          <TrendingUp className="w-5 h-5 mr-2.5" strokeWidth={2.2} style={{ color: 'rgba(255,255,255,0.72)' }} />
+                          Market Data ({searchResults.tickers.length})
+                        </h3>
+                      </div>
+                      <div className="space-y-3 px-2">
                         {searchResults.tickers.map(({ ticker, ...data }) => (
                           <TickerResult
                             key={ticker}
@@ -663,14 +845,36 @@ export default function SearchOmni({ isOpen, setIsOpen, theme }) {
                   {/* News Results */}
                   {searchResults.news.length > 0 && (
                     <div>
-                      <h3 
-                        className="text-base font-semibold mb-4 px-4 flex items-center"
-                        style={{ color: 'rgba(255,255,255,0.88)' }}
+                      <div 
+                        className="flex items-center mb-5 px-4 relative"
+                        style={{
+                          paddingLeft: '24px'
+                        }}
                       >
-                        <Newspaper className="w-5 h-5 mr-2" strokeWidth={2} style={{ color: 'rgba(255,255,255,0.68)' }} />
-                        News ({searchResults.news.length})
-                      </h3>
-                      <div className="space-y-2.5 px-2">
+                        {/* Left anchor line */}
+                        <div style={{
+                          position: 'absolute',
+                          left: '12px',
+                          top: '50%',
+                          width: '3px',
+                          height: '20px',
+                          transform: 'translateY(-50%)',
+                          background: 'linear-gradient(180deg, rgba(88, 227, 164, 0.32) 0%, transparent 100%)',
+                          borderRadius: '2px'
+                        }} />
+                        
+                        <h3 
+                          className="text-base font-bold flex items-center"
+                          style={{ 
+                            color: 'rgba(255,255,255,0.92)',
+                            letterSpacing: '0.03em'
+                          }}
+                        >
+                          <Newspaper className="w-5 h-5 mr-2.5" strokeWidth={2.2} style={{ color: 'rgba(255,255,255,0.72)' }} />
+                          News ({searchResults.news.length})
+                        </h3>
+                      </div>
+                      <div className="space-y-3.5 px-2">
                         {searchResults.news.map(article => (
                           <NewsResult key={article.id} article={article} />
                         ))}
@@ -828,22 +1032,33 @@ export default function SearchOmni({ isOpen, setIsOpen, theme }) {
             
             {/* Footer with macOS-style keycaps */}
             <div 
-              className="p-4 text-xs flex items-center justify-between relative"
+              className="px-6 py-3.5 text-xs flex items-center justify-between relative"
               style={{
-                borderTop: '1px solid rgba(255,255,255,0.05)'
+                borderTop: '1px solid rgba(255,255,255,0.04)'
               }}
             >
-              <span style={{ color: 'rgba(255,255,255,0.42)' }}>
+              {/* Top glass luminance line */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: '10%',
+                right: '10%',
+                height: '1px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)',
+                pointerEvents: 'none'
+              }} />
+
+              <span style={{ color: 'rgba(255,255,255,0.44)', fontSize: '11px', fontWeight: 500 }}>
                 Search across market data and news
               </span>
-              <div className="flex items-center gap-5">
-                <span style={{ color: 'rgba(255,255,255,0.48)' }}>
+              <div className="flex items-center gap-4">
+                <span style={{ color: 'rgba(255,255,255,0.48)', fontSize: '11px' }}>
                   Open{' '}
                   <kbd 
-                    className="px-2.5 py-1 text-xs font-semibold rounded-md inline-flex items-center"
+                    className="px-2 py-0.5 text-[10px] font-bold rounded-md inline-flex items-center"
                     style={{
                       background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%)',
-                      color: 'rgba(255,255,255,0.72)',
+                      color: 'rgba(255,255,255,0.74)',
                       border: '1px solid rgba(255,255,255,0.08)',
                       boxShadow: `
                         inset 0 0.5px 0 rgba(255,255,255,0.10),
@@ -855,13 +1070,13 @@ export default function SearchOmni({ isOpen, setIsOpen, theme }) {
                     ⌘K
                   </kbd>
                 </span>
-                <span style={{ color: 'rgba(255,255,255,0.48)' }}>
+                <span style={{ color: 'rgba(255,255,255,0.48)', fontSize: '11px' }}>
                   Close{' '}
                   <kbd 
-                    className="px-2.5 py-1 text-xs font-semibold rounded-md inline-flex items-center"
+                    className="px-2 py-0.5 text-[10px] font-bold rounded-md inline-flex items-center"
                     style={{
                       background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%)',
-                      color: 'rgba(255,255,255,0.72)',
+                      color: 'rgba(255,255,255,0.74)',
                       border: '1px solid rgba(255,255,255,0.08)',
                       boxShadow: `
                         inset 0 0.5px 0 rgba(255,255,255,0.10),
