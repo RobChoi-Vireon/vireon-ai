@@ -13,6 +13,8 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isNearCursor, setIsNearCursor] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
+  const [tiltX, setTiltX] = useState(0);
+  const [tiltY, setTiltY] = useState(0);
   const buttonRef = React.useRef(null);
   
   // Safe data access
@@ -47,7 +49,7 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
 
   const signalMeta = getSignalMeta(type);
 
-  // Cursor proximity detection
+  // Cursor proximity detection + parallax tilt
   React.useEffect(() => {
     const handleMouseMove = (e) => {
       if (buttonRef.current) {
@@ -58,11 +60,26 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
           Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2)
         );
         setIsNearCursor(distance < 60);
+
+        // Parallax tilt calculation (2-3° max, very subtle)
+        if (isHovered && distance < rect.width) {
+          const mouseX = e.clientX - rect.left;
+          const mouseY = e.clientY - rect.top;
+          const percentX = (mouseX / rect.width - 0.5) * 2; // -1 to 1
+          const percentY = (mouseY / rect.height - 0.5) * 2; // -1 to 1
+          
+          // Apple-grade subtle tilt: max 2.5°
+          setTiltX(percentY * -2.5);
+          setTiltY(percentX * 2.5);
+        } else {
+          setTiltX(0);
+          setTiltY(0);
+        }
       }
     };
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  }, [isHovered]);
 
   const handleClick = (e) => {
     try {
@@ -107,13 +124,13 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
         willChange: 'transform, filter'
       }}
     >
-      {/* OS Horizon Tahoe Liquid-Glass Panel */}
+      {/* OS Horizon Tahoe Liquid-Glass Panel with Parallax */}
       <motion.div
         className="relative cursor-pointer rounded-[28px] backdrop-blur-xl overflow-hidden"
         style={{
           background: `linear-gradient(145deg, 
-            rgba(255, 255, 255, ${isPrimary ? '0.072' : '0.065'}) 0%, 
-            rgba(255, 255, 255, ${isPrimary ? '0.052' : '0.048'}) 100%)`,
+            rgba(255, 255, 255, ${isPrimary ? '0.102' : '0.095'}) 0%, 
+            rgba(255, 255, 255, ${isPrimary ? '0.082' : '0.078'}) 100%)`,
           border: '1px solid rgba(255, 255, 255, 0.11)',
           boxShadow: isPrimary 
             ? `
@@ -127,16 +144,20 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
               inset 0 -1px 1px rgba(0,0,0,0.04)
             `,
           minHeight: '220px',
-          padding: '26px 28px'
+          padding: '26px 28px',
+          transformStyle: 'preserve-3d',
+          perspective: '1200px'
         }}
         animate={{
           y: isPressed ? 2 : (isHovered ? -2 : 0),
           scale: isPressed ? 0.99 : (isHovered ? 1.01 : 1),
+          rotateX: tiltX,
+          rotateY: tiltY,
           background: isPressed 
-            ? `linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.035) 100%)`
+            ? `linear-gradient(145deg, rgba(255, 255, 255, 0.068) 0%, rgba(255, 255, 255, 0.052) 100%)`
             : (isHovered 
-              ? `linear-gradient(145deg, rgba(255, 255, 255, ${isPrimary ? '0.082' : '0.075'}) 0%, rgba(255, 255, 255, ${isPrimary ? '0.062' : '0.058'}) 100%)`
-              : `linear-gradient(145deg, rgba(255, 255, 255, ${isPrimary ? '0.072' : '0.065'}) 0%, rgba(255, 255, 255, ${isPrimary ? '0.052' : '0.048'}) 100%)`),
+              ? `linear-gradient(145deg, rgba(255, 255, 255, ${isPrimary ? '0.112' : '0.105'}) 0%, rgba(255, 255, 255, ${isPrimary ? '0.092' : '0.088'}) 100%)`
+              : `linear-gradient(145deg, rgba(255, 255, 255, ${isPrimary ? '0.102' : '0.095'}) 0%, rgba(255, 255, 255, ${isPrimary ? '0.082' : '0.078'}) 100%)`),
           boxShadow: isPressed
             ? (isPrimary 
               ? `0 8px 32px -8px rgba(0, 0, 0, 0.32), inset 0 2px 5px rgba(0,0,0,0.12)`
@@ -167,28 +188,29 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
           aria-hidden="true"
         />
 
-        {/* Subsurface lighting gradient (brighter top-left, darker bottom-right) */}
+        {/* Directional subsurface lighting (Tahoe key light simulation) */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background: isPrimary
-              ? 'radial-gradient(ellipse at 25% 20%, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0.04) 100%)'
-              : 'radial-gradient(ellipse at 25% 20%, rgba(255, 255, 255, 0.06) 0%, rgba(0, 0, 0, 0.03) 100%)',
+              ? 'radial-gradient(ellipse at 22% 18%, rgba(255, 255, 255, 0.10) 0%, rgba(0, 0, 0, 0.04) 100%)'
+              : 'radial-gradient(ellipse at 22% 18%, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0.03) 100%)',
             borderRadius: '28px'
           }}
           aria-hidden="true"
         />
 
-        {/* Rim light (top + left edges) */}
+        {/* 1px Inner Rim Glow (top + left edges, feathered) */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background: `
-              linear-gradient(to bottom, rgba(86, 156, 235, ${isPrimary ? '0.16' : '0.12'}) 0%, transparent 35%),
-              linear-gradient(to right, rgba(86, 156, 235, ${isPrimary ? '0.14' : '0.10'}) 0%, transparent 35%)
+              linear-gradient(to bottom, rgba(86, 156, 235, ${isPrimary ? '0.12' : '0.10'}) 0%, transparent 28%),
+              linear-gradient(to right, rgba(86, 156, 235, ${isPrimary ? '0.12' : '0.10'}) 0%, transparent 28%)
             `,
             borderRadius: '28px',
-            opacity: isHovered ? 0.8 : 0.6
+            opacity: isHovered ? 0.65 : 0.52,
+            filter: 'blur(0.5px)'
           }}
           aria-hidden="true"
         />
@@ -253,15 +275,21 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
 
             {/* Icon with enhanced styling */}
             <div className="relative">
-              {/* Faint neon haze (2%) */}
-              <div style={{
-                position: 'absolute',
-                inset: '-4px',
-                background: 'radial-gradient(circle, rgba(86, 156, 235, 0.02) 0%, transparent 70%)',
-                borderRadius: '50%',
-                filter: 'blur(5px)',
-                pointerEvents: 'none'
-              }} />
+              {/* Faint sapphire halo (6-10px radius) */}
+              <motion.div 
+                style={{
+                  position: 'absolute',
+                  inset: '-8px',
+                  background: 'radial-gradient(circle, rgba(86, 156, 235, 0.20) 0%, transparent 70%)',
+                  borderRadius: '50%',
+                  filter: 'blur(8px)',
+                  pointerEvents: 'none'
+                }}
+                animate={{
+                  opacity: isHovered ? 0.18 : 0.02
+                }}
+                transition={{ duration: 0.18 }}
+              />
 
               {/* 2% refraction line at 1.5° */}
               <div
@@ -281,10 +309,10 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
                 animate={{
                   opacity: isPressed ? 0.70 : (isHovered ? 0.92 : 0.80),
                   filter: isHovered 
-                    ? 'brightness(1.10) drop-shadow(0 0 8px rgba(86, 156, 235, 0.24))'
+                    ? 'brightness(1.10) drop-shadow(0 0 10px rgba(86, 156, 235, 0.28))'
                     : 'brightness(1.02)'
                 }}
-                transition={{ duration: 0.16 }}
+                transition={{ duration: 0.18, ease: [0.22, 0.61, 0.36, 1] }}
               >
                 <Icon 
                   className="w-6 h-6 relative z-10"
@@ -297,14 +325,14 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
             </div>
           </motion.div>
           
-          {/* Micro-signal tags (small pills) */}
-          <div className="flex items-center gap-2 mb-3">
+          {/* Micro-signal tags (calmer glass pills) */}
+          <div className="flex items-center gap-2 mb-4" style={{ marginTop: '10px' }}>
             <div
               className="px-2 py-0.5 rounded-full text-[9px] font-semibold uppercase tracking-wider"
               style={{
-                background: 'rgba(255, 255, 255, 0.06)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                color: 'rgba(255, 255, 255, 0.68)',
+                background: 'rgba(255, 255, 255, 0.04)',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                color: 'rgba(255, 255, 255, 0.64)',
                 letterSpacing: '0.06em'
               }}
             >
@@ -313,9 +341,9 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
             <div
               className="px-2 py-0.5 rounded-full text-[9px] font-semibold uppercase tracking-wider"
               style={{
-                background: 'rgba(255, 255, 255, 0.06)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                color: 'rgba(255, 255, 255, 0.68)',
+                background: 'rgba(255, 255, 255, 0.04)',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                color: 'rgba(255, 255, 255, 0.64)',
                 letterSpacing: '0.06em'
               }}
             >
@@ -324,9 +352,9 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
             <div
               className="px-2 py-0.5 rounded-full text-[9px] font-semibold uppercase tracking-wider flex items-center gap-1"
               style={{
-                background: 'rgba(255, 255, 255, 0.06)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                color: 'rgba(255, 255, 255, 0.68)',
+                background: 'rgba(255, 255, 255, 0.04)',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                color: 'rgba(255, 255, 255, 0.64)',
                 letterSpacing: '0.06em'
               }}
             >
@@ -334,8 +362,8 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
                 width: '4px',
                 height: '4px',
                 borderRadius: '50%',
-                background: signalMeta.impact === 'High' ? '#FFB020' : (signalMeta.impact === 'Medium' ? '#A0AEC0' : '#73E6D2'),
-                opacity: 0.8
+                background: signalMeta.impact === 'High' ? '#E6A84E' : (signalMeta.impact === 'Medium' ? '#9BA8B8' : '#6BCAB8'),
+                opacity: 0.72
               }} />
               {signalMeta.impact}
             </div>
@@ -398,29 +426,27 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
               className="font-medium relative"
               style={{
                 fontSize: '14px',
-                color: 'rgba(255, 255, 255, 0.76)'
+                color: 'rgba(255, 255, 255, 0.78)'
               }}
               animate={{
-                y: isHovered ? -1 : 0,
-                color: isHovered ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0.76)',
-                letterSpacing: isHovered ? '0.01em' : '0em'
+                y: isHovered ? -2 : 0,
+                opacity: isHovered ? 1.0 : 0.78,
+                letterSpacing: isHovered ? '0.012em' : '0em'
               }}
-              transition={{ duration: 0.18, ease: [0.22, 0.61, 0.36, 1] }}
-              whileHover={{
-                textDecoration: 'none'
-              }}
+              transition={{ duration: 0.20, ease: [0.22, 0.61, 0.36, 1] }}
             >
               View analysis
-              {/* Subtle bottom glow on link hover */}
+              {/* Soft underline glow on text hover */}
               <motion.div
                 className="absolute bottom-0 left-0 right-0 h-px"
                 style={{
-                  background: 'linear-gradient(90deg, transparent, rgba(86, 156, 235, 0.40), transparent)'
+                  background: 'linear-gradient(90deg, transparent, rgba(86, 156, 235, 0.32), transparent)',
+                  filter: 'blur(0.5px)'
                 }}
                 animate={{
-                  opacity: isHovered ? 0.6 : 0
+                  opacity: isHovered ? 0.10 : 0
                 }}
-                transition={{ duration: 0.16 }}
+                transition={{ duration: 0.18 }}
               />
             </motion.span>
 
@@ -431,14 +457,14 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
                 bottom: '26px'
               }}
               animate={{
-                opacity: isHovered ? 1 : 0.6,
+                opacity: isHovered ? 1 : 0.62,
                 x: isHovered ? 2 : 0
               }}
-              transition={{ duration: 0.16, ease: 'easeOut' }}
+              transition={{ duration: 0.18, ease: [0.22, 0.61, 0.36, 1] }}
             >
               <ExternalLink 
                 className="w-4 h-4"
-                style={{ color: 'rgba(86, 156, 235, 0.76)' }}
+                style={{ color: 'rgba(86, 156, 235, 0.78)' }}
                 strokeWidth={2}
                 aria-hidden="true"
               />
