@@ -129,19 +129,19 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
         className="relative cursor-pointer rounded-[28px] backdrop-blur-xl overflow-hidden"
         style={{
           background: `linear-gradient(145deg, 
-            rgba(255, 255, 255, ${isPrimary ? '0.102' : '0.095'}) 0%, 
-            rgba(255, 255, 255, ${isPrimary ? '0.082' : '0.078'}) 100%)`,
+            rgba(255, 255, 255, ${isPrimary ? '0.105' : '0.095'}) 0%, 
+            rgba(255, 255, 255, ${isPrimary ? '0.088' : '0.082'}) 100%)`,
           border: '1px solid rgba(255, 255, 255, 0.11)',
           boxShadow: isPrimary 
             ? `
-              0 ${isPressed ? 8 : 22}px ${isPressed ? 32 : 48}px -8px rgba(0, 0, 0, 0.32),
+              0 ${isPressed ? 10 : 24}px ${isPressed ? 36 : 52}px -8px rgba(0, 0, 0, ${isPressed ? '0.28' : '0.32'}),
               inset 0 1.5px 0 rgba(255,255,255,0.08),
-              inset 0 -1px 1px rgba(0,0,0,0.05)
+              inset 0 -1px 1px rgba(0,0,0,0.03)
             `
             : `
-              0 ${isPressed ? 6 : 18}px ${isPressed ? 28 : 42}px -8px rgba(0, 0, 0, 0.28),
+              0 ${isPressed ? 8 : 20}px ${isPressed ? 32 : 44}px -8px rgba(0, 0, 0, ${isPressed ? '0.24' : '0.28'}),
               inset 0 1.5px 0 rgba(255,255,255,0.07),
-              inset 0 -1px 1px rgba(0,0,0,0.04)
+              inset 0 -1px 1px rgba(0,0,0,0.03)
             `,
           minHeight: '220px',
           padding: '26px 28px',
@@ -154,21 +154,21 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
           rotateX: tiltX,
           rotateY: tiltY,
           background: isPressed 
-            ? `linear-gradient(145deg, rgba(255, 255, 255, 0.068) 0%, rgba(255, 255, 255, 0.052) 100%)`
+            ? `linear-gradient(145deg, rgba(255, 255, 255, 0.072) 0%, rgba(255, 255, 255, 0.058) 100%)`
             : (isHovered 
-              ? `linear-gradient(145deg, rgba(255, 255, 255, ${isPrimary ? '0.112' : '0.105'}) 0%, rgba(255, 255, 255, ${isPrimary ? '0.092' : '0.088'}) 100%)`
-              : `linear-gradient(145deg, rgba(255, 255, 255, ${isPrimary ? '0.102' : '0.095'}) 0%, rgba(255, 255, 255, ${isPrimary ? '0.082' : '0.078'}) 100%)`),
+              ? `linear-gradient(145deg, rgba(255, 255, 255, ${isPrimary ? '0.118' : '0.108'}) 0%, rgba(255, 255, 255, ${isPrimary ? '0.098' : '0.092'}) 100%)`
+              : `linear-gradient(145deg, rgba(255, 255, 255, ${isPrimary ? '0.105' : '0.095'}) 0%, rgba(255, 255, 255, ${isPrimary ? '0.088' : '0.082'}) 100%)`),
           boxShadow: isPressed
             ? (isPrimary 
-              ? `0 8px 32px -8px rgba(0, 0, 0, 0.32), inset 0 2px 5px rgba(0,0,0,0.12)`
-              : `0 6px 28px -8px rgba(0, 0, 0, 0.28), inset 0 2px 4px rgba(0,0,0,0.10)`)
+              ? `0 10px 36px -8px rgba(0, 0, 0, 0.28), inset 0 2px 5px rgba(0,0,0,0.12)`
+              : `0 8px 32px -8px rgba(0, 0, 0, 0.24), inset 0 2px 4px rgba(0,0,0,0.10)`)
             : (isHovered
               ? (isPrimary
-                ? `0 28px 56px -8px rgba(0, 0, 0, 0.38), 0 0 32px rgba(86, 156, 235, 0.18), inset 0 1.5px 0 rgba(255,255,255,0.10)`
-                : `0 24px 48px -8px rgba(0, 0, 0, 0.34), 0 0 28px rgba(86, 156, 235, 0.14), inset 0 1.5px 0 rgba(255,255,255,0.09)`)
+                ? `0 30px 60px -8px rgba(0, 0, 0, 0.38), 0 0 30px rgba(86, 156, 235, 0.16), inset 0 1.5px 0 rgba(255,255,255,0.10)`
+                : `0 26px 52px -8px rgba(0, 0, 0, 0.34), 0 0 26px rgba(86, 156, 235, 0.12), inset 0 1.5px 0 rgba(255,255,255,0.09)`)
               : (isPrimary 
-                ? `0 22px 48px -8px rgba(0, 0, 0, 0.32), inset 0 1.5px 0 rgba(255,255,255,0.08)`
-                : `0 18px 42px -8px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255,255,255,0.07)`))
+                ? `0 24px 52px -8px rgba(0, 0, 0, 0.32), inset 0 1.5px 0 rgba(255,255,255,0.08)`
+                : `0 20px 44px -8px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255,255,255,0.07)`))
         }}
         transition={{
           type: "spring",
@@ -193,24 +193,44 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
           className="absolute inset-0 pointer-events-none"
           style={{
             background: isPrimary
-              ? 'radial-gradient(ellipse at 22% 18%, rgba(255, 255, 255, 0.10) 0%, rgba(0, 0, 0, 0.04) 100%)'
-              : 'radial-gradient(ellipse at 22% 18%, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0.03) 100%)',
+              ? 'radial-gradient(ellipse at 22% 18%, rgba(255, 255, 255, 0.13) 0%, rgba(0, 0, 0, 0.01) 100%)'
+              : 'radial-gradient(ellipse at 22% 18%, rgba(255, 255, 255, 0.10) 0%, rgba(0, 0, 0, 0.007) 100%)',
             borderRadius: '28px'
           }}
           aria-hidden="true"
         />
 
-        {/* 1px Inner Rim Glow (top + left edges, feathered) */}
+        {/* Soft upward glow to prevent bottom heaviness */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at 50% 100%, rgba(255, 255, 255, 0.015) 0%, transparent 60%)',
+            borderRadius: '28px'
+          }}
+          aria-hidden="true"
+        />
+
+        {/* Enhanced 1px Inner Rim Glow (top + left edges, feathered) */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background: `
-              linear-gradient(to bottom, rgba(86, 156, 235, ${isPrimary ? '0.12' : '0.10'}) 0%, transparent 28%),
-              linear-gradient(to right, rgba(86, 156, 235, ${isPrimary ? '0.12' : '0.10'}) 0%, transparent 28%)
+              linear-gradient(to bottom, rgba(86, 156, 235, ${isPrimary ? '0.24' : '0.22'}) 0%, transparent 28%),
+              linear-gradient(to right, rgba(86, 156, 235, ${isPrimary ? '0.24' : '0.22'}) 0%, transparent 28%)
             `,
             borderRadius: '28px',
-            opacity: isHovered ? 0.65 : 0.52,
+            opacity: isHovered ? 0.72 : 0.62,
             filter: 'blur(0.5px)'
+          }}
+          aria-hidden="true"
+        />
+
+        {/* Soft upward glow (prevents bottom visual heaviness) */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at 50% 105%, rgba(255, 255, 255, 0.018) 0%, transparent 55%)',
+            borderRadius: '28px'
           }}
           aria-hidden="true"
         />
@@ -219,12 +239,12 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
         <motion.div
           className="absolute inset-0 rounded-[28px] pointer-events-none"
           style={{
-            background: 'radial-gradient(ellipse at 40% 25%, rgba(86, 156, 235, 0.16) 0%, transparent 65%)'
+            background: 'radial-gradient(ellipse at 40% 25%, rgba(86, 156, 235, 0.14) 0%, transparent 65%)'
           }}
           animate={{
-            opacity: isPressed ? 0.08 : (isHovered ? 0.20 : 0.14)
+            opacity: isPressed ? 0.08 : (isHovered ? 0.18 : 0.12)
           }}
-          transition={{ duration: isPressed ? 0.08 : 0.22, ease: [0.22, 0.61, 0.36, 1] }}
+          transition={{ duration: isPressed ? 0.08 : 0.20, ease: [0.22, 0.61, 0.36, 1] }}
           aria-hidden="true"
         />
 
@@ -258,7 +278,7 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
             animate={{
               scale: isPressed ? 0.96 : (isHovered ? 1.03 : 1),
               background: isHovered 
-                ? `linear-gradient(180deg, rgba(255, 255, 255, ${isPrimary ? '0.14' : '0.12'}) 0%, rgba(255, 255, 255, ${isPrimary ? '0.10' : '0.09'}) 100%)`
+                ? `linear-gradient(180deg, rgba(255, 255, 255, ${isPrimary ? '0.15' : '0.13'}) 0%, rgba(255, 255, 255, ${isPrimary ? '0.11' : '0.10'}) 100%)`
                 : `linear-gradient(180deg, rgba(255, 255, 255, ${isPrimary ? '0.12' : '0.10'}) 0%, rgba(255, 255, 255, ${isPrimary ? '0.08' : '0.07'}) 100%)`
             }}
             transition={{ type: "spring", stiffness: 300, damping: 28 }}
@@ -275,20 +295,20 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
 
             {/* Icon with enhanced styling */}
             <div className="relative">
-              {/* Faint sapphire halo (6-10px radius) */}
+              {/* Enhanced sapphire halo (6-10px radius) */}
               <motion.div 
                 style={{
                   position: 'absolute',
-                  inset: '-8px',
-                  background: 'radial-gradient(circle, rgba(86, 156, 235, 0.20) 0%, transparent 70%)',
+                  inset: '-9px',
+                  background: 'radial-gradient(circle, rgba(86, 156, 235, 0.26) 0%, transparent 70%)',
                   borderRadius: '50%',
-                  filter: 'blur(8px)',
+                  filter: 'blur(9px)',
                   pointerEvents: 'none'
                 }}
                 animate={{
-                  opacity: isHovered ? 0.18 : 0.02
+                  opacity: isHovered ? 0.22 : 0.02
                 }}
-                transition={{ duration: 0.18 }}
+                transition={{ duration: 0.20, ease: [0.22, 0.61, 0.36, 1] }}
               />
 
               {/* 2% refraction line at 1.5° */}
@@ -309,10 +329,10 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
                 animate={{
                   opacity: isPressed ? 0.70 : (isHovered ? 0.92 : 0.80),
                   filter: isHovered 
-                    ? 'brightness(1.10) drop-shadow(0 0 10px rgba(86, 156, 235, 0.28))'
+                    ? 'brightness(1.12) drop-shadow(0 0 10px rgba(86, 156, 235, 0.32))'
                     : 'brightness(1.02)'
                 }}
-                transition={{ duration: 0.18, ease: [0.22, 0.61, 0.36, 1] }}
+                transition={{ duration: 0.20, ease: [0.22, 0.61, 0.36, 1] }}
               >
                 <Icon 
                   className="w-6 h-6 relative z-10"
