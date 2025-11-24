@@ -741,7 +741,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               top: calc(72px + 14px);
               max-width: min(820px, 90vw);
               border: 1px solid rgba(255, 255, 255, 0.06);
-              background: linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(0,0,0,0.12));
+              background: transparent;
               box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
               border-radius: calc(var(--mp-radius) + 8px);
               overflow: visible;
@@ -1196,6 +1196,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                 className="relative z-10 p-8 pb-6"
                 style={{
                   borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+                  background: 'transparent',
                 }}
               >
                 <div className="flex items-start justify-between gap-6 mb-4">
@@ -1328,6 +1329,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                   maxHeight: 'calc(88vh - 180px)',
                   scrollbarWidth: 'thin',
                   scrollbarColor: 'rgba(255, 255, 255, 0.18) rgba(255, 255, 255, 0.04)',
+                  background: 'transparent',
                 }}
               >
                 <style>{`
