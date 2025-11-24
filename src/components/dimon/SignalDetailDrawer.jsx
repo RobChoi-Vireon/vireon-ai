@@ -367,13 +367,13 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
   const confOverall = 78;
 
   // Generate content
-  const morningTakeaway = `${signal.text} → compliance costs rise → downside for tech multiples; hawkish Fed bias reinforced.`;
-  const translation = 'Big tech companies will spend more on compliance, reducing profit margins and stock attractiveness.';
-  const rippleImpact = 'Watch tech sector margins and growth multiple compression for continued pressure.';
+  const morningTakeaway = `${signal.text} New compliance costs will reduce tech company profits and make their stocks less attractive. The Federal Reserve may keep interest rates higher for longer.`;
+  const translation = 'Large technology companies will need to spend significantly more money to comply with new rules, which will reduce their profit margins and make their stocks less appealing to investors.';
+  const rippleImpact = 'Watch for continued pressure on tech company profit margins and lower stock valuations.';
 
   const analysis = {
-    what: `${signal.text}. This move signals a potential hardening of regulatory frameworks, affecting projections for the tech sector's compliance-related capital expenditures.`,
-    why: 'Regulatory shift implies rising costs and compressed valuations — focus: Technology.',
+    what: `${signal.text}. This move signals that regulators are taking a stricter approach, which will affect how much tech companies need to spend on meeting new requirements.`,
+    why: 'New regulations mean higher costs and lower company valuations — this especially affects the technology sector.',
     impacts: [
       { text: 'Tech Equities', tone: 'risk' },
       { text: 'Treasuries', tone: 'opportunity' },
@@ -382,19 +382,19 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
     ],
     quote: signal.tag === 'Policy Shock' ? 'The new framework represents the most significant regulatory shift in technology oversight since the early 2000s.' : null,
     relevance: {
-      impacts: 'Inflation expectations; Fed policy; growth valuations',
+      impacts: 'Inflation expectations, Federal Reserve policy decisions, how fast companies are expected to grow',
       sectors: 'Technology (negative), Financials (neutral), Industrials (indirectly negative)',
-      assetClasses: 'Equities (growth-sensitive), Rates (short-end yield pressure)',
+      assetClasses: 'Stocks especially fast-growing companies, Bonds especially shorter-term rates',
     },
     downside: {
-      text: 'Potential for accelerated tightening could trigger a risk-off event, particularly in long-duration assets and high-growth tech.',
+      text: 'If regulations tighten faster than expected, investors may sell riskier assets like high-growth tech stocks and long-term bonds.',
       confidence: 85,
     },
     upside: {
-      text: 'A hawkish pivot could strengthen the dollar and create rotational opportunities into value and cyclical sectors.',
+      text: 'Stricter policy could strengthen the U.S. dollar and create opportunities to invest in more established, stable companies instead of high-growth ones.',
       confidence: 60,
     },
-    strategy: 'Traders may hedge duration risk via short-term bond futures, overweight value factor ETFs (e.g., VTV), and rotate away from high-beta growth stocks.',
+    strategy: 'Traders may protect against interest rate risk by using short-term bonds, invest more in established companies with steady earnings, and move away from high-risk growth stocks.',
     correlated: [
       { id: 1, label: 'Fed Rate Decision' },
       { id: 2, label: 'Tech Earnings Miss' },
