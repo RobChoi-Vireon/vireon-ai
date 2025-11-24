@@ -366,41 +366,274 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
   const durationBias = 'Short-term risk-off';
   const confOverall = 78;
 
-  // Generate content
-  const morningTakeaway = `${signal.text} New compliance costs will reduce tech company profits and make their stocks less attractive. The Federal Reserve may keep interest rates higher for longer.`;
-  const translation = 'Large technology companies will need to spend significantly more money to comply with new rules, which will reduce their profit margins and make their stocks less appealing to investors.';
-  const rippleImpact = 'Watch for continued pressure on tech company profit margins and lower stock valuations.';
+  // Generate content based on signal type
+  const getContentForSignal = () => {
+    switch (signal.tag) {
+      case 'Policy Shock':
+        return {
+          morningTakeaway: 'New compliance costs will reduce tech company profits and make their stocks less attractive to investors. The Federal Reserve may keep interest rates higher for longer.',
+          translation: 'Large technology companies will need to spend significantly more money to comply with new rules, which will reduce their profit margins and make their stocks less appealing to investors.',
+          rippleImpact: 'Watch for continued pressure on tech company profit margins and lower stock valuations.',
+          what: 'The U.S. government announced new regulations that require companies using artificial intelligence tools to follow stricter content and safety guidelines.',
+          why: 'These new regulations mean companies will need to spend more money on compliance and legal teams, which directly reduces their profits.',
+          impacts: [
+            { text: 'Tech Stocks', tone: 'risk' },
+            { text: 'Government Bonds', tone: 'opportunity' },
+            { text: 'U.S. Dollar', tone: 'opportunity' },
+            { text: 'Riskier Corporate Bonds', tone: 'risk' },
+          ],
+          quote: 'The new framework represents the most significant regulatory shift in technology oversight since the early 2000s.',
+          relevance: {
+            impacts: 'Inflation expectations, Federal Reserve policy decisions, how fast companies are expected to grow',
+            sectors: 'Technology (negative), Financial companies (neutral), Industrial companies (indirectly negative)',
+            assetClasses: 'Stocks especially fast-growing companies, Bonds especially shorter-term maturities',
+          },
+          downside: {
+            text: 'If regulations get stricter faster than expected, investors may sell riskier assets like high-growth tech stocks and long-term bonds.',
+            confidence: 85,
+          },
+          upside: {
+            text: 'Stricter policy could strengthen the U.S. dollar and create opportunities to invest in more established, profitable companies instead of fast-growing but unprofitable ones.',
+            confidence: 60,
+          },
+          strategy: 'Investors may protect against interest rate increases by using shorter-term bonds, invest more in established companies with steady profits, and reduce exposure to high-risk growth stocks.',
+          correlated: [
+            { id: 1, label: 'Fed Rate Decision' },
+            { id: 2, label: 'Tech Earnings Miss' },
+            { id: 3, label: 'EU Data Privacy' },
+            { id: 4, label: 'AI Regulation Vote' },
+          ]
+        };
+      
+      case 'Credit Stress':
+        return {
+          morningTakeaway: 'Companies in emerging markets are facing higher borrowing costs and difficulty raising money. This creates financial stress and may lead to payment problems.',
+          translation: 'When borrowing costs rise sharply, companies with high debt levels struggle to refinance their loans, which can lead to defaults or forced asset sales.',
+          rippleImpact: 'Watch for continued stress in emerging market bonds and potential spillover to U.S. companies with international exposure.',
+          what: 'Borrowing costs for companies in emerging markets have increased sharply this week, and fewer companies are successfully issuing new bonds.',
+          why: 'When it costs more to borrow money, companies with existing debt face higher expenses. This can force them to cut spending, sell assets, or in worst cases, default on their loans.',
+          impacts: [
+            { text: 'Emerging Market Bonds', tone: 'risk' },
+            { text: 'U.S. Dollar', tone: 'opportunity' },
+            { text: 'Safe Haven Assets', tone: 'opportunity' },
+            { text: 'Export-Heavy Stocks', tone: 'risk' },
+          ],
+          quote: null,
+          relevance: {
+            impacts: 'Global lending conditions, investor confidence in emerging markets, U.S. dollar strength',
+            sectors: 'Companies with international sales (negative), U.S.-focused companies (neutral to positive)',
+            assetClasses: 'Emerging market bonds (negative), U.S. government bonds (positive), U.S. stocks (mixed)',
+          },
+          downside: {
+            text: 'If borrowing stress worsens, emerging market companies may default on their debts, which could spread to global financial markets and hurt investor confidence.',
+            confidence: 72,
+          },
+          upside: {
+            text: 'Some investors may find opportunities to buy distressed assets at lower prices, or invest in safer U.S. companies that benefit from a stronger dollar.',
+            confidence: 55,
+          },
+          strategy: 'Investors may reduce exposure to emerging market bonds, increase holdings in U.S. dollar assets, and focus on companies with strong balance sheets and low debt levels.',
+          correlated: [
+            { id: 1, label: 'Dollar Strength' },
+            { id: 2, label: 'Fed Policy' },
+            { id: 3, label: 'China Slowdown' },
+            { id: 4, label: 'Bond Market Stress' },
+          ]
+        };
+      
+      case 'Tech Disruption':
+        return {
+          morningTakeaway: 'A new quantum computing breakthrough raises long-term security concerns but has limited immediate market impact.',
+          translation: 'Quantum computers could eventually break the encryption systems that protect digital information today, but this is a long-term risk that will take years to materialize.',
+          rippleImpact: 'Watch for increased spending on next-generation security systems over the next several years.',
+          what: 'Researchers announced a breakthrough in quantum computing that demonstrates the technology could eventually decode current encryption methods.',
+          why: 'Most online security today relies on encryption that quantum computers could theoretically break. This means companies and governments will need to upgrade their security systems over time.',
+          impacts: [
+            { text: 'Cybersecurity Stocks', tone: 'opportunity' },
+            { text: 'Tech Infrastructure', tone: 'neutral' },
+            { text: 'Financial Services', tone: 'neutral' },
+            { text: 'Government Bonds', tone: 'neutral' },
+          ],
+          quote: null,
+          relevance: {
+            impacts: 'Long-term security infrastructure needs, technology spending priorities, data protection requirements',
+            sectors: 'Cybersecurity (positive), Cloud computing (neutral), Financial services (neutral)',
+            assetClasses: 'Technology stocks (mixed), Infrastructure investments (neutral)',
+          },
+          downside: {
+            text: 'If quantum computing advances faster than expected, companies may need to upgrade security systems sooner, creating unexpected costs.',
+            confidence: 45,
+          },
+          upside: {
+            text: 'Companies that develop quantum-resistant security solutions could see strong demand and revenue growth over the next decade.',
+            confidence: 68,
+          },
+          strategy: 'Investors may gradually increase exposure to cybersecurity companies and quantum computing developers while monitoring the pace of technological advancement.',
+          correlated: [
+            { id: 1, label: 'Cybersecurity Spending' },
+            { id: 2, label: 'Cloud Security' },
+            { id: 3, label: 'Data Privacy Rules' },
+            { id: 4, label: 'Tech Infrastructure' },
+          ]
+        };
+      
+      case 'Geopolitical Risk':
+        return {
+          morningTakeaway: 'Ongoing trade tensions are disrupting supply chains and creating uncertainty for companies that manufacture or sell goods internationally.',
+          translation: 'When countries impose tariffs or restrictions on each other, it becomes more expensive and complicated for companies to move products across borders.',
+          rippleImpact: 'Watch for rising costs at companies that rely on international suppliers, and potential shortages of certain products.',
+          what: 'Trade tensions between the U.S., China, and other major economies have escalated, with new tariffs and restrictions affecting global supply chains.',
+          why: 'When trade becomes more expensive or restricted, companies face higher costs for parts and materials. This can lead to product delays, higher prices for consumers, and lower company profits.',
+          impacts: [
+            { text: 'Manufacturing Stocks', tone: 'risk' },
+            { text: 'Consumer Goods', tone: 'risk' },
+            { text: 'Domestic Companies', tone: 'opportunity' },
+            { text: 'Shipping Costs', tone: 'risk' },
+          ],
+          quote: null,
+          relevance: {
+            impacts: 'Product availability, consumer prices, manufacturing costs, delivery times',
+            sectors: 'Manufacturing (negative), Retail (negative), U.S.-focused companies (positive)',
+            assetClasses: 'International stocks (negative), U.S. domestic stocks (positive), Commodities (mixed)',
+          },
+          downside: {
+            text: 'If trade tensions worsen, companies may face severe supply disruptions, forcing them to find new suppliers at higher costs or shut down production temporarily.',
+            confidence: 78,
+          },
+          upside: {
+            text: 'Some U.S. companies that produce domestically may benefit as businesses shift away from international suppliers, creating new sales opportunities.',
+            confidence: 62,
+          },
+          strategy: 'Investors may reduce exposure to companies heavily dependent on international manufacturing and increase holdings in U.S.-based producers.',
+          correlated: [
+            { id: 1, label: 'China Relations' },
+            { id: 2, label: 'Tariff Policy' },
+            { id: 3, label: 'Supply Chain' },
+            { id: 4, label: 'Manufacturing Costs' },
+          ]
+        };
+      
+      case 'Energy Transition':
+        return {
+          morningTakeaway: 'A breakthrough in clean energy technology could lower renewable energy costs and accelerate the transition away from fossil fuels.',
+          translation: 'New technology that makes solar, wind, or battery storage significantly cheaper could speed up the shift to renewable energy.',
+          rippleImpact: 'Watch for increased investment in renewable energy companies and pressure on traditional energy producers.',
+          what: 'Scientists announced a significant improvement in renewable energy technology that could reduce the cost of clean energy production.',
+          why: 'Lower costs make renewable energy more competitive with traditional fossil fuels. This can accelerate adoption by businesses and consumers, affecting energy companies and their investors.',
+          impacts: [
+            { text: 'Renewable Energy Stocks', tone: 'opportunity' },
+            { text: 'Oil & Gas Companies', tone: 'risk' },
+            { text: 'Electric Utilities', tone: 'opportunity' },
+            { text: 'Battery Technology', tone: 'opportunity' },
+          ],
+          quote: null,
+          relevance: {
+            impacts: 'Energy costs, climate policy momentum, infrastructure investment priorities',
+            sectors: 'Renewable energy (positive), Traditional energy (negative), Electric utilities (positive)',
+            assetClasses: 'Clean energy stocks (positive), Oil and gas stocks (negative), Infrastructure bonds (positive)',
+          },
+          downside: {
+            text: 'Traditional energy companies may see declining demand and lower stock prices as renewable energy becomes more cost-competitive.',
+            confidence: 65,
+          },
+          upside: {
+            text: 'Companies in solar, wind, battery storage, and electric vehicle infrastructure could see strong growth as adoption accelerates.',
+            confidence: 72,
+          },
+          strategy: 'Investors may gradually shift from traditional energy stocks to renewable energy companies while monitoring the pace of technology adoption.',
+          correlated: [
+            { id: 1, label: 'Climate Policy' },
+            { id: 2, label: 'Battery Technology' },
+            { id: 3, label: 'Electric Vehicles' },
+            { id: 4, label: 'Utility Companies' },
+          ]
+        };
+      
+      case 'Social Unrest':
+        return {
+          morningTakeaway: 'Rising living costs are causing protests across Europe, which could lead to policy changes and economic disruption in affected countries.',
+          translation: 'When many people struggle with high prices for food, housing, and energy, social and political pressure builds for governments to take action.',
+          rippleImpact: 'Watch for potential policy responses, business disruptions, and reduced consumer spending in affected European markets.',
+          what: 'Large protests over high living costs are occurring in major cities across France, the UK, and Spain as inflation continues to squeeze household budgets.',
+          why: 'High inflation reduces purchasing power, making everyday life more expensive. This can lead to political instability, policy changes, and reduced consumer spending, all of which affect businesses and markets.',
+          impacts: [
+            { text: 'European Stocks', tone: 'risk' },
+            { text: 'Consumer Spending', tone: 'risk' },
+            { text: 'Safe Haven Bonds', tone: 'opportunity' },
+            { text: 'Political Stability', tone: 'risk' },
+          ],
+          quote: null,
+          relevance: {
+            impacts: 'Consumer spending patterns, political stability, government policy responses, business operations',
+            sectors: 'European retailers (negative), Luxury goods (negative), Utilities (neutral)',
+            assetClasses: 'European stocks (negative), European bonds (mixed), Safe haven assets (positive)',
+          },
+          downside: {
+            text: 'If unrest intensifies, governments may implement emergency policies that hurt business profits, or disruptions could affect supply chains and consumer spending.',
+            confidence: 68,
+          },
+          upside: {
+            text: 'Government responses to social pressure may include spending programs that boost economic growth, or inflation may ease faster than expected as energy costs decline.',
+            confidence: 52,
+          },
+          strategy: 'Investors may reduce exposure to European consumer-facing businesses and increase holdings in defensive sectors or U.S. assets.',
+          correlated: [
+            { id: 1, label: 'Inflation Data' },
+            { id: 2, label: 'Energy Prices' },
+            { id: 3, label: 'Government Policy' },
+            { id: 4, label: 'Consumer Confidence' },
+          ]
+        };
+      
+      default:
+        return {
+          morningTakeaway: `${signal.text} This development may affect market sentiment and investor positioning.`,
+          translation: 'Market conditions are changing in ways that could affect investment decisions.',
+          rippleImpact: 'Watch for related developments and their impact on affected markets.',
+          what: signal.text,
+          why: 'This event may influence how investors view risk and opportunity in the current market environment.',
+          impacts: [
+            { text: 'Global Markets', tone: 'neutral' },
+            { text: 'Investor Sentiment', tone: 'neutral' },
+          ],
+          quote: null,
+          relevance: {
+            impacts: 'Market sentiment, investor positioning, risk appetite',
+            sectors: 'Various sectors may be affected depending on specific circumstances',
+            assetClasses: 'Multiple asset classes may see impacts',
+          },
+          downside: {
+            text: 'Uncertainty may lead to increased market volatility and more cautious investor behavior.',
+            confidence: 60,
+          },
+          upside: {
+            text: 'Markets may adapt to new conditions and create opportunities for well-positioned investors.',
+            confidence: 55,
+          },
+          strategy: 'Investors should monitor developments closely and adjust portfolios based on their risk tolerance and investment goals.',
+          correlated: [
+            { id: 1, label: 'Related Signal 1' },
+            { id: 2, label: 'Related Signal 2' },
+          ]
+        };
+    }
+  };
+
+  const content = getContentForSignal();
+  const morningTakeaway = content.morningTakeaway;
+  const translation = content.translation;
+  const rippleImpact = content.rippleImpact;
 
   const analysis = {
-    what: `${signal.text}. This move signals that regulators are taking a stricter approach, which will affect how much tech companies need to spend on meeting new requirements.`,
-    why: 'New regulations mean higher costs and lower company valuations — this especially affects the technology sector.',
-    impacts: [
-      { text: 'Tech Equities', tone: 'risk' },
-      { text: 'Treasuries', tone: 'opportunity' },
-      { text: 'USD', tone: 'opportunity' },
-      { text: 'HY Spreads', tone: 'risk' },
-    ],
-    quote: signal.tag === 'Policy Shock' ? 'The new framework represents the most significant regulatory shift in technology oversight since the early 2000s.' : null,
-    relevance: {
-      impacts: 'Inflation expectations, Federal Reserve policy decisions, how fast companies are expected to grow',
-      sectors: 'Technology (negative), Financials (neutral), Industrials (indirectly negative)',
-      assetClasses: 'Stocks especially fast-growing companies, Bonds especially shorter-term rates',
-    },
-    downside: {
-      text: 'If regulations tighten faster than expected, investors may sell riskier assets like high-growth tech stocks and long-term bonds.',
-      confidence: 85,
-    },
-    upside: {
-      text: 'Stricter policy could strengthen the U.S. dollar and create opportunities to invest in more established, stable companies instead of high-growth ones.',
-      confidence: 60,
-    },
-    strategy: 'Traders may protect against interest rate risk by using short-term bonds, invest more in established companies with steady earnings, and move away from high-risk growth stocks.',
-    correlated: [
-      { id: 1, label: 'Fed Rate Decision' },
-      { id: 2, label: 'Tech Earnings Miss' },
-      { id: 3, label: 'EU Data Privacy' },
-      { id: 4, label: 'AI Regulation Vote' },
-    ]
+    what: content.what,
+    why: content.why,
+    impacts: content.impacts,
+    quote: content.quote,
+    relevance: content.relevance,
+    downside: content.downside,
+    upside: content.upside,
+    strategy: content.strategy,
+    correlated: content.correlated
   };
 
   return (
