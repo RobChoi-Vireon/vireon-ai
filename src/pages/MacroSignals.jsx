@@ -58,7 +58,7 @@ const MOCK_DATA = {
   priority_signals: [
     {
       tag: "Policy Shock",
-      text: "DC unveils sweeping AI content rules, compliance costs surge",
+      text: "New U.S. AI rules will raise costs for companies using AI tools.",
       urgency: "critical",
       source: "washpost",
       quick_glance_tags: [
@@ -70,7 +70,7 @@ const MOCK_DATA = {
     },
     {
       tag: "Credit Stress", 
-      text: "EM HY spreads widen 35 bps WoW, issuance freezes",
+      text: "Borrowing costs for emerging-market companies are rising, and fewer new bonds are being issued.",
       urgency: "high",
       source: "ft",
       quick_glance_tags: [
