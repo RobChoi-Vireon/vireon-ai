@@ -1364,19 +1364,23 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
 
                 <div className="p-8 pt-6">
                   {/* ============================================================
-                      SIMPLIFIED VIEW: Summary, Confidence, Why It Matters, In Simple Terms
-                      These 4 sections appear in BOTH views
+                      SIMPLIFIED VIEW (CEP_STAGE_1)
+                      Summary, Confidence, Why It Matters, In Simple Terms, Impact Badges
                   ============================================================ */}
                   
-                  {/* 1. SUMMARY */}
-                  <section className="ri-section mb-6">
+                  {/* 1. SUMMARY [CEP_STAGE_1] */}
+                  <section className="ri-section ri-section--compact" data-cep="CEP_STAGE_1">
                     <h3 className="ri-section-title">
                       <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
                       Summary
                     </h3>
-                    <p className="ri-section-body mb-4">{summary}</p>
-                    
-                    {/* 2. CONFIDENCE */}
+                    <p className="ri-section-body">{summary}</p>
+                  </section>
+
+                  <div className="ri-divider" />
+
+                  {/* 2. CONFIDENCE [CEP_STAGE_1] */}
+                  <section className="ri-section ri-section--compact" data-cep="CEP_STAGE_1">
                     <div className="ri-confidence-inline">
                       <span className="text-xs font-medium uppercase tracking-wide" style={{ color: '#AAB1B8', opacity: 0.7 }}>
                         Confidence
@@ -1385,12 +1389,12 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                     </div>
                   </section>
 
-                  <NarrativeLink />
+                  <div className="ri-divider" />
 
-                  {/* 3. WHY IT MATTERS */}
-                  <section className="ri-section">
+                  {/* 3. WHY IT MATTERS [CEP_STAGE_1] */}
+                  <section className="ri-section ri-section--compact" data-cep="CEP_STAGE_1">
                     <h3 className="ri-section-title">
-                      <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                      <Target className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
                       Why It Matters
                     </h3>
                     <p className="ri-section-body">
@@ -1398,51 +1402,66 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                     </p>
                   </section>
 
-                  <NarrativeLink />
+                  <div className="ri-divider" />
 
-                  {/* 4. IN SIMPLE TERMS */}
+                  {/* 4. IN SIMPLE TERMS [CEP_STAGE_1] */}
                   {translation && (
-                    <section className="ri-section">
-                      <div 
-                        className="p-5 rounded-[16px] border relative"
-                        style={{
-                          background: 'rgba(255, 255, 255, 0.025)',
-                          borderColor: 'rgba(255, 255, 255, 0.08)',
-                          backdropFilter: 'blur(18px)',
-                        }}
-                      >
-                        <div className="flex items-center gap-2 mb-3">
-                          <Sparkles className="w-3.5 h-3.5" style={{ color: 'rgba(255, 255, 255, 0.55)' }} />
-                          <span 
-                            className="text-[11px] font-semibold uppercase tracking-wide"
-                            style={{ color: 'rgba(255, 255, 255, 0.55)' }}
-                          >
-                            In Simple Terms
-                          </span>
-                        </div>
-                        <p 
-                          className="text-[14px] font-normal leading-relaxed"
-                          style={{ 
-                            color: 'rgba(255, 255, 255, 0.82)',
-                            lineHeight: '1.55'
+                    <>
+                      <section className="ri-section ri-section--compact" data-cep="CEP_STAGE_1">
+                        <div 
+                          className="p-4 rounded-[14px] border relative"
+                          style={{
+                            background: 'rgba(255, 255, 255, 0.02)',
+                            borderColor: 'rgba(255, 255, 255, 0.06)',
+                            backdropFilter: 'blur(16px)',
                           }}
                         >
-                          {translation}
-                        </p>
-                      </div>
-                    </section>
+                          <div className="flex items-center gap-2 mb-2">
+                            <Sparkles className="w-3.5 h-3.5" style={{ color: 'rgba(255, 255, 255, 0.50)' }} />
+                            <span 
+                              className="text-[11px] font-semibold uppercase tracking-wide"
+                              style={{ color: 'rgba(255, 255, 255, 0.50)' }}
+                            >
+                              In Simple Terms
+                            </span>
+                          </div>
+                          <p 
+                            className="text-[14px] font-normal leading-relaxed"
+                            style={{ 
+                              color: 'rgba(255, 255, 255, 0.80)',
+                              lineHeight: '1.5'
+                            }}
+                          >
+                            {translation}
+                          </p>
+                        </div>
+                      </section>
+                      <div className="ri-divider" />
+                    </>
                   )}
 
+                  {/* 5. IMPACT SNAPSHOT - BADGES ONLY [CEP_STAGE_1] */}
+                  <section className="ri-section ri-section--compact" data-cep="CEP_STAGE_1">
+                    <h3 className="ri-section-title">
+                      <Activity className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                      Impact Snapshot
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {analysis.impacts.map((impact, i) => (
+                        <ImpactChip key={i} text={impact.text} tone={impact.tone} />
+                      ))}
+                    </div>
+                  </section>
+
                   {/* ============================================================
-                      DETAILED VIEW ONLY: Everything below only shows when detailed
-                      What Happened, Impact Snapshot, Risk/Upside, Ripple Effects,
-                      Market Relevance, How Investors May Respond, Related Signals
+                      DETAILED VIEW ONLY (CEP_STAGE_2, CEP_STAGE_3, CEP_STAGE_4)
+                      Non-duplicating sections that expand below simplified view
                   ============================================================ */}
                   <div className="ri-details">
-                    <NarrativeLink />
+                    <div className="ri-divider ri-divider--expanded" />
 
-                    {/* 5. WHAT HAPPENED (Detailed only) */}
-                    <section className="ri-section">
+                    {/* 1. WHAT HAPPENED [CEP_STAGE_2] */}
+                    <section className="ri-section ri-section--expanded" data-cep="CEP_STAGE_2">
                       <h3 className="ri-section-title">
                         <Target className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
                         What Happened
@@ -1450,152 +1469,183 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                       <p className="ri-section-body">{analysis.what}</p>
                     </section>
 
-                    <NarrativeLink />
+                    <div className="ri-divider ri-divider--expanded" />
 
-                    {/* 6. IMPACT SNAPSHOT (Detailed only) */}
-                    <section className="ri-section">
+                    {/* 2. IMPACT SNAPSHOT - FULL [CEP_STAGE_2] */}
+                    <section className="ri-section ri-section--expanded" data-cep="CEP_STAGE_2">
                       <h3 className="ri-section-title">
                         <Activity className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                        Impact Snapshot
+                        Detailed Impact Analysis
                       </h3>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-2 mb-4">
                         {analysis.impacts.map((impact, i) => (
                           <ImpactChip key={i} text={impact.text} tone={impact.tone} />
                         ))}
                       </div>
+                      <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.55, opacity: 0.75 }}>
+                        Assets ordered by expected magnitude of effect. Risk-toned items indicate potential negative pressure; opportunity-toned indicate potential positive pressure.
+                      </p>
                     </section>
 
-                    <NarrativeLink />
+                    <div className="ri-divider ri-divider--expanded" />
 
-                    {/* 7 & 8. DOWNSIDE RISK / UPSIDE POTENTIAL (Detailed only) */}
-                    <section className="ri-section">
-                      <div className="ri-grid mb-2">
-                        <div className={`ri-card ${sentiment === 'risk' ? 'active risk' : ''}`}>
-                          <div className="flex items-center gap-3 mb-3">
-                            <AlertCircle className="w-5 h-5" style={{ color: HORIZON.color.risk }} />
-                            <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
-                              Downside Risk
-                            </h4>
-                          </div>
-                          <p className="text-sm mb-3" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
-                            {analysis.downside.text}
-                          </p>
-                          <div className="text-xs" style={{ color: '#AAB1B8' }}>
-                            Confidence: <span style={{ color: HORIZON.color.risk, fontWeight: 700 }}>
-                              {analysis.downside.confidence}%
-                            </span>
-                          </div>
+                    {/* 3. DOWNSIDE RISK [CEP_STAGE_3] */}
+                    <motion.section 
+                      className="ri-section ri-section--expanded" 
+                      data-cep="CEP_STAGE_3"
+                      initial={{ opacity: 0, scale: 0.97 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
+                    >
+                      <div className={`ri-card ri-card--risk ${sentiment === 'risk' ? 'active' : ''}`}>
+                        <div className="flex items-center gap-3 mb-3">
+                          <AlertCircle className="w-5 h-5" style={{ color: HORIZON.color.risk }} />
+                          <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
+                            Downside Risk
+                          </h4>
                         </div>
-
-                        <div className={`ri-card ${sentiment === 'opportunity' ? 'active oppty' : ''}`}>
-                          <div className="flex items-center gap-3 mb-3">
-                            <ShieldCheck className="w-5 h-5" style={{ color: HORIZON.color.opportunity }} />
-                            <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
-                              Upside Potential
-                            </h4>
-                          </div>
-                          <p className="text-sm mb-3" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
-                            {analysis.upside.text}
-                          </p>
-                          <div className="text-xs" style={{ color: '#AAB1B8' }}>
-                            Confidence: <span style={{ color: HORIZON.color.opportunity, fontWeight: 700 }}>
-                              {analysis.upside.confidence}%
-                            </span>
-                          </div>
+                        <p className="text-sm mb-3" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
+                          {analysis.downside.text}
+                        </p>
+                        <div className="text-xs" style={{ color: '#AAB1B8' }}>
+                          Confidence: <span style={{ color: HORIZON.color.risk, fontWeight: 700 }}>
+                            {analysis.downside.confidence}%
+                          </span>
                         </div>
                       </div>
-                    </section>
+                    </motion.section>
 
-                    <NarrativeLink />
+                    <div className="ri-divider ri-divider--expanded" />
 
-                    {/* 9. RIPPLE EFFECTS (Detailed only) */}
+                    {/* 4. UPSIDE POTENTIAL [CEP_STAGE_3] */}
+                    <motion.section 
+                      className="ri-section ri-section--expanded" 
+                      data-cep="CEP_STAGE_3"
+                      initial={{ opacity: 0, scale: 0.97 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1], delay: 0.05 }}
+                    >
+                      <div className={`ri-card ri-card--oppty ${sentiment === 'opportunity' ? 'active' : ''}`}>
+                        <div className="flex items-center gap-3 mb-3">
+                          <ShieldCheck className="w-5 h-5" style={{ color: HORIZON.color.opportunity }} />
+                          <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
+                            Upside Potential
+                          </h4>
+                        </div>
+                        <p className="text-sm mb-3" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
+                          {analysis.upside.text}
+                        </p>
+                        <div className="text-xs" style={{ color: '#AAB1B8' }}>
+                          Confidence: <span style={{ color: HORIZON.color.opportunity, fontWeight: 700 }}>
+                            {analysis.upside.confidence}%
+                          </span>
+                        </div>
+                      </div>
+                    </motion.section>
+
+                    <div className="ri-divider ri-divider--expanded" />
+
+                    {/* 5. RIPPLE EFFECTS [CEP_STAGE_3] */}
                     {rippleImpact && (
                       <>
-                        <section className="ri-section">
+                        <section className="ri-section ri-section--expanded" data-cep="CEP_STAGE_3">
                           <h3 className="ri-section-title">
                             <Activity className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
                             Ripple Effects
                           </h3>
                           <p className="ri-section-body">{rippleImpact}</p>
                         </section>
-                        <NarrativeLink />
+                        <div className="ri-divider ri-divider--expanded" />
                       </>
                     )}
 
-                    {/* 10. CONTEXT QUOTE (Detailed only, optional) */}
+                    {/* 6. QUOTED INSIGHT [CEP_STAGE_4] */}
                     {analysis.quote && (
                       <>
-                        <blockquote
-                          className="ri-section-body mb-6 pl-4 italic"
-                          style={{
-                            borderLeft: `2px solid ${HORIZON.color.accent}`,
-                            opacity: 0.85,
-                          }}
-                        >
-                          "{analysis.quote}"
-                        </blockquote>
-                        <NarrativeLink />
+                        <section className="ri-section ri-section--expanded" data-cep="CEP_STAGE_4">
+                          <h3 className="ri-section-title">
+                            <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                            Quoted Insight
+                          </h3>
+                          <blockquote
+                            className="ri-section-body pl-4 italic"
+                            style={{
+                              borderLeft: `2px solid ${HORIZON.color.accent}`,
+                              opacity: 0.85,
+                            }}
+                          >
+                            "{analysis.quote}"
+                          </blockquote>
+                        </section>
+                        <div className="ri-divider ri-divider--expanded" />
                       </>
                     )}
 
-                    {/* 11. MARKET RELEVANCE (Detailed only) */}
-                    <div className="mb-6">
-                      <h4 className="ri-section-title">Market Relevance</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* 7. MARKET RELEVANCE [CEP_STAGE_4] */}
+                    <section className="ri-section ri-section--expanded" data-cep="CEP_STAGE_4">
+                      <h3 className="ri-section-title">
+                        <Target className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                        Market Relevance
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                         <div>
-                          <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
+                          <div className="text-xs font-semibold mb-2" style={{ color: '#AAB1B8', opacity: 0.65 }}>
                             What Changes
                           </div>
-                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
+                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.55, opacity: 0.82 }}>
                             {analysis.relevance.impacts}
                           </p>
                         </div>
                         <div>
-                          <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
+                          <div className="text-xs font-semibold mb-2" style={{ color: '#AAB1B8', opacity: 0.65 }}>
                             Sectors Affected
                           </div>
-                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
+                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.55, opacity: 0.82 }}>
                             {analysis.relevance.sectors}
                           </p>
                         </div>
                         <div>
-                          <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
+                          <div className="text-xs font-semibold mb-2" style={{ color: '#AAB1B8', opacity: 0.65 }}>
                             Investment Types
                           </div>
-                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
+                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.55, opacity: 0.82 }}>
                             {analysis.relevance.assetClasses}
                           </p>
                         </div>
                       </div>
-                    </div>
+                    </section>
 
-                    <NarrativeLink />
+                    <div className="ri-divider ri-divider--expanded" />
 
-                    {/* 12. HOW INVESTORS MAY RESPOND (Detailed only) */}
-                    <div
-                      className="ri-card mb-6"
-                      style={{
-                        background: 'rgba(255, 255, 255, 0.04)',
-                        border: '1px solid rgba(255, 255, 255, 0.08)',
-                      }}
-                    >
-                      <div className="flex items-center gap-2 mb-3">
-                        <Link2 className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                        <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
-                          How Investors May Respond
-                        </h4>
+                    {/* 8. HOW INVESTORS MAY RESPOND [CEP_STAGE_4] */}
+                    <section className="ri-section ri-section--expanded" data-cep="CEP_STAGE_4">
+                      <div
+                        className="ri-card"
+                        style={{
+                          background: 'rgba(255, 255, 255, 0.03)',
+                          border: '1px solid rgba(255, 255, 255, 0.06)',
+                        }}
+                      >
+                        <div className="flex items-center gap-2 mb-3">
+                          <Link2 className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                          <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
+                            How Investors May Respond
+                          </h4>
+                        </div>
+                        <p className="ai-voice">
+                          <span className="li-ai-voice-dot" />
+                          Based on this signal:
+                        </p>
+                        <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
+                          {analysis.strategy}
+                        </p>
                       </div>
-                      <p className="ai-voice">
-                        <span className="li-ai-voice-dot" />
-                        Based on this signal:
-                      </p>
-                      <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
-                        {analysis.strategy}
-                      </p>
-                    </div>
+                    </section>
 
-                    {/* 13. RELATED SIGNALS (Detailed only) */}
-                    <section className="ri-section">
+                    <div className="ri-divider ri-divider--expanded" />
+
+                    {/* 9. RELATED SIGNALS [CEP_STAGE_4] */}
+                    <section className="ri-section ri-section--expanded" data-cep="CEP_STAGE_4">
                       <div className="ri-next">
                         <strong style={{ fontSize: 14, color: 'rgba(255, 255, 255, 0.88)' }}>
                           Related Signals
