@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLeft, ChevronRight, BarChart3, DollarSign, Activity, Sparkles } from 'lucide-react';
@@ -926,14 +925,15 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const [orbPulseActive, setOrbPulseActive] = useState(false);
   const [drawerLuminance, setDrawerLuminance] = useState(1.0);
 
-  const glassParallaxX = useSpring(0, { damping: 30, stiffness: 90 });
-  const glassParallaxY = useSpring(0, { damping: 30, stiffness: 90 });
+  // OS Horizon V4 — GPU-optimized spring configs for 60fps parallax
+  const glassParallaxX = useSpring(0, { damping: 40, stiffness: 60, mass: 0.8 });
+  const glassParallaxY = useSpring(0, { damping: 40, stiffness: 60, mass: 0.8 });
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const parallaxX = useSpring(mouseX, { damping: 20, stiffness: 100 });
-  const parallaxY = useSpring(mouseY, { damping: 20, stiffness: 100 });
-  const bgParallaxX = useSpring(mouseX, { damping: 25, stiffness: 80 });
-  const bgParallaxY = useSpring(mouseY, { damping: 25, stiffness: 80 });
+  const parallaxX = useSpring(mouseX, { damping: 35, stiffness: 50, mass: 0.6 });
+  const parallaxY = useSpring(mouseY, { damping: 35, stiffness: 50, mass: 0.6 });
+  const bgParallaxX = useSpring(mouseX, { damping: 45, stiffness: 40, mass: 0.7 });
+  const bgParallaxY = useSpring(mouseY, { damping: 45, stiffness: 40, mass: 0.7 });
 
   const [isPillHovered, setIsPillHovered] = useState(false);
   const [isEquilibriumActive, setIsEquilibriumActive] = useState(false);
