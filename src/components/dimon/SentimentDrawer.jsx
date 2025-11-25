@@ -28,41 +28,41 @@ const MOTION = {
   }
 };
 
-// Segment Configuration — OS Horizon V1 CEP Clarity Rewrite (Zero Jargon)
+// Segment Configuration
 const SEGMENT_CONFIG = {
   Policy: { 
     Icon: Shield, 
     color: '#70A8E8', 
-    glow: 'rgba(112, 168, 232, 0.10)',
-    ambient: 'rgba(112, 168, 232, 0.05)',
-    insight: 'Government rules are tightening across multiple industries.',
+    glow: 'rgba(112, 168, 232, 0.15)',
+    ambient: 'rgba(112, 168, 232, 0.08)',
+    insight: 'Regulatory oversight expanding across multiple sectors',
     status: 'Rising',
     statusColor: '#FFB020'
   },
   Credit: { 
     Icon: Briefcase, 
     color: '#B88AED', 
-    glow: 'rgba(184, 138, 237, 0.10)',
-    ambient: 'rgba(184, 138, 237, 0.05)',
-    insight: 'Borrowing costs for weaker companies jumped as lenders tightened conditions.',
+    glow: 'rgba(184, 138, 237, 0.15)',
+    ambient: 'rgba(184, 138, 237, 0.08)',
+    insight: 'EM spreads widening as credit markets show stress signals',
     status: 'Moderate',
     statusColor: '#FFB020'
   },
   Equities: { 
     Icon: BarChart3, 
     color: '#32C288', 
-    glow: 'rgba(50, 194, 136, 0.10)',
-    ambient: 'rgba(50, 194, 136, 0.05)',
-    insight: 'Large tech stocks are driving most of the gains, signaling big tech dominance risk.',
+    glow: 'rgba(50, 194, 136, 0.15)',
+    ambient: 'rgba(50, 194, 136, 0.08)',
+    insight: 'Flat breadth with concentrated gains in mega-cap names',
     status: 'Stable',
     statusColor: '#5EA7FF'
   },
   Global: { 
     Icon: Globe, 
     color: '#EDB859', 
-    glow: 'rgba(237, 184, 89, 0.10)',
-    ambient: 'rgba(237, 184, 89, 0.05)',
-    insight: 'Soft demand from China is weighing on industrial metals.',
+    glow: 'rgba(237, 184, 89, 0.15)',
+    ambient: 'rgba(237, 184, 89, 0.08)',
+    insight: 'China slowdown weighing on global growth outlook',
     status: 'Softening',
     statusColor: '#F26A6A'
   }
@@ -262,306 +262,86 @@ const LivingAlignmentOrb = ({ score, delay }) => {
 };
 
 // ============================================================================
-// CONDENSED INSIGHT (Top Line) — OS Horizon Ironclad V3
+// NARRATIVE CAPSULE (Apple-Grade Optical Centering)
 // ============================================================================
-const CondensedInsightPanel = ({ delay }) => {
+const InsightRevealPanel = ({ segments, delay }) => {
   return (
     <motion.div
-      className="relative mx-auto"
+      className="relative rounded-[28px] overflow-hidden mx-auto"
       style={{
-        maxWidth: '92%',
-        marginTop: '8px',
-        marginBottom: '28px',
-        textAlign: 'left'
-      }}
-      initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: delay + 0.06, duration: 0.22, ease: MOTION.CURVES.silk }}
-    >
-      <p 
-        className="relative z-10"
-        style={{ 
-          fontSize: '17px',
-          lineHeight: '1.38',
-          color: 'rgba(255,255,255,0.94)',
-          letterSpacing: '-0.02em',
-          fontWeight: 500,
-          textShadow: '0px 1px 3px rgba(0,0,0,0.32)'
-        }}
-      >
-        Markets are turning more cautious as borrowing costs rise across multiple areas.
-      </p>
-    </motion.div>
-  );
-};
-
-// ============================================================================
-// CEP MINI-CARD — OS Horizon Ironclad V3
-// ============================================================================
-const CEPMiniCard = ({ icon: Icon, title, color, whatHappening, whyMatters, delay, isLast }) => {
-  return (
-    <motion.div
-      className="relative"
-      style={{ 
-        paddingLeft: '0',
-        paddingBottom: isLast ? '0' : '20px',
-        marginBottom: isLast ? '0' : '20px'
-      }}
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.24, ease: MOTION.CURVES.spring }}
-    >
-      {/* Header Row */}
-      <div className="flex items-center gap-3 mb-4">
-        <div 
-          className="w-9 h-9 rounded-[12px] flex items-center justify-center"
-          style={{
-            background: `${color}14`,
-            border: `1px solid ${color}28`,
-            boxShadow: `inset 0 1px 0 rgba(255,255,255,0.08)`
-          }}
-        >
-          <Icon 
-            style={{ color: color, filter: 'brightness(1.12)' }} 
-            className="w-4.5 h-4.5" 
-            strokeWidth={2.2} 
-          />
-        </div>
-        <span 
-          className="text-[12px] font-semibold uppercase tracking-wider"
-          style={{ 
-            color: 'rgba(255,255,255,0.72)', 
-            letterSpacing: '0.08em'
-          }}
-        >
-          {title}
-        </span>
-      </div>
-
-      {/* Content Block — Left-Aligned Spine */}
-      <div className="space-y-3" style={{ paddingLeft: '0' }}>
-        <div>
-          <span 
-            className="text-[11px] font-medium uppercase tracking-wide block mb-1.5"
-            style={{ color: 'rgba(255,255,255,0.48)', letterSpacing: '0.04em' }}
-          >
-            What's happening
-          </span>
-          <p 
-            style={{ 
-              fontSize: '14px',
-              lineHeight: '1.4',
-              color: 'rgba(255,255,255,0.88)',
-              letterSpacing: '-0.01em'
-            }}
-          >
-            {whatHappening}
-          </p>
-        </div>
-        <div>
-          <span 
-            className="text-[11px] font-medium uppercase tracking-wide block mb-1.5"
-            style={{ color: 'rgba(255,255,255,0.48)', letterSpacing: '0.04em' }}
-          >
-            Why it matters
-          </span>
-          <p 
-            style={{ 
-              fontSize: '14px',
-              lineHeight: '1.4',
-              color: 'rgba(255,255,255,0.78)',
-              letterSpacing: '-0.01em'
-            }}
-          >
-            {whyMatters}
-          </p>
-        </div>
-      </div>
-
-      {/* Soft Liquid Glass Separator */}
-      {!isLast && (
-        <div 
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: '0',
-            right: '0',
-            height: '1px',
-            background: 'linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04))',
-            pointerEvents: 'none'
-          }}
-        />
-      )}
-    </motion.div>
-  );
-};
-
-// ============================================================================
-// CEP BLOCKS CONTAINER — OS Horizon Ironclad V3
-// ============================================================================
-const CEPBlocksPanel = ({ delay }) => {
-  const cepData = [
-    {
-      icon: Briefcase,
-      title: 'Credit',
-      color: '#B88AED',
-      whatHappening: 'Companies are paying more to borrow as lenders tighten funding conditions.',
-      whyMatters: 'Rising borrowing costs can slow growth and pressure high-risk debt.'
-    },
-    {
-      icon: BarChart3,
-      title: 'Equities',
-      color: '#32C288',
-      whatHappening: 'Market gains are narrow, driven mostly by a few mega-cap stocks.',
-      whyMatters: 'Narrow leadership often signals fragility beneath the surface.'
-    },
-    {
-      icon: Globe,
-      title: 'Commodities',
-      color: '#EDB859',
-      whatHappening: 'Weak demand from China is pulling commodity prices lower.',
-      whyMatters: 'Slower demand can weigh on global manufacturing and related sectors.'
-    }
-  ];
-
-  return (
-    <motion.div
-      className="relative rounded-[24px] overflow-hidden"
-      style={{
-        background: 'rgba(255, 255, 255, 0.032)',
-        backdropFilter: 'blur(18px) saturate(160%)',
-        WebkitBackdropFilter: 'blur(18px) saturate(160%)',
-        border: '1px solid rgba(255,255,255,0.08)',
+        maxWidth: '84%',
+        paddingTop: '20px',
+        paddingBottom: '20px',
+        paddingLeft: '32px',
+        paddingRight: '32px',
+        background: 'rgba(255, 255, 255, 0.04)',
+        backdropFilter: 'blur(16px) saturate(165%)',
+        WebkitBackdropFilter: 'blur(16px) saturate(165%)',
+        border: '1px solid rgba(255,255,255,0.14)',
         boxShadow: `
-          inset 0 1.5px 0 rgba(255,255,255,0.05),
-          inset 0 0 20px rgba(0,0,0,0.18),
-          0 0 18px rgba(140,180,255,0.04),
-          0 4px 28px rgba(0,0,0,0.28)
+          inset 0 2px 0 rgba(255,255,255,0.06),
+          inset 0 0 24px rgba(0,0,0,0.24),
+          0 0 22px rgba(140,180,255,0.06),
+          0 4px 32px rgba(0,0,0,0.35)
         `,
-        padding: '24px 28px',
+        marginTop: '12px',
         marginBottom: '32px'
       }}
-      initial={{ opacity: 0, y: 10, scale: 0.98 }}
+      initial={{ opacity: 0, y: 8, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ delay: delay + 0.12, duration: 0.26, ease: MOTION.CURVES.silk }}
+      transition={{ delay: delay + 0.09, duration: 0.18, ease: MOTION.CURVES.silk }}
     >
       {/* Top Inner Highlight */}
       <div style={{
         position: 'absolute',
         top: 0,
-        left: '15%',
-        right: '15%',
-        height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)',
+        left: 0,
+        right: 0,
+        height: '28px',
+        background: 'linear-gradient(to bottom, rgba(255,255,255,0.06) 0%, transparent 100%)',
+        borderRadius: '28px 28px 0 0',
         pointerEvents: 'none'
       }} />
 
-      {/* OS Horizon Fog Layer */}
+      {/* Bottom Inner Shadow */}
+      <div style={{
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: '28px',
+        background: 'linear-gradient(to top, rgba(0,0,0,0.24) 0%, transparent 100%)',
+        borderRadius: '0 0 28px 28px',
+        pointerEvents: 'none'
+      }} />
+
+      {/* Enhanced Glass Surface Glow */}
       <div style={{
         position: 'absolute',
         inset: 0,
-        background: 'radial-gradient(ellipse at 50% 30%, rgba(140,180,255,0.05) 0%, transparent 70%)',
+        background: 'radial-gradient(ellipse at 50% 50%, rgba(140,180,255,0.08) 0%, transparent 70%)',
         pointerEvents: 'none',
-        borderRadius: '24px'
+        borderRadius: '28px'
       }} />
 
-      {cepData.map((item, idx) => (
-        <CEPMiniCard
-          key={item.title}
-          icon={item.icon}
-          title={item.title}
-          color={item.color}
-          whatHappening={item.whatHappening}
-          whyMatters={item.whyMatters}
-          delay={delay + 0.18 + (idx * 0.06)}
-          isLast={idx === cepData.length - 1}
-        />
-      ))}
-    </motion.div>
-  );
-};
-
-// ============================================================================
-// MACRO POSTURE BAR — OS Horizon Ironclad V3
-// ============================================================================
-const MacroPostureBar = ({ score, delay }) => {
-  const getPosture = (s) => {
-    if (s < 40) return { label: 'Risk-Off', color: '#E86565' };
-    if (s < 70) return { label: 'Neutral', color: '#70A8E8' };
-    return { label: 'Risk-On', color: '#32C288' };
-  };
-
-  const posture = getPosture(score);
-  const barPosition = Math.min(100, Math.max(0, score));
-
-  return (
-    <motion.div
-      className="relative rounded-[20px] overflow-hidden"
-      style={{
-        background: 'rgba(255, 255, 255, 0.028)',
-        backdropFilter: 'blur(14px) saturate(155%)',
-        WebkitBackdropFilter: 'blur(14px) saturate(155%)',
-        border: '1px solid rgba(255,255,255,0.06)',
-        boxShadow: `
-          inset 0 1px 0 rgba(255,255,255,0.04),
-          0 2px 16px rgba(0,0,0,0.18)
-        `,
-        padding: '20px 24px'
-      }}
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: delay + 0.32, duration: 0.24, ease: MOTION.CURVES.spring }}
-    >
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <span 
-          className="text-[12px] font-medium uppercase tracking-wider"
-          style={{ color: 'rgba(255,255,255,0.58)', letterSpacing: '0.06em' }}
-        >
-          Current Posture
-        </span>
-        <span 
-          className="text-[14px] font-semibold"
-          style={{ color: posture.color }}
-        >
-          {posture.label}
-        </span>
-      </div>
-
-      {/* Bar Track */}
-      <div 
-        className="relative w-full h-[6px] rounded-full overflow-hidden"
-        style={{ background: 'rgba(255,255,255,0.06)' }}
+      <p 
+        className="text-center relative z-10"
+        style={{ 
+          fontSize: '15.5px',
+          lineHeight: '1.42',
+          color: 'rgba(255,255,255,0.92)',
+          letterSpacing: '-0.15px',
+          textShadow: '0px 1.2px 2.4px rgba(0,0,0,0.28)',
+          maxWidth: '82%',
+          margin: '0 auto',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100%'
+        }}
       >
-        {/* Gradient Background */}
-        <div 
-          className="absolute inset-0 rounded-full"
-          style={{
-            background: 'linear-gradient(90deg, #E86565 0%, #70A8E8 50%, #32C288 100%)',
-            opacity: 0.25
-          }}
-        />
-        
-        {/* Position Indicator */}
-        <motion.div
-          className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full"
-          style={{
-            background: posture.color,
-            boxShadow: `0 0 12px ${posture.color}60, inset 0 1px 2px rgba(255,255,255,0.30)`,
-            left: `calc(${barPosition}% - 6px)`
-          }}
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: delay + 0.42, duration: 0.28, ease: MOTION.CURVES.bounce }}
-        />
-      </div>
-
-      {/* Scale Labels */}
-      <div className="flex justify-between mt-2">
-        <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.38)' }}>Risk-Off</span>
-        <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.38)' }}>Neutral</span>
-        <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.38)' }}>Risk-On</span>
-      </div>
+        Markets show mild upward pressure driven by policy tightening and early credit stress signals.
+      </p>
     </motion.div>
   );
 };
@@ -588,8 +368,7 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
         What's Driving This Alignment
       </motion.div>
 
-      {/* OS Horizon V1: Reduced internal tile spacing by 6% (gap-5 → gap-[18.8px]) */}
-      <div className="grid grid-cols-2" style={{ gap: '18.8px' }}>
+      <div className="grid grid-cols-2 gap-5">
         {sortedSegments.map((segment, idx) => {
           if (!segment) return null;
           const config = SEGMENT_CONFIG[segment.name];
@@ -693,9 +472,9 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
                 </span>
               </div>
 
-              {/* Label + Bar — OS Horizon V1: +3% tile header size (15px → 15.45px) */}
+              {/* Label + Bar */}
               <div className="relative z-10">
-                <h4 className="font-semibold mb-3" style={{ fontSize: '15.45px', color: 'rgba(255,255,255,0.94)', letterSpacing: '-0.01em', lineHeight: '1.35' }}>
+                <h4 className="text-[15px] font-semibold mb-3" style={{ color: 'rgba(255,255,255,0.94)', letterSpacing: '-0.01em', lineHeight: '1.35' }}>
                   {segment.name}
                 </h4>
 
@@ -750,16 +529,15 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
       transition={{ delay: delay + 0.14, duration: 0.24, ease: MOTION.CURVES.silk }}
       style={{ marginTop: '56px', marginBottom: '32px' }}
     >
-      {/* OS Horizon V1: +1% letter-spacing on MACRO INSIGHT label */}
       <h3 
         className="text-[11px] uppercase mb-8" 
         style={{ 
           color: 'rgba(255,255,255,0.72)', 
-          letterSpacing: '0.066em',
+          letterSpacing: '0.056em',
           fontWeight: 400
         }}
       >
-        Macro Insight
+        Insight Capsules
       </h3>
 
       <div className="flex flex-col gap-[14px]">
@@ -1014,7 +792,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
             zIndex: 10
           }} />
 
-          {/* Subsurface Glow Behind Orb — Reduced by 35% per OS Horizon V1 */}
+          {/* Subsurface Glow Behind Orb */}
           <div style={{
             position: 'absolute',
             zIndex: 0,
@@ -1023,7 +801,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
             transform: 'translateX(-50%)',
             width: '420px',
             height: '420px',
-            background: 'radial-gradient(circle at 50% 50%, rgba(155, 185, 255, 0.143) 0%, rgba(0, 0, 0, 0) 72%)',
+            background: 'radial-gradient(circle at 50% 50%, rgba(155, 185, 255, 0.22) 0%, rgba(0, 0, 0, 0) 72%)',
             filter: 'blur(80px)',
             mixBlendMode: 'screen',
             pointerEvents: 'none'
@@ -1116,20 +894,14 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
               Based on 5 sources • Updated 2m ago
             </motion.p>
 
-            {/* Condensed Insight — Top Line */}
-            <CondensedInsightPanel delay={0.78} />
-
-            {/* CEP Blocks — Credit, Equities, Commodities */}
-            <CEPBlocksPanel delay={0.84} />
-
-            {/* Macro Posture Bar — Anchored */}
-            <MacroPostureBar score={consensusScore} delay={0.92} />
+            {/* Insight Reveal Panel */}
+            <InsightRevealPanel segments={segments} delay={0.78} />
 
             {/* Macro Forces Grid */}
-            <MacroForceGrid segments={segments} delay={1.02} onOpenDetail={onOpenDetail} />
+            <MacroForceGrid segments={segments} delay={0.88} onOpenDetail={onOpenDetail} />
 
             {/* Insight Capsules */}
-            <InsightCapsules segments={segments} delay={1.10} onOpenDetail={onOpenDetail} />
+            <InsightCapsules segments={segments} delay={0.95} onOpenDetail={onOpenDetail} />
           </div>
         </motion.div>
       </motion.div>
