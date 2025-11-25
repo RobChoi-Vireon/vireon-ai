@@ -633,7 +633,9 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
   };
 
   const content = getContentForSignal();
-  const morningTakeaway = content.morningTakeaway;
+  
+  // CEP ENGINE content mapping
+  const summary = content.summary;
   const translation = content.translation;
   const rippleImpact = content.rippleImpact;
 
