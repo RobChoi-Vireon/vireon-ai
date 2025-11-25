@@ -1116,14 +1116,20 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
               Based on 5 sources • Updated 2m ago
             </motion.p>
 
-            {/* Insight Reveal Panel */}
-            <InsightRevealPanel segments={segments} delay={0.78} />
+            {/* Condensed Insight — Top Line */}
+            <CondensedInsightPanel delay={0.78} />
+
+            {/* CEP Blocks — Credit, Equities, Commodities */}
+            <CEPBlocksPanel delay={0.84} />
+
+            {/* Macro Posture Bar — Anchored */}
+            <MacroPostureBar score={consensusScore} delay={0.92} />
 
             {/* Macro Forces Grid */}
-            <MacroForceGrid segments={segments} delay={0.88} onOpenDetail={onOpenDetail} />
+            <MacroForceGrid segments={segments} delay={1.02} onOpenDetail={onOpenDetail} />
 
             {/* Insight Capsules */}
-            <InsightCapsules segments={segments} delay={0.95} onOpenDetail={onOpenDetail} />
+            <InsightCapsules segments={segments} delay={1.10} onOpenDetail={onOpenDetail} />
           </div>
         </motion.div>
       </motion.div>
