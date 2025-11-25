@@ -1261,25 +1261,63 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedDomain, handleCloseDrawer, handlePrevDomain, handleNextDomain, domains, handleOpenDrawer]);
 
+  // OS Horizon V4 — Throttled parallax handler for buttery 60fps performance
+  const lastMouseMoveRef = useRef(0);
+  const mouseMoveRafRef = useRef(null);
+  const pendingMouseRef = useRef({ x: 0, y: 0 });
+
   useEffect(() => {
     const handleMouseMove = (e) => {
-      if (!containerRef.current || shouldReduceMotion || isEquilibriumActive) return; // BLOCK parallax when equilibrium active
-      const rect = containerRef.current.getBoundingClientRect();
-      const normX = ((e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2));
-      const normY = ((e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2));
-      mouseX.set(normX * 14);
-      mouseY.set(normY * 14);
-      if (selectedDomain) {
-        glassParallaxX.set(-normX * TOKENS.HORIZON.microParallaxMax * TOKENS.HORIZON.microParallaxDamping);
-        glassParallaxY.set(-normY * TOKENS.HORIZON.microParallaxMax * TOKENS.HORIZON.microParallaxDamping);
-      } else {
-        glassParallaxX.set(0);
-        glassParallaxY.set(0);
-      }
+      if (!containerRef.current || shouldReduceMotion || isEquilibriumActive) return;
+      
+      // Store pending values
+      pendingMouseRef.current = { x: e.clientX, y: e.clientY };
+      
+      // Skip if we're already waiting for next frame
+      if (mouseMoveRafRef.current) return;
+      
+      mouseMoveRafRef.current = requestAnimationFrame(() => {
+        const now = performance.now();
+        // Throttle to ~60fps (16ms minimum between updates)
+        if (now - lastMouseMoveRef.current < 16) {
+          mouseMoveRafRef.current = null;
+          return;
+        }
+        lastMouseMoveRef.current = now;
+        
+        const rect = containerRef.current?.getBoundingClientRect();
+        if (!rect) {
+          mouseMoveRafRef.current = null;
+          return;
+        }
+        
+        const { x: clientX, y: clientY } = pendingMouseRef.current;
+        const normX = ((clientX - (rect.left + rect.width / 2)) / (rect.width / 2));
+        const normY = ((clientY - (rect.top + rect.height / 2)) / (rect.height / 2));
+        
+        // Reduced parallax multiplier for smoother feel
+        mouseX.set(normX * 10);
+        mouseY.set(normY * 10);
+        
+        if (selectedDomain) {
+          glassParallaxX.set(-normX * TOKENS.HORIZON.microParallaxMax * TOKENS.HORIZON.microParallaxDamping * 0.7);
+          glassParallaxY.set(-normY * TOKENS.HORIZON.microParallaxMax * TOKENS.HORIZON.microParallaxDamping * 0.7);
+        } else {
+          glassParallaxX.set(0);
+          glassParallaxY.set(0);
+        }
+        
+        mouseMoveRafRef.current = null;
+      });
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      if (mouseMoveRafRef.current) {
+        cancelAnimationFrame(mouseMoveRafRef.current);
+      }
+    };
   }, [shouldReduceMotion, selectedDomain, mouseX, mouseY, glassParallaxX, glassParallaxY, isEquilibriumActive]);
 
   useEffect(() => {
