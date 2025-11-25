@@ -838,6 +838,19 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               50% { opacity: 0.7; }
             }
             
+            /* OS Horizon Dividers - Reduced Opacity */
+            .ri-divider {
+              height: 1px;
+              margin: 20px 0;
+              background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+              opacity: 0.5;
+            }
+            
+            .ri-divider--expanded {
+              margin: 24px 0;
+              opacity: 0.4;
+            }
+            
             /* Micro-Transitions */
             .ri-section {
               margin-bottom: var(--ri-gap-lg);
@@ -846,6 +859,16 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               transform: translateY(4px);
               transition: opacity var(--li-duration) var(--li-ease), 
                           transform var(--li-duration) var(--li-ease);
+            }
+            
+            /* Compact sections for simplified view */
+            .ri-section--compact {
+              margin-bottom: 16px;
+            }
+            
+            /* Expanded sections with more breathing room */
+            .ri-section--expanded {
+              margin-bottom: 24px;
             }
             
             .hzn-drawer--open .ri-section {
@@ -864,19 +887,19 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               to { opacity: 1; transform: translateY(0); }
             }
             
-            /* Auto-reveal Details */
+            /* Auto-reveal Details - 220ms ease for expand/collapse */
             .ri-details {
               overflow: clip;
               max-height: 0;
               opacity: 0;
               transform: translateY(6px);
-              transition: max-height var(--ri-dur) var(--ri-ease-io), 
-                          opacity var(--ri-dur) var(--ri-ease-io), 
-                          transform var(--ri-dur) var(--ri-ease-io);
+              transition: max-height 220ms cubic-bezier(0.4, 0, 0.2, 1), 
+                          opacity 220ms cubic-bezier(0.4, 0, 0.2, 1), 
+                          transform 220ms cubic-bezier(0.4, 0, 0.2, 1);
             }
             
             .drawer--detailed .ri-details {
-              max-height: 1200px;
+              max-height: 2000px;
               opacity: 1;
               transform: translateY(0);
             }
