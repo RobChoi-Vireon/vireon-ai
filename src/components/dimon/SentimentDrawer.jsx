@@ -28,41 +28,41 @@ const MOTION = {
   }
 };
 
-// Segment Configuration
+// Segment Configuration — OS Horizon V1 CEP Clarity Rewrite (Zero Jargon)
 const SEGMENT_CONFIG = {
   Policy: { 
     Icon: Shield, 
     color: '#70A8E8', 
-    glow: 'rgba(112, 168, 232, 0.15)',
-    ambient: 'rgba(112, 168, 232, 0.08)',
-    insight: 'Regulatory oversight expanding across multiple sectors',
+    glow: 'rgba(112, 168, 232, 0.10)',
+    ambient: 'rgba(112, 168, 232, 0.05)',
+    insight: 'Government rules are tightening across multiple industries.',
     status: 'Rising',
     statusColor: '#FFB020'
   },
   Credit: { 
     Icon: Briefcase, 
     color: '#B88AED', 
-    glow: 'rgba(184, 138, 237, 0.15)',
-    ambient: 'rgba(184, 138, 237, 0.08)',
-    insight: 'EM spreads widening as credit markets show stress signals',
+    glow: 'rgba(184, 138, 237, 0.10)',
+    ambient: 'rgba(184, 138, 237, 0.05)',
+    insight: 'Borrowing costs for weaker companies jumped as lenders tightened conditions.',
     status: 'Moderate',
     statusColor: '#FFB020'
   },
   Equities: { 
     Icon: BarChart3, 
     color: '#32C288', 
-    glow: 'rgba(50, 194, 136, 0.15)',
-    ambient: 'rgba(50, 194, 136, 0.08)',
-    insight: 'Flat breadth with concentrated gains in mega-cap names',
+    glow: 'rgba(50, 194, 136, 0.10)',
+    ambient: 'rgba(50, 194, 136, 0.05)',
+    insight: 'Large tech stocks are driving most of the gains, signaling big tech dominance risk.',
     status: 'Stable',
     statusColor: '#5EA7FF'
   },
   Global: { 
     Icon: Globe, 
     color: '#EDB859', 
-    glow: 'rgba(237, 184, 89, 0.15)',
-    ambient: 'rgba(237, 184, 89, 0.08)',
-    insight: 'China slowdown weighing on global growth outlook',
+    glow: 'rgba(237, 184, 89, 0.10)',
+    ambient: 'rgba(237, 184, 89, 0.05)',
+    insight: 'Soft demand from China is weighing on industrial metals.',
     status: 'Softening',
     statusColor: '#F26A6A'
   }
@@ -324,6 +324,20 @@ const InsightRevealPanel = ({ segments, delay }) => {
         borderRadius: '28px'
       }} />
 
+      {/* OS Horizon V1 Posture Interpretation Label */}
+      <p 
+        className="text-center relative z-10 mb-3"
+        style={{ 
+          fontSize: '12px',
+          lineHeight: '1.35',
+          color: 'rgba(255,255,255,0.58)',
+          letterSpacing: '0.02em',
+          fontWeight: 500,
+          textTransform: 'uppercase'
+        }}
+      >
+        Overall posture: slight risk-off as global borrowing costs rise.
+      </p>
       <p 
         className="text-center relative z-10"
         style={{ 
@@ -340,7 +354,7 @@ const InsightRevealPanel = ({ segments, delay }) => {
           minHeight: '100%'
         }}
       >
-        Markets show mild upward pressure driven by policy tightening and early credit stress signals.
+        Markets are turning more cautious as borrowing costs rise across credit, equities, and commodities.
       </p>
     </motion.div>
   );
@@ -368,7 +382,8 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
         What's Driving This Alignment
       </motion.div>
 
-      <div className="grid grid-cols-2 gap-5">
+      {/* OS Horizon V1: Reduced internal tile spacing by 6% (gap-5 → gap-[18.8px]) */}
+      <div className="grid grid-cols-2" style={{ gap: '18.8px' }}
         {sortedSegments.map((segment, idx) => {
           if (!segment) return null;
           const config = SEGMENT_CONFIG[segment.name];
@@ -472,9 +487,9 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
                 </span>
               </div>
 
-              {/* Label + Bar */}
+              {/* Label + Bar — OS Horizon V1: +3% tile header size (15px → 15.45px) */}
               <div className="relative z-10">
-                <h4 className="text-[15px] font-semibold mb-3" style={{ color: 'rgba(255,255,255,0.94)', letterSpacing: '-0.01em', lineHeight: '1.35' }}>
+                <h4 className="font-semibold mb-3" style={{ fontSize: '15.45px', color: 'rgba(255,255,255,0.94)', letterSpacing: '-0.01em', lineHeight: '1.35' }}>
                   {segment.name}
                 </h4>
 
@@ -529,15 +544,16 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
       transition={{ delay: delay + 0.14, duration: 0.24, ease: MOTION.CURVES.silk }}
       style={{ marginTop: '56px', marginBottom: '32px' }}
     >
+      {/* OS Horizon V1: +1% letter-spacing on MACRO INSIGHT label */}
       <h3 
         className="text-[11px] uppercase mb-8" 
         style={{ 
           color: 'rgba(255,255,255,0.72)', 
-          letterSpacing: '0.056em',
+          letterSpacing: '0.066em',
           fontWeight: 400
         }}
       >
-        Insight Capsules
+        Macro Insight
       </h3>
 
       <div className="flex flex-col gap-[14px]">
@@ -792,7 +808,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
             zIndex: 10
           }} />
 
-          {/* Subsurface Glow Behind Orb */}
+          {/* Subsurface Glow Behind Orb — Reduced by 35% per OS Horizon V1 */}
           <div style={{
             position: 'absolute',
             zIndex: 0,
@@ -801,7 +817,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
             transform: 'translateX(-50%)',
             width: '420px',
             height: '420px',
-            background: 'radial-gradient(circle at 50% 50%, rgba(155, 185, 255, 0.22) 0%, rgba(0, 0, 0, 0) 72%)',
+            background: 'radial-gradient(circle at 50% 50%, rgba(155, 185, 255, 0.143) 0%, rgba(0, 0, 0, 0) 72%)',
             filter: 'blur(80px)',
             mixBlendMode: 'screen',
             pointerEvents: 'none'
