@@ -1363,14 +1363,15 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                 `}</style>
 
                 <div className="p-8 pt-6">
-                  {/* I. TOP SUMMARY (mandatory) - OS Horizon V2 */}
+                  {/* 1. SUMMARY - CEP Engine */}
                   <section className="ri-section mb-6">
                     <h3 className="ri-section-title">
                       <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
                       Summary
                     </h3>
-                    <p className="ri-section-body mb-4">{morningTakeaway}</p>
+                    <p className="ri-section-body mb-4">{summary}</p>
                     
+                    {/* 2. CONFIDENCE */}
                     <div className="ri-confidence-inline">
                       <span className="text-xs font-medium uppercase tracking-wide" style={{ color: '#AAB1B8', opacity: 0.7 }}>
                         Confidence
@@ -1381,7 +1382,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
 
                   <NarrativeLink />
 
-                  {/* II. WHY IT MATTERS (mandatory) - OS Horizon V2 */}
+                  {/* 3. WHY IT MATTERS - CEP Engine */}
                   <section className="ri-section">
                     <h3 className="ri-section-title">
                       <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
@@ -1394,7 +1395,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
 
                   <NarrativeLink />
 
-                  {/* III. TRANSLATION (optional) - OS Horizon V2 */}
+                  {/* 4. IN SIMPLE TERMS - CEP Engine */}
                   {translation && (
                     <>
                       <section className="ri-section">
@@ -1430,7 +1431,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                     </>
                   )}
 
-                  {/* IV. WHAT HAPPENED (mandatory) - OS Horizon V2 */}
+                  {/* 5. WHAT HAPPENED - CEP Engine */}
                   <section className="ri-section">
                     <h3 className="ri-section-title">
                       <Target className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
@@ -1441,7 +1442,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
 
                   <NarrativeLink />
 
-                  {/* V. IMPACT SNAPSHOT (mandatory) - OS Horizon V2 */}
+                  {/* 6. IMPACT SNAPSHOT - CEP Engine (ordered by magnitude) */}
                   <section className="ri-section">
                     <h3 className="ri-section-title">
                       <Activity className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
@@ -1456,7 +1457,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
 
                   <NarrativeLink />
 
-                  {/* VI. DOWNSIDE RISK / UPSIDE POTENTIAL (mandatory) - OS Horizon V2 */}
+                  {/* 7 & 8. DOWNSIDE RISK / UPSIDE POTENTIAL - CEP Engine */}
                   <section className="ri-section">
                     <div className="ri-grid mb-2">
                       <div className={`ri-card ${sentiment === 'risk' ? 'active risk' : ''}`}>
@@ -1495,11 +1496,11 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                     </div>
                   </section>
 
-                  {/* AUTO-REVEAL DETAILS */}
+                  {/* DETAILED VIEW - AUTO-REVEAL */}
                   <div className="ri-details">
                     <NarrativeLink />
 
-                    {/* VII. RIPPLE EFFECTS (optional) - OS Horizon V2 */}
+                    {/* 9. RIPPLE EFFECTS - CEP Engine */}
                     {rippleImpact && (
                       <>
                         <section className="ri-section">
@@ -1513,7 +1514,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                       </>
                     )}
 
-                    {/* Quote (if available) */}
+                    {/* 10. CONTEXT QUOTE - CEP Engine (optional) */}
                     {analysis.quote && (
                       <>
                         <blockquote
@@ -1529,7 +1530,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                       </>
                     )}
 
-                    {/* Market Relevance Details */}
+                    {/* 11. MARKET RELEVANCE - CEP Engine (3-column) */}
                     <div className="mb-6">
                       <h4 className="ri-section-title">Market Relevance</h4>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1562,7 +1563,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
 
                     <NarrativeLink />
 
-                    {/* VIII. AI STRATEGY LENS (optional) - OS Horizon V2 */}
+                    {/* 12. HOW INVESTORS MAY RESPOND - CEP Engine */}
                     <div
                       className="ri-card mb-6"
                       style={{
@@ -1586,7 +1587,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                     </div>
                   </div>
 
-                  {/* IX. CORRELATED SIGNALS (always last) - OS Horizon V2 */}
+                  {/* 13. RELATED SIGNALS - CEP Engine (always last) */}
                   <section className="ri-section">
                     <div className="ri-next">
                       <strong style={{ fontSize: 14, color: 'rgba(255, 255, 255, 0.88)' }}>
