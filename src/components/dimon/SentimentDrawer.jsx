@@ -383,7 +383,7 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
       </motion.div>
 
       {/* OS Horizon V1: Reduced internal tile spacing by 6% (gap-5 → gap-[18.8px]) */}
-      <div className="grid grid-cols-2" style={{ gap: '18.8px' }}
+      <div className="grid grid-cols-2" style={{ gap: '18.8px' }}>
         {sortedSegments.map((segment, idx) => {
           if (!segment) return null;
           const config = SEGMENT_CONFIG[segment.name];
