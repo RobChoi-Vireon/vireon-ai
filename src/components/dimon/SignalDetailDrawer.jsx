@@ -1363,7 +1363,12 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                 `}</style>
 
                 <div className="p-8 pt-6">
-                  {/* 1. SUMMARY - CEP Engine */}
+                  {/* ============================================================
+                      SIMPLIFIED VIEW: Summary, Confidence, Why It Matters, In Simple Terms
+                      These 4 sections appear in BOTH views
+                  ============================================================ */}
+                  
+                  {/* 1. SUMMARY */}
                   <section className="ri-section mb-6">
                     <h3 className="ri-section-title">
                       <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
@@ -1382,7 +1387,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
 
                   <NarrativeLink />
 
-                  {/* 3. WHY IT MATTERS - CEP Engine */}
+                  {/* 3. WHY IT MATTERS */}
                   <section className="ri-section">
                     <h3 className="ri-section-title">
                       <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
@@ -1395,112 +1400,115 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
 
                   <NarrativeLink />
 
-                  {/* 4. IN SIMPLE TERMS - CEP Engine */}
+                  {/* 4. IN SIMPLE TERMS */}
                   {translation && (
-                    <>
-                      <section className="ri-section">
-                        <div 
-                          className="p-5 rounded-[16px] border relative"
-                          style={{
-                            background: 'rgba(255, 255, 255, 0.025)',
-                            borderColor: 'rgba(255, 255, 255, 0.08)',
-                            backdropFilter: 'blur(18px)',
+                    <section className="ri-section">
+                      <div 
+                        className="p-5 rounded-[16px] border relative"
+                        style={{
+                          background: 'rgba(255, 255, 255, 0.025)',
+                          borderColor: 'rgba(255, 255, 255, 0.08)',
+                          backdropFilter: 'blur(18px)',
+                        }}
+                      >
+                        <div className="flex items-center gap-2 mb-3">
+                          <Sparkles className="w-3.5 h-3.5" style={{ color: 'rgba(255, 255, 255, 0.55)' }} />
+                          <span 
+                            className="text-[11px] font-semibold uppercase tracking-wide"
+                            style={{ color: 'rgba(255, 255, 255, 0.55)' }}
+                          >
+                            In Simple Terms
+                          </span>
+                        </div>
+                        <p 
+                          className="text-[14px] font-normal leading-relaxed"
+                          style={{ 
+                            color: 'rgba(255, 255, 255, 0.82)',
+                            lineHeight: '1.55'
                           }}
                         >
-                          <div className="flex items-center gap-2 mb-3">
-                            <Sparkles className="w-3.5 h-3.5" style={{ color: 'rgba(255, 255, 255, 0.55)' }} />
-                            <span 
-                              className="text-[11px] font-semibold uppercase tracking-wide"
-                              style={{ color: 'rgba(255, 255, 255, 0.55)' }}
-                            >
-                              In Simple Terms
-                            </span>
-                          </div>
-                          <p 
-                            className="text-[14px] font-normal leading-relaxed"
-                            style={{ 
-                              color: 'rgba(255, 255, 255, 0.82)',
-                              lineHeight: '1.55'
-                            }}
-                          >
-                            {translation}
-                          </p>
-                        </div>
-                      </section>
-                      <NarrativeLink />
-                    </>
+                          {translation}
+                        </p>
+                      </div>
+                    </section>
                   )}
 
-                  {/* 5. WHAT HAPPENED - CEP Engine */}
-                  <section className="ri-section">
-                    <h3 className="ri-section-title">
-                      <Target className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                      What Happened
-                    </h3>
-                    <p className="ri-section-body">{analysis.what}</p>
-                  </section>
-
-                  <NarrativeLink />
-
-                  {/* 6. IMPACT SNAPSHOT - CEP Engine (ordered by magnitude) */}
-                  <section className="ri-section">
-                    <h3 className="ri-section-title">
-                      <Activity className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                      Impact Snapshot
-                    </h3>
-                    <div className="flex flex-wrap gap-2">
-                      {analysis.impacts.map((impact, i) => (
-                        <ImpactChip key={i} text={impact.text} tone={impact.tone} />
-                      ))}
-                    </div>
-                  </section>
-
-                  <NarrativeLink />
-
-                  {/* 7 & 8. DOWNSIDE RISK / UPSIDE POTENTIAL - CEP Engine */}
-                  <section className="ri-section">
-                    <div className="ri-grid mb-2">
-                      <div className={`ri-card ${sentiment === 'risk' ? 'active risk' : ''}`}>
-                        <div className="flex items-center gap-3 mb-3">
-                          <AlertCircle className="w-5 h-5" style={{ color: HORIZON.color.risk }} />
-                          <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
-                            Downside Risk
-                          </h4>
-                        </div>
-                        <p className="text-sm mb-3" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
-                          {analysis.downside.text}
-                        </p>
-                        <div className="text-xs" style={{ color: '#AAB1B8' }}>
-                          Confidence: <span style={{ color: HORIZON.color.risk, fontWeight: 700 }}>
-                            {analysis.downside.confidence}%
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className={`ri-card ${sentiment === 'opportunity' ? 'active oppty' : ''}`}>
-                        <div className="flex items-center gap-3 mb-3">
-                          <ShieldCheck className="w-5 h-5" style={{ color: HORIZON.color.opportunity }} />
-                          <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
-                            Upside Potential
-                          </h4>
-                        </div>
-                        <p className="text-sm mb-3" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
-                          {analysis.upside.text}
-                        </p>
-                        <div className="text-xs" style={{ color: '#AAB1B8' }}>
-                          Confidence: <span style={{ color: HORIZON.color.opportunity, fontWeight: 700 }}>
-                            {analysis.upside.confidence}%
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </section>
-
-                  {/* DETAILED VIEW - AUTO-REVEAL */}
+                  {/* ============================================================
+                      DETAILED VIEW ONLY: Everything below only shows when detailed
+                      What Happened, Impact Snapshot, Risk/Upside, Ripple Effects,
+                      Market Relevance, How Investors May Respond, Related Signals
+                  ============================================================ */}
                   <div className="ri-details">
                     <NarrativeLink />
 
-                    {/* 9. RIPPLE EFFECTS - CEP Engine */}
+                    {/* 5. WHAT HAPPENED (Detailed only) */}
+                    <section className="ri-section">
+                      <h3 className="ri-section-title">
+                        <Target className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                        What Happened
+                      </h3>
+                      <p className="ri-section-body">{analysis.what}</p>
+                    </section>
+
+                    <NarrativeLink />
+
+                    {/* 6. IMPACT SNAPSHOT (Detailed only) */}
+                    <section className="ri-section">
+                      <h3 className="ri-section-title">
+                        <Activity className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                        Impact Snapshot
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {analysis.impacts.map((impact, i) => (
+                          <ImpactChip key={i} text={impact.text} tone={impact.tone} />
+                        ))}
+                      </div>
+                    </section>
+
+                    <NarrativeLink />
+
+                    {/* 7 & 8. DOWNSIDE RISK / UPSIDE POTENTIAL (Detailed only) */}
+                    <section className="ri-section">
+                      <div className="ri-grid mb-2">
+                        <div className={`ri-card ${sentiment === 'risk' ? 'active risk' : ''}`}>
+                          <div className="flex items-center gap-3 mb-3">
+                            <AlertCircle className="w-5 h-5" style={{ color: HORIZON.color.risk }} />
+                            <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
+                              Downside Risk
+                            </h4>
+                          </div>
+                          <p className="text-sm mb-3" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
+                            {analysis.downside.text}
+                          </p>
+                          <div className="text-xs" style={{ color: '#AAB1B8' }}>
+                            Confidence: <span style={{ color: HORIZON.color.risk, fontWeight: 700 }}>
+                              {analysis.downside.confidence}%
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className={`ri-card ${sentiment === 'opportunity' ? 'active oppty' : ''}`}>
+                          <div className="flex items-center gap-3 mb-3">
+                            <ShieldCheck className="w-5 h-5" style={{ color: HORIZON.color.opportunity }} />
+                            <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
+                              Upside Potential
+                            </h4>
+                          </div>
+                          <p className="text-sm mb-3" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
+                            {analysis.upside.text}
+                          </p>
+                          <div className="text-xs" style={{ color: '#AAB1B8' }}>
+                            Confidence: <span style={{ color: HORIZON.color.opportunity, fontWeight: 700 }}>
+                              {analysis.upside.confidence}%
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+
+                    <NarrativeLink />
+
+                    {/* 9. RIPPLE EFFECTS (Detailed only) */}
                     {rippleImpact && (
                       <>
                         <section className="ri-section">
@@ -1514,7 +1522,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                       </>
                     )}
 
-                    {/* 10. CONTEXT QUOTE - CEP Engine (optional) */}
+                    {/* 10. CONTEXT QUOTE (Detailed only, optional) */}
                     {analysis.quote && (
                       <>
                         <blockquote
@@ -1530,7 +1538,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                       </>
                     )}
 
-                    {/* 11. MARKET RELEVANCE - CEP Engine (3-column) */}
+                    {/* 11. MARKET RELEVANCE (Detailed only) */}
                     <div className="mb-6">
                       <h4 className="ri-section-title">Market Relevance</h4>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1563,7 +1571,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
 
                     <NarrativeLink />
 
-                    {/* 12. HOW INVESTORS MAY RESPOND - CEP Engine */}
+                    {/* 12. HOW INVESTORS MAY RESPOND (Detailed only) */}
                     <div
                       className="ri-card mb-6"
                       style={{
@@ -1585,26 +1593,26 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                         {analysis.strategy}
                       </p>
                     </div>
-                  </div>
 
-                  {/* 13. RELATED SIGNALS - CEP Engine (always last) */}
-                  <section className="ri-section">
-                    <div className="ri-next">
-                      <strong style={{ fontSize: 14, color: 'rgba(255, 255, 255, 0.88)' }}>
-                        Related Signals
-                      </strong>
-                      <div className="ri-carousel">
-                        {analysis.correlated.map((s) => (
-                          <CorrelatedChip 
-                            key={s.id} 
-                            signal={s} 
-                            onNavigate={(id) => console.log('Navigate to signal:', id)} 
-                          />
-                        ))}
+                    {/* 13. RELATED SIGNALS (Detailed only) */}
+                    <section className="ri-section">
+                      <div className="ri-next">
+                        <strong style={{ fontSize: 14, color: 'rgba(255, 255, 255, 0.88)' }}>
+                          Related Signals
+                        </strong>
+                        <div className="ri-carousel">
+                          {analysis.correlated.map((s) => (
+                            <CorrelatedChip 
+                              key={s.id} 
+                              signal={s} 
+                              onNavigate={(id) => console.log('Navigate to signal:', id)} 
+                            />
+                          ))}
+                        </div>
+                        <ArrowRight className="w-4 h-4" style={{ color: 'rgba(255, 255, 255, 0.6)', flexShrink: 0 }} />
                       </div>
-                      <ArrowRight className="w-4 h-4" style={{ color: 'rgba(255, 255, 255, 0.6)', flexShrink: 0 }} />
-                    </div>
-                  </section>
+                    </section>
+                  </div>
                 </div>
               </div>
             </div>
