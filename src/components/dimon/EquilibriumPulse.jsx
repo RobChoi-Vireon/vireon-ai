@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence, useSpring } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, ArrowRight, Sparkles } from 'lucide-react';
@@ -238,9 +239,7 @@ export default function EquilibriumPulse({
         border: '1px solid rgba(255,255,255,0.10)',
         boxShadow: 'inset 0 2px 16px rgba(0, 0, 0, 0.36), 0 24px 48px rgba(0, 0, 0, 0.36)',
         cursor: 'pointer',
-        willChange: 'filter, transform',
-        transform: 'translateZ(0)',
-        backfaceVisibility: 'hidden'
+        willChange: 'filter, transform'
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -568,8 +567,7 @@ export default function EquilibriumPulse({
             position: 'absolute',
             top: '50%',
             left: `${pulseX.get() + pulseDrift}%`,
-            transform: 'translate(-50%, -50%) translateZ(0)',
-            backfaceVisibility: 'hidden',
+            transform: 'translate(-50%, -50%)',
             width: '16px',
             height: '16px',
             borderRadius: '999px',
