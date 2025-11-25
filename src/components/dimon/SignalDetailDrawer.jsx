@@ -991,7 +991,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               overflow: visible;
             }
             
-            /* Luminous Cards */
+            /* Luminous Cards - OS Horizon Liquid Glass */
             .ri-card {
               border-radius: var(--mp-radius);
               padding: 20px;
@@ -999,19 +999,46 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               border: var(--mp-border);
               box-shadow: var(--mp-shadow-soft);
               overflow: visible;
-              transition: box-shadow var(--ri-dur) var(--ri-ease-io), background var(--ri-dur) var(--ri-ease-io);
+              transition: box-shadow 220ms cubic-bezier(0.4, 0, 0.2, 1), 
+                          background 220ms cubic-bezier(0.4, 0, 0.2, 1),
+                          transform 220ms cubic-bezier(0.4, 0, 0.2, 1);
             }
             
+            /* Risk Card - Reduced bloom by 12-15% */
+            .ri-card--risk {
+              background: linear-gradient(180deg, rgba(255, 60, 60, 0.04), rgba(255, 60, 60, 0.01));
+              border: 1px solid rgba(255, 90, 90, 0.12);
+            }
+            
+            .ri-card--risk.active {
+              box-shadow: inset 0 0 0 1px rgba(255,90,90,0.28), 0 0 18px rgba(255,60,60,0.14);
+              background: linear-gradient(180deg, rgba(255, 60, 60, 0.06), rgba(255, 60, 60, 0.02));
+              filter: drop-shadow(0 8px 14px rgba(120,20,20,0.18));
+            }
+            
+            /* Opportunity Card - Reduced bloom by 12-15% */
+            .ri-card--oppty {
+              background: linear-gradient(180deg, rgba(60, 220, 160, 0.04), rgba(60, 220, 160, 0.01));
+              border: 1px solid rgba(60, 220, 160, 0.12);
+            }
+            
+            .ri-card--oppty.active {
+              box-shadow: inset 0 0 0 1px rgba(60,220,160,0.28), 0 0 18px rgba(60,220,160,0.12);
+              background: linear-gradient(180deg, rgba(60, 220, 160, 0.06), rgba(60, 220, 160, 0.02));
+              filter: drop-shadow(0 8px 14px rgba(14,70,52,0.16));
+            }
+            
+            /* Legacy active classes for backwards compat */
             .ri-card.active.risk {
               box-shadow: var(--mp-risk-rim), var(--mp-shadow-soft);
-              background: linear-gradient(180deg, rgba(255, 60, 60, 0.08), transparent);
-              filter: drop-shadow(0 10px 18px rgba(120,20,20,0.25));
+              background: linear-gradient(180deg, rgba(255, 60, 60, 0.06), transparent);
+              filter: drop-shadow(0 8px 14px rgba(120,20,20,0.18));
             }
             
             .ri-card.active.oppty {
               box-shadow: var(--mp-up-rim), var(--mp-shadow-soft);
-              background: linear-gradient(180deg, rgba(60, 220, 160, 0.08), transparent);
-              filter: drop-shadow(0 10px 18px rgba(14,70,52,0.22));
+              background: linear-gradient(180deg, rgba(60, 220, 160, 0.06), transparent);
+              filter: drop-shadow(0 8px 14px rgba(14,70,52,0.16));
             }
             
             .ri-card p {
