@@ -349,120 +349,153 @@ const PrioritySignal = ({ signal, index, onClick }) => {
 };
 
 export default function PrioritySignalStrip({ signals = [], onOpenDrawer }) {
+  const [selectedSignal, setSelectedSignal] = useState(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const handleSignalClick = (signal) => {
+    setSelectedSignal(signal);
+    setIsDrawerOpen(true);
+  };
+
+  const handleCloseDrawer = () => {
+    setIsDrawerOpen(false);
+    setSelectedSignal(null);
+  };
+
+  const handleNavigate = (direction) => {
+    if (!selectedSignal || !signals.length) return;
+    const currentIndex = signals.findIndex(s => s.text === selectedSignal.text);
+    if (currentIndex === -1) return;
+    const nextIndex = direction === 'next' 
+      ? (currentIndex + 1) % signals.length 
+      : (currentIndex - 1 + signals.length) % signals.length;
+    setSelectedSignal(signals[nextIndex]);
+  };
+
   if (!signals || signals.length === 0) {
     return null;
   }
 
   return (
-    <motion.section
-      aria-labelledby="priority-signals-heading"
-      className="mb-8"
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
-    >
-      <style>{`
-        /* ============================================================================
-           HORIZON OS — FRONT PAGE SIGNALS: LEGIBILITY ENHANCEMENT v2.0
-        ============================================================================ */
-        
-        /* Glass Blur Tightening - Reduced by 2px for sharper refractions */
-        .hzn-priority-signal {
-          backdrop-filter: blur(14px) !important;
-          -webkit-backdrop-filter: blur(14px) !important;
-        }
-        
-        /* Edge Shading - Curved gradient masking for 3D inset effect */
-        .hzn-edge-shadow {
-          opacity: 1;
-          transition: opacity 300ms ease;
-        }
-        
-        .hzn-priority-signal:hover .hzn-edge-shadow {
-          opacity: 0.7;
-        }
-        
-        /* Performance optimization */
-        .hzn-priority-signal {
-          transform: translateZ(0);
-          backface-visibility: hidden;
-          will-change: transform, box-shadow;
-        }
-        
-        /* Text Rendering Optimization for Legibility */
-        .hzn-priority-signal p,
-        .hzn-priority-signal span {
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
-          text-rendering: optimizeLegibility;
-        }
-        
-        /* Contrast Enhancement Layer */
-        .hzn-priority-signal::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          border-radius: 18px;
-          background: linear-gradient(135deg, 
-            rgba(0, 0, 0, 0.15) 0%, 
-            transparent 40%, 
-            rgba(0, 0, 0, 0.08) 100%
-          );
-          pointer-events: none;
-          z-index: 1;
-        }
-        
-        /* Reduced Motion Support */
-        @media (prefers-reduced-motion: reduce) {
+    <>
+      <motion.section
+        aria-labelledby="priority-signals-heading"
+        className="mb-8"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
+        <style>{`
+          /* ============================================================================
+             HORIZON OS — FRONT PAGE SIGNALS: LEGIBILITY ENHANCEMENT v2.0
+          ============================================================================ */
+          
+          /* Glass Blur Tightening - Reduced by 2px for sharper refractions */
           .hzn-priority-signal {
-            transition: none !important;
+            backdrop-filter: blur(14px) !important;
+            -webkit-backdrop-filter: blur(14px) !important;
           }
           
-          .hzn-priority-signal * {
-            animation: none !important;
-            transition: none !important;
-          }
-        }
-        
-        /* High Contrast Mode Support */
-        @media (prefers-contrast: high) {
-          .hzn-priority-signal p {
-            color: #FFFFFF !important;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 1) !important;
+          /* Edge Shading - Curved gradient masking for 3D inset effect */
+          .hzn-edge-shadow {
+            opacity: 1;
+            transition: opacity 300ms ease;
           }
           
-          .hzn-priority-signal {
-            border-color: rgba(255, 255, 255, 0.5) !important;
+          .hzn-priority-signal:hover .hzn-edge-shadow {
+            opacity: 0.7;
           }
-        }
-      `}</style>
+          
+          /* Performance optimization */
+          .hzn-priority-signal {
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            will-change: transform, box-shadow;
+          }
+          
+          /* Text Rendering Optimization for Legibility */
+          .hzn-priority-signal p,
+          .hzn-priority-signal span {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+          }
+          
+          /* Contrast Enhancement Layer */
+          .hzn-priority-signal::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 18px;
+            background: linear-gradient(135deg, 
+              rgba(0, 0, 0, 0.15) 0%, 
+              transparent 40%, 
+              rgba(0, 0, 0, 0.08) 100%
+            );
+            pointer-events: none;
+            z-index: 1;
+          }
+          
+          /* Reduced Motion Support */
+          @media (prefers-reduced-motion: reduce) {
+            .hzn-priority-signal {
+              transition: none !important;
+            }
+            
+            .hzn-priority-signal * {
+              animation: none !important;
+              transition: none !important;
+            }
+          }
+          
+          /* High Contrast Mode Support */
+          @media (prefers-contrast: high) {
+            .hzn-priority-signal p {
+              color: #FFFFFF !important;
+              text-shadow: 0 2px 4px rgba(0, 0, 0, 1) !important;
+            }
+            
+            .hzn-priority-signal {
+              border-color: rgba(255, 255, 255, 0.5) !important;
+            }
+          }
+        `}</style>
 
-      {/* MATCHED HEADER STYLING */}
-      <div className="mb-4 pl-2">
-        <h2 
-          className="font-semibold mb-2"
-          style={{ 
-            fontSize: '34px',
-            lineHeight: '1.2',
-            color: 'rgba(255, 255, 255, 0.95)',
-            letterSpacing: '-0.02em'
-          }}
-        >
-          U.S. Front Page Signals
-        </h2>
-        <p 
-          className="text-sm"
-          style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-        >
-          Urgent developments requiring immediate attention.
-        </p>
-      </div>
-      
-      <div className="grid gap-6 md:grid-cols-2">
-        {signals.slice(0, 2).map((signal, index) => (
-          <PrioritySignal key={index} signal={signal} index={index} onClick={onOpenDrawer} />
-        ))}
-      </div>
-    </motion.section>
+        {/* MATCHED HEADER STYLING */}
+        <div className="mb-4 pl-2">
+          <h2 
+            className="font-semibold mb-2"
+            style={{ 
+              fontSize: '34px',
+              lineHeight: '1.2',
+              color: 'rgba(255, 255, 255, 0.95)',
+              letterSpacing: '-0.02em'
+            }}
+          >
+            U.S. Front Page Signals
+          </h2>
+          <p 
+            className="text-sm"
+            style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+          >
+            Urgent developments requiring immediate attention.
+          </p>
+        </div>
+        
+        <div className="grid gap-6 md:grid-cols-2">
+          {signals.slice(0, 2).map((signal, index) => (
+            <PrioritySignal key={index} signal={signal} index={index} onClick={handleSignalClick} />
+          ))}
+        </div>
+      </motion.section>
+
+      {/* OS Horizon V2 CEP Drawer */}
+      <FrontPageSignalDrawer
+        isOpen={isDrawerOpen}
+        onClose={handleCloseDrawer}
+        signal={selectedSignal}
+        onNavigate={handleNavigate}
+      />
+    </>
   );
 }
