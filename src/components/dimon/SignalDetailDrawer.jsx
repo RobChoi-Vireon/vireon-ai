@@ -746,7 +746,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               opacity: 1;
             }
             
-            /* Priority Drawer */
+            /* Priority Drawer - OS Horizon Liquid Glass */
             .hzn-drawer {
               position: fixed;
               z-index: 90;
@@ -755,9 +755,13 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               margin-inline: auto;
               top: calc(72px + 14px);
               max-width: min(820px, 90vw);
-              border: 1px solid rgba(255, 255, 255, 0.06);
-              background: linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(0,0,0,0.12));
-              box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+              border: 1px solid rgba(255, 255, 255, 0.05);
+              background: linear-gradient(180deg, rgba(22, 24, 28, 0.92) 0%, rgba(18, 20, 24, 0.95) 100%);
+              backdrop-filter: blur(32px) saturate(1.2);
+              -webkit-backdrop-filter: blur(32px) saturate(1.2);
+              box-shadow: 
+                0 24px 70px rgba(0, 0, 0, 0.40),
+                inset 0 1px 0 rgba(255, 255, 255, 0.04);
               border-radius: calc(var(--mp-radius) + 8px);
               overflow: visible;
               
@@ -765,8 +769,8 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               opacity: 0;
               will-change: transform, opacity;
               transition: 
-                transform var(--hzn-dur-open) var(--hzn-ease-silk),
-                opacity var(--hzn-dur-open) var(--hzn-ease-silk);
+                transform 220ms cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 220ms cubic-bezier(0.4, 0, 0.2, 1);
             }
             
             .hzn-drawer--open {
