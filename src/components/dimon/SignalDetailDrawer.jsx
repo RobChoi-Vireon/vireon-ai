@@ -1348,48 +1348,74 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                 `}</style>
 
                 <div className="p-8 pt-6">
-                  {/* MORNING TAKEAWAY (Matches Policy Analysis Format) */}
+                  {/* I. TOP SUMMARY (mandatory) - OS Horizon V2 */}
                   <section className="ri-section mb-6">
                     <h3 className="ri-section-title">
                       <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                      Morning Takeaway
+                      Summary
                     </h3>
-                    <p className="ri-section-body mb-5">{morningTakeaway}</p>
-
-                    {/* TRANSLATION BOX (Matching Screenshot Format) */}
-                    <div 
-                      className="p-5 rounded-[16px] border relative"
-                      style={{
-                        background: 'rgba(255, 255, 255, 0.025)',
-                        borderColor: 'rgba(255, 255, 255, 0.08)',
-                        backdropFilter: 'blur(18px)',
-                      }}
-                    >
-                      <div className="flex items-center gap-2 mb-3">
-                        <Sparkles className="w-3.5 h-3.5" style={{ color: 'rgba(255, 255, 255, 0.55)' }} />
-                        <span 
-                          className="text-[11px] font-semibold uppercase tracking-wide"
-                          style={{ color: 'rgba(255, 255, 255, 0.55)' }}
-                        >
-                          Translation
-                        </span>
-                      </div>
-                      <p 
-                        className="text-[14px] font-normal leading-relaxed"
-                        style={{ 
-                          color: 'rgba(255, 255, 255, 0.82)',
-                          lineHeight: '1.55'
-                        }}
-                      >
-                        {translation}
-                      </p>
+                    <p className="ri-section-body mb-4">{morningTakeaway}</p>
+                    
+                    <div className="ri-confidence-inline">
+                      <span className="text-xs font-medium uppercase tracking-wide" style={{ color: '#AAB1B8', opacity: 0.7 }}>
+                        Confidence
+                      </span>
+                      <ConfidenceRing value={confOverall} color={HORIZON.color.neutral} size={42} sentiment={sentiment} />
                     </div>
                   </section>
 
-                  {/* Narrative Link */}
                   <NarrativeLink />
 
-                  {/* WHAT HAPPENED */}
+                  {/* II. WHY IT MATTERS (mandatory) - OS Horizon V2 */}
+                  <section className="ri-section">
+                    <h3 className="ri-section-title">
+                      <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                      Why It Matters
+                    </h3>
+                    <p className="ri-section-body">
+                      {analysis.why}
+                    </p>
+                  </section>
+
+                  <NarrativeLink />
+
+                  {/* III. TRANSLATION (optional) - OS Horizon V2 */}
+                  {translation && (
+                    <>
+                      <section className="ri-section">
+                        <div 
+                          className="p-5 rounded-[16px] border relative"
+                          style={{
+                            background: 'rgba(255, 255, 255, 0.025)',
+                            borderColor: 'rgba(255, 255, 255, 0.08)',
+                            backdropFilter: 'blur(18px)',
+                          }}
+                        >
+                          <div className="flex items-center gap-2 mb-3">
+                            <Sparkles className="w-3.5 h-3.5" style={{ color: 'rgba(255, 255, 255, 0.55)' }} />
+                            <span 
+                              className="text-[11px] font-semibold uppercase tracking-wide"
+                              style={{ color: 'rgba(255, 255, 255, 0.55)' }}
+                            >
+                              In Simple Terms
+                            </span>
+                          </div>
+                          <p 
+                            className="text-[14px] font-normal leading-relaxed"
+                            style={{ 
+                              color: 'rgba(255, 255, 255, 0.82)',
+                              lineHeight: '1.55'
+                            }}
+                          >
+                            {translation}
+                          </p>
+                        </div>
+                      </section>
+                      <NarrativeLink />
+                    </>
+                  )}
+
+                  {/* IV. WHAT HAPPENED (mandatory) - OS Horizon V2 */}
                   <section className="ri-section">
                     <h3 className="ri-section-title">
                       <Target className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
@@ -1398,148 +1424,26 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                     <p className="ri-section-body">{analysis.what}</p>
                   </section>
 
-                  {/* Narrative Link */}
                   <NarrativeLink />
 
-                  {/* WHY IT MATTERS + Confidence */}
-                  <section className="ri-section">
-                    <h3 className="ri-section-title">
-                      <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                      Why It Matters
-                    </h3>
-                    <p className="ri-section-body">
-                      <strong>{analysis.why}</strong>
-                    </p>
-                    
-                    <div className="ri-confidence-inline mt-4">
-                      <span className="text-xs font-medium uppercase tracking-wide" style={{ color: '#AAB1B8', opacity: 0.7 }}>
-                        Confidence
-                      </span>
-                      <ConfidenceRing value={confOverall} color={HORIZON.color.neutral} size={42} sentiment={sentiment} />
-                    </div>
-                  </section>
-
-                  {/* Narrative Link */}
-                  <NarrativeLink />
-
-                  {/* IMPACT OVERVIEW */}
+                  {/* V. IMPACT SNAPSHOT (mandatory) - OS Horizon V2 */}
                   <section className="ri-section">
                     <h3 className="ri-section-title">
                       <Activity className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                      Impact Overview
+                      Impact Snapshot
                     </h3>
                     <div className="flex flex-wrap gap-2">
                       {analysis.impacts.map((impact, i) => (
                         <ImpactChip key={i} text={impact.text} tone={impact.tone} />
                       ))}
                     </div>
-
-                    {/* RIPPLE IMPACT - ONLY IN DETAILED MODE */}
-                    {viewMode === 'detailed' && rippleImpact && (
-                      <motion.div
-                        className="mt-6 flex items-start gap-2"
-                        initial={{ opacity: 0, y: 2 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.18, delay: 0.4 }}
-                        whileHover={{ y: -1 }}
-                        role="region"
-                        aria-label={`Ripple Impact: ${rippleImpact}`}
-                      >
-                        <svg 
-                          width="16" 
-                          height="16" 
-                          viewBox="0 0 16 16" 
-                          fill="none"
-                          className="mt-0.5 flex-shrink-0"
-                          style={{ color: 'rgba(255, 255, 255, 0.38)' }}
-                          aria-hidden="true"
-                        >
-                          <path 
-                            d="M3 8h10M8 3l5 5-5 5" 
-                            stroke="currentColor" 
-                            strokeWidth="1.5" 
-                            strokeLinecap="round" 
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                        <div>
-                          <span 
-                            className="text-xs font-medium uppercase tracking-wide mr-2"
-                            style={{ color: 'rgba(255, 255, 255, 0.5)' }}
-                          >
-                            Ripple Impact
-                          </span>
-                          <span 
-                            style={{ 
-                              fontSize: '14px', 
-                              lineHeight: '20px', 
-                              color: 'rgba(255, 255, 255, 0.82)',
-                              fontWeight: 500
-                            }}
-                          >
-                            {rippleImpact}
-                          </span>
-                        </div>
-                      </motion.div>
-                    )}
                   </section>
 
-                  {/* AUTO-REVEAL DETAILS */}
-                  <div className="ri-details">
-                    <NarrativeLink />
+                  <NarrativeLink />
 
-                    {/* Quote */}
-                    {analysis.quote && (
-                      <>
-                        <blockquote
-                          className="ri-section-body mb-6 pl-4 italic"
-                          style={{
-                            borderLeft: `2px solid ${HORIZON.color.accent}`,
-                            opacity: 0.85,
-                          }}
-                        >
-                          "{analysis.quote}"
-                        </blockquote>
-                        
-                        <NarrativeLink />
-                      </>
-                    )}
-
-                    {/* Market Relevance */}
-                    <div className="mb-6">
-                      <h4 className="ri-section-title">Market Relevance</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                          <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
-                            Impacts
-                          </div>
-                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
-                            {analysis.relevance.impacts}
-                          </p>
-                        </div>
-                        <div>
-                          <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
-                            Sectors
-                          </div>
-                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
-                            {analysis.relevance.sectors}
-                          </p>
-                        </div>
-                        <div>
-                          <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
-                            Asset Classes
-                          </div>
-                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
-                            {analysis.relevance.assetClasses}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <NarrativeLink />
-
-                    {/* Risk/Opportunity Cards */}
-                    <div className="ri-grid mb-6">
+                  {/* VI. DOWNSIDE RISK / UPSIDE POTENTIAL (mandatory) - OS Horizon V2 */}
+                  <section className="ri-section">
+                    <div className="ri-grid mb-2">
                       <div className={`ri-card ${sentiment === 'risk' ? 'active risk' : ''}`}>
                         <div className="flex items-center gap-3 mb-3">
                           <AlertCircle className="w-5 h-5" style={{ color: HORIZON.color.risk }} />
@@ -1561,7 +1465,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                         <div className="flex items-center gap-3 mb-3">
                           <ShieldCheck className="w-5 h-5" style={{ color: HORIZON.color.opportunity }} />
                           <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
-                            Potential Upside
+                            Upside Potential
                           </h4>
                         </div>
                         <p className="text-sm mb-3" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
@@ -1574,10 +1478,76 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                         </div>
                       </div>
                     </div>
+                  </section>
+
+                  {/* AUTO-REVEAL DETAILS */}
+                  <div className="ri-details">
+                    <NarrativeLink />
+
+                    {/* VII. RIPPLE EFFECTS (optional) - OS Horizon V2 */}
+                    {rippleImpact && (
+                      <>
+                        <section className="ri-section">
+                          <h3 className="ri-section-title">
+                            <Activity className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                            Ripple Effects
+                          </h3>
+                          <p className="ri-section-body">{rippleImpact}</p>
+                        </section>
+                        <NarrativeLink />
+                      </>
+                    )}
+
+                    {/* Quote (if available) */}
+                    {analysis.quote && (
+                      <>
+                        <blockquote
+                          className="ri-section-body mb-6 pl-4 italic"
+                          style={{
+                            borderLeft: `2px solid ${HORIZON.color.accent}`,
+                            opacity: 0.85,
+                          }}
+                        >
+                          "{analysis.quote}"
+                        </blockquote>
+                        <NarrativeLink />
+                      </>
+                    )}
+
+                    {/* Market Relevance Details */}
+                    <div className="mb-6">
+                      <h4 className="ri-section-title">Market Relevance</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
+                            What Changes
+                          </div>
+                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
+                            {analysis.relevance.impacts}
+                          </p>
+                        </div>
+                        <div>
+                          <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
+                            Sectors Affected
+                          </div>
+                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
+                            {analysis.relevance.sectors}
+                          </p>
+                        </div>
+                        <div>
+                          <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
+                            Investment Types
+                          </div>
+                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
+                            {analysis.relevance.assetClasses}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
 
                     <NarrativeLink />
 
-                    {/* AI Strategy Lens */}
+                    {/* VIII. AI STRATEGY LENS (optional) - OS Horizon V2 */}
                     <div
                       className="ri-card mb-6"
                       style={{
@@ -1588,12 +1558,12 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                       <div className="flex items-center gap-2 mb-3">
                         <Link2 className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
                         <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
-                          AI Strategy Lens
+                          How Investors May Respond
                         </h4>
                       </div>
                       <p className="ai-voice">
                         <span className="li-ai-voice-dot" />
-                        Vireon detects alignment across macro positioning data:
+                        Based on this signal:
                       </p>
                       <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
                         {analysis.strategy}
@@ -1601,11 +1571,11 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                     </div>
                   </div>
 
-                  {/* CORRELATED SIGNALS */}
+                  {/* IX. CORRELATED SIGNALS (always last) - OS Horizon V2 */}
                   <section className="ri-section">
                     <div className="ri-next">
                       <strong style={{ fontSize: 14, color: 'rgba(255, 255, 255, 0.88)' }}>
-                        Correlated Signals
+                        Related Signals
                       </strong>
                       <div className="ri-carousel">
                         {analysis.correlated.map((s) => (
