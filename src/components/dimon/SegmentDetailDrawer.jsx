@@ -24,44 +24,53 @@ const MOTION = {
 
 const DirectionIcons = { '+': ArrowUp, '-': ArrowDown, '=': ArrowRight };
 
+// Unified glass token for all cards
+const GLASS_TOKENS = {
+  cardBg: 'linear-gradient(180deg, rgba(255, 255, 255, 0.052) 0%, rgba(255, 255, 255, 0.028) 100%)',
+  cardBorder: 'rgba(255,255,255,0.12)',
+  cardBlur: 'blur(24px) saturate(160%)',
+  cardShadow: (glowColor) => `
+    inset 0 1px 1.5px rgba(255,255,255,0.08),
+    inset 0 0 18px ${glowColor},
+    0 6px 20px rgba(0,0,0,0.12),
+    0 0 24px ${glowColor}
+  `,
+  cardHoverShadow: (glowColor) => `
+    inset 0 1px 2px rgba(255,255,255,0.10),
+    inset 0 0 20px ${glowColor},
+    0 10px 28px rgba(0,0,0,0.14),
+    0 0 28px ${glowColor}
+  `
+};
+
 const getTheme = (name) => {
   switch (name) {
-    case 'Policy': return { Icon: Shield, color: '#70A8E8', borderColor: 'rgba(112, 168, 232, 0.25)', glowColor: 'rgba(112, 168, 232, 0.30)', ambient: 'rgba(112, 168, 232, 0.08)' };
-    case 'Credit': return { Icon: Briefcase, color: '#B88AED', borderColor: 'rgba(184, 138, 237, 0.25)', glowColor: 'rgba(184, 138, 237, 0.30)', ambient: 'rgba(184, 138, 237, 0.08)' };
-    case 'Equities': return { Icon: BarChart3, color: '#32C288', borderColor: 'rgba(50, 194, 136, 0.25)', glowColor: 'rgba(50, 194, 136, 0.30)', ambient: 'rgba(50, 194, 136, 0.08)' };
-    case 'Global': return { Icon: Globe, color: '#EDB859', borderColor: 'rgba(255, 176, 32, 0.25)', glowColor: 'rgba(255, 176, 32, 0.30)', ambient: 'rgba(237, 184, 89, 0.08)' };
-    default: return { Icon: Zap, color: '#AAB1B8', borderColor: 'rgba(170, 177, 184, 0.25)', glowColor: 'rgba(170, 177, 184, 0.30)', ambient: 'rgba(170, 177, 184, 0.08)' };
+    case 'Policy': return { Icon: Shield, color: '#70A8E8', borderColor: 'rgba(112, 168, 232, 0.20)', glowColor: 'rgba(200, 220, 255, 0.16)', ambient: 'rgba(112, 168, 232, 0.06)' };
+    case 'Credit': return { Icon: Briefcase, color: '#B88AED', borderColor: 'rgba(184, 138, 237, 0.20)', glowColor: 'rgba(220, 200, 255, 0.16)', ambient: 'rgba(184, 138, 237, 0.06)' };
+    case 'Equities': return { Icon: BarChart3, color: '#32C288', borderColor: 'rgba(50, 194, 136, 0.20)', glowColor: 'rgba(180, 255, 220, 0.16)', ambient: 'rgba(50, 194, 136, 0.06)' };
+    case 'Global': return { Icon: Globe, color: '#EDB859', borderColor: 'rgba(255, 176, 32, 0.20)', glowColor: 'rgba(255, 235, 200, 0.16)', ambient: 'rgba(237, 184, 89, 0.06)' };
+    default: return { Icon: Zap, color: '#AAB1B8', borderColor: 'rgba(170, 177, 184, 0.20)', glowColor: 'rgba(220, 220, 230, 0.16)', ambient: 'rgba(170, 177, 184, 0.06)' };
   }
 };
 
-const InsightPanel = ({ icon: Icon, title, content, delay, iconColor, tintColor }) => (
+const InsightPanel = ({ icon: Icon, title, content, delay, iconColor, tintColor, glowColor }) => (
   <motion.div
     variants={{ hidden: { opacity: 0, y: 4 }, visible: { opacity: 1, y: 0 } }}
     transition={{ delay, duration: 0.06, ease: MOTION.CURVES.silk }}
     className="relative rounded-[26px]"
     style={{
-      padding: '32px 30px',
-      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.032) 100%)',
-      backdropFilter: 'blur(24px) saturate(165%)',
-      WebkitBackdropFilter: 'blur(24px) saturate(165%)',
-      border: '1px solid rgba(255,255,255,0.14)',
-      boxShadow: `
-        inset 0 1.5px 2px rgba(255,255,255,0.10),
-        inset 0 0 22px ${iconColor}12,
-        0 8px 24px rgba(0,0,0,0.14),
-        0 0 18px ${iconColor}08
-      `,
+      padding: '28px 28px',
+      background: GLASS_TOKENS.cardBg,
+      backdropFilter: GLASS_TOKENS.cardBlur,
+      WebkitBackdropFilter: GLASS_TOKENS.cardBlur,
+      border: `1px solid ${GLASS_TOKENS.cardBorder}`,
+      boxShadow: GLASS_TOKENS.cardShadow(glowColor || 'rgba(220, 230, 255, 0.10)'),
       transition: 'transform 0.14s ease-out, box-shadow 0.14s ease-out, filter 0.14s ease-out'
     }}
     whileHover={{
       y: -2,
-      boxShadow: `
-        inset 0 1.5px 2px rgba(255,255,255,0.12),
-        inset 0 0 24px ${iconColor}14,
-        0 12px 32px rgba(0,0,0,0.16),
-        0 0 22px ${iconColor}10
-      `,
-      filter: 'brightness(1.02)',
+      boxShadow: GLASS_TOKENS.cardHoverShadow(glowColor || 'rgba(220, 230, 255, 0.12)'),
+      filter: 'brightness(1.015)',
       transition: { duration: 0.14, ease: 'easeOut' }
     }}
     whileTap={{
@@ -70,50 +79,59 @@ const InsightPanel = ({ icon: Icon, title, content, delay, iconColor, tintColor 
       transition: { duration: 0.1, ease: 'easeOut' }
     }}
   >
+    {/* Top-to-bottom micro-gradient for subsurface lighting */}
+    <div style={{
+      position: 'absolute',
+      inset: 0,
+      background: 'linear-gradient(180deg, rgba(255,255,255,0.025) 0%, rgba(0,0,0,0.015) 100%)',
+      borderRadius: '26px',
+      pointerEvents: 'none'
+    }} />
+
     <div style={{
       position: 'absolute',
       top: 0,
       left: '12%',
       right: '12%',
-      height: '1.5px',
-      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.24), transparent)',
-      filter: 'blur(1px)',
+      height: '1px',
+      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+      filter: 'blur(0.5px)',
       pointerEvents: 'none'
     }} />
 
     <div style={{
       position: 'absolute',
       inset: 0,
-      background: `radial-gradient(ellipse at 50% 40%, ${iconColor}06 0%, transparent 100%)`,
+      background: `radial-gradient(ellipse at 50% 40%, ${iconColor}04 0%, transparent 100%)`,
       borderRadius: '26px',
       pointerEvents: 'none',
-      opacity: 0.68
+      opacity: 0.55
     }} />
 
     <div className="flex items-start gap-5 relative">
       <div 
         className="w-10 h-10 rounded-[13px] flex items-center justify-center flex-shrink-0 relative"
         style={{
-          background: `${iconColor}14`,
-          border: `1px solid ${iconColor}28`,
-          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.12), 0 0 14px ${iconColor}18`
+          background: `${iconColor}12`,
+          border: `1px solid ${iconColor}22`,
+          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.10), 0 0 10px ${iconColor}10`
         }}
       >
         <div style={{
           position: 'absolute',
-          inset: '-8px',
-          background: `radial-gradient(circle, ${iconColor}06 0%, transparent 70%)`,
-          filter: 'blur(12px)',
+          inset: '-6px',
+          background: `radial-gradient(circle, ${iconColor}04 0%, transparent 70%)`,
+          filter: 'blur(10px)',
           pointerEvents: 'none'
         }} />
-        <Icon className="w-5 h-5 relative z-10" style={{ color: iconColor, filter: 'brightness(1.18)' }} strokeWidth={2.2} />
+        <Icon className="w-5 h-5 relative z-10" style={{ color: iconColor, filter: 'brightness(1.15)' }} strokeWidth={2.2} />
       </div>
 
       <div className="flex-1">
         <h3 
           className="text-[14px] font-medium mb-3 relative" 
           style={{ 
-            color: 'rgba(255,255,255,0.72)',
+            color: 'rgba(255,255,255,0.70)',
             letterSpacing: '0.025em'
           }}
         >
@@ -121,7 +139,7 @@ const InsightPanel = ({ icon: Icon, title, content, delay, iconColor, tintColor 
             <div style={{
               position: 'absolute',
               inset: '-4px -8px',
-              background: `linear-gradient(90deg, ${tintColor}03, transparent)`,
+              background: `linear-gradient(90deg, ${tintColor}02, transparent)`,
               borderRadius: '6px',
               pointerEvents: 'none'
             }} />
@@ -130,11 +148,11 @@ const InsightPanel = ({ icon: Icon, title, content, delay, iconColor, tintColor 
         </h3>
         
         <p 
-          className="text-[16px]" 
+          className="text-[16.5px]" 
           style={{ 
-            color: 'rgba(255,255,255,0.90)',
-            lineHeight: '1.52',
-            letterSpacing: '-0.005em',
+            color: 'rgba(255,255,255,0.92)',
+            lineHeight: '1.50',
+            letterSpacing: '-0.006em',
             fontWeight: 420
           }}
         >
@@ -195,17 +213,26 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         pointerEvents: 'none'
       }} />
 
+      {/* Rounded Header Background */}
       <motion.div
         variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
         transition={{ duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.easeOutQuint }}
-        style={{ marginBottom: '28px', paddingBottom: '4px' }}
+        className="relative rounded-[26px]"
+        style={{ 
+          marginBottom: '32px',
+          padding: '24px 28px',
+          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.038) 0%, rgba(255, 255, 255, 0.022) 100%)',
+          backdropFilter: GLASS_TOKENS.cardBlur,
+          WebkitBackdropFilter: GLASS_TOKENS.cardBlur,
+          border: `1px solid rgba(255,255,255,0.08)`
+        }}
       >
         <h1 
           style={{
-            fontSize: '23px',
+            fontSize: '25px',
             fontWeight: 600,
-            color: 'rgba(255,255,255,0.94)',
-            letterSpacing: '0.012em',
+            color: 'rgba(255,255,255,0.96)',
+            letterSpacing: '0.018em',
             marginBottom: '8px'
           }}
         >
@@ -213,46 +240,37 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         </h1>
         <p 
           style={{
-            fontSize: '15.5px',
+            fontSize: '15px',
             fontWeight: 400,
-            color: 'rgba(255,255,255,0.68)',
-            lineHeight: '1.52',
-            letterSpacing: '0.004em'
+            color: 'rgba(255,255,255,0.72)',
+            lineHeight: '1.48',
+            letterSpacing: '0.006em'
           }}
         >
           Market Pressure Lens — What's Driving Street Alignment
         </p>
       </motion.div>
 
+      {/* TL;DR Band - Reduced glow, tighter padding */}
       <motion.div
         variants={{ hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } }}
         transition={{ delay: 0.02, duration: 0.09, ease: MOTION.CURVES.silk }}
         className="relative rounded-[26px]"
         style={{
-          marginTop: '24px',
+          marginTop: '0px',
           marginBottom: '48px',
-          padding: '30px 32px',
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.042) 100%)',
-          backdropFilter: 'blur(24px) saturate(165%)',
-          WebkitBackdropFilter: 'blur(24px) saturate(165%)',
-          border: '1px solid rgba(255,255,255,0.16)',
-          boxShadow: `
-            inset 0 2px 3px rgba(255,255,255,0.14),
-            inset 0 0 28px ${theme.glowColor},
-            0 10px 32px rgba(0,0,0,0.18),
-            0 0 42px ${theme.glowColor}
-          `,
+          padding: '24px 28px',
+          background: GLASS_TOKENS.cardBg,
+          backdropFilter: GLASS_TOKENS.cardBlur,
+          WebkitBackdropFilter: GLASS_TOKENS.cardBlur,
+          border: `1px solid ${GLASS_TOKENS.cardBorder}`,
+          boxShadow: GLASS_TOKENS.cardShadow(theme.glowColor),
           transition: 'transform 0.14s ease-out, box-shadow 0.14s ease-out, filter 0.14s ease-out'
         }}
         whileHover={{
           y: -2,
-          boxShadow: `
-            inset 0 2px 3px rgba(255,255,255,0.16),
-            inset 0 0 32px ${theme.glowColor},
-            0 14px 38px rgba(0,0,0,0.20),
-            0 0 48px ${theme.glowColor}
-          `,
-          filter: 'brightness(1.02)',
+          boxShadow: GLASS_TOKENS.cardHoverShadow(theme.glowColor),
+          filter: 'brightness(1.015)',
           transition: { duration: 0.14, ease: 'easeOut' }
         }}
         whileTap={{
@@ -261,14 +279,23 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           transition: { duration: 0.1, ease: 'easeOut' }
         }}
       >
+        {/* Top-to-bottom micro-gradient */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.025) 0%, rgba(0,0,0,0.015) 100%)',
+          borderRadius: '26px',
+          pointerEvents: 'none'
+        }} />
+
         <div style={{
           position: 'absolute',
           top: 0,
           left: '12%',
           right: '12%',
-          height: '1.5px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent)',
-          filter: 'blur(1px)',
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+          filter: 'blur(0.5px)',
           pointerEvents: 'none'
         }} />
 
@@ -279,10 +306,10 @@ const PolicyDrawerContent = ({ segment, delay }) => {
             background: `radial-gradient(ellipse at 50% 40%, ${theme.ambient} 0%, transparent 100%)`,
             borderRadius: '26px',
             pointerEvents: 'none',
-            opacity: 0.68
+            opacity: 0.55
           }}
           animate={{
-            opacity: [0.68 + haloPulse, 0.68]
+            opacity: [0.55 + haloPulse, 0.55]
           }}
           transition={{
             duration: 0.8,
@@ -290,18 +317,18 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           }}
         />
 
-        <div className="flex items-center justify-between gap-8 relative">
+        <div className="flex items-center justify-between gap-6 relative">
           <div 
             className="inline-block rounded-full flex-shrink-0"
             style={{
-              fontSize: '11px',
+              fontSize: '10.5px',
               fontWeight: 600,
-              color: 'rgba(255,255,255,0.84)',
-              padding: '7px 14px',
-              background: 'rgba(255,255,255,0.12)',
-              border: '1px solid rgba(255,255,255,0.18)',
-              borderRadius: '24px',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10)'
+              color: 'rgba(255,255,255,0.82)',
+              padding: '6px 12px',
+              background: 'rgba(255,255,255,0.10)',
+              border: '1px solid rgba(255,255,255,0.14)',
+              borderRadius: '20px',
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)'
             }}
           >
             TL;DR
@@ -310,29 +337,29 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           <p 
             className="flex-1 text-center"
             style={{
-              fontSize: '17.5px',
-              fontWeight: 480,
+              fontSize: '16.5px',
+              fontWeight: 460,
               color: 'rgba(255,255,255,0.94)',
-              lineHeight: '1.50',
+              lineHeight: '1.48',
               letterSpacing: '-0.006em'
             }}
           >
             Stricter rules are raising costs and putting pressure on big tech companies.
           </p>
 
-          <div className="flex items-center gap-4 flex-shrink-0">
+          <div className="flex items-center gap-3 flex-shrink-0">
             <div
               className="inline-block rounded-full"
               style={{
-                fontSize: '12px',
+                fontSize: '11.5px',
                 fontWeight: 500,
                 color: '#7BB1FF',
-                background: 'rgba(80, 140, 255, 0.18)',
-                padding: '7px 15px',
-                borderRadius: '24px',
-                border: '1px solid rgba(80, 140, 255, 0.32)',
-                boxShadow: `0 0 16px ${theme.glowColor}, inset 0 1px 0 rgba(255,255,255,0.10)`,
-                filter: 'brightness(1.03)'
+                background: 'rgba(80, 140, 255, 0.14)',
+                padding: '6px 13px',
+                borderRadius: '20px',
+                border: '1px solid rgba(80, 140, 255, 0.26)',
+                boxShadow: `0 0 12px ${theme.glowColor}, inset 0 1px 0 rgba(255,255,255,0.08)`,
+                filter: 'brightness(1.02)'
               }}
             >
               Rising
@@ -341,11 +368,10 @@ const PolicyDrawerContent = ({ segment, delay }) => {
             <div style={{ textAlign: 'right' }}>
               <div 
                 style={{ 
-                  fontSize: '12px', 
+                  fontSize: '11.5px', 
                   fontWeight: 500,
-                  color: 'rgba(255,255,255,0.76)',
-                  letterSpacing: '0.005em',
-                  filter: 'brightness(1.03)'
+                  color: 'rgba(255,255,255,0.74)',
+                  letterSpacing: '0.005em'
                 }}
               >
                 {Math.round(weight)}%
@@ -361,7 +387,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           display: 'flex',
           flexDirection: 'column',
           gap: '24px',
-          marginBottom: '40px'
+          marginBottom: '56px'
         }}
       >
         <InsightPanel 
@@ -371,6 +397,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           delay={0.06}
           iconColor={theme.color}
           tintColor="#6FB5FF"
+          glowColor={theme.glowColor}
         />
 
         <InsightPanel 
@@ -380,6 +407,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           delay={0.12}
           iconColor={theme.color}
           tintColor="#7BC8FF"
+          glowColor={theme.glowColor}
         />
 
         <InsightPanel 
@@ -389,38 +417,30 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           delay={0.18}
           iconColor={theme.color}
           tintColor="#8FD6FF"
+          glowColor={theme.glowColor}
         />
       </motion.div>
 
+      {/* What This Means - Lightened container, reduced glow */}
       <motion.div
         variants={{ hidden: { opacity: 0, y: 4 }, visible: { opacity: 1, y: 0 } }}
         transition={{ delay: 0.24, duration: 0.24, ease: MOTION.CURVES.silk }}
         className="relative rounded-[26px] mx-auto"
         style={{
           maxWidth: '88%',
-          padding: '32px 36px',
+          padding: '28px 32px',
           marginBottom: '48px',
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.082) 0%, rgba(255, 255, 255, 0.048) 100%)',
-          backdropFilter: 'blur(24px) saturate(165%)',
-          WebkitBackdropFilter: 'blur(24px) saturate(165%)',
-          border: '1px solid rgba(255,255,255,0.16)',
-          boxShadow: `
-            inset 0 2px 3px rgba(255,255,255,0.14),
-            inset 0 0 28px ${theme.glowColor},
-            0 10px 32px rgba(0,0,0,0.18),
-            0 0 42px ${theme.glowColor}
-          `,
+          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.035) 100%)',
+          backdropFilter: GLASS_TOKENS.cardBlur,
+          WebkitBackdropFilter: GLASS_TOKENS.cardBlur,
+          border: `1px solid ${GLASS_TOKENS.cardBorder}`,
+          boxShadow: GLASS_TOKENS.cardShadow(theme.glowColor),
           transition: 'transform 0.14s ease-out, box-shadow 0.14s ease-out, filter 0.14s ease-out'
         }}
         whileHover={{
           y: -2,
-          boxShadow: `
-            inset 0 2px 3px rgba(255,255,255,0.16),
-            inset 0 0 32px ${theme.glowColor},
-            0 14px 38px rgba(0,0,0,0.20),
-            0 0 48px ${theme.glowColor}
-          `,
-          filter: 'brightness(1.02)',
+          boxShadow: GLASS_TOKENS.cardHoverShadow(theme.glowColor),
+          filter: 'brightness(1.015)',
           transition: { duration: 0.14, ease: 'easeOut' }
         }}
         whileTap={{
@@ -429,14 +449,23 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           transition: { duration: 0.1, ease: 'easeOut' }
         }}
       >
+        {/* Top-to-bottom micro-gradient */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.025) 0%, rgba(0,0,0,0.015) 100%)',
+          borderRadius: '26px',
+          pointerEvents: 'none'
+        }} />
+
         <div style={{
           position: 'absolute',
           top: 0,
           left: '12%',
           right: '12%',
-          height: '1.5px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent)',
-          filter: 'blur(1px)',
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+          filter: 'blur(0.5px)',
           pointerEvents: 'none'
         }} />
 
@@ -446,14 +475,14 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           background: `radial-gradient(ellipse at 50% 40%, ${theme.ambient} 0%, transparent 100%)`,
           borderRadius: '26px',
           pointerEvents: 'none',
-          opacity: 0.68
+          opacity: 0.55
         }} />
 
         <div className="relative text-center">
           <h3 
             className="text-[14px] font-medium mb-4 uppercase" 
             style={{ 
-              color: 'rgba(255,255,255,0.68)',
+              color: 'rgba(255,255,255,0.66)',
               letterSpacing: '0.09em'
             }}
           >
@@ -461,11 +490,11 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           </h3>
           
           <p 
-            className="text-[16.5px]" 
+            className="text-[17px]" 
             style={{ 
-              color: 'rgba(255,255,255,0.90)',
-              lineHeight: '1.54',
-              letterSpacing: '-0.005em',
+              color: 'rgba(255,255,255,0.94)',
+              lineHeight: '1.52',
+              letterSpacing: '-0.006em',
               fontWeight: 420,
               maxWidth: '620px',
               margin: '0 auto'
@@ -649,17 +678,26 @@ const StandardDrawerContent = ({ segment, delay }) => {
         pointerEvents: 'none'
       }} />
 
+      {/* Rounded Header Background */}
       <motion.div
         variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
         transition={{ duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.easeOutQuint }}
-        style={{ marginBottom: '28px', paddingBottom: '4px' }}
+        className="relative rounded-[26px]"
+        style={{ 
+          marginBottom: '32px',
+          padding: '24px 28px',
+          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.038) 0%, rgba(255, 255, 255, 0.022) 100%)',
+          backdropFilter: GLASS_TOKENS.cardBlur,
+          WebkitBackdropFilter: GLASS_TOKENS.cardBlur,
+          border: `1px solid rgba(255,255,255,0.08)`
+        }}
       >
         <h1 
           style={{
-            fontSize: '23px',
+            fontSize: '25px',
             fontWeight: 600,
-            color: 'rgba(255,255,255,0.94)',
-            letterSpacing: '0.012em',
+            color: 'rgba(255,255,255,0.96)',
+            letterSpacing: '0.018em',
             marginBottom: '8px'
           }}
         >
@@ -667,47 +705,37 @@ const StandardDrawerContent = ({ segment, delay }) => {
         </h1>
         <p 
           style={{
-            fontSize: '15.5px',
+            fontSize: '15px',
             fontWeight: 400,
-            color: 'rgba(255,255,255,0.68)',
-            lineHeight: '1.52',
-            letterSpacing: '0.004em'
+            color: 'rgba(255,255,255,0.72)',
+            lineHeight: '1.48',
+            letterSpacing: '0.006em'
           }}
         >
           Market Pressure Lens — What's Driving Street Alignment
         </p>
       </motion.div>
 
-      {/* TL;DR Block - Matching Policy drawer styling */}
+      {/* TL;DR Band - Reduced glow, tighter padding */}
       <motion.div
         variants={{ hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } }}
         transition={{ delay: 0.02, duration: 0.09, ease: MOTION.CURVES.silk }}
         className="relative rounded-[26px]"
         style={{
-          marginTop: '24px',
+          marginTop: '0px',
           marginBottom: '48px',
-          padding: '30px 32px',
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.042) 100%)',
-          backdropFilter: 'blur(24px) saturate(165%)',
-          WebkitBackdropFilter: 'blur(24px) saturate(165%)',
-          border: '1px solid rgba(255,255,255,0.16)',
-          boxShadow: `
-            inset 0 2px 3px rgba(255,255,255,0.14),
-            inset 0 0 28px ${theme.glowColor},
-            0 10px 32px rgba(0,0,0,0.18),
-            0 0 42px ${theme.glowColor}
-          `,
+          padding: '24px 28px',
+          background: GLASS_TOKENS.cardBg,
+          backdropFilter: GLASS_TOKENS.cardBlur,
+          WebkitBackdropFilter: GLASS_TOKENS.cardBlur,
+          border: `1px solid ${GLASS_TOKENS.cardBorder}`,
+          boxShadow: GLASS_TOKENS.cardShadow(theme.glowColor),
           transition: 'transform 0.14s ease-out, box-shadow 0.14s ease-out, filter 0.14s ease-out'
         }}
         whileHover={{
           y: -2,
-          boxShadow: `
-            inset 0 2px 3px rgba(255,255,255,0.16),
-            inset 0 0 32px ${theme.glowColor},
-            0 14px 38px rgba(0,0,0,0.20),
-            0 0 48px ${theme.glowColor}
-          `,
-          filter: 'brightness(1.02)',
+          boxShadow: GLASS_TOKENS.cardHoverShadow(theme.glowColor),
+          filter: 'brightness(1.015)',
           transition: { duration: 0.14, ease: 'easeOut' }
         }}
         whileTap={{
@@ -716,14 +744,23 @@ const StandardDrawerContent = ({ segment, delay }) => {
           transition: { duration: 0.1, ease: 'easeOut' }
         }}
       >
+        {/* Top-to-bottom micro-gradient */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.025) 0%, rgba(0,0,0,0.015) 100%)',
+          borderRadius: '26px',
+          pointerEvents: 'none'
+        }} />
+
         <div style={{
           position: 'absolute',
           top: 0,
           left: '12%',
           right: '12%',
-          height: '1.5px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent)',
-          filter: 'blur(1px)',
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+          filter: 'blur(0.5px)',
           pointerEvents: 'none'
         }} />
 
@@ -734,22 +771,22 @@ const StandardDrawerContent = ({ segment, delay }) => {
             background: `radial-gradient(ellipse at 50% 40%, ${theme.ambient} 0%, transparent 100%)`,
             borderRadius: '26px',
             pointerEvents: 'none',
-            opacity: 0.68
+            opacity: 0.55
           }}
         />
 
-        <div className="flex items-center justify-between gap-8 relative">
+        <div className="flex items-center justify-between gap-6 relative">
           <div 
             className="inline-block rounded-full flex-shrink-0"
             style={{
-              fontSize: '11px',
+              fontSize: '10.5px',
               fontWeight: 600,
-              color: 'rgba(255,255,255,0.84)',
-              padding: '7px 14px',
-              background: 'rgba(255,255,255,0.12)',
-              border: '1px solid rgba(255,255,255,0.18)',
-              borderRadius: '24px',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10)'
+              color: 'rgba(255,255,255,0.82)',
+              padding: '6px 12px',
+              background: 'rgba(255,255,255,0.10)',
+              border: '1px solid rgba(255,255,255,0.14)',
+              borderRadius: '20px',
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)'
             }}
           >
             TL;DR
@@ -758,29 +795,29 @@ const StandardDrawerContent = ({ segment, delay }) => {
           <p 
             className="flex-1 text-center"
             style={{
-              fontSize: '17.5px',
-              fontWeight: 480,
+              fontSize: '16.5px',
+              fontWeight: 460,
               color: 'rgba(255,255,255,0.94)',
-              lineHeight: '1.50',
+              lineHeight: '1.48',
               letterSpacing: '-0.006em'
             }}
           >
             {details.tldr}
           </p>
 
-          <div className="flex items-center gap-4 flex-shrink-0">
+          <div className="flex items-center gap-3 flex-shrink-0">
             <div
               className="inline-block rounded-full"
               style={{
-                fontSize: '12px',
+                fontSize: '11.5px',
                 fontWeight: 500,
                 color: theme.color,
-                background: `${theme.color}18`,
-                padding: '7px 15px',
-                borderRadius: '24px',
-                border: `1px solid ${theme.color}32`,
-                boxShadow: `0 0 16px ${theme.glowColor}, inset 0 1px 0 rgba(255,255,255,0.10)`,
-                filter: 'brightness(1.03)'
+                background: `${theme.color}12`,
+                padding: '6px 13px',
+                borderRadius: '20px',
+                border: `1px solid ${theme.color}26`,
+                boxShadow: `0 0 12px ${theme.glowColor}, inset 0 1px 0 rgba(255,255,255,0.08)`,
+                filter: 'brightness(1.02)'
               }}
             >
               {details.status || 'Active'}
@@ -789,11 +826,10 @@ const StandardDrawerContent = ({ segment, delay }) => {
             <div style={{ textAlign: 'right' }}>
               <div 
                 style={{ 
-                  fontSize: '12px', 
+                  fontSize: '11.5px', 
                   fontWeight: 500,
-                  color: 'rgba(255,255,255,0.76)',
-                  letterSpacing: '0.005em',
-                  filter: 'brightness(1.03)'
+                  color: 'rgba(255,255,255,0.74)',
+                  letterSpacing: '0.005em'
                 }}
               >
                 {Math.round(weight)}%
@@ -810,7 +846,7 @@ const StandardDrawerContent = ({ segment, delay }) => {
           display: 'flex',
           flexDirection: 'column',
           gap: '24px',
-          marginBottom: '48px'
+          marginBottom: '56px'
         }}
       >
         <InsightPanel 
@@ -820,6 +856,7 @@ const StandardDrawerContent = ({ segment, delay }) => {
           delay={0.06}
           iconColor={theme.color}
           tintColor={theme.color}
+          glowColor={theme.glowColor}
         />
 
         <InsightPanel 
@@ -829,6 +866,7 @@ const StandardDrawerContent = ({ segment, delay }) => {
           delay={0.12}
           iconColor={theme.color}
           tintColor={theme.color}
+          glowColor={theme.glowColor}
         />
 
         <InsightPanel 
@@ -838,39 +876,30 @@ const StandardDrawerContent = ({ segment, delay }) => {
           delay={0.18}
           iconColor={theme.color}
           tintColor={theme.color}
+          glowColor={theme.glowColor}
         />
       </motion.div>
 
-      {/* What This Means Block - Matching Policy drawer styling */}
+      {/* What This Means - Lightened container, reduced glow */}
       <motion.div
         variants={{ hidden: { opacity: 0, y: 4 }, visible: { opacity: 1, y: 0 } }}
         transition={{ delay: 0.24, duration: 0.24, ease: MOTION.CURVES.silk }}
         className="relative rounded-[26px] mx-auto"
         style={{
           maxWidth: '88%',
-          padding: '32px 36px',
+          padding: '28px 32px',
           marginBottom: '48px',
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.082) 0%, rgba(255, 255, 255, 0.048) 100%)',
-          backdropFilter: 'blur(24px) saturate(165%)',
-          WebkitBackdropFilter: 'blur(24px) saturate(165%)',
-          border: '1px solid rgba(255,255,255,0.16)',
-          boxShadow: `
-            inset 0 2px 3px rgba(255,255,255,0.14),
-            inset 0 0 28px ${theme.glowColor},
-            0 10px 32px rgba(0,0,0,0.18),
-            0 0 42px ${theme.glowColor}
-          `,
+          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.035) 100%)',
+          backdropFilter: GLASS_TOKENS.cardBlur,
+          WebkitBackdropFilter: GLASS_TOKENS.cardBlur,
+          border: `1px solid ${GLASS_TOKENS.cardBorder}`,
+          boxShadow: GLASS_TOKENS.cardShadow(theme.glowColor),
           transition: 'transform 0.14s ease-out, box-shadow 0.14s ease-out, filter 0.14s ease-out'
         }}
         whileHover={{
           y: -2,
-          boxShadow: `
-            inset 0 2px 3px rgba(255,255,255,0.16),
-            inset 0 0 32px ${theme.glowColor},
-            0 14px 38px rgba(0,0,0,0.20),
-            0 0 48px ${theme.glowColor}
-          `,
-          filter: 'brightness(1.02)',
+          boxShadow: GLASS_TOKENS.cardHoverShadow(theme.glowColor),
+          filter: 'brightness(1.015)',
           transition: { duration: 0.14, ease: 'easeOut' }
         }}
         whileTap={{
@@ -879,14 +908,23 @@ const StandardDrawerContent = ({ segment, delay }) => {
           transition: { duration: 0.1, ease: 'easeOut' }
         }}
       >
+        {/* Top-to-bottom micro-gradient */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.025) 0%, rgba(0,0,0,0.015) 100%)',
+          borderRadius: '26px',
+          pointerEvents: 'none'
+        }} />
+
         <div style={{
           position: 'absolute',
           top: 0,
           left: '12%',
           right: '12%',
-          height: '1.5px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent)',
-          filter: 'blur(1px)',
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+          filter: 'blur(0.5px)',
           pointerEvents: 'none'
         }} />
 
@@ -896,14 +934,14 @@ const StandardDrawerContent = ({ segment, delay }) => {
           background: `radial-gradient(ellipse at 50% 40%, ${theme.ambient} 0%, transparent 100%)`,
           borderRadius: '26px',
           pointerEvents: 'none',
-          opacity: 0.68
+          opacity: 0.55
         }} />
 
         <div className="relative text-center">
           <h3 
             className="text-[14px] font-medium mb-4 uppercase" 
             style={{ 
-              color: 'rgba(255,255,255,0.68)',
+              color: 'rgba(255,255,255,0.66)',
               letterSpacing: '0.09em'
             }}
           >
@@ -911,11 +949,11 @@ const StandardDrawerContent = ({ segment, delay }) => {
           </h3>
           
           <p 
-            className="text-[16.5px]" 
+            className="text-[17px]" 
             style={{ 
-              color: 'rgba(255,255,255,0.90)',
-              lineHeight: '1.54',
-              letterSpacing: '-0.005em',
+              color: 'rgba(255,255,255,0.94)',
+              lineHeight: '1.52',
+              letterSpacing: '-0.006em',
               fontWeight: 420,
               maxWidth: '620px',
               margin: '0 auto'
