@@ -1059,48 +1059,7 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
             }}
             variants={{ hidden: { opacity: 0, y: -10 }, visible: { opacity: 1, y: 0 }}}
           >
-            {/* Glass Header Background */}
-            <div 
-              className="absolute rounded-[26px]"
-              style={{
-                top: '12px',
-                left: '24px',
-                right: '24px',
-                bottom: '12px',
-                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.028) 100%)',
-                backdropFilter: 'blur(24px) saturate(165%)',
-                WebkitBackdropFilter: 'blur(24px) saturate(165%)',
-                border: '1px solid rgba(255,255,255,0.10)',
-                boxShadow: `
-                  inset 0 1.5px 2px rgba(255,255,255,0.08),
-                  inset 0 0 18px ${theme.glowColor},
-                  0 4px 16px rgba(0,0,0,0.10)
-                `,
-                pointerEvents: 'none',
-                zIndex: -1
-              }}
-            >
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: '12%',
-                right: '12%',
-                height: '1px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
-                filter: 'blur(0.5px)',
-                pointerEvents: 'none'
-              }} />
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                background: `radial-gradient(ellipse at 50% 40%, ${theme.ambient} 0%, transparent 100%)`,
-                borderRadius: '26px',
-                pointerEvents: 'none',
-                opacity: 0.5
-              }} />
-            </div>
-
-            <div className="flex items-start justify-between relative z-10">
+            <div className="flex items-start justify-between">
               <div className="flex items-start space-x-3.5">
                 <motion.div 
                   className="relative p-3 rounded-[15px] border overflow-hidden"
