@@ -198,46 +198,9 @@ const PolicyDrawerContent = ({ segment, delay }) => {
       <motion.div
         variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
         transition={{ duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.easeOutQuint }}
-        className="relative rounded-[26px]"
-        style={{ 
-          marginBottom: '24px',
-          padding: '28px 32px',
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.032) 100%)',
-          backdropFilter: 'blur(24px) saturate(165%)',
-          WebkitBackdropFilter: 'blur(24px) saturate(165%)',
-          border: '1px solid rgba(255,255,255,0.12)',
-          boxShadow: `
-            inset 0 1.5px 2px rgba(255,255,255,0.10),
-            inset 0 0 22px ${theme.glowColor},
-            0 8px 24px rgba(0,0,0,0.14),
-            0 0 18px ${theme.glowColor}
-          `
-        }}
+        style={{ marginBottom: '28px', paddingBottom: '4px' }}
       >
-        {/* Top edge highlight */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: '12%',
-          right: '12%',
-          height: '1.5px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.24), transparent)',
-          filter: 'blur(1px)',
-          pointerEvents: 'none'
-        }} />
-
-        {/* Ambient tint */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: `radial-gradient(ellipse at 50% 40%, ${theme.ambient} 0%, transparent 100%)`,
-          borderRadius: '26px',
-          pointerEvents: 'none',
-          opacity: 0.68
-        }} />
-
         <h1 
-          className="relative"
           style={{
             fontSize: '23px',
             fontWeight: 600,
@@ -249,7 +212,6 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           Policy Analysis
         </h1>
         <p 
-          className="relative"
           style={{
             fontSize: '15.5px',
             fontWeight: 400,
@@ -267,6 +229,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         transition={{ delay: 0.02, duration: 0.09, ease: MOTION.CURVES.silk }}
         className="relative rounded-[26px]"
         style={{
+          marginTop: '24px',
           marginBottom: '48px',
           padding: '30px 32px',
           background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.042) 100%)',
@@ -689,46 +652,9 @@ const StandardDrawerContent = ({ segment, delay }) => {
       <motion.div
         variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
         transition={{ duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.easeOutQuint }}
-        className="relative rounded-[26px]"
-        style={{ 
-          marginBottom: '24px',
-          padding: '28px 32px',
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.032) 100%)',
-          backdropFilter: 'blur(24px) saturate(165%)',
-          WebkitBackdropFilter: 'blur(24px) saturate(165%)',
-          border: '1px solid rgba(255,255,255,0.12)',
-          boxShadow: `
-            inset 0 1.5px 2px rgba(255,255,255,0.10),
-            inset 0 0 22px ${theme.glowColor},
-            0 8px 24px rgba(0,0,0,0.14),
-            0 0 18px ${theme.glowColor}
-          `
-        }}
+        style={{ marginBottom: '28px', paddingBottom: '4px' }}
       >
-        {/* Top edge highlight */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: '12%',
-          right: '12%',
-          height: '1.5px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.24), transparent)',
-          filter: 'blur(1px)',
-          pointerEvents: 'none'
-        }} />
-
-        {/* Ambient tint */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: `radial-gradient(ellipse at 50% 40%, ${theme.ambient} 0%, transparent 100%)`,
-          borderRadius: '26px',
-          pointerEvents: 'none',
-          opacity: 0.68
-        }} />
-
         <h1 
-          className="relative"
           style={{
             fontSize: '23px',
             fontWeight: 600,
@@ -740,7 +666,6 @@ const StandardDrawerContent = ({ segment, delay }) => {
           {segment.name} Analysis
         </h1>
         <p 
-          className="relative"
           style={{
             fontSize: '15.5px',
             fontWeight: 400,
@@ -759,6 +684,7 @@ const StandardDrawerContent = ({ segment, delay }) => {
         transition={{ delay: 0.02, duration: 0.09, ease: MOTION.CURVES.silk }}
         className="relative rounded-[26px]"
         style={{
+          marginTop: '24px',
           marginBottom: '48px',
           padding: '30px 32px',
           background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.042) 100%)',
