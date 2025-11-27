@@ -483,13 +483,13 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
             className="text-[20px] font-semibold mb-1 relative z-10" 
             style={{ color: 'rgba(255,255,255,0.98)', letterSpacing: '-0.01em' }}
           >
-            {scoreLabel} Consensus
+            {scoreLabel} View
           </div>
           <div 
             className="text-[12px] font-medium relative z-10" 
             style={{ color: 'rgba(255,255,255,0.65)' }}
           >
-            Conviction: Medium
+            Confidence: Moderate
           </div>
         </motion.div>
 

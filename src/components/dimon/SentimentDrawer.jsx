@@ -35,7 +35,7 @@ const SEGMENT_CONFIG = {
     color: '#70A8E8', 
     glow: 'rgba(112, 168, 232, 0.15)',
     ambient: 'rgba(112, 168, 232, 0.08)',
-    insight: 'Regulatory oversight expanding across multiple sectors',
+    insight: 'Regulators are becoming stricter across more industries',
     status: 'Rising',
     statusColor: '#FFB020'
   },
@@ -44,7 +44,7 @@ const SEGMENT_CONFIG = {
     color: '#B88AED', 
     glow: 'rgba(184, 138, 237, 0.15)',
     ambient: 'rgba(184, 138, 237, 0.08)',
-    insight: 'EM spreads widening as credit markets show stress signals',
+    insight: 'Borrowing costs rising for emerging markets as credit conditions tighten',
     status: 'Moderate',
     statusColor: '#FFB020'
   },
@@ -53,7 +53,7 @@ const SEGMENT_CONFIG = {
     color: '#32C288', 
     glow: 'rgba(50, 194, 136, 0.15)',
     ambient: 'rgba(50, 194, 136, 0.08)',
-    insight: 'Flat breadth with concentrated gains in mega-cap names',
+    insight: 'A few large companies are driving most of the market gains',
     status: 'Stable',
     statusColor: '#5EA7FF'
   },
@@ -62,7 +62,7 @@ const SEGMENT_CONFIG = {
     color: '#EDB859', 
     glow: 'rgba(237, 184, 89, 0.15)',
     ambient: 'rgba(237, 184, 89, 0.08)',
-    insight: 'China slowdown weighing on global growth outlook',
+    insight: 'China's slowdown is dampening expectations for global growth',
     status: 'Softening',
     statusColor: '#F26A6A'
   }
@@ -254,7 +254,7 @@ const LivingAlignmentOrb = ({ score, delay }) => {
           animate={{ opacity: 1 }}
           transition={{ delay: delay + 0.62, duration: 0.28 }}
         >
-          Medium Weight
+          Moderate alignment
         </motion.div>
       </div>
     </motion.div>
@@ -340,7 +340,7 @@ const InsightRevealPanel = ({ segments, delay }) => {
           minHeight: '100%'
         }}
       >
-        Markets show mild upward pressure driven by policy tightening and early credit stress signals.
+        Markets are showing slight upward pressure as stricter policies and early signs of credit strain push investors to be more cautious.
       </p>
     </motion.div>
   );
@@ -365,7 +365,7 @@ const MacroForceGrid = ({ segments, delay, onOpenDetail }) => {
         animate={{ opacity: 1 }}
         transition={{ delay: delay - 0.05, duration: 0.3 }}
       >
-        What's Driving This Alignment
+        What's Behind This Reading
       </motion.div>
 
       <div className="grid grid-cols-2 gap-5">

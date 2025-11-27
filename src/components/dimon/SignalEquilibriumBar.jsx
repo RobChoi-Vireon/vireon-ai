@@ -85,7 +85,7 @@ const SignalEquilibriumBar = ({
 
     if (absBias >= 0.15) {
       // Simplified language: "Risk-Off" → "Cautious stance"
-      direction = clampedBias < 0 ? 'Cautious stance (Risk-Off)' : 'Confident stance (Risk-On)';
+      direction = clampedBias < 0 ? 'Playing it safe' : 'Taking more risk';
       
       if (absBias >= 0.7) {
         prefix = 'Strong ';

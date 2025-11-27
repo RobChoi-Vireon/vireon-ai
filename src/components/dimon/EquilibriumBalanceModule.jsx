@@ -370,8 +370,8 @@ export default function EquilibriumBalanceModule({
           letterSpacing: '0.01em',
           fontSize: '11px'
         }}>
-          <span>Growth / Demand</span>
-          <span>Tightening / Supply</span>
+          <span>Economy Growing</span>
+          <span>Economy Slowing</span>
         </div>
       </div>
 
@@ -443,7 +443,7 @@ export default function EquilibriumBalanceModule({
                   color: 'rgba(255,255,255,0.65)',
                   marginBottom: '14px'
                 }}>
-                  Force Contributions
+                  What's Driving Markets
                 </h5>
                 
                 <div className="grid grid-cols-2 gap-3">
@@ -535,7 +535,7 @@ export default function EquilibriumBalanceModule({
                       color: 'rgba(255,255,255,0.85)',
                       fontWeight: 500
                     }}>
-                      {stabilityIndex >= 70 ? 'Stable' : stabilityIndex >= 50 ? 'Moderate' : 'Volatile'}
+                      {stabilityIndex >= 70 ? 'Very Stable' : stabilityIndex >= 50 ? 'Somewhat Stable' : 'Higher Risk'}
                     </div>
                   </div>
                 </div>
