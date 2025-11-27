@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Triangle, ArrowUpRight, Scale, Calendar, Target, Clock, ArrowRight } from 'lucide-react';
@@ -665,7 +664,7 @@ export default function StrategicTrajectory({ trajectory = [], density }) {
               Strategic Trajectory
             </h2>
             <p className="text-sm text-gray-400">
-              Risk/opportunity outlook across time horizons.
+              Risk/opportunity across time.
             </p>
           </div>
         </div>

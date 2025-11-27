@@ -42,7 +42,7 @@ export default function SourceGrid({ sources, density }) {
         <h2 id="source-weighting-heading" className="text-lg font-bold text-white">
           Trusted Source Weighting
         </h2>
-        <p className="text-xs text-neutral-400 ml-3">Weighting signals from key publications.</p>
+        <p className="text-xs text-neutral-400 ml-3">Source influence and tone analysis.</p>
       </div>
       
       {/* Section-Level Summary with Shimmer */}
