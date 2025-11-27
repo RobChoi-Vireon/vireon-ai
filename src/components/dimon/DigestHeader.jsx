@@ -691,7 +691,7 @@ export default function DigestHeader({
               animate={{ opacity: isLoaded ? 1 : 0 }}
               transition={{ duration: 0.22, delay: 0.28, ease: [0.22, 0.61, 0.36, 1] }}
             >
-              Global posture, distilled in real time.
+              Global posture, distilled live.
             </motion.p>
 
             {/* OS Horizon V2 Info Capsules — Unified Glass Pills */}
@@ -827,7 +827,7 @@ export default function DigestHeader({
                   marginBottom: '56px'
                 }}
               >
-                24-hour macro sentiment, synthesized from {stats.sources} sources
+                24h sentiment — {stats.sources} sources
               </label>
 
               {/* Arc + Capsule Container with Responsive Positioning */}
@@ -1207,7 +1207,7 @@ export default function DigestHeader({
                         letterSpacing: '0.06em'
                       }}
                     >
-                      {getDominantSentiment() === 'opportunity' ? 'Moderately Risk-On' : getDominantSentiment() === 'risk' ? 'Moderately Risk-Off' : 'Market Neutral'}
+                      {getDominantSentiment() === 'opportunity' ? 'Risk-On Lean' : getDominantSentiment() === 'risk' ? 'Risk-Off Lean' : 'Neutral'}
                     </span>
                   </motion.div>
                 </div>

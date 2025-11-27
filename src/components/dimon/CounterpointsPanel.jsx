@@ -227,7 +227,7 @@ const BlindspotCard = ({ blindspot, index, isExpandedView = false }) => {
           <div className="flex items-center gap-2">
             <Target className="w-4 h-4 text-purple-400" />
             <span className="text-xs font-semibold text-purple-300 uppercase tracking-wide">
-              Blindspot Detected
+              Blindspot
             </span>
           </div>
           <Badge 
@@ -358,9 +358,9 @@ export default function CounterpointsPanel({ counterpoints = [], blindspots = []
         >
           <span className="font-semibold text-gray-300">{totalDebates} Active Debates</span>
           <span className="mx-2 text-gray-600">|</span>
-          <span className="font-semibold text-purple-300">{totalBlindspots} Blindspots Detected</span>
+          <span className="font-semibold text-purple-300">{totalBlindspots} Blindspots</span>
           <span className="mx-2 text-gray-600">→</span>
-          <span>Overall: <span className={`font-bold ${consensusState.color}`}>{consensusState.text}</span></span>
+          <span><span className={`font-bold ${consensusState.color}`}>{consensusState.text}</span></span>
         </motion.div>
 
         <AnimatePresence mode="wait">
