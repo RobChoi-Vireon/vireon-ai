@@ -81,16 +81,16 @@ const SignalEquilibriumBar = ({
   const getLabel = () => {
     const absBias = Math.abs(clampedBias);
     let prefix = '';
-    let direction = 'Neutral';
+    let direction = 'Balanced';
 
     if (absBias >= 0.15) {
-      // Simplified language: "Risk-Off" → "Cautious stance"
-      direction = clampedBias < 0 ? 'Cautious stance (Risk-Off)' : 'Confident stance (Risk-On)';
+      // Simplified language: clear and direct
+      direction = clampedBias < 0 ? 'Playing it safe' : 'Taking more risk';
       
       if (absBias >= 0.7) {
-        prefix = 'Strong ';
+        prefix = 'Very ';
       } else if (absBias >= 0.45) {
-        prefix = 'Moderate ';
+        prefix = 'Somewhat ';
       } else {
         prefix = '';
       }
@@ -111,11 +111,11 @@ const SignalEquilibriumBar = ({
   // Accessibility label
   const getAriaLabel = () => {
     const absBias = Math.abs(clampedBias);
-    const strengthText = absBias >= 0.7 ? 'strong' : absBias >= 0.45 ? 'moderate' : absBias >= 0.15 ? 'slight' : 'neutral';
-    const directionText = clampedBias < -0.15 ? 'risk-off' : clampedBias > 0.15 ? 'risk-on' : 'neutral';
+    const strengthText = absBias >= 0.7 ? 'very' : absBias >= 0.45 ? 'somewhat' : absBias >= 0.15 ? 'slightly' : 'balanced';
+    const directionText = clampedBias < -0.15 ? 'cautious' : clampedBias > 0.15 ? 'aggressive' : 'neutral';
     const confText = clampedConfidence >= 80 ? 'high' : clampedConfidence >= 60 ? 'moderate' : 'low';
     
-    return `Signal equilibrium indicator: ${strengthText} ${directionText} tilt with ${confText} confidence on a balanced risk scale.`;
+    return `Market mood: ${strengthText} ${directionText} with ${confText} confidence.`;
   };
 
   const dotTint = getDotTint();
@@ -127,7 +127,7 @@ const SignalEquilibriumBar = ({
           className="text-xs font-medium uppercase tracking-wide" 
           style={{ color: TOKENS.captionColor }}
         >
-          Signal Equilibrium
+          Market Mood
         </span>
       </div>
       
@@ -144,13 +144,13 @@ const SignalEquilibriumBar = ({
             className="text-[11.5px] font-medium"
             style={{ color: TOKENS.axisLeft }}
           >
-            Risk-Off
+            Playing Safe
           </span>
           <span 
             className="text-[11.5px] font-medium"
             style={{ color: TOKENS.axisRight }}
           >
-            Risk-On
+            Taking Risk
           </span>
         </div>
 

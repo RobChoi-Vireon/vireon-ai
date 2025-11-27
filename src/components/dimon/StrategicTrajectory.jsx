@@ -390,13 +390,13 @@ const EvolutionDetailDrawer = ({ data, onClose }) => {
 
         <div className="mb-4">
           <h5 className="text-lg font-bold text-white mb-2">{data.label}</h5>
-          <h6 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Strategic Context</h6>
+          <h6 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">The Full Picture</h6>
           <p className="text-sm text-gray-300 leading-relaxed">{data.context}</p>
         </div>
         
         <div className="grid grid-cols-1 gap-4 mb-4">
           <div>
-            <h6 className="text-xs font-semibold text-red-400 mb-2">Key Risks</h6>
+            <h6 className="text-xs font-semibold text-red-400 mb-2">What Could Go Wrong</h6>
             <div className="space-y-1">
               {data.risks.map((risk, i) => (
                 <div key={i} className="text-sm text-red-300 bg-red-500/10 px-2 py-1 rounded border border-red-500/20">{risk}</div>
@@ -404,7 +404,7 @@ const EvolutionDetailDrawer = ({ data, onClose }) => {
             </div>
           </div>
           <div>
-            <h6 className="text-xs font-semibold text-green-400 mb-2">Key Opportunities</h6>
+            <h6 className="text-xs font-semibold text-green-400 mb-2">What Could Go Right</h6>
             <div className="space-y-1">
               {data.opportunities.map((opp, i) => (
                 <div key={i} className="text-sm text-green-300 bg-green-500/10 px-2 py-1 rounded border border-green-500/20">{opp}</div>
@@ -414,7 +414,7 @@ const EvolutionDetailDrawer = ({ data, onClose }) => {
         </div>
         
         <div>
-          <h6 className="text-xs font-semibold text-gray-400 mb-2">Related Signals</h6>
+          <h6 className="text-xs font-semibold text-gray-400 mb-2">Also Watch</h6>
           <div className="flex flex-wrap gap-1">
             {data.signals.map((signal, i) => (
               <span key={i} className="text-xs text-gray-400 bg-gray-500/10 px-2 py-1 rounded border border-gray-500/20">{signal}</span>
@@ -434,34 +434,34 @@ const TimelineEvolution = ({ trajectory }) => {
 
   const evolutionData = {
     'Now': {
-      label: 'Now (0-1M)',
+      label: 'Right Now',
       summary: 'New rules are costing companies money. Most investors are playing it safe.',
       confidence: 0.80,
       sentiment: 'risk',
-      risks: ['Higher costs to follow new rules', 'Uncertainty about government policy', 'Tech stocks under pressure'],
-      opportunities: ['Safer investments holding up', 'Quality companies outperforming'],
-      signals: ['Washington announces AI rules', 'More tech oversight coming', 'Bank rules being debated'],
-      context: 'New regulations in Europe and the US are forcing tech companies to spend more on compliance. Companies are hiring new teams and updating their systems to follow AI content rules.'
+      risks: ['Companies spending more to follow new rules', 'Government policy is unclear', 'Tech stocks dropping'],
+      opportunities: ['Safe investments holding steady', 'Strong companies doing better'],
+      signals: ['New AI rules announced', 'More tech rules expected', 'Bank rules under review'],
+      context: 'New regulations in Europe and the US are forcing tech companies to spend more on following the rules. Companies are hiring teams and updating systems to meet AI safety requirements.'
     },
     '3M': {
-      label: '3M Outlook',
+      label: 'Next 3 Months',
       summary: 'Borrowing is getting harder for some companies, but deals are still happening.',
       confidence: 0.65,
       sentiment: 'balanced',
-      risks: ['Borrowing costs rising for riskier companies', 'Loans getting more expensive', 'Exporters facing challenges'],
-      opportunities: ['Good deals available for buyers', 'Some stocks are cheaper than usual', 'Tech may start recovering'],
-      signals: ['Borrowing costs rising', 'Company deals continuing', 'Lenders being cautious'],
-      context: 'It is getting harder and more expensive for some companies to borrow money, especially in developing countries. But this also means patient buyers may find good opportunities.'
+      risks: ['Weaker companies paying more to borrow', 'Loans costing more', 'Companies selling abroad struggling'],
+      opportunities: ['Good buying opportunities appearing', 'Some stocks are on sale', 'Tech might bounce back'],
+      signals: ['Borrowing costs climbing', 'Deals still getting done', 'Banks being picky'],
+      context: 'Companies are finding it harder and more expensive to borrow, especially in developing countries. But this also means smart buyers can find good deals.'
     },
     '12M': {
-      label: '12M Outlook',
-      summary: 'Global demand is uncertain, but raw materials are getting cheaper.',
+      label: 'Next Year',
+      summary: 'People worldwide are buying less, but materials are getting cheaper.',
       confidence: 0.55,
       sentiment: 'opportunity',
-      risks: ['Shoppers worldwide buying less', 'China economy slowing', 'Trade patterns changing'],
-      opportunities: ['Cheaper materials for manufacturers', 'Supply chains improving', 'Factory profits could rise'],
-      signals: ['China spending less', 'Material prices falling', 'Production costs dropping'],
-      context: 'Because China is buying less, prices for steel, aluminum, and other materials are down 12-18% from last year. This helps US manufacturers make more profit on what they sell.'
+      risks: ['Shoppers spending less', 'China slowing down', 'Trade routes shifting'],
+      opportunities: ['Materials costing less', 'Supply chains getting better', 'Factories making more profit'],
+      signals: ['China buying less', 'Material prices down', 'Production getting cheaper'],
+      context: 'Because China is buying less, steel, aluminum, and other materials cost 12-18% less than last year. This helps US manufacturers earn more.'
     }
   };
 
@@ -492,7 +492,7 @@ const TimelineEvolution = ({ trajectory }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2, duration: 0.4 }} // Fixed: Reduced delay from 1.5s to 0.2s
     >
-      <h4 className="text-sm font-semibold text-gray-300 mb-6">Strategic Evolution</h4>
+      <h4 className="text-sm font-semibold text-gray-300 mb-6">How Things Are Changing</h4>
       
       {/* Fixed: Added proper overflow handling and positioning context */}
       <div className="relative overflow-visible">
@@ -575,7 +575,7 @@ const TimelineEvolution = ({ trajectory }) => {
                           {Math.round(data.confidence * 100)}% confidence
                         </span>
                         <span className="text-xs text-gray-500">
-                          {data.sentiment === 'risk' ? 'Risk-weighted' : data.sentiment === 'opportunity' ? 'Opportunity-weighted' : 'Balanced'}
+                         {data.sentiment === 'risk' ? 'Risk focus' : data.sentiment === 'opportunity' ? 'Opportunity focus' : 'Balanced'}
                         </span>
                       </div>
                     </div>
@@ -661,10 +661,10 @@ export default function StrategicTrajectory({ trajectory = [], density }) {
           </div>
           <div>
             <h2 id="strategic-trajectory-heading" className="text-lg font-semibold text-white">
-              Strategic Trajectory
+              What's Next
             </h2>
             <p className="text-sm text-gray-400">
-              What to watch for over the coming weeks and months.
+              What to watch in the weeks and months ahead.
             </p>
           </div>
         </div>

@@ -143,9 +143,9 @@ const NarrativeLink = () => (
 // ============================================================================
 const SentimentChip = ({ sentiment }) => {
   const styles = {
-    risk: { bg: HORIZON.ri.riskTint, fg: HORIZON.color.risk, label: 'Policy Shock / Risk' },
-    opportunity: { bg: HORIZON.ri.opptyTint, fg: HORIZON.color.opportunity, label: 'Opportunity Signal' },
-    neutral: { bg: HORIZON.ri.neutralTint, fg: HORIZON.color.neutral, label: 'Market Signal' },
+    risk: { bg: HORIZON.ri.riskTint, fg: HORIZON.color.risk, label: 'Risk Alert' },
+    opportunity: { bg: HORIZON.ri.opptyTint, fg: HORIZON.color.opportunity, label: 'Opportunity' },
+    neutral: { bg: HORIZON.ri.neutralTint, fg: HORIZON.color.neutral, label: 'Update' },
   };
 
   const style = styles[sentiment] || styles.neutral;
@@ -201,11 +201,11 @@ const ContextTags = ({ signalAge, durationBias }) => (
   <div className="li-meta-tags flex items-center gap-2 mb-3">
     <span className="li-tag flex items-center gap-1.5">
       <Clock className="w-3 h-3" />
-      Signal Age • {signalAge}
+      Posted • {signalAge}
     </span>
     <span className="li-tag flex items-center gap-1.5">
       <TrendingUp className="w-3 h-3" />
-      Duration Bias • {durationBias}
+      Timing • {durationBias}
     </span>
   </div>
 );
@@ -362,8 +362,8 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
   // Extract signal metadata
   const sentiment = signal.urgency === 'critical' ? 'risk' : signal.urgency === 'high' ? 'risk' : 'neutral';
   const primarySector = 'Technology';
-  const ageLabel = '2h ago';
-  const durationBias = 'Short-term risk-off';
+  const ageLabel = '2 hours ago';
+  const durationBias = 'Short-term caution';
   const confOverall = 78;
 
   // Generate content based on signal type - CEP ENGINE FORMAT
@@ -1201,7 +1201,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                     exit={{ opacity: 0, y: -4 }}
                     transition={{ duration: 0.2, ease: HORIZON.motion.ease }}
                   >
-                    ⌘ ← / → to navigate • D to toggle details • Esc to close
+                    ⌘ ← / → navigate • D details • Esc close
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -1225,7 +1225,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                         opacity: HORIZON.type.h1.opacity,
                       }}
                     >
-                      Priority Signal Analysis
+                      Signal Details
                     </h1>
                     <p
                       className="mb-3"
@@ -1372,7 +1372,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                   <section className="ri-section mb-6">
                     <h3 className="ri-section-title">
                       <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                      Summary
+                      What Happened
                     </h3>
                     <p className="ri-section-body mb-4">{summary}</p>
                     
@@ -1445,7 +1445,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                     <section className="ri-section">
                       <h3 className="ri-section-title">
                         <Target className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                        What Happened
+                        The Details
                       </h3>
                       <p className="ri-section-body">{analysis.what}</p>
                     </section>
@@ -1474,7 +1474,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                           <div className="flex items-center gap-3 mb-3">
                             <AlertCircle className="w-5 h-5" style={{ color: HORIZON.color.risk }} />
                             <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
-                              Downside Risk
+                              Potential Downside
                             </h4>
                           </div>
                           <p className="text-sm mb-3" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
@@ -1491,7 +1491,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                           <div className="flex items-center gap-3 mb-3">
                             <ShieldCheck className="w-5 h-5" style={{ color: HORIZON.color.opportunity }} />
                             <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
-                              Upside Potential
+                              Potential Upside
                             </h4>
                           </div>
                           <p className="text-sm mb-3" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
@@ -1514,7 +1514,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                         <section className="ri-section">
                           <h3 className="ri-section-title">
                             <Activity className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                            Ripple Effects
+                            Knock-On Effects
                           </h3>
                           <p className="ri-section-body">{rippleImpact}</p>
                         </section>
@@ -1540,7 +1540,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
 
                     {/* 11. MARKET RELEVANCE (Detailed only) */}
                     <div className="mb-6">
-                      <h4 className="ri-section-title">Market Relevance</h4>
+                      <h4 className="ri-section-title">What This Affects</h4>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                           <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
@@ -1598,7 +1598,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                     <section className="ri-section">
                       <div className="ri-next">
                         <strong style={{ fontSize: 14, color: 'rgba(255, 255, 255, 0.88)' }}>
-                          Related Signals
+                          Also Watch
                         </strong>
                         <div className="ri-carousel">
                           {analysis.correlated.map((s) => (
