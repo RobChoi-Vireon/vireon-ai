@@ -190,12 +190,12 @@ const MOCK_DATA = {
   ],
   consensus_score: 66,
   consensus_breakdown: {
-    morning_takeaway: "Overall market sentiment is mixed, with government regulations weighing heavily, borrowing costs causing stress, and China's economic slowdown dampening growth expectations.",
+    morning_takeaway: "The market mood is mixed today: new government rules are creating costs, borrowing is getting harder, and China's slowdown is making investors cautious.",
     segments: [
-      {name: "Policy", weight: 0.30, trend: "+", note: "Increasing oversight", detail: "The regulatory environment is shifting towards stricter oversight, particularly for large technology companies. New regulations are expected regarding data privacy, AI content, and competitive practices. This means higher compliance costs and potential limitations on business models for affected sectors. Investors should watch legislative developments and their potential impact on company profits and innovation.", stress_level: "moderate", trend_indicator: "rising"},
-      {name: "Credit", weight: 0.25, trend: "-", note: "Borrowing stress rising", detail: "Credit markets are showing signs of stress, particularly for riskier companies in emerging markets. The cost of borrowing has increased significantly this week, indicating that lenders see more risk. This could lead to higher borrowing costs for companies, reduced access to financing, and slower merger and acquisition activity, especially for companies with high debt levels.", stress_level: "high", trend_indicator: "worsening"},
-      {name: "Equities", weight: 0.25, trend: "~", note: "Narrow gains", detail: "Stock market gains are concentrated in a few large companies rather than being broadly distributed. This lack of widespread participation could indicate underlying weakness. While major stock indexes might look strong, investors should be cautious and diversify their portfolios, focusing on companies with strong fundamentals that are less affected by economic swings.", stress_level: "stable", trend_indicator: "stable"},
-      {name: "Global", weight: 0.20, trend: "-", note: "China slowdown", detail: "China's economic growth continues to slow, affecting global demand and commodity prices. Government efforts to stimulate the economy have had limited success, and consumer confidence remains low. This slowdown creates risks for international companies with significant business in China and could reduce global trade. Companies may need to adjust their supply chains and market strategies.", stress_level: "moderate", trend_indicator: "worsening"},
+      {name: "Policy", weight: 0.30, trend: "+", note: "More rules coming", detail: "The government is putting more rules on big tech companies. New laws about privacy, AI, and competition are on the way. This means companies will spend more on following rules, which could cut into profits. Watch for news from Washington about how this affects tech stocks.", stress_level: "moderate", trend_indicator: "rising"},
+      {name: "Credit", weight: 0.25, trend: "-", note: "Borrowing getting harder", detail: "It's getting harder and more expensive to borrow money, especially for riskier companies. Lenders are being more careful about who they lend to. This could mean fewer business deals, less growth investment, and trouble for companies that need to refinance their debt soon.", stress_level: "high", trend_indicator: "worsening"},
+      {name: "Equities", weight: 0.25, trend: "~", note: "Only some stocks rising", detail: "The stock market looks okay on the surface, but only a few big companies are doing well. Most stocks aren't participating in the gains. This could be a warning sign. Consider spreading your investments across different types of companies.", stress_level: "stable", trend_indicator: "stable"},
+      {name: "Global", weight: 0.20, trend: "-", note: "China slowing down", detail: "China's economy is growing more slowly, which affects companies around the world. Chinese consumers aren't spending as much, and government programs haven't fully fixed the problem. Companies that sell a lot to China may see lower sales.", stress_level: "moderate", trend_indicator: "worsening"},
     ]
   },
   synthesis: {
@@ -249,22 +249,22 @@ const MOCK_DATA = {
   },
   counterpoints: [
     {
-      consensus: "Regulations tightening",
-      counter: "Some analysts believe enforcement may ease before elections",
+      consensus: "Rules are getting stricter",
+      counter: "Some experts think enforcement might slow down before the election",
       confidence: 0.45,
       source: "alternative_analysis"
     },
     {
-      consensus: "China slowing down", 
-      counter: "New government spending programs could boost infrastructure growth",
+      consensus: "China is slowing down", 
+      counter: "New government spending could help the economy recover",
       confidence: 0.52,
       source: "contrarian_view"
     }
   ],
   blindspots: [
     {
-      title: "International coverage",
-      text: "Asian business news reports merger activity increasing, but U.S. media hasn't covered it",
+      title: "Asia deals picking up",
+      text: "Asian news reports more company mergers, but this hasn't been covered much in the US",
       significance: "medium",
       region: "asia"
     }
@@ -326,51 +326,51 @@ const MOCK_DATA = {
   trajectory: [
     {
       horizon: "Now",
-      risk: "↑ Compliance costs slowing growth",
+      risk: "↑ New rules are costing companies money",
       opportunity: "Neutral",
       confidence: 0.8
     },
     {
       horizon: "3M",
-      risk: "↑ Emerging market borrowing stress", 
-      opportunity: "Selected merger opportunities",
+      risk: "↑ Borrowing getting harder for some companies", 
+      opportunity: "Good deals available for patient buyers",
       confidence: 0.65
     },
     {
       horizon: "12M",
-      risk: "Mixed global demand patterns",
-      opportunity: "Lower input costs for U.S. companies",
+      risk: "Global shoppers buying less",
+      opportunity: "Cheaper materials help US manufacturers",
       confidence: 0.55
     }
   ],
   strategic_implications: [
     { 
       type: 'risk', 
-      text: "Tightening regulations mean higher costs and slower innovation for tech companies",
+      text: "Stricter rules mean higher costs and slower growth for tech companies",
       timeframe: "short_term",
       priority: "high",
-      action_cues: ["Tech sector watchlist", "Regulatory expense alerts", "Policy timeline tracker"]
+      action_cues: ["Watch tech stocks", "Track compliance costs", "Follow policy news"]
     },
     { 
       type: 'risk', 
-      text: "Emerging market stress means higher financing costs for companies with international business", 
+      text: "Borrowing is getting harder for companies with international business", 
       timeframe: "medium_term",
       priority: "medium",
-      action_cues: ["Emerging market borrowing cost alerts", "Export-focused company monitor", "Currency volatility tracker"]
+      action_cues: ["Watch borrowing costs", "Track export companies", "Monitor currency swings"]
     },
     { 
       type: 'opportunity', 
-      text: "China's slowdown means cheaper raw materials for U.S. manufacturers",
+      text: "China buying less means cheaper materials for US factories",
       timeframe: "long_term", 
       priority: "medium",
-      action_cues: ["Commodity price alerts", "Manufacturing sector rotation", "Supply chain optimization"]
+      action_cues: ["Track material prices", "Watch manufacturing stocks", "Follow supply chain news"]
     }
   ],
   status: 'ok',
   missing_sources: [],
   sla_adherence: true,
   sentiment_flow: { green: 28, blue: 44, red: 28 },
-  insight_line: "Markets are becoming more cautious — three significant differences detected in global borrowing costs."
+  insight_line: "Markets are playing it safe — we found three areas where experts disagree about borrowing conditions."
 };
 
 // Main page component
