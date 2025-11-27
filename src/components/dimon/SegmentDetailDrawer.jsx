@@ -111,11 +111,12 @@ const InsightPanel = ({ icon: Icon, title, content, delay, iconColor, tintColor 
         </h3>
         
         <p 
-          className="text-[14.5px]" 
+          className="text-[15.5px]" 
           style={{ 
-            color: 'rgba(255,255,255,0.90)',
-            lineHeight: '1.55',
-            letterSpacing: '-0.003em'
+            color: 'rgba(255,255,255,0.92)',
+            lineHeight: '1.58',
+            letterSpacing: '-0.004em',
+            fontWeight: 400
           }}
         >
           {content}
@@ -272,11 +273,11 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           <p 
             className="flex-1 text-center"
             style={{
-              fontSize: '16px',
-              fontWeight: 600,
+              fontSize: '17px',
+              fontWeight: 500,
               color: 'rgba(255,255,255,0.96)',
-              lineHeight: '1.48',
-              letterSpacing: '-0.004em'
+              lineHeight: '1.52',
+              letterSpacing: '-0.005em'
             }}
           >
             Stricter rules are raising costs and putting pressure on big tech companies.
@@ -409,11 +410,12 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           </h3>
           
           <p 
-            className="text-[15px]" 
+            className="text-[16px]" 
             style={{ 
               color: 'rgba(255,255,255,0.92)',
-              lineHeight: '1.52',
-              letterSpacing: '-0.003em',
+              lineHeight: '1.56',
+              letterSpacing: '-0.004em',
+              fontWeight: 400,
               maxWidth: '620px',
               margin: '0 auto'
             }}
@@ -687,11 +689,11 @@ const StandardDrawerContent = ({ segment, delay }) => {
           <p 
             className="flex-1 text-center"
             style={{
-              fontSize: '16px',
-              fontWeight: 600,
+              fontSize: '17px',
+              fontWeight: 500,
               color: 'rgba(255,255,255,0.96)',
-              lineHeight: '1.48',
-              letterSpacing: '-0.004em'
+              lineHeight: '1.52',
+              letterSpacing: '-0.005em'
             }}
           >
             {details.tldr}
@@ -826,11 +828,12 @@ const StandardDrawerContent = ({ segment, delay }) => {
           </h3>
           
           <p 
-            className="text-[15px]" 
+            className="text-[16px]" 
             style={{ 
               color: 'rgba(255,255,255,0.92)',
-              lineHeight: '1.52',
-              letterSpacing: '-0.003em',
+              lineHeight: '1.56',
+              letterSpacing: '-0.004em',
+              fontWeight: 400,
               maxWidth: '620px',
               margin: '0 auto'
             }}
