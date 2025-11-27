@@ -418,7 +418,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
               margin: '0 auto'
             }}
           >
-            Stricter regulation is creating steady pressure on the market. Big tech companies may face higher costs and slower valuations as oversight increases.
+            Stricter regulation is creating steady pressure on the market. Big tech companies may face higher costs and slower stock price growth as oversight increases.
           </p>
         </div>
       </motion.div>
