@@ -279,7 +279,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
               letterSpacing: '-0.004em'
             }}
           >
-            Regulatory hardening raises compliance costs, downside for Big Tech multiples
+            Stricter rules are raising costs and putting pressure on big tech companies.
           </p>
 
           <div className="flex items-center gap-4 flex-shrink-0">
@@ -329,7 +329,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         <InsightPanel 
           icon={Target} 
           title="Key Driver"
-          content="Regulatory oversight expanding across content, privacy, and platform audits"
+          content="Regulators are getting tougher across content, privacy, and platform practices."
           delay={0.06}
           iconColor={theme.color}
           tintColor="#6FB5FF"
@@ -338,7 +338,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         <InsightPanel 
           icon={Waves} 
           title="Pressure Direction"
-          content="Tightening — medium-term environment trending more restrictive"
+          content="Rules are becoming stricter, making the environment harder for companies."
           delay={0.12}
           iconColor={theme.color}
           tintColor="#7BC8FF"
@@ -347,7 +347,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         <InsightPanel 
           icon={BarChart3} 
           title="Market Impact Level"
-          content="Moderate impact with pockets of friction emerging in affected sectors"
+          content="Moderate impact, with some industries beginning to feel more pressure."
           delay={0.18}
           iconColor={theme.color}
           tintColor="#8FD6FF"
@@ -418,7 +418,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
               margin: '0 auto'
             }}
           >
-            Net effect: Policy tightening is elevating medium-term pressure on Street Alignment, reinforcing upward momentum with growing consistency. Expect continued regulatory scrutiny to weigh on tech valuations in the near term.
+            Stricter regulation is creating steady pressure on the market. Big tech companies may face higher costs and slower valuations as oversight increases.
           </p>
         </div>
       </motion.div>
