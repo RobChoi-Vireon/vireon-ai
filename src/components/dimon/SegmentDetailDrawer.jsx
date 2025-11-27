@@ -984,7 +984,7 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
           key={segment.name}
           className="relative w-full max-w-4xl max-h-[92vh] overflow-hidden border shadow-2xl flex flex-col"
           style={{
-            borderRadius: isPolicyDrawer ? '26px' : '32px',
+            borderRadius: '26px',
             background: isPolicyDrawer 
               ? `linear-gradient(180deg, rgba(4, 9, 15, 0.84) 0%, rgba(4, 9, 15, 0.84) 100%)`
               : `linear-gradient(180deg, rgba(18, 20, 28, 0.90) 0%, rgba(16, 18, 26, 0.94) 100%)`,
@@ -1031,7 +1031,7 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
               height: '68%',
               background: `radial-gradient(ellipse at 50% 12%, ${theme.color}04 0%, transparent 88%)`,
               pointerEvents: 'none',
-              borderRadius: '32px',
+              borderRadius: '26px',
               zIndex: 1
             }} />
           )}
@@ -1039,13 +1039,13 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
           <div style={{
             position: 'absolute',
             top: 0,
-            left: isPolicyDrawer ? '18%' : '12%',
-            right: isPolicyDrawer ? '18%' : '12%',
+            left: '18%',
+            right: '18%',
             height: '1.5px',
             background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent)',
             filter: 'blur(1.2px)',
             pointerEvents: 'none',
-            borderRadius: isPolicyDrawer ? '26px 26px 0 0' : '32px 32px 0 0',
+            borderRadius: '26px 26px 0 0',
             zIndex: 2
           }} />
 
