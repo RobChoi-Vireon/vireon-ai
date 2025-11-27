@@ -62,7 +62,7 @@ const SEGMENT_CONFIG = {
     color: '#EDB859', 
     glow: 'rgba(237, 184, 89, 0.15)',
     ambient: 'rgba(237, 184, 89, 0.08)',
-    insight: 'China's slowdown is dampening expectations for global growth',
+    insight: 'China slowdown is dampening expectations for global growth',
     status: 'Softening',
     statusColor: '#F26A6A'
   }
