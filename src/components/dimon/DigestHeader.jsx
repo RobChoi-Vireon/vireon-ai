@@ -827,7 +827,7 @@ export default function DigestHeader({
                   marginBottom: '56px'
                 }}
               >
-                24-hour macro sentiment, synthesized from {stats.sources} sources
+                How markets are feeling today, based on {stats.sources} sources
               </label>
 
               {/* Arc + Capsule Container with Responsive Positioning */}
@@ -874,7 +874,7 @@ export default function DigestHeader({
                         animate={{ rotate: 360 }}
                         transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                       />
-                      <span className="text-sm text-white/60 mt-3">Loading sentiment data...</span>
+                      <span className="text-sm text-white/60 mt-3">Loading market mood...</span>
                     </motion.div>
                   )}
 
@@ -887,7 +887,7 @@ export default function DigestHeader({
                       transition={{ duration: 0.3 }}
                     >
                       <Database className="w-8 h-8 text-white/40 mb-2" />
-                      <span className="text-sm text-white/60">Awaiting macro updates...</span>
+                      <span className="text-sm text-white/60">Waiting for market updates...</span>
                     </motion.div>
                   )}
 
@@ -901,7 +901,7 @@ export default function DigestHeader({
                         background: 'transparent'
                       }}
                       preserveAspectRatio="xMidYMid meet"
-                      aria-label="Sentiment spectrum visualization"
+                      aria-label="Market mood visualization"
                       role="img"
                     >
                       <defs>
@@ -1369,7 +1369,7 @@ export default function DigestHeader({
                   marginBottom: '10px'
                 }}
               >
-                Analysis Date
+                Date
               </label>
 
               {/* Date Input in Glass Pocket */}
@@ -1405,9 +1405,9 @@ export default function DigestHeader({
             >
               <TooltipProvider>
                 {[
-                  { icon: Calendar, label: "Set analysis date" },
-                  { icon: Share, label: "Share snapshot" },
-                  { icon: Info, label: "About Macro Signals" }
+                  { icon: Calendar, label: "Pick a date" },
+                  { icon: Share, label: "Share this" },
+                  { icon: Info, label: "Learn more" }
                 ].map((item, idx) => {
                   const [isNearCursor, setIsNearCursor] = React.useState(false);
                   const buttonRef = React.useRef(null);
