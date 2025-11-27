@@ -901,7 +901,7 @@ const StandardDrawerContent = ({ segment, delay }) => {
         style={{ 
           display: 'flex',
           flexDirection: 'column',
-          gap: '20px',
+          gap: '24px',
           marginBottom: '24px'
         }}
       >
@@ -936,18 +936,19 @@ const StandardDrawerContent = ({ segment, delay }) => {
         />
       </motion.div>
 
-      {/* What This Means */}
+      {/* What This Means - OS Horizon 3-Layer Depth */}
       <motion.div
         variants={{ hidden: { opacity: 0, y: 4 }, visible: { opacity: 1, y: 0 } }}
         transition={{ delay: 0.24, duration: 0.24, ease: MOTION.CURVES.silk }}
-        className="relative rounded-[26px] mx-auto"
+        className="relative mx-auto"
         style={{
           maxWidth: '88%',
-          padding: '28px 32px',
+          padding: GLASS_TOKENS.cardPadding,
           marginBottom: '24px',
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.035) 100%)',
+          background: GLASS_TOKENS.cardBg,
           backdropFilter: GLASS_TOKENS.cardBlur,
           WebkitBackdropFilter: GLASS_TOKENS.cardBlur,
+          borderRadius: GLASS_TOKENS.cardRadius,
           border: `1px solid ${GLASS_TOKENS.cardBorder}`,
           boxShadow: GLASS_TOKENS.cardShadow(theme.glowColor),
           transition: 'transform 0.14s ease-out, box-shadow 0.14s ease-out, filter 0.14s ease-out'
@@ -964,23 +965,23 @@ const StandardDrawerContent = ({ segment, delay }) => {
           transition: { duration: 0.1, ease: 'easeOut' }
         }}
       >
-        {/* Top-to-bottom micro-gradient */}
+        {/* Layer 2: Soft inner shadow */}
         <div style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.025) 0%, rgba(0,0,0,0.015) 100%)',
-          borderRadius: '26px',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.020) 0%, rgba(0,0,0,0.012) 100%)',
+          borderRadius: GLASS_TOKENS.cardRadius,
           pointerEvents: 'none'
         }} />
 
+        {/* Layer 3: Gentle bloom edge */}
         <div style={{
           position: 'absolute',
           top: 0,
           left: '12%',
           right: '12%',
           height: '1px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
-          filter: 'blur(0.5px)',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
           pointerEvents: 'none'
         }} />
 
@@ -988,29 +989,30 @@ const StandardDrawerContent = ({ segment, delay }) => {
           position: 'absolute',
           inset: 0,
           background: `radial-gradient(ellipse at 50% 40%, ${theme.ambient} 0%, transparent 100%)`,
-          borderRadius: '26px',
+          borderRadius: GLASS_TOKENS.cardRadius,
           pointerEvents: 'none',
-          opacity: 0.55
+          opacity: 0.48
         }} />
 
         <div className="relative text-center">
           <h3 
-            className="text-[14px] font-medium mb-4 uppercase" 
+            className="text-[13.5px] font-medium mb-4 uppercase" 
             style={{ 
-              color: 'rgba(255,255,255,0.66)',
-              letterSpacing: '0.09em'
+              color: 'rgba(255,255,255,0.64)',
+              letterSpacing: '0.08em',
+              fontWeight: 500
             }}
           >
             What This Means
           </h3>
           
           <p 
-            className="text-[17px]" 
+            className="text-[16.5px]" 
             style={{ 
-              color: 'rgba(255,255,255,0.94)',
-              lineHeight: '1.52',
-              letterSpacing: '-0.006em',
-              fontWeight: 420,
+              color: 'rgba(255,255,255,0.92)',
+              lineHeight: '1.54',
+              letterSpacing: '-0.005em',
+              fontWeight: 400,
               maxWidth: '620px',
               margin: '0 auto'
             }}
