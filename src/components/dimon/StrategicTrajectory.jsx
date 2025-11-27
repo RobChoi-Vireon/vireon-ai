@@ -390,13 +390,13 @@ const EvolutionDetailDrawer = ({ data, onClose }) => {
 
         <div className="mb-4">
           <h5 className="text-lg font-bold text-white mb-2">{data.label}</h5>
-          <h6 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Strategic Context</h6>
+          <h6 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Context</h6>
           <p className="text-sm text-gray-300 leading-relaxed">{data.context}</p>
         </div>
         
         <div className="grid grid-cols-1 gap-4 mb-4">
           <div>
-            <h6 className="text-xs font-semibold text-red-400 mb-2">Key Risks</h6>
+            <h6 className="text-xs font-semibold text-red-400 mb-2">Risks</h6>
             <div className="space-y-1">
               {data.risks.map((risk, i) => (
                 <div key={i} className="text-sm text-red-300 bg-red-500/10 px-2 py-1 rounded border border-red-500/20">{risk}</div>
@@ -404,7 +404,7 @@ const EvolutionDetailDrawer = ({ data, onClose }) => {
             </div>
           </div>
           <div>
-            <h6 className="text-xs font-semibold text-green-400 mb-2">Key Opportunities</h6>
+            <h6 className="text-xs font-semibold text-green-400 mb-2">Opportunities</h6>
             <div className="space-y-1">
               {data.opportunities.map((opp, i) => (
                 <div key={i} className="text-sm text-green-300 bg-green-500/10 px-2 py-1 rounded border border-green-500/20">{opp}</div>
@@ -414,7 +414,7 @@ const EvolutionDetailDrawer = ({ data, onClose }) => {
         </div>
         
         <div>
-          <h6 className="text-xs font-semibold text-gray-400 mb-2">Related Signals</h6>
+          <h6 className="text-xs font-semibold text-gray-400 mb-2">Signals</h6>
           <div className="flex flex-wrap gap-1">
             {data.signals.map((signal, i) => (
               <span key={i} className="text-xs text-gray-400 bg-gray-500/10 px-2 py-1 rounded border border-gray-500/20">{signal}</span>
@@ -438,9 +438,9 @@ const TimelineEvolution = ({ trajectory }) => {
       summary: 'Compliance drag dominates.',
       confidence: 0.80,
       sentiment: 'risk',
-      risks: ['Regulatory compliance costs', 'Policy uncertainty', 'Tech sector drag'],
-      opportunities: ['Defensive positioning', 'Quality premium'],
-      signals: ['DC unveils AI rules', 'Tech oversight rises', 'Bank capital debate'],
+      risks: ['Compliance costs', 'Policy uncertainty', 'Tech drag'],
+      opportunities: ['Defensive stance', 'Quality premium'],
+      signals: ['AI rules live', 'Tech oversight up', 'Bank capital debate'],
       context: 'EU tech rules add 15% to R&D. AI compliance requires new teams and infrastructure.'
     },
     '3M': {
@@ -448,9 +448,9 @@ const TimelineEvolution = ({ trajectory }) => {
       summary: 'EM credit stress rising; selective M&A emerging.',
       confidence: 0.65,
       sentiment: 'balanced', // Using 'balanced' maps to 'default' color
-      risks: ['EM credit spreads widening', 'Funding cost increases', 'Export market stress'],
-      opportunities: ['Selective M&A opportunities', 'Valuation compression', 'Tech sector rotation'],
-      signals: ['HY spreads widen', 'Industrial deal flow', 'Credit markets stress'],
+      risks: ['EM spreads widening', 'Funding costs up', 'Export stress'],
+      opportunities: ['Selective M&A', 'Valuation entry', 'Sector rotation'],
+      signals: ['HY +35bps', 'Industrial M&A', 'Credit strain'],
       context: 'EM HY stress rising. Creates selective entry points for positioned buyers.'
     },
     '12M': {
@@ -458,9 +458,9 @@ const TimelineEvolution = ({ trajectory }) => {
       summary: 'Demand uncertain; input costs falling.',
       confidence: 0.55,
       sentiment: 'opportunity',
-      risks: ['Global demand weakness', 'China slowdown', 'Export normalization'],
-      opportunities: ['Cheaper commodity inputs', 'Supply chain optimization', 'Manufacturing margin expansion'],
-      signals: ['China demand softens', 'Commodity deflation', 'Input cost relief'],
+      risks: ['Demand weak', 'China drag', 'Export fade'],
+      opportunities: ['Input costs down', 'Supply chain gains', 'Margin expansion'],
+      signals: ['China soft', 'Commodity drop', 'Cost relief'],
       context: 'China slowdown cuts input costs. Steel, aluminum down 12-18% YoY — margin tailwind for U.S. industrials.'
     }
   };
