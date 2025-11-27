@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GitBranch, Eye, AlertCircle, ChevronDown, ChevronUp, Scale, ArrowRight, Target, Radar } from 'lucide-react';
@@ -102,7 +103,7 @@ const DebateCard = ({ counterpoint, index, isExpandedView = false }) => {
           <div className="flex items-center gap-2">
             <Scale className="w-4 h-4 text-amber-400" />
             <span className="text-xs font-semibold text-amber-300 uppercase tracking-wide">
-              Debate
+              Debate Snapshot
             </span>
             {isRising && (
               <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 text-xs">
@@ -121,7 +122,7 @@ const DebateCard = ({ counterpoint, index, isExpandedView = false }) => {
               <Scale className="w-4 h-4 text-blue-400" />
             </div>
             <div className="flex-1">
-              <h5 className="text-xs font-semibold text-blue-300 mb-1">Consensus</h5>
+              <h5 className="text-xs font-semibold text-blue-300 mb-1">CONSENSUS</h5>
               <p className="text-sm font-medium text-gray-200 leading-snug">
                 {counterpoint.consensus}
               </p>
@@ -143,7 +144,7 @@ const DebateCard = ({ counterpoint, index, isExpandedView = false }) => {
               <GitBranch className="w-4 h-4 text-orange-400" />
             </div>
             <div className="flex-1">
-              <h5 className="text-xs font-semibold text-orange-300 mb-1">Counter</h5>
+              <h5 className="text-xs font-semibold text-orange-300 mb-1">COUNTER</h5>
               <p className="text-sm font-medium text-gray-200 leading-snug">
                 {counterpoint.counter}
               </p>
@@ -154,7 +155,7 @@ const DebateCard = ({ counterpoint, index, isExpandedView = false }) => {
         {/* Source & Expand */}
         <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/5">
           <span className="text-xs text-gray-400">
-            <span className="text-gray-300 capitalize font-medium">
+            Source: <span className="text-gray-300 capitalize font-medium">
               {counterpoint.source?.replace('_', ' ')}
             </span>
           </span>
@@ -178,8 +179,8 @@ const DebateCard = ({ counterpoint, index, isExpandedView = false }) => {
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             >
               <div className="space-y-2 text-xs text-gray-400">
-                <p><span className="font-medium">Analysis:</span> {counterpoint.confidence && counterpoint.confidence > 0.6 ? 'Strong' : 'Moderate'} challenge to consensus.</p>
-                <p><span className="font-medium">Impact:</span> May shift sentiment if sustained.</p>
+                <p><span className="font-medium">Analysis:</span> This represents a {counterpoint.confidence && counterpoint.confidence > 0.6 ? 'strong' : 'moderate'} challenge to the prevailing narrative.</p>
+                <p><span className="font-medium">Impact:</span> Could shift market sentiment if gains traction.</p>
               </div>
             </motion.div>
           )}
@@ -227,7 +228,7 @@ const BlindspotCard = ({ blindspot, index, isExpandedView = false }) => {
           <div className="flex items-center gap-2">
             <Target className="w-4 h-4 text-purple-400" />
             <span className="text-xs font-semibold text-purple-300 uppercase tracking-wide">
-              Blindspot
+              Blindspot Detected
             </span>
           </div>
           <Badge 
@@ -323,7 +324,7 @@ export default function CounterpointsPanel({ counterpoints = [], blindspots = []
                 Debate Board & Blindspot Radar
               </h2>
               <p className="text-sm text-gray-400">
-                Consensus fractures and underreported themes.
+                Real-time consensus fractures and hidden narratives.
               </p>
             </div>
           </div>
@@ -358,9 +359,9 @@ export default function CounterpointsPanel({ counterpoints = [], blindspots = []
         >
           <span className="font-semibold text-gray-300">{totalDebates} Active Debates</span>
           <span className="mx-2 text-gray-600">|</span>
-          <span className="font-semibold text-purple-300">{totalBlindspots} Blindspots</span>
+          <span className="font-semibold text-purple-300">{totalBlindspots} Blindspots Detected</span>
           <span className="mx-2 text-gray-600">→</span>
-          <span><span className={`font-bold ${consensusState.color}`}>{consensusState.text}</span></span>
+          <span>Overall: <span className={`font-bold ${consensusState.color}`}>{consensusState.text}</span></span>
         </motion.div>
 
         <AnimatePresence mode="wait">
@@ -377,7 +378,7 @@ export default function CounterpointsPanel({ counterpoints = [], blindspots = []
                 <motion.div variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}>
                   <h3 className="text-md font-semibold mb-4 flex items-center text-gray-200">
                     <Scale className="w-4 h-4 mr-2 text-amber-400" />
-                    Debates ({counterpoints.length})
+                    Active Debates ({counterpoints.length})
                   </h3>
                   <div className="space-y-4">
                     {visibleCounterpoints.map((counterpoint, index) => (
@@ -391,7 +392,7 @@ export default function CounterpointsPanel({ counterpoints = [], blindspots = []
                 <motion.div variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}>
                   <h3 className="text-md font-semibold mb-4 flex items-center text-gray-200">
                     <Radar className="w-4 h-4 mr-2 text-purple-400" />
-                    Blindspots ({blindspots.length})
+                    Radar Detections ({blindspots.length})
                   </h3>
                   <div className="space-y-4">
                     {visibleBlindspots.map((blindspot, index) => (

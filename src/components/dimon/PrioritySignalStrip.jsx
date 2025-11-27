@@ -1,3 +1,4 @@
+
 // 🔒 DESIGN LOCKED — OS HORIZON V4.0
 // Last Updated: 2025-01-20
 // Do not modify visual design without explicit assignment
@@ -453,7 +454,7 @@ export default function PrioritySignalStrip({ signals = [], onOpenDrawer }) {
           className="text-sm"
           style={{ color: 'rgba(255, 255, 255, 0.7)' }}
         >
-          Critical shifts demanding immediate awareness.
+          Urgent developments requiring immediate attention.
         </p>
       </div>
       

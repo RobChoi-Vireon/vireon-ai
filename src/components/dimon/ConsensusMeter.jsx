@@ -947,7 +947,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
           opacity: { duration: 0.2, ease: MOTION.CURVES.tertiary }
         }}
       >
-        {sourcesCount} sources • {updatedAgo}
+        Based on {sourcesCount} sources • Updated {updatedAgo}
       </motion.p>
 
       {/* Interactive breakdown hint */}
@@ -987,7 +987,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
             duration: 0.15
           }}
         >
-          View breakdown
+          View detailed breakdown
         </motion.span>
       </motion.div>
 

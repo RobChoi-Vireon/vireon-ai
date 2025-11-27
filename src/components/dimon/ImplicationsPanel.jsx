@@ -56,8 +56,8 @@ const ImplicationPanel = React.memo(({ item, index, delay, totalCount, sectionTy
     : 'linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.1))';
 
   const expandedContext = isRisk 
-    ? "EU tech rules add **15% to R&D**. AI compliance requires new teams and infrastructure."
-    : "China slowdown cuts inputs. **Steel, aluminum down 12-18% YoY** — margin lift for U.S. industrials.";
+    ? "Regulatory shifts in EU tech compliance projected to add **15% to R&D costs** across major platforms. New AI content rules require dedicated compliance teams and infrastructure overhaul."
+    : "China's manufacturing slowdown creates a favorable input cost environment. **Steel, aluminum, and rare earth prices are down 12-18% YoY**, improving margins for US industrial producers.";
   
   const linkedSignals = item.action_cues || [];
 
@@ -180,7 +180,7 @@ const ImplicationPanel = React.memo(({ item, index, delay, totalCount, sectionTy
                 />
                 
                 <motion.div className="space-y-2" variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} initial="hidden" animate="visible">
-                  <h5 className="text-xs font-bold text-neutral-400 uppercase tracking-wider">Signals</h5>
+                  <h5 className="text-xs font-bold text-neutral-400 uppercase tracking-wider">Linked Signals</h5>
                   <div className="flex flex-wrap gap-2">
                     {linkedSignals.map((signal, idx) => (
                       <motion.a 

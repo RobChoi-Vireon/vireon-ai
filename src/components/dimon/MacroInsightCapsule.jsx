@@ -3,14 +3,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, X, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
 export default function MacroInsightCapsule({ 
-  insight = "Risk-off tilt — 3 divergences flagged in global credit.",
-  expandedInsight = "HY and EM spreads widening. Fed expectations shifting hawkish. Industrial refinancing at risk.",
+  insight = "Markets lean risk-off — 3 divergences flagged in global credit spreads.",
+  expandedInsight = "Credit spreads widening across HY and EM. Fed policy expectations shifting hawkish. Monitor refinancing risks in industrial sector.",
   isLoading = false,
   onExpand,
   secondaryInsights = [
-    { category: "Credit", summary: "HY +35bps WoW; issuance tight", sentiment: "risk" },
-    { category: "Equities", summary: "Narrow breadth — mega-cap concentration", sentiment: "neutral" },
-    { category: "Commodities", summary: "China demand soft — metals pressured", sentiment: "risk" }
+    { category: "Credit", summary: "HY spreads widen 35 bps WoW; issuance windows tighten", sentiment: "risk" },
+    { category: "Equities", summary: "Flat breadth signals concentration risk in mega-cap tech", sentiment: "neutral" },
+    { category: "Commodities", summary: "China demand softness weighs on industrial metals", sentiment: "risk" }
   ],
   sentimentScore = 34 // 0-100 scale, where <40 = risk-off, >60 = risk-on
 }) {

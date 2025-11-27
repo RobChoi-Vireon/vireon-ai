@@ -16,12 +16,12 @@ const generateAggregateSkew = (sources) => {
   
   if (cautionaryCount >= supportiveCount && riskySources.length > 0) {
     const riskText = riskySources.join(' and ');
-    const neutralText = neutralSources.length > 0 ? `; ${neutralSources.join(' and ')} neutral` : '';
-    return `Source tilt: hawkish. **${riskText}** flag credit risk, China drag${neutralText}.`;
+    const neutralText = neutralSources.length > 0 ? `, while ${neutralSources.join(' and ')} coverage remains neutral` : '';
+    return `Trusted source weighting tilts hawkish: **${riskText}** stress credit risk and China slowdown${neutralText}.`;
   } else if (supportiveCount > cautionaryCount) {
-    return `Source lean: **bullish**. Supportive tone across majors.`;
+    return `Source consensus leans **bullish** with supportive narratives dominating across major publications.`;
   } else {
-    return `**Mixed signals** — balanced risk/opportunity coverage.`;
+    return `Sources show **mixed signals** with balanced coverage across risk and opportunity themes.`;
   }
 };
 
@@ -42,7 +42,7 @@ export default function SourceGrid({ sources, density }) {
         <h2 id="source-weighting-heading" className="text-lg font-bold text-white">
           Trusted Source Weighting
         </h2>
-        <p className="text-xs text-neutral-400 ml-3">Source influence and tone analysis.</p>
+        <p className="text-xs text-neutral-400 ml-3">Weighting signals from key publications.</p>
       </div>
       
       {/* Section-Level Summary with Shimmer */}

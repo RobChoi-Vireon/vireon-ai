@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Triangle, ArrowUpRight, Scale, Calendar, Target, Clock, ArrowRight } from 'lucide-react';
@@ -390,13 +391,13 @@ const EvolutionDetailDrawer = ({ data, onClose }) => {
 
         <div className="mb-4">
           <h5 className="text-lg font-bold text-white mb-2">{data.label}</h5>
-          <h6 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Context</h6>
+          <h6 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Strategic Context</h6>
           <p className="text-sm text-gray-300 leading-relaxed">{data.context}</p>
         </div>
         
         <div className="grid grid-cols-1 gap-4 mb-4">
           <div>
-            <h6 className="text-xs font-semibold text-red-400 mb-2">Risks</h6>
+            <h6 className="text-xs font-semibold text-red-400 mb-2">Key Risks</h6>
             <div className="space-y-1">
               {data.risks.map((risk, i) => (
                 <div key={i} className="text-sm text-red-300 bg-red-500/10 px-2 py-1 rounded border border-red-500/20">{risk}</div>
@@ -404,7 +405,7 @@ const EvolutionDetailDrawer = ({ data, onClose }) => {
             </div>
           </div>
           <div>
-            <h6 className="text-xs font-semibold text-green-400 mb-2">Opportunities</h6>
+            <h6 className="text-xs font-semibold text-green-400 mb-2">Key Opportunities</h6>
             <div className="space-y-1">
               {data.opportunities.map((opp, i) => (
                 <div key={i} className="text-sm text-green-300 bg-green-500/10 px-2 py-1 rounded border border-green-500/20">{opp}</div>
@@ -414,7 +415,7 @@ const EvolutionDetailDrawer = ({ data, onClose }) => {
         </div>
         
         <div>
-          <h6 className="text-xs font-semibold text-gray-400 mb-2">Signals</h6>
+          <h6 className="text-xs font-semibold text-gray-400 mb-2">Related Signals</h6>
           <div className="flex flex-wrap gap-1">
             {data.signals.map((signal, i) => (
               <span key={i} className="text-xs text-gray-400 bg-gray-500/10 px-2 py-1 rounded border border-gray-500/20">{signal}</span>
@@ -434,34 +435,34 @@ const TimelineEvolution = ({ trajectory }) => {
 
   const evolutionData = {
     'Now': {
-      label: 'Now',
-      summary: 'Compliance drag dominates.',
+      label: 'Now (0-1M)',
+      summary: 'Compliance drag dominates with neutral positioning.',
       confidence: 0.80,
       sentiment: 'risk',
-      risks: ['Compliance costs', 'Policy uncertainty', 'Tech drag'],
-      opportunities: ['Defensive stance', 'Quality premium'],
-      signals: ['AI rules live', 'Tech oversight up', 'Bank capital debate'],
-      context: 'EU tech rules add 15% to R&D. AI compliance requires new teams and infrastructure.'
+      risks: ['Regulatory compliance costs', 'Policy uncertainty', 'Tech sector drag'],
+      opportunities: ['Defensive positioning', 'Quality premium'],
+      signals: ['DC unveils AI rules', 'Tech oversight rises', 'Bank capital debate'],
+      context: 'Regulatory shifts in EU tech compliance projected to add 15% to R&D costs across major platforms. New AI content rules require dedicated compliance teams and infrastructure overhaul.'
     },
     '3M': {
-      label: '3M',
-      summary: 'EM credit stress rising; selective M&A emerging.',
+      label: '3M Outlook',
+      summary: 'EM credit stress emerges, but selective M&A offsets risk.',
       confidence: 0.65,
       sentiment: 'balanced', // Using 'balanced' maps to 'default' color
-      risks: ['EM spreads widening', 'Funding costs up', 'Export stress'],
-      opportunities: ['Selective M&A', 'Valuation entry', 'Sector rotation'],
-      signals: ['HY +35bps', 'Industrial M&A', 'Credit strain'],
-      context: 'EM HY stress rising. Creates selective entry points for positioned buyers.'
+      risks: ['EM credit spreads widening', 'Funding cost increases', 'Export market stress'],
+      opportunities: ['Selective M&A opportunities', 'Valuation compression', 'Tech sector rotation'],
+      signals: ['HY spreads widen', 'Industrial deal flow', 'Credit markets stress'],
+      context: 'Credit markets show signs of stress, particularly in emerging market high-yield bonds. However, this creates selective opportunities for well-positioned acquirers and value investors.'
     },
     '12M': {
-      label: '12M',
-      summary: 'Demand uncertain; input costs falling.',
+      label: '12M Outlook',
+      summary: 'Global demand uncertainty, but cheaper inputs boost resilience.',
       confidence: 0.55,
       sentiment: 'opportunity',
-      risks: ['Demand weak', 'China drag', 'Export fade'],
-      opportunities: ['Input costs down', 'Supply chain gains', 'Margin expansion'],
-      signals: ['China soft', 'Commodity drop', 'Cost relief'],
-      context: 'China slowdown cuts input costs. Steel, aluminum down 12-18% YoY — margin tailwind for U.S. industrials.'
+      risks: ['Global demand weakness', 'China slowdown', 'Export normalization'],
+      opportunities: ['Cheaper commodity inputs', 'Supply chain optimization', 'Manufacturing margin expansion'],
+      signals: ['China demand softens', 'Commodity deflation', 'Input cost relief'],
+      context: 'China\'s manufacturing slowdown creates a favorable input cost environment. Steel, aluminum, and rare earth prices are down 12-18% YoY, improving margins for US industrial producers.'
     }
   };
 
@@ -492,7 +493,7 @@ const TimelineEvolution = ({ trajectory }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2, duration: 0.4 }} // Fixed: Reduced delay from 1.5s to 0.2s
     >
-      <h4 className="text-sm font-semibold text-gray-300 mb-6">Trajectory</h4>
+      <h4 className="text-sm font-semibold text-gray-300 mb-6">Strategic Evolution</h4>
       
       {/* Fixed: Added proper overflow handling and positioning context */}
       <div className="relative overflow-visible">
@@ -664,7 +665,7 @@ export default function StrategicTrajectory({ trajectory = [], density }) {
               Strategic Trajectory
             </h2>
             <p className="text-sm text-gray-400">
-              Risk/opportunity across time.
+              Risk/opportunity outlook across time horizons.
             </p>
           </div>
         </div>
