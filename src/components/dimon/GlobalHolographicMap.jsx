@@ -120,8 +120,8 @@ const MOCK_DOMAINS = [
       ]
     },
     footer: {
-      primary_cta: { label: "View market implications", route: "/implications/rates" },
-      secondary_link: { label: "Open timeline", route: "/timeline/rates" },
+      primary_cta: { label: "See what this means", route: "/implications/rates" },
+      secondary_link: { label: "View history", route: "/timeline/rates" },
       timestamp: new Date().toISOString()
     },
     last_updated_iso: new Date().toISOString(),
@@ -152,11 +152,11 @@ const MOCK_DOMAINS = [
       ]
     },
     footer: {
-      primary_cta: { label: "View FX analytics", route: "/fx/dashboard" },
-      secondary_link: { label: "Currency tracker", route: "/fx/tracker" },
+      primary_cta: { label: "See currency details", route: "/fx/dashboard" },
+      secondary_link: { label: "Track currencies", route: "/fx/tracker" },
       timestamp: new Date().toISOString()
     },
-    addendum: "Next 48h: FX likely stable; carry re-risk limited unless yields diverge.",
+    addendum: "Next 48 hours: Currency markets likely stay calm unless interest rates start moving differently between countries.",
     last_updated_iso: new Date().toISOString(),
     sparkline: [0.60, 0.59, 0.58, 0.57, 0.58, 0.59, 0.58, 0.57, 0.58],
     confidenceDelta: -3
@@ -185,8 +185,8 @@ const MOCK_DOMAINS = [
       ]
     },
     footer: {
-      primary_cta: { label: "Growth outlook", route: "/growth/outlook" },
-      secondary_link: { label: "Sector rotation", route: "/sectors" },
+      primary_cta: { label: "See growth forecast", route: "/growth/outlook" },
+      secondary_link: { label: "Track sector shifts", route: "/sectors" },
       timestamp: new Date().toISOString()
     },
     last_updated_iso: new Date().toISOString(),
@@ -217,8 +217,8 @@ const MOCK_DOMAINS = [
       ]
     },
     footer: {
-      primary_cta: { label: "Risk analysis", route: "/geopolitics/risk" },
-      secondary_link: { label: "Supply chain tracker", route: "/supply-chain" },
+      primary_cta: { label: "See risk details", route: "/geopolitics/risk" },
+      secondary_link: { label: "Track supply chains", route: "/supply-chain" },
       timestamp: new Date().toISOString()
     },
     last_updated_iso: new Date().toISOString(),
@@ -2239,7 +2239,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase'
                 }}>
-                  What It Means
+                  What's Happening
                 </h4>
                 <p style={{
                   color: TOKENS.colors.textBody,
@@ -2282,7 +2282,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase'
                 }}>
-                  Downstream Effects
+                  What This Affects
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   {selectedDomain.downstream_effects.map((effect, i) => (
@@ -2405,7 +2405,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     fontWeight: 600,
                     textTransform: 'uppercase'
                   }}>
-                    Actionable Signal
+                    What to Do
                   </p>
                   <div className="flex items-center gap-3 text-xs">
                     <span style={{ color: 'rgba(255, 255, 255, 0.58)', fontSize: '12px' }}>
@@ -2428,7 +2428,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         letterSpacing: '0.03em'
                       }}
                     >
-                      {selectedDomain.actionable.conviction} Conviction
+                      {selectedDomain.actionable.conviction} confidence
                     </span>
                   </div>
                 </div>
@@ -2565,7 +2565,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   Updated {new Date(selectedDomain.footer.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </span>
                 <span style={{ opacity: 0.55, letterSpacing: '0.05em' }}>
-                  1–4 · ← → · ESC
+                  Press 1–4 or arrows to navigate
                 </span>
               </div>
             </motion.div>
