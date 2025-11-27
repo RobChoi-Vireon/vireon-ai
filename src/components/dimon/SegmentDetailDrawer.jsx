@@ -111,11 +111,11 @@ const InsightPanel = ({ icon: Icon, title, content, delay, iconColor, tintColor 
         </h3>
         
         <p 
-          className="text-[13px]" 
+          className="text-[14.5px]" 
           style={{ 
-            color: 'rgba(255,255,255,0.88)',
-            lineHeight: '1.50',
-            letterSpacing: '-0.002em'
+            color: 'rgba(255,255,255,0.90)',
+            lineHeight: '1.55',
+            letterSpacing: '-0.003em'
           }}
         >
           {content}
@@ -409,10 +409,10 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           </h3>
           
           <p 
-            className="text-[14px]" 
+            className="text-[15px]" 
             style={{ 
               color: 'rgba(255,255,255,0.92)',
-              lineHeight: '1.42',
+              lineHeight: '1.52',
               letterSpacing: '-0.003em',
               maxWidth: '620px',
               margin: '0 auto'
@@ -528,19 +528,19 @@ const StandardDrawerContent = ({ segment, delay }) => {
     switch (segment.name) {
       case 'Credit':
         return {
-          morning_takeaway: "EM HY spreads decompress rapidly → tightening financial conditions signal M&A slowdown and refinancing stress.",
+          morning_takeaway: "Borrowing is getting more expensive and harder to access, especially for weaker borrowers.",
           drivers: [
-            {icon: TrendingUp, text: "Widening high-yield (HY) and emerging market (EM) spreads", bold: "Widening high-yield spreads", weight: "high"},
-            {icon: Building2, text: "Freezing issuance in primary debt markets", bold: "Freezing issuance", weight: "high"},
-            {icon: Users, text: "Tighter underwriting standards from banks", bold: "Tighter underwriting standards", weight: "medium"}
+            {icon: TrendingUp, text: "Lenders are getting more cautious after early signs of stress in riskier debt.", bold: "Lenders getting cautious", weight: "high"},
+            {icon: Building2, text: "Credit is tightening, making it tougher for companies and households to refinance or take on new loans.", bold: "Credit tightening", weight: "high"},
+            {icon: Users, text: "Moderate impact, with highly indebted companies and lower-quality borrowers feeling it first.", bold: "Impact on weaker borrowers", weight: "medium"}
           ],
           sentiment_rationale: [
-            "Rising risk aversion driving rapid spread decompression in EM.",
-            "Tightening financial conditions stalling M&A and refinancing globally.",
-            "Leading indicator for broader credit market stress ahead."
+            "Tighter credit conditions can slow growth and increase default risk at the edges of the market.",
+            "Companies that rely heavily on cheap borrowing may face higher costs and less flexibility.",
+            "Early warning signs in high-yield markets often precede broader credit stress."
           ],
           outlook: {
-            line1: "CDX HY index above 400 bps signals broader risk-off → continued debt issuance freeze through month-end would confirm significant credit cycle turn.",
+            line1: "Tighter credit conditions can slow growth and increase default risk at the edges of the market. Companies that rely heavily on cheap borrowing may face higher costs and less flexibility.",
             line2: ""
           },
           impact_groups: {
@@ -552,19 +552,19 @@ const StandardDrawerContent = ({ segment, delay }) => {
         };
       case 'Equities':
         return {
-          morning_takeaway: "Market breadth deteriorating → fragile concentration in mega-caps signals vulnerability to rotation shocks.",
+          morning_takeaway: "Most stock gains are coming from a small group of big companies, not the whole market.",
           drivers: [
-            {icon: TrendingDown, text: "Sector rotation from growth to value accelerating", bold: "Sector rotation accelerating", weight: "medium"},
-            {icon: BarChart3, text: "Narrowing market breadth with fewer stocks participating", bold: "Narrowing market breadth", weight: "high"},
-            {icon: FileText, text: "Earnings season surprises and guidance updates", bold: "Earnings season surprises", weight: "medium"}
+            {icon: TrendingDown, text: "Investors are crowding into large, well-known names while many smaller and mid-size stocks lag behind.", bold: "Crowding into large names", weight: "medium"},
+            {icon: BarChart3, text: "Support for the market is narrowing, making it more vulnerable if these leaders stumble.", bold: "Narrowing support", weight: "high"},
+            {icon: FileText, text: "Moderate impact, with the index looking strong on the surface but more fragile underneath.", bold: "Surface strength, fragile underneath", weight: "medium"}
           ],
           sentiment_rationale: [
-            "Market breadth deteriorating with concentration risk in mega-cap stocks.",
-            "Fragile and selective market vulnerable to sentiment shocks.",
-            "Headline resilience masking underlying structural weaknesses."
+            "A narrow group of winners can keep the headline market up, but it also raises concentration risk.",
+            "If leadership cracks, the pullback can be sharper because fewer areas are holding the market up.",
+            "Headline resilience may be masking underlying fragility."
           ],
           outlook: {
-            line1: "Advance-decline ratio below 1.0 for 5+ consecutive days → mega-cap leadership breakdown could trigger 5-10% broad market correction within 2-3 weeks.",
+            line1: "A narrow group of winners can keep the headline market up, but it also raises concentration risk. If leadership cracks, the pullback can be sharper because fewer areas are holding the market up.",
             line2: ""
           },
           impact_groups: {
@@ -578,19 +578,19 @@ const StandardDrawerContent = ({ segment, delay }) => {
         };
       case 'Global':
         return {
-          morning_takeaway: "China demand weakness suppresses commodities → global growth outlook softens as stimulus efforts underperform.",
+          morning_takeaway: "Slower growth in key regions, especially China, is starting to weigh on the global outlook.",
           drivers: [
-            {icon: Factory, text: "Slowing demand from China post-reopening normalization", bold: "Slowing demand from China", weight: "high"},
-            {icon: Zap, text: "European energy price volatility creating uncertainty", bold: "European energy price volatility", weight: "medium"},
-            {icon: DollarSign, text: "Strength of the US Dollar (DXY) pressuring EM", bold: "Strength of the US Dollar", weight: "medium"}
+            {icon: Factory, text: "Weaker demand from China and softer data in other major economies are cooling trade and production.", bold: "Weaker demand from China", weight: "high"},
+            {icon: Zap, text: "Growth momentum is cooling instead of accelerating.", bold: "Growth momentum cooling", weight: "medium"},
+            {icon: DollarSign, text: "Moderate impact, with export-driven and commodity-linked areas feeling the slowdown more.", bold: "Export-driven areas impacted", weight: "medium"}
           ],
           sentiment_rationale: [
-            "Structural slowdown in China moving beyond cyclical weakness.",
-            "Global commodity demand declining as consumer confidence lags.",
-            "Multinational earnings at risk from reduced China exposure."
+            "A cooling global economy can pressure earnings expectations and risk appetite.",
+            "If the slowdown deepens, markets may start to price in weaker profits and fewer growth opportunities.",
+            "Multinational earnings at risk from reduced global demand."
           ],
           outlook: {
-            line1: "Chinese PMI below 50 for 3+ months → global trade volume decline accelerates → commodity correction deepens 10-15% through Q2.",
+            line1: "A cooling global economy can pressure earnings expectations and risk appetite. If the slowdown deepens, markets may start to price in weaker profits and fewer growth opportunities.",
             line2: ""
           },
           impact_groups: {
@@ -660,7 +660,7 @@ const StandardDrawerContent = ({ segment, delay }) => {
           </span>
         </div>
         <item.icon className="w-4 h-4 mr-2.5 mt-0.5 flex-shrink-0" style={{ color: '#5EA7FF' }} strokeWidth={2.2} />
-        <span className="text-[13px]" style={{ color: 'rgba(255,255,255,0.90)', lineHeight: '1.62', paddingLeft: '4px' }}>
+        <span className="text-[14.5px]" style={{ color: 'rgba(255,255,255,0.90)', lineHeight: '1.58', paddingLeft: '4px' }}>
           {item.text}
         </span>
       </motion.li>
@@ -696,7 +696,7 @@ const StandardDrawerContent = ({ segment, delay }) => {
         </div>
       </div>
 
-      <p className="text-[13px] mb-6" style={{ color: 'rgba(255,255,255,0.90)', lineHeight: '1.52', maxWidth: '680px' }}>
+      <p className="text-[14.5px] mb-6" style={{ color: 'rgba(255,255,255,0.90)', lineHeight: '1.55', maxWidth: '680px' }}>
         <strong style={{ fontWeight: 600, color: 'rgba(255,255,255,0.98)' }}>
           {details.morning_takeaway.split('.')[0]}.
         </strong>
@@ -753,10 +753,10 @@ const StandardDrawerContent = ({ segment, delay }) => {
                   style={{ background: theme.color, boxShadow: `0 0 8px ${theme.color}48` }}
                 />
                 <span 
-                  className="text-[13px] leading-relaxed"
+                  className="text-[14.5px] leading-relaxed"
                   style={{ 
                     color: 'rgba(255,255,255,0.90)',
-                    lineHeight: '1.72'
+                    lineHeight: '1.58'
                   }}
                 >
                   <strong style={{ fontWeight: 600, color: 'rgba(255,255,255,0.98)' }}>
@@ -798,11 +798,11 @@ const StandardDrawerContent = ({ segment, delay }) => {
           border: '1px solid rgba(255,255,255,0.12)',
           boxShadow: `inset 0 1px 0 rgba(255,255,255,0.11), inset 0 0 26px ${theme.color}05, 0 4px 16px rgba(0,0,0,0.10)`
         }}>
-          <p className="text-[14px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.90)', lineHeight: '1.52', maxWidth: '680px' }}>
+          <p className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.90)', lineHeight: '1.55', maxWidth: '680px' }}>
             {details.outlook.line1}
           </p>
           {details.outlook.line2 && (
-            <p className="text-[14px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.80)', lineHeight: '1.52', maxWidth: '680px' }}>
+            <p className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.80)', lineHeight: '1.55', maxWidth: '680px' }}>
               {details.outlook.line2}
             </p>
           )}
