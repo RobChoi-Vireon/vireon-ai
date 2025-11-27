@@ -128,9 +128,9 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
   };
 
   const getZoneLabel = (s) => {
-    if (s < 40) return 'Risk-Tilt';
+    if (s < 40) return 'Cautious';
     if (s < 70) return 'Mixed';
-    return 'Constructive';
+    return 'Optimistic';
   };
 
   const getTrendIcon = (s) => {

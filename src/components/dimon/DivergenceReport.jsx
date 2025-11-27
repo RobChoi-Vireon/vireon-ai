@@ -110,7 +110,7 @@ const DivergenceIntensityMeter = ({ divergences = [] }) => {
       
       {/* Micro descriptor */}
       <p className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.68)', letterSpacing: '0.02em', lineHeight: '1.4' }}>
-        Degree of narrative disagreement
+        How much sources disagree with each other
       </p>
     </div>
   );
@@ -124,11 +124,11 @@ const DivergenceCapsule = ({ divergence, onClick, index }) => {
   const getContextCue = (divergence) => {
     switch (divergence?.id) {
       case 'em_credit':
-        return 'Localized EM credit strain flagged by spreads';
+        return 'Companies in developing countries are struggling to borrow money';
       case 'energy_vs_industrials':
-        return 'Energy strength diverges from weak industrial output';
+        return 'Energy companies are doing well while factories are slowing down';
       default:
-        return 'Narrative inconsistency detected across sources';
+        return 'News sources are telling different stories about this topic';
     }
   };
 
@@ -404,7 +404,7 @@ export default function DivergenceReport({ divergences = [], onOpenDrawer }) {
             No Divergences Detected
           </h3>
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.72)', lineHeight: '1.4' }}>
-            Consensus remains aligned across sources.
+            All sources agree on the key points today.
           </p>
         </div>
       </motion.div>
@@ -505,7 +505,7 @@ export default function DivergenceReport({ divergences = [], onOpenDrawer }) {
               Divergence Report
             </h2>
             <p className="text-sm" style={{ color: 'rgba(255,255,255,0.70)', lineHeight: '1.4' }}>
-              Where the consensus narrative fractures.
+              Where the experts disagree.
             </p>
           </div>
         </div>
@@ -550,7 +550,7 @@ export default function DivergenceReport({ divergences = [], onOpenDrawer }) {
                 transition: { duration: 0.16 }
               }}
             >
-              Explore full anomaly radar →
+              See all disagreements →
             </motion.button>
           </motion.div>
         )}

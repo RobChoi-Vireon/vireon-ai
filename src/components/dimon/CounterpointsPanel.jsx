@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GitBranch, Eye, AlertCircle, ChevronDown, ChevronUp, Scale, ArrowRight, Target, Radar } from 'lucide-react';
@@ -294,9 +293,9 @@ export default function CounterpointsPanel({ counterpoints = [], blindspots = []
   const visibleItemsCount = visibleCounterpoints.length + visibleBlindspots.length;
 
   const getConsensusState = () => {
-    if (totalDebates > 3) return { text: "Heavily Divergent", color: "text-red-400" };
-    if (totalDebates > 1) return { text: "Moderately Divergent", color: "text-amber-400" };
-    return { text: "Aligned", color: "text-green-400" };
+    if (totalDebates > 3) return { text: "Lots of Disagreement", color: "text-red-400" };
+    if (totalDebates > 1) return { text: "Some Disagreement", color: "text-amber-400" };
+    return { text: "Mostly Agree", color: "text-green-400" };
   };
   const consensusState = getConsensusState();
 
@@ -324,7 +323,7 @@ export default function CounterpointsPanel({ counterpoints = [], blindspots = []
                 Debate Board & Blindspot Radar
               </h2>
               <p className="text-sm text-gray-400">
-                Real-time consensus fractures and hidden narratives.
+                Where experts disagree and what others might be missing.
               </p>
             </div>
           </div>

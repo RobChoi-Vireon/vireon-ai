@@ -56,8 +56,8 @@ const ImplicationPanel = React.memo(({ item, index, delay, totalCount, sectionTy
     : 'linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.1))';
 
   const expandedContext = isRisk 
-    ? "Regulatory shifts in EU tech compliance projected to add **15% to R&D costs** across major platforms. New AI content rules require dedicated compliance teams and infrastructure overhaul."
-    : "China's manufacturing slowdown creates a favorable input cost environment. **Steel, aluminum, and rare earth prices are down 12-18% YoY**, improving margins for US industrial producers.";
+    ? "New rules in Europe and the US mean tech companies will spend **15% more on research and development**. Companies need to hire new teams and update their systems to follow new AI content rules."
+    : "Because China is buying less, raw materials are getting cheaper. **Steel, aluminum, and other materials cost 12-18% less than last year**, which helps US manufacturers keep more of what they earn.";
   
   const linkedSignals = item.action_cues || [];
 

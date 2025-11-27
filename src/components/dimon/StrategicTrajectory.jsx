@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Triangle, ArrowUpRight, Scale, Calendar, Target, Clock, ArrowRight } from 'lucide-react';
@@ -436,33 +435,33 @@ const TimelineEvolution = ({ trajectory }) => {
   const evolutionData = {
     'Now': {
       label: 'Now (0-1M)',
-      summary: 'Compliance drag dominates with neutral positioning.',
+      summary: 'New rules are costing companies money. Most investors are playing it safe.',
       confidence: 0.80,
       sentiment: 'risk',
-      risks: ['Regulatory compliance costs', 'Policy uncertainty', 'Tech sector drag'],
-      opportunities: ['Defensive positioning', 'Quality premium'],
-      signals: ['DC unveils AI rules', 'Tech oversight rises', 'Bank capital debate'],
-      context: 'Regulatory shifts in EU tech compliance projected to add 15% to R&D costs across major platforms. New AI content rules require dedicated compliance teams and infrastructure overhaul.'
+      risks: ['Higher costs to follow new rules', 'Uncertainty about government policy', 'Tech stocks under pressure'],
+      opportunities: ['Safer investments holding up', 'Quality companies outperforming'],
+      signals: ['Washington announces AI rules', 'More tech oversight coming', 'Bank rules being debated'],
+      context: 'New regulations in Europe and the US are forcing tech companies to spend more on compliance. Companies are hiring new teams and updating their systems to follow AI content rules.'
     },
     '3M': {
       label: '3M Outlook',
-      summary: 'EM credit stress emerges, but selective M&A offsets risk.',
+      summary: 'Borrowing is getting harder for some companies, but deals are still happening.',
       confidence: 0.65,
-      sentiment: 'balanced', // Using 'balanced' maps to 'default' color
-      risks: ['EM credit spreads widening', 'Funding cost increases', 'Export market stress'],
-      opportunities: ['Selective M&A opportunities', 'Valuation compression', 'Tech sector rotation'],
-      signals: ['HY spreads widen', 'Industrial deal flow', 'Credit markets stress'],
-      context: 'Credit markets show signs of stress, particularly in emerging market high-yield bonds. However, this creates selective opportunities for well-positioned acquirers and value investors.'
+      sentiment: 'balanced',
+      risks: ['Borrowing costs rising for riskier companies', 'Loans getting more expensive', 'Exporters facing challenges'],
+      opportunities: ['Good deals available for buyers', 'Some stocks are cheaper than usual', 'Tech may start recovering'],
+      signals: ['Borrowing costs rising', 'Company deals continuing', 'Lenders being cautious'],
+      context: 'It is getting harder and more expensive for some companies to borrow money, especially in developing countries. But this also means patient buyers may find good opportunities.'
     },
     '12M': {
       label: '12M Outlook',
-      summary: 'Global demand uncertainty, but cheaper inputs boost resilience.',
+      summary: 'Global demand is uncertain, but raw materials are getting cheaper.',
       confidence: 0.55,
       sentiment: 'opportunity',
-      risks: ['Global demand weakness', 'China slowdown', 'Export normalization'],
-      opportunities: ['Cheaper commodity inputs', 'Supply chain optimization', 'Manufacturing margin expansion'],
-      signals: ['China demand softens', 'Commodity deflation', 'Input cost relief'],
-      context: 'China\'s manufacturing slowdown creates a favorable input cost environment. Steel, aluminum, and rare earth prices are down 12-18% YoY, improving margins for US industrial producers.'
+      risks: ['Shoppers worldwide buying less', 'China economy slowing', 'Trade patterns changing'],
+      opportunities: ['Cheaper materials for manufacturers', 'Supply chains improving', 'Factory profits could rise'],
+      signals: ['China spending less', 'Material prices falling', 'Production costs dropping'],
+      context: 'Because China is buying less, prices for steel, aluminum, and other materials are down 12-18% from last year. This helps US manufacturers make more profit on what they sell.'
     }
   };
 
@@ -665,7 +664,7 @@ export default function StrategicTrajectory({ trajectory = [], density }) {
               Strategic Trajectory
             </h2>
             <p className="text-sm text-gray-400">
-              Risk/opportunity outlook across time horizons.
+              What to watch for over the coming weeks and months.
             </p>
           </div>
         </div>
