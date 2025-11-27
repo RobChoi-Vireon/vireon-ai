@@ -510,17 +510,11 @@ const AssetGroupImpact = ({ group, items, delay }) => {
 const StandardDrawerContent = ({ segment, delay }) => {
   const getSegmentDetails = (segment) => {
     const baseDetails = {
-      morning_takeaway: "General market conditions are the primary influence.",
-      drivers: [{icon: Target, text: "No specific drivers identified.", weight: "medium"}],
-      sentiment_rationale: ["General market conditions are the primary influence."],
-      outlook: {
-        line1: "Monitor for new catalysts.",
-        line2: ""
-      },
-      impact_groups: {
-        Equities: [{ detail: "Mixed", direction: "=" }],
-        Rates: [{ detail: "Neutral", direction: "=" }]
-      }
+      tldr: "General market conditions are the primary influence.",
+      keyDriver: "No specific drivers identified.",
+      pressureDirection: "Neutral pressure.",
+      marketImpact: "Mixed impact across sectors.",
+      whatThisMeans: "Monitor for new catalysts."
     };
 
     if (!segment) return baseDetails;
@@ -528,77 +522,30 @@ const StandardDrawerContent = ({ segment, delay }) => {
     switch (segment.name) {
       case 'Credit':
         return {
-          morning_takeaway: "Borrowing is getting more expensive and harder to access, especially for weaker borrowers.",
-          drivers: [
-            {icon: TrendingUp, text: "Lenders are getting more cautious after early signs of stress in riskier debt.", bold: "Lenders getting cautious", weight: "high"},
-            {icon: Building2, text: "Credit is tightening, making it tougher for companies and households to refinance or take on new loans.", bold: "Credit tightening", weight: "high"},
-            {icon: Users, text: "Moderate impact, with highly indebted companies and lower-quality borrowers feeling it first.", bold: "Impact on weaker borrowers", weight: "medium"}
-          ],
-          sentiment_rationale: [
-            "Tighter credit conditions can slow growth and increase default risk at the edges of the market.",
-            "Companies that rely heavily on cheap borrowing may face higher costs and less flexibility.",
-            "Early warning signs in high-yield markets often precede broader credit stress."
-          ],
-          outlook: {
-            line1: "Tighter credit conditions can slow growth and increase default risk at the edges of the market. Companies that rely heavily on cheap borrowing may face higher costs and less flexibility.",
-            line2: ""
-          },
-          impact_groups: {
-            Credit: [{ detail: "Spreads widen", direction: "-" }],
-            Equities: [{ detail: "Industrials", direction: "-" }],
-            FX: [{ detail: "USD", direction: "+" }],
-            Rates: [{ detail: "Treasuries", direction: "+" }]
-          }
+          tldr: "Borrowing is getting more expensive and harder to access, especially for weaker borrowers.",
+          keyDriver: "Lenders are getting more cautious after early signs of stress in riskier debt.",
+          pressureDirection: "Credit is tightening, making it tougher for companies and households to refinance or take on new loans.",
+          marketImpact: "Moderate impact, with highly indebted companies and lower-quality borrowers feeling it first.",
+          whatThisMeans: "Tighter credit conditions can slow growth and increase default risk at the edges of the market. Companies that rely heavily on cheap borrowing may face higher costs and less flexibility.",
+          status: "Moderate"
         };
       case 'Equities':
         return {
-          morning_takeaway: "Most stock gains are coming from a small group of big companies, not the whole market.",
-          drivers: [
-            {icon: TrendingDown, text: "Investors are crowding into large, well-known names while many smaller and mid-size stocks lag behind.", bold: "Crowding into large names", weight: "medium"},
-            {icon: BarChart3, text: "Support for the market is narrowing, making it more vulnerable if these leaders stumble.", bold: "Narrowing support", weight: "high"},
-            {icon: FileText, text: "Moderate impact, with the index looking strong on the surface but more fragile underneath.", bold: "Surface strength, fragile underneath", weight: "medium"}
-          ],
-          sentiment_rationale: [
-            "A narrow group of winners can keep the headline market up, but it also raises concentration risk.",
-            "If leadership cracks, the pullback can be sharper because fewer areas are holding the market up.",
-            "Headline resilience may be masking underlying fragility."
-          ],
-          outlook: {
-            line1: "A narrow group of winners can keep the headline market up, but it also raises concentration risk. If leadership cracks, the pullback can be sharper because fewer areas are holding the market up.",
-            line2: ""
-          },
-          impact_groups: {
-            Equities: [
-              { detail: "Growth", direction: "-" },
-              { detail: "Value", direction: "+" }
-            ],
-            Rates: [{ detail: "Neutral", direction: "=" }],
-            FX: [{ detail: "Mixed", direction: "=" }]
-          }
+          tldr: "Most stock gains are coming from a small group of big companies, not the whole market.",
+          keyDriver: "Investors are crowding into large, well-known names while many smaller and mid-size stocks lag behind.",
+          pressureDirection: "Support for the market is narrowing, making it more vulnerable if these leaders stumble.",
+          marketImpact: "Moderate impact, with the index looking strong on the surface but more fragile underneath.",
+          whatThisMeans: "A narrow group of winners can keep the headline market up, but it also raises concentration risk. If leadership cracks, the pullback can be sharper because fewer areas are holding the market up.",
+          status: "Moderate"
         };
       case 'Global':
         return {
-          morning_takeaway: "Slower growth in key regions, especially China, is starting to weigh on the global outlook.",
-          drivers: [
-            {icon: Factory, text: "Weaker demand from China and softer data in other major economies are cooling trade and production.", bold: "Weaker demand from China", weight: "high"},
-            {icon: Zap, text: "Growth momentum is cooling instead of accelerating.", bold: "Growth momentum cooling", weight: "medium"},
-            {icon: DollarSign, text: "Moderate impact, with export-driven and commodity-linked areas feeling the slowdown more.", bold: "Export-driven areas impacted", weight: "medium"}
-          ],
-          sentiment_rationale: [
-            "A cooling global economy can pressure earnings expectations and risk appetite.",
-            "If the slowdown deepens, markets may start to price in weaker profits and fewer growth opportunities.",
-            "Multinational earnings at risk from reduced global demand."
-          ],
-          outlook: {
-            line1: "A cooling global economy can pressure earnings expectations and risk appetite. If the slowdown deepens, markets may start to price in weaker profits and fewer growth opportunities.",
-            line2: ""
-          },
-          impact_groups: {
-            Equities: [{ detail: "EM", direction: "-" }],
-            Commodities: [{ detail: "Metals/Oil", direction: "-" }],
-            FX: [{ detail: "USD", direction: "+" }],
-            Rates: [{ detail: "Neutral", direction: "=" }]
-          }
+          tldr: "Slower growth in key regions, especially China, is starting to weigh on the global outlook.",
+          keyDriver: "Weaker demand from China and softer data in other major economies are cooling trade and production.",
+          pressureDirection: "Growth momentum is cooling instead of accelerating.",
+          marketImpact: "Moderate impact, with export-driven and commodity-linked areas feeling the slowdown more.",
+          whatThisMeans: "A cooling global economy can pressure earnings expectations and risk appetite. If the slowdown deepens, markets may start to price in weaker profits and fewer growth opportunities.",
+          status: "Softening"
         };
       default:
         return baseDetails;
@@ -609,242 +556,289 @@ const StandardDrawerContent = ({ segment, delay }) => {
   const details = getSegmentDetails(segment);
   const weight = (segment?.weight || 0) * 100;
 
-  const DriverItem = ({ item, delay }) => {
-    const weightConfig = {
-      high: { color: '#F26A6A', dot: 'bg-red-500', label: 'HIGH' },
-      medium: { color: '#FFB020', dot: 'bg-amber-500', label: 'MED' },
-      low: { color: '#2ECF8D', dot: 'bg-green-500', label: 'LOW' }
-    };
-    
-    const config = weightConfig[item.weight];
-    
-    return (
-      <motion.li 
-        className="flex items-start p-4 rounded-[16px] border relative" 
-        style={{
-          background: 'rgba(255,255,255,0.036)',
-          backdropFilter: 'blur(22px) saturate(140%)',
-          WebkitBackdropFilter: 'blur(22px) saturate(140%)',
-          borderColor: 'rgba(255,255,255,0.10)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 3px 10px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(255,255,255,0.04)'
-        }}
-        variants={{ hidden: { opacity: 0, x: -10 }, visible: { opacity: 1, x: 0 }}} 
-        transition={{ delay: 0.1 + delay * 0.06, duration: MOTION.DURATIONS.base }}
-        whileHover={{ 
-          y: -1,
-          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.11), 0 5px 14px rgba(0,0,0,0.10), 0 0 0 0.5px rgba(255,255,255,0.04)`,
-          transition: { duration: 0.15 }
-        }}
-      >
-        {delay > 0 && (
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: '12%',
-            right: '12%',
-            height: '1px',
-            background: 'rgba(255,255,255,0.045)',
-            pointerEvents: 'none'
-          }} />
-        )}
-
-        <div className="flex items-center gap-2.5 mr-4 mt-0.5 min-w-[46px]">
-          <motion.div 
-            className={`w-1.5 h-1.5 rounded-full ${config.dot}`}
-            initial={{ scale: 0 }}
-            animate={{ scale: [0, 1.25, 1] }}
-            transition={{ delay: 0.14 + delay * 0.06, duration: 0.13 }}
-          />
-          <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: config.color }}>
-            {config.label}
-          </span>
-        </div>
-        <item.icon className="w-4 h-4 mr-2.5 mt-0.5 flex-shrink-0" style={{ color: '#5EA7FF' }} strokeWidth={2.2} />
-        <span className="text-[14.5px]" style={{ color: 'rgba(255,255,255,0.90)', lineHeight: '1.58', paddingLeft: '4px' }}>
-          {item.text}
-        </span>
-      </motion.li>
-    );
-  };
-
   return (
     <motion.div
-      className="space-y-4"
-      variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.02, delayChildren: 0.08 } } }}
+      className="relative w-full"
+      style={{ 
+        minHeight: '85vh',
+        padding: '32px 48px 64px 48px'
+      }}
+      variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.02, delayChildren: 0.10 } } }}
       initial="hidden"
       animate="visible"
+      transition={{ duration: 0.12, ease: MOTION.CURVES.easeOutQuint }}
     >
       <div style={{
         position: 'absolute',
         zIndex: -1,
-        inset: 0,
-        background: 'linear-gradient(180deg, rgba(255,255,255,0.025) 0%, transparent 100%)',
+        top: 0,
+        left: 0,
+        right: 0,
+        width: '100%',
+        height: '490px',
+        background: 'radial-gradient(circle at 50% 20%, rgba(205, 230, 255, 0.06) 0%, rgba(0, 0, 0, 0) 70%)',
         pointerEvents: 'none'
       }} />
 
-      <div style={{ marginTop: '14px', marginBottom: '24px' }}>
-        <div 
-          className="inline-block px-3 py-1.5 rounded-lg text-[10px] font-semibold mb-4"
+      <div style={{
+        position: 'absolute',
+        zIndex: -1,
+        inset: 0,
+        background: 'linear-gradient(180deg, rgba(255,255,255,0.028) 0%, transparent 100%)',
+        pointerEvents: 'none'
+      }} />
+
+      <div style={{
+        position: 'absolute',
+        zIndex: -1,
+        inset: 0,
+        background: 'radial-gradient(ellipse at 50% 50%, transparent 0%, rgba(0,0,0,0.12) 100%)',
+        pointerEvents: 'none'
+      }} />
+
+      <motion.div
+        variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
+        transition={{ duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.easeOutQuint }}
+        style={{ marginBottom: '28px', paddingBottom: '4px' }}
+      >
+        <h1 
           style={{
-            background: 'rgba(255,255,255,0.07)',
-            border: '1px solid rgba(255,255,255,0.12)',
-            color: 'rgba(255,255,255,0.78)',
-            letterSpacing: '0.04em'
+            fontSize: '23px',
+            fontWeight: 600,
+            color: 'rgba(255,255,255,0.94)',
+            letterSpacing: '0.012em',
+            marginBottom: '8px'
           }}
         >
-          TL;DR
-        </div>
-      </div>
-
-      <p className="text-[14.5px] mb-6" style={{ color: 'rgba(255,255,255,0.90)', lineHeight: '1.55', maxWidth: '680px' }}>
-        <strong style={{ fontWeight: 600, color: 'rgba(255,255,255,0.98)' }}>
-          {details.morning_takeaway.split('.')[0]}.
-        </strong>
-        {details.morning_takeaway.substring(details.morning_takeaway.indexOf('.') + 1)}
-      </p>
-
-      <LuxurySection icon={Target} title="Key Drivers" iconColor={theme.color} delay={0.1}>
-        <ul className="space-y-2.5">
-          {details.drivers.map((driver, i) => (
-            <DriverItem key={i} item={driver} delay={i} />
-          ))}
-        </ul>
-      </LuxurySection>
-
-      <LuxurySection icon={Target} title="Impact Overview" iconColor="#C4B5FD" delay={0.2}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-7 rounded-[20px] relative" style={{ 
-          background: `linear-gradient(135deg, rgba(255,255,255,0.040) 0%, rgba(255,255,255,0.032) 100%)`,
-          backdropFilter: 'blur(28px)',
-          WebkitBackdropFilter: 'blur(28px)',
-          border: '1px solid rgba(255,255,255,0.10)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.09)'
-        }}>
-          <div className="hidden md:block absolute top-6 bottom-6 left-1/2 w-px" style={{ background: 'rgba(255,255,255,0.10)' }} />
-
-          {Object.entries(details.impact_groups).map(([group, items], i) => (
-            <AssetGroupImpact key={group} group={group} items={items} delay={i * 0.06} />
-          ))}
-        </div>
-      </LuxurySection>
-
-      <LuxurySection icon={Eye} title="Sentiment Rationale" iconColor="#FBCFE8" delay={0.3}>
-        <div className="p-7 rounded-[20px] space-y-4" style={{
-          background: 'rgba(255,255,255,0.038)',
-          backdropFilter: 'blur(28px)',
-          WebkitBackdropFilter: 'blur(28px)',
-          border: '1px solid rgba(255,255,255,0.10)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)'
-        }}>
-          {details.sentiment_rationale.map((point, i) => {
-            const words = point.split(' ');
-            const firstFourWords = words.slice(0, 4).join(' ');
-            const restOfText = words.slice(4).join(' ');
-
-            return (
-              <motion.div
-                key={i}
-                className="flex items-start"
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.38 + i * 0.07, duration: MOTION.DURATIONS.base }}
-              >
-                <div 
-                  className="w-1.5 h-1.5 rounded-full mr-3 mt-1.5 flex-shrink-0"
-                  style={{ background: theme.color, boxShadow: `0 0 8px ${theme.color}48` }}
-                />
-                <span 
-                  className="text-[14.5px] leading-relaxed"
-                  style={{ 
-                    color: 'rgba(255,255,255,0.90)',
-                    lineHeight: '1.58'
-                  }}
-                >
-                  <strong style={{ fontWeight: 600, color: 'rgba(255,255,255,0.98)' }}>
-                    {firstFourWords}
-                  </strong>
-                  {' '}{restOfText}
-                </span>
-              </motion.div>
-            );
-          })}
-        </div>
-      </LuxurySection>
-      
-      <LuxurySection icon={TrendingUp} title="Forward Outlook" iconColor="#A7F3D0" delay={0.4}>
-        <div 
-          className="inline-block px-3.5 py-1.5 rounded-lg text-[11px] font-semibold mb-3"
+          {segment.name} Analysis
+        </h1>
+        <p 
           style={{
-            background: 'rgba(255,255,255,0.06)',
-            border: '1px solid rgba(255,255,255,0.12)',
-            color: 'rgba(255,255,255,0.74)',
-            letterSpacing: '0.025em'
+            fontSize: '15.5px',
+            fontWeight: 400,
+            color: 'rgba(255,255,255,0.68)',
+            lineHeight: '1.52',
+            letterSpacing: '0.004em'
           }}
         >
-          Next 1–3 Months
-        </div>
+          Market Pressure Lens — What's Driving Street Alignment
+        </p>
+      </motion.div>
 
-        <div 
-          className="h-px mb-4"
+      {/* TL;DR Block */}
+      <motion.div
+        variants={{ hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } }}
+        transition={{ delay: 0.02, duration: 0.09, ease: MOTION.CURVES.silk }}
+        className="relative rounded-[26px] mb-12"
+        style={{
+          marginTop: '24px',
+          padding: '30px 32px',
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.042) 100%)',
+          backdropFilter: 'blur(24px) saturate(165%)',
+          WebkitBackdropFilter: 'blur(24px) saturate(165%)',
+          border: '1px solid rgba(255,255,255,0.16)',
+          boxShadow: `
+            inset 0 2px 3px rgba(255,255,255,0.14),
+            inset 0 0 28px ${theme.glowColor},
+            0 10px 32px rgba(0,0,0,0.18),
+            0 0 42px ${theme.glowColor}
+          `
+        }}
+      >
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '12%',
+          right: '12%',
+          height: '1.5px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent)',
+          filter: 'blur(1px)',
+          pointerEvents: 'none'
+        }} />
+
+        <motion.div 
           style={{
-            background: `linear-gradient(90deg, transparent, ${theme.color}42, transparent)`,
-            boxShadow: `0 0 14px ${theme.glowColor}`
+            position: 'absolute',
+            inset: 0,
+            background: `radial-gradient(ellipse at 50% 40%, ${theme.ambient} 0%, transparent 100%)`,
+            borderRadius: '26px',
+            pointerEvents: 'none',
+            opacity: 0.68
           }}
         />
-        
-        <div className="p-7 rounded-[20px] space-y-4" style={{
-          background: 'rgba(255,255,255,0.042)',
-          backdropFilter: 'blur(30px)',
-          WebkitBackdropFilter: 'blur(30px)',
-          border: '1px solid rgba(255,255,255,0.12)',
-          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.11), inset 0 0 26px ${theme.color}05, 0 4px 16px rgba(0,0,0,0.10)`
-        }}>
-          <p className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.90)', lineHeight: '1.55', maxWidth: '680px' }}>
-            {details.outlook.line1}
-          </p>
-          {details.outlook.line2 && (
-            <p className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.80)', lineHeight: '1.55', maxWidth: '680px' }}>
-              {details.outlook.line2}
-            </p>
-          )}
-        </div>
-      </LuxurySection>
 
-      <div style={{ marginTop: '24px' }}>
-        <div className="flex items-center gap-3.5 mb-2">
-          <div
-            className="px-3 py-1.5 rounded-lg text-[10px] font-semibold"
+        <div className="flex items-center justify-between gap-8 relative">
+          <div 
+            className="inline-block rounded-full flex-shrink-0"
             style={{
-              background: `${theme.color}09`,
-              border: `1px solid ${theme.color}18`,
-              color: theme.color,
-              boxShadow: `inset 0 1px 0 rgba(255,255,255,0.06)`
+              fontSize: '11px',
+              fontWeight: 600,
+              color: 'rgba(255,255,255,0.84)',
+              padding: '7px 14px',
+              background: 'rgba(255,255,255,0.12)',
+              border: '1px solid rgba(255,255,255,0.18)',
+              borderRadius: '24px',
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10)'
             }}
           >
-            {segment.name === 'Credit' ? 'Moderate' : segment.name === 'Equities' ? 'Moderate' : 'Softening'}
+            TL;DR
           </div>
-          <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.62)' }}>
-            Contribution: {Math.round(weight)}%
-          </span>
-        </div>
 
-        <div className="relative" style={{ marginTop: '8px', marginBottom: '6px' }}>
-          <div 
-            className="w-full h-[3px] rounded-full overflow-hidden" 
-            style={{ background: 'rgba(255,255,255,0.06)' }}
+          <p 
+            className="flex-1 text-center"
+            style={{
+              fontSize: '16px',
+              fontWeight: 600,
+              color: 'rgba(255,255,255,0.96)',
+              lineHeight: '1.48',
+              letterSpacing: '-0.004em'
+            }}
           >
-            <motion.div
-              className="h-full rounded-full"
-              style={{ 
-                background: `linear-gradient(90deg, ${theme.color}94, ${theme.color}f4)`,
-                boxShadow: `0 0 10px ${theme.color}30, inset 0 1px 0 rgba(255,255,255,0.10)`
+            {details.tldr}
+          </p>
+
+          <div className="flex items-center gap-4 flex-shrink-0">
+            <div
+              className="inline-block rounded-full"
+              style={{
+                fontSize: '12px',
+                fontWeight: 500,
+                color: theme.color,
+                background: `${theme.color}18`,
+                padding: '7px 15px',
+                borderRadius: '24px',
+                border: `1px solid ${theme.color}32`,
+                boxShadow: `0 0 16px ${theme.glowColor}, inset 0 1px 0 rgba(255,255,255,0.10)`,
+                filter: 'brightness(1.03)'
               }}
-              initial={{ width: '0%' }}
-              animate={{ width: `${weight}%` }}
-              transition={{ duration: 0.32, ease: MOTION.CURVES.silk }}
-            />
+            >
+              {details.status || 'Active'}
+            </div>
+
+            <div style={{ textAlign: 'right' }}>
+              <div 
+                style={{ 
+                  fontSize: '12px', 
+                  fontWeight: 500,
+                  color: 'rgba(255,255,255,0.76)',
+                  letterSpacing: '0.005em',
+                  filter: 'brightness(1.03)'
+                }}
+              >
+                {Math.round(weight)}%
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </motion.div>
+
+      {/* Insight Panels */}
+      <motion.div
+        variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
+        style={{ 
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '24px',
+          marginBottom: '40px'
+        }}
+      >
+        <InsightPanel 
+          icon={Target} 
+          title="Key Driver"
+          content={details.keyDriver}
+          delay={0.06}
+          iconColor={theme.color}
+          tintColor={theme.color}
+        />
+
+        <InsightPanel 
+          icon={Waves} 
+          title="Pressure Direction"
+          content={details.pressureDirection}
+          delay={0.12}
+          iconColor={theme.color}
+          tintColor={theme.color}
+        />
+
+        <InsightPanel 
+          icon={BarChart3} 
+          title="Market Impact Level"
+          content={details.marketImpact}
+          delay={0.18}
+          iconColor={theme.color}
+          tintColor={theme.color}
+        />
+      </motion.div>
+
+      {/* What This Means Block */}
+      <motion.div
+        variants={{ hidden: { opacity: 0, y: 4 }, visible: { opacity: 1, y: 0 } }}
+        transition={{ delay: 0.24, duration: 0.24, ease: MOTION.CURVES.silk }}
+        className="relative rounded-[30px] mx-auto"
+        style={{
+          maxWidth: '88%',
+          padding: '32px 36px',
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.069) 0%, rgba(255, 255, 255, 0.039) 100%)',
+          backdropFilter: 'blur(22px) saturate(158%)',
+          WebkitBackdropFilter: 'blur(22px) saturate(158%)',
+          border: '1px solid rgba(255,255,255,0.14)',
+          boxShadow: `
+            inset 0 2px 2px rgba(255,255,255,0.12),
+            inset 0 -2px 4px rgba(0,0,0,0.10),
+            inset 0 0 24px rgba(142, 187, 255, 0.06),
+            0 12px 36px rgba(0,0,0,0.16),
+            0 0 45px rgba(142, 187, 255, 0.08)
+          `
+        }}
+      >
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '15%',
+          right: '15%',
+          height: '1.5px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.24), transparent)',
+          filter: 'blur(1.2px)',
+          pointerEvents: 'none'
+        }} />
+
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '320px',
+          height: '180px',
+          background: 'radial-gradient(ellipse, rgba(142, 187, 255, 0.08) 0%, transparent 68%)',
+          filter: 'blur(48px)',
+          pointerEvents: 'none'
+        }} />
+
+        <div className="relative text-center">
+          <h3 
+            className="text-[14px] font-medium mb-4 uppercase" 
+            style={{ 
+              color: 'rgba(255,255,255,0.68)',
+              letterSpacing: '0.09em'
+            }}
+          >
+            What This Means
+          </h3>
+          
+          <p 
+            className="text-[15px]" 
+            style={{ 
+              color: 'rgba(255,255,255,0.92)',
+              lineHeight: '1.52',
+              letterSpacing: '-0.003em',
+              maxWidth: '620px',
+              margin: '0 auto'
+            }}
+          >
+            {details.whatThisMeans}
+          </p>
+        </div>
+      </motion.div>
     </motion.div>
   );
 };
