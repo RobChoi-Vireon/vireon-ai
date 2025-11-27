@@ -443,7 +443,7 @@ export default function EquilibriumBalanceModule({
                   color: 'rgba(255,255,255,0.65)',
                   marginBottom: '14px'
                 }}>
-                  What's Affecting Markets
+                  Force Contributions
                 </h5>
                 
                 <div className="grid grid-cols-2 gap-3">
