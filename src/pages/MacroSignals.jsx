@@ -133,7 +133,7 @@ const MOCK_DATA = {
     {
       type: "Markets", 
       icon: "DollarSign",
-      headline: "Business deals are slowing down",
+      headline: "Businesses are slowing down.",
       insight: "Companies are finding it harder to raise money through new bond sales. Borrowing costs are rising, especially for riskier companies and those in emerging markets. Banks are becoming more cautious about who they lend to. This makes it difficult for industrial companies to refinance their debt, particularly those with significant business outside the U.S. We expect merger and acquisition activity to slow significantly in the first quarter as financing becomes more expensive and harder to obtain.",
       exhibits: [
         { title: "High-Risk Borrowing Cost Analysis", type: "Chart" },
@@ -152,7 +152,7 @@ const MOCK_DATA = {
     {
       type: "Policy",
       icon: "Scale",
-      headline: "Government is increasing oversight of large tech companies",
+      headline: "The government is cracking down on big tech.",
       insight: "Both political parties are pushing for stricter rules on content moderation and user privacy. New AI regulations from Washington signal a fundamental shift in how tech giants will operate, with compliance costs expected to increase by 40-60% across major platforms. This represents a significant challenge for large tech stocks in the near term, as companies redirect money from growth projects to meeting new regulatory requirements.",
       exhibits: [
         { title: "Congressional Hearing Schedule Q1 2025", type: "Document" },
@@ -171,7 +171,7 @@ const MOCK_DATA = {
     {
       type: "Global",
       icon: "Globe", 
-      headline: "China's economy is slowing down",
+      headline: "China's economy is slowing.",
       insight: "Chinese exports are returning to normal levels after pandemic disruptions. Consumer confidence remains low despite government efforts to boost spending. Infrastructure projects are providing some support but not enough to offset weak consumer spending and declining export demand. This slowdown has significant implications for global commodity prices and international companies that rely heavily on Chinese customers.",
       exhibits: [
         { title: "China Export Trends vs. Global Demand", type: "Chart" },
