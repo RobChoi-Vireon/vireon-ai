@@ -400,9 +400,9 @@ export default function Watchlist() {
         { date: '2024-02-12', close: 148, open: 146, high: 150, low: 145 },
       ],
       headlines: { 
-        marketMoving: 'Google's Gemini AI model updates show strong performance compared to competitors.', 
+        marketMoving: 'Google\'s Gemini AI model updates show strong performance compared to competitors.', 
         catalyst: 'I/O Developer Conference - May 10th', 
-        riskNote: 'AI chatbots could threaten Google's main search business.', 
+        riskNote: 'AI chatbots could threaten Google\'s main search business.', 
         source: 'WSJ', 
         timestamp: new Date(Date.now() - 21600000).toISOString(), 
         sentiment: 'Neutral' 
