@@ -213,21 +213,31 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         pointerEvents: 'none'
       }} />
 
-      {/* Rounded Header Background */}
+      {/* Rounded Header Background - Depth matched to TL;DR */}
       <motion.div
         variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
         transition={{ duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.easeOutQuint }}
         className="relative rounded-[26px]"
         style={{ 
-          marginBottom: '32px',
+          marginBottom: '24px',
           padding: '24px 28px',
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.038) 0%, rgba(255, 255, 255, 0.022) 100%)',
-          backdropFilter: GLASS_TOKENS.cardBlur,
-          WebkitBackdropFilter: GLASS_TOKENS.cardBlur,
-          border: `1px solid rgba(255,255,255,0.08)`
+          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.026) 100%)',
+          backdropFilter: 'blur(27px) saturate(168%)',
+          WebkitBackdropFilter: 'blur(27px) saturate(168%)',
+          border: `1px solid rgba(255,255,255,0.10)`,
+          boxShadow: `inset 0 1px 2px rgba(${theme.color === '#70A8E8' ? '112, 168, 232' : theme.color === '#B88AED' ? '184, 138, 237' : theme.color === '#32C288' ? '50, 194, 136' : '237, 184, 89'}, 0.02), inset 0 0 12px rgba(255,255,255,0.015)`
         }}
       >
+        {/* Top-to-bottom micro-gradient for subsurface lighting */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.018) 0%, rgba(0,0,0,0.008) 100%)',
+          borderRadius: '26px',
+          pointerEvents: 'none'
+        }} />
         <h1 
+          className="relative"
           style={{
             fontSize: '25px',
             fontWeight: 600,
@@ -239,6 +249,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           Policy Analysis
         </h1>
         <p 
+          className="relative"
           style={{
             fontSize: '15px',
             fontWeight: 400,
@@ -251,14 +262,14 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         </p>
       </motion.div>
 
-      {/* TL;DR Band - Reduced glow, tighter padding */}
+      {/* TL;DR Band */}
       <motion.div
         variants={{ hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } }}
         transition={{ delay: 0.02, duration: 0.09, ease: MOTION.CURVES.silk }}
         className="relative rounded-[26px]"
         style={{
           marginTop: '0px',
-          marginBottom: '48px',
+          marginBottom: '20px',
           padding: '24px 28px',
           background: GLASS_TOKENS.cardBg,
           backdropFilter: GLASS_TOKENS.cardBlur,
@@ -386,8 +397,8 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         style={{ 
           display: 'flex',
           flexDirection: 'column',
-          gap: '24px',
-          marginBottom: '56px'
+          gap: '20px',
+          marginBottom: '24px'
         }}
       >
         <InsightPanel 
@@ -421,7 +432,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         />
       </motion.div>
 
-      {/* What This Means - Lightened container, reduced glow */}
+      {/* What This Means */}
       <motion.div
         variants={{ hidden: { opacity: 0, y: 4 }, visible: { opacity: 1, y: 0 } }}
         transition={{ delay: 0.24, duration: 0.24, ease: MOTION.CURVES.silk }}
@@ -429,7 +440,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         style={{
           maxWidth: '88%',
           padding: '28px 32px',
-          marginBottom: '48px',
+          marginBottom: '24px',
           background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.035) 100%)',
           backdropFilter: GLASS_TOKENS.cardBlur,
           WebkitBackdropFilter: GLASS_TOKENS.cardBlur,
@@ -678,21 +689,31 @@ const StandardDrawerContent = ({ segment, delay }) => {
         pointerEvents: 'none'
       }} />
 
-      {/* Rounded Header Background */}
+      {/* Rounded Header Background - Depth matched to TL;DR */}
       <motion.div
         variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
         transition={{ duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.easeOutQuint }}
         className="relative rounded-[26px]"
         style={{ 
-          marginBottom: '32px',
+          marginBottom: '24px',
           padding: '24px 28px',
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.038) 0%, rgba(255, 255, 255, 0.022) 100%)',
-          backdropFilter: GLASS_TOKENS.cardBlur,
-          WebkitBackdropFilter: GLASS_TOKENS.cardBlur,
-          border: `1px solid rgba(255,255,255,0.08)`
+          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.026) 100%)',
+          backdropFilter: 'blur(27px) saturate(168%)',
+          WebkitBackdropFilter: 'blur(27px) saturate(168%)',
+          border: `1px solid rgba(255,255,255,0.10)`,
+          boxShadow: `inset 0 1px 2px rgba(${theme.color === '#70A8E8' ? '112, 168, 232' : theme.color === '#B88AED' ? '184, 138, 237' : theme.color === '#32C288' ? '50, 194, 136' : '237, 184, 89'}, 0.02), inset 0 0 12px rgba(255,255,255,0.015)`
         }}
       >
+        {/* Top-to-bottom micro-gradient for subsurface lighting */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.018) 0%, rgba(0,0,0,0.008) 100%)',
+          borderRadius: '26px',
+          pointerEvents: 'none'
+        }} />
         <h1 
+          className="relative"
           style={{
             fontSize: '25px',
             fontWeight: 600,
@@ -704,6 +725,7 @@ const StandardDrawerContent = ({ segment, delay }) => {
           {segment.name} Analysis
         </h1>
         <p 
+          className="relative"
           style={{
             fontSize: '15px',
             fontWeight: 400,
@@ -716,14 +738,14 @@ const StandardDrawerContent = ({ segment, delay }) => {
         </p>
       </motion.div>
 
-      {/* TL;DR Band - Reduced glow, tighter padding */}
+      {/* TL;DR Band */}
       <motion.div
         variants={{ hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } }}
         transition={{ delay: 0.02, duration: 0.09, ease: MOTION.CURVES.silk }}
         className="relative rounded-[26px]"
         style={{
           marginTop: '0px',
-          marginBottom: '48px',
+          marginBottom: '20px',
           padding: '24px 28px',
           background: GLASS_TOKENS.cardBg,
           backdropFilter: GLASS_TOKENS.cardBlur,
@@ -845,8 +867,8 @@ const StandardDrawerContent = ({ segment, delay }) => {
         style={{ 
           display: 'flex',
           flexDirection: 'column',
-          gap: '24px',
-          marginBottom: '56px'
+          gap: '20px',
+          marginBottom: '24px'
         }}
       >
         <InsightPanel 
@@ -880,7 +902,7 @@ const StandardDrawerContent = ({ segment, delay }) => {
         />
       </motion.div>
 
-      {/* What This Means - Lightened container, reduced glow */}
+      {/* What This Means */}
       <motion.div
         variants={{ hidden: { opacity: 0, y: 4 }, visible: { opacity: 1, y: 0 } }}
         transition={{ delay: 0.24, duration: 0.24, ease: MOTION.CURVES.silk }}
@@ -888,7 +910,7 @@ const StandardDrawerContent = ({ segment, delay }) => {
         style={{
           maxWidth: '88%',
           padding: '28px 32px',
-          marginBottom: '48px',
+          marginBottom: '24px',
           background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.035) 100%)',
           backdropFilter: GLASS_TOKENS.cardBlur,
           WebkitBackdropFilter: GLASS_TOKENS.cardBlur,
