@@ -633,9 +633,10 @@ const StandardDrawerContent = ({ segment, delay }) => {
       <motion.div
         variants={{ hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } }}
         transition={{ delay: 0.02, duration: 0.09, ease: MOTION.CURVES.silk }}
-        className="relative rounded-[26px] mb-12"
+        className="relative rounded-[26px]"
         style={{
           marginTop: '24px',
+          marginBottom: '48px',
           padding: '30px 32px',
           background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.042) 100%)',
           backdropFilter: 'blur(24px) saturate(165%)',
@@ -750,7 +751,7 @@ const StandardDrawerContent = ({ segment, delay }) => {
           display: 'flex',
           flexDirection: 'column',
           gap: '24px',
-          marginBottom: '40px'
+          marginBottom: '48px'
         }}
       >
         <InsightPanel 
