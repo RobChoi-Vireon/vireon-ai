@@ -15,38 +15,38 @@ const mockOutlookData = {
       type: 'Bull', 
       probability: 25, 
       trending: 'up',
-      drivers: ['CPI miss accelerates Fed pivot speculation.', 'Tech earnings surprise to the upside.', 'Geopolitical tensions in key regions de-escalate.'], 
+      drivers: ['Inflation comes in lower than expected, raising hopes for rate cuts.', 'Tech companies report better profits than predicted.', 'International tensions ease in key areas.'], 
       confidence: 'Medium', 
-      historicalContext: "Similar setup in Q4 2018 preceded a 6% rally in equities.",
+      historicalContext: "This looked similar in late 2018, which led to a 6% stock rally.",
       linkedModules: ['Macro Signals', 'Sector Heatmap']
     },
     { 
       type: 'Base', 
       probability: 55, 
       trending: 'stable',
-      drivers: ['Fed maintains hawkish pause, data dependent.', 'Mixed earnings season with slowing growth.', 'Orderly slowdown in consumer spending.'], 
+      drivers: ['The Federal Reserve keeps rates steady, waiting for more data.', 'Company earnings are mixed with some signs of slowing.', 'Consumers are spending less gradually.'], 
       confidence: 'High', 
-      historicalContext: "Reflects typical late-cycle dynamics with controlled volatility.",
+      historicalContext: "This is typical for the late stage of an economic cycle.",
       linkedModules: ['Macro Signals', 'Watchlist']
     },
     { 
       type: 'Bear', 
       probability: 20, 
       trending: 'down',
-      drivers: ['Sticky inflation forces another rate hike.', 'Credit event surfaces in commercial real estate.', 'Major supply chain disruption in Asia.'], 
+      drivers: ['Inflation stays high, forcing the Fed to raise rates again.', 'Problems emerge in commercial real estate lending.', 'A major disruption hits Asian supply chains.'], 
       confidence: 'Medium', 
-      historicalContext: "Risk of a repeat of the 2022 inflationary shock remains, though contained.",
+      historicalContext: "There's a risk we could see another inflation shock like 2022, but it seems contained for now.",
       linkedModules: ['Macro Signals', 'Event Tracker']
     },
   ],
-  personalCallout: "This week's inflation data and MSFT earnings report will have an outsized impact on your tracked NVDA and AAPL positions.",
+  personalCallout: "This week's inflation numbers and Microsoft earnings will likely affect your NVIDIA and Apple holdings.",
 };
 
 const mockDivergenceData = [
   {
-    title: "Weakening Dollar vs. Lagging EM Equities",
-    description: "The DXY has fallen 1.5% this week, which typically fuels a rally in Emerging Markets. However, the EEM ETF is flat, suggesting underlying weakness or risk aversion in EM that contradicts the FX signal.",
-    whyItMatters: "Potential trap for longs in EM; suggests risk-off sentiment is more pervasive than FX markets indicate.",
+    title: "Dollar Falling But Emerging Markets Not Rising",
+    description: "The US dollar fell 1.5% this week. Usually when the dollar falls, emerging market stocks go up. But they're staying flat, which suggests investors are still worried about risk.",
+    whyItMatters: "This could be a trap for investors betting on emerging markets—it shows people are more nervous than the dollar move suggests.",
     sources: ["Macro Signals", "Watchlist"],
     sourceModules: ["MacroSignals", "Watchlist"],
     assetClass: 'Equities',
@@ -54,9 +54,9 @@ const mockDivergenceData = [
     intensity: 'high'
   },
   {
-    title: "Energy Sector Rotation vs. Yield Curve",
-    description: "XLE is showing strong inflows, indicating a cyclical rotation. This move usually coincides with a steepening yield curve, but the 2s10s spread remains deeply inverted.",
-    whyItMatters: "Conflict between equity and bond markets. One is pricing growth, the other recession. High probability of volatility.",
+    title: "Energy Stocks Rising But Bonds Signal Trouble",
+    description: "Energy stocks are getting lots of investor money, which usually happens when the economy is growing. But bond markets are still signaling that a recession might be coming.",
+    whyItMatters: "Stocks and bonds are telling opposite stories. One thinks the economy will grow, the other thinks it will shrink. This conflict often leads to big market swings.",
     sources: ["Sector Heatmap", "Macro Signals"],
     sourceModules: ["SectorHeatmap", "MacroSignals"],
     assetClass: 'Rates',
@@ -69,7 +69,7 @@ const mockPersonalizedData = [
   {
     ticker: "NVDA",
     logoUrl: "https://logo.clearbit.com/nvidia.com",
-    insight: "Upcoming earnings imply an 8.5% move. The current macro stance makes tech highly sensitive to any guidance revisions, amplifying risk.",
+    insight: "NVIDIA's earnings report could move the stock 8.5%. Right now, tech stocks are extra sensitive to any changes in company forecasts, which increases your risk.",
     exposure: "High",
     exposureChange: "increased",
     impliedVol: 85.2,
@@ -82,7 +82,7 @@ const mockPersonalizedData = [
   {
     ticker: "JPM",
     logoUrl: "https://logo.clearbit.com/jpmorgan.com",
-    insight: "Your watchlist is overweight Financials. Recent regional bank commentary suggests potential for better-than-expected net interest margins, a positive catalyst for JPM.",
+    insight: "You own a lot of bank stocks. Smaller banks are saying they're earning more from interest, which could be good news for JPMorgan.",
     exposure: "Medium",
     exposureChange: "stable",
     impliedVol: 32.1,
@@ -97,56 +97,56 @@ const mockPersonalizedData = [
 const mockRiskMapData = {
   "1-2 Weeks": { 
     risks: [
-      { text: 'CPI print hotter than expected', intensity: 0.8, icon: Flame },
-      { text: 'Geopolitical flare-up', intensity: 0.6, icon: Zap }
+      { text: 'Inflation comes in higher than expected', intensity: 0.8, icon: Flame },
+      { text: 'International tensions flare up', intensity: 0.6, icon: Zap }
     ], 
     opportunities: [
-      { text: 'Tech earnings beat lowered expectations', intensity: 0.7, icon: Rocket },
-      { text: 'Dovish Fed surprise', intensity: 0.5, icon: ArrowUp }
+      { text: 'Tech earnings surprise on the upside', intensity: 0.7, icon: Rocket },
+      { text: 'Fed hints at possible rate cuts', intensity: 0.5, icon: ArrowUp }
     ] 
   },
   "1-3 Months": { 
     risks: [
-      { text: 'Credit cycle tightening', intensity: 0.9, icon: Flame },
-      { text: 'Slowing consumer spending', intensity: 0.7, icon: TrendingDown }
+      { text: 'Borrowing conditions get much tighter', intensity: 0.9, icon: Flame },
+      { text: 'Shoppers spending less', intensity: 0.7, icon: TrendingDown }
     ], 
     opportunities: [
-      { text: 'Potential Fed pivot brings forward rate cuts', intensity: 0.8, icon: Rocket },
-      { text: 'Disinflationary trend accelerates', intensity: 0.6, icon: BarChart3 }
+      { text: 'Fed changes course and starts cutting rates', intensity: 0.8, icon: Rocket },
+      { text: 'Prices stop rising as fast', intensity: 0.6, icon: BarChart3 }
     ] 
   },
   "6+ Months": { 
     risks: [
-      { text: 'Deglobalization affecting supply chains', intensity: 0.6, icon: Activity },
-      { text: 'Structural inflation', intensity: 0.7, icon: ArrowUp }
+      { text: 'Countries trading less with each other hurts supply chains', intensity: 0.6, icon: Activity },
+      { text: 'Inflation becomes permanent', intensity: 0.7, icon: ArrowUp }
     ], 
     opportunities: [
-      { text: 'AI-driven productivity boom fully materializes', intensity: 0.9, icon: Brain },
-      { text: 'Energy transition investments', intensity: 0.8, icon: Zap }
+      { text: 'AI makes workers much more productive', intensity: 0.9, icon: Brain },
+      { text: 'Clean energy investments pay off', intensity: 0.8, icon: Zap }
     ] 
   }
 };
 
 const mockStrategistNotes = {
   hedging: { 
-    title: "Hedging", 
+    title: "Protection Strategy", 
     icon: Shield,
-    content: "Consider short-dated VIX calls into CPI as a portfolio hedge against a hotter-than-expected print.",
-    reasoning: "Historical volatility spikes during surprise inflation prints average 15-20%. Current VIX at 18.5 offers asymmetric upside protection.",
-    linkedSignals: ["Macro Signals: CPI Expectations", "Options Flow: VIX Call Volume"]
+    content: "Consider buying short-term volatility protection before the inflation report in case it comes in higher than expected.",
+    reasoning: "When inflation surprises people, market swings usually increase by 15-20%. Right now, volatility is at 18.5, which offers good protection value.",
+    linkedSignals: ["Macro Signals: Inflation Expectations", "Options Activity: Volatility Demand"]
   },
   catalysts: { 
-    title: "Catalysts to Watch", 
+    title: "Key Events to Watch", 
     icon: Calendar,
-    content: "Monitor Powell's speech on Thursday; market is pricing in a 70% chance of a hawkish tone, leaving room for a dovish surprise.",
-    reasoning: "Fed Watch tool shows 70% hawkish probability vs 30% neutral/dovish. Any dovish lean could trigger 1-2% equity rally given current positioning.",
+    content: "Watch Powell's speech on Thursday. Markets expect him to sound tough on inflation, but he might surprise by sounding more dovish.",
+    reasoning: "Markets are betting 70% he'll sound tough, 30% he'll sound neutral or friendly. If he sounds friendlier, stocks could jump 1-2%.",
     linkedSignals: ["Event Calendar: Fed Speakers", "Macro Signals: Fed Policy Tracker"]
   },
   positioning: { 
-    title: "Tactical View", 
+    title: "Where to Invest", 
     icon: Compass,
-    content: "Remain neutral on broad indexes, but look for relative value in Healthcare (XLV) vs. Discretionary (XLY) on signs of economic slowing.",
-    reasoning: "Healthcare typically outperforms during economic uncertainty. Current XLV/XLY ratio at 0.85, near historical support.",
+    content: "Stay neutral on the overall market, but consider healthcare stocks over retail stocks if the economy shows more signs of slowing.",
+    reasoning: "Healthcare tends to do better when the economy is uncertain. Healthcare vs retail stocks are near a historically good buying point.",
     linkedSignals: ["Sector Heatmap: Rotation Signals", "Watchlist: Sector Allocation"]
   }
 };
@@ -236,7 +236,7 @@ export default function InsightsPage() {
                     AI Strategist
                   </h1>
                   <p className="text-sm md:text-base lg:text-lg text-gray-400 mt-2 mb-3 md:mb-4">
-                    Interpreting signals, forecasting scenarios, personalizing insights
+                    Reading the signals, predicting what might happen, personalized for you
                   </p>
                   
                   {/* Refined "Powered by Lyra" Badge */}
@@ -339,7 +339,7 @@ export default function InsightsPage() {
               <Target className="w-4 md:w-5 h-4 md:h-5 text-blue-400" />
             </div>
             <p className="text-xs md:text-sm font-medium text-blue-100">
-              <strong className="font-semibold text-white">Personal Impact:</strong> {mockOutlookData.personalCallout}
+              <strong className="font-semibold text-white">What This Means For You:</strong> {mockOutlookData.personalCallout}
             </p>
           </motion.div>
 

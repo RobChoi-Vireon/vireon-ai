@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useFeatureFlags } from '../components/core/FeatureFlags';
 import { useMiniSheet } from '../components/core/MiniSheetProvider';
@@ -184,7 +183,7 @@ const LuxuryWatchlistCard = ({ item, index, theme, onHeadlinesClick, onChartClic
                 ))}
               </div>
               <p className="text-xs font-medium text-gray-400">
-                Heat: {performanceIntensity.toFixed(1)}%
+                Move: {performanceIntensity.toFixed(1)}%
               </p>
             </div>
           </div>
@@ -301,9 +300,9 @@ export default function Watchlist() {
         { date: '2024-02-12', close: 198, open: 195, high: 200, low: 194 },
       ],
       headlines: { 
-        marketMoving: 'Reports suggest new Vision Pro 2 supplier secured, potentially accelerating production timeline.', 
+        marketMoving: 'Reports say Apple secured a new supplier for Vision Pro 2, which could speed up production.', 
         catalyst: 'WWDC Keynote - June 5th', 
-        riskNote: 'Regulatory scrutiny in EU over App Store policies remains a key overhang.', 
+        riskNote: 'European regulators are still investigating App Store practices.', 
         source: 'Bloomberg', 
         timestamp: new Date(Date.now() - 3600000).toISOString(), 
         sentiment: 'Bullish' 
@@ -326,9 +325,9 @@ export default function Watchlist() {
         { date: '2024-02-12', close: 393, open: 390, high: 395, low: 389 },
       ],
       headlines: { 
-        marketMoving: 'Microsoft announces major new partnership with London Stock Exchange Group for AI data solutions.', 
+        marketMoving: 'Microsoft announces major partnership with London Stock Exchange for AI data services.', 
         catalyst: 'Ignite Conference - Nov 15th', 
-        riskNote: 'Antitrust concerns around Activision acquisition could create headwinds.', 
+        riskNote: 'Regulators are still reviewing the Activision deal, which could create problems.', 
         source: 'Reuters', 
         timestamp: new Date(Date.now() - 7200000).toISOString(), 
         sentiment: 'Bullish' 
@@ -351,9 +350,9 @@ export default function Watchlist() {
         { date: '2024-02-12', close: 950, open: 920, high: 960, low: 915 },
       ],
       headlines: { 
-        marketMoving: 'Company signals strong demand for new H200 AI chip, exceeding initial production targets.', 
+        marketMoving: 'NVIDIA says demand for its new H200 AI chip is stronger than expected, beating production goals.', 
         catalyst: 'GTC AI Conference - Mar 18th', 
-        riskNote: 'Potential for increased competition from in-house chip designs at major cloud providers.', 
+        riskNote: 'Big cloud companies are starting to make their own chips, which could hurt NVIDIA.', 
         source: 'The Verge', 
         timestamp: new Date(Date.now() - 900000).toISOString(), 
         sentiment: 'Bullish' 
@@ -376,9 +375,9 @@ export default function Watchlist() {
         { date: '2024-02-12', close: 230, open: 235, high: 232, low: 228 },
       ],
       headlines: { 
-        marketMoving: 'Further price cuts announced in China to combat increasing local competition.', 
+        marketMoving: 'Tesla cuts prices again in China to compete with local car makers.', 
         catalyst: 'Q4 Earnings Call - Jan 24th', 
-        riskNote: 'Margin compression is a primary investor concern amid the ongoing price war.', 
+        riskNote: 'Investors are worried profits are shrinking due to the price war.', 
         source: 'CNBC', 
         timestamp: new Date(Date.now() - 14400000).toISOString(), 
         sentiment: 'Bearish' 
@@ -401,9 +400,9 @@ export default function Watchlist() {
         { date: '2024-02-12', close: 148, open: 146, high: 150, low: 145 },
       ],
       headlines: { 
-        marketMoving: 'Gemini AI model updates show promising performance benchmarks against competitors.', 
+        marketMoving: 'Google's Gemini AI model updates show strong performance compared to competitors.', 
         catalyst: 'I/O Developer Conference - May 10th', 
-        riskNote: 'Core search business faces potential disruption from generative AI models.', 
+        riskNote: 'AI chatbots could threaten Google's main search business.', 
         source: 'WSJ', 
         timestamp: new Date(Date.now() - 21600000).toISOString(), 
         sentiment: 'Neutral' 
@@ -426,9 +425,9 @@ export default function Watchlist() {
         { date: '2024-02-12', close: 173, open: 175, high: 175, low: 171 },
       ],
       headlines: { 
-        marketMoving: 'AWS announces new generative AI services for enterprise clients, expanding its cloud lead.', 
+        marketMoving: 'Amazon Web Services launches new AI tools for business customers, strengthening its cloud leadership.', 
         catalyst: 'Prime Day Dates Announcement', 
-        riskNote: 'Increased regulatory pressure on e-commerce practices in Europe.', 
+        riskNote: 'European regulators are pushing for stricter rules on online shopping.', 
         source: 'TechCrunch', 
         timestamp: new Date(Date.now() - 86400000).toISOString(), 
         sentiment: 'Neutral' 
@@ -527,8 +526,8 @@ export default function Watchlist() {
                 <div>
                   <p className="font-semibold text-white">Comparison Mode</p>
                   <p className="text-sm text-gray-300">
-                    {selectedForComparison.length === 0 && 'Click a card\'s chart icon to select.'}
-                    {selectedForComparison.length === 1 && `Selected ${selectedForComparison[0].symbol}. Select one more.`}
+                    {selectedForComparison.length === 0 && 'Click the chart icon on any card to select it.'}
+                    {selectedForComparison.length === 1 && `You picked ${selectedForComparison[0].symbol}. Pick one more.`}
                     {selectedForComparison.length === 2 && `Comparing ${selectedForComparison.map(s => s.symbol).join(' vs ')}`}
                   </p>
                 </div>

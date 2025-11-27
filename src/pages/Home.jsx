@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useFeatureFlags } from '../components/core/FeatureFlags';
 import { useMiniSheet } from '../components/core/MiniSheetProvider';
@@ -398,10 +397,10 @@ export default function Home() {
   const [isAssetDrawerOpen, setIsAssetDrawerOpen] = useState(false);
   const [pulseData, setPulseData] = useState({
     score: 72,
-    trend: 'Moderate Bullish',
-    insight: 'Markets show resilience with tech leading broad-based gains across sectors.',
+    trend: 'Somewhat Optimistic',
+    insight: 'Markets are holding steady with tech stocks leading the way.',
     previousScore: 68,
-    sectorBreakdown: 'Tech +3.4%, Financials +2.1%, Energy flat, Healthcare +1.2%',
+    sectorBreakdown: 'Tech +3.4%, Banks +2.1%, Energy flat, Healthcare +1.2%',
     sparklineData: [65, 68, 70, 69, 71, 68, 72] // 7-day historical data
   });
   const [selectedSector, setSelectedSector] = useState(null);
@@ -430,7 +429,7 @@ export default function Home() {
 
   const getTrendIndicator = useCallback(() => {
     const diff = pulseData.score - pulseData.previousScore;
-    if (Math.abs(diff) < 1) return { symbol: '→', color: 'text-gray-400', label: 'Stable', sign: '' };
+    if (Math.abs(diff) < 1) return { symbol: '→', color: 'text-gray-400', label: 'Steady', sign: '' };
     if (diff > 0) return { symbol: '▲', color: 'text-green-400', label: `+${diff.toFixed(1)}`, sign: '+' };
     return { symbol: '▼', color: 'text-red-400', label: diff.toFixed(1), sign: '' };
   }, [pulseData.score, pulseData.previousScore]);

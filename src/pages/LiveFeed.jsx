@@ -67,7 +67,7 @@ export default function LiveFeed() {
       } catch (err) {
         console.error(`Error loading articles (attempt ${attempt}):`, err);
         if (attempt === retries) {
-          setError("Could not connect to the news service. Please check your connection and try again.");
+          setError("Can't load news right now. Check your internet connection and try again.");
         }
         await new Promise(res => setTimeout(res, 1000 * attempt));
       }
@@ -222,7 +222,7 @@ export default function LiveFeed() {
                   </div>
                   <div className="h-4 w-px bg-white/20" />
                   <span className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-                    {filteredArticles.length} articles • Updated {lastUpdated.toLocaleTimeString()}
+                    {filteredArticles.length} stories • Last updated {lastUpdated.toLocaleTimeString()}
                   </span>
                 </div>
               </div>
@@ -350,10 +350,10 @@ export default function LiveFeed() {
                         <TrendingUp className={`w-10 h-10 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
                       </div>
                       <h3 className={`text-2xl font-bold mb-3 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-                        No articles match your filters
+                        No stories match your filters
                       </h3>
                       <p className={`text-base ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}>
-                        Try adjusting your search criteria or refresh the feed
+                        Try changing your filters or refresh the page
                       </p>
                     </motion.div>
                   )}
