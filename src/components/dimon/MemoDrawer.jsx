@@ -440,20 +440,20 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
           headline_summary: "Industrial activity is slowing as borrowing costs rise and banks get stricter.",
           morning_takeaway: "A wave of upcoming debt repayments is raising costs for companies and putting pressure on riskier stocks.",
           translation: "Borrowing is getting harder and more expensive, so investors are becoming more cautious.",
-          ripple_impact: "Watch high-beta equities and industrial spreads for further downside pressure.",
+          ripple_impact: "Keep an eye on riskier stocks and industrial company borrowing costs for more signs of stress.",
           context_points: [
-            { icon: 'TrendingDown', text: "Spreads widen (HY/EM +18–35 bps WoW)", color: "text-red-300" },
-            { icon: 'Landmark', text: "Banks tighten underwriting criteria", color: "text-amber-300" },
-            { icon: 'Globe', text: "EM credit stress emerges globally", color: "text-orange-300" }
+            { icon: 'TrendingDown', text: "Borrowing costs rose significantly this week", color: "text-red-300" },
+            { icon: 'Landmark', text: "Banks are being pickier about who they lend to", color: "text-amber-300" },
+            { icon: 'Globe', text: "Companies in developing countries are struggling to borrow", color: "text-orange-300" }
           ],
           market_impact: {
-            short_term: { text: "Monitor volatility and refinancing windows", severity: 0.8, confidence: 0.75 },
-            medium_term: { text: "Potential for trend establishment in credit markets", severity: 0.55, confidence: 0.65 },
-            long_term: { text: "Dependent on follow-through and macro conditions", severity: 0.30, confidence: 0.45 }
+            short_term: { text: "Watch for market swings and companies struggling to get new loans", severity: 0.8, confidence: 0.75 },
+            medium_term: { text: "Borrowing conditions may worsen if this trend continues", severity: 0.55, confidence: 0.65 },
+            long_term: { text: "Long-term impact depends on how the broader economy performs", severity: 0.30, confidence: 0.45 }
           },
           risk_opportunity: {
-            risk: { text: "Refinancing cliff approaching for industrial sector, elevated execution risk in deal markets", confidence: 0.78 },
-            opportunity: { text: "Potential for alpha if credit thesis proves correct, with favorable entry points emerging", confidence: 0.65 }
+            risk: { text: "Many industrial companies need to refinance soon, and deals may fall through if rates stay high", confidence: 0.78 },
+            opportunity: { text: "If borrowing costs stabilize, patient investors may find good buying opportunities", confidence: 0.65 }
           },
           impact_tags: [
             { asset: "Industrials", detail: "Weaker (–)", direction: "-" },
@@ -461,74 +461,74 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
             { asset: "Rates", detail: "Unchanged", direction: "=" },
             { asset: "USD", detail: "Strengthening (+)", direction: "+" }
           ],
-          key_takeaway: "Credit stress in industrials signals refinancing risks → near-term downside in high-yield exposure.",
+          key_takeaway: "Companies are struggling to refinance debt, which could hurt riskier investments in the short term.",
           source_count: 38,
         };
       case 'Policy':
         return {
           ...baseAnalysis,
-          headline_summary: "Regulators harden stance on big tech as bipartisan push expands audit scope and compliance requirements.",
-          morning_takeaway: "Regulatory hardening raises compliance costs → downside for Big Tech multiples, hawkish Fed bias reinforced.",
-          translation: "Big tech companies will spend more on compliance, reducing profit margins and stock attractiveness.",
-          ripple_impact: "Next: stress may surface in tech sector margins and growth multiple compression.",
+          headline_summary: "The government is increasing pressure on big tech companies, requiring more audits and stricter rules.",
+          morning_takeaway: "New rules will cost tech companies more money, which could hurt their stock prices.",
+          translation: "Big tech will spend more following new rules, leaving less profit and making their stocks less appealing.",
+          ripple_impact: "Tech company profits may shrink as they adjust to these new requirements.",
           context_points: [
-            { icon: 'Scale', text: "Bipartisan push on content/privacy expands Y/Y", color: "text-blue-300" },
-            { icon: 'Banknote', text: "Capex guidance reflects regulatory friction", color: "text-amber-300" },
-            { icon: 'Landmark', text: "Committee signals broader enforcement runway", color: "text-purple-300" }
+            { icon: 'Scale', text: "Both parties agree on tighter rules for content and privacy", color: "text-blue-300" },
+            { icon: 'Banknote', text: "Companies are spending more to meet new requirements", color: "text-amber-300" },
+            { icon: 'Landmark', text: "Regulators signal more enforcement is coming", color: "text-purple-300" }
           ],
           market_impact: {
-            short_term: { text: "Compliance drag on tech sector margins", severity: 0.85, confidence: 0.80 },
-            medium_term: { text: "Structural shift in tech operating models", severity: 0.60, confidence: 0.70 },
-            long_term: { text: "Regulatory framework becomes embedded cost", severity: 0.40, confidence: 0.50 }
+            short_term: { text: "Tech profits may shrink due to new costs", severity: 0.85, confidence: 0.80 },
+            medium_term: { text: "Tech companies may need to change how they operate", severity: 0.60, confidence: 0.70 },
+            long_term: { text: "These costs will become a permanent part of doing business", severity: 0.40, confidence: 0.50 }
           },
           risk_opportunity: {
-            risk: { text: "Material impact on tech sector margins as compliance costs surge 40-60% across major platforms", confidence: 0.85 },
-            opportunity: { text: "Potential for regulatory clarity to create competitive moats for compliant players", confidence: 0.55 }
+            risk: { text: "Tech company profits could drop significantly as new compliance costs rise 40-60%", confidence: 0.85 },
+            opportunity: { text: "Companies that adapt quickly may gain an advantage over slower competitors", confidence: 0.55 }
           },
           impact_tags: [
-            { asset: "Equities", detail: "Tech (–)", direction: "-" },
-            { asset: "Rates", detail: "Treasuries (+)", direction: "+" },
-            { asset: "FX", detail: "USD (+)", direction: "+" },
-            { asset: "Credit", detail: "Neutral", direction: "=" }
+            { asset: "Tech stocks", detail: "Under pressure (–)", direction: "-" },
+            { asset: "Government bonds", detail: "More attractive (+)", direction: "+" },
+            { asset: "US Dollar", detail: "Strengthening (+)", direction: "+" },
+            { asset: "Corporate bonds", detail: "Unchanged", direction: "=" }
           ],
-          key_takeaway: "Hardened regulation lifts compliance costs → Fed bias hawkish, downside for growth tech multiples.",
+          key_takeaway: "Stricter rules mean higher costs for tech companies, which could push their stock prices down.",
           source_count: 45,
         };
       case 'Global':
         return {
           ...baseAnalysis,
-          headline_summary: "China demand softens into 2026 as exports normalize and household confidence lags recovery efforts.",
-          morning_takeaway: "China demand slowdown weakens commodities and EM exports → downside pressure on global growth forecasts.",
-          translation: "Slower Chinese consumer spending will reduce global demand for commodities and exports.",
-          ripple_impact: "Monitor commodity prices and emerging market trade volumes for weakness signals.",
+          headline_summary: "Chinese consumers are spending less, and this slowdown is expected to continue into 2026.",
+          morning_takeaway: "Weaker Chinese demand means lower prices for raw materials and slower growth worldwide.",
+          translation: "When Chinese shoppers buy less, companies around the world sell fewer products and materials.",
+          ripple_impact: "Watch for falling prices in oil, metals, and goods exported to China.",
           context_points: [
-            { icon: 'Package', text: "Exports normalize post-reopening boost", color: "text-orange-300" },
-            { icon: 'Home', text: "Household confidence lags despite stimulus", color: "text-red-300" },
-            { icon: 'Construction', text: "Local infrastructure offsets narrow in 2H", color: "text-amber-300" }
+            { icon: 'Package', text: "Exports are returning to normal after the reopening surge", color: "text-orange-300" },
+            { icon: 'Home', text: "Chinese families remain hesitant to spend despite government efforts", color: "text-red-300" },
+            { icon: 'Construction', text: "Government building projects are providing less support", color: "text-amber-300" }
           ],
           market_impact: {
-            short_term: { text: "Commodity demand weakens, EM trade volumes decline", severity: 0.75, confidence: 0.70 },
-            medium_term: { text: "Global supply chain adjustments accelerate", severity: 0.50, confidence: 0.60 },
-            long_term: { text: "Structural shifts in global trade patterns", severity: 0.35, confidence: 0.45 }
+            short_term: { text: "Less demand for raw materials; international trade slowing", severity: 0.75, confidence: 0.70 },
+            medium_term: { text: "Companies are rethinking where they make and sell products", severity: 0.50, confidence: 0.60 },
+            long_term: { text: "Global trade patterns may shift permanently", severity: 0.35, confidence: 0.45 }
           },
           risk_opportunity: {
-            risk: { text: "Global growth implications as China consumer confidence remains 15% below pre-pandemic levels", confidence: 0.72 },
-            opportunity: { text: "Cheaper inputs for US producers, potential supply chain diversification benefits", confidence: 0.58 }
+            risk: { text: "World economic growth could slow because Chinese consumers are still 15% less confident than before the pandemic", confidence: 0.72 },
+            opportunity: { text: "US companies may benefit from cheaper materials and less reliance on Chinese suppliers", confidence: 0.58 }
           },
           impact_tags: [
-            { asset: "Equities", detail: "EM (–)", direction: "-" },
-            { asset: "Commodities", detail: "Metals/Oil (–)", direction: "-" },
-            { asset: "FX", detail: "USD (+)", direction: "+" },
-            { asset: "Rates", detail: "Neutral", direction: "=" }
+            { asset: "International stocks", detail: "Under pressure (–)", direction: "-" },
+            { asset: "Oil & metals", detail: "Prices falling (–)", direction: "-" },
+            { asset: "US Dollar", detail: "Strengthening (+)", direction: "+" },
+            { asset: "Interest rates", detail: "Unchanged", direction: "=" }
           ],
-          key_takeaway: "China demand weakness suppresses commodities → global growth outlook softens.",
+          key_takeaway: "China's slowdown means lower commodity prices and slower growth for the global economy.",
           source_count: 49,
         };
       default:
         return {
           ...baseAnalysis,
-          translation: "Plain take: tighter credit conditions favor defensive posture until spreads stabilize.",
-          ripple_impact: "Next: stress may surface in high-beta equities and loan origination activity."
+          translation: "In plain terms: borrowing is getting harder, so it's wise to be cautious until things settle down.",
+          ripple_impact: "Watch for pressure on riskier stocks and fewer new loans being issued."
         };
     }
   };
@@ -550,9 +550,9 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
   const getMacroPosture = (type) => {
     switch (type) {
       case 'Markets': return 'slightly cautious';
-      case 'Policy': return 'Hawkish Bias';
-      case 'Global': return 'Growth Concerns';
-      default: return 'Neutral';
+      case 'Policy': return 'watching closely';
+      case 'Global': return 'concerned about growth';
+      default: return 'wait and see';
     }
   };
 
