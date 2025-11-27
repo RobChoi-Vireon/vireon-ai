@@ -29,19 +29,19 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
         sentiment: 'Bearish',
         timeframe: 'Short-term',
         impact: 'High',
-        summary: 'Short-term softness in industrial pipelines; watch for capex pullback.'
+        summary: 'Companies may start spending less soon.'
       },
       'Policy': {
         sentiment: 'Mixed',
         timeframe: '3–12M',
         impact: 'High',
-        summary: 'Regulatory risk premium rising for mega-cap tech; volatility skew steepens.'
+        summary: 'Big tech stocks may get shakier.'
       },
       'Global': {
         sentiment: 'Bearish',
         timeframe: 'Multi-year',
         impact: 'Medium',
-        summary: 'Extended demand softness pushes out cyclical recovery window into 2026.'
+        summary: 'A real recovery may not come until 2026.'
       }
     };
     return meta[type] || meta['Global'];
@@ -637,7 +637,7 @@ export default function ExecutiveTakeaway({ digest, onOpenMemo, isLoading = fals
             className="text-sm"
             style={{ color: 'rgba(255, 255, 255, 0.7)' }}
           >
-            High-conviction insights delivered for immediate strategic review.
+            Clear, fast insights anyone can understand.
           </p>
         </div>
         
@@ -674,7 +674,7 @@ export default function ExecutiveTakeaway({ digest, onOpenMemo, isLoading = fals
             className="text-sm"
             style={{ color: 'rgba(255, 255, 255, 0.7)' }}
           >
-            High-conviction insights delivered for immediate strategic review.
+            Clear, fast insights anyone can understand.
           </p>
         </div>
         
