@@ -121,7 +121,7 @@ const DebateCard = ({ counterpoint, index, isExpandedView = false }) => {
               <Scale className="w-4 h-4 text-blue-400" />
             </div>
             <div className="flex-1">
-              <h5 className="text-xs font-semibold text-blue-300 mb-1">CONSENSUS</h5>
+              <h5 className="text-xs font-semibold text-blue-300 mb-1">Consensus</h5>
               <p className="text-sm font-medium text-gray-200 leading-snug">
                 {counterpoint.consensus}
               </p>
@@ -143,7 +143,7 @@ const DebateCard = ({ counterpoint, index, isExpandedView = false }) => {
               <GitBranch className="w-4 h-4 text-orange-400" />
             </div>
             <div className="flex-1">
-              <h5 className="text-xs font-semibold text-orange-300 mb-1">COUNTER</h5>
+              <h5 className="text-xs font-semibold text-orange-300 mb-1">Counter</h5>
               <p className="text-sm font-medium text-gray-200 leading-snug">
                 {counterpoint.counter}
               </p>
@@ -154,7 +154,7 @@ const DebateCard = ({ counterpoint, index, isExpandedView = false }) => {
         {/* Source & Expand */}
         <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/5">
           <span className="text-xs text-gray-400">
-            Source: <span className="text-gray-300 capitalize font-medium">
+            <span className="text-gray-300 capitalize font-medium">
               {counterpoint.source?.replace('_', ' ')}
             </span>
           </span>
@@ -377,7 +377,7 @@ export default function CounterpointsPanel({ counterpoints = [], blindspots = []
                 <motion.div variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}>
                   <h3 className="text-md font-semibold mb-4 flex items-center text-gray-200">
                     <Scale className="w-4 h-4 mr-2 text-amber-400" />
-                    Active Debates ({counterpoints.length})
+                    Debates ({counterpoints.length})
                   </h3>
                   <div className="space-y-4">
                     {visibleCounterpoints.map((counterpoint, index) => (
@@ -391,7 +391,7 @@ export default function CounterpointsPanel({ counterpoints = [], blindspots = []
                 <motion.div variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}>
                   <h3 className="text-md font-semibold mb-4 flex items-center text-gray-200">
                     <Radar className="w-4 h-4 mr-2 text-purple-400" />
-                    Radar Detections ({blindspots.length})
+                    Blindspots ({blindspots.length})
                   </h3>
                   <div className="space-y-4">
                     {visibleBlindspots.map((blindspot, index) => (

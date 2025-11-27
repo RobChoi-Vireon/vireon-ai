@@ -492,7 +492,7 @@ const TimelineEvolution = ({ trajectory }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2, duration: 0.4 }} // Fixed: Reduced delay from 1.5s to 0.2s
     >
-      <h4 className="text-sm font-semibold text-gray-300 mb-6">Strategic Evolution</h4>
+      <h4 className="text-sm font-semibold text-gray-300 mb-6">Trajectory</h4>
       
       {/* Fixed: Added proper overflow handling and positioning context */}
       <div className="relative overflow-visible">

@@ -180,7 +180,7 @@ const ImplicationPanel = React.memo(({ item, index, delay, totalCount, sectionTy
                 />
                 
                 <motion.div className="space-y-2" variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} initial="hidden" animate="visible">
-                  <h5 className="text-xs font-bold text-neutral-400 uppercase tracking-wider">Linked Signals</h5>
+                  <h5 className="text-xs font-bold text-neutral-400 uppercase tracking-wider">Signals</h5>
                   <div className="flex flex-wrap gap-2">
                     {linkedSignals.map((signal, idx) => (
                       <motion.a 
