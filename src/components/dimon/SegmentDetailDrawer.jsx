@@ -41,16 +41,33 @@ const InsightPanel = ({ icon: Icon, title, content, delay, iconColor, tintColor 
     className="relative rounded-[26px]"
     style={{
       padding: '32px 30px',
-      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.042) 100%)',
+      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.032) 100%)',
       backdropFilter: 'blur(24px) saturate(165%)',
       WebkitBackdropFilter: 'blur(24px) saturate(165%)',
-      border: '1px solid rgba(255,255,255,0.16)',
+      border: '1px solid rgba(255,255,255,0.14)',
       boxShadow: `
-        inset 0 2px 3px rgba(255,255,255,0.14),
-        inset 0 0 28px ${iconColor}18,
-        0 10px 32px rgba(0,0,0,0.18),
-        0 0 24px ${iconColor}12
-      `
+        inset 0 1.5px 2px rgba(255,255,255,0.10),
+        inset 0 0 22px ${iconColor}12,
+        0 8px 24px rgba(0,0,0,0.14),
+        0 0 18px ${iconColor}08
+      `,
+      transition: 'transform 0.14s ease-out, box-shadow 0.14s ease-out, filter 0.14s ease-out'
+    }}
+    whileHover={{
+      y: -2,
+      boxShadow: `
+        inset 0 1.5px 2px rgba(255,255,255,0.12),
+        inset 0 0 24px ${iconColor}14,
+        0 12px 32px rgba(0,0,0,0.16),
+        0 0 22px ${iconColor}10
+      `,
+      filter: 'brightness(1.02)',
+      transition: { duration: 0.14, ease: 'easeOut' }
+    }}
+    whileTap={{
+      y: 1,
+      filter: 'brightness(0.99)',
+      transition: { duration: 0.1, ease: 'easeOut' }
     }}
   >
     <div style={{
@@ -59,7 +76,7 @@ const InsightPanel = ({ icon: Icon, title, content, delay, iconColor, tintColor 
       left: '12%',
       right: '12%',
       height: '1.5px',
-      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent)',
+      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.24), transparent)',
       filter: 'blur(1px)',
       pointerEvents: 'none'
     }} />
@@ -67,7 +84,7 @@ const InsightPanel = ({ icon: Icon, title, content, delay, iconColor, tintColor 
     <div style={{
       position: 'absolute',
       inset: 0,
-      background: `radial-gradient(ellipse at 50% 40%, ${iconColor}08 0%, transparent 100%)`,
+      background: `radial-gradient(ellipse at 50% 40%, ${iconColor}06 0%, transparent 100%)`,
       borderRadius: '26px',
       pointerEvents: 'none',
       opacity: 0.68
@@ -113,12 +130,12 @@ const InsightPanel = ({ icon: Icon, title, content, delay, iconColor, tintColor 
         </h3>
         
         <p 
-          className="text-[15.5px]" 
+          className="text-[16px]" 
           style={{ 
-            color: 'rgba(255,255,255,0.92)',
-            lineHeight: '1.58',
-            letterSpacing: '-0.004em',
-            fontWeight: 400
+            color: 'rgba(255,255,255,0.90)',
+            lineHeight: '1.52',
+            letterSpacing: '-0.005em',
+            fontWeight: 420
           }}
         >
           {content}
@@ -210,9 +227,10 @@ const PolicyDrawerContent = ({ segment, delay }) => {
       <motion.div
         variants={{ hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } }}
         transition={{ delay: 0.02, duration: 0.09, ease: MOTION.CURVES.silk }}
-        className="relative rounded-[26px] mb-12"
+        className="relative rounded-[26px]"
         style={{
           marginTop: '24px',
+          marginBottom: '48px',
           padding: '30px 32px',
           background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.042) 100%)',
           backdropFilter: 'blur(24px) saturate(165%)',
@@ -223,7 +241,24 @@ const PolicyDrawerContent = ({ segment, delay }) => {
             inset 0 0 28px ${theme.glowColor},
             0 10px 32px rgba(0,0,0,0.18),
             0 0 42px ${theme.glowColor}
-          `
+          `,
+          transition: 'transform 0.14s ease-out, box-shadow 0.14s ease-out, filter 0.14s ease-out'
+        }}
+        whileHover={{
+          y: -2,
+          boxShadow: `
+            inset 0 2px 3px rgba(255,255,255,0.16),
+            inset 0 0 32px ${theme.glowColor},
+            0 14px 38px rgba(0,0,0,0.20),
+            0 0 48px ${theme.glowColor}
+          `,
+          filter: 'brightness(1.02)',
+          transition: { duration: 0.14, ease: 'easeOut' }
+        }}
+        whileTap={{
+          y: 1,
+          filter: 'brightness(0.99)',
+          transition: { duration: 0.1, ease: 'easeOut' }
         }}
       >
         <div style={{
@@ -275,11 +310,11 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           <p 
             className="flex-1 text-center"
             style={{
-              fontSize: '17px',
-              fontWeight: 500,
-              color: 'rgba(255,255,255,0.96)',
-              lineHeight: '1.52',
-              letterSpacing: '-0.005em'
+              fontSize: '17.5px',
+              fontWeight: 480,
+              color: 'rgba(255,255,255,0.94)',
+              lineHeight: '1.50',
+              letterSpacing: '-0.006em'
             }}
           >
             Stricter rules are raising costs and putting pressure on big tech companies.
@@ -360,44 +395,58 @@ const PolicyDrawerContent = ({ segment, delay }) => {
       <motion.div
         variants={{ hidden: { opacity: 0, y: 4 }, visible: { opacity: 1, y: 0 } }}
         transition={{ delay: 0.24, duration: 0.24, ease: MOTION.CURVES.silk }}
-        className="relative rounded-[30px] mx-auto"
+        className="relative rounded-[26px] mx-auto"
         style={{
           maxWidth: '88%',
           padding: '32px 36px',
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.069) 0%, rgba(255, 255, 255, 0.039) 100%)',
-          backdropFilter: 'blur(22px) saturate(158%)',
-          WebkitBackdropFilter: 'blur(22px) saturate(158%)',
-          border: '1px solid rgba(255,255,255,0.14)',
+          marginBottom: '48px',
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.082) 0%, rgba(255, 255, 255, 0.048) 100%)',
+          backdropFilter: 'blur(24px) saturate(165%)',
+          WebkitBackdropFilter: 'blur(24px) saturate(165%)',
+          border: '1px solid rgba(255,255,255,0.16)',
           boxShadow: `
-            inset 0 2px 2px rgba(255,255,255,0.12),
-            inset 0 -2px 4px rgba(0,0,0,0.10),
-            inset 0 0 24px rgba(142, 187, 255, 0.06),
-            0 12px 36px rgba(0,0,0,0.16),
-            0 0 45px rgba(142, 187, 255, 0.08)
-          `
+            inset 0 2px 3px rgba(255,255,255,0.14),
+            inset 0 0 28px ${theme.glowColor},
+            0 10px 32px rgba(0,0,0,0.18),
+            0 0 42px ${theme.glowColor}
+          `,
+          transition: 'transform 0.14s ease-out, box-shadow 0.14s ease-out, filter 0.14s ease-out'
+        }}
+        whileHover={{
+          y: -2,
+          boxShadow: `
+            inset 0 2px 3px rgba(255,255,255,0.16),
+            inset 0 0 32px ${theme.glowColor},
+            0 14px 38px rgba(0,0,0,0.20),
+            0 0 48px ${theme.glowColor}
+          `,
+          filter: 'brightness(1.02)',
+          transition: { duration: 0.14, ease: 'easeOut' }
+        }}
+        whileTap={{
+          y: 1,
+          filter: 'brightness(0.99)',
+          transition: { duration: 0.1, ease: 'easeOut' }
         }}
       >
         <div style={{
           position: 'absolute',
           top: 0,
-          left: '15%',
-          right: '15%',
+          left: '12%',
+          right: '12%',
           height: '1.5px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.24), transparent)',
-          filter: 'blur(1.2px)',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent)',
+          filter: 'blur(1px)',
           pointerEvents: 'none'
         }} />
 
         <div style={{
           position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '320px',
-          height: '180px',
-          background: 'radial-gradient(ellipse, rgba(142, 187, 255, 0.08) 0%, transparent 68%)',
-          filter: 'blur(48px)',
-          pointerEvents: 'none'
+          inset: 0,
+          background: `radial-gradient(ellipse at 50% 40%, ${theme.ambient} 0%, transparent 100%)`,
+          borderRadius: '26px',
+          pointerEvents: 'none',
+          opacity: 0.68
         }} />
 
         <div className="relative text-center">
@@ -412,12 +461,12 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           </h3>
           
           <p 
-            className="text-[16px]" 
+            className="text-[16.5px]" 
             style={{ 
-              color: 'rgba(255,255,255,0.92)',
-              lineHeight: '1.56',
-              letterSpacing: '-0.004em',
-              fontWeight: 400,
+              color: 'rgba(255,255,255,0.90)',
+              lineHeight: '1.54',
+              letterSpacing: '-0.005em',
+              fontWeight: 420,
               maxWidth: '620px',
               margin: '0 auto'
             }}
@@ -647,7 +696,24 @@ const StandardDrawerContent = ({ segment, delay }) => {
             inset 0 0 28px ${theme.glowColor},
             0 10px 32px rgba(0,0,0,0.18),
             0 0 42px ${theme.glowColor}
-          `
+          `,
+          transition: 'transform 0.14s ease-out, box-shadow 0.14s ease-out, filter 0.14s ease-out'
+        }}
+        whileHover={{
+          y: -2,
+          boxShadow: `
+            inset 0 2px 3px rgba(255,255,255,0.16),
+            inset 0 0 32px ${theme.glowColor},
+            0 14px 38px rgba(0,0,0,0.20),
+            0 0 48px ${theme.glowColor}
+          `,
+          filter: 'brightness(1.02)',
+          transition: { duration: 0.14, ease: 'easeOut' }
+        }}
+        whileTap={{
+          y: 1,
+          filter: 'brightness(0.99)',
+          transition: { duration: 0.1, ease: 'easeOut' }
         }}
       >
         <div style={{
@@ -669,13 +735,6 @@ const StandardDrawerContent = ({ segment, delay }) => {
             borderRadius: '26px',
             pointerEvents: 'none',
             opacity: 0.68
-          }}
-          animate={{
-            opacity: [0.68, 0.68]
-          }}
-          transition={{
-            duration: 0.8,
-            ease: 'easeOut'
           }}
         />
 
@@ -699,11 +758,11 @@ const StandardDrawerContent = ({ segment, delay }) => {
           <p 
             className="flex-1 text-center"
             style={{
-              fontSize: '17px',
-              fontWeight: 500,
-              color: 'rgba(255,255,255,0.96)',
-              lineHeight: '1.52',
-              letterSpacing: '-0.005em'
+              fontSize: '17.5px',
+              fontWeight: 480,
+              color: 'rgba(255,255,255,0.94)',
+              lineHeight: '1.50',
+              letterSpacing: '-0.006em'
             }}
           >
             {details.tldr}
@@ -790,7 +849,8 @@ const StandardDrawerContent = ({ segment, delay }) => {
         style={{
           maxWidth: '88%',
           padding: '32px 36px',
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.042) 100%)',
+          marginBottom: '48px',
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.082) 0%, rgba(255, 255, 255, 0.048) 100%)',
           backdropFilter: 'blur(24px) saturate(165%)',
           WebkitBackdropFilter: 'blur(24px) saturate(165%)',
           border: '1px solid rgba(255,255,255,0.16)',
@@ -799,7 +859,24 @@ const StandardDrawerContent = ({ segment, delay }) => {
             inset 0 0 28px ${theme.glowColor},
             0 10px 32px rgba(0,0,0,0.18),
             0 0 42px ${theme.glowColor}
-          `
+          `,
+          transition: 'transform 0.14s ease-out, box-shadow 0.14s ease-out, filter 0.14s ease-out'
+        }}
+        whileHover={{
+          y: -2,
+          boxShadow: `
+            inset 0 2px 3px rgba(255,255,255,0.16),
+            inset 0 0 32px ${theme.glowColor},
+            0 14px 38px rgba(0,0,0,0.20),
+            0 0 48px ${theme.glowColor}
+          `,
+          filter: 'brightness(1.02)',
+          transition: { duration: 0.14, ease: 'easeOut' }
+        }}
+        whileTap={{
+          y: 1,
+          filter: 'brightness(0.99)',
+          transition: { duration: 0.1, ease: 'easeOut' }
         }}
       >
         <div style={{
@@ -834,12 +911,12 @@ const StandardDrawerContent = ({ segment, delay }) => {
           </h3>
           
           <p 
-            className="text-[16px]" 
+            className="text-[16.5px]" 
             style={{ 
-              color: 'rgba(255,255,255,0.92)',
-              lineHeight: '1.56',
-              letterSpacing: '-0.004em',
-              fontWeight: 400,
+              color: 'rgba(255,255,255,0.90)',
+              lineHeight: '1.54',
+              letterSpacing: '-0.005em',
+              fontWeight: 420,
               maxWidth: '620px',
               margin: '0 auto'
             }}
