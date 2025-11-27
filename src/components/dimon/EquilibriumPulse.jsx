@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence, useSpring } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, ArrowRight, Sparkles } from 'lucide-react';
@@ -144,11 +143,11 @@ export default function EquilibriumPulse({
 
   const getStateLabel = () => {
     if (dominantForce === 'balanced') return 'Balanced';
-    if (Math.abs(equilibriumScore - 0.5) < 0.15) return 'Stable';
-    if (volatility > 0.6) return 'Diverging';
-    if (equilibriumScore < 0.4) return 'Growth-Leaning';
-    if (equilibriumScore > 0.6) return 'Tightening';
-    return 'Shifting';
+    if (Math.abs(equilibriumScore - 0.5) < 0.15) return 'Steady';
+    if (volatility > 0.6) return 'Splitting';
+    if (equilibriumScore < 0.4) return 'Pro-Growth';
+    if (equilibriumScore > 0.6) return 'Under Pressure';
+    return 'In Flux';
   };
 
   const getPulseColor = () => {
@@ -645,8 +644,8 @@ export default function EquilibriumPulse({
           paddingLeft: '8px',
           paddingRight: '8px'
         }}>
-          <span>Growth / Demand</span>
-          <span>Tightening / Supply</span>
+          <span>Economy Growing</span>
+          <span>Economy Slowing</span>
         </div>
       </div>
 
@@ -724,7 +723,7 @@ export default function EquilibriumPulse({
                   color: 'rgba(255,255,255,0.68)',
                   marginBottom: '14px'
                 }}>
-                  Force Contributions
+                  What's Driving Markets
                 </h5>
                 
                 <div className="grid grid-cols-2 gap-2.5">
@@ -817,7 +816,7 @@ export default function EquilibriumPulse({
                     fontWeight: 600,
                     letterSpacing: '-0.005em'
                   }}>
-                    {stabilityIndex >= 70 ? 'High Stability' : stabilityIndex >= 50 ? 'Moderate' : 'Elevated Risk'}
+                    {stabilityIndex >= 70 ? 'Very Stable' : stabilityIndex >= 50 ? 'Somewhat Stable' : 'Higher Risk'}
                   </div>
                 </div>
               </div>
@@ -855,10 +854,10 @@ export default function EquilibriumPulse({
                       letterSpacing: '-0.003em'
                     }}>
                       {dominantForce === 'balanced'
-                        ? "Equilibrium stable; opportunities expanding across defensive and cyclical sectors."
+                        ? "Markets are calm right now. Good time to look at both safe and growth-oriented investments."
                         : equilibriumScore > 0.6
-                          ? "Watch geopolitical and rate pressure — defensive positioning advised."
-                          : "Growth resilience offsetting tight rates — favor cyclical exposure."}
+                          ? "Global tensions and rising rates are creating pressure. Consider safer investments."
+                          : "The economy is holding up well despite higher borrowing costs. Growth stocks look attractive."}
                     </p>
                   </div>
                 </div>
