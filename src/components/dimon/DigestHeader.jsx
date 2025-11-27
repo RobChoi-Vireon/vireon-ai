@@ -1367,10 +1367,10 @@ export default function DigestHeader({
                   color: 'rgba(255,255,255,0.60)', 
                   letterSpacing: '0.08em', 
                   marginBottom: '10px'
-                }}
-              >
-                Date
-              </label>
+                  }}
+                  >
+                  Date
+                  </label>
 
               {/* Date Input in Glass Pocket */}
               <div 
