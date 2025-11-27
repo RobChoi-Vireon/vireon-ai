@@ -24,23 +24,30 @@ const MOTION = {
 
 const DirectionIcons = { '+': ArrowUp, '-': ArrowDown, '=': ArrowRight };
 
-// Unified glass token for all cards
+// Unified glass token for all cards - OS Horizon 3-Layer Depth Model
 const GLASS_TOKENS = {
-  cardBg: 'linear-gradient(180deg, rgba(255, 255, 255, 0.052) 0%, rgba(255, 255, 255, 0.028) 100%)',
-  cardBorder: 'rgba(255,255,255,0.12)',
-  cardBlur: 'blur(24px) saturate(160%)',
+  // Layer 1: Base blurred glass panel
+  cardBg: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.024) 100%)',
+  cardBorder: 'rgba(255,255,255,0.10)',
+  cardBlur: 'blur(26px) saturate(162%)',
+  cardRadius: '26px',
+  cardPadding: '24px 28px',
+  // Layer 2 + 3: Soft inner shadow + gentle bloom edge
   cardShadow: (glowColor) => `
-    inset 0 1px 1.5px rgba(255,255,255,0.08),
-    inset 0 0 18px ${glowColor},
-    0 6px 20px rgba(0,0,0,0.12),
-    0 0 24px ${glowColor}
+    inset 0 1px 1px rgba(255,255,255,0.06),
+    inset 0 0 16px ${glowColor},
+    0 5px 18px rgba(0,0,0,0.10),
+    0 0 20px ${glowColor}
   `,
   cardHoverShadow: (glowColor) => `
-    inset 0 1px 2px rgba(255,255,255,0.10),
-    inset 0 0 20px ${glowColor},
-    0 10px 28px rgba(0,0,0,0.14),
-    0 0 28px ${glowColor}
-  `
+    inset 0 1px 1.5px rgba(255,255,255,0.08),
+    inset 0 0 18px ${glowColor},
+    0 8px 24px rgba(0,0,0,0.12),
+    0 0 24px ${glowColor}
+  `,
+  // Header-specific tokens (5-8% reduced opacity)
+  headerBg: 'linear-gradient(180deg, rgba(255, 255, 255, 0.036) 0%, rgba(255, 255, 255, 0.020) 100%)',
+  headerBlur: 'blur(28px) saturate(165%)'
 };
 
 const getTheme = (name) => {
@@ -57,19 +64,20 @@ const InsightPanel = ({ icon: Icon, title, content, delay, iconColor, tintColor,
   <motion.div
     variants={{ hidden: { opacity: 0, y: 4 }, visible: { opacity: 1, y: 0 } }}
     transition={{ delay, duration: 0.06, ease: MOTION.CURVES.silk }}
-    className="relative rounded-[26px]"
+    className="relative"
     style={{
-      padding: '28px 28px',
+      padding: GLASS_TOKENS.cardPadding,
       background: GLASS_TOKENS.cardBg,
       backdropFilter: GLASS_TOKENS.cardBlur,
       WebkitBackdropFilter: GLASS_TOKENS.cardBlur,
       border: `1px solid ${GLASS_TOKENS.cardBorder}`,
-      boxShadow: GLASS_TOKENS.cardShadow(glowColor || 'rgba(220, 230, 255, 0.10)'),
+      borderRadius: GLASS_TOKENS.cardRadius,
+      boxShadow: GLASS_TOKENS.cardShadow(glowColor || 'rgba(220, 230, 255, 0.08)'),
       transition: 'transform 0.14s ease-out, box-shadow 0.14s ease-out, filter 0.14s ease-out'
     }}
     whileHover={{
       y: -2,
-      boxShadow: GLASS_TOKENS.cardHoverShadow(glowColor || 'rgba(220, 230, 255, 0.12)'),
+      boxShadow: GLASS_TOKENS.cardHoverShadow(glowColor || 'rgba(220, 230, 255, 0.10)'),
       filter: 'brightness(1.015)',
       transition: { duration: 0.14, ease: 'easeOut' }
     }}
@@ -79,22 +87,23 @@ const InsightPanel = ({ icon: Icon, title, content, delay, iconColor, tintColor,
       transition: { duration: 0.1, ease: 'easeOut' }
     }}
   >
-    {/* Top-to-bottom micro-gradient for subsurface lighting */}
+    {/* Layer 2: Soft inner shadow gradient */}
     <div style={{
       position: 'absolute',
       inset: 0,
-      background: 'linear-gradient(180deg, rgba(255,255,255,0.025) 0%, rgba(0,0,0,0.015) 100%)',
-      borderRadius: '26px',
+      background: 'linear-gradient(180deg, rgba(255,255,255,0.020) 0%, rgba(0,0,0,0.012) 100%)',
+      borderRadius: GLASS_TOKENS.cardRadius,
       pointerEvents: 'none'
     }} />
 
+    {/* Layer 3: Gentle bloom edge */}
     <div style={{
       position: 'absolute',
       top: 0,
       left: '12%',
       right: '12%',
       height: '1px',
-      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
       filter: 'blur(0.5px)',
       pointerEvents: 'none'
     }} />
@@ -102,37 +111,38 @@ const InsightPanel = ({ icon: Icon, title, content, delay, iconColor, tintColor,
     <div style={{
       position: 'absolute',
       inset: 0,
-      background: `radial-gradient(ellipse at 50% 40%, ${iconColor}04 0%, transparent 100%)`,
-      borderRadius: '26px',
+      background: `radial-gradient(ellipse at 50% 40%, ${iconColor}03 0%, transparent 100%)`,
+      borderRadius: GLASS_TOKENS.cardRadius,
       pointerEvents: 'none',
-      opacity: 0.55
+      opacity: 0.50
     }} />
 
-    <div className="flex items-start gap-5 relative">
+    <div className="flex items-start gap-4 relative">
       <div 
         className="w-10 h-10 rounded-[13px] flex items-center justify-center flex-shrink-0 relative"
         style={{
-          background: `${iconColor}12`,
-          border: `1px solid ${iconColor}22`,
-          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.10), 0 0 10px ${iconColor}10`
+          background: `${iconColor}10`,
+          border: `1px solid ${iconColor}20`,
+          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.08), 0 0 8px ${iconColor}08`
         }}
       >
         <div style={{
           position: 'absolute',
-          inset: '-6px',
-          background: `radial-gradient(circle, ${iconColor}04 0%, transparent 70%)`,
-          filter: 'blur(10px)',
+          inset: '-5px',
+          background: `radial-gradient(circle, ${iconColor}03 0%, transparent 70%)`,
+          filter: 'blur(8px)',
           pointerEvents: 'none'
         }} />
-        <Icon className="w-5 h-5 relative z-10" style={{ color: iconColor, filter: 'brightness(1.15)' }} strokeWidth={2.2} />
+        <Icon className="w-5 h-5 relative z-10" style={{ color: iconColor, filter: 'brightness(1.12)' }} strokeWidth={2.2} />
       </div>
 
       <div className="flex-1">
         <h3 
-          className="text-[14px] font-medium mb-3 relative" 
+          className="text-[13.5px] font-medium mb-2.5 relative" 
           style={{ 
-            color: 'rgba(255,255,255,0.70)',
-            letterSpacing: '0.025em'
+            color: 'rgba(255,255,255,0.68)',
+            letterSpacing: '0.022em',
+            fontWeight: 500
           }}
         >
           {tintColor && (
@@ -148,12 +158,12 @@ const InsightPanel = ({ icon: Icon, title, content, delay, iconColor, tintColor,
         </h3>
         
         <p 
-          className="text-[16.5px]" 
+          className="text-[16px]" 
           style={{ 
-            color: 'rgba(255,255,255,0.92)',
-            lineHeight: '1.50',
-            letterSpacing: '-0.006em',
-            fontWeight: 420
+            color: 'rgba(255,255,255,0.90)',
+            lineHeight: '1.52',
+            letterSpacing: '-0.005em',
+            fontWeight: 400
           }}
         >
           {content}
@@ -213,37 +223,48 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         pointerEvents: 'none'
       }} />
 
-      {/* Rounded Header Background - Depth matched to TL;DR */}
+      {/* Rounded Header Background - OS Horizon 3-Layer Depth */}
       <motion.div
         variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
         transition={{ duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.easeOutQuint }}
-        className="relative rounded-[26px]"
+        className="relative"
         style={{ 
           marginBottom: '24px',
-          padding: '24px 28px',
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.026) 100%)',
-          backdropFilter: 'blur(27px) saturate(168%)',
-          WebkitBackdropFilter: 'blur(27px) saturate(168%)',
-          border: `1px solid rgba(255,255,255,0.10)`,
-          boxShadow: `inset 0 1px 2px rgba(${theme.color === '#70A8E8' ? '112, 168, 232' : theme.color === '#B88AED' ? '184, 138, 237' : theme.color === '#32C288' ? '50, 194, 136' : '237, 184, 89'}, 0.02), inset 0 0 12px rgba(255,255,255,0.015)`
+          padding: GLASS_TOKENS.cardPadding,
+          background: GLASS_TOKENS.headerBg,
+          backdropFilter: GLASS_TOKENS.headerBlur,
+          WebkitBackdropFilter: GLASS_TOKENS.headerBlur,
+          borderRadius: GLASS_TOKENS.cardRadius,
+          border: `1px solid rgba(255,255,255,0.08)`,
+          boxShadow: `inset 0 1px 1px rgba(255,255,255,0.04), inset 0 0 10px ${theme.glowColor}`
         }}
       >
-        {/* Top-to-bottom micro-gradient for subsurface lighting */}
+        {/* Layer 2: Soft inner shadow */}
         <div style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.018) 0%, rgba(0,0,0,0.008) 100%)',
-          borderRadius: '26px',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.015) 0%, rgba(0,0,0,0.006) 100%)',
+          borderRadius: GLASS_TOKENS.cardRadius,
+          pointerEvents: 'none'
+        }} />
+        {/* Layer 3: Gentle bloom edge */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '12%',
+          right: '12%',
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
           pointerEvents: 'none'
         }} />
         <h1 
           className="relative"
           style={{
-            fontSize: '25px',
+            fontSize: '24px',
             fontWeight: 600,
-            color: 'rgba(255,255,255,0.96)',
-            letterSpacing: '0.018em',
-            marginBottom: '8px'
+            color: 'rgba(255,255,255,0.95)',
+            letterSpacing: '0.016em',
+            marginBottom: '10px'
           }}
         >
           Policy Analysis
@@ -251,29 +272,30 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         <p 
           className="relative"
           style={{
-            fontSize: '15px',
+            fontSize: '14.5px',
             fontWeight: 400,
-            color: 'rgba(255,255,255,0.72)',
-            lineHeight: '1.48',
-            letterSpacing: '0.006em'
+            color: 'rgba(255,255,255,0.70)',
+            lineHeight: '1.52',
+            letterSpacing: '0.005em'
           }}
         >
           Market Pressure Lens — What's Driving Street Alignment
         </p>
       </motion.div>
 
-      {/* TL;DR Band */}
+      {/* TL;DR Band - OS Horizon 3-Layer Depth */}
       <motion.div
         variants={{ hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } }}
         transition={{ delay: 0.02, duration: 0.09, ease: MOTION.CURVES.silk }}
-        className="relative rounded-[26px]"
+        className="relative"
         style={{
           marginTop: '0px',
-          marginBottom: '20px',
-          padding: '24px 28px',
+          marginBottom: '24px',
+          padding: GLASS_TOKENS.cardPadding,
           background: GLASS_TOKENS.cardBg,
           backdropFilter: GLASS_TOKENS.cardBlur,
           WebkitBackdropFilter: GLASS_TOKENS.cardBlur,
+          borderRadius: GLASS_TOKENS.cardRadius,
           border: `1px solid ${GLASS_TOKENS.cardBorder}`,
           boxShadow: GLASS_TOKENS.cardShadow(theme.glowColor),
           transition: 'transform 0.14s ease-out, box-shadow 0.14s ease-out, filter 0.14s ease-out'
@@ -290,23 +312,23 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           transition: { duration: 0.1, ease: 'easeOut' }
         }}
       >
-        {/* Top-to-bottom micro-gradient */}
+        {/* Layer 2: Soft inner shadow */}
         <div style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.025) 0%, rgba(0,0,0,0.015) 100%)',
-          borderRadius: '26px',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.020) 0%, rgba(0,0,0,0.012) 100%)',
+          borderRadius: GLASS_TOKENS.cardRadius,
           pointerEvents: 'none'
         }} />
 
+        {/* Layer 3: Gentle bloom edge */}
         <div style={{
           position: 'absolute',
           top: 0,
           left: '12%',
           right: '12%',
           height: '1px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
-          filter: 'blur(0.5px)',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
           pointerEvents: 'none'
         }} />
 
@@ -315,12 +337,12 @@ const PolicyDrawerContent = ({ segment, delay }) => {
             position: 'absolute',
             inset: 0,
             background: `radial-gradient(ellipse at 50% 40%, ${theme.ambient} 0%, transparent 100%)`,
-            borderRadius: '26px',
+            borderRadius: GLASS_TOKENS.cardRadius,
             pointerEvents: 'none',
-            opacity: 0.55
+            opacity: 0.48
           }}
           animate={{
-            opacity: [0.55 + haloPulse, 0.55]
+            opacity: [0.48 + haloPulse, 0.48]
           }}
           transition={{
             duration: 0.8,
@@ -328,18 +350,18 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           }}
         />
 
-        <div className="flex items-center justify-between gap-6 relative">
+        <div className="flex items-center justify-between gap-5 relative">
           <div 
             className="inline-block rounded-full flex-shrink-0"
             style={{
               fontSize: '10.5px',
               fontWeight: 600,
-              color: 'rgba(255,255,255,0.82)',
-              padding: '6px 12px',
-              background: 'rgba(255,255,255,0.10)',
-              border: '1px solid rgba(255,255,255,0.14)',
-              borderRadius: '20px',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)'
+              color: 'rgba(255,255,255,0.80)',
+              padding: '5px 11px',
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              borderRadius: '18px',
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)'
             }}
           >
             TL;DR
@@ -348,29 +370,28 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           <p 
             className="flex-1 text-center"
             style={{
-              fontSize: '16.5px',
-              fontWeight: 460,
-              color: 'rgba(255,255,255,0.94)',
-              lineHeight: '1.48',
-              letterSpacing: '-0.006em'
+              fontSize: '16px',
+              fontWeight: 450,
+              color: 'rgba(255,255,255,0.92)',
+              lineHeight: '1.50',
+              letterSpacing: '-0.005em'
             }}
           >
             Stricter rules are raising costs and putting pressure on big tech companies.
           </p>
 
-          <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="flex items-center gap-2.5 flex-shrink-0">
             <div
               className="inline-block rounded-full"
               style={{
-                fontSize: '11.5px',
+                fontSize: '11px',
                 fontWeight: 500,
                 color: '#7BB1FF',
-                background: 'rgba(80, 140, 255, 0.14)',
-                padding: '6px 13px',
-                borderRadius: '20px',
-                border: '1px solid rgba(80, 140, 255, 0.26)',
-                boxShadow: `0 0 12px ${theme.glowColor}, inset 0 1px 0 rgba(255,255,255,0.08)`,
-                filter: 'brightness(1.02)'
+                background: 'rgba(80, 140, 255, 0.12)',
+                padding: '5px 12px',
+                borderRadius: '18px',
+                border: '1px solid rgba(80, 140, 255, 0.22)',
+                boxShadow: `0 0 10px ${theme.glowColor}, inset 0 1px 0 rgba(255,255,255,0.06)`
               }}
             >
               Rising
@@ -379,10 +400,10 @@ const PolicyDrawerContent = ({ segment, delay }) => {
             <div style={{ textAlign: 'right' }}>
               <div 
                 style={{ 
-                  fontSize: '11.5px', 
+                  fontSize: '11px', 
                   fontWeight: 500,
-                  color: 'rgba(255,255,255,0.74)',
-                  letterSpacing: '0.005em'
+                  color: 'rgba(255,255,255,0.72)',
+                  letterSpacing: '0.004em'
                 }}
               >
                 {Math.round(weight)}%
@@ -397,7 +418,7 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         style={{ 
           display: 'flex',
           flexDirection: 'column',
-          gap: '20px',
+          gap: '24px',
           marginBottom: '24px'
         }}
       >
@@ -432,18 +453,19 @@ const PolicyDrawerContent = ({ segment, delay }) => {
         />
       </motion.div>
 
-      {/* What This Means */}
+      {/* What This Means - OS Horizon 3-Layer Depth */}
       <motion.div
         variants={{ hidden: { opacity: 0, y: 4 }, visible: { opacity: 1, y: 0 } }}
         transition={{ delay: 0.24, duration: 0.24, ease: MOTION.CURVES.silk }}
-        className="relative rounded-[26px] mx-auto"
+        className="relative mx-auto"
         style={{
           maxWidth: '88%',
-          padding: '28px 32px',
+          padding: GLASS_TOKENS.cardPadding,
           marginBottom: '24px',
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.035) 100%)',
+          background: GLASS_TOKENS.cardBg,
           backdropFilter: GLASS_TOKENS.cardBlur,
           WebkitBackdropFilter: GLASS_TOKENS.cardBlur,
+          borderRadius: GLASS_TOKENS.cardRadius,
           border: `1px solid ${GLASS_TOKENS.cardBorder}`,
           boxShadow: GLASS_TOKENS.cardShadow(theme.glowColor),
           transition: 'transform 0.14s ease-out, box-shadow 0.14s ease-out, filter 0.14s ease-out'
@@ -460,23 +482,23 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           transition: { duration: 0.1, ease: 'easeOut' }
         }}
       >
-        {/* Top-to-bottom micro-gradient */}
+        {/* Layer 2: Soft inner shadow */}
         <div style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.025) 0%, rgba(0,0,0,0.015) 100%)',
-          borderRadius: '26px',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.020) 0%, rgba(0,0,0,0.012) 100%)',
+          borderRadius: GLASS_TOKENS.cardRadius,
           pointerEvents: 'none'
         }} />
 
+        {/* Layer 3: Gentle bloom edge */}
         <div style={{
           position: 'absolute',
           top: 0,
           left: '12%',
           right: '12%',
           height: '1px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
-          filter: 'blur(0.5px)',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
           pointerEvents: 'none'
         }} />
 
@@ -484,29 +506,30 @@ const PolicyDrawerContent = ({ segment, delay }) => {
           position: 'absolute',
           inset: 0,
           background: `radial-gradient(ellipse at 50% 40%, ${theme.ambient} 0%, transparent 100%)`,
-          borderRadius: '26px',
+          borderRadius: GLASS_TOKENS.cardRadius,
           pointerEvents: 'none',
-          opacity: 0.55
+          opacity: 0.48
         }} />
 
         <div className="relative text-center">
           <h3 
-            className="text-[14px] font-medium mb-4 uppercase" 
+            className="text-[13.5px] font-medium mb-4 uppercase" 
             style={{ 
-              color: 'rgba(255,255,255,0.66)',
-              letterSpacing: '0.09em'
+              color: 'rgba(255,255,255,0.64)',
+              letterSpacing: '0.08em',
+              fontWeight: 500
             }}
           >
             What This Means
           </h3>
           
           <p 
-            className="text-[17px]" 
+            className="text-[16.5px]" 
             style={{ 
-              color: 'rgba(255,255,255,0.94)',
-              lineHeight: '1.52',
-              letterSpacing: '-0.006em',
-              fontWeight: 420,
+              color: 'rgba(255,255,255,0.92)',
+              lineHeight: '1.54',
+              letterSpacing: '-0.005em',
+              fontWeight: 400,
               maxWidth: '620px',
               margin: '0 auto'
             }}
@@ -689,37 +712,48 @@ const StandardDrawerContent = ({ segment, delay }) => {
         pointerEvents: 'none'
       }} />
 
-      {/* Rounded Header Background - Depth matched to TL;DR */}
+      {/* Rounded Header Background - OS Horizon 3-Layer Depth */}
       <motion.div
         variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
         transition={{ duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.easeOutQuint }}
-        className="relative rounded-[26px]"
+        className="relative"
         style={{ 
           marginBottom: '24px',
-          padding: '24px 28px',
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.026) 100%)',
-          backdropFilter: 'blur(27px) saturate(168%)',
-          WebkitBackdropFilter: 'blur(27px) saturate(168%)',
-          border: `1px solid rgba(255,255,255,0.10)`,
-          boxShadow: `inset 0 1px 2px rgba(${theme.color === '#70A8E8' ? '112, 168, 232' : theme.color === '#B88AED' ? '184, 138, 237' : theme.color === '#32C288' ? '50, 194, 136' : '237, 184, 89'}, 0.02), inset 0 0 12px rgba(255,255,255,0.015)`
+          padding: GLASS_TOKENS.cardPadding,
+          background: GLASS_TOKENS.headerBg,
+          backdropFilter: GLASS_TOKENS.headerBlur,
+          WebkitBackdropFilter: GLASS_TOKENS.headerBlur,
+          borderRadius: GLASS_TOKENS.cardRadius,
+          border: `1px solid rgba(255,255,255,0.08)`,
+          boxShadow: `inset 0 1px 1px rgba(255,255,255,0.04), inset 0 0 10px ${theme.glowColor}`
         }}
       >
-        {/* Top-to-bottom micro-gradient for subsurface lighting */}
+        {/* Layer 2: Soft inner shadow */}
         <div style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.018) 0%, rgba(0,0,0,0.008) 100%)',
-          borderRadius: '26px',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.015) 0%, rgba(0,0,0,0.006) 100%)',
+          borderRadius: GLASS_TOKENS.cardRadius,
+          pointerEvents: 'none'
+        }} />
+        {/* Layer 3: Gentle bloom edge */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '12%',
+          right: '12%',
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
           pointerEvents: 'none'
         }} />
         <h1 
           className="relative"
           style={{
-            fontSize: '25px',
+            fontSize: '24px',
             fontWeight: 600,
-            color: 'rgba(255,255,255,0.96)',
-            letterSpacing: '0.018em',
-            marginBottom: '8px'
+            color: 'rgba(255,255,255,0.95)',
+            letterSpacing: '0.016em',
+            marginBottom: '10px'
           }}
         >
           {segment.name} Analysis
@@ -727,29 +761,30 @@ const StandardDrawerContent = ({ segment, delay }) => {
         <p 
           className="relative"
           style={{
-            fontSize: '15px',
+            fontSize: '14.5px',
             fontWeight: 400,
-            color: 'rgba(255,255,255,0.72)',
-            lineHeight: '1.48',
-            letterSpacing: '0.006em'
+            color: 'rgba(255,255,255,0.70)',
+            lineHeight: '1.52',
+            letterSpacing: '0.005em'
           }}
         >
           Market Pressure Lens — What's Driving Street Alignment
         </p>
       </motion.div>
 
-      {/* TL;DR Band */}
+      {/* TL;DR Band - OS Horizon 3-Layer Depth */}
       <motion.div
         variants={{ hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } }}
         transition={{ delay: 0.02, duration: 0.09, ease: MOTION.CURVES.silk }}
-        className="relative rounded-[26px]"
+        className="relative"
         style={{
           marginTop: '0px',
-          marginBottom: '20px',
-          padding: '24px 28px',
+          marginBottom: '24px',
+          padding: GLASS_TOKENS.cardPadding,
           background: GLASS_TOKENS.cardBg,
           backdropFilter: GLASS_TOKENS.cardBlur,
           WebkitBackdropFilter: GLASS_TOKENS.cardBlur,
+          borderRadius: GLASS_TOKENS.cardRadius,
           border: `1px solid ${GLASS_TOKENS.cardBorder}`,
           boxShadow: GLASS_TOKENS.cardShadow(theme.glowColor),
           transition: 'transform 0.14s ease-out, box-shadow 0.14s ease-out, filter 0.14s ease-out'
@@ -766,23 +801,23 @@ const StandardDrawerContent = ({ segment, delay }) => {
           transition: { duration: 0.1, ease: 'easeOut' }
         }}
       >
-        {/* Top-to-bottom micro-gradient */}
+        {/* Layer 2: Soft inner shadow */}
         <div style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.025) 0%, rgba(0,0,0,0.015) 100%)',
-          borderRadius: '26px',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.020) 0%, rgba(0,0,0,0.012) 100%)',
+          borderRadius: GLASS_TOKENS.cardRadius,
           pointerEvents: 'none'
         }} />
 
+        {/* Layer 3: Gentle bloom edge */}
         <div style={{
           position: 'absolute',
           top: 0,
           left: '12%',
           right: '12%',
           height: '1px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
-          filter: 'blur(0.5px)',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
           pointerEvents: 'none'
         }} />
 
@@ -791,24 +826,24 @@ const StandardDrawerContent = ({ segment, delay }) => {
             position: 'absolute',
             inset: 0,
             background: `radial-gradient(ellipse at 50% 40%, ${theme.ambient} 0%, transparent 100%)`,
-            borderRadius: '26px',
+            borderRadius: GLASS_TOKENS.cardRadius,
             pointerEvents: 'none',
-            opacity: 0.55
+            opacity: 0.48
           }}
         />
 
-        <div className="flex items-center justify-between gap-6 relative">
+        <div className="flex items-center justify-between gap-5 relative">
           <div 
             className="inline-block rounded-full flex-shrink-0"
             style={{
               fontSize: '10.5px',
               fontWeight: 600,
-              color: 'rgba(255,255,255,0.82)',
-              padding: '6px 12px',
-              background: 'rgba(255,255,255,0.10)',
-              border: '1px solid rgba(255,255,255,0.14)',
-              borderRadius: '20px',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)'
+              color: 'rgba(255,255,255,0.80)',
+              padding: '5px 11px',
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              borderRadius: '18px',
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)'
             }}
           >
             TL;DR
@@ -817,29 +852,28 @@ const StandardDrawerContent = ({ segment, delay }) => {
           <p 
             className="flex-1 text-center"
             style={{
-              fontSize: '16.5px',
-              fontWeight: 460,
-              color: 'rgba(255,255,255,0.94)',
-              lineHeight: '1.48',
-              letterSpacing: '-0.006em'
+              fontSize: '16px',
+              fontWeight: 450,
+              color: 'rgba(255,255,255,0.92)',
+              lineHeight: '1.50',
+              letterSpacing: '-0.005em'
             }}
           >
             {details.tldr}
           </p>
 
-          <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="flex items-center gap-2.5 flex-shrink-0">
             <div
               className="inline-block rounded-full"
               style={{
-                fontSize: '11.5px',
+                fontSize: '11px',
                 fontWeight: 500,
                 color: theme.color,
-                background: `${theme.color}12`,
-                padding: '6px 13px',
-                borderRadius: '20px',
-                border: `1px solid ${theme.color}26`,
-                boxShadow: `0 0 12px ${theme.glowColor}, inset 0 1px 0 rgba(255,255,255,0.08)`,
-                filter: 'brightness(1.02)'
+                background: `${theme.color}10`,
+                padding: '5px 12px',
+                borderRadius: '18px',
+                border: `1px solid ${theme.color}20`,
+                boxShadow: `0 0 10px ${theme.glowColor}, inset 0 1px 0 rgba(255,255,255,0.06)`
               }}
             >
               {details.status || 'Active'}
@@ -848,10 +882,10 @@ const StandardDrawerContent = ({ segment, delay }) => {
             <div style={{ textAlign: 'right' }}>
               <div 
                 style={{ 
-                  fontSize: '11.5px', 
+                  fontSize: '11px', 
                   fontWeight: 500,
-                  color: 'rgba(255,255,255,0.74)',
-                  letterSpacing: '0.005em'
+                  color: 'rgba(255,255,255,0.72)',
+                  letterSpacing: '0.004em'
                 }}
               >
                 {Math.round(weight)}%
