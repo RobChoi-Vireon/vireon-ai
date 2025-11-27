@@ -42,8 +42,8 @@ export default function EquilibriumBalanceModule({
     geopolitics: -0.28
   },
   stabilityIndex = 72,
-  summary = "Global equilibrium stable — mild downside pressure from geopolitics.",
-  actionableInsight = "Watch geopolitical pressure — tightening risk rising. Favor defensive positioning.",
+  summary = "Global market forces are balanced — some pressure from international tensions.",
+  actionableInsight = "Watch for rising political tensions. Consider safer, more defensive investments.",
   lastUpdated = new Date()
 }) {
   const [isHovered, setIsHovered] = useState(false);

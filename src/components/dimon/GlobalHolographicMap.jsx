@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLeft, ChevronRight, BarChart3, DollarSign, Activity, Sparkles } from 'lucide-react';
@@ -101,23 +100,23 @@ const MOCK_DOMAINS = [
     id: "rates",
     title: "Rates Markets",
     posture: "hawkish",
-    trend: "Hawkish Momentum",
+    trend: "Rising pressure",
     confidence_pct: 78,
     strength: 0.82,
-    confidence_label: "High certainty",
-    summary: "Policy tone remains hawkish as sticky services inflation persists; terminal-rate expectations drift higher.",
-    insight: "Yields steady — credit markets adjusting to new baseline.",
+    confidence_label: "High confidence",
+    summary: "The Federal Reserve is staying tough on inflation because prices keep rising. This means borrowing costs will stay high or go higher.",
+    insight: "Interest rates holding steady while banks and companies adjust to the new normal.",
     downstream_effects: [
-      { title: "Credit spreads widen", tags: ["Credit", "HY", "IG"], link: "/credit" },
-      { title: "Tech multiples compress", tags: ["Tech", "Large-cap growth"], link: "/equities/tech" },
-      { title: "EM funding costs rise", tags: ["EM debt", "FX funding"], link: "/em" }
+      { title: "Borrowing costs rising for companies", tags: ["Credit", "HY", "IG"], link: "/credit" },
+      { title: "Tech stock valuations under pressure", tags: ["Tech", "Large-cap growth"], link: "/equities/tech" },
+      { title: "Emerging markets paying more to borrow", tags: ["EM debt", "FX funding"], link: "/em" }
     ],
     actionable: {
       horizon: "1–3 months",
       conviction: "High",
       directives: [
-        "Tilt: shorten duration; keep rate-sensitive equity underweight.",
-        "Hedge: add payer swaptions; receive USD carry vs EM FX."
+        "Favor short-term bonds and avoid stocks that are sensitive to interest rates.",
+        "Protect against rising rates and hold dollars instead of emerging market currencies."
       ]
     },
     footer: {
@@ -133,23 +132,23 @@ const MOCK_DOMAINS = [
     id: "fx",
     title: "FX Markets",
     posture: "stable",
-    trend: "Stable Momentum",
+    trend: "Steady trend",
     confidence_pct: 65,
     strength: 0.58,
     confidence_label: "Moderate confidence",
-    summary: "Carry trades unwind as global rates converge; capital flows stabilize with cooling risk appetite.",
-    insight: "Capital flows stabilizing; global risk appetite cooling.",
+    summary: "Currency markets are settling down as interest rates around the world become more similar. Money is moving less between countries as investors become more cautious.",
+    insight: "Money flows between countries are stabilizing. Investors are becoming less aggressive.",
     downstream_effects: [
-      { title: "EM currencies stabilize", tags: ["FX", "EM", "Volatility"], link: "/fx/em" },
-      { title: "Energy imports neutral", tags: ["Commodities", "Trade"], link: "/commodities" },
-      { title: "Bond yields compressed", tags: ["Fixed Income", "Rates"], link: "/bonds" }
+      { title: "Emerging market currencies steadying", tags: ["FX", "EM", "Volatility"], link: "/fx/em" },
+      { title: "Energy import costs staying flat", tags: ["Commodities", "Trade"], link: "/commodities" },
+      { title: "Bond interest rates tightening together", tags: ["Fixed Income", "Rates"], link: "/bonds" }
     ],
     actionable: {
       horizon: "2–4 weeks",
       conviction: "Medium",
       directives: [
-        "Monitor: yield-curve divergence for carry trade shifts.",
-        "Position: favor domestic exposure until volatility returns."
+        "Watch for interest rate differences between countries—they could shift currency bets.",
+        "Stick with US investments until market swings pick up again."
       ]
     },
     footer: {
@@ -166,23 +165,23 @@ const MOCK_DOMAINS = [
     id: "growth",
     title: "Growth Markets",
     posture: "softening",
-    trend: "Softening Momentum",
+    trend: "Mild slowdown",
     confidence_pct: 71,
     strength: 0.68,
     confidence_label: "Moderate confidence",
-    summary: "China deceleration dampens global demand; US resilience persists but moderates across sectors.",
-    insight: "Rotation toward defensive assets underway as markets rebalance.",
+    summary: "China's economy is slowing, which is reducing demand worldwide. The US economy is still holding up but showing signs of cooling across different industries.",
+    insight: "Investors are shifting toward safer, more defensive investments as growth slows.",
     downstream_effects: [
-      { title: "Commodity prices soften", tags: ["Commodities", "Energy", "Materials"], link: "/commodities" },
-      { title: "Defensive rotation starts", tags: ["Equities", "Defensive", "Utilities"], link: "/equities/defensive" },
-      { title: "Services remain steady", tags: ["Services", "Labor", "Domestic"], link: "/sectors/services" }
+      { title: "Raw material prices falling", tags: ["Commodities", "Energy", "Materials"], link: "/commodities" },
+      { title: "Money moving to safer stocks", tags: ["Equities", "Defensive", "Utilities"], link: "/equities/defensive" },
+      { title: "Service businesses holding steady", tags: ["Services", "Labor", "Domestic"], link: "/sectors/services" }
     ],
     actionable: {
       horizon: "1–2 weeks",
       conviction: "High",
       directives: [
-        "Rotate: favor defensive and pricing-power names.",
-        "Monitor: commodities for further softening signals."
+        "Shift toward defensive stocks and companies that can raise prices easily.",
+        "Watch commodity prices for more signs of weakening demand."
       ]
     },
     footer: {
@@ -198,23 +197,23 @@ const MOCK_DOMAINS = [
     id: "geopolitics",
     title: "Geopolitics Markets",
     posture: "tightening",
-    trend: "Tightening Momentum",
+    trend: "Rising tension",
     confidence_pct: 58,
     strength: 0.72,
-    confidence_label: "Cautious read",
-    summary: "Trade fragmentation reshapes supply chains; energy security concerns elevate regional tensions.",
-    insight: "Policy tensions rising — volatility expanding in select regions.",
+    confidence_label: "Moderate confidence",
+    summary: "Countries are trading less with each other, forcing companies to rebuild supply chains. Concerns about energy security are increasing tensions in key regions.",
+    insight: "Political tensions are building, creating more uncertainty in specific parts of the world.",
     downstream_effects: [
-      { title: "Energy premium elevated", tags: ["Energy", "Oil", "Gas"], link: "/energy" },
-      { title: "Onshoring accelerates", tags: ["Industrials", "Supply Chain", "Domestic"], link: "/industrials" },
-      { title: "Regional blocs solidify", tags: ["Geopolitics", "Trade", "Policy"], link: "/geopolitics" }
+      { title: "Energy prices staying high", tags: ["Energy", "Oil", "Gas"], link: "/energy" },
+      { title: "Companies moving factories back home", tags: ["Industrials", "Supply Chain", "Domestic"], link: "/industrials" },
+      { title: "Countries forming closer trading groups", tags: ["Geopolitics", "Trade", "Policy"], link: "/geopolitics" }
     ],
     actionable: {
       horizon: "3–6 months",
       conviction: "Medium",
       directives: [
-        "Hedge: prioritize domestic resilience and energy exposure.",
-        "Diversify: reduce single-region concentration risk."
+        "Focus on US companies and energy investments that can handle disruptions.",
+        "Spread your investments across multiple countries to reduce risk."
       ]
     },
     footer: {
@@ -1060,10 +1059,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const getBlur = useCallback((type) => isLowPower ? (type === 'panel' ? 'blur(16px)' : 'blur(12px)') : (type === 'panel' ? 'blur(20px)' : 'blur(16px)'), [isLowPower]);
 
   const getConfidenceStrength = useCallback((confidence_pct) => {
-    if (confidence_pct >= 75) return "High Signal Strength";
-    if (confidence_pct >= 65) return "Moderate Strength";
-    if (confidence_pct >= 55) return "Emerging Signal";
-    return "Weak Signal";
+    if (confidence_pct >= 75) return "High confidence";
+    if (confidence_pct >= 65) return "Moderate confidence";
+    if (confidence_pct >= 55) return "Low confidence";
+    return "Very low confidence";
   }, []);
 
   const handleDomainHoverEnter = useCallback((domain, event) => {
