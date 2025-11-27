@@ -58,7 +58,7 @@ const MOCK_DATA = {
   priority_signals: [
     {
       tag: "Policy Shock",
-      text: "New U.S. AI rules will raise costs for companies using AI tools.",
+      text: "U.S. AI rules raise compliance costs. Tech stocks at risk.",
       urgency: "critical",
       source: "washpost",
       quick_glance_tags: [
@@ -70,7 +70,7 @@ const MOCK_DATA = {
     },
     {
       tag: "Credit Stress", 
-      text: "Borrowing costs for emerging-market companies are rising, and fewer new bonds are being issued.",
+      text: "EM borrowing costs up. Bond issuance slowing.",
       urgency: "high",
       source: "ft",
       quick_glance_tags: [
@@ -82,7 +82,7 @@ const MOCK_DATA = {
     },
     {
       tag: "Tech Disruption",
-      text: "New quantum computer breakthrough could make current digital security systems vulnerable.",
+      text: "Quantum breakthrough threatens current encryption. Long-term risk.",
       urgency: "medium",
       source: "nyt",
        quick_glance_tags: [
@@ -94,7 +94,7 @@ const MOCK_DATA = {
     },
     {
       tag: "Geopolitical Risk",
-      text: "Trade tensions between major economies are disrupting global supply chains.",
+      text: "Trade tensions disrupt supply chains. Industrial costs rising.",
       urgency: "high",
       source: "wsj",
        quick_glance_tags: [
@@ -106,7 +106,7 @@ const MOCK_DATA = {
     },
     {
       tag: "Energy Transition",
-      text: "New clean energy technology could significantly lower renewable energy costs.",
+      text: "Clean energy costs may drop sharply. Renewables gain edge.",
       urgency: "medium",
       source: "bloomberg",
       quick_glance_tags: [
@@ -118,7 +118,7 @@ const MOCK_DATA = {
     },
     {
       tag: "Social Unrest",
-      text: "Protests over rising living costs are spreading across major European cities.",
+      text: "Cost-of-living protests spread across Europe. Consumer risk rising.",
       urgency: "high",
       source: "reuters",
       quick_glance_tags: [
@@ -133,114 +133,114 @@ const MOCK_DATA = {
     {
       type: "Markets", 
       icon: "DollarSign",
-      headline: "Business deals are slowing down",
-      insight: "Companies are finding it harder to raise money through new bond sales. Borrowing costs are rising, especially for riskier companies and those in emerging markets. Banks are becoming more cautious about who they lend to. This makes it difficult for industrial companies to refinance their debt, particularly those with significant business outside the U.S. We expect merger and acquisition activity to slow significantly in the first quarter as financing becomes more expensive and harder to obtain.",
+      headline: "Deal flow slowing as borrowing costs rise",
+      insight: "Bond issuance stalling. High-yield spreads widening. Banks tightening lending. Industrial refinancing at risk. M&A likely to slow in Q1 as financing becomes scarce.",
       exhibits: [
-        { title: "High-Risk Borrowing Cost Analysis", type: "Chart" },
-        { title: "Q1 2025 Deal Calendar - At Risk Transactions", type: "Calendar" },
-        { title: "Bank Lending Standards Survey", type: "Document" },
-        { title: "Industrial Sector Financial Stress Indicators", type: "Analysis" }
+        { title: "HY Spread Analysis", type: "Chart" },
+        { title: "Q1 Deal Calendar — At Risk", type: "Calendar" },
+        { title: "Bank Lending Survey", type: "Document" },
+        { title: "Industrial Stress Indicators", type: "Analysis" }
       ],
       key_metrics: {
         "Borrowing Cost Increase": "Rising across all categories",
         "Deal Cancellation Rate": "23%",
         "Average Time to Close": "45% increase"
       },
-      risk_assessment: "Medium-High - Companies facing refinancing challenges ahead",
+      risk_assessment: "Medium-High — Refinancing risk elevated",
       confidence_level: 0.78
     },
     {
       type: "Policy",
       icon: "Scale",
-      headline: "Government is increasing oversight of large tech companies",
-      insight: "Both political parties are pushing for stricter rules on content moderation and user privacy. New AI regulations from Washington signal a fundamental shift in how tech giants will operate, with compliance costs expected to increase by 40-60% across major platforms. This represents a significant challenge for large tech stocks in the near term, as companies redirect money from growth projects to meeting new regulatory requirements.",
+      headline: "Tech oversight intensifying",
+      insight: "Bipartisan push for stricter content and privacy rules. AI regulations signal 40-60% compliance cost jump. Growth budgets redirecting to legal. Tech margins under pressure near-term.",
       exhibits: [
-        { title: "Congressional Hearing Schedule Q1 2025", type: "Document" },
-        { title: "Compliance Budget Allocations - Meta, Google, Apple", type: "Chart" },
-        { title: "Legal Spending Forecasts by Tech Giant", type: "Analysis" },
-        { title: "Historical Regulatory Impact on Stock Performance", type: "Research" }
+        { title: "Congressional Hearing Calendar", type: "Document" },
+        { title: "Compliance Budget Shifts", type: "Chart" },
+        { title: "Legal Spend Forecasts", type: "Analysis" },
+        { title: "Regulatory Impact History", type: "Research" }
       ],
       key_metrics: {
         "Expected Compliance Cost Increase": "40-60%",
         "Timeline for Implementation": "Q2 2025",
         "Affected Companies": "AAPL, GOOGL, META, AMZN"
       },
-      risk_assessment: "High - Significant impact on tech company profit margins",
+      risk_assessment: "High — Tech margins at risk",
       confidence_level: 0.85
     },
     {
       type: "Global",
       icon: "Globe", 
-      headline: "China's economy is slowing down",
-      insight: "Chinese exports are returning to normal levels after pandemic disruptions. Consumer confidence remains low despite government efforts to boost spending. Infrastructure projects are providing some support but not enough to offset weak consumer spending and declining export demand. This slowdown has significant implications for global commodity prices and international companies that rely heavily on Chinese customers.",
+      headline: "China growth decelerating",
+      insight: "Exports normalizing. Consumer confidence weak. Infrastructure spend not offsetting demand decline. Commodity prices and China-exposed companies at risk.",
       exhibits: [
-        { title: "China Export Trends vs. Global Demand", type: "Chart" },
-        { title: "Consumer Confidence Index - Historical Context", type: "Analysis" },
-        { title: "Infrastructure Spending Effectiveness Analysis", type: "Research" },
-        { title: "Global Supply Chain Impact Assessment", type: "Document" }
+        { title: "China Export Trends", type: "Chart" },
+        { title: "Consumer Confidence History", type: "Analysis" },
+        { title: "Infrastructure ROI", type: "Research" },
+        { title: "Supply Chain Impact", type: "Document" }
       ],
       key_metrics: {
-        "Consumer Confidence": "15% below pre-pandemic levels",
-        "Export Growth": "Down 3.2% year-over-year",
+        "Consumer Confidence": "15% below pre-pandemic",
+        "Export Growth": "Down 3.2% YoY",
         "Infrastructure Spending": "Up 8.5% but slowing"
       },
-      risk_assessment: "Medium - Could affect global economic growth",
+      risk_assessment: "Medium — Global growth drag",
       confidence_level: 0.72
     }
   ],
   consensus_score: 66,
   consensus_breakdown: {
-    morning_takeaway: "Overall market sentiment is mixed, with government regulations weighing heavily, borrowing costs causing stress, and China's economic slowdown dampening growth expectations.",
+    morning_takeaway: "Mixed sentiment. Regulation weighs on tech, credit stress rising, China drag persists.",
     segments: [
-      {name: "Policy", weight: 0.30, trend: "+", note: "Increasing oversight", detail: "The regulatory environment is shifting towards stricter oversight, particularly for large technology companies. New regulations are expected regarding data privacy, AI content, and competitive practices. This means higher compliance costs and potential limitations on business models for affected sectors. Investors should watch legislative developments and their potential impact on company profits and innovation.", stress_level: "moderate", trend_indicator: "rising"},
-      {name: "Credit", weight: 0.25, trend: "-", note: "Borrowing stress rising", detail: "Credit markets are showing signs of stress, particularly for riskier companies in emerging markets. The cost of borrowing has increased significantly this week, indicating that lenders see more risk. This could lead to higher borrowing costs for companies, reduced access to financing, and slower merger and acquisition activity, especially for companies with high debt levels.", stress_level: "high", trend_indicator: "worsening"},
-      {name: "Equities", weight: 0.25, trend: "~", note: "Narrow gains", detail: "Stock market gains are concentrated in a few large companies rather than being broadly distributed. This lack of widespread participation could indicate underlying weakness. While major stock indexes might look strong, investors should be cautious and diversify their portfolios, focusing on companies with strong fundamentals that are less affected by economic swings.", stress_level: "stable", trend_indicator: "stable"},
-      {name: "Global", weight: 0.20, trend: "-", note: "China slowdown", detail: "China's economic growth continues to slow, affecting global demand and commodity prices. Government efforts to stimulate the economy have had limited success, and consumer confidence remains low. This slowdown creates risks for international companies with significant business in China and could reduce global trade. Companies may need to adjust their supply chains and market strategies.", stress_level: "moderate", trend_indicator: "worsening"},
+      {name: "Policy", weight: 0.30, trend: "+", note: "Oversight rising", detail: "Stricter tech rules ahead. Higher compliance costs expected. Watch legislative moves.", stress_level: "moderate", trend_indicator: "rising"},
+      {name: "Credit", weight: 0.25, trend: "-", note: "Spreads widening", detail: "Borrowing costs up sharply. EM and HY under pressure. M&A financing constrained.", stress_level: "high", trend_indicator: "worsening"},
+      {name: "Equities", weight: 0.25, trend: "~", note: "Narrow breadth", detail: "Gains concentrated in mega-caps. Broad participation weak. Diversify.", stress_level: "stable", trend_indicator: "stable"},
+      {name: "Global", weight: 0.20, trend: "-", note: "China drag", detail: "Export demand soft. Consumer confidence low. Commodity prices pressured.", stress_level: "moderate", trend_indicator: "worsening"},
     ]
   },
   synthesis: {
     consensus: [
       {
-        claim: "Government oversight of large tech companies is increasing",
+        claim: "Tech oversight rising across regulators",
         evidence_urls: ["https://example.com/wapo/1", "https://example.com/nyt/1", "https://example.com/ft/1"],
         confidence: 0.74,
         macro_tags: ["Regulation", "Tech"],
-        rationale: "Three sources mention hearings or new regulations moving forward."
+        rationale: "Three sources confirm hearings and new rules advancing."
       }
     ],
     divergences: [
       {
         id: "em_credit",
         type: "coverage_gap",
-        topic: "Borrowing stress for emerging market companies",
-        detail: "Borrowing costs rising sharply",
+        topic: "EM credit stress under-reported",
+        detail: "HY spreads widening; issuance stalling",
         present_in: ["ft"],
         missing_in: ["nyt", "wapo"],
         evidence_urls: ["https://example.com/ft/2"],
         confidence: 0.63,
         macro_tags: ["Credit", "EM"],
-        rationale: "Only the Financial Times mentions bond issuance delays and rising borrowing costs.",
+        rationale: "FT only source flagging bond delays.",
         linked: ["ft", "washpost"]
       },
       {
         id: "energy_vs_industrials",
         type: "angle_disagreement", 
-        topic: "Energy companies performing better than industrial companies",
-        detail: "Profit margins diverging significantly",
+        topic: "Energy vs Industrial margin divergence",
+        detail: "Energy outperforming; industrials lagging",
         present_in: ["wsj"],
         missing_in: ["nyt"],
         evidence_urls: ["https://example.com/wsj/1"],
         confidence: 0.58,
         macro_tags: ["Energy", "Industrial"],
-        rationale: "Different sectors showing significantly different performance.",
+        rationale: "Sector performance diverging sharply.",
         linked: ["ft"]
       }
     ],
     us_global_split: [
       {
-        topic: "China's economic growth path",
-        us_view: "temporary slowdown",
-        global_view: "long-term structural decline", 
+        topic: "China growth outlook",
+        us_view: "cyclical slowdown",
+        global_view: "structural decline", 
         evidence_urls_us: ["https://example.com/nyt/2"],
         evidence_urls_global: ["https://example.com/ft/3"],
         confidence: 0.71
@@ -249,22 +249,22 @@ const MOCK_DATA = {
   },
   counterpoints: [
     {
-      consensus: "Regulations tightening",
-      counter: "Some analysts believe enforcement may ease before elections",
+      consensus: "Regulation tightening",
+      counter: "Enforcement may ease pre-election",
       confidence: 0.45,
       source: "alternative_analysis"
     },
     {
-      consensus: "China slowing down", 
-      counter: "New government spending programs could boost infrastructure growth",
+      consensus: "China slowing", 
+      counter: "New stimulus may lift infrastructure",
       confidence: 0.52,
       source: "contrarian_view"
     }
   ],
   blindspots: [
     {
-      title: "International coverage",
-      text: "Asian business news reports merger activity increasing, but U.S. media hasn't covered it",
+      title: "Asia M&A uptick",
+      text: "Asian sources report rising deal flow — underreported in U.S. media",
       significance: "medium",
       region: "asia"
     }
@@ -274,103 +274,103 @@ const MOCK_DATA = {
       source: "wapo",
       name: "Washington Post",
       specialty: "Policy",
-      topline: "Tech oversight increasing",
-      policy: "Congressional committees signaling more enforcement ahead",
-      market_macro: "Debate over bank capital requirements resurfacing",
+      topline: "Tech oversight rising",
+      policy: "Congress signals enforcement push",
+      market_macro: "Bank capital debate resurfaces",
       tones: ["cautionary"],
       risk_flags: ["regulatory"],
       influence: 5,
       reliability: 4,
-      historical_bias: "Tends to emphasize regulatory risks"
+      historical_bias: "Regulatory risk focus"
     },
     {
       source: "nyt", 
       name: "New York Times",
       specialty: "Domestic",
-      topline: "Clean energy industry gaining momentum",
-      policy: "Government subsidies continuing as planned",
-      market_macro: "Consumer spending showing mixed results",
+      topline: "Clean energy momentum",
+      policy: "Subsidies on track",
+      market_macro: "Consumer spending mixed",
       tones: ["neutral", "supportive"],
       risk_flags: ["policy", "labor"],
       influence: 4,
       reliability: 4,
-      historical_bias: "Consumer-focused perspective"
+      historical_bias: "Consumer-focused"
     },
     {
       source: "wsj",
       name: "Wall Street Journal", 
       specialty: "Markets",
-      topline: "Industrial mergers and acquisitions picking up",
-      policy: "Company executives expect interest rates to stay high",
-      market_macro: "Emerging market companies facing borrowing difficulties",
+      topline: "Industrial M&A picks up",
+      policy: "Executives expect rates to hold",
+      market_macro: "EM borrowing strained",
       tones: ["neutral", "cautionary"],
       risk_flags: ["credit", "rates"],
       influence: 5,
       reliability: 5,
-      historical_bias: "Market-centric, corporate viewpoint"
+      historical_bias: "Corporate/market lens"
     },
     {
       source: "ft",
       name: "Financial Times",
       specialty: "Global", 
-      topline: "China's economic outlook worsening",
-      policy: "Government stimulus programs becoming more limited",
-      market_macro: "Export patterns changing",
+      topline: "China outlook dims",
+      policy: "Stimulus running low",
+      market_macro: "Export trends shifting",
       tones: ["cautionary"],
       risk_flags: ["fx", "growth", "rates"],
       influence: 5,
       reliability: 5,
-      historical_bias: "Global macro focus, emerging markets expertise"
+      historical_bias: "Global macro / EM focus"
     }
   ],
   trajectory: [
     {
       horizon: "Now",
-      risk: "↑ Compliance costs slowing growth",
+      risk: "↑ Compliance drag on growth",
       opportunity: "Neutral",
       confidence: 0.8
     },
     {
       horizon: "3M",
-      risk: "↑ Emerging market borrowing stress", 
-      opportunity: "Selected merger opportunities",
+      risk: "↑ EM credit stress", 
+      opportunity: "Selective M&A",
       confidence: 0.65
     },
     {
       horizon: "12M",
-      risk: "Mixed global demand patterns",
-      opportunity: "Lower input costs for U.S. companies",
+      risk: "Global demand mixed",
+      opportunity: "Lower input costs",
       confidence: 0.55
     }
   ],
   strategic_implications: [
     { 
       type: 'risk', 
-      text: "Tightening regulations mean higher costs and slower innovation for tech companies",
+      text: "Regulation tightening — tech costs up, innovation slowing",
       timeframe: "short_term",
       priority: "high",
-      action_cues: ["Tech sector watchlist", "Regulatory expense alerts", "Policy timeline tracker"]
+      action_cues: ["Tech watchlist", "Compliance alerts", "Policy tracker"]
     },
     { 
       type: 'risk', 
-      text: "Emerging market stress means higher financing costs for companies with international business", 
+      text: "EM stress — financing costs rising for global businesses", 
       timeframe: "medium_term",
       priority: "medium",
-      action_cues: ["Emerging market borrowing cost alerts", "Export-focused company monitor", "Currency volatility tracker"]
+      action_cues: ["EM spread alerts", "Export monitor", "FX tracker"]
     },
     { 
       type: 'opportunity', 
-      text: "China's slowdown means cheaper raw materials for U.S. manufacturers",
+      text: "China slowdown — cheaper inputs for U.S. manufacturers",
       timeframe: "long_term", 
       priority: "medium",
-      action_cues: ["Commodity price alerts", "Manufacturing sector rotation", "Supply chain optimization"]
+      action_cues: ["Commodity alerts", "Industrial rotation", "Supply chain moves"]
     }
   ],
   status: 'ok',
   missing_sources: [],
   sla_adherence: true,
   sentiment_flow: { green: 28, blue: 44, red: 28 },
-  insight_line: "Markets are becoming more cautious — three significant differences detected in global borrowing costs."
+  insight_line: "Risk-off tilt — 3 divergences flagged in global credit."
 };
 
 // Main page component
