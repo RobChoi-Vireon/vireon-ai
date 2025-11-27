@@ -77,21 +77,22 @@ const SignalEquilibriumBar = ({
     }
   };
 
-  // Label logic
+  // Label logic - CEP Pillar Zero Clarity Standard
   const getLabel = () => {
     const absBias = Math.abs(clampedBias);
     let prefix = '';
     let direction = 'Neutral';
 
     if (absBias >= 0.15) {
-      direction = clampedBias < 0 ? 'Risk-Off' : 'Risk-On';
+      // Simplified language: "Risk-Off" → "Cautious stance"
+      direction = clampedBias < 0 ? 'Cautious stance (Risk-Off)' : 'Confident stance (Risk-On)';
       
       if (absBias >= 0.7) {
         prefix = 'Strong ';
       } else if (absBias >= 0.45) {
         prefix = 'Moderate ';
       } else {
-        prefix = 'Lean ';
+        prefix = '';
       }
     }
 
