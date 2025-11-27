@@ -16,12 +16,12 @@ const generateAggregateSkew = (sources) => {
   
   if (cautionaryCount >= supportiveCount && riskySources.length > 0) {
     const riskText = riskySources.join(' and ');
-    const neutralText = neutralSources.length > 0 ? `, while ${neutralSources.join(' and ')} coverage remains neutral` : '';
-    return `Trusted source weighting tilts hawkish: **${riskText}** stress credit risk and China slowdown${neutralText}.`;
+    const neutralText = neutralSources.length > 0 ? `; ${neutralSources.join(' and ')} neutral` : '';
+    return `Source tilt: hawkish. **${riskText}** flag credit risk, China drag${neutralText}.`;
   } else if (supportiveCount > cautionaryCount) {
-    return `Source consensus leans **bullish** with supportive narratives dominating across major publications.`;
+    return `Source lean: **bullish**. Supportive tone across majors.`;
   } else {
-    return `Sources show **mixed signals** with balanced coverage across risk and opportunity themes.`;
+    return `**Mixed signals** — balanced risk/opportunity coverage.`;
   }
 };
 

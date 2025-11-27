@@ -102,7 +102,7 @@ const DebateCard = ({ counterpoint, index, isExpandedView = false }) => {
           <div className="flex items-center gap-2">
             <Scale className="w-4 h-4 text-amber-400" />
             <span className="text-xs font-semibold text-amber-300 uppercase tracking-wide">
-              Debate Snapshot
+              Debate
             </span>
             {isRising && (
               <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 text-xs">
@@ -178,8 +178,8 @@ const DebateCard = ({ counterpoint, index, isExpandedView = false }) => {
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             >
               <div className="space-y-2 text-xs text-gray-400">
-                <p><span className="font-medium">Analysis:</span> This represents a {counterpoint.confidence && counterpoint.confidence > 0.6 ? 'strong' : 'moderate'} challenge to the prevailing narrative.</p>
-                <p><span className="font-medium">Impact:</span> Could shift market sentiment if gains traction.</p>
+                <p><span className="font-medium">Analysis:</span> {counterpoint.confidence && counterpoint.confidence > 0.6 ? 'Strong' : 'Moderate'} challenge to consensus.</p>
+                <p><span className="font-medium">Impact:</span> May shift sentiment if sustained.</p>
               </div>
             </motion.div>
           )}
