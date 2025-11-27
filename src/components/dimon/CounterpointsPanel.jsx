@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GitBranch, Eye, AlertCircle, ChevronDown, ChevronUp, Scale, ArrowRight, Target, Radar } from 'lucide-react';
@@ -324,7 +323,7 @@ export default function CounterpointsPanel({ counterpoints = [], blindspots = []
                 Debate Board & Blindspot Radar
               </h2>
               <p className="text-sm text-gray-400">
-                Real-time consensus fractures and hidden narratives.
+                Consensus fractures and underreported themes.
               </p>
             </div>
           </div>

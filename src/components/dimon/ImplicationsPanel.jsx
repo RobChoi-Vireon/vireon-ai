@@ -56,8 +56,8 @@ const ImplicationPanel = React.memo(({ item, index, delay, totalCount, sectionTy
     : 'linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.1))';
 
   const expandedContext = isRisk 
-    ? "Regulatory shifts in EU tech compliance projected to add **15% to R&D costs** across major platforms. New AI content rules require dedicated compliance teams and infrastructure overhaul."
-    : "China's manufacturing slowdown creates a favorable input cost environment. **Steel, aluminum, and rare earth prices are down 12-18% YoY**, improving margins for US industrial producers.";
+    ? "EU tech rules add **15% to R&D**. AI compliance requires new teams and infrastructure."
+    : "China slowdown cuts inputs. **Steel, aluminum down 12-18% YoY** — margin lift for U.S. industrials.";
   
   const linkedSignals = item.action_cues || [];
 

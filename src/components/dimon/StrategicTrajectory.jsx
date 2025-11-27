@@ -434,34 +434,34 @@ const TimelineEvolution = ({ trajectory }) => {
 
   const evolutionData = {
     'Now': {
-      label: 'Now (0-1M)',
-      summary: 'Compliance drag dominates with neutral positioning.',
+      label: 'Now',
+      summary: 'Compliance drag dominates.',
       confidence: 0.80,
       sentiment: 'risk',
       risks: ['Regulatory compliance costs', 'Policy uncertainty', 'Tech sector drag'],
       opportunities: ['Defensive positioning', 'Quality premium'],
       signals: ['DC unveils AI rules', 'Tech oversight rises', 'Bank capital debate'],
-      context: 'Regulatory shifts in EU tech compliance projected to add 15% to R&D costs across major platforms. New AI content rules require dedicated compliance teams and infrastructure overhaul.'
+      context: 'EU tech rules add 15% to R&D. AI compliance requires new teams and infrastructure.'
     },
     '3M': {
-      label: '3M Outlook',
-      summary: 'EM credit stress emerges, but selective M&A offsets risk.',
+      label: '3M',
+      summary: 'EM credit stress rising; selective M&A emerging.',
       confidence: 0.65,
       sentiment: 'balanced', // Using 'balanced' maps to 'default' color
       risks: ['EM credit spreads widening', 'Funding cost increases', 'Export market stress'],
       opportunities: ['Selective M&A opportunities', 'Valuation compression', 'Tech sector rotation'],
       signals: ['HY spreads widen', 'Industrial deal flow', 'Credit markets stress'],
-      context: 'Credit markets show signs of stress, particularly in emerging market high-yield bonds. However, this creates selective opportunities for well-positioned acquirers and value investors.'
+      context: 'EM HY stress rising. Creates selective entry points for positioned buyers.'
     },
     '12M': {
-      label: '12M Outlook',
-      summary: 'Global demand uncertainty, but cheaper inputs boost resilience.',
+      label: '12M',
+      summary: 'Demand uncertain; input costs falling.',
       confidence: 0.55,
       sentiment: 'opportunity',
       risks: ['Global demand weakness', 'China slowdown', 'Export normalization'],
       opportunities: ['Cheaper commodity inputs', 'Supply chain optimization', 'Manufacturing margin expansion'],
       signals: ['China demand softens', 'Commodity deflation', 'Input cost relief'],
-      context: 'China\'s manufacturing slowdown creates a favorable input cost environment. Steel, aluminum, and rare earth prices are down 12-18% YoY, improving margins for US industrial producers.'
+      context: 'China slowdown cuts input costs. Steel, aluminum down 12-18% YoY — margin tailwind for U.S. industrials.'
     }
   };
 
