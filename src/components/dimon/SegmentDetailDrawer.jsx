@@ -1209,10 +1209,9 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
                 >
                   <X className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.74)' }} strokeWidth={2.2} />
                 </motion.button>
-                </div>
-                </div>
-                </div>
-                </motion.div>
+              </div>
+            </div>
+          </motion.div>
 
           <motion.div 
             key={`${segment.name}-content`}
