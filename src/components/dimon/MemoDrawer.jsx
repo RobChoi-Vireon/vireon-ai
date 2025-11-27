@@ -1,4 +1,3 @@
-
 // 🔒 DESIGN LOCKED — OS HORIZON V4.0
 // Last Updated: 2025-01-20
 // Do not modify visual design without explicit assignment
@@ -438,9 +437,9 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
       case 'Markets':
         return {
           ...baseAnalysis,
-          headline_summary: "Industrial deal flow slows as spreads widen and banks tighten underwriting standards.",
-          morning_takeaway: "Refinancing cliff risk → pressures industrial credit spreads and creates downside bias for high-beta equities.",
-          translation: "This means credit conditions are tightening, raising funding costs and pushing investors defensive.",
+          headline_summary: "Industrial activity is slowing as borrowing costs rise and banks get stricter.",
+          morning_takeaway: "A wave of upcoming debt repayments is raising costs for companies and putting pressure on riskier stocks.",
+          translation: "Borrowing is getting harder and more expensive, so investors are becoming more cautious.",
           ripple_impact: "Watch high-beta equities and industrial spreads for further downside pressure.",
           context_points: [
             { icon: 'TrendingDown', text: "Spreads widen (HY/EM +18–35 bps WoW)", color: "text-red-300" },
@@ -457,10 +456,10 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
             opportunity: { text: "Potential for alpha if credit thesis proves correct, with favorable entry points emerging", confidence: 0.65 }
           },
           impact_tags: [
-            { asset: "Equities", detail: "Industrials (–)", direction: "-" },
-            { asset: "Credit", detail: "Spreads widen (–)", direction: "-" },
-            { asset: "Rates", detail: "Neutral", direction: "=" },
-            { asset: "FX", detail: "USD (+)", direction: "+" }
+            { asset: "Industrials", detail: "Weaker (–)", direction: "-" },
+            { asset: "Corporate credit", detail: "Higher costs (–)", direction: "-" },
+            { asset: "Rates", detail: "Unchanged", direction: "=" },
+            { asset: "USD", detail: "Strengthening (+)", direction: "+" }
           ],
           key_takeaway: "Credit stress in industrials signals refinancing risks → near-term downside in high-yield exposure.",
           source_count: 38,
@@ -550,7 +549,7 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
   // Macro posture (could be dynamic from data)
   const getMacroPosture = (type) => {
     switch (type) {
-      case 'Markets': return 'Lean Risk-Off';
+      case 'Markets': return 'slightly cautious';
       case 'Policy': return 'Hawkish Bias';
       case 'Global': return 'Growth Concerns';
       default: return 'Neutral';
@@ -1335,7 +1334,7 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
                         letterSpacing: '0.02em',
                       }}
                     >
-                      Macro Posture: {getMacroPosture(type)}
+                      Market mood: {getMacroPosture(type)}
                     </p>
                     
                     {/* Meta Row */}
@@ -1350,7 +1349,7 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
                         letterSpacing: `${HORIZON.type.meta.tracking}em`,
                       }}
                     >
-                      Generated today • {type} Analysis • Horizon: Short-Term (1W) • Based on {sourceCount} sources
+                      Generated today • {type} Analysis • Short-term outlook (1 week) • Based on {sourceCount} sources
                     </p>
                   </div>
 
