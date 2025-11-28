@@ -1,84 +1,90 @@
-// 🔒 DESIGN LOCKED — OS HORIZON V3.5 "SIGNAL CASCADE V2" ARCHITECTURE
-// Last Updated: 2025-01-28 | VisionOS Depth Layers + Liquid Glass Realism
-// Full Kinetic Parallax + Feather Card System
+// 🔒 DESIGN LOCKED — OS HORIZON "SIGNAL CASCADE V3" ARCHITECTURE
+// Last Updated: 2025-01-28 | Apple-Grade Liquid Glass + VisionOS Depth
+// 4-Tier Narrative Hierarchy | Kinetic Parallax System
 // See: DESIGN_LOCKED_COMPONENTS.md
 
 import React, { useEffect, useState, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { X, Shield, Briefcase, BarChart3, Globe, Zap, Target, ChevronLeft, ChevronRight, Waves, TrendingUp, TrendingDown, Clock } from 'lucide-react';
 
 // ============================================================================
-// SIGNAL CASCADE V2 — MOTION DNA
+// SIGNAL CASCADE V3 — MOTION DNA
 // ============================================================================
 const MOTION = {
   CURVES: {
-    silk: [0.25, 0.1, 0.25, 1.0],
-    cascade: [0.22, 0.68, 0.35, 1],
-    breathe: [0.4, 0.0, 0.2, 1],
-    bounce: [0.34, 1.56, 0.64, 1]
+    easeOut: [0.25, 0.1, 0.25, 1.0],
+    cascade: [0.22, 0.58, 0.35, 1],
+    mount: [0.20, 0.60, 0.40, 1]
   },
   DURATIONS: {
-    fast: 0.12,
-    base: 0.18,
-    slow: 0.28,
-    cascade: 0.38
+    fast: 0.16,
+    base: 0.20,
+    mount: 0.18,
+    fadeUp: 0.15
   },
-  // Kinetic Parallax Rates
+  // Kinetic Parallax Rates (V3 Spec)
   PARALLAX: {
-    title: -1.5,
-    tldr: -1.0,
-    insights: -0.5,
-    narrative: -0.25
+    heroPlate: -1.5,
+    signalOrb: -1.0,
+    insightModules: -0.5,
+    narrativePanel: -0.25
   }
 };
 
 // ============================================================================
-// SIGNAL CASCADE V2 — GLASS PLATE SYSTEM
+// SIGNAL CASCADE V3 — 4-TIER GLASS SYSTEM
 // ============================================================================
-const CASCADE_TOKENS = {
-  // Level 1: Title Frame
-  titleFrame: {
-    radius: '28px',
-    blur: 'blur(28px) saturate(170%)',
-    bg: 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.018) 100%)',
-    border: 'rgba(255,255,255,0.08)'
+const GLASS = {
+  // TIER 1: Hero Title Plate (highest brightness + strongest sheen)
+  heroPlate: {
+    radius: '30px',
+    blur: 'blur(30px) saturate(175%)',
+    bg: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.018) 100%)',
+    border: 'rgba(255,255,255,0.09)',
+    sheen: 'linear-gradient(180deg, rgba(255,255,255,0.022) 0%, transparent 45%)'
   },
-  // Level 2: TL;DR Signal Orb
+  // TIER 2: TL;DR Signal Orb (mid-high blur + gradient + pill curvature)
   signalOrb: {
     radius: '36px',
-    blur: 'blur(32px) saturate(175%)',
-    bg: (color) => `linear-gradient(135deg, ${color}08 0%, rgba(255, 255, 255, 0.045) 50%, rgba(255, 255, 255, 0.025) 100%)`,
-    border: 'rgba(255,255,255,0.14)'
+    blur: 'blur(34px) saturate(178%)',
+    bgGradient: (colorRgb) => `linear-gradient(135deg, rgba(${colorRgb}, 0.10) 0%, rgba(255, 255, 255, 0.048) 45%, rgba(255, 255, 255, 0.022) 100%)`,
+    border: 'rgba(255,255,255,0.14)',
+    hoverLift: 3
   },
-  // Feather Cards
+  // TIER 3: Feather Glass Cards (minimal glow, feather-thin border)
   featherCard: {
     radius: '24px',
-    blur: 'blur(20px) saturate(155%)',
-    bg: 'linear-gradient(180deg, rgba(255, 255, 255, 0.032) 0%, rgba(255, 255, 255, 0.012) 100%)',
-    border: 'rgba(255,255,255,0.12)',
+    blur: 'blur(18px) saturate(150%)',
+    bg: 'linear-gradient(180deg, rgba(255, 255, 255, 0.028) 0%, rgba(255, 255, 255, 0.010) 100%)',
+    border: 'rgba(255,255,255,0.11)',
     borderWidth: '0.5px',
     hoverLift: 2
   },
-  // Level 3: Intelligence Panel
-  intelligencePanel: {
-    radius: '36px',
-    blur: 'blur(26px) saturate(168%)',
-    bg: 'linear-gradient(180deg, rgba(255, 255, 255, 0.038) 0%, rgba(255, 255, 255, 0.016) 100%)',
+  // TIER 4: Narrative Intelligence Panel (warm inner-glow + soft contours)
+  narrativePanel: {
+    radius: '34px',
+    blur: 'blur(28px) saturate(168%)',
+    bg: 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.016) 100%)',
     border: 'rgba(255,255,255,0.10)',
-    glowOpacity: 0.35
-  },
-  // Spacing Rhythm
-  rhythm: {
-    titleToTldr: 48,
-    tldrToInsights: 44,
-    betweenCards: 20,
-    insightsToNarrative: 56,
-    bottomPadding: 64
+    glowOpacity: 0.12,
+    hoverLift: 1
   }
 };
 
 // ============================================================================
-// SEGMENT THEMING — ATMOSPHERIC COLORS
+// SPACING RHYTHM
+// ============================================================================
+const SPACING = {
+  heroToOrb: 52,
+  orbToModules: 48,
+  betweenModules: 24,
+  modulesToDivider: 40,
+  dividerToNarrative: 40,
+  bottomPadding: 56
+};
+
+// ============================================================================
+// SEGMENT COLOR ATMOSPHERES
 // ============================================================================
 const getTheme = (name) => {
   const themes = {
@@ -86,40 +92,36 @@ const getTheme = (name) => {
       Icon: Shield, 
       color: '#5A9BE8',
       colorRgb: '90, 155, 232',
-      accentLight: 'rgba(90, 155, 232, 0.14)',
-      atmospheric: 'rgba(90, 155, 232, 0.06)',
-      gradient: 'linear-gradient(135deg, rgba(90, 155, 232, 0.12) 0%, transparent 100%)'
+      accentLight: 'rgba(90, 155, 232, 0.15)',
+      atmospheric: 'rgba(90, 155, 232, 0.05)'
     },
     Credit: { 
       Icon: Briefcase, 
       color: '#9B7ADB',
       colorRgb: '155, 122, 219',
-      accentLight: 'rgba(155, 122, 219, 0.14)',
-      atmospheric: 'rgba(155, 122, 219, 0.06)',
-      gradient: 'linear-gradient(135deg, rgba(155, 122, 219, 0.12) 0%, transparent 100%)'
+      accentLight: 'rgba(155, 122, 219, 0.15)',
+      atmospheric: 'rgba(155, 122, 219, 0.05)'
     },
     Equities: { 
       Icon: BarChart3, 
       color: '#2DB87D',
       colorRgb: '45, 184, 125',
-      accentLight: 'rgba(45, 184, 125, 0.14)',
-      atmospheric: 'rgba(45, 184, 125, 0.06)',
-      gradient: 'linear-gradient(135deg, rgba(45, 184, 125, 0.12) 0%, transparent 100%)'
+      accentLight: 'rgba(45, 184, 125, 0.15)',
+      atmospheric: 'rgba(45, 184, 125, 0.05)'
     },
     Global: { 
       Icon: Globe, 
       color: '#D4A24A',
       colorRgb: '212, 162, 74',
-      accentLight: 'rgba(212, 162, 74, 0.14)',
-      atmospheric: 'rgba(212, 162, 74, 0.06)',
-      gradient: 'linear-gradient(135deg, rgba(212, 162, 74, 0.12) 0%, transparent 100%)'
+      accentLight: 'rgba(212, 162, 74, 0.15)',
+      atmospheric: 'rgba(212, 162, 74, 0.05)'
     }
   };
   return themes[name] || themes.Policy;
 };
 
 // ============================================================================
-// SEGMENT DATA
+// SEGMENT DATA (TEXT UNCHANGED)
 // ============================================================================
 const getSegmentDetails = (segment) => {
   if (!segment) return null;
@@ -175,79 +177,68 @@ const getSegmentDetails = (segment) => {
 };
 
 // ============================================================================
-// LEVEL 1: TITLE FRAME — 2-Layer Parallax Drift
+// TIER 1: HERO TITLE PLATE
 // ============================================================================
-const TitleFrame = ({ segment, theme, scrollY }) => {
-  const parallaxY = useTransform(scrollY, [0, 300], [0, 300 * MOTION.PARALLAX.title * 0.01]);
-  const parallaxY2 = useTransform(scrollY, [0, 300], [0, 300 * MOTION.PARALLAX.title * 0.015]);
+const HeroTitlePlate = ({ segment, theme, scrollY }) => {
+  const parallaxY = useTransform(scrollY, [0, 400], [0, 400 * MOTION.PARALLAX.heroPlate * 0.01]);
   
   return (
     <motion.div
       className="relative"
       style={{ 
         y: parallaxY,
-        marginBottom: `${CASCADE_TOKENS.rhythm.titleToTldr}px`
+        marginBottom: `${SPACING.heroToOrb}px`
       }}
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: MOTION.DURATIONS.cascade, ease: MOTION.CURVES.cascade }}
+      transition={{ duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.cascade }}
     >
-      {/* Layer 1: Atmospheric Bloom */}
-      <motion.div 
-        className="absolute -inset-16 pointer-events-none"
-        style={{
-          y: parallaxY2,
-          background: `radial-gradient(ellipse at 50% 40%, ${theme.atmospheric} 0%, transparent 65%)`,
-          filter: 'blur(50px)'
-        }}
-      />
-      
-      {/* Layer 2: Edge Glow */}
+      {/* Atmospheric Color Bloom */}
       <div 
-        className="absolute -inset-1 pointer-events-none"
+        className="absolute -inset-20 pointer-events-none"
         style={{
-          background: `radial-gradient(ellipse at 50% 0%, rgba(${theme.colorRgb}, 0.08) 0%, transparent 60%)`,
-          borderRadius: CASCADE_TOKENS.titleFrame.radius,
-          filter: 'blur(20px)'
+          background: `radial-gradient(ellipse at 50% 35%, ${theme.atmospheric} 0%, transparent 60%)`,
+          filter: 'blur(45px)'
         }}
       />
       
-      {/* Title Frame Glass */}
+      {/* Hero Glass Plate */}
       <div
         className="relative overflow-hidden"
         style={{
-          padding: '32px 40px',
-          background: CASCADE_TOKENS.titleFrame.bg,
-          backdropFilter: CASCADE_TOKENS.titleFrame.blur,
-          WebkitBackdropFilter: CASCADE_TOKENS.titleFrame.blur,
-          borderRadius: CASCADE_TOKENS.titleFrame.radius,
-          border: `1px solid ${CASCADE_TOKENS.titleFrame.border}`
+          padding: '34px 42px',
+          background: GLASS.heroPlate.bg,
+          backdropFilter: GLASS.heroPlate.blur,
+          WebkitBackdropFilter: GLASS.heroPlate.blur,
+          borderRadius: GLASS.heroPlate.radius,
+          border: `1px solid ${GLASS.heroPlate.border}`
         }}
       >
-        {/* Inner Sheen */}
+        {/* VisionOS Inner Sheen */}
         <div 
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: 'linear-gradient(180deg, rgba(255,255,255,0.015) 0%, transparent 50%)',
-            borderRadius: CASCADE_TOKENS.titleFrame.radius
+            background: GLASS.heroPlate.sheen,
+            borderRadius: GLASS.heroPlate.radius
           }}
         />
         
-        {/* Segment Color Accent Line */}
+        {/* Segment Color Top Edge */}
         <div 
-          className="absolute top-0 left-[20%] right-[20%] h-px pointer-events-none"
+          className="absolute top-0 left-[18%] right-[18%] h-px pointer-events-none"
           style={{
-            background: `linear-gradient(90deg, transparent, rgba(${theme.colorRgb}, 0.25), transparent)`
+            background: `linear-gradient(90deg, transparent, rgba(${theme.colorRgb}, 0.28), transparent)`
           }}
         />
         
+        {/* Title: 24px semibold */}
         <h1 
           className="relative"
           style={{
             fontSize: '24px',
             fontWeight: 600,
-            color: 'rgba(255,255,255,0.96)',
-            letterSpacing: '-0.01em',
+            color: 'rgba(255,255,255,0.97)',
+            letterSpacing: '-0.012em',
             marginBottom: '10px',
             lineHeight: 1.25
           }}
@@ -255,16 +246,17 @@ const TitleFrame = ({ segment, theme, scrollY }) => {
           {segment.name} Analysis
         </h1>
         
+        {/* Subtitle: 16px medium, 65-70% opacity */}
         <p 
           className="relative"
           style={{
             fontSize: '16px',
-            fontWeight: 450,
+            fontWeight: 500,
             color: 'rgba(255,255,255,0.68)',
             lineHeight: 1.5
           }}
         >
-          Market Pressure Lens — <span style={{ color: theme.color, opacity: 0.9 }}>What's Driving Street Alignment</span>
+          Market Pressure Lens — What's Driving Street Alignment
         </p>
       </div>
     </motion.div>
@@ -272,16 +264,17 @@ const TitleFrame = ({ segment, theme, scrollY }) => {
 };
 
 // ============================================================================
-// LEVEL 2: TL;DR SIGNAL ORB — Ripple + Hover Physics
+// TIER 2: TL;DR SIGNAL ORB (PRIMARY INSIGHT)
 // ============================================================================
 const SignalOrb = ({ details, theme, weight, scrollY }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [rippleKey, setRippleKey] = useState(0);
-  const parallaxY = useTransform(scrollY, [0, 300], [0, 300 * MOTION.PARALLAX.tldr * 0.01]);
+  const [rippleActive, setRippleActive] = useState(false);
+  const parallaxY = useTransform(scrollY, [0, 400], [0, 400 * MOTION.PARALLAX.signalOrb * 0.01]);
   
-  const handleHover = () => {
+  const handleHoverStart = () => {
     setIsHovered(true);
-    setRippleKey(prev => prev + 1);
+    setRippleActive(true);
+    setTimeout(() => setRippleActive(false), 280);
   };
   
   return (
@@ -289,94 +282,83 @@ const SignalOrb = ({ details, theme, weight, scrollY }) => {
       className="flex justify-center"
       style={{ 
         y: parallaxY,
-        marginBottom: `${CASCADE_TOKENS.rhythm.tldrToInsights}px` 
+        marginBottom: `${SPACING.orbToModules}px` 
       }}
-      initial={{ opacity: 0, y: 12, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ delay: 0.08, duration: MOTION.DURATIONS.slow, ease: MOTION.CURVES.silk }}
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.06, duration: MOTION.DURATIONS.mount, ease: MOTION.CURVES.mount }}
     >
       <motion.div
         className="relative overflow-hidden cursor-default"
         style={{
-          width: '88%',
-          maxWidth: '720px',
-          padding: '24px 32px',
-          background: CASCADE_TOKENS.signalOrb.bg(theme.color),
-          backdropFilter: CASCADE_TOKENS.signalOrb.blur,
-          WebkitBackdropFilter: CASCADE_TOKENS.signalOrb.blur,
-          borderRadius: CASCADE_TOKENS.signalOrb.radius,
-          border: `1px solid ${CASCADE_TOKENS.signalOrb.border}`
+          width: '90%',
+          maxWidth: '740px',
+          padding: '26px 36px',
+          background: GLASS.signalOrb.bgGradient(theme.colorRgb),
+          backdropFilter: GLASS.signalOrb.blur,
+          WebkitBackdropFilter: GLASS.signalOrb.blur,
+          borderRadius: GLASS.signalOrb.radius,
+          border: `1px solid ${GLASS.signalOrb.border}`
         }}
         animate={{
-          y: isHovered ? -3 : 0,
+          y: isHovered ? -GLASS.signalOrb.hoverLift : 0,
           boxShadow: isHovered 
-            ? `0 12px 40px rgba(0,0,0,0.15), 0 0 30px rgba(${theme.colorRgb}, 0.12)`
-            : `0 6px 24px rgba(0,0,0,0.10), 0 0 20px rgba(${theme.colorRgb}, 0.06)`
+            ? `0 14px 44px rgba(0,0,0,0.16), 0 0 28px rgba(${theme.colorRgb}, 0.10)`
+            : `0 8px 28px rgba(0,0,0,0.12), 0 0 18px rgba(${theme.colorRgb}, 0.06)`
         }}
-        transition={{ duration: 0.2, ease: MOTION.CURVES.silk }}
-        onHoverStart={handleHover}
+        transition={{ duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.easeOut }}
+        onHoverStart={handleHoverStart}
         onHoverEnd={() => setIsHovered(false)}
       >
-        {/* Micro-Ripple Animation */}
+        {/* Subtle Ripple (200-300ms) */}
         <AnimatePresence>
-          {isHovered && (
+          {rippleActive && (
             <motion.div
-              key={rippleKey}
               className="absolute inset-0 pointer-events-none"
               style={{
-                background: `radial-gradient(circle at 50% 50%, rgba(${theme.colorRgb}, 0.08) 0%, transparent 70%)`,
-                borderRadius: CASCADE_TOKENS.signalOrb.radius
+                background: `radial-gradient(circle at 50% 50%, rgba(${theme.colorRgb}, 0.06) 0%, transparent 65%)`,
+                borderRadius: GLASS.signalOrb.radius
               }}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1.2, opacity: [0, 0.5, 0] }}
+              initial={{ scale: 0.85, opacity: 0 }}
+              animate={{ scale: 1.15, opacity: [0, 0.45, 0] }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.6, ease: 'easeOut' }}
+              transition={{ duration: 0.28, ease: 'easeOut' }}
             />
           )}
         </AnimatePresence>
         
-        {/* Gradient Overlay */}
+        {/* Inner Sheen */}
         <div 
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: theme.gradient,
-            borderRadius: CASCADE_TOKENS.signalOrb.radius,
-            opacity: 0.5
-          }}
-        />
-        
-        {/* Inner Glass Sheen */}
-        <div 
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: 'linear-gradient(180deg, rgba(255,255,255,0.025) 0%, transparent 40%)',
-            borderRadius: CASCADE_TOKENS.signalOrb.radius
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.028) 0%, transparent 40%)',
+            borderRadius: GLASS.signalOrb.radius
           }}
         />
         
         <div className="flex items-center justify-between gap-6 relative">
           {/* TL;DR Tag */}
           <div 
-            className="flex-shrink-0 px-3.5 py-2 rounded-full"
+            className="flex-shrink-0 px-4 py-2 rounded-full"
             style={{
               fontSize: '10.5px',
               fontWeight: 600,
-              color: 'rgba(255,255,255,0.85)',
+              color: 'rgba(255,255,255,0.88)',
               background: 'rgba(255,255,255,0.12)',
-              border: '1px solid rgba(255,255,255,0.16)',
-              letterSpacing: '0.05em'
+              border: '1px solid rgba(255,255,255,0.18)',
+              letterSpacing: '0.06em'
             }}
           >
             TL;DR
           </div>
           
-          {/* Centered Insight Text */}
+          {/* TL;DR Text: ~20px */}
           <p 
             className="flex-1 text-center"
             style={{
               fontSize: '20px',
               fontWeight: 480,
-              color: 'rgba(255,255,255,0.95)',
+              color: 'rgba(255,255,255,0.96)',
               lineHeight: 1.45,
               letterSpacing: '-0.01em'
             }}
@@ -384,23 +366,22 @@ const SignalOrb = ({ details, theme, weight, scrollY }) => {
             {details.tldr}
           </p>
           
-          {/* Sentiment Pill with Micro-Lift */}
+          {/* Floating Sentiment Pill (hover lift: 3px) */}
           <motion.div 
-            className="flex items-center gap-2.5 flex-shrink-0"
-            animate={{ y: isHovered ? -2 : 0 }}
-            transition={{ duration: 0.15 }}
+            className="flex items-center gap-3 flex-shrink-0"
+            animate={{ y: isHovered ? -3 : 0 }}
+            transition={{ duration: 0.18, ease: MOTION.CURVES.easeOut }}
           >
             <motion.div
               className="px-4 py-2 rounded-full"
               style={{
                 fontSize: '12px',
-                fontWeight: 550,
+                fontWeight: 560,
                 color: theme.color,
                 background: theme.accentLight,
-                border: `1px solid rgba(${theme.colorRgb}, 0.25)`,
-                boxShadow: isHovered ? `0 0 16px rgba(${theme.colorRgb}, 0.25)` : `0 0 8px rgba(${theme.colorRgb}, 0.12)`
+                border: `1px solid rgba(${theme.colorRgb}, 0.28)`,
+                boxShadow: `0 0 ${isHovered ? 18 : 10}px rgba(${theme.colorRgb}, ${isHovered ? 0.22 : 0.12})`
               }}
-              transition={{ duration: 0.2 }}
             >
               {details.status}
             </motion.div>
@@ -408,8 +389,8 @@ const SignalOrb = ({ details, theme, weight, scrollY }) => {
             <span 
               style={{ 
                 fontSize: '12px', 
-                fontWeight: 500,
-                color: 'rgba(255,255,255,0.65)'
+                fontWeight: 520,
+                color: 'rgba(255,255,255,0.62)'
               }}
             >
               {Math.round(weight)}%
@@ -422,66 +403,65 @@ const SignalOrb = ({ details, theme, weight, scrollY }) => {
 };
 
 // ============================================================================
-// FEATHER CARDS — VisionOS Style Insight Modules
+// TIER 3: FEATHER GLASS CARDS (INSIGHT MODULES)
 // ============================================================================
-const FeatherCard = ({ icon: Icon, label, content, theme, delay, scrollY, index }) => {
+const FeatherCard = ({ icon: Icon, label, content, theme, delay, scrollY }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const parallaxY = useTransform(scrollY, [0, 300], [0, 300 * MOTION.PARALLAX.insights * 0.01]);
+  const parallaxY = useTransform(scrollY, [0, 400], [0, 400 * MOTION.PARALLAX.insightModules * 0.01]);
   
   return (
     <motion.div
       className="relative"
       style={{ 
         y: parallaxY,
-        marginBottom: `${CASCADE_TOKENS.rhythm.betweenCards}px`
+        marginBottom: `${SPACING.betweenModules}px`
       }}
-      initial={{ opacity: 0, x: -12 }}
+      initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ delay, duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.silk }}
+      transition={{ delay, duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.easeOut }}
     >
       <motion.div
         className="relative overflow-hidden"
         style={{
-          padding: '22px 26px',
-          background: CASCADE_TOKENS.featherCard.bg,
-          backdropFilter: CASCADE_TOKENS.featherCard.blur,
-          WebkitBackdropFilter: CASCADE_TOKENS.featherCard.blur,
-          borderRadius: CASCADE_TOKENS.featherCard.radius,
-          border: `${CASCADE_TOKENS.featherCard.borderWidth} solid rgba(255,255,255,${isHovered ? 0.16 : 0.12})`
+          padding: '22px 28px',
+          background: GLASS.featherCard.bg,
+          backdropFilter: GLASS.featherCard.blur,
+          WebkitBackdropFilter: GLASS.featherCard.blur,
+          borderRadius: GLASS.featherCard.radius,
+          border: `${GLASS.featherCard.borderWidth} solid ${GLASS.featherCard.border}`
         }}
         animate={{
-          y: isHovered ? -CASCADE_TOKENS.featherCard.hoverLift : 0,
+          y: isHovered ? -GLASS.featherCard.hoverLift : 0,
           boxShadow: isHovered 
-            ? `0 8px 24px rgba(0,0,0,0.12), 0 0 1px rgba(${theme.colorRgb}, 0.15)`
-            : '0 4px 12px rgba(0,0,0,0.06)'
+            ? `0 8px 22px rgba(0,0,0,0.10)`
+            : '0 3px 10px rgba(0,0,0,0.05)'
         }}
-        transition={{ duration: 0.16, ease: MOTION.CURVES.silk }}
+        transition={{ duration: MOTION.DURATIONS.fast, ease: MOTION.CURVES.easeOut }}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
       >
-        {/* Subtle Color Highlight on Border */}
+        {/* Segment Color Top Highlight (on hover +3-4%) */}
         <div 
-          className="absolute top-0 left-[25%] right-[25%] h-px pointer-events-none"
+          className="absolute top-0 left-[22%] right-[22%] h-px pointer-events-none transition-opacity duration-200"
           style={{
-            background: `linear-gradient(90deg, transparent, rgba(${theme.colorRgb}, ${isHovered ? 0.22 : 0.12}), transparent)`,
-            transition: 'all 0.2s ease'
+            background: `linear-gradient(90deg, transparent, rgba(${theme.colorRgb}, ${isHovered ? 0.20 : 0.10}), transparent)`
           }}
         />
         
         <div className="flex items-start gap-4 relative">
-          {/* VisionOS Style Icon - Brighter Embossing */}
+          {/* VisionOS-Style Embossed Icon */}
           <div 
             className="w-10 h-10 rounded-[14px] flex items-center justify-center flex-shrink-0"
             style={{
-              background: `linear-gradient(135deg, ${theme.accentLight} 0%, rgba(${theme.colorRgb}, 0.08) 100%)`,
-              boxShadow: `0 0 14px rgba(${theme.colorRgb}, 0.18), inset 0 1px 1px rgba(255,255,255,0.12)`
+              background: `linear-gradient(145deg, ${theme.accentLight} 0%, rgba(${theme.colorRgb}, 0.06) 100%)`,
+              boxShadow: `0 0 12px rgba(${theme.colorRgb}, 0.14), inset 0 1px 1px rgba(255,255,255,0.14)`
             }}
           >
             <Icon 
               className="w-[18px] h-[18px]" 
               style={{ 
                 color: theme.color,
-                filter: 'brightness(1.15)'
+                filter: 'brightness(1.18)'
               }} 
               strokeWidth={2.2} 
             />
@@ -489,25 +469,27 @@ const FeatherCard = ({ icon: Icon, label, content, theme, delay, scrollY, index 
           
           {/* Text Content */}
           <div className="flex-1 pt-0.5">
+            {/* Insight Labels: 14px medium, ~60% opacity */}
             <h4 
               style={{
                 fontSize: '14px',
                 fontWeight: 500,
-                color: 'rgba(255,255,255,0.62)',
+                color: 'rgba(255,255,255,0.60)',
                 marginBottom: '8px',
-                letterSpacing: '0.01em'
+                letterSpacing: '0.008em'
               }}
             >
               {label}
             </h4>
             
+            {/* Insight Text: 15-16px regular */}
             <p 
               style={{
                 fontSize: '15.5px',
                 fontWeight: 400,
                 color: 'rgba(255,255,255,0.92)',
                 lineHeight: 1.58,
-                letterSpacing: '-0.005em'
+                letterSpacing: '-0.006em'
               }}
             >
               {content}
@@ -519,7 +501,7 @@ const FeatherCard = ({ icon: Icon, label, content, theme, delay, scrollY, index 
   );
 };
 
-const InsightStack = ({ details, theme, scrollY }) => {
+const InsightModulesStack = ({ details, theme, scrollY }) => {
   const modules = [
     { icon: Target, label: 'Key Driver', content: details.keyDriver },
     { icon: Waves, label: 'Pressure Direction', content: details.pressureDirection },
@@ -527,11 +509,7 @@ const InsightStack = ({ details, theme, scrollY }) => {
   ];
   
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 0.15, duration: MOTION.DURATIONS.base }}
-    >
+    <div style={{ marginBottom: `${SPACING.modulesToDivider}px` }}>
       {modules.map((module, idx) => (
         <FeatherCard
           key={module.label}
@@ -539,57 +517,53 @@ const InsightStack = ({ details, theme, scrollY }) => {
           label={module.label}
           content={module.content}
           theme={theme}
-          delay={0.18 + (idx * 0.07)}
+          delay={0.14 + (idx * 0.06)}
           scrollY={scrollY}
-          index={idx}
         />
       ))}
-    </motion.div>
+    </div>
   );
 };
 
 // ============================================================================
-// DIVIDER TRANSITION — Segment Color Bloom
+// SECTION TRANSITION DIVIDER
 // ============================================================================
-const DividerTransition = ({ theme }) => {
+const TransitionDivider = ({ theme }) => {
   return (
     <motion.div
       className="relative flex items-center justify-center"
       style={{ 
-        height: '48px',
-        marginBottom: `${CASCADE_TOKENS.rhythm.insightsToNarrative - 48}px`
+        height: '24px',
+        marginBottom: `${SPACING.dividerToNarrative}px`
       }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ delay: 0.4, duration: 0.3 }}
+      transition={{ delay: 0.36, duration: 0.22 }}
     >
-      {/* Base Line */}
+      {/* Ghost Line: 1px at 4% opacity */}
       <div 
         className="absolute left-0 right-0 h-px"
-        style={{
-          background: 'rgba(255,255,255,0.04)'
-        }}
+        style={{ background: 'rgba(255,255,255,0.04)' }}
       />
       
-      {/* Center Bloom */}
-      <div 
-        className="absolute h-px"
-        style={{
-          left: 'calc(50% - 80px)',
-          right: 'calc(50% - 80px)',
-          background: `linear-gradient(90deg, transparent, rgba(${theme.colorRgb}, 0.25), transparent)`
-        }}
-      />
-      
-      {/* Bloom Glow */}
+      {/* Center Bloom: 6px radius, segment color */}
       <div 
         className="absolute"
         style={{
-          left: 'calc(50% - 40px)',
-          right: 'calc(50% - 40px)',
-          height: '8px',
-          background: `radial-gradient(ellipse at 50% 50%, rgba(${theme.colorRgb}, 0.12) 0%, transparent 100%)`,
-          filter: 'blur(4px)'
+          width: '120px',
+          height: '1px',
+          background: `linear-gradient(90deg, transparent, rgba(${theme.colorRgb}, 0.32), transparent)`
+        }}
+      />
+      
+      {/* Glow Falloff: 50px horizontal */}
+      <div 
+        className="absolute"
+        style={{
+          width: '100px',
+          height: '6px',
+          background: `radial-gradient(ellipse at 50% 50%, rgba(${theme.colorRgb}, 0.10) 0%, transparent 100%)`,
+          filter: 'blur(3px)'
         }}
       />
     </motion.div>
@@ -597,102 +571,102 @@ const DividerTransition = ({ theme }) => {
 };
 
 // ============================================================================
-// LEVEL 3: INTELLIGENCE PANEL — "WHAT THIS MEANS"
+// TIER 4: NARRATIVE INTELLIGENCE PANEL ("WHAT THIS MEANS")
 // ============================================================================
-const IntelligencePanel = ({ details, theme, scrollY }) => {
+const NarrativePanel = ({ details, theme, scrollY }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const parallaxY = useTransform(scrollY, [0, 300], [0, 300 * MOTION.PARALLAX.narrative * 0.01]);
+  const parallaxY = useTransform(scrollY, [0, 400], [0, 400 * MOTION.PARALLAX.narrativePanel * 0.01]);
   
   return (
     <motion.div
       className="relative mx-auto"
       style={{ 
         y: parallaxY,
-        maxWidth: '94%',
-        marginBottom: '28px'
+        maxWidth: '95%',
+        marginBottom: '24px'
       }}
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.45, duration: MOTION.DURATIONS.slow, ease: MOTION.CURVES.breathe }}
+      transition={{ delay: 0.42, duration: MOTION.DURATIONS.fadeUp, ease: MOTION.CURVES.mount }}
     >
       <motion.div
         className="relative overflow-hidden text-center"
         style={{
-          padding: '38px 44px',
-          background: CASCADE_TOKENS.intelligencePanel.bg,
-          backdropFilter: CASCADE_TOKENS.intelligencePanel.blur,
-          WebkitBackdropFilter: CASCADE_TOKENS.intelligencePanel.blur,
-          borderRadius: CASCADE_TOKENS.intelligencePanel.radius,
-          border: `1px solid ${CASCADE_TOKENS.intelligencePanel.border}`
+          padding: '42px 48px',
+          background: GLASS.narrativePanel.bg,
+          backdropFilter: GLASS.narrativePanel.blur,
+          WebkitBackdropFilter: GLASS.narrativePanel.blur,
+          borderRadius: GLASS.narrativePanel.radius,
+          border: `1px solid ${GLASS.narrativePanel.border}`
         }}
         animate={{
-          y: isHovered ? -1 : 0,
+          y: isHovered ? -GLASS.narrativePanel.hoverLift : 0,
           boxShadow: isHovered 
-            ? `0 16px 48px rgba(0,0,0,0.14), 0 0 40px rgba(${theme.colorRgb}, ${CASCADE_TOKENS.intelligencePanel.glowOpacity * 0.012})`
-            : `0 10px 32px rgba(0,0,0,0.10), 0 0 28px rgba(${theme.colorRgb}, ${CASCADE_TOKENS.intelligencePanel.glowOpacity * 0.008})`
+            ? `0 16px 48px rgba(0,0,0,0.14), 0 0 36px rgba(${theme.colorRgb}, ${GLASS.narrativePanel.glowOpacity})`
+            : `0 10px 32px rgba(0,0,0,0.10), 0 0 24px rgba(${theme.colorRgb}, ${GLASS.narrativePanel.glowOpacity * 0.7})`
         }}
-        transition={{ duration: 0.2, ease: MOTION.CURVES.silk }}
+        transition={{ duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.easeOut }}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
       >
-        {/* Inner Glass Sheen */}
+        {/* Warm Inner Glow */}
         <div 
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: 'linear-gradient(180deg, rgba(255,255,255,0.018) 0%, transparent 35%, rgba(0,0,0,0.008) 100%)',
-            borderRadius: CASCADE_TOKENS.intelligencePanel.radius
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.020) 0%, transparent 35%, rgba(0,0,0,0.008) 100%)',
+            borderRadius: GLASS.narrativePanel.radius
           }}
         />
         
-        {/* Atmospheric Tint */}
+        {/* Segment Accent Edge Glow */}
         <div 
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: `radial-gradient(ellipse at 50% 30%, ${theme.atmospheric} 0%, transparent 70%)`,
-            borderRadius: CASCADE_TOKENS.intelligencePanel.radius
+            background: `radial-gradient(ellipse at 50% 25%, ${theme.atmospheric} 0%, transparent 65%)`,
+            borderRadius: GLASS.narrativePanel.radius
           }}
         />
         
         {/* Top Edge Highlight */}
         <div 
-          className="absolute top-0 left-[18%] right-[18%] h-px pointer-events-none"
+          className="absolute top-0 left-[16%] right-[16%] h-px pointer-events-none"
           style={{
             background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)'
           }}
         />
         
-        {/* Apple-Style Spaced Label */}
+        {/* Narrative Label: 11-12px uppercased tracking */}
         <motion.h3 
           className="relative uppercase"
           style={{
             fontSize: '11.5px',
-            fontWeight: 520,
-            color: 'rgba(255,255,255,0.55)',
-            letterSpacing: '0.14em',
+            fontWeight: 540,
+            color: 'rgba(255,255,255,0.54)',
+            letterSpacing: '0.15em',
             marginBottom: '18px'
           }}
-          initial={{ opacity: 0, y: 8 }}
+          initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.25 }}
+          transition={{ delay: 0.48, duration: MOTION.DURATIONS.fadeUp }}
         >
           What This Means
         </motion.h3>
         
-        {/* Narrative Body */}
+        {/* Narrative Body: 18-19px regular */}
         <motion.p 
           className="relative"
           style={{
-            fontSize: '19px',
+            fontSize: '18.5px',
             fontWeight: 420,
             color: 'rgba(255,255,255,0.94)',
             lineHeight: 1.58,
             letterSpacing: '-0.008em',
-            maxWidth: '560px',
+            maxWidth: '540px',
             margin: '0 auto'
           }}
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.55, duration: 0.3 }}
+          transition={{ delay: 0.52, duration: MOTION.DURATIONS.mount }}
         >
           {details.whatThisMeans}
         </motion.p>
@@ -702,29 +676,28 @@ const IntelligencePanel = ({ details, theme, scrollY }) => {
 };
 
 // ============================================================================
-// MICRO TAGS — Bottom Right Chips
+// MICRO TAGS (OPTIONAL BOTTOM ROW)
 // ============================================================================
 const MicroTags = ({ details, theme }) => {
   const TrendIcon = details.trend === 'up' ? TrendingUp : details.trend === 'down' ? TrendingDown : null;
   
   return (
     <motion.div
-      className="flex justify-end gap-2.5 px-4"
-      style={{ marginBottom: `${CASCADE_TOKENS.rhythm.bottomPadding}px` }}
+      className="flex justify-end gap-2 px-3"
+      style={{ marginBottom: `${SPACING.bottomPadding}px` }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ delay: 0.6, duration: 0.25 }}
+      transition={{ delay: 0.58, duration: 0.22 }}
     >
-      {/* Trend Direction */}
       {TrendIcon && (
         <div 
           className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg"
           style={{
             fontSize: '10px',
-            fontWeight: 550,
+            fontWeight: 560,
             color: theme.color,
             background: theme.accentLight,
-            border: `1px solid rgba(${theme.colorRgb}, 0.18)`
+            border: `1px solid rgba(${theme.colorRgb}, 0.20)`
           }}
         >
           <TrendIcon className="w-3 h-3" strokeWidth={2.5} />
@@ -732,13 +705,12 @@ const MicroTags = ({ details, theme }) => {
         </div>
       )}
       
-      {/* Certainty */}
       <div 
         className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg"
         style={{
           fontSize: '10px',
-          fontWeight: 550,
-          color: 'rgba(255,255,255,0.75)',
+          fontWeight: 560,
+          color: 'rgba(255,255,255,0.72)',
           background: 'rgba(255,255,255,0.06)',
           border: '1px solid rgba(255,255,255,0.10)'
         }}
@@ -746,13 +718,12 @@ const MicroTags = ({ details, theme }) => {
         <span>{details.certainty}% certain</span>
       </div>
       
-      {/* Time Horizon */}
       <div 
         className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg"
         style={{
           fontSize: '10px',
-          fontWeight: 550,
-          color: 'rgba(255,255,255,0.75)',
+          fontWeight: 560,
+          color: 'rgba(255,255,255,0.72)',
           background: 'rgba(255,255,255,0.06)',
           border: '1px solid rgba(255,255,255,0.10)'
         }}
@@ -765,7 +736,7 @@ const MicroTags = ({ details, theme }) => {
 };
 
 // ============================================================================
-// SIGNAL CASCADE V2 — COMPLETE DRAWER CONTENT
+// SIGNAL CASCADE V3 — COMPLETE DRAWER CONTENT
 // ============================================================================
 const SignalCascadeContent = ({ segment, scrollY }) => {
   const theme = getTheme(segment.name);
@@ -777,23 +748,23 @@ const SignalCascadeContent = ({ segment, scrollY }) => {
   return (
     <div 
       className="relative"
-      style={{ padding: '32px 44px 0 44px' }}
+      style={{ padding: '28px 40px 0 40px' }}
     >
       {/* Background Atmospheric Layer */}
       <div 
-        className="absolute top-0 left-0 right-0 h-[450px] pointer-events-none"
+        className="absolute top-0 left-0 right-0 h-[400px] pointer-events-none"
         style={{
-          background: `radial-gradient(ellipse at 50% 10%, ${theme.atmospheric} 0%, transparent 60%)`,
-          filter: 'blur(60px)'
+          background: `radial-gradient(ellipse at 50% 8%, ${theme.atmospheric} 0%, transparent 55%)`,
+          filter: 'blur(50px)'
         }}
       />
       
-      {/* Cascade Flow */}
-      <TitleFrame segment={segment} theme={theme} scrollY={scrollY} />
+      {/* 4-Tier Cascade */}
+      <HeroTitlePlate segment={segment} theme={theme} scrollY={scrollY} />
       <SignalOrb details={details} theme={theme} weight={weight} scrollY={scrollY} />
-      <InsightStack details={details} theme={theme} scrollY={scrollY} />
-      <DividerTransition theme={theme} />
-      <IntelligencePanel details={details} theme={theme} scrollY={scrollY} />
+      <InsightModulesStack details={details} theme={theme} scrollY={scrollY} />
+      <TransitionDivider theme={theme} />
+      <NarrativePanel details={details} theme={theme} scrollY={scrollY} />
       <MicroTags details={details} theme={theme} />
     </div>
   );
@@ -832,7 +803,7 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.28, ease: MOTION.CURVES.silk }}
+        transition={{ duration: 0.26, ease: MOTION.CURVES.easeOut }}
         style={{ paddingTop: '80px' }}
       >
         {/* Backdrop */}
@@ -840,14 +811,14 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
           className="absolute inset-0"
           style={{ 
             top: '80px',
-            background: 'rgba(0,0,0,0.75)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)'
+            background: 'rgba(0,0,0,0.76)',
+            backdropFilter: 'blur(22px)',
+            WebkitBackdropFilter: 'blur(22px)'
           }}
           onClick={onClose}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.28 }}
         />
         
         {/* Drawer Panel */}
@@ -856,36 +827,36 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
           className="relative w-full max-w-4xl max-h-[92vh] overflow-hidden flex flex-col"
           style={{
             borderRadius: '32px',
-            background: 'linear-gradient(180deg, rgba(10, 12, 18, 0.94) 0%, rgba(6, 8, 14, 0.97) 100%)',
-            backdropFilter: 'blur(80px) saturate(185%)',
-            WebkitBackdropFilter: 'blur(80px) saturate(185%)',
+            background: 'linear-gradient(180deg, rgba(10, 12, 18, 0.95) 0%, rgba(6, 8, 14, 0.98) 100%)',
+            backdropFilter: 'blur(85px) saturate(185%)',
+            WebkitBackdropFilter: 'blur(85px) saturate(185%)',
             border: '1px solid rgba(255,255,255,0.07)',
             boxShadow: `
-              0 48px 96px -24px rgba(0, 0, 0, 0.88),
-              0 0 48px rgba(${theme.colorRgb}, 0.06),
+              0 52px 100px -28px rgba(0, 0, 0, 0.90),
+              0 0 44px rgba(${theme.colorRgb}, 0.05),
               inset 0 1px 0 rgba(255, 255, 255, 0.06)
             `
           }}
-          initial={{ opacity: 0, scale: 0.97, y: 20 }}
+          initial={{ opacity: 0, scale: 0.97, y: 18 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.98, y: 16 }}
-          transition={{ duration: MOTION.DURATIONS.cascade, ease: MOTION.CURVES.cascade }}
+          exit={{ opacity: 0, scale: 0.98, y: 14 }}
+          transition={{ duration: 0.32, ease: MOTION.CURVES.cascade }}
         >
-          {/* Top Edge Rim Light */}
+          {/* Top Rim Light */}
           <div 
-            className="absolute top-0 left-[10%] right-[10%] h-[1px] pointer-events-none z-10"
+            className="absolute top-0 left-[10%] right-[10%] h-px pointer-events-none z-10"
             style={{
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)'
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)'
             }}
           />
           
-          {/* Header Navigation */}
+          {/* Header */}
           <motion.div 
             className="relative p-5 flex-shrink-0 z-10"
-            style={{ paddingTop: '20px', paddingBottom: '12px' }}
-            initial={{ opacity: 0, y: -8 }}
+            style={{ paddingTop: '18px', paddingBottom: '10px' }}
+            initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05, duration: 0.2 }}
+            transition={{ delay: 0.04, duration: 0.18 }}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
@@ -893,18 +864,12 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
                   className="p-2.5 rounded-xl"
                   style={{ 
                     background: theme.accentLight,
-                    boxShadow: `0 0 12px rgba(${theme.colorRgb}, 0.15)`
+                    boxShadow: `0 0 10px rgba(${theme.colorRgb}, 0.12)`
                   }}
                 >
-                  <Icon className="w-5 h-5" style={{ color: theme.color, filter: 'brightness(1.1)' }} strokeWidth={2.2} />
+                  <Icon className="w-5 h-5" style={{ color: theme.color, filter: 'brightness(1.12)' }} strokeWidth={2.2} />
                 </div>
-                <span 
-                  style={{ 
-                    fontSize: '14px', 
-                    fontWeight: 500, 
-                    color: 'rgba(255,255,255,0.72)'
-                  }}
-                >
+                <span style={{ fontSize: '14px', fontWeight: 500, color: 'rgba(255,255,255,0.70)' }}>
                   {segment.name} Segment
                 </span>
               </div>
@@ -913,43 +878,34 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
                 <motion.button
                   onClick={() => onNavigate('prev')}
                   className="p-2.5 rounded-xl"
-                  style={{
-                    background: 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(255,255,255,0.08)'
-                  }}
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
                   whileHover={{ background: 'rgba(255,255,255,0.10)', scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   aria-label="Previous Segment"
                 >
-                  <ChevronLeft className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.72)' }} strokeWidth={2.2} />
+                  <ChevronLeft className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.70)' }} strokeWidth={2.2} />
                 </motion.button>
                 
                 <motion.button
                   onClick={() => onNavigate('next')}
                   className="p-2.5 rounded-xl"
-                  style={{
-                    background: 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(255,255,255,0.08)'
-                  }}
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
                   whileHover={{ background: 'rgba(255,255,255,0.10)', scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   aria-label="Next Segment"
                 >
-                  <ChevronRight className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.72)' }} strokeWidth={2.2} />
+                  <ChevronRight className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.70)' }} strokeWidth={2.2} />
                 </motion.button>
                 
                 <motion.button 
                   onClick={onClose} 
                   className="p-2.5 rounded-xl ml-2"
-                  style={{
-                    background: 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(255,255,255,0.08)'
-                  }}
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
                   whileHover={{ background: 'rgba(255,255,255,0.10)', scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   aria-label="Close"
                 >
-                  <X className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.72)' }} strokeWidth={2.2} />
+                  <X className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.70)' }} strokeWidth={2.2} />
                 </motion.button>
               </div>
             </div>
@@ -959,10 +915,7 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
           <div 
             ref={scrollRef}
             className="overflow-y-auto flex-1"
-            style={{ 
-              scrollBehavior: 'smooth',
-              WebkitOverflowScrolling: 'touch'
-            }}
+            style={{ scrollBehavior: 'smooth', WebkitOverflowScrolling: 'touch' }}
           >
             <SignalCascadeContent segment={segment} scrollY={scrollY} />
           </div>
