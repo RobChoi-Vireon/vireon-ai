@@ -3,7 +3,7 @@
 // Last Updated: 2025-01-28
 
 import React, { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { X, Shield, Briefcase, BarChart3, Globe, Target, Waves, ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Clock } from 'lucide-react';
 
 // ============================================================================
@@ -129,7 +129,7 @@ const getData = (name) => ({
 // ============================================================================
 // HERO BLOCK — TL;DR Card with Tahoe Glass
 // ============================================================================
-const HeroBlock = ({ data, theme, weight, scrollProgress }) => {
+const HeroBlock = ({ data, theme, weight }) => {
   const [isHovered, setIsHovered] = useState(false);
   
   return (
@@ -138,7 +138,6 @@ const HeroBlock = ({ data, theme, weight, scrollProgress }) => {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.08, duration: MOTION.duration, ease: MOTION.ease }}
-      style={{ y: scrollProgress ? useTransform(scrollProgress, [0, 1], [0, -8]) : 0 }}
     >
       <motion.div
         className="relative overflow-hidden"
@@ -301,13 +300,12 @@ const EvidenceTrio = ({ data, theme }) => (
 // ============================================================================
 // NARRATIVE SUMMARY — What This Means Panel
 // ============================================================================
-const NarrativeSummary = ({ data, theme, scrollProgress }) => (
+const NarrativeSummary = ({ data, theme }) => (
   <motion.div
     className="mx-7 mt-5"
     initial={{ opacity: 0, y: 8 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: 0.32, duration: 0.22, ease: MOTION.ease }}
-    style={{ y: scrollProgress ? useTransform(scrollProgress, [0, 1], [0, -8]) : 0 }}
   >
     <div
       className="relative overflow-hidden"
@@ -516,7 +514,6 @@ const NoiseOverlay = () => (
 // ============================================================================
 export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNavigate }) {
   const scrollRef = useRef(null);
-  const { scrollYProgress } = useScroll({ container: scrollRef });
   
   useEffect(() => {
     if (isOpen) {
@@ -559,8 +556,8 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
           }}
           onClick={onClose}
         >
-          {/* Bokeh glows - parallax at 0.8x */}
-          <motion.div
+          {/* Bokeh glows */}
+          <div
             className="absolute w-96 h-96 rounded-full"
             style={{
               top: '10%',
@@ -568,9 +565,8 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
               background: 'radial-gradient(circle, rgba(80,120,200,0.08) 0%, transparent 70%)',
               filter: 'blur(60px)'
             }}
-            animate={{ y: useTransform(scrollYProgress, [0, 1], [0, 40]) }}
           />
-          <motion.div
+          <div
             className="absolute w-80 h-80 rounded-full"
             style={{
               bottom: '20%',
@@ -578,7 +574,6 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
               background: 'radial-gradient(circle, rgba(120,80,180,0.06) 0%, transparent 70%)',
               filter: 'blur(50px)'
             }}
-            animate={{ y: useTransform(scrollYProgress, [0, 1], [0, 32]) }}
           />
           <NoiseOverlay />
         </motion.div>
@@ -633,9 +628,9 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
             className="overflow-y-auto flex-1" 
             style={{ scrollBehavior: 'smooth' }}
           >
-            <HeroBlock data={data} theme={theme} weight={weight} scrollProgress={scrollYProgress} />
+            <HeroBlock data={data} theme={theme} weight={weight} />
             <EvidenceTrio data={data} theme={theme} />
-            <NarrativeSummary data={data} theme={theme} scrollProgress={scrollYProgress} />
+            <NarrativeSummary data={data} theme={theme} />
             <SignalRow data={data} theme={theme} />
           </div>
         </motion.div>
