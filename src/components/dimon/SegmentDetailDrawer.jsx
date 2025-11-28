@@ -509,40 +509,144 @@ const SummaryCard = ({ data, theme }) => {
 };
 
 // ============================================================================
-// BOKEH LAYER
+// ATMOSPHERIC ENVIRONMENT — OS HORIZON LIQUID GLASS FIELD
 // ============================================================================
-const BokehLayer = () => (
-  <div className="absolute inset-0 pointer-events-none overflow-hidden">
-    {GLASS.canvas.bokeh.map((glow, i) => (
-      <div
-        key={i}
-        className="absolute rounded-full"
+const GlassFieldEnvironment = ({ mouseOffset }) => {
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      {/* Base Canvas Gradient — ultra smooth */}
+      <div 
+        className="absolute inset-0"
         style={{
-          left: glow.x,
-          top: glow.y,
-          width: glow.size,
-          height: glow.size,
-          background: glow.color,
-          filter: 'blur(90px)',
-          transform: 'translate(-50%, -50%)'
+          background: 'linear-gradient(180deg, #050914 0%, #080F1F 45%, #050910 100%)'
         }}
       />
-    ))}
-  </div>
-);
+      
+      {/* Noise Layer — 1.5% to prevent banding */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.80' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          opacity: 0.015,
+          mixBlendMode: 'overlay'
+        }}
+      />
+      
+      {/* Bokeh Blooms — asymmetric, desaturated, extremely subtle */}
+      <motion.div 
+        className="absolute inset-0"
+        animate={{
+          x: mouseOffset ? -mouseOffset.x * 0.015 : 0,
+          y: mouseOffset ? -mouseOffset.y * 0.015 : 0
+        }}
+        transition={{ type: 'spring', stiffness: 50, damping: 30 }}
+      >
+        {/* Bokeh 1 — upper left */}
+        <div
+          className="absolute rounded-full"
+          style={{
+            left: '15%',
+            top: '18%',
+            width: '420px',
+            height: '420px',
+            background: 'radial-gradient(circle, rgba(32, 48, 92, 0.055) 0%, transparent 70%)',
+            filter: 'blur(90px)'
+          }}
+        />
+        {/* Bokeh 2 — lower right */}
+        <div
+          className="absolute rounded-full"
+          style={{
+            right: '12%',
+            bottom: '22%',
+            width: '380px',
+            height: '380px',
+            background: 'radial-gradient(circle, rgba(53, 42, 95, 0.045) 0%, transparent 70%)',
+            filter: 'blur(100px)'
+          }}
+        />
+        {/* Bokeh 3 — center-right subtle */}
+        <div
+          className="absolute rounded-full"
+          style={{
+            right: '25%',
+            top: '40%',
+            width: '300px',
+            height: '300px',
+            background: 'radial-gradient(circle, rgba(40, 55, 100, 0.04) 0%, transparent 65%)',
+            filter: 'blur(80px)'
+          }}
+        />
+      </motion.div>
+      
+      {/* Vignette — dark corners, light center */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          background: 'radial-gradient(ellipse 85% 75% at 50% 50%, transparent 40%, rgba(3, 5, 12, 0.45) 100%)'
+        }}
+      />
+    </div>
+  );
+};
 
 // ============================================================================
-// NOISE LAYER
+// VOLUMETRIC LIGHT HALO — behind drawer
 // ============================================================================
-const NoiseLayer = () => (
-  <div 
-    className="absolute inset-0 pointer-events-none"
-    style={{
-      backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-      opacity: 0.01,
-      mixBlendMode: 'overlay'
+const VolumetricHalo = ({ mouseOffset }) => (
+  <motion.div 
+    className="absolute inset-0 pointer-events-none flex items-center justify-center"
+    style={{ paddingTop: '80px' }}
+    animate={{
+      x: mouseOffset ? -mouseOffset.x * 0.008 : 0,
+      y: mouseOffset ? -mouseOffset.y * 0.008 : 0
     }}
-  />
+    transition={{ type: 'spring', stiffness: 40, damping: 25 }}
+  >
+    {/* Outer glow — large radius, very soft */}
+    <div
+      className="absolute"
+      style={{
+        width: '900px',
+        height: '750px',
+        background: 'radial-gradient(ellipse 100% 100% at 50% 48%, rgba(27, 52, 92, 0.18) 0%, rgba(27, 52, 92, 0.08) 35%, transparent 70%)',
+        filter: 'blur(100px)'
+      }}
+    />
+    
+    {/* Inner glow — tighter to drawer */}
+    <div
+      className="absolute"
+      style={{
+        width: '700px',
+        height: '600px',
+        background: 'radial-gradient(ellipse 100% 100% at 50% 45%, rgba(45, 75, 130, 0.12) 0%, rgba(35, 60, 110, 0.05) 40%, transparent 65%)',
+        filter: 'blur(50px)'
+      }}
+    />
+    
+    {/* Vertical gradient — lighter top, darker bottom */}
+    <div
+      className="absolute"
+      style={{
+        width: '680px',
+        height: '700px',
+        background: 'linear-gradient(180deg, rgba(60, 90, 150, 0.06) 0%, transparent 40%, rgba(5, 8, 18, 0.08) 100%)',
+        filter: 'blur(40px)'
+      }}
+    />
+    
+    {/* Depth haze — subtle bluish fog */}
+    <div
+      className="absolute"
+      style={{
+        width: '660px',
+        height: '580px',
+        background: 'radial-gradient(ellipse 90% 85% at 50% 50%, rgba(50, 80, 140, 0.045) 0%, transparent 60%)',
+        filter: 'blur(35px)'
+      }}
+    />
+  </motion.div>
 );
 
 // ============================================================================
@@ -550,15 +654,29 @@ const NoiseLayer = () => (
 // ============================================================================
 export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNavigate }) {
   const scrollRef = useRef(null);
+  const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
   
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
       const handleKey = (e) => e.key === 'Escape' && onClose?.();
       document.addEventListener('keydown', handleKey);
+      
+      // Mouse parallax handler
+      const handleMouseMove = (e) => {
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        setMouseOffset({
+          x: (e.clientX - centerX) / centerX,
+          y: (e.clientY - centerY) / centerY
+        });
+      };
+      window.addEventListener('mousemove', handleMouseMove);
+      
       return () => {
         document.body.style.overflow = '';
         document.removeEventListener('keydown', handleKey);
+        window.removeEventListener('mousemove', handleMouseMove);
       };
     }
   }, [isOpen, onClose]);
@@ -599,18 +717,18 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
             background: rgba(255,255,255,0.20);
           }
         `}</style>
-        {/* Canvas */}
-        <motion.div 
+        
+        {/* Liquid Glass Field Environment */}
+        <div 
           className="absolute inset-0"
-          style={{ 
-            top: '80px',
-            background: GLASS.canvas.gradient
-          }}
+          style={{ top: '80px' }}
           onClick={onClose}
         >
-          <BokehLayer />
-          <NoiseLayer />
-        </motion.div>
+          <GlassFieldEnvironment mouseOffset={mouseOffset} />
+        </div>
+        
+        {/* Volumetric Light Halo — behind drawer */}
+        <VolumetricHalo mouseOffset={mouseOffset} />
         
         {/* Drawer */}
         <motion.div
@@ -621,7 +739,13 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
             background: GLASS.drawer.bg,
             backdropFilter: GLASS.drawer.blur,
             WebkitBackdropFilter: GLASS.drawer.blur,
-            boxShadow: `${GLASS.drawer.innerGlow}, ${GLASS.drawer.innerShadow}, 0 30px 60px -15px rgba(0,0,0,0.50)`
+            boxShadow: `
+            ${GLASS.drawer.innerGlow}, 
+            ${GLASS.drawer.innerShadow}, 
+            0 30px 60px -15px rgba(0,0,0,0.50),
+            0 0 80px rgba(92, 155, 255, 0.12),
+            0 -2px 40px rgba(92, 155, 255, 0.08)
+          `
           }}
           initial={{ opacity: 0, scale: 0.97, y: 8, filter: 'blur(6px)' }}
           animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
