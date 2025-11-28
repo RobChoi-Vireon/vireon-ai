@@ -1,51 +1,73 @@
-// 🔒 DESIGN LOCKED — STEVE JOBS DRAWER LAYOUT V2
-// Narrative Flow | Apple-Grade Calm | Tahoe Glass
+// 🔒 DESIGN LOCKED — OS HORIZON TAHOE LIQUID GLASS V3
+// 16-Pillar Ironclad Audit Compliant
 // Last Updated: 2025-01-28
 
-import React, { useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { X, Shield, Briefcase, BarChart3, Globe, Target, Waves, ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Clock } from 'lucide-react';
 
 // ============================================================================
-// MOTION
+// MOTION SYSTEM
 // ============================================================================
 const MOTION = {
-  ease: [0.25, 0.1, 0.25, 1.0],
-  duration: 0.24,
-  stagger: 0.05
+  ease: [0.22, 0.61, 0.36, 1],
+  duration: 0.28,
+  stagger: 0.06
 };
 
 // ============================================================================
-// STEVE JOBS V1 GLASS SYSTEM
+// OS HORIZON TAHOE GLASS SYSTEM
 // ============================================================================
-const GLASS = {
+const TAHOE = {
+  // Global canvas
+  canvas: {
+    bg: `
+      radial-gradient(ellipse at 30% 20%, rgba(60, 100, 180, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 80%, rgba(100, 60, 180, 0.06) 0%, transparent 50%),
+      linear-gradient(180deg, #050814 0%, #050A18 50%, #020712 100%)
+    `,
+    noise: 0.015
+  },
+  // Main drawer
+  drawer: {
+    bg: 'rgba(10, 18, 40, 0.82)',
+    blur: 'blur(30px)',
+    radius: '28px',
+    border: 'linear-gradient(135deg, rgba(255,255,255,0.22) 0%, rgba(120,180,255,0.02) 100%)',
+    innerShadow: 'inset 0 0 40px rgba(0,0,0,0.35)',
+    highlight: 'linear-gradient(90deg, transparent 20%, rgba(255,255,255,0.12) 50%, transparent 80%)'
+  },
+  // Header
+  header: {
+    bg: 'rgba(20, 32, 70, 0.9)',
+    blur: 'blur(40px)'
+  },
+  // TL;DR card
   hero: {
-    bg: 'linear-gradient(to bottom, rgba(255,255,255,0.04), rgba(255,255,255,0.02))',
-    blur: 'blur(14px)',
-    radius: '26px',
-    padding: '32px'
+    bg: 'rgba(23, 38, 80, 0.85)',
+    blur: 'blur(38px)',
+    radius: '24px'
   },
+  // Middle cards
   card: {
-    bg: 'rgba(255, 255, 255, 0.02)',
-    blur: 'blur(12px)',
-    radius: '22px',
-    padding: '22px 26px'
+    bg: 'rgba(13, 23, 55, 0.9)',
+    blur: 'blur(24px)',
+    radius: '20px',
+    iconBg: 'rgba(52, 87, 140, 0.65)'
   },
+  // Summary
   summary: {
-    bg: 'rgba(255,255,255,0.03)',
-    blur: 'blur(16px)',
-    radius: '26px',
-    padding: '32px 30px'
+    bg: 'rgba(23, 38, 80, 0.85)',
+    blur: 'blur(38px)',
+    radius: '24px'
   },
+  // Chips
   chip: {
-    radius: '16px',
-    padding: '6px 14px'
-  },
-  badge: (rgb) => ({
-    bg: `rgba(${rgb}, 0.10)`,
-    radius: '16px',
-    padding: '6px 14px'
-  })
+    bg: 'rgba(30, 52, 96, 0.9)',
+    border: 'rgba(120, 180, 255, 0.35)',
+    radius: '999px',
+    activeGradient: 'linear-gradient(90deg, rgba(58, 108, 245, 0.25) 0%, rgba(75, 211, 255, 0.25) 100%)'
+  }
 };
 
 // ============================================================================
@@ -105,46 +127,46 @@ const getData = (name) => ({
 }[name]);
 
 // ============================================================================
-// HERO BLOCK — The Story Opens
+// HERO BLOCK — TL;DR Card with Tahoe Glass
 // ============================================================================
-const HeroBlock = ({ data, theme, weight }) => {
-  const [isHovered, setIsHovered] = React.useState(false);
+const HeroBlock = ({ data, theme, weight, scrollProgress }) => {
+  const [isHovered, setIsHovered] = useState(false);
   
   return (
     <motion.div
-      className="mx-9 mt-6"
-      initial={{ opacity: 0, y: 18 }}
+      className="mx-7 mt-5"
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.08, duration: MOTION.duration, ease: MOTION.ease }}
+      style={{ y: scrollProgress ? useTransform(scrollProgress, [0, 1], [0, -8]) : 0 }}
     >
       <motion.div
-        className="relative overflow-hidden text-center"
+        className="relative overflow-hidden"
         style={{
-          padding: GLASS.hero.padding,
-          background: GLASS.hero.bg,
-          backdropFilter: GLASS.hero.blur,
-          WebkitBackdropFilter: GLASS.hero.blur,
-          borderRadius: GLASS.hero.radius
+          padding: '28px 32px',
+          background: TAHOE.hero.bg,
+          backdropFilter: TAHOE.hero.blur,
+          WebkitBackdropFilter: TAHOE.hero.blur,
+          borderRadius: TAHOE.hero.radius,
+          border: '1px solid rgba(120, 180, 255, 0.08)'
         }}
         animate={{
-          scale: isHovered ? 1.01 : 1,
+          y: isHovered ? -2 : 0,
           filter: isHovered ? 'brightness(1.04)' : 'brightness(1)'
         }}
-        transition={{ duration: 0.16, ease: MOTION.ease }}
+        transition={{ duration: 0.18, ease: MOTION.ease }}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
       >
-        {/* TL;DR floating chip */}
+        {/* TL;DR micro-label */}
         <div 
-          className="inline-block mb-5"
+          className="mb-4"
           style={{
-            fontSize: '9px',
-            fontWeight: 550,
+            fontSize: '12px',
+            fontWeight: 600,
             color: 'rgba(255,255,255,0.55)',
-            background: 'rgba(255,255,255,0.06)',
-            padding: GLASS.chip.padding,
-            borderRadius: GLASS.chip.radius,
-            letterSpacing: '0.1em'
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase'
           }}
         >
           TL;DR
@@ -152,45 +174,26 @@ const HeroBlock = ({ data, theme, weight }) => {
         
         {/* Hero headline */}
         <p 
-          className="relative"
           style={{
-            fontSize: '19px',
-            fontWeight: 480,
+            fontSize: '18px',
+            fontWeight: 500,
             color: 'rgba(255,255,255,0.95)',
-            lineHeight: 1.52,
-            maxWidth: '520px',
-            margin: '0 auto 22px'
+            lineHeight: 1.55,
+            maxWidth: '80%',
+            marginBottom: '20px'
           }}
         >
           {data.tldr}
         </p>
         
-        {/* Sentiment + Weight badges */}
-        <div className="flex items-center justify-center gap-2.5">
-          <span 
-            style={{
-              fontSize: '11px',
-              fontWeight: 540,
-              color: theme.color,
-              background: `rgba(${theme.rgb}, 0.10)`,
-              padding: GLASS.badge(theme.rgb).padding,
-              borderRadius: GLASS.badge(theme.rgb).radius
-            }}
-          >
+        {/* State chips aligned right */}
+        <div className="flex items-center justify-end gap-2">
+          <TahoeChip theme={theme} isActive variant="status">
             {data.status}
-          </span>
-          <span 
-            style={{
-              fontSize: '11px',
-              fontWeight: 480,
-              color: 'rgba(255,255,255,0.55)',
-              background: 'rgba(255,255,255,0.04)',
-              padding: GLASS.chip.padding,
-              borderRadius: GLASS.chip.radius
-            }}
-          >
+          </TahoeChip>
+          <TahoeChip theme={theme}>
             {Math.round(weight)}% weight
-          </span>
+          </TahoeChip>
         </div>
       </motion.div>
     </motion.div>
@@ -198,62 +201,80 @@ const HeroBlock = ({ data, theme, weight }) => {
 };
 
 // ============================================================================
-// EVIDENCE TRIO — Lightweight Stepping Stones
+// EVIDENCE CARDS — Middle cards with Tahoe styling
 // ============================================================================
 const EvidenceCard = ({ item, theme, delay }) => {
-  const [isHovered, setIsHovered] = React.useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const cardRef = useRef(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  
+  const handleMouseMove = (e) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setTilt({ x: y * -4, y: x * 4 });
+  };
   
   return (
     <motion.div
+      ref={cardRef}
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: MOTION.duration, ease: MOTION.ease }}
       className="relative overflow-hidden"
       style={{
-        padding: GLASS.card.padding,
-        background: GLASS.card.bg,
-        backdropFilter: GLASS.card.blur,
-        WebkitBackdropFilter: GLASS.card.blur,
-        borderRadius: GLASS.card.radius
+        padding: '20px 24px',
+        background: TAHOE.card.bg,
+        backdropFilter: TAHOE.card.blur,
+        WebkitBackdropFilter: TAHOE.card.blur,
+        borderRadius: TAHOE.card.radius,
+        border: '1px solid rgba(120, 180, 255, 0.06)'
       }}
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseLeave={() => { setIsHovered(false); setTilt({ x: 0, y: 0 }); }}
+      onMouseMove={handleMouseMove}
     >
       <motion.div
         className="flex items-start gap-4"
         animate={{
-          scale: isHovered ? 1.005 : 1,
-          filter: isHovered ? 'brightness(1.03)' : 'brightness(1)'
+          y: isHovered ? -1 : 0,
+          filter: isHovered ? 'brightness(1.04)' : 'brightness(1)'
         }}
-        transition={{ duration: 0.14, ease: MOTION.ease }}
+        transition={{ duration: 0.15, ease: MOTION.ease }}
       >
-        <div 
-          className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+        <motion.div 
+          className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
           style={{
-            background: `rgba(${theme.rgb}, 0.10)`,
-            boxShadow: isHovered ? `0 0 8px rgba(${theme.rgb}, 0.16)` : 'none',
-            transition: 'box-shadow 0.14s ease'
+            background: TAHOE.card.iconBg,
+            boxShadow: `inset 0 1px 2px rgba(255,255,255,0.12), ${isHovered ? `0 0 16px rgba(${theme.rgb}, 0.30)` : 'none'}`,
+            transition: 'box-shadow 0.2s ease'
           }}
+          animate={{
+            rotateX: isHovered ? tilt.x : 0,
+            rotateY: isHovered ? tilt.y : 0
+          }}
+          transition={{ duration: 0.15 }}
         >
-          <item.icon className="w-4 h-4" style={{ color: theme.color }} strokeWidth={2} />
-        </div>
-        <div className="flex-1 pt-0.5">
+          <item.icon className="w-[18px] h-[18px]" style={{ color: theme.color }} strokeWidth={2} />
+        </motion.div>
+        <div className="flex-1 pt-1">
           <h4 
             style={{
-              fontSize: '13px',
-              fontWeight: 520,
-              color: 'rgba(255,255,255,0.78)',
-              marginBottom: '5px'
+              fontSize: '14px',
+              fontWeight: 600,
+              color: 'rgba(255,255,255,0.9)',
+              marginBottom: '6px'
             }}
           >
             {item.title}
           </h4>
           <p 
             style={{
-              fontSize: '14px',
+              fontSize: '13px',
               fontWeight: 400,
-              color: 'rgba(255,255,255,0.62)',
-              lineHeight: 1.52
+              color: 'rgba(210,220,255,0.78)',
+              lineHeight: 1.5
             }}
           >
             {item.text}
@@ -265,45 +286,47 @@ const EvidenceCard = ({ item, theme, delay }) => {
 };
 
 const EvidenceTrio = ({ data, theme }) => (
-  <div className="mx-9 mt-5 flex flex-col" style={{ gap: '22px' }}>
+  <div className="mx-7 mt-4 flex flex-col" style={{ gap: '16px' }}>
     {data.evidence.map((item, i) => (
       <EvidenceCard 
         key={item.title} 
         item={item} 
         theme={theme} 
-        delay={0.16 + (i * MOTION.stagger)} 
+        delay={0.14 + (i * MOTION.stagger)} 
       />
     ))}
   </div>
 );
 
 // ============================================================================
-// NARRATIVE SUMMARY — The Story Closes
+// NARRATIVE SUMMARY — What This Means Panel
 // ============================================================================
-const NarrativeSummary = ({ data }) => (
+const NarrativeSummary = ({ data, theme, scrollProgress }) => (
   <motion.div
-    className="mx-9 mt-6"
+    className="mx-7 mt-5"
     initial={{ opacity: 0, y: 8 }}
     animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.34, duration: 0.22, ease: MOTION.ease }}
+    transition={{ delay: 0.32, duration: 0.22, ease: MOTION.ease }}
+    style={{ y: scrollProgress ? useTransform(scrollProgress, [0, 1], [0, -8]) : 0 }}
   >
     <div
-      className="relative overflow-hidden text-center"
+      className="relative overflow-hidden"
       style={{
-        padding: GLASS.summary.padding,
-        background: GLASS.summary.bg,
-        backdropFilter: GLASS.summary.blur,
-        WebkitBackdropFilter: GLASS.summary.blur,
-        borderRadius: GLASS.summary.radius
+        padding: '26px 28px',
+        background: TAHOE.summary.bg,
+        backdropFilter: TAHOE.summary.blur,
+        WebkitBackdropFilter: TAHOE.summary.blur,
+        borderRadius: TAHOE.summary.radius,
+        border: '1px solid rgba(120, 180, 255, 0.08)'
       }}
     >
       <h3 
-        className="relative mb-4"
+        className="mb-4"
         style={{
-          fontSize: '10px',
-          fontWeight: 550,
-          color: 'rgba(255,255,255,0.42)',
-          letterSpacing: '0.14em',
+          fontSize: '12px',
+          fontWeight: 600,
+          color: 'rgba(255,255,255,0.55)',
+          letterSpacing: '0.18em',
           textTransform: 'uppercase'
         }}
       >
@@ -311,14 +334,11 @@ const NarrativeSummary = ({ data }) => (
       </h3>
       
       <p 
-        className="relative"
         style={{
           fontSize: '16px',
-          fontWeight: 430,
-          color: 'rgba(255,255,255,0.88)',
-          lineHeight: 1.60,
-          maxWidth: '440px',
-          margin: '0 auto'
+          fontWeight: 400,
+          color: 'rgba(230,235,255,0.92)',
+          lineHeight: 1.65
         }}
       >
         {data.summary}
@@ -328,102 +348,124 @@ const NarrativeSummary = ({ data }) => (
 );
 
 // ============================================================================
-// MICRO SIGNAL ROW — Quiet Metadata
+// TAHOE CHIP SYSTEM
 // ============================================================================
-const SignalChip = ({ children, theme, isActive }) => {
-  const [isHovered, setIsHovered] = React.useState(false);
+const TahoeChip = ({ children, theme, isActive, variant }) => {
+  const [isHovered, setIsHovered] = useState(false);
   
   return (
     <motion.div
-      className="flex items-center gap-1"
+      className="flex items-center gap-1.5 relative"
       style={{
-        fontSize: '10px',
+        fontSize: '13px',
         fontWeight: 500,
-        color: isActive ? theme.color : 'rgba(255,255,255,0.55)',
-        background: isActive ? `rgba(${theme.rgb}, 0.12)` : 'rgba(255,255,255,0.04)',
-        padding: GLASS.chip.padding,
-        borderRadius: GLASS.chip.radius,
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        boxShadow: isHovered && isActive ? `0 0 12px rgba(${theme.rgb}, 0.22)` : 'none',
-        border: isHovered ? `1px solid rgba(${theme.rgb}, 0.30)` : '1px solid transparent',
-        transition: 'box-shadow 0.14s ease, border 0.14s ease'
+        color: isActive ? 'rgba(220,230,255,0.95)' : 'rgba(220,230,255,0.9)',
+        background: isActive ? TAHOE.chip.activeGradient : TAHOE.chip.bg,
+        padding: '6px 14px',
+        borderRadius: TAHOE.chip.radius,
+        border: `1px solid ${TAHOE.chip.border}`,
+        boxShadow: isHovered ? '0 0 16px rgba(84,141,255,0.45)' : 'none',
+        transition: 'box-shadow 0.15s ease'
       }}
       animate={{ scale: isHovered ? 1.03 : 1 }}
       transition={{ duration: 0.14, ease: MOTION.ease }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
     >
+      {/* Pulsing dot for active status chips */}
+      {isActive && variant === 'status' && (
+        <motion.div
+          className="w-1.5 h-1.5 rounded-full"
+          style={{ background: '#4BD3FF' }}
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      )}
       {children}
     </motion.div>
   );
 };
 
+// ============================================================================
+// SIGNAL ROW — Bottom chips
+// ============================================================================
 const SignalRow = ({ data, theme }) => {
   const TrendIcon = data.trend === 'up' ? TrendingUp : data.trend === 'down' ? TrendingDown : null;
   
   return (
     <motion.div
-      className="flex justify-center mx-9 mt-6 mb-10"
-      style={{ gap: '10px' }}
+      className="flex justify-center mx-7 mt-4 mb-8"
+      style={{ gap: '12px' }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ delay: 0.42, duration: MOTION.duration }}
+      transition={{ delay: 0.40, duration: MOTION.duration }}
     >
       {TrendIcon && (
-        <SignalChip theme={theme} isActive>
-          <TrendIcon className="w-3 h-3" strokeWidth={2.5} />
+        <TahoeChip theme={theme} isActive variant="status">
+          <TrendIcon className="w-3.5 h-3.5" strokeWidth={2.5} />
           <span>{data.status}</span>
-        </SignalChip>
+        </TahoeChip>
       )}
       
-      <SignalChip theme={theme}>
+      <TahoeChip theme={theme}>
         <span>{data.certainty}%</span>
-      </SignalChip>
+      </TahoeChip>
       
-      <SignalChip theme={theme}>
-        <Clock className="w-3 h-3" strokeWidth={2.5} />
+      <TahoeChip theme={theme}>
+        <Clock className="w-3.5 h-3.5" strokeWidth={2} />
         <span>{data.horizon}</span>
-      </SignalChip>
+      </TahoeChip>
     </motion.div>
   );
 };
 
 // ============================================================================
-// HEADER
+// HEADER — Merged glass sheet, no harsh divider
 // ============================================================================
 const Header = ({ segment, theme, onClose, onNavigate }) => {
   const { Icon } = theme;
   
   return (
     <motion.div 
-      className="relative px-9 pt-8 pb-5"
+      className="relative px-8 pt-7 pb-5"
+      style={{
+        background: TAHOE.header.bg,
+        backdropFilter: TAHOE.header.blur,
+        WebkitBackdropFilter: TAHOE.header.blur,
+        borderRadius: '28px 28px 0 0'
+      }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.18 }}
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div 
-            className="w-11 h-11 rounded-[14px] flex items-center justify-center"
+          <motion.div 
+            className="w-11 h-11 rounded-full flex items-center justify-center"
             style={{
-              background: `rgba(${theme.rgb}, 0.12)`,
-              boxShadow: `0 0 8px rgba(${theme.rgb}, 0.16)`
+              background: TAHOE.card.iconBg,
+              boxShadow: `inset 0 1px 2px rgba(255,255,255,0.15), 0 0 12px rgba(${theme.rgb}, 0.20)`
             }}
+            whileHover={{ 
+              boxShadow: `inset 0 1px 2px rgba(255,255,255,0.15), 0 0 20px rgba(${theme.rgb}, 0.35)`,
+              rotateY: 4,
+              rotateX: -3
+            }}
+            transition={{ duration: 0.2 }}
           >
             <Icon className="w-5 h-5" style={{ color: theme.color }} strokeWidth={2} />
-          </div>
+          </motion.div>
           <div>
-            <h1 style={{ fontSize: '20px', fontWeight: 600, color: 'rgba(255,255,255,0.94)', letterSpacing: '-0.02em' }}>
+            <h1 style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(255,255,255,0.95)', letterSpacing: '-0.01em' }}>
               {segment.name}
             </h1>
-            <p style={{ fontSize: '13px', fontWeight: 420, color: 'rgba(255,255,255,0.45)', marginTop: '1px' }}>
+            <p style={{ fontSize: '13px', fontWeight: 420, color: 'rgba(210,220,255,0.7)', marginTop: '2px' }}>
               Market Pressure Analysis
             </p>
           </div>
         </div>
         
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           {[
             { action: () => onNavigate('prev'), icon: ChevronLeft },
             { action: () => onNavigate('next'), icon: ChevronRight },
@@ -432,30 +474,50 @@ const Header = ({ segment, theme, onClose, onNavigate }) => {
             <motion.button
               key={i}
               onClick={action}
-              className={`w-9 h-9 rounded-xl flex items-center justify-center ${ml ? 'ml-1' : ''}`}
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}
-              whileHover={{ background: 'rgba(255,255,255,0.08)' }}
+              className={`w-8 h-8 rounded-full flex items-center justify-center ${ml ? 'ml-2' : ''}`}
+              style={{ 
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.08)'
+              }}
+              whileHover={{ 
+                scale: 1.04,
+                background: 'rgba(255,255,255,0.12)',
+                boxShadow: '0 0 12px rgba(120,180,255,0.25)'
+              }}
               whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.15 }}
             >
-              <BtnIcon className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.60)' }} />
+              <BtnIcon className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.70)' }} />
             </motion.button>
           ))}
         </div>
       </div>
-      
-      {/* Subtle divider */}
-      <div 
-        className="absolute bottom-0 left-9 right-9 h-px"
-        style={{ background: 'rgba(255,255,255,0.06)' }}
-      />
     </motion.div>
   );
 };
 
 // ============================================================================
+// NOISE OVERLAY
+// ============================================================================
+const NoiseOverlay = () => (
+  <div 
+    className="absolute inset-0 pointer-events-none"
+    style={{
+      backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+      opacity: 0.015,
+      mixBlendMode: 'overlay',
+      borderRadius: '28px'
+    }}
+  />
+);
+
+// ============================================================================
 // MAIN DRAWER
 // ============================================================================
 export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNavigate }) {
+  const scrollRef = useRef(null);
+  const { scrollYProgress } = useScroll({ container: scrollRef });
+  
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -483,51 +545,97 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.22 }}
+        transition={{ duration: 0.28, ease: MOTION.ease }}
         style={{ paddingTop: '80px' }}
       >
-        {/* Backdrop with vignette */}
+        {/* Global canvas with deep navy gradient + bokeh */}
         <motion.div 
           className="absolute inset-0"
           style={{ 
             top: '80px',
-            background: `
-              radial-gradient(ellipse at 50% 50%, rgba(5,8,20,0.75) 0%, rgba(5,10,19,0.92) 100%),
-              linear-gradient(to bottom, #050814 0%, #050A13 100%)
-            `,
+            background: TAHOE.canvas.bg,
             backdropFilter: 'blur(24px)',
             WebkitBackdropFilter: 'blur(24px)'
           }}
           onClick={onClose}
-        />
+        >
+          {/* Bokeh glows - parallax at 0.8x */}
+          <motion.div
+            className="absolute w-96 h-96 rounded-full"
+            style={{
+              top: '10%',
+              left: '20%',
+              background: 'radial-gradient(circle, rgba(80,120,200,0.08) 0%, transparent 70%)',
+              filter: 'blur(60px)'
+            }}
+            animate={{ y: useTransform(scrollYProgress, [0, 1], [0, 40]) }}
+          />
+          <motion.div
+            className="absolute w-80 h-80 rounded-full"
+            style={{
+              bottom: '20%',
+              right: '15%',
+              background: 'radial-gradient(circle, rgba(120,80,180,0.06) 0%, transparent 70%)',
+              filter: 'blur(50px)'
+            }}
+            animate={{ y: useTransform(scrollYProgress, [0, 1], [0, 32]) }}
+          />
+          <NoiseOverlay />
+        </motion.div>
         
-        {/* Drawer */}
+        {/* Main Drawer Glass */}
         <motion.div
           key={segment.name}
           className="relative w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col"
           style={{
-            borderRadius: '26px',
-            background: '#060C18',
-            backdropFilter: 'blur(22px)',
-            WebkitBackdropFilter: 'blur(22px)',
-            border: '1px solid rgba(255,255,255,0.04)',
+            borderRadius: TAHOE.drawer.radius,
+            background: TAHOE.drawer.bg,
+            backdropFilter: TAHOE.drawer.blur,
+            WebkitBackdropFilter: TAHOE.drawer.blur,
             boxShadow: `
-              0 0 40px rgba(0,0,0,0.32) inset,
-              0 0 8px rgba(255,255,255,0.05) inset,
-              0 40px 80px -20px rgba(0,0,0,0.80)
+              ${TAHOE.drawer.innerShadow},
+              0 40px 80px -20px rgba(0,0,0,0.70)
             `
           }}
-          initial={{ opacity: 0, scale: 0.97 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.97 }}
-          transition={{ duration: 0.22, ease: [0.16, 0.80, 0.33, 1] }}
+          initial={{ opacity: 0, scale: 0.97, y: 10, filter: 'blur(4px)' }}
+          animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
+          exit={{ opacity: 0, scale: 0.97, y: 8, filter: 'blur(2px)' }}
+          transition={{ duration: 0.28, ease: MOTION.ease }}
         >
+          {/* Gradient border effect */}
+          <div 
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              borderRadius: TAHOE.drawer.radius,
+              border: '1px solid transparent',
+              background: `${TAHOE.drawer.border} border-box`,
+              WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+              WebkitMaskComposite: 'xor',
+              maskComposite: 'exclude'
+            }}
+          />
+          
+          {/* Top highlight strip */}
+          <div 
+            className="absolute top-0 left-0 right-0 h-1.5 pointer-events-none"
+            style={{
+              background: TAHOE.drawer.highlight,
+              borderRadius: '28px 28px 0 0'
+            }}
+          />
+          
+          <NoiseOverlay />
+          
           <Header segment={segment} theme={theme} onClose={onClose} onNavigate={onNavigate} />
           
-          <div className="overflow-y-auto flex-1" style={{ scrollBehavior: 'smooth' }}>
-            <HeroBlock data={data} theme={theme} weight={weight} />
+          <div 
+            ref={scrollRef}
+            className="overflow-y-auto flex-1" 
+            style={{ scrollBehavior: 'smooth' }}
+          >
+            <HeroBlock data={data} theme={theme} weight={weight} scrollProgress={scrollYProgress} />
             <EvidenceTrio data={data} theme={theme} />
-            <NarrativeSummary data={data} />
+            <NarrativeSummary data={data} theme={theme} scrollProgress={scrollYProgress} />
             <SignalRow data={data} theme={theme} />
           </div>
         </motion.div>
