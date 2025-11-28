@@ -30,57 +30,70 @@ const MOTION = {
 };
 
 // ============================================================================
-// CASCADE SPACING MODEL
+// CASCADE SPACING MODEL (V3 Production)
 // ============================================================================
 const SPACING = {
-  drawerPadding: 42,       // 38-44px
-  topIntro: 52,            // 48-55px
-  betweenPhases: 40,       // 36-44px
-  insidePhase: 24,         // 22-26px
-  bottomSafety: 62,        // 55-70px
-  // Tri-insight stagger offsets
-  staggerOffsets: [0, 7, 13] // Card 1 normal, Card 2 +6-8px, Card 3 +12-14px
+  drawerPadding: 44,
+  topIntro: 56,
+  betweenPhases: 44,
+  insidePhase: 26,
+  bottomSafety: 64,
+  breathingDivider: 52,     // 40-60px vertical spacer
+  metaTagsSpacing: 30,      // 24-36px above meta row
+  // Tri-insight stagger offsets (6-12px)
+  staggerOffsets: [0, 8, 14],
+  // Staggered widths for insight blocks
+  staggerWidths: ['88%', '92%', '86%']
 };
 
 // ============================================================================
-// 4-PHASE GLASS HIERARCHY
+// 4-PHASE GLASS HIERARCHY (V3 Production Materials)
 // ============================================================================
 const GLASS = {
-  // PHASE 1: Primary Signal Panel (highest luminosity)
-  primary: {
-    radius: '28px',
-    blur: 'blur(32px) saturate(178%)',
-    opacity: 0.09, // 8-10%
-    bg: (tintRgb) => `linear-gradient(180deg, rgba(${tintRgb}, 0.14) 0%, rgba(255, 255, 255, 0.055) 40%, rgba(255, 255, 255, 0.025) 100%)`,
-    border: 'rgba(255,255,255,0.12)',
-    glow: (tintRgb) => `0 0 60px rgba(${tintRgb}, 0.10), 0 0 30px rgba(${tintRgb}, 0.06)`,
-    glowHover: (tintRgb) => `0 0 70px rgba(${tintRgb}, 0.14), 0 0 35px rgba(${tintRgb}, 0.08)`
-  },
-  // PHASE 2: Tri-Insight Cards (mid luminosity, alternating)
-  insight: {
+  // HEADER: Floating Glass Island (High-Clarity, low blur 18-22px)
+  header: {
     radius: '24px',
-    blur: 'blur(24px) saturate(165%)',
-    opacities: [0.08, 0.10, 0.08], // Alternating contrast
-    bg: (tintRgb, opacity) => `linear-gradient(180deg, rgba(${tintRgb}, ${opacity * 1.2}) 0%, rgba(255, 255, 255, ${opacity * 0.6}) 50%, rgba(255, 255, 255, ${opacity * 0.3}) 100%)`,
+    blur: 'blur(20px) saturate(160%)',
+    bg: 'linear-gradient(180deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.028) 100%)',
     border: 'rgba(255,255,255,0.10)',
-    glow: (tintRgb) => `0 0 40px rgba(${tintRgb}, 0.06), 0 0 20px rgba(${tintRgb}, 0.04)`,
-    glowHover: (tintRgb) => `0 0 50px rgba(${tintRgb}, 0.09), 0 0 25px rgba(${tintRgb}, 0.06)`
+    glow: '0 4px 24px rgba(0, 0, 0, 0.12), 0 0 8px rgba(255, 255, 255, 0.015)'
   },
-  // PHASE 3: Interpretation Panel (lowest luminosity, softest)
-  interpretation: {
-    radius: '30px',
-    blur: 'blur(26px) saturate(160%)',
-    opacity: 0.065, // 6-7%
-    bg: (tintRgb) => `linear-gradient(180deg, rgba(${tintRgb}, 0.08) 0%, rgba(255, 255, 255, 0.035) 45%, rgba(255, 255, 255, 0.015) 100%)`,
-    border: 'rgba(255,255,255,0.08)',
-    glow: (tintRgb) => `0 0 80px rgba(${tintRgb}, 0.05), 0 0 40px rgba(${tintRgb}, 0.03)`,
-    glowHover: (tintRgb) => `0 0 90px rgba(${tintRgb}, 0.07), 0 0 45px rgba(${tintRgb}, 0.04)`
+  // TL;DR: Liquid Metal Glass (denser, darker, higher contrast)
+  tldr: {
+    radius: '36px',
+    blur: 'blur(38px) saturate(185%)',
+    bg: (tintRgb) => `linear-gradient(180deg, rgba(${tintRgb}, 0.12) 0%, rgba(18, 20, 28, 0.75) 35%, rgba(12, 14, 22, 0.85) 100%)`,
+    border: 'rgba(255,255,255,0.14)',
+    glow: (tintRgb) => `0 0 55px rgba(${tintRgb}, 0.06), 0 8px 32px rgba(0, 0, 0, 0.22)`,
+    glowHover: (tintRgb) => `0 0 65px rgba(${tintRgb}, 0.09), 0 10px 40px rgba(0, 0, 0, 0.26)`
   },
-  // PHASE 4: Meta-Signal Strip (no container, badges only)
+  // INSIGHT: Staggered Cards with varying glow (±10%)
+  insight: {
+    radius: '26px',
+    blur: 'blur(22px) saturate(162%)',
+    opacities: [0.07, 0.085, 0.065],
+    glowIntensities: [0.055, 0.065, 0.05], // ±10% variance
+    elevations: [1, 1.5, 1],
+    bg: (tintRgb, opacity) => `linear-gradient(180deg, rgba(${tintRgb}, ${opacity * 1.1}) 0%, rgba(255, 255, 255, ${opacity * 0.55}) 50%, rgba(255, 255, 255, ${opacity * 0.25}) 100%)`,
+    border: 'rgba(255,255,255,0.09)',
+    glow: (tintRgb, intensity) => `0 0 ${35 + intensity * 200}px rgba(${tintRgb}, ${intensity}), 0 ${4 + intensity * 20}px ${16 + intensity * 40}px rgba(0, 0, 0, 0.10)`,
+    glowHover: (tintRgb, intensity) => `0 0 ${45 + intensity * 200}px rgba(${tintRgb}, ${intensity + 0.025}), 0 ${6 + intensity * 20}px ${20 + intensity * 40}px rgba(0, 0, 0, 0.14)`
+  },
+  // CONCLUSION: Revelation Material (Subsurface Frosted Glass Light, elevation +4)
+  revelation: {
+    radius: '44px',
+    blur: 'blur(30px) saturate(172%)',
+    bg: (tintRgb) => `linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(${tintRgb}, 0.035) 40%, rgba(255, 255, 255, 0.018) 100%)`,
+    border: 'rgba(255,255,255,0.11)',
+    glow: (tintRgb) => `0 0 90px rgba(${tintRgb}, 0.14), 0 16px 56px rgba(0, 0, 0, 0.18)`,
+    glowHover: (tintRgb) => `0 0 100px rgba(${tintRgb}, 0.18), 0 20px 64px rgba(0, 0, 0, 0.22)`
+  },
+  // META: Reduced chips (20-25% smaller, 55-65% opacity)
   meta: {
-    radius: '10px',
-    bg: 'rgba(255,255,255,0.06)',
-    border: 'rgba(255,255,255,0.10)'
+    radius: '8px',
+    bg: 'rgba(255,255,255,0.045)',
+    border: 'rgba(255,255,255,0.08)',
+    opacity: 0.60
   }
 };
 
@@ -174,15 +187,15 @@ const getSegmentDetails = (segment) => {
 };
 
 // ============================================================================
-// PHASE 1: PRIMARY SIGNAL PANEL (North Star)
+// TL;DR ANCHOR BAR (Liquid Metal Glass)
 // ============================================================================
-const PrimarySignalPanel = ({ details, theme, weight, index }) => {
+const TLDRAnchorBar = ({ details, theme, weight, index }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   
   return (
     <motion.div
-      className="relative"
+      className="relative w-full"
       style={{ marginBottom: `${SPACING.betweenPhases}px` }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -195,20 +208,20 @@ const PrimarySignalPanel = ({ details, theme, weight, index }) => {
       <motion.div
         className="relative overflow-hidden"
         style={{
-          padding: '32px 38px',
-          minHeight: '140px', // 20-30% taller
-          background: GLASS.primary.bg(theme.colorRgb),
-          backdropFilter: GLASS.primary.blur,
-          WebkitBackdropFilter: GLASS.primary.blur,
-          borderRadius: GLASS.primary.radius,
-          border: `1px solid ${GLASS.primary.border}`
+          padding: '30px 40px',
+          minHeight: '130px',
+          background: GLASS.tldr.bg(theme.colorRgb),
+          backdropFilter: GLASS.tldr.blur,
+          WebkitBackdropFilter: GLASS.tldr.blur,
+          borderRadius: GLASS.tldr.radius,
+          border: `1px solid ${GLASS.tldr.border}`
         }}
         animate={{
           scale: isPressed ? 0.997 : (isHovered ? MOTION.HOVER.scale : 1),
           y: isPressed ? 1 : (isHovered ? -MOTION.HOVER.lift : 0),
           boxShadow: isHovered 
-            ? GLASS.primary.glowHover(theme.colorRgb)
-            : GLASS.primary.glow(theme.colorRgb)
+            ? GLASS.tldr.glowHover(theme.colorRgb)
+            : GLASS.tldr.glow(theme.colorRgb)
         }}
         transition={{ 
           duration: isPressed ? MOTION.DURATIONS.press : MOTION.DURATIONS.hover, 
@@ -220,20 +233,20 @@ const PrimarySignalPanel = ({ details, theme, weight, index }) => {
         onTap={() => setIsPressed(false)}
         onTapCancel={() => setIsPressed(false)}
       >
-        {/* Inner Sheen */}
+        {/* Liquid Metal Sheen */}
         <div 
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: 'linear-gradient(180deg, rgba(255,255,255,0.025) 0%, transparent 40%)',
-            borderRadius: GLASS.primary.radius
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.032) 0%, transparent 35%, rgba(0,0,0,0.08) 100%)',
+            borderRadius: GLASS.tldr.radius
           }}
         />
         
-        {/* Segment Tint Top Edge */}
+        {/* Segment Tint Top Edge (5-7% glow) */}
         <div 
-          className="absolute top-0 left-[15%] right-[15%] h-px pointer-events-none"
+          className="absolute top-0 left-[12%] right-[12%] h-px pointer-events-none"
           style={{
-            background: `linear-gradient(90deg, transparent, rgba(${theme.colorRgb}, 0.32), transparent)`
+            background: `linear-gradient(90deg, transparent, rgba(${theme.colorRgb}, 0.38), transparent)`
           }}
         />
         
@@ -244,31 +257,31 @@ const PrimarySignalPanel = ({ details, theme, weight, index }) => {
             style={{
               fontSize: '10px',
               fontWeight: 650,
-              color: 'rgba(255,255,255,0.90)',
-              background: 'rgba(255,255,255,0.12)',
-              border: '1px solid rgba(255,255,255,0.18)',
+              color: 'rgba(255,255,255,0.92)',
+              background: 'rgba(255,255,255,0.14)',
+              border: '1px solid rgba(255,255,255,0.20)',
               letterSpacing: '0.08em'
             }}
           >
             TL;DR
           </div>
           
-          {/* Primary Text: Centered, max-width 680-720px */}
+          {/* Primary Text */}
           <p 
             style={{
               fontSize: '19px',
               fontWeight: 480,
-              color: 'rgba(255,255,255,0.96)',
-              lineHeight: 1.52,
+              color: 'rgba(255,255,255,0.97)',
+              lineHeight: 1.54,
               letterSpacing: '-0.01em',
-              maxWidth: '700px'
+              maxWidth: '680px'
             }}
           >
             {details.tldr}
           </p>
           
-          {/* Bias Tag + Certainty */}
-          <div className="flex items-center gap-4 mt-5">
+          {/* Tag + Sentiment + Weight Row (perfectly aligned) */}
+          <div className="flex items-center justify-center gap-4 mt-5">
             <motion.div
               className="px-4 py-2 rounded-full"
               style={{
@@ -276,14 +289,14 @@ const PrimarySignalPanel = ({ details, theme, weight, index }) => {
                 fontWeight: 580,
                 color: theme.color,
                 background: `rgba(${theme.colorRgb}, ${theme.tint.card})`,
-                border: `1px solid rgba(${theme.colorRgb}, 0.30)`,
-                boxShadow: `0 0 ${isHovered ? 20 : 12}px rgba(${theme.colorRgb}, ${isHovered ? 0.20 : 0.12})`
+                border: `1px solid rgba(${theme.colorRgb}, 0.32)`,
+                boxShadow: `0 0 ${isHovered ? 22 : 14}px rgba(${theme.colorRgb}, ${isHovered ? 0.22 : 0.14})`
               }}
             >
               {details.status}
             </motion.div>
             
-            <span style={{ fontSize: '12px', fontWeight: 520, color: 'rgba(255,255,255,0.60)' }}>
+            <span style={{ fontSize: '12px', fontWeight: 520, color: 'rgba(255,255,255,0.58)' }}>
               {Math.round(weight)}% weight
             </span>
           </div>
@@ -294,21 +307,23 @@ const PrimarySignalPanel = ({ details, theme, weight, index }) => {
 };
 
 // ============================================================================
-// PHASE 2: TRI-INSIGHT CLUSTER (Staggered Rhythm)
+// INSIGHT STACK (Staggered Widths + Elevations)
 // ============================================================================
 const InsightCard = ({ icon: Icon, label, content, theme, cardIndex, phaseIndex }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   
-  const opacity = GLASS.insight.opacities[cardIndex] || 0.08;
+  const opacity = GLASS.insight.opacities[cardIndex] || 0.07;
+  const glowIntensity = GLASS.insight.glowIntensities[cardIndex] || 0.055;
   const staggerOffset = SPACING.staggerOffsets[cardIndex] || 0;
+  const width = SPACING.staggerWidths[cardIndex] || '88%';
   
   return (
     <motion.div
-      className="relative"
+      className="relative flex justify-center"
       style={{ 
         marginBottom: `${SPACING.insidePhase}px`,
-        marginTop: `${staggerOffset}px` // Staggered vertical rhythm
+        marginTop: `${staggerOffset}px`
       }}
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
@@ -321,7 +336,8 @@ const InsightCard = ({ icon: Icon, label, content, theme, cardIndex, phaseIndex 
       <motion.div
         className="relative overflow-hidden"
         style={{
-          padding: '22px 28px',
+          width: width,
+          padding: '24px 30px',
           background: GLASS.insight.bg(theme.colorRgb, opacity),
           backdropFilter: GLASS.insight.blur,
           WebkitBackdropFilter: GLASS.insight.blur,
@@ -332,8 +348,8 @@ const InsightCard = ({ icon: Icon, label, content, theme, cardIndex, phaseIndex 
           scale: isPressed ? 0.997 : (isHovered ? MOTION.HOVER.scale : 1),
           y: isPressed ? 1 : (isHovered ? -MOTION.HOVER.lift : 0),
           boxShadow: isHovered 
-            ? GLASS.insight.glowHover(theme.colorRgb)
-            : GLASS.insight.glow(theme.colorRgb)
+            ? GLASS.insight.glowHover(theme.colorRgb, glowIntensity)
+            : GLASS.insight.glow(theme.colorRgb, glowIntensity)
         }}
         transition={{ 
           duration: isPressed ? MOTION.DURATIONS.press : MOTION.DURATIONS.hover, 
@@ -347,14 +363,14 @@ const InsightCard = ({ icon: Icon, label, content, theme, cardIndex, phaseIndex 
       >
         {/* Segment Tint Accent */}
         <div 
-          className="absolute top-0 left-[20%] right-[20%] h-px pointer-events-none transition-opacity duration-200"
+          className="absolute top-0 left-[18%] right-[18%] h-px pointer-events-none transition-opacity duration-200"
           style={{
-            background: `linear-gradient(90deg, transparent, rgba(${theme.colorRgb}, ${isHovered ? 0.24 : 0.14}), transparent)`
+            background: `linear-gradient(90deg, transparent, rgba(${theme.colorRgb}, ${isHovered ? 0.26 : 0.15}), transparent)`
           }}
         />
         
         <div className="flex items-start gap-4 relative">
-          {/* VisionOS-Style Icon (20-26% tint intensity) */}
+          {/* VisionOS-Style Icon */}
           <div 
             className="w-10 h-10 rounded-[14px] flex items-center justify-center flex-shrink-0"
             style={{
@@ -370,7 +386,6 @@ const InsightCard = ({ icon: Icon, label, content, theme, cardIndex, phaseIndex 
           </div>
           
           <div className="flex-1 pt-0.5">
-            {/* Header: -1 step, +1-2% letter spacing, 70-75% opacity */}
             <h4 
               style={{
                 fontSize: '13px',
@@ -383,13 +398,12 @@ const InsightCard = ({ icon: Icon, label, content, theme, cardIndex, phaseIndex 
               {label}
             </h4>
             
-            {/* Body: +2-4px line height, 84-88% opacity */}
             <p 
               style={{
                 fontSize: '15px',
                 fontWeight: 420,
                 color: 'rgba(255,255,255,0.86)',
-                lineHeight: 1.62,
+                lineHeight: 1.64,
                 letterSpacing: '-0.005em'
               }}
             >
@@ -427,20 +441,60 @@ const TriInsightCluster = ({ details, theme, startIndex }) => {
 };
 
 // ============================================================================
-// PHASE 3: INTERPRETATION PANEL (What This Means)
+// BREATHING DIVIDER (40-60px spacer with gradient fade)
 // ============================================================================
-const InterpretationPanel = ({ details, theme, index }) => {
+const BreathingDivider = ({ theme }) => {
+  return (
+    <motion.div
+      className="relative flex justify-center"
+      style={{ 
+        height: `${SPACING.breathingDivider}px`,
+        marginBottom: '0px'
+      }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.32, duration: 0.24 }}
+    >
+      {/* Vertical Gradient Fade (0% → 6% opacity) */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          background: `linear-gradient(180deg, transparent 0%, rgba(${theme.colorRgb}, 0.06) 50%, transparent 100%)`
+        }}
+      />
+    </motion.div>
+  );
+};
+
+// ============================================================================
+// CONCLUSION BLOCK (Revelation Material — Elevation +4, "Aha Moment")
+// ============================================================================
+const RevelationPanel = ({ details, theme, index }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
+  const [scrollOffset, setScrollOffset] = useState(0);
+  
+  // Micro-parallax on scroll (0.6-1.0px)
+  useEffect(() => {
+    const handleScroll = (e) => {
+      const scrollTop = e.target?.scrollTop || 0;
+      setScrollOffset(scrollTop * 0.0008); // 0.8px parallax factor
+    };
+    
+    const scrollContainer = document.querySelector('[data-scroll-container]');
+    if (scrollContainer) {
+      scrollContainer.addEventListener('scroll', handleScroll);
+      return () => scrollContainer.removeEventListener('scroll', handleScroll);
+    }
+  }, []);
   
   return (
     <motion.div
-      className="relative"
+      className="relative flex justify-center"
       style={{ 
-        marginTop: `${SPACING.betweenPhases - 8}px`, // 32-36px above
-        marginBottom: `${SPACING.insidePhase}px`
+        marginBottom: `${SPACING.metaTagsSpacing}px`
       }}
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ 
         delay: index * MOTION.DURATIONS.stagger, 
@@ -451,19 +505,21 @@ const InterpretationPanel = ({ details, theme, index }) => {
       <motion.div
         className="relative overflow-hidden text-center"
         style={{
-          padding: '38px 44px',
-          background: GLASS.interpretation.bg(theme.colorRgb),
-          backdropFilter: GLASS.interpretation.blur,
-          WebkitBackdropFilter: GLASS.interpretation.blur,
-          borderRadius: GLASS.interpretation.radius,
-          border: `1px solid ${GLASS.interpretation.border}`
+          width: '86%',
+          padding: '48px 52px',
+          background: GLASS.revelation.bg(theme.colorRgb),
+          backdropFilter: GLASS.revelation.blur,
+          WebkitBackdropFilter: GLASS.revelation.blur,
+          borderRadius: GLASS.revelation.radius,
+          border: `1px solid ${GLASS.revelation.border}`,
+          transform: `translateY(${scrollOffset}px)`
         }}
         animate={{
-          scale: isPressed ? 0.998 : (isHovered ? 1.004 : 1),
-          y: isPressed ? 0.5 : (isHovered ? -1 : 0),
+          scale: isPressed ? 0.998 : (isHovered ? 1.005 : 1),
+          y: isPressed ? 0.5 : (isHovered ? -2 : scrollOffset),
           boxShadow: isHovered 
-            ? GLASS.interpretation.glowHover(theme.colorRgb)
-            : GLASS.interpretation.glow(theme.colorRgb)
+            ? GLASS.revelation.glowHover(theme.colorRgb)
+            : GLASS.revelation.glow(theme.colorRgb)
         }}
         transition={{ 
           duration: isPressed ? MOTION.DURATIONS.press : MOTION.DURATIONS.hover, 
@@ -475,56 +531,57 @@ const InterpretationPanel = ({ details, theme, index }) => {
         onTap={() => setIsPressed(false)}
         onTapCancel={() => setIsPressed(false)}
       >
-        {/* Soft Inner Glow */}
+        {/* Subsurface Frosted Glow */}
         <div 
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: 'linear-gradient(180deg, rgba(255,255,255,0.018) 0%, transparent 35%)',
-            borderRadius: GLASS.interpretation.radius
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.028) 0%, transparent 30%, rgba(0,0,0,0.04) 100%)',
+            borderRadius: GLASS.revelation.radius
           }}
         />
         
-        {/* Atmospheric Tint (phase-scaled: lowest for Phase 3) */}
+        {/* Color-Coded Glow Halo (12-16%) */}
         <div 
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-[-2px] pointer-events-none"
           style={{
-            background: `radial-gradient(ellipse at 50% 20%, rgba(${theme.colorRgb}, 0.04) 0%, transparent 60%)`,
-            borderRadius: GLASS.interpretation.radius
+            background: `radial-gradient(ellipse at 50% 0%, rgba(${theme.colorRgb}, 0.14) 0%, transparent 55%)`,
+            borderRadius: GLASS.revelation.radius,
+            filter: 'blur(20px)'
           }}
         />
         
         {/* Top Edge Highlight */}
         <div 
-          className="absolute top-0 left-[14%] right-[14%] h-px pointer-events-none"
+          className="absolute top-0 left-[10%] right-[10%] h-px pointer-events-none"
           style={{
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)'
+            background: `linear-gradient(90deg, transparent, rgba(${theme.colorRgb}, 0.28), transparent)`
           }}
         />
         
-        {/* Title: 1 step smaller */}
+        {/* Title */}
         <h3 
           className="relative uppercase"
           style={{
-            fontSize: '10.5px',
-            fontWeight: 560,
-            color: 'rgba(255,255,255,0.52)',
-            letterSpacing: '0.16em',
-            marginBottom: '16px'
+            fontSize: '10px',
+            fontWeight: 580,
+            color: 'rgba(255,255,255,0.50)',
+            letterSpacing: '0.18em',
+            marginBottom: '20px'
           }}
         >
           What This Means
         </h3>
         
-        {/* Paragraph: +1 weight (light → regular) */}
+        {/* Revelation Text (larger, increased line-height) */}
         <p 
           className="relative"
           style={{
-            fontSize: '17px',
-            fontWeight: 440,
-            color: 'rgba(255,255,255,0.92)',
-            lineHeight: 1.62,
-            letterSpacing: '-0.008em',
-            maxWidth: '520px',
+            fontSize: '18.5px',
+            fontWeight: 450,
+            color: 'rgba(255,255,255,0.94)',
+            lineHeight: 1.68,
+            letterSpacing: '-0.01em',
+            maxWidth: '540px',
             margin: '0 auto'
           }}
         >
@@ -536,42 +593,45 @@ const InterpretationPanel = ({ details, theme, index }) => {
 };
 
 // ============================================================================
-// PHASE 4: META-SIGNAL STRIP (Bottom Tags)
+// META-SIGNAL STRIP (Reduced chips, 55-65% opacity, visually subordinate)
 // ============================================================================
 const MetaSignalStrip = ({ details, theme, index }) => {
   const TrendIcon = details.trend === 'up' ? TrendingUp : details.trend === 'down' ? TrendingDown : null;
   
   return (
     <motion.div
-      className="flex justify-center gap-2.5"
-      style={{ marginBottom: `${SPACING.bottomSafety}px` }}
+      className="flex justify-center gap-2"
+      style={{ 
+        marginBottom: `${SPACING.bottomSafety}px`,
+        opacity: GLASS.meta.opacity
+      }}
       initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      animate={{ opacity: GLASS.meta.opacity }}
       transition={{ delay: index * MOTION.DURATIONS.stagger, duration: 0.2 }}
     >
       {TrendIcon && (
         <div 
-          className="flex items-center gap-1.5 px-3 py-1.5"
+          className="flex items-center gap-1 px-2.5 py-1"
           style={{
-            fontSize: '10px',
-            fontWeight: 580,
+            fontSize: '9px',
+            fontWeight: 560,
             color: theme.color,
-            background: `rgba(${theme.colorRgb}, 0.12)`,
-            border: `1px solid rgba(${theme.colorRgb}, 0.22)`,
+            background: `rgba(${theme.colorRgb}, 0.10)`,
+            border: `1px solid rgba(${theme.colorRgb}, 0.18)`,
             borderRadius: GLASS.meta.radius
           }}
         >
-          <TrendIcon className="w-3 h-3" strokeWidth={2.5} />
+          <TrendIcon className="w-2.5 h-2.5" strokeWidth={2.5} />
           <span>{details.trend === 'up' ? 'Rising' : 'Falling'}</span>
         </div>
       )}
       
       <div 
-        className="flex items-center gap-1 px-3 py-1.5"
+        className="flex items-center gap-1 px-2.5 py-1"
         style={{
-          fontSize: '10px',
-          fontWeight: 580,
-          color: 'rgba(255,255,255,0.70)',
+          fontSize: '9px',
+          fontWeight: 560,
+          color: 'rgba(255,255,255,0.65)',
           background: GLASS.meta.bg,
           border: `1px solid ${GLASS.meta.border}`,
           borderRadius: GLASS.meta.radius
@@ -581,17 +641,17 @@ const MetaSignalStrip = ({ details, theme, index }) => {
       </div>
       
       <div 
-        className="flex items-center gap-1 px-3 py-1.5"
+        className="flex items-center gap-1 px-2.5 py-1"
         style={{
-          fontSize: '10px',
-          fontWeight: 580,
-          color: 'rgba(255,255,255,0.70)',
+          fontSize: '9px',
+          fontWeight: 560,
+          color: 'rgba(255,255,255,0.65)',
           background: GLASS.meta.bg,
           border: `1px solid ${GLASS.meta.border}`,
           borderRadius: GLASS.meta.radius
         }}
       >
-        <Clock className="w-3 h-3" strokeWidth={2.5} />
+        <Clock className="w-2.5 h-2.5" strokeWidth={2.5} />
         <span>{details.horizon}</span>
       </div>
     </motion.div>
@@ -614,43 +674,46 @@ const SignalCascadeContent = ({ segment }) => {
   return (
     <div 
       className="relative"
+      data-scroll-container
       style={{ 
         padding: `${SPACING.topIntro}px ${SPACING.drawerPadding}px 0 ${SPACING.drawerPadding}px` 
       }}
     >
       {/* Background Atmospheric Layer */}
       <div 
-        className="absolute top-0 left-0 right-0 h-[380px] pointer-events-none"
+        className="absolute top-0 left-0 right-0 h-[420px] pointer-events-none"
         style={{
-          background: `radial-gradient(ellipse at 50% 5%, rgba(${theme.colorRgb}, 0.045) 0%, transparent 50%)`,
-          filter: 'blur(45px)'
+          background: `radial-gradient(ellipse at 50% 5%, rgba(${theme.colorRgb}, 0.05) 0%, transparent 55%)`,
+          filter: 'blur(50px)'
         }}
       />
       
-      {/* PHASE 1: Primary Signal Panel */}
-      <PrimarySignalPanel 
+      {/* TL;DR ANCHOR BAR (Liquid Metal Glass) */}
+      <TLDRAnchorBar 
         details={details} 
         theme={theme} 
         weight={weight} 
         index={cascadeIndex++} 
       />
       
-      {/* PHASE 2: Tri-Insight Cluster */}
+      {/* TRI-INSIGHT CLUSTER (Staggered Widths) */}
       <TriInsightCluster 
         details={details} 
         theme={theme} 
         startIndex={cascadeIndex} 
       />
-      {/* Advance index by 3 for the cluster */}
       
-      {/* PHASE 3: Interpretation Panel */}
-      <InterpretationPanel 
+      {/* BREATHING DIVIDER */}
+      <BreathingDivider theme={theme} />
+      
+      {/* REVELATION PANEL (Conclusion Block) */}
+      <RevelationPanel 
         details={details} 
         theme={theme} 
         index={cascadeIndex + 4} 
       />
       
-      {/* PHASE 4: Meta-Signal Strip */}
+      {/* META-SIGNAL STRIP (Subordinate Footer) */}
       <MetaSignalStrip 
         details={details} 
         theme={theme} 
@@ -737,63 +800,83 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
             style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)' }}
           />
           
-          {/* Header */}
+          {/* FLOATING GLASS ISLAND HEADER (Elevation +2, 84-88% width) */}
           <motion.div 
-            className="relative p-5 flex-shrink-0 z-10"
-            style={{ paddingTop: '18px', paddingBottom: '10px' }}
-            initial={{ opacity: 0, y: -5 }}
+            className="relative flex-shrink-0 z-10 flex justify-center"
+            style={{ padding: '20px 24px 16px 24px' }}
+            initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.03, duration: 0.16 }}
+            transition={{ delay: 0.03, duration: 0.18 }}
           >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div 
-                  className="p-2.5 rounded-xl"
-                  style={{ 
-                    background: `rgba(${theme.colorRgb}, ${theme.tint.card})`,
-                    boxShadow: `0 0 10px rgba(${theme.colorRgb}, 0.10)`
-                  }}
-                >
-                  <Icon className="w-5 h-5" style={{ color: theme.color, filter: 'brightness(1.14)' }} strokeWidth={2.2} />
-                </div>
-                <span style={{ fontSize: '14px', fontWeight: 520, color: 'rgba(255,255,255,0.68)' }}>
-                  {segment.name} Analysis
-                </span>
-              </div>
+            <div 
+              className="relative overflow-hidden"
+              style={{
+                width: '86%',
+                padding: '16px 24px',
+                background: GLASS.header.bg,
+                backdropFilter: GLASS.header.blur,
+                WebkitBackdropFilter: GLASS.header.blur,
+                borderRadius: GLASS.header.radius,
+                border: `1px solid ${GLASS.header.border}`,
+                boxShadow: GLASS.header.glow
+              }}
+            >
+              {/* Top Sheen */}
+              <div 
+                className="absolute top-0 left-[15%] right-[15%] h-px pointer-events-none"
+                style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)' }}
+              />
               
-              <div className="flex items-center space-x-1.5">
-                <motion.button
-                  onClick={() => onNavigate('prev')}
-                  className="p-2.5 rounded-xl"
-                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
-                  whileHover={{ background: 'rgba(255,255,255,0.10)', scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  aria-label="Previous Segment"
-                >
-                  <ChevronLeft className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.68)' }} strokeWidth={2.2} />
-                </motion.button>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div 
+                    className="p-2.5 rounded-xl"
+                    style={{ 
+                      background: `rgba(${theme.colorRgb}, ${theme.tint.card})`,
+                      boxShadow: `0 0 12px rgba(${theme.colorRgb}, 0.12)`
+                    }}
+                  >
+                    <Icon className="w-5 h-5" style={{ color: theme.color, filter: 'brightness(1.16)' }} strokeWidth={2.2} />
+                  </div>
+                  <span style={{ fontSize: '14px', fontWeight: 540, color: 'rgba(255,255,255,0.72)' }}>
+                    {segment.name} Analysis
+                  </span>
+                </div>
                 
-                <motion.button
-                  onClick={() => onNavigate('next')}
-                  className="p-2.5 rounded-xl"
-                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
-                  whileHover={{ background: 'rgba(255,255,255,0.10)', scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  aria-label="Next Segment"
-                >
-                  <ChevronRight className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.68)' }} strokeWidth={2.2} />
-                </motion.button>
-                
-                <motion.button 
-                  onClick={onClose} 
-                  className="p-2.5 rounded-xl ml-2"
-                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
-                  whileHover={{ background: 'rgba(255,255,255,0.10)', scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  aria-label="Close"
-                >
-                  <X className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.68)' }} strokeWidth={2.2} />
-                </motion.button>
+                <div className="flex items-center space-x-1.5">
+                  <motion.button
+                    onClick={() => onNavigate('prev')}
+                    className="p-2 rounded-xl"
+                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.09)' }}
+                    whileHover={{ background: 'rgba(255,255,255,0.11)', scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    aria-label="Previous Segment"
+                  >
+                    <ChevronLeft className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.70)' }} strokeWidth={2.2} />
+                  </motion.button>
+                  
+                  <motion.button
+                    onClick={() => onNavigate('next')}
+                    className="p-2 rounded-xl"
+                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.09)' }}
+                    whileHover={{ background: 'rgba(255,255,255,0.11)', scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    aria-label="Next Segment"
+                  >
+                    <ChevronRight className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.70)' }} strokeWidth={2.2} />
+                  </motion.button>
+                  
+                  <motion.button 
+                    onClick={onClose} 
+                    className="p-2 rounded-xl ml-1.5"
+                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.09)' }}
+                    whileHover={{ background: 'rgba(255,255,255,0.11)', scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    aria-label="Close"
+                  >
+                    <X className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.70)' }} strokeWidth={2.2} />
+                  </motion.button>
+                </div>
               </div>
             </div>
           </motion.div>
