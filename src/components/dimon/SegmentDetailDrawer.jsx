@@ -16,14 +16,21 @@ const MOTION = {
 };
 
 // ============================================================================
-// STEVE JOBS V1 GLASS SYSTEM
+// STEVE JOBS V1 GLASS SYSTEM — Unified Glass Slab
 // ============================================================================
 const GLASS = {
+  drawer: {
+    bg: `radial-gradient(circle at top center, rgba(255,255,255,0.06) 0%, rgba(6,10,20,0.96) 55%, rgba(3,6,14,1) 100%)`,
+    blur: 'blur(24px)',
+    radius: '26px',
+    shadow: `0 0 40px rgba(0,0,0,0.35), 0 0 0 0.5px rgba(255,255,255,0.05) inset`
+  },
   hero: {
-    bg: 'linear-gradient(to bottom, rgba(255,255,255,0.04), rgba(255,255,255,0.02))',
+    bg: 'rgba(10,20,40,0.9)',
     blur: 'blur(14px)',
     radius: '26px',
-    padding: '32px'
+    padding: '32px',
+    shadow: `0 18px 40px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.08)`
   },
   card: {
     bg: 'rgba(255, 255, 255, 0.02)',
@@ -112,7 +119,7 @@ const HeroBlock = ({ data, theme, weight }) => {
   
   return (
     <motion.div
-      className="mx-9 mt-6"
+      className="mx-9 mt-4"
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.08, duration: MOTION.duration, ease: MOTION.ease }}
@@ -124,7 +131,8 @@ const HeroBlock = ({ data, theme, weight }) => {
           background: GLASS.hero.bg,
           backdropFilter: GLASS.hero.blur,
           WebkitBackdropFilter: GLASS.hero.blur,
-          borderRadius: GLASS.hero.radius
+          borderRadius: GLASS.hero.radius,
+          boxShadow: GLASS.hero.shadow
         }}
         animate={{
           scale: isHovered ? 1.01 : 1,
@@ -397,7 +405,7 @@ const Header = ({ segment, theme, onClose, onNavigate }) => {
   
   return (
     <motion.div 
-      className="relative px-9 pt-8 pb-5"
+      className="relative px-9 pt-7 pb-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.18 }}
@@ -501,21 +509,16 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
           onClick={onClose}
         />
         
-        {/* Drawer */}
+        {/* Drawer — Unified Glass Slab */}
         <motion.div
           key={segment.name}
           className="relative w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col"
           style={{
-            borderRadius: '26px',
-            background: '#060C18',
-            backdropFilter: 'blur(22px)',
-            WebkitBackdropFilter: 'blur(22px)',
-            border: '1px solid rgba(255,255,255,0.04)',
-            boxShadow: `
-              0 0 40px rgba(0,0,0,0.32) inset,
-              0 0 8px rgba(255,255,255,0.05) inset,
-              0 40px 80px -20px rgba(0,0,0,0.80)
-            `
+            borderRadius: GLASS.drawer.radius,
+            background: GLASS.drawer.bg,
+            backdropFilter: GLASS.drawer.blur,
+            WebkitBackdropFilter: GLASS.drawer.blur,
+            boxShadow: GLASS.drawer.shadow
           }}
           initial={{ opacity: 0, scale: 0.97 }}
           animate={{ opacity: 1, scale: 1 }}
