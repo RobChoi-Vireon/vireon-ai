@@ -1,103 +1,121 @@
-// 🔒 DESIGN LOCKED — OS HORIZON V3.0 "SIGNAL CASCADE" ARCHITECTURE
-// Last Updated: 2025-01-28 | Full Structural Redesign
-// Liquid Glass + macOS Tahoe/VisionOS Compliance
+// 🔒 DESIGN LOCKED — OS HORIZON V3.5 "SIGNAL CASCADE V2" ARCHITECTURE
+// Last Updated: 2025-01-28 | VisionOS Depth Layers + Liquid Glass Realism
+// Full Kinetic Parallax + Feather Card System
 // See: DESIGN_LOCKED_COMPONENTS.md
 
 import React, { useEffect, useState, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
-import { X, Shield, Briefcase, BarChart3, Globe, Zap, Target, ChevronLeft, ChevronRight, Waves, ArrowUp, ArrowDown, ArrowRight } from 'lucide-react';
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
+import { X, Shield, Briefcase, BarChart3, Globe, Zap, Target, ChevronLeft, ChevronRight, Waves, TrendingUp, TrendingDown, Clock } from 'lucide-react';
 
 // ============================================================================
-// SIGNAL CASCADE — MOTION DNA
+// SIGNAL CASCADE V2 — MOTION DNA
 // ============================================================================
 const MOTION = {
   CURVES: {
     silk: [0.25, 0.1, 0.25, 1.0],
     cascade: [0.22, 0.68, 0.35, 1],
-    breathe: [0.4, 0.0, 0.2, 1]
+    breathe: [0.4, 0.0, 0.2, 1],
+    bounce: [0.34, 1.56, 0.64, 1]
   },
   DURATIONS: {
     fast: 0.12,
     base: 0.18,
     slow: 0.28,
-    cascade: 0.34
+    cascade: 0.38
+  },
+  // Kinetic Parallax Rates
+  PARALLAX: {
+    title: -1.5,
+    tldr: -1.0,
+    insights: -0.5,
+    narrative: -0.25
   }
 };
 
 // ============================================================================
-// SIGNAL CASCADE — UNIFIED GLASS SYSTEM
+// SIGNAL CASCADE V2 — GLASS PLATE SYSTEM
 // ============================================================================
 const CASCADE_TOKENS = {
-  // Tier 1: Hero Block (strongest presence)
-  hero: {
-    radius: '32px',
-    blur: 'blur(26px) saturate(168%)',
-    bg: 'linear-gradient(180deg, rgba(255, 255, 255, 0.038) 0%, rgba(255, 255, 255, 0.018) 100%)',
-    border: 'rgba(255,255,255,0.08)',
-    glow: (color) => `0 0 80px ${color}08, 0 0 40px ${color}05`
+  // Level 1: Title Frame
+  titleFrame: {
+    radius: '28px',
+    blur: 'blur(28px) saturate(170%)',
+    bg: 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.018) 100%)',
+    border: 'rgba(255,255,255,0.08)'
   },
-  // Tier 2: TL;DR Capsule (focal point)
-  capsule: {
-    radius: '999px',
-    blur: 'blur(28px) saturate(172%)',
-    bg: 'linear-gradient(180deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.032) 100%)',
+  // Level 2: TL;DR Signal Orb
+  signalOrb: {
+    radius: '36px',
+    blur: 'blur(32px) saturate(175%)',
+    bg: (color) => `linear-gradient(135deg, ${color}08 0%, rgba(255, 255, 255, 0.045) 50%, rgba(255, 255, 255, 0.025) 100%)`,
+    border: 'rgba(255,255,255,0.14)'
+  },
+  // Feather Cards
+  featherCard: {
+    radius: '24px',
+    blur: 'blur(20px) saturate(155%)',
+    bg: 'linear-gradient(180deg, rgba(255, 255, 255, 0.032) 0%, rgba(255, 255, 255, 0.012) 100%)',
     border: 'rgba(255,255,255,0.12)',
-    glow: (color) => `0 0 32px ${color}12, 0 0 16px ${color}08, inset 0 1px 1px rgba(255,255,255,0.08)`
+    borderWidth: '0.5px',
+    hoverLift: 2
   },
-  // Tier 0.5: Insight Modules (lightweight, minimal)
-  module: {
-    separatorOpacity: 0.10,
-    iconGlow: (color) => `0 0 12px ${color}15`
+  // Level 3: Intelligence Panel
+  intelligencePanel: {
+    radius: '36px',
+    blur: 'blur(26px) saturate(168%)',
+    bg: 'linear-gradient(180deg, rgba(255, 255, 255, 0.038) 0%, rgba(255, 255, 255, 0.016) 100%)',
+    border: 'rgba(255,255,255,0.10)',
+    glowOpacity: 0.35
   },
-  // Tier 3: Narrative Block (emotional crescendo)
-  narrative: {
-    radius: '32px',
-    blur: 'blur(24px) saturate(165%)',
-    bg: 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.022) 100%)',
-    border: 'rgba(255,255,255,0.09)',
-    glow: (color) => `0 0 48px ${color}08, inset 0 1px 0 rgba(255,255,255,0.06)`
-  },
-  // Cascade Rhythm (vertical spacing)
+  // Spacing Rhythm
   rhythm: {
-    heroToTldr: 56,
-    tldrToModules: 48,
-    betweenModules: 32,
-    modulesToNarrative: 64,
-    bottomPadding: 72
+    titleToTldr: 48,
+    tldrToInsights: 44,
+    betweenCards: 20,
+    insightsToNarrative: 56,
+    bottomPadding: 64
   }
 };
 
 // ============================================================================
-// SEGMENT THEMING (10-15% reduced saturation)
+// SEGMENT THEMING — ATMOSPHERIC COLORS
 // ============================================================================
 const getTheme = (name) => {
   const themes = {
     Policy: { 
       Icon: Shield, 
-      color: '#6A9FDE', // reduced saturation
-      accentLight: 'rgba(106, 159, 222, 0.12)',
-      atmospheric: 'rgba(106, 159, 222, 0.04)'
+      color: '#5A9BE8',
+      colorRgb: '90, 155, 232',
+      accentLight: 'rgba(90, 155, 232, 0.14)',
+      atmospheric: 'rgba(90, 155, 232, 0.06)',
+      gradient: 'linear-gradient(135deg, rgba(90, 155, 232, 0.12) 0%, transparent 100%)'
     },
     Credit: { 
       Icon: Briefcase, 
-      color: '#A980E0', // reduced saturation
-      accentLight: 'rgba(169, 128, 224, 0.12)',
-      atmospheric: 'rgba(169, 128, 224, 0.04)'
+      color: '#9B7ADB',
+      colorRgb: '155, 122, 219',
+      accentLight: 'rgba(155, 122, 219, 0.14)',
+      atmospheric: 'rgba(155, 122, 219, 0.06)',
+      gradient: 'linear-gradient(135deg, rgba(155, 122, 219, 0.12) 0%, transparent 100%)'
     },
     Equities: { 
       Icon: BarChart3, 
-      color: '#2DB87D', // reduced saturation
-      accentLight: 'rgba(45, 184, 125, 0.12)',
-      atmospheric: 'rgba(45, 184, 125, 0.04)'
+      color: '#2DB87D',
+      colorRgb: '45, 184, 125',
+      accentLight: 'rgba(45, 184, 125, 0.14)',
+      atmospheric: 'rgba(45, 184, 125, 0.06)',
+      gradient: 'linear-gradient(135deg, rgba(45, 184, 125, 0.12) 0%, transparent 100%)'
     },
     Global: { 
       Icon: Globe, 
-      color: '#D9A84F', // reduced saturation
-      accentLight: 'rgba(217, 168, 79, 0.12)',
-      atmospheric: 'rgba(217, 168, 79, 0.04)'
+      color: '#D4A24A',
+      colorRgb: '212, 162, 74',
+      accentLight: 'rgba(212, 162, 74, 0.14)',
+      atmospheric: 'rgba(212, 162, 74, 0.06)',
+      gradient: 'linear-gradient(135deg, rgba(212, 162, 74, 0.12) 0%, transparent 100%)'
     }
   };
-  return themes[name] || { Icon: Zap, color: '#9AA1A8', accentLight: 'rgba(154, 161, 168, 0.12)', atmospheric: 'rgba(154, 161, 168, 0.04)' };
+  return themes[name] || themes.Policy;
 };
 
 // ============================================================================
@@ -110,6 +128,9 @@ const getSegmentDetails = (segment) => {
     Policy: {
       tldr: "Stricter rules are raising costs and putting pressure on big tech companies.",
       status: "Rising",
+      trend: "up",
+      certainty: 72,
+      horizon: "Near-term",
       keyDriver: "Regulators are getting tougher across content, privacy, and platform practices.",
       pressureDirection: "Rules are becoming stricter, making the environment harder for companies.",
       marketImpact: "Moderate impact, with some industries beginning to feel more pressure.",
@@ -118,26 +139,35 @@ const getSegmentDetails = (segment) => {
     Credit: {
       tldr: "Borrowing is getting more expensive and harder to access, especially for weaker borrowers.",
       status: "Moderate",
+      trend: "up",
+      certainty: 68,
+      horizon: "Medium-term",
       keyDriver: "Lenders are getting more cautious after early signs of stress in riskier debt.",
-      pressureDirection: "Credit is tightening, making it tougher for companies and households to refinance or take on new loans.",
+      pressureDirection: "Credit is tightening, making it tougher for companies and households to refinance.",
       marketImpact: "Moderate impact, with highly indebted companies and lower-quality borrowers feeling it first.",
-      whatThisMeans: "Tighter credit conditions can slow growth and increase default risk at the edges of the market. Companies that rely heavily on cheap borrowing may face higher costs and less flexibility."
+      whatThisMeans: "Tighter credit conditions can slow growth and increase default risk. Companies that rely heavily on cheap borrowing may face higher costs and less flexibility."
     },
     Equities: {
       tldr: "Most stock gains are coming from a small group of big companies, not the whole market.",
       status: "Narrow",
-      keyDriver: "Investors are crowding into large, well-known names while many smaller and mid-size stocks lag behind.",
-      pressureDirection: "Support for the market is narrowing, making it more vulnerable if these leaders stumble.",
+      trend: "neutral",
+      certainty: 75,
+      horizon: "Near-term",
+      keyDriver: "Investors are crowding into large, well-known names while smaller stocks lag behind.",
+      pressureDirection: "Support for the market is narrowing, making it more vulnerable if leaders stumble.",
       marketImpact: "Moderate impact, with the index looking strong on the surface but more fragile underneath.",
-      whatThisMeans: "A narrow group of winners can keep the headline market up, but it also raises concentration risk. If leadership cracks, the pullback can be sharper because fewer areas are holding the market up."
+      whatThisMeans: "A narrow group of winners can keep the market up, but it also raises concentration risk. If leadership cracks, the pullback can be sharper."
     },
     Global: {
       tldr: "Slower growth in key regions, especially China, is starting to weigh on the global outlook.",
       status: "Softening",
-      keyDriver: "Weaker demand from China and softer data in other major economies are cooling trade and production.",
+      trend: "down",
+      certainty: 70,
+      horizon: "Medium-term",
+      keyDriver: "Weaker demand from China and softer data in other major economies are cooling trade.",
       pressureDirection: "Growth momentum is cooling instead of accelerating.",
       marketImpact: "Moderate impact, with export-driven and commodity-linked areas feeling the slowdown more.",
-      whatThisMeans: "A cooling global economy can pressure earnings expectations and risk appetite. If the slowdown deepens, markets may start to price in weaker profits and fewer growth opportunities."
+      whatThisMeans: "A cooling global economy can pressure earnings expectations. If the slowdown deepens, markets may price in weaker profits and fewer growth opportunities."
     }
   };
   
@@ -145,71 +175,81 @@ const getSegmentDetails = (segment) => {
 };
 
 // ============================================================================
-// TIER 1: HERO TITLE BLOCK
+// LEVEL 1: TITLE FRAME — 2-Layer Parallax Drift
 // ============================================================================
-const HeroTitleBlock = ({ segment, theme, scrollY }) => {
-  // Subtle parallax (1-2px on scroll)
-  const parallaxY = useTransform(scrollY, [0, 200], [0, -2]);
+const TitleFrame = ({ segment, theme, scrollY }) => {
+  const parallaxY = useTransform(scrollY, [0, 300], [0, 300 * MOTION.PARALLAX.title * 0.01]);
+  const parallaxY2 = useTransform(scrollY, [0, 300], [0, 300 * MOTION.PARALLAX.title * 0.015]);
   
   return (
     <motion.div
       className="relative"
       style={{ 
         y: parallaxY,
-        marginBottom: `${CASCADE_TOKENS.rhythm.heroToTldr}px`
+        marginBottom: `${CASCADE_TOKENS.rhythm.titleToTldr}px`
       }}
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: MOTION.DURATIONS.cascade, ease: MOTION.CURVES.cascade }}
     >
-      {/* Atmospheric Behind-Glow */}
-      <div 
-        className="absolute -inset-12 pointer-events-none"
+      {/* Layer 1: Atmospheric Bloom */}
+      <motion.div 
+        className="absolute -inset-16 pointer-events-none"
         style={{
-          background: `radial-gradient(ellipse at 50% 30%, ${theme.atmospheric} 0%, transparent 70%)`,
-          filter: 'blur(40px)'
+          y: parallaxY2,
+          background: `radial-gradient(ellipse at 50% 40%, ${theme.atmospheric} 0%, transparent 65%)`,
+          filter: 'blur(50px)'
         }}
       />
       
-      {/* Hero Glass Panel */}
+      {/* Layer 2: Edge Glow */}
+      <div 
+        className="absolute -inset-1 pointer-events-none"
+        style={{
+          background: `radial-gradient(ellipse at 50% 0%, rgba(${theme.colorRgb}, 0.08) 0%, transparent 60%)`,
+          borderRadius: CASCADE_TOKENS.titleFrame.radius,
+          filter: 'blur(20px)'
+        }}
+      />
+      
+      {/* Title Frame Glass */}
       <div
         className="relative overflow-hidden"
         style={{
-          padding: '36px 44px',
-          background: CASCADE_TOKENS.hero.bg,
-          backdropFilter: CASCADE_TOKENS.hero.blur,
-          WebkitBackdropFilter: CASCADE_TOKENS.hero.blur,
-          borderRadius: CASCADE_TOKENS.hero.radius,
-          border: `1px solid ${CASCADE_TOKENS.hero.border}`,
-          boxShadow: CASCADE_TOKENS.hero.glow(theme.color)
+          padding: '32px 40px',
+          background: CASCADE_TOKENS.titleFrame.bg,
+          backdropFilter: CASCADE_TOKENS.titleFrame.blur,
+          WebkitBackdropFilter: CASCADE_TOKENS.titleFrame.blur,
+          borderRadius: CASCADE_TOKENS.titleFrame.radius,
+          border: `1px solid ${CASCADE_TOKENS.titleFrame.border}`
         }}
       >
-        {/* Inner Depth Layer */}
+        {/* Inner Sheen */}
         <div 
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: 'linear-gradient(180deg, rgba(255,255,255,0.012) 0%, rgba(0,0,0,0.008) 100%)',
-            borderRadius: CASCADE_TOKENS.hero.radius
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.015) 0%, transparent 50%)',
+            borderRadius: CASCADE_TOKENS.titleFrame.radius
           }}
         />
         
-        {/* Top Edge Highlight */}
+        {/* Segment Color Accent Line */}
         <div 
-          className="absolute top-0 left-[15%] right-[15%] h-px pointer-events-none"
+          className="absolute top-0 left-[20%] right-[20%] h-px pointer-events-none"
           style={{
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)'
+            background: `linear-gradient(90deg, transparent, rgba(${theme.colorRgb}, 0.25), transparent)`
           }}
         />
         
         <h1 
           className="relative"
           style={{
-            fontSize: '29px',
+            fontSize: '24px',
             fontWeight: 600,
             color: 'rgba(255,255,255,0.96)',
             letterSpacing: '-0.01em',
-            marginBottom: '12px',
-            lineHeight: 1.2
+            marginBottom: '10px',
+            lineHeight: 1.25
           }}
         >
           {segment.name} Analysis
@@ -218,14 +258,13 @@ const HeroTitleBlock = ({ segment, theme, scrollY }) => {
         <p 
           className="relative"
           style={{
-            fontSize: '16.5px',
+            fontSize: '16px',
             fontWeight: 450,
-            color: 'rgba(255,255,255,0.70)',
-            lineHeight: 1.5,
-            letterSpacing: '0.003em'
+            color: 'rgba(255,255,255,0.68)',
+            lineHeight: 1.5
           }}
         >
-          Market Pressure Lens — What's Driving Street Alignment
+          Market Pressure Lens — <span style={{ color: theme.color, opacity: 0.9 }}>What's Driving Street Alignment</span>
         </p>
       </div>
     </motion.div>
@@ -233,171 +272,254 @@ const HeroTitleBlock = ({ segment, theme, scrollY }) => {
 };
 
 // ============================================================================
-// TIER 2: TL;DR PRIMARY INSIGHT CAPSULE
+// LEVEL 2: TL;DR SIGNAL ORB — Ripple + Hover Physics
 // ============================================================================
-const InsightCapsule = ({ details, theme, weight }) => {
+const SignalOrb = ({ details, theme, weight, scrollY }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [rippleKey, setRippleKey] = useState(0);
+  const parallaxY = useTransform(scrollY, [0, 300], [0, 300 * MOTION.PARALLAX.tldr * 0.01]);
+  
+  const handleHover = () => {
+    setIsHovered(true);
+    setRippleKey(prev => prev + 1);
+  };
+  
   return (
     <motion.div
       className="flex justify-center"
-      style={{ marginBottom: `${CASCADE_TOKENS.rhythm.tldrToModules}px` }}
-      initial={{ opacity: 0, y: 10, scale: 0.98 }}
+      style={{ 
+        y: parallaxY,
+        marginBottom: `${CASCADE_TOKENS.rhythm.tldrToInsights}px` 
+      }}
+      initial={{ opacity: 0, y: 12, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay: 0.08, duration: MOTION.DURATIONS.slow, ease: MOTION.CURVES.silk }}
     >
-      <div
-        className="relative flex items-center gap-5 overflow-hidden"
+      <motion.div
+        className="relative overflow-hidden cursor-default"
         style={{
-          maxWidth: '85%',
-          padding: '18px 28px',
-          background: CASCADE_TOKENS.capsule.bg,
-          backdropFilter: CASCADE_TOKENS.capsule.blur,
-          WebkitBackdropFilter: CASCADE_TOKENS.capsule.blur,
-          borderRadius: CASCADE_TOKENS.capsule.radius,
-          border: `1px solid ${CASCADE_TOKENS.capsule.border}`,
-          boxShadow: CASCADE_TOKENS.capsule.glow(theme.color)
+          width: '88%',
+          maxWidth: '720px',
+          padding: '24px 32px',
+          background: CASCADE_TOKENS.signalOrb.bg(theme.color),
+          backdropFilter: CASCADE_TOKENS.signalOrb.blur,
+          WebkitBackdropFilter: CASCADE_TOKENS.signalOrb.blur,
+          borderRadius: CASCADE_TOKENS.signalOrb.radius,
+          border: `1px solid ${CASCADE_TOKENS.signalOrb.border}`
         }}
+        animate={{
+          y: isHovered ? -3 : 0,
+          boxShadow: isHovered 
+            ? `0 12px 40px rgba(0,0,0,0.15), 0 0 30px rgba(${theme.colorRgb}, 0.12)`
+            : `0 6px 24px rgba(0,0,0,0.10), 0 0 20px rgba(${theme.colorRgb}, 0.06)`
+        }}
+        transition={{ duration: 0.2, ease: MOTION.CURVES.silk }}
+        onHoverStart={handleHover}
+        onHoverEnd={() => setIsHovered(false)}
       >
-        {/* Subtle Ambient Tint */}
+        {/* Micro-Ripple Animation */}
+        <AnimatePresence>
+          {isHovered && (
+            <motion.div
+              key={rippleKey}
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: `radial-gradient(circle at 50% 50%, rgba(${theme.colorRgb}, 0.08) 0%, transparent 70%)`,
+                borderRadius: CASCADE_TOKENS.signalOrb.radius
+              }}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1.2, opacity: [0, 0.5, 0] }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
+            />
+          )}
+        </AnimatePresence>
+        
+        {/* Gradient Overlay */}
         <div 
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: `radial-gradient(ellipse at 50% 50%, ${theme.accentLight} 0%, transparent 80%)`,
-            opacity: 0.35,
-            borderRadius: CASCADE_TOKENS.capsule.radius
+            background: theme.gradient,
+            borderRadius: CASCADE_TOKENS.signalOrb.radius,
+            opacity: 0.5
           }}
         />
         
-        {/* TL;DR Tag */}
+        {/* Inner Glass Sheen */}
         <div 
-          className="relative flex-shrink-0 px-3 py-1.5 rounded-full"
+          className="absolute inset-0 pointer-events-none"
           style={{
-            fontSize: '10px',
-            fontWeight: 600,
-            color: 'rgba(255,255,255,0.82)',
-            background: 'rgba(255,255,255,0.10)',
-            border: '1px solid rgba(255,255,255,0.14)',
-            letterSpacing: '0.04em'
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.025) 0%, transparent 40%)',
+            borderRadius: CASCADE_TOKENS.signalOrb.radius
           }}
-        >
-          TL;DR
-        </div>
+        />
         
-        {/* Primary Insight Text */}
-        <p 
-          className="relative flex-1 text-center"
-          style={{
-            fontSize: '15.5px',
-            fontWeight: 450,
-            color: 'rgba(255,255,255,0.94)',
-            lineHeight: 1.48,
-            letterSpacing: '-0.003em'
-          }}
-        >
-          {details.tldr}
-        </p>
-        
-        {/* Pressure Tag + Percentage */}
-        <div className="relative flex items-center gap-2.5 flex-shrink-0">
-          <div
-            className="px-3 py-1.5 rounded-full"
+        <div className="flex items-center justify-between gap-6 relative">
+          {/* TL;DR Tag */}
+          <div 
+            className="flex-shrink-0 px-3.5 py-2 rounded-full"
             style={{
-              fontSize: '11px',
-              fontWeight: 500,
-              color: theme.color,
-              background: theme.accentLight,
-              border: `1px solid ${theme.color}22`
+              fontSize: '10.5px',
+              fontWeight: 600,
+              color: 'rgba(255,255,255,0.85)',
+              background: 'rgba(255,255,255,0.12)',
+              border: '1px solid rgba(255,255,255,0.16)',
+              letterSpacing: '0.05em'
             }}
           >
-            {details.status}
+            TL;DR
           </div>
           
-          <span 
-            style={{ 
-              fontSize: '11px', 
-              fontWeight: 500,
-              color: 'rgba(255,255,255,0.68)'
+          {/* Centered Insight Text */}
+          <p 
+            className="flex-1 text-center"
+            style={{
+              fontSize: '20px',
+              fontWeight: 480,
+              color: 'rgba(255,255,255,0.95)',
+              lineHeight: 1.45,
+              letterSpacing: '-0.01em'
             }}
           >
-            {Math.round(weight)}%
-          </span>
+            {details.tldr}
+          </p>
+          
+          {/* Sentiment Pill with Micro-Lift */}
+          <motion.div 
+            className="flex items-center gap-2.5 flex-shrink-0"
+            animate={{ y: isHovered ? -2 : 0 }}
+            transition={{ duration: 0.15 }}
+          >
+            <motion.div
+              className="px-4 py-2 rounded-full"
+              style={{
+                fontSize: '12px',
+                fontWeight: 550,
+                color: theme.color,
+                background: theme.accentLight,
+                border: `1px solid rgba(${theme.colorRgb}, 0.25)`,
+                boxShadow: isHovered ? `0 0 16px rgba(${theme.colorRgb}, 0.25)` : `0 0 8px rgba(${theme.colorRgb}, 0.12)`
+              }}
+              transition={{ duration: 0.2 }}
+            >
+              {details.status}
+            </motion.div>
+            
+            <span 
+              style={{ 
+                fontSize: '12px', 
+                fontWeight: 500,
+                color: 'rgba(255,255,255,0.65)'
+              }}
+            >
+              {Math.round(weight)}%
+            </span>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     </motion.div>
   );
 };
 
 // ============================================================================
-// TIER 0.5: LIGHTWEIGHT INSIGHT MODULES
+// FEATHER CARDS — VisionOS Style Insight Modules
 // ============================================================================
-const InsightModule = ({ icon: Icon, label, content, theme, delay, isLast }) => {
+const FeatherCard = ({ icon: Icon, label, content, theme, delay, scrollY, index }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const parallaxY = useTransform(scrollY, [0, 300], [0, 300 * MOTION.PARALLAX.insights * 0.01]);
+  
   return (
     <motion.div
       className="relative"
       style={{ 
-        paddingBottom: isLast ? 0 : `${CASCADE_TOKENS.rhythm.betweenModules}px`
+        y: parallaxY,
+        marginBottom: `${CASCADE_TOKENS.rhythm.betweenCards}px`
       }}
-      initial={{ opacity: 0, x: -8 }}
+      initial={{ opacity: 0, x: -12 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay, duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.silk }}
     >
-      <div className="flex items-start gap-4">
-        {/* Icon Container (minimal) */}
+      <motion.div
+        className="relative overflow-hidden"
+        style={{
+          padding: '22px 26px',
+          background: CASCADE_TOKENS.featherCard.bg,
+          backdropFilter: CASCADE_TOKENS.featherCard.blur,
+          WebkitBackdropFilter: CASCADE_TOKENS.featherCard.blur,
+          borderRadius: CASCADE_TOKENS.featherCard.radius,
+          border: `${CASCADE_TOKENS.featherCard.borderWidth} solid rgba(255,255,255,${isHovered ? 0.16 : 0.12})`
+        }}
+        animate={{
+          y: isHovered ? -CASCADE_TOKENS.featherCard.hoverLift : 0,
+          boxShadow: isHovered 
+            ? `0 8px 24px rgba(0,0,0,0.12), 0 0 1px rgba(${theme.colorRgb}, 0.15)`
+            : '0 4px 12px rgba(0,0,0,0.06)'
+        }}
+        transition={{ duration: 0.16, ease: MOTION.CURVES.silk }}
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
+      >
+        {/* Subtle Color Highlight on Border */}
         <div 
-          className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+          className="absolute top-0 left-[25%] right-[25%] h-px pointer-events-none"
           style={{
-            background: theme.accentLight,
-            boxShadow: CASCADE_TOKENS.module.iconGlow(theme.color)
-          }}
-        >
-          <Icon 
-            className="w-4.5 h-4.5" 
-            style={{ color: theme.color }} 
-            strokeWidth={2} 
-          />
-        </div>
-        
-        {/* Text Content */}
-        <div className="flex-1 pt-0.5">
-          <h4 
-            style={{
-              fontSize: '14px',
-              fontWeight: 500,
-              color: 'rgba(255,255,255,0.60)',
-              marginBottom: '6px',
-              letterSpacing: '0.01em'
-            }}
-          >
-            {label}
-          </h4>
-          
-          <p 
-            style={{
-              fontSize: '15.5px',
-              fontWeight: 400,
-              color: 'rgba(255,255,255,0.90)',
-              lineHeight: 1.52,
-              letterSpacing: '-0.003em'
-            }}
-          >
-            {content}
-          </p>
-        </div>
-      </div>
-      
-      {/* Soft Separator (10-12% opacity) */}
-      {!isLast && (
-        <div 
-          className="absolute bottom-4 left-[52px] right-0 h-px"
-          style={{
-            background: `linear-gradient(90deg, rgba(255,255,255,${CASCADE_TOKENS.module.separatorOpacity}) 0%, transparent 100%)`
+            background: `linear-gradient(90deg, transparent, rgba(${theme.colorRgb}, ${isHovered ? 0.22 : 0.12}), transparent)`,
+            transition: 'all 0.2s ease'
           }}
         />
-      )}
+        
+        <div className="flex items-start gap-4 relative">
+          {/* VisionOS Style Icon - Brighter Embossing */}
+          <div 
+            className="w-10 h-10 rounded-[14px] flex items-center justify-center flex-shrink-0"
+            style={{
+              background: `linear-gradient(135deg, ${theme.accentLight} 0%, rgba(${theme.colorRgb}, 0.08) 100%)`,
+              boxShadow: `0 0 14px rgba(${theme.colorRgb}, 0.18), inset 0 1px 1px rgba(255,255,255,0.12)`
+            }}
+          >
+            <Icon 
+              className="w-[18px] h-[18px]" 
+              style={{ 
+                color: theme.color,
+                filter: 'brightness(1.15)'
+              }} 
+              strokeWidth={2.2} 
+            />
+          </div>
+          
+          {/* Text Content */}
+          <div className="flex-1 pt-0.5">
+            <h4 
+              style={{
+                fontSize: '14px',
+                fontWeight: 500,
+                color: 'rgba(255,255,255,0.62)',
+                marginBottom: '8px',
+                letterSpacing: '0.01em'
+              }}
+            >
+              {label}
+            </h4>
+            
+            <p 
+              style={{
+                fontSize: '15.5px',
+                fontWeight: 400,
+                color: 'rgba(255,255,255,0.92)',
+                lineHeight: 1.58,
+                letterSpacing: '-0.005em'
+              }}
+            >
+              {content}
+            </p>
+          </div>
+        </div>
+      </motion.div>
     </motion.div>
   );
 };
 
-const InsightModulesSection = ({ details, theme }) => {
+const InsightStack = ({ details, theme, scrollY }) => {
   const modules = [
     { icon: Target, label: 'Key Driver', content: details.keyDriver },
     { icon: Waves, label: 'Pressure Direction', content: details.pressureDirection },
@@ -406,21 +528,20 @@ const InsightModulesSection = ({ details, theme }) => {
   
   return (
     <motion.div
-      className="px-2"
-      style={{ marginBottom: `${CASCADE_TOKENS.rhythm.modulesToNarrative}px` }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.15, duration: MOTION.DURATIONS.base }}
     >
       {modules.map((module, idx) => (
-        <InsightModule
+        <FeatherCard
           key={module.label}
           icon={module.icon}
           label={module.label}
           content={module.content}
           theme={theme}
-          delay={0.18 + (idx * 0.06)}
-          isLast={idx === modules.length - 1}
+          delay={0.18 + (idx * 0.07)}
+          scrollY={scrollY}
+          index={idx}
         />
       ))}
     </motion.div>
@@ -428,48 +549,107 @@ const InsightModulesSection = ({ details, theme }) => {
 };
 
 // ============================================================================
-// TIER 3: NARRATIVE BLOCK (EMOTIONAL CRESCENDO)
+// DIVIDER TRANSITION — Segment Color Bloom
 // ============================================================================
-const NarrativeBlock = ({ details, theme }) => {
+const DividerTransition = ({ theme }) => {
+  return (
+    <motion.div
+      className="relative flex items-center justify-center"
+      style={{ 
+        height: '48px',
+        marginBottom: `${CASCADE_TOKENS.rhythm.insightsToNarrative - 48}px`
+      }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.4, duration: 0.3 }}
+    >
+      {/* Base Line */}
+      <div 
+        className="absolute left-0 right-0 h-px"
+        style={{
+          background: 'rgba(255,255,255,0.04)'
+        }}
+      />
+      
+      {/* Center Bloom */}
+      <div 
+        className="absolute h-px"
+        style={{
+          left: 'calc(50% - 80px)',
+          right: 'calc(50% - 80px)',
+          background: `linear-gradient(90deg, transparent, rgba(${theme.colorRgb}, 0.25), transparent)`
+        }}
+      />
+      
+      {/* Bloom Glow */}
+      <div 
+        className="absolute"
+        style={{
+          left: 'calc(50% - 40px)',
+          right: 'calc(50% - 40px)',
+          height: '8px',
+          background: `radial-gradient(ellipse at 50% 50%, rgba(${theme.colorRgb}, 0.12) 0%, transparent 100%)`,
+          filter: 'blur(4px)'
+        }}
+      />
+    </motion.div>
+  );
+};
+
+// ============================================================================
+// LEVEL 3: INTELLIGENCE PANEL — "WHAT THIS MEANS"
+// ============================================================================
+const IntelligencePanel = ({ details, theme, scrollY }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const parallaxY = useTransform(scrollY, [0, 300], [0, 300 * MOTION.PARALLAX.narrative * 0.01]);
+  
   return (
     <motion.div
       className="relative mx-auto"
       style={{ 
-        maxWidth: '92%',
-        marginBottom: `${CASCADE_TOKENS.rhythm.bottomPadding}px`
+        y: parallaxY,
+        maxWidth: '94%',
+        marginBottom: '28px'
       }}
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.32, duration: MOTION.DURATIONS.slow, ease: MOTION.CURVES.breathe }}
+      transition={{ delay: 0.45, duration: MOTION.DURATIONS.slow, ease: MOTION.CURVES.breathe }}
     >
-      {/* Narrative Glass Panel */}
-      <div
+      <motion.div
         className="relative overflow-hidden text-center"
         style={{
-          padding: '42px 48px',
-          background: CASCADE_TOKENS.narrative.bg,
-          backdropFilter: CASCADE_TOKENS.narrative.blur,
-          WebkitBackdropFilter: CASCADE_TOKENS.narrative.blur,
-          borderRadius: CASCADE_TOKENS.narrative.radius,
-          border: `1px solid ${CASCADE_TOKENS.narrative.border}`,
-          boxShadow: CASCADE_TOKENS.narrative.glow(theme.color)
+          padding: '38px 44px',
+          background: CASCADE_TOKENS.intelligencePanel.bg,
+          backdropFilter: CASCADE_TOKENS.intelligencePanel.blur,
+          WebkitBackdropFilter: CASCADE_TOKENS.intelligencePanel.blur,
+          borderRadius: CASCADE_TOKENS.intelligencePanel.radius,
+          border: `1px solid ${CASCADE_TOKENS.intelligencePanel.border}`
         }}
+        animate={{
+          y: isHovered ? -1 : 0,
+          boxShadow: isHovered 
+            ? `0 16px 48px rgba(0,0,0,0.14), 0 0 40px rgba(${theme.colorRgb}, ${CASCADE_TOKENS.intelligencePanel.glowOpacity * 0.012})`
+            : `0 10px 32px rgba(0,0,0,0.10), 0 0 28px rgba(${theme.colorRgb}, ${CASCADE_TOKENS.intelligencePanel.glowOpacity * 0.008})`
+        }}
+        transition={{ duration: 0.2, ease: MOTION.CURVES.silk }}
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
       >
-        {/* Subtle Ambient Glow */}
+        {/* Inner Glass Sheen */}
         <div 
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: `radial-gradient(ellipse at 50% 40%, ${theme.atmospheric} 0%, transparent 75%)`,
-            borderRadius: CASCADE_TOKENS.narrative.radius
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.018) 0%, transparent 35%, rgba(0,0,0,0.008) 100%)',
+            borderRadius: CASCADE_TOKENS.intelligencePanel.radius
           }}
         />
         
-        {/* Inner Depth */}
+        {/* Atmospheric Tint */}
         <div 
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: 'linear-gradient(180deg, rgba(255,255,255,0.015) 0%, rgba(0,0,0,0.010) 100%)',
-            borderRadius: CASCADE_TOKENS.narrative.radius
+            background: `radial-gradient(ellipse at 50% 30%, ${theme.atmospheric} 0%, transparent 70%)`,
+            borderRadius: CASCADE_TOKENS.intelligencePanel.radius
           }}
         />
         
@@ -477,46 +657,115 @@ const NarrativeBlock = ({ details, theme }) => {
         <div 
           className="absolute top-0 left-[18%] right-[18%] h-px pointer-events-none"
           style={{
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)'
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)'
           }}
         />
         
         {/* Apple-Style Spaced Label */}
-        <h3 
+        <motion.h3 
           className="relative uppercase"
           style={{
             fontSize: '11.5px',
-            fontWeight: 500,
-            color: 'rgba(255,255,255,0.58)',
-            letterSpacing: '0.12em',
-            marginBottom: '20px'
+            fontWeight: 520,
+            color: 'rgba(255,255,255,0.55)',
+            letterSpacing: '0.14em',
+            marginBottom: '18px'
           }}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.25 }}
         >
           What This Means
-        </h3>
+        </motion.h3>
         
         {/* Narrative Body */}
-        <p 
+        <motion.p 
           className="relative"
           style={{
-            fontSize: '16.5px',
-            fontWeight: 400,
-            color: 'rgba(255,255,255,0.92)',
+            fontSize: '19px',
+            fontWeight: 420,
+            color: 'rgba(255,255,255,0.94)',
             lineHeight: 1.58,
-            letterSpacing: '-0.004em',
-            maxWidth: '580px',
+            letterSpacing: '-0.008em',
+            maxWidth: '560px',
             margin: '0 auto'
           }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.55, duration: 0.3 }}
         >
           {details.whatThisMeans}
-        </p>
+        </motion.p>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+// ============================================================================
+// MICRO TAGS — Bottom Right Chips
+// ============================================================================
+const MicroTags = ({ details, theme }) => {
+  const TrendIcon = details.trend === 'up' ? TrendingUp : details.trend === 'down' ? TrendingDown : null;
+  
+  return (
+    <motion.div
+      className="flex justify-end gap-2.5 px-4"
+      style={{ marginBottom: `${CASCADE_TOKENS.rhythm.bottomPadding}px` }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.6, duration: 0.25 }}
+    >
+      {/* Trend Direction */}
+      {TrendIcon && (
+        <div 
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg"
+          style={{
+            fontSize: '10px',
+            fontWeight: 550,
+            color: theme.color,
+            background: theme.accentLight,
+            border: `1px solid rgba(${theme.colorRgb}, 0.18)`
+          }}
+        >
+          <TrendIcon className="w-3 h-3" strokeWidth={2.5} />
+          <span>{details.trend === 'up' ? 'Rising' : 'Falling'}</span>
+        </div>
+      )}
+      
+      {/* Certainty */}
+      <div 
+        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg"
+        style={{
+          fontSize: '10px',
+          fontWeight: 550,
+          color: 'rgba(255,255,255,0.75)',
+          background: 'rgba(255,255,255,0.06)',
+          border: '1px solid rgba(255,255,255,0.10)'
+        }}
+      >
+        <span>{details.certainty}% certain</span>
+      </div>
+      
+      {/* Time Horizon */}
+      <div 
+        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg"
+        style={{
+          fontSize: '10px',
+          fontWeight: 550,
+          color: 'rgba(255,255,255,0.75)',
+          background: 'rgba(255,255,255,0.06)',
+          border: '1px solid rgba(255,255,255,0.10)'
+        }}
+      >
+        <Clock className="w-3 h-3" strokeWidth={2.5} />
+        <span>{details.horizon}</span>
       </div>
     </motion.div>
   );
 };
 
 // ============================================================================
-// SIGNAL CASCADE — COMPLETE DRAWER CONTENT
+// SIGNAL CASCADE V2 — COMPLETE DRAWER CONTENT
 // ============================================================================
 const SignalCascadeContent = ({ segment, scrollY }) => {
   const theme = getTheme(segment.name);
@@ -528,22 +777,24 @@ const SignalCascadeContent = ({ segment, scrollY }) => {
   return (
     <div 
       className="relative"
-      style={{ padding: '36px 52px 0 52px' }}
+      style={{ padding: '32px 44px 0 44px' }}
     >
       {/* Background Atmospheric Layer */}
       <div 
-        className="absolute top-0 left-0 right-0 h-[500px] pointer-events-none"
+        className="absolute top-0 left-0 right-0 h-[450px] pointer-events-none"
         style={{
-          background: `radial-gradient(ellipse at 50% 15%, ${theme.atmospheric} 0%, transparent 65%)`,
+          background: `radial-gradient(ellipse at 50% 10%, ${theme.atmospheric} 0%, transparent 60%)`,
           filter: 'blur(60px)'
         }}
       />
       
       {/* Cascade Flow */}
-      <HeroTitleBlock segment={segment} theme={theme} scrollY={scrollY} />
-      <InsightCapsule details={details} theme={theme} weight={weight} />
-      <InsightModulesSection details={details} theme={theme} />
-      <NarrativeBlock details={details} theme={theme} />
+      <TitleFrame segment={segment} theme={theme} scrollY={scrollY} />
+      <SignalOrb details={details} theme={theme} weight={weight} scrollY={scrollY} />
+      <InsightStack details={details} theme={theme} scrollY={scrollY} />
+      <DividerTransition theme={theme} />
+      <IntelligencePanel details={details} theme={theme} scrollY={scrollY} />
+      <MicroTags details={details} theme={theme} />
     </div>
   );
 };
@@ -589,9 +840,9 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
           className="absolute inset-0"
           style={{ 
             top: '80px',
-            background: 'rgba(0,0,0,0.72)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)'
+            background: 'rgba(0,0,0,0.75)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)'
           }}
           onClick={onClose}
           initial={{ opacity: 0 }}
@@ -605,34 +856,33 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
           className="relative w-full max-w-4xl max-h-[92vh] overflow-hidden flex flex-col"
           style={{
             borderRadius: '32px',
-            background: 'linear-gradient(180deg, rgba(12, 14, 20, 0.92) 0%, rgba(8, 10, 16, 0.96) 100%)',
-            backdropFilter: 'blur(72px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(72px) saturate(180%)',
-            border: '1px solid rgba(255,255,255,0.08)',
+            background: 'linear-gradient(180deg, rgba(10, 12, 18, 0.94) 0%, rgba(6, 8, 14, 0.97) 100%)',
+            backdropFilter: 'blur(80px) saturate(185%)',
+            WebkitBackdropFilter: 'blur(80px) saturate(185%)',
+            border: '1px solid rgba(255,255,255,0.07)',
             boxShadow: `
-              0 40px 80px -20px rgba(0, 0, 0, 0.85),
-              0 0 60px ${theme.accentLight},
-              inset 0 1px 0 rgba(255, 255, 255, 0.08)
+              0 48px 96px -24px rgba(0, 0, 0, 0.88),
+              0 0 48px rgba(${theme.colorRgb}, 0.06),
+              inset 0 1px 0 rgba(255, 255, 255, 0.06)
             `
           }}
-          initial={{ opacity: 0, scale: 0.98, y: 16 }}
+          initial={{ opacity: 0, scale: 0.97, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.98, y: 12 }}
+          exit={{ opacity: 0, scale: 0.98, y: 16 }}
           transition={{ duration: MOTION.DURATIONS.cascade, ease: MOTION.CURVES.cascade }}
         >
           {/* Top Edge Rim Light */}
           <div 
-            className="absolute top-0 left-[12%] right-[12%] h-[1.5px] pointer-events-none z-10"
+            className="absolute top-0 left-[10%] right-[10%] h-[1px] pointer-events-none z-10"
             style={{
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.20), transparent)',
-              filter: 'blur(0.5px)'
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)'
             }}
           />
           
           {/* Header Navigation */}
           <motion.div 
-            className="relative p-6 flex-shrink-0 z-10"
-            style={{ paddingTop: '24px', paddingBottom: '16px' }}
+            className="relative p-5 flex-shrink-0 z-10"
+            style={{ paddingTop: '20px', paddingBottom: '12px' }}
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05, duration: 0.2 }}
@@ -643,17 +893,16 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
                   className="p-2.5 rounded-xl"
                   style={{ 
                     background: theme.accentLight,
-                    boxShadow: CASCADE_TOKENS.module.iconGlow(theme.color)
+                    boxShadow: `0 0 12px rgba(${theme.colorRgb}, 0.15)`
                   }}
                 >
-                  <Icon className="w-5 h-5" style={{ color: theme.color }} strokeWidth={2} />
+                  <Icon className="w-5 h-5" style={{ color: theme.color, filter: 'brightness(1.1)' }} strokeWidth={2.2} />
                 </div>
                 <span 
                   style={{ 
-                    fontSize: '15px', 
+                    fontSize: '14px', 
                     fontWeight: 500, 
-                    color: 'rgba(255,255,255,0.75)',
-                    letterSpacing: '0.01em'
+                    color: 'rgba(255,255,255,0.72)'
                   }}
                 >
                   {segment.name} Segment
@@ -668,11 +917,11 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
                     background: 'rgba(255,255,255,0.05)',
                     border: '1px solid rgba(255,255,255,0.08)'
                   }}
-                  whileHover={{ background: 'rgba(255,255,255,0.08)', scale: 1.04 }}
-                  whileTap={{ scale: 0.96 }}
+                  whileHover={{ background: 'rgba(255,255,255,0.10)', scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   aria-label="Previous Segment"
                 >
-                  <ChevronLeft className="w-4.5 h-4.5" style={{ color: 'rgba(255,255,255,0.70)' }} strokeWidth={2} />
+                  <ChevronLeft className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.72)' }} strokeWidth={2.2} />
                 </motion.button>
                 
                 <motion.button
@@ -682,11 +931,11 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
                     background: 'rgba(255,255,255,0.05)',
                     border: '1px solid rgba(255,255,255,0.08)'
                   }}
-                  whileHover={{ background: 'rgba(255,255,255,0.08)', scale: 1.04 }}
-                  whileTap={{ scale: 0.96 }}
+                  whileHover={{ background: 'rgba(255,255,255,0.10)', scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   aria-label="Next Segment"
                 >
-                  <ChevronRight className="w-4.5 h-4.5" style={{ color: 'rgba(255,255,255,0.70)' }} strokeWidth={2} />
+                  <ChevronRight className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.72)' }} strokeWidth={2.2} />
                 </motion.button>
                 
                 <motion.button 
@@ -696,11 +945,11 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
                     background: 'rgba(255,255,255,0.05)',
                     border: '1px solid rgba(255,255,255,0.08)'
                   }}
-                  whileHover={{ background: 'rgba(255,255,255,0.08)', scale: 1.04 }}
-                  whileTap={{ scale: 0.96 }}
+                  whileHover={{ background: 'rgba(255,255,255,0.10)', scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   aria-label="Close"
                 >
-                  <X className="w-4.5 h-4.5" style={{ color: 'rgba(255,255,255,0.70)' }} strokeWidth={2} />
+                  <X className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.72)' }} strokeWidth={2.2} />
                 </motion.button>
               </div>
             </div>
