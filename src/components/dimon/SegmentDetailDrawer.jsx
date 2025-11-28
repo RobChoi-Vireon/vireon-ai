@@ -1,13 +1,13 @@
-// 🔒 DESIGN LOCKED — OS HORIZON TAHOE LIQUID GLASS V3
+// 🔒 DESIGN LOCKED — OS HORIZON TAHOE LIQUID GLASS V1
 // 16-Pillar Ironclad Audit Compliant
 // Last Updated: 2025-01-28
 
 import React, { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { X, Shield, Briefcase, BarChart3, Globe, Target, Waves, ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Clock } from 'lucide-react';
 
 // ============================================================================
-// MOTION SYSTEM
+// MOTION CONFIG
 // ============================================================================
 const MOTION = {
   ease: [0.22, 0.61, 0.36, 1],
@@ -16,57 +16,47 @@ const MOTION = {
 };
 
 // ============================================================================
-// OS HORIZON TAHOE GLASS SYSTEM
+// TAHOE LIQUID GLASS SYSTEM
 // ============================================================================
 const TAHOE = {
-  // Global canvas
   canvas: {
-    bg: `
-      radial-gradient(ellipse at 30% 20%, rgba(60, 100, 180, 0.08) 0%, transparent 50%),
-      radial-gradient(ellipse at 70% 80%, rgba(100, 60, 180, 0.06) 0%, transparent 50%),
-      linear-gradient(180deg, #050814 0%, #050A18 50%, #020712 100%)
+    gradient: `
+      radial-gradient(ellipse at 20% 20%, #050814 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, #050814 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, #050A18 0%, transparent 70%),
+      linear-gradient(to bottom, #050814 0%, #050A18 40%, #020712 100%)
     `,
-    noise: 0.015
+    bokeh: [
+      { x: '25%', y: '30%', color: 'rgba(58, 108, 245, 0.08)', size: '300px' },
+      { x: '75%', y: '60%', color: 'rgba(138, 100, 255, 0.06)', size: '250px' }
+    ]
   },
-  // Main drawer
   drawer: {
     bg: 'rgba(10, 18, 40, 0.82)',
     blur: 'blur(30px)',
     radius: '28px',
     border: 'linear-gradient(135deg, rgba(255,255,255,0.22) 0%, rgba(120,180,255,0.02) 100%)',
-    innerShadow: 'inset 0 0 40px rgba(0,0,0,0.35)',
-    highlight: 'linear-gradient(90deg, transparent 20%, rgba(255,255,255,0.12) 50%, transparent 80%)'
+    shadow: 'inset 0 0 40px rgba(0,0,0,0.35), 0 40px 80px -20px rgba(0,0,0,0.70)'
   },
-  // Header
   header: {
     bg: 'rgba(20, 32, 70, 0.9)',
     blur: 'blur(40px)'
   },
-  // TL;DR card
-  hero: {
+  tldr: {
     bg: 'rgba(23, 38, 80, 0.85)',
     blur: 'blur(38px)',
     radius: '24px'
   },
-  // Middle cards
   card: {
     bg: 'rgba(13, 23, 55, 0.9)',
     blur: 'blur(24px)',
-    radius: '20px',
-    iconBg: 'rgba(52, 87, 140, 0.65)'
+    radius: '20px'
   },
-  // Summary
-  summary: {
-    bg: 'rgba(23, 38, 80, 0.85)',
-    blur: 'blur(38px)',
-    radius: '24px'
-  },
-  // Chips
   chip: {
     bg: 'rgba(30, 52, 96, 0.9)',
     border: 'rgba(120, 180, 255, 0.35)',
     radius: '999px',
-    activeGradient: 'linear-gradient(90deg, rgba(58, 108, 245, 0.25) 0%, rgba(75, 211, 255, 0.25) 100%)'
+    activeGradient: 'linear-gradient(90deg, rgba(58,108,245,0.22) 0%, rgba(75,211,255,0.22) 100%)'
   }
 };
 
@@ -127,51 +117,175 @@ const getData = (name) => ({
 }[name]);
 
 // ============================================================================
-// HERO BLOCK — TL;DR Card with Tahoe Glass
+// PULSING DOT
 // ============================================================================
-const HeroBlock = ({ data, theme, weight }) => {
+const PulsingDot = ({ color }) => (
+  <motion.div
+    className="w-1.5 h-1.5 rounded-full mr-1.5"
+    style={{ background: color, boxShadow: `0 0 6px ${color}` }}
+    animate={{ opacity: [0.5, 1, 0.5] }}
+    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+  />
+);
+
+// ============================================================================
+// CHIP COMPONENT
+// ============================================================================
+const Chip = ({ children, isActive, theme }) => {
   const [isHovered, setIsHovered] = useState(false);
   
   return (
     <motion.div
-      className="mx-7 mt-5"
-      initial={{ opacity: 0, y: 12 }}
+      className="flex items-center"
+      style={{
+        padding: '6px 14px',
+        fontSize: '13px',
+        fontWeight: 500,
+        color: 'rgba(220, 230, 255, 0.9)',
+        background: isActive ? TAHOE.chip.activeGradient : TAHOE.chip.bg,
+        border: `1px solid ${TAHOE.chip.border}`,
+        borderRadius: TAHOE.chip.radius
+      }}
+      animate={{
+        scale: isHovered ? 1.03 : 1,
+        boxShadow: isHovered ? '0 0 16px rgba(84, 141, 255, 0.45)' : 'none'
+      }}
+      transition={{ duration: 0.14 }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+    >
+      {isActive && <PulsingDot color={theme.color} />}
+      {children}
+    </motion.div>
+  );
+};
+
+// ============================================================================
+// HEADER
+// ============================================================================
+const Header = ({ segment, theme, onClose, onNavigate }) => {
+  const { Icon } = theme;
+  
+  const NavButton = ({ onClick, children }) => {
+    const [isHovered, setIsHovered] = useState(false);
+    
+    return (
+      <motion.button
+        onClick={onClick}
+        className="w-8 h-8 rounded-full flex items-center justify-center"
+        style={{ background: 'rgba(255,255,255,0.06)' }}
+        animate={{
+          scale: isHovered ? 1.04 : 1,
+          background: isHovered ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.06)',
+          boxShadow: isHovered ? '0 0 12px rgba(120,180,255,0.25)' : 'none'
+        }}
+        transition={{ duration: 0.14 }}
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
+        whileTap={{ scale: 0.95 }}
+      >
+        {children}
+      </motion.button>
+    );
+  };
+
+  return (
+    <div 
+      className="relative px-8 pt-7 pb-5"
+      style={{
+        background: TAHOE.header.bg,
+        backdropFilter: TAHOE.header.blur,
+        WebkitBackdropFilter: TAHOE.header.blur
+      }}
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <motion.div 
+            className="w-11 h-11 rounded-full flex items-center justify-center"
+            style={{
+              background: 'rgba(52, 87, 140, 0.65)',
+              boxShadow: 'inset 0 0 12px rgba(120,180,255,0.15)'
+            }}
+            whileHover={{ 
+              boxShadow: `0 0 20px rgba(${theme.rgb}, 0.3), inset 0 0 12px rgba(120,180,255,0.15)`,
+              rotate: 3
+            }}
+          >
+            <Icon className="w-5 h-5" style={{ color: theme.color }} strokeWidth={2} />
+          </motion.div>
+          <div>
+            <h1 style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(255,255,255,0.95)', letterSpacing: '-0.01em' }}>
+              {segment.name}
+            </h1>
+            <p style={{ fontSize: '13px', fontWeight: 420, color: 'rgba(210,220,255,0.7)', marginTop: '1px' }}>
+              Market Pressure Analysis
+            </p>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <NavButton onClick={() => onNavigate('prev')}>
+            <ChevronLeft className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.70)' }} />
+          </NavButton>
+          <NavButton onClick={() => onNavigate('next')}>
+            <ChevronRight className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.70)' }} />
+          </NavButton>
+          <NavButton onClick={onClose}>
+            <X className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.70)' }} />
+          </NavButton>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ============================================================================
+// TL;DR CARD
+// ============================================================================
+const TLDRCard = ({ data, theme, weight, scrollY }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const y = useTransform(scrollY, [0, 100], [0, -8]);
+  
+  return (
+    <motion.div
+      className="mx-6 mt-5"
+      style={{ y }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.08, duration: MOTION.duration, ease: MOTION.ease }}
     >
       <motion.div
-        className="relative overflow-hidden"
+        className="relative overflow-hidden text-center"
         style={{
           padding: '28px 32px',
-          background: TAHOE.hero.bg,
-          backdropFilter: TAHOE.hero.blur,
-          WebkitBackdropFilter: TAHOE.hero.blur,
-          borderRadius: TAHOE.hero.radius,
-          border: '1px solid rgba(120, 180, 255, 0.08)'
+          background: TAHOE.tldr.bg,
+          backdropFilter: TAHOE.tldr.blur,
+          WebkitBackdropFilter: TAHOE.tldr.blur,
+          borderRadius: TAHOE.tldr.radius
         }}
         animate={{
           y: isHovered ? -2 : 0,
           filter: isHovered ? 'brightness(1.04)' : 'brightness(1)'
         }}
-        transition={{ duration: 0.18, ease: MOTION.ease }}
+        transition={{ duration: 0.16 }}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
       >
-        {/* TL;DR micro-label */}
+        {/* Micro label */}
         <div 
-          className="mb-4"
           style={{
             fontSize: '12px',
             fontWeight: 600,
             color: 'rgba(255,255,255,0.55)',
             letterSpacing: '0.18em',
-            textTransform: 'uppercase'
+            textTransform: 'uppercase',
+            marginBottom: '16px'
           }}
         >
           TL;DR
         </div>
         
-        {/* Hero headline */}
+        {/* Main text */}
         <p 
           style={{
             fontSize: '18px',
@@ -179,20 +293,16 @@ const HeroBlock = ({ data, theme, weight }) => {
             color: 'rgba(255,255,255,0.95)',
             lineHeight: 1.55,
             maxWidth: '80%',
-            marginBottom: '20px'
+            margin: '0 auto 20px'
           }}
         >
           {data.tldr}
         </p>
         
-        {/* State chips aligned right */}
-        <div className="flex items-center justify-end gap-2">
-          <TahoeChip theme={theme} isActive variant="status">
-            {data.status}
-          </TahoeChip>
-          <TahoeChip theme={theme}>
-            {Math.round(weight)}% weight
-          </TahoeChip>
+        {/* Chips */}
+        <div className="flex items-center justify-center gap-2">
+          <Chip isActive theme={theme}>{data.status}</Chip>
+          <Chip theme={theme}>{Math.round(weight)}% weight</Chip>
         </div>
       </motion.div>
     </motion.div>
@@ -200,25 +310,14 @@ const HeroBlock = ({ data, theme, weight }) => {
 };
 
 // ============================================================================
-// EVIDENCE CARDS — Middle cards with Tahoe styling
+// EVIDENCE CARD
 // ============================================================================
 const EvidenceCard = ({ item, theme, delay }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const cardRef = useRef(null);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  
-  const handleMouseMove = (e) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    setTilt({ x: y * -4, y: x * 4 });
-  };
   
   return (
     <motion.div
-      ref={cardRef}
-      initial={{ opacity: 0, y: 14 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: MOTION.duration, ease: MOTION.ease }}
       className="relative overflow-hidden"
@@ -227,12 +326,10 @@ const EvidenceCard = ({ item, theme, delay }) => {
         background: TAHOE.card.bg,
         backdropFilter: TAHOE.card.blur,
         WebkitBackdropFilter: TAHOE.card.blur,
-        borderRadius: TAHOE.card.radius,
-        border: '1px solid rgba(120, 180, 255, 0.06)'
+        borderRadius: TAHOE.card.radius
       }}
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => { setIsHovered(false); setTilt({ x: 0, y: 0 }); }}
-      onMouseMove={handleMouseMove}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <motion.div
         className="flex items-start gap-4"
@@ -240,24 +337,25 @@ const EvidenceCard = ({ item, theme, delay }) => {
           y: isHovered ? -1 : 0,
           filter: isHovered ? 'brightness(1.04)' : 'brightness(1)'
         }}
-        transition={{ duration: 0.15, ease: MOTION.ease }}
+        transition={{ duration: 0.14 }}
       >
         <motion.div 
           className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
           style={{
-            background: TAHOE.card.iconBg,
-            boxShadow: `inset 0 1px 2px rgba(255,255,255,0.12), ${isHovered ? `0 0 16px rgba(${theme.rgb}, 0.30)` : 'none'}`,
-            transition: 'box-shadow 0.2s ease'
+            background: 'rgba(52, 87, 140, 0.65)',
+            boxShadow: 'inset 0 0 10px rgba(120,180,255,0.12)'
           }}
           animate={{
-            rotateX: isHovered ? tilt.x : 0,
-            rotateY: isHovered ? tilt.y : 0
+            boxShadow: isHovered 
+              ? `0 0 16px rgba(${theme.rgb}, 0.25), inset 0 0 10px rgba(120,180,255,0.12)`
+              : 'inset 0 0 10px rgba(120,180,255,0.12)',
+            rotate: isHovered ? 3 : 0
           }}
-          transition={{ duration: 0.15 }}
+          transition={{ duration: 0.14 }}
         >
-          <item.icon className="w-[18px] h-[18px]" style={{ color: theme.color }} strokeWidth={2} />
+          <item.icon className="w-4.5 h-4.5" style={{ color: theme.color }} strokeWidth={2} />
         </motion.div>
-        <div className="flex-1 pt-1">
+        <div className="flex-1 pt-0.5">
           <h4 
             style={{
               fontSize: '14px',
@@ -284,227 +382,144 @@ const EvidenceCard = ({ item, theme, delay }) => {
   );
 };
 
-const EvidenceTrio = ({ data, theme }) => (
-  <div className="mx-7 mt-4 flex flex-col" style={{ gap: '16px' }}>
+// ============================================================================
+// EVIDENCE STACK
+// ============================================================================
+const EvidenceStack = ({ data, theme }) => (
+  <div className="mx-6 mt-5 flex flex-col" style={{ gap: '16px' }}>
     {data.evidence.map((item, i) => (
       <EvidenceCard 
         key={item.title} 
         item={item} 
         theme={theme} 
-        delay={0.14 + (i * MOTION.stagger)} 
+        delay={0.16 + (i * MOTION.stagger)} 
       />
     ))}
   </div>
 );
 
 // ============================================================================
-// NARRATIVE SUMMARY — What This Means Panel
+// WHAT THIS MEANS
 // ============================================================================
-const NarrativeSummary = ({ data, theme }) => (
-  <motion.div
-    className="mx-7 mt-5"
-    initial={{ opacity: 0, y: 8 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.32, duration: 0.22, ease: MOTION.ease }}
-  >
-    <div
-      className="relative overflow-hidden"
-      style={{
-        padding: '26px 28px',
-        background: TAHOE.summary.bg,
-        backdropFilter: TAHOE.summary.blur,
-        WebkitBackdropFilter: TAHOE.summary.blur,
-        borderRadius: TAHOE.summary.radius,
-        border: '1px solid rgba(120, 180, 255, 0.08)'
-      }}
-    >
-      <h3 
-        className="mb-4"
-        style={{
-          fontSize: '12px',
-          fontWeight: 600,
-          color: 'rgba(255,255,255,0.55)',
-          letterSpacing: '0.18em',
-          textTransform: 'uppercase'
-        }}
-      >
-        What This Means
-      </h3>
-      
-      <p 
-        style={{
-          fontSize: '16px',
-          fontWeight: 400,
-          color: 'rgba(230,235,255,0.92)',
-          lineHeight: 1.65
-        }}
-      >
-        {data.summary}
-      </p>
-    </div>
-  </motion.div>
-);
-
-// ============================================================================
-// TAHOE CHIP SYSTEM
-// ============================================================================
-const TahoeChip = ({ children, theme, isActive, variant }) => {
-  const [isHovered, setIsHovered] = useState(false);
+const WhatThisMeans = ({ data, theme, scrollY }) => {
+  const y = useTransform(scrollY, [0, 100], [0, -8]);
   
   return (
     <motion.div
-      className="flex items-center gap-1.5 relative"
-      style={{
-        fontSize: '13px',
-        fontWeight: 500,
-        color: isActive ? 'rgba(220,230,255,0.95)' : 'rgba(220,230,255,0.9)',
-        background: isActive ? TAHOE.chip.activeGradient : TAHOE.chip.bg,
-        padding: '6px 14px',
-        borderRadius: TAHOE.chip.radius,
-        border: `1px solid ${TAHOE.chip.border}`,
-        boxShadow: isHovered ? '0 0 16px rgba(84,141,255,0.45)' : 'none',
-        transition: 'box-shadow 0.15s ease'
-      }}
-      animate={{ scale: isHovered ? 1.03 : 1 }}
-      transition={{ duration: 0.14, ease: MOTION.ease }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
+      className="mx-6 mt-5"
+      style={{ y }}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.34, duration: 0.22, ease: MOTION.ease }}
     >
-      {/* Pulsing dot for active status chips */}
-      {isActive && variant === 'status' && (
-        <motion.div
-          className="w-1.5 h-1.5 rounded-full"
-          style={{ background: '#4BD3FF' }}
-          animate={{ opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      )}
-      {children}
-    </motion.div>
-  );
-};
-
-// ============================================================================
-// SIGNAL ROW — Bottom chips
-// ============================================================================
-const SignalRow = ({ data, theme }) => {
-  const TrendIcon = data.trend === 'up' ? TrendingUp : data.trend === 'down' ? TrendingDown : null;
-  
-  return (
-    <motion.div
-      className="flex justify-center mx-7 mt-4 mb-8"
-      style={{ gap: '12px' }}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 0.40, duration: MOTION.duration }}
-    >
-      {TrendIcon && (
-        <TahoeChip theme={theme} isActive variant="status">
-          <TrendIcon className="w-3.5 h-3.5" strokeWidth={2.5} />
-          <span>{data.status}</span>
-        </TahoeChip>
-      )}
-      
-      <TahoeChip theme={theme}>
-        <span>{data.certainty}%</span>
-      </TahoeChip>
-      
-      <TahoeChip theme={theme}>
-        <Clock className="w-3.5 h-3.5" strokeWidth={2} />
-        <span>{data.horizon}</span>
-      </TahoeChip>
-    </motion.div>
-  );
-};
-
-// ============================================================================
-// HEADER — Merged glass sheet, no harsh divider
-// ============================================================================
-const Header = ({ segment, theme, onClose, onNavigate }) => {
-  const { Icon } = theme;
-  
-  return (
-    <motion.div 
-      className="relative px-8 pt-7 pb-5"
-      style={{
-        background: TAHOE.header.bg,
-        backdropFilter: TAHOE.header.blur,
-        WebkitBackdropFilter: TAHOE.header.blur,
-        borderRadius: '28px 28px 0 0'
-      }}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.18 }}
-    >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <motion.div 
-            className="w-11 h-11 rounded-full flex items-center justify-center"
-            style={{
-              background: TAHOE.card.iconBg,
-              boxShadow: `inset 0 1px 2px rgba(255,255,255,0.15), 0 0 12px rgba(${theme.rgb}, 0.20)`
-            }}
-            whileHover={{ 
-              boxShadow: `inset 0 1px 2px rgba(255,255,255,0.15), 0 0 20px rgba(${theme.rgb}, 0.35)`,
-              rotateY: 4,
-              rotateX: -3
-            }}
-            transition={{ duration: 0.2 }}
-          >
-            <Icon className="w-5 h-5" style={{ color: theme.color }} strokeWidth={2} />
-          </motion.div>
-          <div>
-            <h1 style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(255,255,255,0.95)', letterSpacing: '-0.01em' }}>
-              {segment.name}
-            </h1>
-            <p style={{ fontSize: '13px', fontWeight: 420, color: 'rgba(210,220,255,0.7)', marginTop: '2px' }}>
-              Market Pressure Analysis
-            </p>
-          </div>
+      <div
+        className="relative overflow-hidden text-center"
+        style={{
+          padding: '28px 30px',
+          background: TAHOE.tldr.bg,
+          backdropFilter: TAHOE.tldr.blur,
+          WebkitBackdropFilter: TAHOE.tldr.blur,
+          borderRadius: TAHOE.tldr.radius
+        }}
+      >
+        <div 
+          style={{
+            fontSize: '12px',
+            fontWeight: 600,
+            color: 'rgba(255,255,255,0.55)',
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+            marginBottom: '14px'
+          }}
+        >
+          What This Means
         </div>
         
-        <div className="flex items-center gap-2">
-          {[
-            { action: () => onNavigate('prev'), icon: ChevronLeft },
-            { action: () => onNavigate('next'), icon: ChevronRight },
-            { action: onClose, icon: X, ml: true }
-          ].map(({ action, icon: BtnIcon, ml }, i) => (
-            <motion.button
-              key={i}
-              onClick={action}
-              className={`w-8 h-8 rounded-full flex items-center justify-center ${ml ? 'ml-2' : ''}`}
-              style={{ 
-                background: 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(255,255,255,0.08)'
-              }}
-              whileHover={{ 
-                scale: 1.04,
-                background: 'rgba(255,255,255,0.12)',
-                boxShadow: '0 0 12px rgba(120,180,255,0.25)'
-              }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.15 }}
-            >
-              <BtnIcon className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.70)' }} />
-            </motion.button>
-          ))}
-        </div>
+        <p 
+          style={{
+            fontSize: '16px',
+            fontWeight: 400,
+            color: 'rgba(230,235,255,0.92)',
+            lineHeight: 1.65,
+            maxWidth: '420px',
+            margin: '0 auto'
+          }}
+        >
+          {data.summary}
+        </p>
+      </div>
+      
+      {/* Bottom chips */}
+      <div className="flex justify-center gap-2.5 mt-4">
+        <Chip isActive theme={theme}>
+          {data.trend === 'up' && <TrendingUp className="w-3 h-3 mr-1.5" />}
+          {data.trend === 'down' && <TrendingDown className="w-3 h-3 mr-1.5" />}
+          {data.status}
+        </Chip>
+        <Chip theme={theme}>{data.certainty}%</Chip>
+        <Chip theme={theme}>
+          <Clock className="w-3 h-3 mr-1.5" />
+          {data.horizon}
+        </Chip>
       </div>
     </motion.div>
   );
 };
 
 // ============================================================================
-// NOISE OVERLAY
+// BOKEH LAYER
 // ============================================================================
-const NoiseOverlay = () => (
+const BokehLayer = ({ scrollY }) => {
+  const scale = useTransform(scrollY, [0, 200], [1, 0.9]);
+  const opacity = useTransform(scrollY, [0, 200], [1, 0.7]);
+  
+  return (
+    <motion.div 
+      className="absolute inset-0 pointer-events-none overflow-hidden"
+      style={{ scale, opacity }}
+    >
+      {TAHOE.canvas.bokeh.map((glow, i) => (
+        <div
+          key={i}
+          className="absolute rounded-full"
+          style={{
+            left: glow.x,
+            top: glow.y,
+            width: glow.size,
+            height: glow.size,
+            background: glow.color,
+            filter: 'blur(80px)',
+            transform: 'translate(-50%, -50%)'
+          }}
+        />
+      ))}
+    </motion.div>
+  );
+};
+
+// ============================================================================
+// NOISE LAYER
+// ============================================================================
+const NoiseLayer = () => (
   <div 
     className="absolute inset-0 pointer-events-none"
     style={{
-      backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+      backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
       opacity: 0.015,
-      mixBlendMode: 'overlay',
-      borderRadius: '28px'
+      mixBlendMode: 'overlay'
+    }}
+  />
+);
+
+// ============================================================================
+// GLASS HIGHLIGHT
+// ============================================================================
+const GlassHighlight = () => (
+  <div 
+    className="absolute top-0 left-0 right-0 h-1.5 pointer-events-none"
+    style={{
+      background: 'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.12) 50%, transparent 90%)',
+      borderRadius: '28px 28px 0 0'
     }}
   />
 );
@@ -514,6 +529,7 @@ const NoiseOverlay = () => (
 // ============================================================================
 export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNavigate }) {
   const scrollRef = useRef(null);
+  const { scrollY } = useScroll({ container: scrollRef });
   
   useEffect(() => {
     if (isOpen) {
@@ -542,43 +558,23 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.28, ease: MOTION.ease }}
+        transition={{ duration: 0.26 }}
         style={{ paddingTop: '80px' }}
       >
-        {/* Global canvas with deep navy gradient + bokeh */}
+        {/* Canvas with gradient + bokeh + noise */}
         <motion.div 
           className="absolute inset-0"
           style={{ 
             top: '80px',
-            background: TAHOE.canvas.bg,
-            backdropFilter: 'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)'
+            background: TAHOE.canvas.gradient
           }}
           onClick={onClose}
         >
-          {/* Bokeh glows */}
-          <div
-            className="absolute w-96 h-96 rounded-full"
-            style={{
-              top: '10%',
-              left: '20%',
-              background: 'radial-gradient(circle, rgba(80,120,200,0.08) 0%, transparent 70%)',
-              filter: 'blur(60px)'
-            }}
-          />
-          <div
-            className="absolute w-80 h-80 rounded-full"
-            style={{
-              bottom: '20%',
-              right: '15%',
-              background: 'radial-gradient(circle, rgba(120,80,180,0.06) 0%, transparent 70%)',
-              filter: 'blur(50px)'
-            }}
-          />
-          <NoiseOverlay />
+          <BokehLayer scrollY={scrollY} />
+          <NoiseLayer />
         </motion.div>
         
-        {/* Main Drawer Glass */}
+        {/* Drawer */}
         <motion.div
           key={segment.name}
           className="relative w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col"
@@ -587,51 +583,38 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
             background: TAHOE.drawer.bg,
             backdropFilter: TAHOE.drawer.blur,
             WebkitBackdropFilter: TAHOE.drawer.blur,
-            boxShadow: `
-              ${TAHOE.drawer.innerShadow},
-              0 40px 80px -20px rgba(0,0,0,0.70)
-            `
+            boxShadow: TAHOE.drawer.shadow
           }}
           initial={{ opacity: 0, scale: 0.97, y: 10, filter: 'blur(4px)' }}
           animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
-          exit={{ opacity: 0, scale: 0.97, y: 8, filter: 'blur(2px)' }}
+          exit={{ opacity: 0, scale: 0.97, y: 10, filter: 'blur(4px)' }}
           transition={{ duration: 0.28, ease: MOTION.ease }}
         >
-          {/* Gradient border effect */}
+          {/* Gradient border overlay */}
           <div 
-            className="absolute inset-0 pointer-events-none"
+            className="absolute inset-0 pointer-events-none rounded-[28px]"
             style={{
-              borderRadius: TAHOE.drawer.radius,
-              border: '1px solid transparent',
-              background: `${TAHOE.drawer.border} border-box`,
-              WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+              background: TAHOE.drawer.border,
+              WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
               WebkitMaskComposite: 'xor',
-              maskComposite: 'exclude'
+              maskComposite: 'exclude',
+              padding: '1px'
             }}
           />
           
-          {/* Top highlight strip */}
-          <div 
-            className="absolute top-0 left-0 right-0 h-1.5 pointer-events-none"
-            style={{
-              background: TAHOE.drawer.highlight,
-              borderRadius: '28px 28px 0 0'
-            }}
-          />
-          
-          <NoiseOverlay />
+          {/* Glass highlight strip */}
+          <GlassHighlight />
           
           <Header segment={segment} theme={theme} onClose={onClose} onNavigate={onNavigate} />
           
           <div 
             ref={scrollRef}
-            className="overflow-y-auto flex-1" 
+            className="overflow-y-auto flex-1 pb-8" 
             style={{ scrollBehavior: 'smooth' }}
           >
-            <HeroBlock data={data} theme={theme} weight={weight} />
-            <EvidenceTrio data={data} theme={theme} />
-            <NarrativeSummary data={data} theme={theme} />
-            <SignalRow data={data} theme={theme} />
+            <TLDRCard data={data} theme={theme} weight={weight} scrollY={scrollY} />
+            <EvidenceStack data={data} theme={theme} />
+            <WhatThisMeans data={data} theme={theme} scrollY={scrollY} />
           </div>
         </motion.div>
       </motion.div>
