@@ -16,31 +16,36 @@ const MOTION = {
 };
 
 // ============================================================================
-// TAHOE GLASS SYSTEM
+// STEVE JOBS V1 GLASS SYSTEM
 // ============================================================================
-const TAHOE = {
+const GLASS = {
   hero: {
-    bg: (rgb) => `radial-gradient(ellipse at 50% 0%, rgba(${rgb}, 0.08) 0%, rgba(255,255,255,0.025) 50%, rgba(255,255,255,0.015) 100%)`,
-    blur: 'blur(16px)',
-    radius: '24px',
-    glow: (rgb) => `0 0 80px rgba(${rgb}, 0.08)`
+    bg: 'linear-gradient(to bottom, rgba(255,255,255,0.04), rgba(255,255,255,0.02))',
+    blur: 'blur(14px)',
+    radius: '26px',
+    padding: '32px'
   },
   card: {
-    bg: 'rgba(255, 255, 255, 0.022)',
+    bg: 'rgba(255, 255, 255, 0.02)',
     blur: 'blur(12px)',
-    radius: '18px',
-    border: 'rgba(255, 255, 255, 0.045)'
+    radius: '22px',
+    padding: '22px 26px'
   },
   summary: {
-    bg: 'linear-gradient(180deg, rgba(255,255,255,0.028) 0%, rgba(255,255,255,0.012) 100%)',
-    blur: 'blur(14px)',
-    radius: '22px'
+    bg: 'rgba(255,255,255,0.03)',
+    blur: 'blur(16px)',
+    radius: '26px',
+    padding: '32px 30px'
   },
   chip: {
-    bg: 'rgba(255, 255, 255, 0.04)',
-    border: 'rgba(255, 255, 255, 0.06)',
-    radius: '10px'
-  }
+    radius: '16px',
+    padding: '6px 14px'
+  },
+  badge: (rgb) => ({
+    bg: `rgba(${rgb}, 0.10)`,
+    radius: '16px',
+    padding: '6px 14px'
+  })
 };
 
 // ============================================================================
@@ -102,149 +107,165 @@ const getData = (name) => ({
 // ============================================================================
 // HERO BLOCK — The Story Opens
 // ============================================================================
-const HeroBlock = ({ data, theme, weight }) => (
-  <motion.div
-    className="mx-8 mt-6"
-    initial={{ opacity: 0, y: 18 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.08, duration: MOTION.duration, ease: MOTION.ease }}
-  >
-    <div
-      className="relative overflow-hidden text-center"
-      style={{
-        padding: '36px 32px 32px',
-        background: TAHOE.hero.bg(theme.rgb),
-        backdropFilter: TAHOE.hero.blur,
-        WebkitBackdropFilter: TAHOE.hero.blur,
-        borderRadius: TAHOE.hero.radius,
-        boxShadow: TAHOE.hero.glow(theme.rgb)
-      }}
+const HeroBlock = ({ data, theme, weight }) => {
+  const [isHovered, setIsHovered] = React.useState(false);
+  
+  return (
+    <motion.div
+      className="mx-9 mt-6"
+      initial={{ opacity: 0, y: 18 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.08, duration: MOTION.duration, ease: MOTION.ease }}
     >
-      {/* Soft parallax glow */}
-      <div 
-        className="absolute inset-0 pointer-events-none"
+      <motion.div
+        className="relative overflow-hidden text-center"
         style={{
-          background: `radial-gradient(ellipse at 50% 20%, rgba(${theme.rgb}, 0.06) 0%, transparent 60%)`,
-          filter: 'blur(30px)'
+          padding: GLASS.hero.padding,
+          background: GLASS.hero.bg,
+          backdropFilter: GLASS.hero.blur,
+          WebkitBackdropFilter: GLASS.hero.blur,
+          borderRadius: GLASS.hero.radius
         }}
-      />
-      
-      {/* TL;DR floating chip */}
-      <div 
-        className="inline-block px-3 py-1 rounded-full mb-5"
-        style={{
-          fontSize: '9px',
-          fontWeight: 550,
-          color: 'rgba(255,255,255,0.55)',
-          background: 'rgba(255,255,255,0.06)',
-          letterSpacing: '0.1em'
+        animate={{
+          scale: isHovered ? 1.01 : 1,
+          filter: isHovered ? 'brightness(1.04)' : 'brightness(1)'
         }}
+        transition={{ duration: 0.16, ease: MOTION.ease }}
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
       >
-        TL;DR
-      </div>
-      
-      {/* Hero headline */}
-      <p 
-        className="relative"
-        style={{
-          fontSize: '19px',
-          fontWeight: 480,
-          color: 'rgba(255,255,255,0.95)',
-          lineHeight: 1.52,
-          maxWidth: '520px',
-          margin: '0 auto 22px'
-        }}
-      >
-        {data.tldr}
-      </p>
-      
-      {/* Sentiment + Weight badges */}
-      <div className="flex items-center justify-center gap-2.5">
-        <span 
-          className="px-3 py-1.5 rounded-full"
+        {/* TL;DR floating chip */}
+        <div 
+          className="inline-block mb-5"
           style={{
-            fontSize: '11px',
-            fontWeight: 540,
-            color: theme.color,
-            background: `rgba(${theme.rgb}, 0.12)`,
-            border: `1px solid rgba(${theme.rgb}, 0.16)`
-          }}
-        >
-          {data.status}
-        </span>
-        <span 
-          className="px-3 py-1.5 rounded-full"
-          style={{
-            fontSize: '11px',
-            fontWeight: 480,
+            fontSize: '9px',
+            fontWeight: 550,
             color: 'rgba(255,255,255,0.55)',
-            background: TAHOE.chip.bg,
-            border: `1px solid ${TAHOE.chip.border}`
+            background: 'rgba(255,255,255,0.06)',
+            padding: GLASS.chip.padding,
+            borderRadius: GLASS.chip.radius,
+            letterSpacing: '0.1em'
           }}
         >
-          {Math.round(weight)}% weight
-        </span>
-      </div>
-    </div>
-  </motion.div>
-);
+          TL;DR
+        </div>
+        
+        {/* Hero headline */}
+        <p 
+          className="relative"
+          style={{
+            fontSize: '19px',
+            fontWeight: 480,
+            color: 'rgba(255,255,255,0.95)',
+            lineHeight: 1.52,
+            maxWidth: '520px',
+            margin: '0 auto 22px'
+          }}
+        >
+          {data.tldr}
+        </p>
+        
+        {/* Sentiment + Weight badges */}
+        <div className="flex items-center justify-center gap-2.5">
+          <span 
+            style={{
+              fontSize: '11px',
+              fontWeight: 540,
+              color: theme.color,
+              background: `rgba(${theme.rgb}, 0.10)`,
+              padding: GLASS.badge(theme.rgb).padding,
+              borderRadius: GLASS.badge(theme.rgb).radius
+            }}
+          >
+            {data.status}
+          </span>
+          <span 
+            style={{
+              fontSize: '11px',
+              fontWeight: 480,
+              color: 'rgba(255,255,255,0.55)',
+              background: 'rgba(255,255,255,0.04)',
+              padding: GLASS.chip.padding,
+              borderRadius: GLASS.chip.radius
+            }}
+          >
+            {Math.round(weight)}% weight
+          </span>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
 
 // ============================================================================
 // EVIDENCE TRIO — Lightweight Stepping Stones
 // ============================================================================
-const EvidenceCard = ({ item, theme, delay }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 14 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay, duration: MOTION.duration, ease: MOTION.ease }}
-    className="relative overflow-hidden"
-    style={{
-      padding: '18px 20px',
-      background: TAHOE.card.bg,
-      backdropFilter: TAHOE.card.blur,
-      WebkitBackdropFilter: TAHOE.card.blur,
-      borderRadius: TAHOE.card.radius,
-      border: `0.5px solid ${TAHOE.card.border}`
-    }}
-  >
-    <div className="flex items-start gap-3.5">
-      <div 
-        className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-        style={{
-          background: `rgba(${theme.rgb}, 0.10)`,
-          border: `1px solid rgba(${theme.rgb}, 0.12)`
+const EvidenceCard = ({ item, theme, delay }) => {
+  const [isHovered, setIsHovered] = React.useState(false);
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: MOTION.duration, ease: MOTION.ease }}
+      className="relative overflow-hidden"
+      style={{
+        padding: GLASS.card.padding,
+        background: GLASS.card.bg,
+        backdropFilter: GLASS.card.blur,
+        WebkitBackdropFilter: GLASS.card.blur,
+        borderRadius: GLASS.card.radius
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <motion.div
+        className="flex items-start gap-4"
+        animate={{
+          scale: isHovered ? 1.005 : 1,
+          filter: isHovered ? 'brightness(1.03)' : 'brightness(1)'
         }}
+        transition={{ duration: 0.14, ease: MOTION.ease }}
       >
-        <item.icon className="w-4 h-4" style={{ color: theme.color }} strokeWidth={2} />
-      </div>
-      <div className="flex-1 pt-0.5">
-        <h4 
+        <div 
+          className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
           style={{
-            fontSize: '13px',
-            fontWeight: 520,
-            color: 'rgba(255,255,255,0.78)',
-            marginBottom: '5px'
+            background: `rgba(${theme.rgb}, 0.10)`,
+            boxShadow: isHovered ? `0 0 8px rgba(${theme.rgb}, 0.16)` : 'none',
+            transition: 'box-shadow 0.14s ease'
           }}
         >
-          {item.title}
-        </h4>
-        <p 
-          style={{
-            fontSize: '14px',
-            fontWeight: 400,
-            color: 'rgba(255,255,255,0.62)',
-            lineHeight: 1.52
-          }}
-        >
-          {item.text}
-        </p>
-      </div>
-    </div>
-  </motion.div>
-);
+          <item.icon className="w-4 h-4" style={{ color: theme.color }} strokeWidth={2} />
+        </div>
+        <div className="flex-1 pt-0.5">
+          <h4 
+            style={{
+              fontSize: '13px',
+              fontWeight: 520,
+              color: 'rgba(255,255,255,0.78)',
+              marginBottom: '5px'
+            }}
+          >
+            {item.title}
+          </h4>
+          <p 
+            style={{
+              fontSize: '14px',
+              fontWeight: 400,
+              color: 'rgba(255,255,255,0.62)',
+              lineHeight: 1.52
+            }}
+          >
+            {item.text}
+          </p>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
 
 const EvidenceTrio = ({ data, theme }) => (
-  <div className="mx-8 mt-6 flex flex-col gap-3">
+  <div className="mx-9 mt-5 flex flex-col" style={{ gap: '22px' }}>
     {data.evidence.map((item, i) => (
       <EvidenceCard 
         key={item.title} 
@@ -261,30 +282,21 @@ const EvidenceTrio = ({ data, theme }) => (
 // ============================================================================
 const NarrativeSummary = ({ data }) => (
   <motion.div
-    className="mx-8 mt-7"
-    initial={{ opacity: 0, y: 14 }}
+    className="mx-9 mt-6"
+    initial={{ opacity: 0, y: 8 }}
     animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.34, duration: MOTION.duration, ease: MOTION.ease }}
+    transition={{ delay: 0.34, duration: 0.22, ease: MOTION.ease }}
   >
     <div
       className="relative overflow-hidden text-center"
       style={{
-        padding: '30px 28px',
-        background: TAHOE.summary.bg,
-        backdropFilter: TAHOE.summary.blur,
-        WebkitBackdropFilter: TAHOE.summary.blur,
-        borderRadius: TAHOE.summary.radius
+        padding: GLASS.summary.padding,
+        background: GLASS.summary.bg,
+        backdropFilter: GLASS.summary.blur,
+        WebkitBackdropFilter: GLASS.summary.blur,
+        borderRadius: GLASS.summary.radius
       }}
     >
-      {/* Warm vignette */}
-      <div 
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.012) 0%, transparent 70%)',
-          borderRadius: TAHOE.summary.radius
-        }}
-      />
-      
       <h3 
         className="relative mb-4"
         style={{
@@ -318,61 +330,61 @@ const NarrativeSummary = ({ data }) => (
 // ============================================================================
 // MICRO SIGNAL ROW — Quiet Metadata
 // ============================================================================
+const SignalChip = ({ children, theme, isActive }) => {
+  const [isHovered, setIsHovered] = React.useState(false);
+  
+  return (
+    <motion.div
+      className="flex items-center gap-1"
+      style={{
+        fontSize: '10px',
+        fontWeight: 500,
+        color: isActive ? theme.color : 'rgba(255,255,255,0.55)',
+        background: isActive ? `rgba(${theme.rgb}, 0.12)` : 'rgba(255,255,255,0.04)',
+        padding: GLASS.chip.padding,
+        borderRadius: GLASS.chip.radius,
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        boxShadow: isHovered && isActive ? `0 0 12px rgba(${theme.rgb}, 0.22)` : 'none',
+        border: isHovered ? `1px solid rgba(${theme.rgb}, 0.30)` : '1px solid transparent',
+        transition: 'box-shadow 0.14s ease, border 0.14s ease'
+      }}
+      animate={{ scale: isHovered ? 1.03 : 1 }}
+      transition={{ duration: 0.14, ease: MOTION.ease }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
 const SignalRow = ({ data, theme }) => {
   const TrendIcon = data.trend === 'up' ? TrendingUp : data.trend === 'down' ? TrendingDown : null;
   
   return (
     <motion.div
-      className="flex justify-center gap-2 mx-8 mt-6 mb-10"
+      className="flex justify-center mx-9 mt-6 mb-10"
+      style={{ gap: '10px' }}
       initial={{ opacity: 0 }}
-      animate={{ opacity: 0.70 }}
+      animate={{ opacity: 1 }}
       transition={{ delay: 0.42, duration: MOTION.duration }}
     >
       {TrendIcon && (
-        <div 
-          className="flex items-center gap-1 px-2 py-1"
-          style={{
-            fontSize: '9px',
-            fontWeight: 500,
-            color: theme.color,
-            background: 'transparent',
-            border: `1px solid rgba(${theme.rgb}, 0.18)`,
-            borderRadius: TAHOE.chip.radius
-          }}
-        >
-          <TrendIcon className="w-2.5 h-2.5" strokeWidth={2.5} />
+        <SignalChip theme={theme} isActive>
+          <TrendIcon className="w-3 h-3" strokeWidth={2.5} />
           <span>{data.status}</span>
-        </div>
+        </SignalChip>
       )}
       
-      <div 
-        className="px-2 py-1"
-        style={{
-          fontSize: '9px',
-          fontWeight: 500,
-          color: 'rgba(255,255,255,0.50)',
-          background: 'transparent',
-          border: `1px solid ${TAHOE.chip.border}`,
-          borderRadius: TAHOE.chip.radius
-        }}
-      >
-        {data.certainty}%
-      </div>
+      <SignalChip theme={theme}>
+        <span>{data.certainty}%</span>
+      </SignalChip>
       
-      <div 
-        className="flex items-center gap-1 px-2 py-1"
-        style={{
-          fontSize: '9px',
-          fontWeight: 500,
-          color: 'rgba(255,255,255,0.50)',
-          background: 'transparent',
-          border: `1px solid ${TAHOE.chip.border}`,
-          borderRadius: TAHOE.chip.radius
-        }}
-      >
-        <Clock className="w-2.5 h-2.5" strokeWidth={2.5} />
+      <SignalChip theme={theme}>
+        <Clock className="w-3 h-3" strokeWidth={2.5} />
         <span>{data.horizon}</span>
-      </div>
+      </SignalChip>
     </motion.div>
   );
 };
@@ -385,21 +397,21 @@ const Header = ({ segment, theme, onClose, onNavigate }) => {
   
   return (
     <motion.div 
-      className="relative px-8 pt-7 pb-5"
+      className="relative px-9 pt-8 pb-5"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.18 }}
     >
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3.5">
+        <div className="flex items-center gap-4">
           <div 
-            className="w-10 h-10 rounded-[14px] flex items-center justify-center"
+            className="w-11 h-11 rounded-[14px] flex items-center justify-center"
             style={{
               background: `rgba(${theme.rgb}, 0.12)`,
-              border: `1px solid rgba(${theme.rgb}, 0.16)`
+              boxShadow: `0 0 8px rgba(${theme.rgb}, 0.16)`
             }}
           >
-            <Icon className="w-[18px] h-[18px]" style={{ color: theme.color }} strokeWidth={2} />
+            <Icon className="w-5 h-5" style={{ color: theme.color }} strokeWidth={2} />
           </div>
           <div>
             <h1 style={{ fontSize: '20px', fontWeight: 600, color: 'rgba(255,255,255,0.94)', letterSpacing: '-0.02em' }}>
@@ -420,9 +432,9 @@ const Header = ({ segment, theme, onClose, onNavigate }) => {
             <motion.button
               key={i}
               onClick={action}
-              className={`w-8 h-8 rounded-xl flex items-center justify-center ${ml ? 'ml-1' : ''}`}
-              style={{ background: TAHOE.chip.bg, border: `1px solid ${TAHOE.chip.border}` }}
-              whileHover={{ background: 'rgba(255,255,255,0.07)' }}
+              className={`w-9 h-9 rounded-xl flex items-center justify-center ${ml ? 'ml-1' : ''}`}
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}
+              whileHover={{ background: 'rgba(255,255,255,0.08)' }}
               whileTap={{ scale: 0.95 }}
             >
               <BtnIcon className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.60)' }} />
@@ -433,7 +445,7 @@ const Header = ({ segment, theme, onClose, onNavigate }) => {
       
       {/* Subtle divider */}
       <div 
-        className="absolute bottom-0 left-8 right-8 h-px"
+        className="absolute bottom-0 left-9 right-9 h-px"
         style={{ background: 'rgba(255,255,255,0.06)' }}
       />
     </motion.div>
@@ -474,12 +486,15 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
         transition={{ duration: 0.22 }}
         style={{ paddingTop: '80px' }}
       >
-        {/* Backdrop */}
+        {/* Backdrop with vignette */}
         <motion.div 
           className="absolute inset-0"
           style={{ 
             top: '80px',
-            background: 'rgba(0,0,0,0.82)',
+            background: `
+              radial-gradient(ellipse at 50% 50%, rgba(5,8,20,0.75) 0%, rgba(5,10,19,0.92) 100%),
+              linear-gradient(to bottom, #050814 0%, #050A13 100%)
+            `,
             backdropFilter: 'blur(24px)',
             WebkitBackdropFilter: 'blur(24px)'
           }}
@@ -492,16 +507,20 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
           className="relative w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col"
           style={{
             borderRadius: '26px',
-            background: 'linear-gradient(180deg, rgba(12, 14, 20, 0.97) 0%, rgba(8, 10, 16, 0.98) 100%)',
-            backdropFilter: 'blur(70px) saturate(175%)',
-            WebkitBackdropFilter: 'blur(70px) saturate(175%)',
-            border: '1px solid rgba(255,255,255,0.045)',
-            boxShadow: '0 40px 80px -20px rgba(0,0,0,0.80)'
+            background: '#060C18',
+            backdropFilter: 'blur(22px)',
+            WebkitBackdropFilter: 'blur(22px)',
+            border: '1px solid rgba(255,255,255,0.04)',
+            boxShadow: `
+              0 0 40px rgba(0,0,0,0.32) inset,
+              0 0 8px rgba(255,255,255,0.05) inset,
+              0 40px 80px -20px rgba(0,0,0,0.80)
+            `
           }}
-          initial={{ opacity: 0, scale: 0.97, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.98, y: 14 }}
-          transition={{ duration: 0.26, ease: MOTION.ease }}
+          initial={{ opacity: 0, scale: 0.97 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.97 }}
+          transition={{ duration: 0.22, ease: [0.16, 0.80, 0.33, 1] }}
         >
           <Header segment={segment} theme={theme} onClose={onClose} onNavigate={onNavigate} />
           
