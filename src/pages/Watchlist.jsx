@@ -9,346 +9,200 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ComparisonView from '../components/watchlist/ComparisonView';
 import { Skeleton } from '../components/ui/skeleton';
 
-// ============================================================================
-// OS HORIZON LIQUID GLASS TAHOE — DESIGN SYSTEM
-// ============================================================================
-const GLASS = {
-  card: {
-    bg: 'rgba(18, 24, 38, 0.52)',
-    blur: 'blur(40px)',
-    radius: '28px',
-    border: 'rgba(255, 255, 255, 0.12)',
-    borderHover: 'rgba(255, 255, 255, 0.20)',
-    innerGlow: 'inset 0 0 40px rgba(255,255,255,0.025)',
-    innerShadow: 'inset 0 0 30px rgba(0,0,0,0.20)'
-  },
-  button: {
-    bg: 'rgba(255, 255, 255, 0.08)',
-    bgHover: 'rgba(255, 255, 255, 0.14)',
-    blur: 'blur(24px)',
-    border: 'rgba(255, 255, 255, 0.14)',
-    innerShadow: 'inset 0 0 14px rgba(255,255,255,0.08)'
-  },
-  chip: {
-    bg: 'rgba(255, 255, 255, 0.08)',
-    border: 'rgba(255, 255, 255, 0.16)',
-    blur: 'blur(28px)',
-    innerShadow: 'inset 0 0 16px rgba(255,255,255,0.08)'
-  }
-};
-
-// ============================================================================
-// GLASS ICON BUTTON — visionOS Style
-// ============================================================================
-const GlassIconButton = ({ onClick, icon: Icon, isActive, disabled, className = "" }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  
-  return (
-    <motion.button
-      onClick={onClick}
-      disabled={disabled}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className={`relative rounded-2xl flex items-center justify-center ${className}`}
-      style={{
-        width: '44px',
-        height: '44px',
-        background: isActive 
-          ? 'linear-gradient(135deg, rgba(99, 140, 255, 0.45) 0%, rgba(130, 100, 255, 0.35) 100%)'
-          : GLASS.button.bg,
-        backdropFilter: GLASS.button.blur,
-        WebkitBackdropFilter: GLASS.button.blur,
-        border: `1px solid ${isActive ? 'rgba(130, 160, 255, 0.40)' : GLASS.button.border}`,
-        boxShadow: isActive
-          ? `${GLASS.button.innerShadow}, 0 0 20px rgba(99, 140, 255, 0.25)`
-          : GLASS.button.innerShadow,
-        opacity: disabled ? 0.4 : 1,
-        cursor: disabled ? 'not-allowed' : 'pointer'
-      }}
-      animate={{
-        scale: isHovered && !disabled ? 1.06 : 1,
-        background: isHovered && !disabled && !isActive 
-          ? GLASS.button.bgHover 
-          : isActive 
-            ? 'linear-gradient(135deg, rgba(99, 140, 255, 0.45) 0%, rgba(130, 100, 255, 0.35) 100%)'
-            : GLASS.button.bg
-      }}
-      whileTap={!disabled ? { scale: 0.95 } : {}}
-      transition={{ duration: 0.15 }}
-    >
-      {/* Top highlight */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: '20%',
-        right: '20%',
-        height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
-        pointerEvents: 'none'
-      }} />
-      
-      <Icon 
-        className="w-5 h-5" 
-        style={{ 
-          color: isActive ? 'rgba(255,255,255,0.95)' : 'rgba(200, 210, 230, 0.85)',
-          filter: isActive ? 'drop-shadow(0 0 6px rgba(130, 170, 255, 0.5))' : 'none'
-        }} 
-        strokeWidth={1.8} 
-      />
-    </motion.button>
-  );
-};
-
-// ============================================================================
-// LIQUID GLASS WATCHLIST CARD — OS Horizon Tahoe
-// ============================================================================
-const LiquidGlassCard = ({ item, index, onHeadlinesClick, onChartClick, isSelected, isSelectable, isEnabled }) => {
+// Enhanced Luxury Watchlist Card Component
+const LuxuryWatchlistCard = ({ item, index, theme, onHeadlinesClick, onChartClick, isSelected, isSelectable, isEnabled }) => {
   const [isHovered, setIsHovered] = useState(false);
   
   const isPositive = item.change.startsWith('+');
   const performanceIntensity = Math.abs(parseFloat(item.change.replace('%', '').replace('+', '')));
-  const accentColor = isPositive ? '#58E3A4' : '#FF6A7A';
-  const accentRgb = isPositive ? '88, 227, 164' : '255, 106, 122';
 
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 30, filter: 'blur(8px)' }}
-      animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+      key={item.symbol}
+      initial={{ opacity: 0, y: 50, scale: 0.9 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ 
-        duration: 0.5, 
-        delay: index * 0.08, 
-        ease: [0.22, 0.61, 0.36, 1] 
+        duration: 0.7, 
+        delay: index * 0.1, 
+        ease: [0.22, 1, 0.36, 1] 
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      whileHover={{ 
+        y: -10, 
+        transition: { duration: 0.3, ease: "easeOut" }
+      }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
       className="group relative"
     >
-      {/* Volumetric Glow — behind card */}
+      {/* Dynamic Performance Glow */}
       <motion.div 
-        className="absolute -inset-3 pointer-events-none"
-        style={{
-          background: `radial-gradient(ellipse 80% 60% at 50% 40%, rgba(${accentRgb}, 0.12) 0%, transparent 70%)`,
-          filter: 'blur(30px)',
-          borderRadius: '36px'
-        }}
+        className="absolute -inset-1 rounded-[2rem] blur-2xl transition-opacity duration-500"
         animate={{
-          opacity: isHovered ? 0.8 : 0.3,
-          scale: isHovered ? 1.02 : 1
+          opacity: isHovered ? (isPositive ? 0.5 : 0.4) : 0.2,
+          background: isPositive 
+            ? `radial-gradient(ellipse at 70% 30%, rgba(88, 227, 164, 0.6) 0%, transparent 70%)`
+            : `radial-gradient(ellipse at 70% 30%, rgba(255, 106, 122, 0.5) 0%, transparent 70%)`
         }}
-        transition={{ duration: 0.3 }}
       />
       
-      {/* Main Card — Liquid Glass */}
-      <motion.div 
-        className="relative overflow-hidden"
-        style={{
-          padding: '24px',
-          background: GLASS.card.bg,
-          backdropFilter: GLASS.card.blur,
-          WebkitBackdropFilter: GLASS.card.blur,
-          borderRadius: GLASS.card.radius,
-          border: `1px solid ${isHovered ? GLASS.card.borderHover : GLASS.card.border}`,
-          boxShadow: `
-            ${GLASS.card.innerGlow},
-            ${GLASS.card.innerShadow},
-            0 20px 40px -15px rgba(0,0,0,0.35)
-          `
-        }}
-        animate={{
-          y: isHovered ? -4 : 0,
-          boxShadow: isHovered 
-            ? `
-              ${GLASS.card.innerGlow},
-              ${GLASS.card.innerShadow},
-              0 25px 50px -15px rgba(0,0,0,0.45),
-              0 0 40px rgba(${accentRgb}, 0.08)
-            `
-            : `
-              ${GLASS.card.innerGlow},
-              ${GLASS.card.innerShadow},
-              0 20px 40px -15px rgba(0,0,0,0.35)
-            `
-        }}
-        transition={{ duration: 0.25, ease: [0.22, 0.61, 0.36, 1] }}
-      >
-        {/* Gradient border overlay */}
-        <div 
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            borderRadius: GLASS.card.radius,
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%, rgba(255,255,255,0.03) 100%)',
-            WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-            WebkitMaskComposite: 'xor',
-            maskComposite: 'exclude',
-            padding: '1px'
-          }}
-        />
-        
-        {/* Top specular highlight */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: '15%',
-          right: '15%',
-          height: '2px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
-          pointerEvents: 'none'
-        }} />
+      {/* Main Card with Luxurious Styling */}
+      <div className={`
+        relative overflow-hidden rounded-[2rem] border backdrop-blur-2xl transition-all duration-500
+        bg-gradient-to-br from-white/[0.06] via-white/[0.04] to-transparent
+        border-white/[0.12] hover:border-white/[0.20]
+        group-hover:shadow-2xl group-hover:shadow-black/50
+        ${isSelected ? 'ring-2 ring-blue-500 ring-offset-2 ring-offset-black' : ''}
+      `}>
+        {/* Animated Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+        </div>
 
-        {/* Header */}
-        <div className="flex items-start justify-between mb-5 relative z-10">
-          <div className="flex items-center gap-3.5">
-            {/* Pulsing status dot */}
-            <div className="relative">
-              <motion.div 
-                className="w-2.5 h-2.5 rounded-full"
-                style={{ 
-                  background: accentColor,
-                  boxShadow: `0 0 10px ${accentColor}, 0 0 4px ${accentColor}`
-                }}
-                animate={{ 
-                  opacity: [0.7, 1, 0.7],
-                  boxShadow: [
-                    `0 0 8px ${accentColor}, 0 0 3px ${accentColor}`,
-                    `0 0 14px ${accentColor}, 0 0 6px ${accentColor}`,
-                    `0 0 8px ${accentColor}, 0 0 3px ${accentColor}`
-                  ]
-                }}
-                transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-              />
+        <div className="relative z-10 p-6">
+          {/* Header */}
+          <div className="flex items-start justify-between mb-6">
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <div className={`w-3 h-3 rounded-full ${isPositive ? 'bg-green-400' : 'bg-red-400'}`} />
+                <motion.div 
+                  className={`absolute inset-0 w-3 h-3 rounded-full ${isPositive ? 'bg-green-400' : 'bg-red-400'}`}
+                  animate={{ scale: [1, 2.5, 1], opacity: [1, 0, 1] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                />
+              </div>
+              <div>
+                <motion.h3 
+                  className="text-2xl font-black tracking-[-0.02em] text-white"
+                  animate={{ scale: isHovered ? 1.05 : 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {item.symbol}
+                </motion.h3>
+                <p className="text-sm font-medium text-gray-400 group-hover:text-gray-300 transition-colors">
+                  {item.name}
+                </p>
+              </div>
             </div>
+            
+            <div className="flex items-center space-x-2">
+              {/* Headlines Button */}
+              {isEnabled('labs_modules') && (
+                <motion.button
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => onHeadlinesClick(item)}
+                  className="p-3 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] border border-white/10 backdrop-blur-sm shadow-lg hover:shadow-xl"
+                >
+                  <Newspaper className="w-5 h-5 text-gray-300" strokeWidth={2} />
+                </motion.button>
+              )}
+
+              {/* Chart Button */}
+              <motion.button
+                whileHover={{ scale: 1.1, rotate: -5 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => onChartClick(item)}
+                disabled={!isSelectable}
+                className={`p-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl
+                  ${isSelected
+                    ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-blue-500/25'
+                    : !isSelectable
+                      ? 'opacity-50 cursor-not-allowed bg-gray-500/20'
+                      : 'bg-white/[0.08] hover:bg-white/[0.15] border border-white/10'
+                  } backdrop-blur-sm`}
+              >
+                <BarChart3 className={`w-5 h-5 ${isSelected ? 'text-white' : 'text-gray-300'}`} strokeWidth={2} />
+              </motion.button>
+            </div>
+          </div>
+
+          {/* Sophisticated Chart Visualization */}
+          <div className="h-24 mb-6">
+            <svg width="100%" height="100%" viewBox="0 0 400 96" className="overflow-visible">
+              <defs>
+                <linearGradient id={`gradient-${item.symbol}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor={isPositive ? '#58E3A4' : '#FF6A7A'} stopOpacity={0.4} />
+                  <stop offset="100%" stopColor={isPositive ? '#58E3A4' : '#FF6A7A'} stopOpacity={0.05} />
+                </linearGradient>
+                <filter id={`glow-${item.symbol}`}>
+                  <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                  <feMerge> 
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+              <motion.path
+                d="M 0,60 Q 50,80 100,65 T 200,45 T 300,55 T 400,30"
+                fill={`url(#gradient-${item.symbol})`}
+                stroke={isPositive ? '#58E3A4' : '#FF6A7A'}
+                strokeWidth="3"
+                filter={`url(#glow-${item.symbol})`}
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 1 }}
+                transition={{ duration: 2, ease: "easeInOut", delay: index * 0.2 }}
+              />
+            </svg>
+          </div>
+
+          {/* Price and Performance */}
+          <div className="flex items-end justify-between">
             <div>
-              <h3 
-                className="text-xl font-bold tracking-[-0.02em]"
-                style={{ color: 'rgba(255,255,255,0.95)' }}
+              <motion.p 
+                className="text-4xl font-black tracking-[-0.03em] mb-1 text-white"
+                key={item.price}
+                initial={{ opacity: 0.7, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
               >
-                {item.symbol}
-              </h3>
-              <p 
-                className="text-sm font-medium"
-                style={{ color: 'rgba(200, 210, 230, 0.65)' }}
+                {item.price}
+              </motion.p>
+              <motion.div
+                key={item.change}
+                initial={{ opacity: 0.7, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+                className={`flex items-center space-x-2 text-lg font-bold ${isPositive ? 'text-green-400' : 'text-red-400'}`}
               >
-                {item.name}
+                {isPositive ? <TrendingUp strokeWidth={2.5} /> : <TrendingDown strokeWidth={2.5} />}
+                <span>{item.change}</span>
+              </motion.div>
+            </div>
+            
+            <div className="text-right">
+              <div className="flex space-x-1.5 mb-2">
+                {[...Array(5)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className={`w-2 h-7 rounded-full ${i < Math.ceil(performanceIntensity) ? (isPositive ? 'bg-green-400' : 'bg-red-400') : 'bg-gray-700'}`}
+                    initial={{ scaleY: 0, opacity: 0 }}
+                    animate={{ scaleY: 1, opacity: 1 }}
+                    transition={{ delay: index * 0.1 + i * 0.05 + 0.5, duration: 0.4 }}
+                  />
+                ))}
+              </div>
+              <p className="text-xs font-medium text-gray-400">
+                Move: {performanceIntensity.toFixed(1)}%
               </p>
             </div>
           </div>
-          
-          <div className="flex items-center gap-2">
-            {isEnabled('labs_modules') && (
-              <GlassIconButton
-                onClick={() => onHeadlinesClick(item)}
-                icon={Newspaper}
-              />
-            )}
-            <GlassIconButton
-              onClick={() => onChartClick(item)}
-              icon={BarChart3}
-              isActive={isSelected}
-              disabled={!isSelectable}
-            />
-          </div>
         </div>
 
-        {/* Mini Chart */}
-        <div className="h-20 mb-5 relative z-10">
-          <svg width="100%" height="100%" viewBox="0 0 400 80" className="overflow-visible">
-            <defs>
-              <linearGradient id={`glass-gradient-${item.symbol}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor={accentColor} stopOpacity={0.25} />
-                <stop offset="100%" stopColor={accentColor} stopOpacity={0.02} />
-              </linearGradient>
-              <filter id={`glass-glow-${item.symbol}`}>
-                <feGaussianBlur stdDeviation="2" result="coloredBlur" />
-                <feMerge> 
-                  <feMergeNode in="coloredBlur"/>
-                  <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-              </filter>
-            </defs>
-            <motion.path
-              d={isPositive 
-                ? "M 0,55 Q 60,65 120,50 T 240,35 T 360,40 T 400,25"
-                : "M 0,25 Q 60,30 120,40 T 240,50 T 360,55 T 400,60"
-              }
-              fill={`url(#glass-gradient-${item.symbol})`}
-              stroke={accentColor}
-              strokeWidth="2.5"
-              filter={`url(#glass-glow-${item.symbol})`}
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: 1 }}
-              transition={{ duration: 1.5, ease: "easeOut", delay: index * 0.1 }}
-            />
-          </svg>
-        </div>
-
-        {/* Price & Change */}
-        <div className="flex items-end justify-between relative z-10">
-          <div>
-            <p 
-              className="text-3xl font-bold tracking-[-0.02em] mb-1"
-              style={{ color: 'rgba(255,255,255,0.95)' }}
-            >
-              {item.price}
-            </p>
-            <div 
-              className="flex items-center gap-1.5 text-base font-semibold"
-              style={{ color: accentColor }}
-            >
-              {isPositive ? <TrendingUp className="w-4 h-4" strokeWidth={2.5} /> : <TrendingDown className="w-4 h-4" strokeWidth={2.5} />}
-              <span>{item.change}</span>
-            </div>
-          </div>
-          
-          {/* Performance bars */}
-          <div className="text-right">
-            <div className="flex gap-1 mb-1.5 justify-end">
-              {[...Array(5)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="w-1.5 rounded-full"
-                  style={{
-                    height: '24px',
-                    background: i < Math.ceil(performanceIntensity) 
-                      ? `linear-gradient(180deg, ${accentColor} 0%, rgba(${accentRgb}, 0.4) 100%)`
-                      : 'rgba(255,255,255,0.08)',
-                    boxShadow: i < Math.ceil(performanceIntensity) 
-                      ? `0 0 8px rgba(${accentRgb}, 0.4)`
-                      : 'none'
-                  }}
-                  initial={{ scaleY: 0, opacity: 0 }}
-                  animate={{ scaleY: 1, opacity: 1 }}
-                  transition={{ delay: index * 0.08 + i * 0.04 + 0.4, duration: 0.35 }}
-                />
-              ))}
-            </div>
-            <p 
-              className="text-xs font-medium"
-              style={{ color: 'rgba(200, 210, 230, 0.55)' }}
-            >
-              {performanceIntensity.toFixed(1)}% move
-            </p>
-          </div>
-        </div>
-
-        {/* Selection indicator */}
+        {/* Selection Checkmark */}
         <AnimatePresence>
           {isSelected && (
             <motion.div
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0, opacity: 0 }}
-              className="absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center"
-              style={{
-                background: 'linear-gradient(135deg, rgba(99, 140, 255, 0.9) 0%, rgba(130, 100, 255, 0.85) 100%)',
-                boxShadow: '0 0 16px rgba(99, 140, 255, 0.5), inset 0 1px 1px rgba(255,255,255,0.3)'
-              }}
+              className="absolute top-4 right-4 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center shadow-lg border-2 border-black"
             >
-              <Check className="w-4 h-4 text-white" strokeWidth={2.5} />
+              <Check className="w-5 h-5 text-white" />
             </motion.div>
           )}
         </AnimatePresence>
-      </motion.div>
+      </div>
     </motion.div>
   );
 };
@@ -585,25 +439,17 @@ export default function Watchlist() {
 
   if (isLoading) {
     return (
-      <div className="space-y-10">
+      <div className="space-y-12">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <Skeleton className="h-9 w-44 rounded-xl" style={{ background: 'rgba(255,255,255,0.06)' }} />
-          <div className="flex items-center gap-2.5">
-            <Skeleton className="h-11 w-32 rounded-2xl" style={{ background: 'rgba(255,255,255,0.06)' }} />
-            <Skeleton className="h-11 w-28 rounded-2xl" style={{ background: 'rgba(255,255,255,0.06)' }} />
+          <Skeleton className="h-10 w-48" />
+          <div className="flex items-center space-x-2">
+            <Skeleton className="h-11 w-32 rounded-xl" />
+            <Skeleton className="h-11 w-24 rounded-xl" />
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[...Array(6)].map((_, i) => (
-            <Skeleton 
-              key={i} 
-              className="h-72" 
-              style={{ 
-                background: 'rgba(18, 24, 38, 0.45)',
-                borderRadius: '28px',
-                border: '1px solid rgba(255,255,255,0.08)'
-              }} 
-            />
+            <Skeleton key={i} className="h-80 rounded-[2rem]" />
           ))}
         </div>
       </div>
@@ -611,69 +457,53 @@ export default function Watchlist() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       
-      {/* Header — OS Horizon Style */}
+      {/* Stunning Header */}
       <motion.div 
-        className="flex flex-col sm:flex-row sm:items-center justify-between gap-5"
-        initial={{ opacity: 0, y: -15 }}
+        className="flex flex-col sm:flex-row sm:items-center justify-between gap-6"
+        initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
+        transition={{ duration: 0.6 }}
       >
-        <h1 
-          className="text-3xl md:text-4xl font-bold tracking-[-0.025em]"
-          style={{ color: 'rgba(255,255,255,0.95)' }}
+        <motion.h1 
+          className="text-4xl md:text-6xl font-black tracking-[-0.04em] text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-100 to-gray-300"
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.1 }}
         >
           My Watchlist
-        </h1>
-        <div className="flex items-center gap-2.5">
-          {/* Compare Button — Glass Style */}
+        </motion.h1>
+        <div className="flex items-stretch sm:items-center space-x-2">
           <motion.button 
             onClick={toggleComparisonMode}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold"
-            style={{
-              background: comparisonMode 
-                ? 'linear-gradient(135deg, rgba(99, 140, 255, 0.40) 0%, rgba(130, 100, 255, 0.32) 100%)'
-                : GLASS.button.bg,
-              backdropFilter: GLASS.button.blur,
-              WebkitBackdropFilter: GLASS.button.blur,
-              border: `1px solid ${comparisonMode ? 'rgba(130, 160, 255, 0.35)' : GLASS.button.border}`,
-              color: comparisonMode ? 'rgba(255,255,255,0.95)' : 'rgba(200, 210, 230, 0.85)',
-              boxShadow: comparisonMode 
-                ? `${GLASS.button.innerShadow}, 0 0 20px rgba(99, 140, 255, 0.20)`
-                : GLASS.button.innerShadow
-            }}
-            whileHover={{ scale: 1.03, y: -1 }}
-            whileTap={{ scale: 0.97 }}
+            className={`
+              flex-1 sm:flex-none flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl text-sm font-semibold
+              transition-all duration-300 hover:scale-105 border backdrop-blur-lg
+              ${comparisonMode
+                ? 'bg-gradient-to-r from-blue-500/80 to-indigo-600/80 text-white shadow-lg shadow-blue-500/25 border-blue-400'
+                : 'bg-white/[0.08] hover:bg-white/[0.12] text-gray-300 border-white/10'
+              }
+            `}
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.95 }}
           >
             <GitCompare className="w-4 h-4" strokeWidth={2} />
             <span>{comparisonMode ? 'Exit Compare' : 'Compare'}</span>
             {selectedForComparison.length > 0 && (
-              <span 
-                className="ml-1 px-2 py-0.5 rounded-full text-xs font-bold"
-                style={{ 
-                  background: 'rgba(255,255,255,0.15)',
-                  color: 'rgba(255,255,255,0.95)'
-                }}
-              >
+              <span className="ml-1 px-2 py-0.5 bg-white/20 rounded-full text-xs">
                 {selectedForComparison.length}
               </span>
             )}
           </motion.button>
-          
-          {/* Add New Button — Glass Accent */}
           <motion.button 
-            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold"
-            style={{
-              background: 'linear-gradient(135deg, rgba(99, 140, 255, 0.50) 0%, rgba(130, 100, 255, 0.42) 100%)',
-              backdropFilter: GLASS.button.blur,
-              WebkitBackdropFilter: GLASS.button.blur,
-              border: '1px solid rgba(140, 170, 255, 0.30)',
-              color: 'rgba(255,255,255,0.98)',
-              boxShadow: `${GLASS.button.innerShadow}, 0 0 24px rgba(99, 140, 255, 0.22)`
-            }}
-            whileHover={{ scale: 1.03, y: -1 }}
-            whileTap={{ scale: 0.97 }}
+            className="flex-1 sm:flex-none flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white
+            bg-gradient-to-r from-blue-500 to-indigo-600 
+            hover:from-blue-600 hover:to-indigo-700
+            shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30
+            hover:scale-105 transition-all duration-300"
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.95 }}
           >
             <Plus className="w-4 h-4" strokeWidth={2.5} />
             <span>Add New</span>
@@ -681,63 +511,40 @@ export default function Watchlist() {
         </div>
       </motion.div>
       
-      {/* Comparison Status Bar — Glass */}
+      {/* Elegant Comparison Status Bar */}
       <AnimatePresence>
         {comparisonMode && (
           <motion.div
-            initial={{ opacity: 0, y: -15, height: 0 }}
+            initial={{ opacity: 0, y: -20, height: 0 }}
             animate={{ opacity: 1, y: 0, height: 'auto' }}
-            exit={{ opacity: 0, y: -15, height: 0 }}
-            className="overflow-hidden"
+            exit={{ opacity: 0, y: -20, height: 0 }}
+            className="p-4 rounded-2xl border-2 border-dashed border-blue-500/30 bg-blue-500/10 backdrop-blur-sm"
           >
-            <div 
-              className="p-4 rounded-2xl"
-              style={{
-                background: 'rgba(99, 140, 255, 0.08)',
-                backdropFilter: 'blur(24px)',
-                WebkitBackdropFilter: 'blur(24px)',
-                border: '1px dashed rgba(99, 140, 255, 0.25)'
-              }}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div 
-                    className="w-9 h-9 rounded-xl flex items-center justify-center"
-                    style={{ 
-                      background: 'rgba(99, 140, 255, 0.15)',
-                      boxShadow: 'inset 0 0 12px rgba(99, 140, 255, 0.1)'
-                    }}
-                  >
-                    <GitCompare className="w-4 h-4" style={{ color: '#8AB4FF' }} />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-sm" style={{ color: 'rgba(255,255,255,0.92)' }}>Comparison Mode</p>
-                    <p className="text-xs" style={{ color: 'rgba(200, 210, 230, 0.65)' }}>
-                      {selectedForComparison.length === 0 && 'Select two assets to compare'}
-                      {selectedForComparison.length === 1 && `${selectedForComparison[0].symbol} selected — pick one more`}
-                      {selectedForComparison.length === 2 && `Comparing ${selectedForComparison.map(s => s.symbol).join(' vs ')}`}
-                    </p>
-                  </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <GitCompare className="w-5 h-5 text-blue-400" />
+                <div>
+                  <p className="font-semibold text-white">Comparison Mode</p>
+                  <p className="text-sm text-gray-300">
+                    {selectedForComparison.length === 0 && 'Click the chart icon on any card to select it.'}
+                    {selectedForComparison.length === 1 && `You picked ${selectedForComparison[0].symbol}. Pick one more.`}
+                    {selectedForComparison.length === 2 && `Comparing ${selectedForComparison.map(s => s.symbol).join(' vs ')}`}
+                  </p>
                 </div>
-                {selectedForComparison.length > 0 && (
-                  <button
-                    onClick={resetComparison}
-                    className="px-3 py-1.5 rounded-xl text-xs font-medium transition-all"
-                    style={{ 
-                      color: 'rgba(200, 210, 230, 0.75)',
-                      background: 'rgba(255,255,255,0.06)'
-                    }}
-                  >
-                    Reset
-                  </button>
-                )}
               </div>
+              {selectedForComparison.length > 0 && (
+                <button
+                  onClick={resetComparison}
+                  className="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors text-gray-300 hover:text-white hover:bg-white/10"
+                >
+                  Reset
+                </button>
+              )}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
       
-      {/* Card Grid */}
       <AnimatePresence mode="wait">
         {!showComparisonView ? (
           <motion.div
@@ -745,17 +552,18 @@ export default function Watchlist() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
             {watchlistData.map((item, index) => {
               const isSelected = selectedForComparison.some(s => s.symbol === item.symbol);
               const isSelectable = comparisonMode && (selectedForComparison.length < 2 || isSelected);
               
               return (
-                <LiquidGlassCard
+                <LuxuryWatchlistCard
                   key={item.symbol}
                   item={item}
                   index={index}
+                  theme={theme}
                   onHeadlinesClick={handleHeadlinesClick}
                   onChartClick={handleChartClick}
                   isSelected={isSelected}
@@ -768,14 +576,14 @@ export default function Watchlist() {
         ) : (
           <motion.div
             key="comparison-view"
-            initial={{ opacity: 0, scale: 0.97, filter: 'blur(8px)' }}
-            animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, scale: 0.97, filter: 'blur(8px)' }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
           >
             <ComparisonView 
               stocks={selectedForComparison} 
               theme={theme}
-              onClose={resetComparison}
+              onClose={resetComparison} // Resetting exits the view
             />
           </motion.div>
         )}
