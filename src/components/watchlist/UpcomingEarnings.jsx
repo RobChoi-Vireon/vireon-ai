@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, Zap, TrendingUp, Star, Sparkles, Clock, Target, ArrowRight, Download, Bell, Plus, BarChart3 } from 'lucide-react';
@@ -8,7 +7,34 @@ import EarningsFilters from './EarningsFilters';
 import EarningsCard from './EarningsCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { generateICS } from '@/components/lib/calendar';
-import DetailedEarningsModal from './DetailedEarningsModal'; // Added import for the new modal
+import DetailedEarningsModal from './DetailedEarningsModal';
+
+// ============================================================================
+// OS HORIZON LIQUID GLASS TAHOE — DESIGN SYSTEM
+// ============================================================================
+const GLASS = {
+  container: {
+    bg: 'rgba(18, 24, 38, 0.48)',
+    blur: 'blur(40px)',
+    radius: '32px',
+    border: 'rgba(255, 255, 255, 0.10)',
+    innerGlow: 'inset 0 0 50px rgba(255,255,255,0.02)',
+    innerShadow: 'inset 0 0 35px rgba(0,0,0,0.18)'
+  },
+  stat: {
+    bg: 'rgba(255, 255, 255, 0.05)',
+    blur: 'blur(28px)',
+    border: 'rgba(255, 255, 255, 0.10)',
+    innerShadow: 'inset 0 0 20px rgba(255,255,255,0.04)'
+  },
+  button: {
+    bg: 'rgba(255, 255, 255, 0.08)',
+    bgHover: 'rgba(255, 255, 255, 0.14)',
+    blur: 'blur(24px)',
+    border: 'rgba(255, 255, 255, 0.14)',
+    innerShadow: 'inset 0 0 14px rgba(255,255,255,0.06)'
+  }
+};
 
 const mockEarningsEvents = [
   { 
@@ -189,30 +215,38 @@ const mockEarningsEvents = [
   },
 ];
 
-// Next-Gen Skeleton Loader
-const NextGenSkeletonLoader = ({ theme }) => (
-  <div className="space-y-10">
+// ============================================================================
+// GLASS SKELETON LOADER
+// ============================================================================
+const GlassSkeletonLoader = () => (
+  <div className="space-y-8">
     {[...Array(2)].map((_, i) => (
       <motion.div 
         key={i}
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: i * 0.1 }}
-        className="relative"
+        transition={{ duration: 0.5, delay: i * 0.08 }}
       >
-        {/* Date header skeleton */}
-        <div className="flex items-center gap-4 mb-6">
-          <Skeleton className="w-12 h-12 rounded-2xl bg-white/5" />
+        <div className="flex items-center gap-4 mb-5">
+          <div 
+            className="w-11 h-11 rounded-2xl"
+            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+          />
           <div className="space-y-2">
-            <Skeleton className="h-7 w-32 rounded-lg bg-white/5" />
-            <Skeleton className="h-4 w-48 rounded-md bg-white/5" />
+            <div className="h-5 w-28 rounded-lg" style={{ background: 'rgba(255,255,255,0.05)' }} />
+            <div className="h-3.5 w-40 rounded-md" style={{ background: 'rgba(255,255,255,0.04)' }} />
           </div>
         </div>
-
-        {/* Event cards skeleton */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           {[...Array(2)].map((_, j) => (
-            <Skeleton key={j} className="h-36 w-full rounded-3xl bg-white/5" />
+            <div 
+              key={j} 
+              className="h-28 w-full rounded-2xl"
+              style={{ 
+                background: 'rgba(18, 24, 38, 0.40)',
+                border: '1px solid rgba(255,255,255,0.06)'
+              }}
+            />
           ))}
         </div>
       </motion.div>
@@ -220,47 +254,133 @@ const NextGenSkeletonLoader = ({ theme }) => (
   </div>
 );
 
-// Next-Gen Statistics Component
-const NextGenStatsBar = ({ stats, theme }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-    className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12"
-  >
-    <StatBox icon={Target} label="Total Events" value={stats.totalEvents} accentColor="text-blue-400" />
-    <StatBox icon={Star} label="Critical Importance" value={stats.criticalEvents} accentColor="text-red-400" />
-    <StatBox icon={TrendingUp} label="Likely Beat" value={stats.beatExpected} accentColor="text-green-400" />
-    <StatBox icon={Zap} label="Avg Options Vol" value={`${Math.round(stats.avgOptionsVolume)}K`} accentColor="text-purple-400" />
-  </motion.div>
-);
-
-const StatBox = ({ icon: Icon, label, value, accentColor }) => (
-  <div className="relative p-5 rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl">
-    <div className="flex items-start justify-between">
-      <div>
-        <p className="text-sm font-medium text-gray-400 mb-2">{label}</p>
-        <p className="text-3xl font-black tracking-tighter text-white">{value}</p>
+// ============================================================================
+// GLASS STAT BOX
+// ============================================================================
+const GlassStatBox = ({ icon: Icon, label, value, accentColor, accentRgb, index }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  
+  return (
+    <motion.div 
+      className="relative overflow-hidden"
+      style={{
+        padding: '20px',
+        background: GLASS.stat.bg,
+        backdropFilter: GLASS.stat.blur,
+        WebkitBackdropFilter: GLASS.stat.blur,
+        borderRadius: '20px',
+        border: `1px solid ${GLASS.stat.border}`,
+        boxShadow: GLASS.stat.innerShadow
+      }}
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: 0.1 + index * 0.06, ease: [0.22, 0.61, 0.36, 1] }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Top highlight */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '20%',
+        right: '20%',
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)',
+        pointerEvents: 'none'
+      }} />
+      
+      {/* Hover glow */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `radial-gradient(ellipse 80% 60% at 50% 30%, rgba(${accentRgb}, 0.08) 0%, transparent 70%)`,
+          borderRadius: '20px'
+        }}
+        animate={{ opacity: isHovered ? 1 : 0 }}
+        transition={{ duration: 0.2 }}
+      />
+      
+      <div className="flex items-start justify-between relative z-10">
+        <div>
+          <p 
+            className="text-xs font-medium uppercase tracking-wide mb-2"
+            style={{ color: 'rgba(200, 210, 230, 0.60)' }}
+          >
+            {label}
+          </p>
+          <p 
+            className="text-2xl font-bold tracking-tight"
+            style={{ color: 'rgba(255,255,255,0.95)' }}
+          >
+            {value}
+          </p>
+        </div>
+        <div 
+          className="w-9 h-9 rounded-xl flex items-center justify-center"
+          style={{
+            background: `rgba(${accentRgb}, 0.12)`,
+            boxShadow: `inset 0 0 12px rgba(${accentRgb}, 0.08)`
+          }}
+        >
+          <Icon className="w-4 h-4" style={{ color: accentColor }} strokeWidth={2} />
+        </div>
       </div>
-      <Icon className={`w-6 h-6 ${accentColor}`} strokeWidth={2} />
-    </div>
+    </motion.div>
+  );
+};
+
+// ============================================================================
+// GLASS STATS BAR
+// ============================================================================
+const GlassStatsBar = ({ stats }) => (
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+    <GlassStatBox icon={Target} label="Total Events" value={stats.totalEvents} accentColor="#6BA3FF" accentRgb="107, 163, 255" index={0} />
+    <GlassStatBox icon={Star} label="Critical" value={stats.criticalEvents} accentColor="#FF7A8A" accentRgb="255, 122, 138" index={1} />
+    <GlassStatBox icon={TrendingUp} label="Likely Beat" value={stats.beatExpected} accentColor="#58E3A4" accentRgb="88, 227, 164" index={2} />
+    <GlassStatBox icon={Zap} label="Avg Options Vol" value={`${Math.round(stats.avgOptionsVolume)}K`} accentColor="#B68AE8" accentRgb="182, 138, 232" index={3} />
   </div>
 );
 
-// Next-Gen Date Header
-const NextGenDateHeader = ({ dateStr, eventsCount, theme, index }) => (
+// ============================================================================
+// GLASS DATE HEADER
+// ============================================================================
+const GlassDateHeader = ({ dateStr, eventsCount, index }) => (
   <motion.div 
-    className="flex items-center gap-4 mb-6"
-    initial={{ opacity: 0, x: -30 }}
+    className="flex items-center gap-4 mb-5"
+    initial={{ opacity: 0, x: -20 }}
     animate={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.7, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+    transition={{ duration: 0.5, delay: index * 0.08, ease: [0.22, 0.61, 0.36, 1] }}
   >
-    <div className="w-12 h-12 flex-shrink-0 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex items-center justify-center">
-      <p className="text-2xl font-black text-white">{format(new Date(dateStr), 'd')}</p>
+    <div 
+      className="w-11 h-11 flex-shrink-0 rounded-2xl flex items-center justify-center"
+      style={{
+        background: 'rgba(255,255,255,0.06)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255,255,255,0.10)',
+        boxShadow: 'inset 0 0 14px rgba(255,255,255,0.04)'
+      }}
+    >
+      <p 
+        className="text-lg font-bold"
+        style={{ color: 'rgba(255,255,255,0.95)' }}
+      >
+        {format(new Date(dateStr), 'd')}
+      </p>
     </div>
     <div>
-      <p className="text-xl font-bold text-white">{format(new Date(dateStr), 'EEEE')}</p>
-      <p className="text-sm text-gray-400">{format(new Date(dateStr), 'MMMM yyyy')} • {eventsCount} events</p>
+      <p 
+        className="text-base font-semibold"
+        style={{ color: 'rgba(255,255,255,0.92)' }}
+      >
+        {format(new Date(dateStr), 'EEEE')}
+      </p>
+      <p 
+        className="text-sm"
+        style={{ color: 'rgba(200, 210, 230, 0.55)' }}
+      >
+        {format(new Date(dateStr), 'MMMM yyyy')} • {eventsCount} event{eventsCount > 1 ? 's' : ''}
+      </p>
     </div>
   </motion.div>
 );
@@ -398,22 +518,33 @@ export default function UpcomingEarnings({ watchlistTickers, theme }) {
   }, [filteredAndSortedEvents]);
 
   const renderContent = () => {
-    if (isLoading) return <NextGenSkeletonLoader theme={theme} />;
+    if (isLoading) return <GlassSkeletonLoader />;
     
     if (error) return (
       <motion.div 
-        className="text-center py-20"
-        initial={{ opacity: 0, scale: 0.9 }}
+        className="text-center py-16"
+        initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.4 }}
       >
-        <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 ${theme === 'dark' ? 'bg-red-500/20 border border-red-500/30' : 'bg-red-100 border border-red-200'}`}>
-          <TrendingUp className={`w-10 h-10 ${theme === 'dark' ? 'text-red-400' : 'text-red-600'}`} strokeWidth={2} />
+        <div 
+          className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
+          style={{
+            background: 'rgba(255, 100, 120, 0.12)',
+            border: '1px solid rgba(255, 100, 120, 0.20)'
+          }}
+        >
+          <TrendingUp className="w-7 h-7" style={{ color: '#FF7A8A' }} strokeWidth={2} />
         </div>
-        <p className={`text-xl font-bold mb-3 ${theme === 'dark' ? 'text-red-400' : 'text-red-600'}`}>{error}</p>
+        <p className="text-lg font-semibold mb-3" style={{ color: '#FF7A8A' }}>{error}</p>
         <button 
           onClick={() => window.location.reload()} 
-          className="px-6 py-3 rounded-xl text-sm font-bold text-blue-500 hover:text-blue-400 transition-colors border border-blue-500/30 hover:border-blue-500/50 backdrop-blur-sm"
+          className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all"
+          style={{
+            background: 'rgba(255,255,255,0.08)',
+            border: '1px solid rgba(255,255,255,0.12)',
+            color: 'rgba(200, 210, 230, 0.85)'
+          }}
         >
           Try Again
         </button>
@@ -422,45 +553,50 @@ export default function UpcomingEarnings({ watchlistTickers, theme }) {
     
     if (Object.keys(groupedEvents).length === 0) return (
       <motion.div 
-        className="text-center py-20"
-        initial={{ opacity: 0, y: 20 }}
+        className="text-center py-16"
+        initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.5 }}
       >
-        <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-2xl border ${theme === 'dark' ? 'bg-white/[0.08] border-white/20' : 'bg-gray-100 border-gray-200'}`}>
-          <Calendar className={`w-10 h-10 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} strokeWidth={2} />
+        <div 
+          className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
+          style={{
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.10)'
+          }}
+        >
+          <Calendar className="w-7 h-7" style={{ color: 'rgba(200, 210, 230, 0.55)' }} strokeWidth={2} />
         </div>
-        <p className={`text-2xl font-black mb-3 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+        <p className="text-xl font-bold mb-2" style={{ color: 'rgba(255,255,255,0.92)' }}>
           No Earnings Found
         </p>
-        <p className={`text-base ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+        <p className="text-sm" style={{ color: 'rgba(200, 210, 230, 0.55)' }}>
           Try adjusting your filters or timeframe
         </p>
       </motion.div>
     );
 
     return (
-      <div className="space-y-12">
-        <NextGenStatsBar stats={summaryStats} theme={theme} />
+      <div className="space-y-10">
+        <GlassStatsBar stats={summaryStats} />
 
         <AnimatePresence>
           {Object.entries(groupedEvents).map(([dateStr, eventsInDay], index) => (
-            <motion.div key={dateStr} className="space-y-6">
-              <NextGenDateHeader 
+            <motion.div key={dateStr} className="space-y-4">
+              <GlassDateHeader 
                 dateStr={dateStr} 
                 eventsCount={eventsInDay.length} 
-                theme={theme} 
                 index={index} 
               />
               
-              <div className="space-y-4">
-                {eventsInDay.map((event, eventIndex) => (
+              <div className="space-y-3">
+                {eventsInDay.map((event) => (
                   <EarningsCard 
                     key={event.id} 
                     event={event} 
                     theme={theme} 
                     onAddToCalendar={handleAddToCalendar}
-                    onShowDetails={handleShowDetails} // Passed the new handler
+                    onShowDetails={handleShowDetails}
                   />
                 ))}
               </div>
@@ -474,92 +610,137 @@ export default function UpcomingEarnings({ watchlistTickers, theme }) {
   return (
     <>
       <motion.div 
-        className="relative overflow-hidden rounded-3xl mt-12 p-8 md:p-12 border border-white/10"
+        className="relative overflow-hidden mt-10"
         style={{
-          background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(12, 74, 110, 0.2), transparent), linear-gradient(180deg, #0B0D10 0%, #0A0C0F 100%)',
+          padding: '32px',
+          background: GLASS.container.bg,
+          backdropFilter: GLASS.container.blur,
+          WebkitBackdropFilter: GLASS.container.blur,
+          borderRadius: GLASS.container.radius,
+          border: `1px solid ${GLASS.container.border}`,
+          boxShadow: `${GLASS.container.innerGlow}, ${GLASS.container.innerShadow}, 0 25px 50px -15px rgba(0,0,0,0.35)`
         }}
-        initial={{ opacity: 0, y: 30, scale: 0.98 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        initial={{ opacity: 0, y: 20, filter: 'blur(8px)' }}
+        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+        transition={{ duration: 0.6, ease: [0.22, 0.61, 0.36, 1] }}
       >
-        {/* Dynamic background elements */}
-        <div className="absolute inset-0 pointer-events-none">
-          <motion.div 
-            className="absolute top-12 right-16 w-64 h-64 rounded-full opacity-[0.02] blur-3xl"
-            style={{ background: 'linear-gradient(45deg, #3B82F6, #8B5CF6)' }}
-            animate={{ 
-              scale: [1, 1.2, 1],
-              rotate: [0, 180, 360]
-            }}
-            transition={{ 
-              duration: 20, 
-              repeat: Infinity, 
-              ease: "linear" 
+        {/* Gradient border overlay */}
+        <div 
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            borderRadius: GLASS.container.radius,
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%, rgba(255,255,255,0.02) 100%)',
+            WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+            WebkitMaskComposite: 'xor',
+            maskComposite: 'exclude',
+            padding: '1px'
+          }}
+        />
+        
+        {/* Top specular highlight */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '12%',
+          right: '12%',
+          height: '2px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)',
+          pointerEvents: 'none'
+        }} />
+
+        {/* Subtle bokeh */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ borderRadius: GLASS.container.radius }}>
+          <div
+            className="absolute rounded-full"
+            style={{
+              top: '-10%',
+              right: '5%',
+              width: '300px',
+              height: '300px',
+              background: 'radial-gradient(circle, rgba(100, 140, 220, 0.06) 0%, transparent 70%)',
+              filter: 'blur(60px)'
             }}
           />
-          <motion.div 
-            className="absolute bottom-12 left-16 w-48 h-48 rounded-full opacity-[0.03] blur-2xl"
-            style={{ background: 'linear-gradient(45deg, #10B981, #059669)' }}
-            animate={{ 
-              scale: [1.2, 1, 1.2],
-              rotate: [360, 180, 0]
-            }}
-            transition={{ 
-              duration: 15, 
-              repeat: Infinity, 
-              ease: "easeInOut" 
+          <div
+            className="absolute rounded-full"
+            style={{
+              bottom: '-5%',
+              left: '10%',
+              width: '250px',
+              height: '250px',
+              background: 'radial-gradient(circle, rgba(88, 227, 164, 0.04) 0%, transparent 70%)',
+              filter: 'blur(50px)'
             }}
           />
         </div>
 
-        {/* Next-Gen Header */}
+        {/* Header */}
         <motion.div 
-          className="flex flex-col md:flex-row items-start md:items-center justify-between mb-10 gap-6"
-          initial={{ opacity: 0, y: -20 }}
+          className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-5 relative z-10"
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 0.61, 0.36, 1] }}
         >
-          <div className="flex items-center space-x-5">
-            <motion.div 
-              className="w-16 h-16 rounded-2xl flex items-center justify-center bg-gradient-to-br from-white/10 to-white/5 border border-white/10 shadow-lg"
-              whileHover={{ scale: 1.1, rotate: -5 }}
-              transition={{ type: "spring", stiffness: 300, damping: 15 }}
+          <div className="flex items-center gap-4">
+            <div 
+              className="w-12 h-12 rounded-2xl flex items-center justify-center"
+              style={{
+                background: 'rgba(107, 163, 255, 0.12)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                border: '1px solid rgba(107, 163, 255, 0.18)',
+                boxShadow: 'inset 0 0 16px rgba(107, 163, 255, 0.08)'
+              }}
             >
-              <BarChart3 className="w-8 h-8 text-blue-400" strokeWidth={2} />
-            </motion.div>
+              <BarChart3 className="w-5 h-5" style={{ color: '#6BA3FF' }} strokeWidth={2} />
+            </div>
             <div>
-              <h2 className="text-4xl font-black tracking-[-0.03em] text-white">
+              <h2 
+                className="text-2xl font-bold tracking-[-0.02em]"
+                style={{ color: 'rgba(255,255,255,0.95)' }}
+              >
                 Earnings Calendar
               </h2>
-              <p className="text-lg text-gray-400">
-                Key financial events on your horizon.
+              <p 
+                className="text-sm"
+                style={{ color: 'rgba(200, 210, 230, 0.60)' }}
+              >
+                Key financial events on your horizon
               </p>
             </div>
           </div>
 
-          {/* Action buttons */}
-          <div className="flex items-center space-x-3">
+          {/* Action buttons — Glass style */}
+          <div className="flex items-center gap-2.5">
             <motion.button 
-              className={`
-                flex items-center space-x-2 px-6 py-3 rounded-xl font-bold text-sm
-                transition-all duration-300 backdrop-blur-sm border hover:scale-105
-                ${theme === 'dark' 
-                  ? 'bg-white/[0.08] hover:bg-white/[0.12] text-gray-300 border-white/10 hover:border-white/20' 
-                  : 'bg-black/[0.04] hover:bg-black/[0.08] text-gray-600 border-black/10 hover:border-black/20'
-                }
-                shadow-lg hover:shadow-xl
-              `}
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.98 }}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold"
+              style={{
+                background: GLASS.button.bg,
+                backdropFilter: GLASS.button.blur,
+                WebkitBackdropFilter: GLASS.button.blur,
+                border: `1px solid ${GLASS.button.border}`,
+                color: 'rgba(200, 210, 230, 0.85)',
+                boxShadow: GLASS.button.innerShadow
+              }}
+              whileHover={{ scale: 1.03, y: -1 }}
+              whileTap={{ scale: 0.97 }}
             >
               <Download className="w-4 h-4" strokeWidth={2} />
               <span>Export</span>
             </motion.button>
             
             <motion.button 
-              className="flex items-center space-x-2 px-6 py-3 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-300"
-              whileHover={{ y: -2, scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold"
+              style={{
+                background: 'linear-gradient(135deg, rgba(99, 140, 255, 0.50) 0%, rgba(130, 100, 255, 0.42) 100%)',
+                backdropFilter: GLASS.button.blur,
+                WebkitBackdropFilter: GLASS.button.blur,
+                border: '1px solid rgba(140, 170, 255, 0.30)',
+                color: 'rgba(255,255,255,0.98)',
+                boxShadow: `${GLASS.button.innerShadow}, 0 0 24px rgba(99, 140, 255, 0.22)`
+              }}
+              whileHover={{ scale: 1.03, y: -1 }}
+              whileTap={{ scale: 0.97 }}
             >
               <Bell className="w-4 h-4" strokeWidth={2} />
               <span>Set Alerts</span>
@@ -567,46 +748,17 @@ export default function UpcomingEarnings({ watchlistTickers, theme }) {
           </div>
         </motion.div>
         
-        <EarningsFilters filters={filters} setFilters={setFilters} theme={theme} />
+        <div className="relative z-10">
+          <EarningsFilters filters={filters} setFilters={setFilters} theme={theme} />
+        </div>
         
         <motion.div 
-          className="mt-12"
+          className="mt-10 relative z-10"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
         >
           {renderContent()}
-        </motion.div>
-
-        {/* Floating sparkles effect */}
-        <motion.div 
-          className="absolute top-8 left-8 text-yellow-400/30"
-          animate={{ 
-            rotate: [0, 360],
-            scale: [1, 1.2, 1]
-          }}
-          transition={{ 
-            duration: 8, 
-            repeat: Infinity, 
-            ease: "easeInOut" 
-          }}
-        >
-          <Sparkles className="w-6 h-6" />
-        </motion.div>
-        
-        <motion.div 
-          className="absolute bottom-8 right-8 text-blue-400/30"
-          animate={{ 
-            rotate: [360, 0],
-            scale: [1.2, 1, 1.2]
-          }}
-          transition={{ 
-            duration: 6, 
-            repeat: Infinity, 
-            ease: "easeInOut" 
-          }}
-        >
-          <Star className="w-5 h-5" />
         </motion.div>
       </motion.div>
 
