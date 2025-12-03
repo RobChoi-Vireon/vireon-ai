@@ -164,7 +164,6 @@ const HorizonTile = ({ item, index, delay }) => {
 
   // Extract dominant headline and sentiment
   const getDominantMessage = (item) => {
-    // Determine which is more impactful
     const riskIntensity = item.risk && item.risk.includes('↑') ? 2 : item.risk ? 1 : 0;
     const opportunityIntensity = item.opportunity && item.opportunity !== 'Neutral' ? 1 : 0;
     
@@ -189,11 +188,8 @@ const HorizonTile = ({ item, index, delay }) => {
     }
   };
 
-  // Get additional signals for drawer
   const getAdditionalSignals = (item, dominantSentiment) => {
     const additional = [];
-    
-    // Add context-based signals
     if (item.horizon === 'Now') {
       additional.push('Policy uncertainty', 'Regulatory headwinds');
     } else if (item.horizon === '3M') {
@@ -205,7 +201,6 @@ const HorizonTile = ({ item, index, delay }) => {
     } else if (item.horizon === '12M') {
       additional.push('Input cost deflation', 'Supply chain normalization');
     }
-    
     return additional;
   };
 
@@ -226,6 +221,15 @@ const HorizonTile = ({ item, index, delay }) => {
   const handleToggleDrawer = () => {
     setShowDrawer(!showDrawer);
   };
+  
+  const getSentimentRgb = (sentiment) => {
+    switch (sentiment) {
+      case 'risk': return '239, 68, 68';
+      case 'opportunity': return '16, 185, 129';
+      default: return '99, 102, 241';
+    }
+  };
+  const sentimentRgb = getSentimentRgb(dominantMessage.sentiment);
 
   return (
     <motion.div
@@ -238,21 +242,34 @@ const HorizonTile = ({ item, index, delay }) => {
       onHoverEnd={() => setIsHovered(false)}
     >
       <motion.div
-        className="relative p-6 rounded-2xl cursor-pointer"
+        className="relative p-6 cursor-pointer overflow-hidden"
         style={{
-          background: 'linear-gradient(145deg, rgba(30, 35, 45, 0.8), rgba(20, 25, 35, 0.9))',
-          backdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)'
+          background: GLASS.card.bg,
+          backdropFilter: GLASS.card.blur,
+          WebkitBackdropFilter: GLASS.card.blur,
+          borderRadius: GLASS.card.radius,
+          border: GLASS.card.border,
+          boxShadow: `${GLASS.card.innerGlow}, 0 12px 40px -15px rgba(0,0,0,0.30)`
         }}
-        whileHover={{ 
-          y: -4,
-          scale: 1.02,
-          boxShadow: '0 12px 40px rgba(0,0,0,0.4)',
-          borderColor: 'rgba(255, 255, 255, 0.2)'
+        animate={{
+          y: isHovered ? -4 : 0,
+          boxShadow: isHovered 
+            ? `${GLASS.card.innerGlow}, 0 18px 50px -15px rgba(0,0,0,0.40), 0 0 30px rgba(${sentimentRgb}, 0.08)`
+            : `${GLASS.card.innerGlow}, 0 12px 40px -15px rgba(0,0,0,0.30)`
         }}
-        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }}
         onClick={handleToggleDrawer}
       >
+        {/* Top specular edge */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '12%',
+          right: '12%',
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+          pointerEvents: 'none'
+        }} />
         {/* Header: Horizon + Icon */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
