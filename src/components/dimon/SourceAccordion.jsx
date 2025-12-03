@@ -146,40 +146,72 @@ const ToneIndicator = ({ tones = [] }) => {
     cautionary: { 
       label: 'Cautionary', 
       dotColor: '#FB7185', 
-      color: 'text-rose-300', 
-      bg: 'bg-gradient-to-r from-rose-900/60 to-orange-900/50', 
-      border: 'border-rose-400/50',
-      shadow: '0 0 6px rgba(251, 113, 133, 0.4)'
+      rgb: '251, 113, 133',
+      textColor: '#FDA4AF'
     },
-    supportive: { label: 'Supportive', dotColor: '#34D399', color: 'text-green-300', bg: 'bg-green-900/50', border: 'border-green-500/40' },
-    alarmist: { label: 'Alarmist', dotColor: '#F87171', color: 'text-red-300', bg: 'bg-red-900/50', border: 'border-red-500/40' },
-    neutral: { label: 'Neutral', dotColor: '#9CA3AF', color: 'text-gray-300', bg: 'bg-gray-700/50', border: 'border-gray-500/40' }
+    supportive: { 
+      label: 'Supportive', 
+      dotColor: '#34D399', 
+      rgb: '52, 211, 153',
+      textColor: '#6EE7B7'
+    },
+    alarmist: { 
+      label: 'Alarmist', 
+      dotColor: '#F87171', 
+      rgb: '248, 113, 113',
+      textColor: '#FCA5A5'
+    },
+    neutral: { 
+      label: 'Neutral', 
+      dotColor: '#9CA3AF', 
+      rgb: '156, 163, 175',
+      textColor: '#D1D5DB'
+    }
   };
 
   const config = toneConfig[primaryTone];
 
   return (
     <motion.div 
-      className={`inline-flex items-center gap-2.5 pl-3 pr-4 py-1.5 text-sm font-medium rounded-full border ${config.bg} ${config.border}`}
+      className="inline-flex items-center gap-2.5 pl-3.5 pr-4 py-2 text-sm font-medium relative overflow-hidden"
       style={{ 
-        backdropFilter: 'blur(4px)',
-        boxShadow: config.shadow || 'none'
+        background: `linear-gradient(135deg, rgba(${config.rgb}, 0.14) 0%, rgba(255,255,255,0.04) 100%)`,
+        backdropFilter: 'blur(25px) saturate(160%)',
+        WebkitBackdropFilter: 'blur(25px) saturate(160%)',
+        borderRadius: '999px',
+        border: `1px solid rgba(${config.rgb}, 0.28)`,
+        boxShadow: `inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 20px rgba(${config.rgb}, 0.08), 0 0 15px rgba(${config.rgb}, 0.12)`
       }}
       whileHover={{ 
-        scale: 1.03,
-        boxShadow: config.shadow ? config.shadow.replace('0.4', '0.6') : 'none'
+        scale: 1.04,
+        boxShadow: `inset 0 1px 0 rgba(255,255,255,0.14), inset 0 0 20px rgba(${config.rgb}, 0.10), 0 0 22px rgba(${config.rgb}, 0.18)`
       }}
       transition={{ type: 'spring', stiffness: 400, damping: 15 }}
     >
+      {/* Top specular */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '18%',
+        right: '18%',
+        height: '1px',
+        background: `linear-gradient(90deg, transparent, rgba(${config.rgb}, 0.35), transparent)`,
+        pointerEvents: 'none'
+      }} />
+      
       <motion.div 
-        className="w-2 h-2 rounded-full"
+        className="w-2 h-2 rounded-full relative z-10"
         style={{ 
           backgroundColor: config.dotColor, 
-          boxShadow: `0 0 5px ${config.dotColor}B3, 0 0 10px ${config.dotColor}80` 
+          boxShadow: `0 0 6px ${config.dotColor}, 0 0 12px ${config.dotColor}80` 
         }}
         animate={{
-          scale: [1, 1.1, 1],
-          opacity: [0.8, 1, 0.8]
+          scale: [1, 1.15, 1],
+          boxShadow: [
+            `0 0 6px ${config.dotColor}, 0 0 12px ${config.dotColor}80`,
+            `0 0 10px ${config.dotColor}, 0 0 18px ${config.dotColor}A0`,
+            `0 0 6px ${config.dotColor}, 0 0 12px ${config.dotColor}80`
+          ]
         }}
         transition={{
           duration: 2,
@@ -187,7 +219,7 @@ const ToneIndicator = ({ tones = [] }) => {
           ease: "easeInOut"
         }}
       />
-      <span className={`${config.color} font-semibold`}>{config.label}</span>
+      <span className="font-semibold relative z-10" style={{ color: config.textColor }}>{config.label}</span>
     </motion.div>
   );
 };
