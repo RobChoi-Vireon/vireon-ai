@@ -6,22 +6,22 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Shield, TrendingUp, AlertTriangle } from 'lucide-react';
 
 // ============================================================================
-// OS HORIZON LIQUID GLASS SYSTEM — TAHOE (Priority Signal Analysis Style)
+// OS HORIZON LIQUID GLASS SYSTEM — TAHOE (Lighter Frosted Glass)
 // ============================================================================
 const GLASS = {
   card: {
-    bg: 'rgba(22, 26, 35, 0.82)',
-    blur: 'blur(60px) saturate(180%)',
+    bg: 'rgba(45, 55, 72, 0.45)',
+    blur: 'blur(40px) saturate(150%)',
     radius: '20px',
-    border: '1px solid rgba(255,255,255,0.06)',
-    innerGlow: 'inset 0 0 50px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.06)'
+    border: '1px solid rgba(255,255,255,0.12)',
+    innerGlow: 'inset 0 1px 0 rgba(255,255,255,0.08)'
   },
   innerCard: {
-    bg: 'rgba(28, 32, 42, 0.70)',
-    blur: 'blur(40px) saturate(165%)',
+    bg: 'rgba(55, 65, 85, 0.50)',
+    blur: 'blur(30px) saturate(140%)',
     radius: '14px',
-    border: '1px solid rgba(255,255,255,0.05)',
-    innerGlow: 'inset 0 0 30px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.05)'
+    border: '1px solid rgba(255,255,255,0.10)',
+    innerGlow: 'inset 0 1px 0 rgba(255,255,255,0.06)'
   }
 };
 
