@@ -66,10 +66,7 @@ const ImplicationPanel = React.memo(({ item, index, delay, totalCount, sectionTy
   const isRisk = item.type === 'risk';
   
   const accentColor = isRisk ? '#EF4444' : '#10B981';
-  const hoverGlowColor = isRisk ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.12)';
-  const borderStyle = isRisk 
-    ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.35), rgba(239, 68, 68, 0.1))' 
-    : 'linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.1))';
+  const accentRgb = isRisk ? '239, 68, 68' : '16, 185, 129';
 
   const expandedContext = isRisk 
     ? "New rules in Europe and the US mean tech companies will spend **15% more on research and development**. Companies need to hire new teams and update their systems to follow new AI content rules."
@@ -77,7 +74,6 @@ const ImplicationPanel = React.memo(({ item, index, delay, totalCount, sectionTy
   
   const linkedSignals = item.action_cues || [];
 
-  // Determine priority based on timeframe and explicit priority
   const effectivePriority = item.priority || timeHorizonStyles[item.timeframe]?.priority || 'medium';
   const priorityStyle = priorityStyles[effectivePriority] || priorityStyles.medium;
   const horizonStyle = timeHorizonStyles[item.timeframe] || { base: 'border-gray-500/40 text-gray-400', dot: 'bg-gray-400' };
@@ -103,21 +99,37 @@ const ImplicationPanel = React.memo(({ item, index, delay, totalCount, sectionTy
       style={{ willChange: 'transform, opacity' }}
     >
       <motion.div
-        className="relative cursor-pointer rounded-2xl overflow-hidden"
-        style={{ background: borderStyle, padding: '1px' }}
-        whileHover={{ y: -2, boxShadow: `0 8px 25px -5px ${hoverGlowColor}, 0 0 20px -5px ${hoverGlowColor}` }}
+        className="relative cursor-pointer overflow-hidden"
+        style={{ 
+          background: `linear-gradient(135deg, rgba(${accentRgb}, 0.14) 0%, ${GLASS.card.bg} 100%)`,
+          backdropFilter: GLASS.card.blur,
+          WebkitBackdropFilter: GLASS.card.blur,
+          borderRadius: GLASS.card.radius,
+          border: `1px solid rgba(${accentRgb}, 0.18)`,
+          boxShadow: `${GLASS.card.innerGlow}, 0 12px 40px -15px rgba(0,0,0,0.30)`
+        }}
+        animate={{
+          y: isHovered ? -3 : 0,
+          boxShadow: isHovered 
+            ? `${GLASS.card.innerGlow}, 0 18px 50px -15px rgba(0,0,0,0.40), 0 0 30px rgba(${accentRgb}, 0.10)`
+            : `${GLASS.card.innerGlow}, 0 12px 40px -15px rgba(0,0,0,0.30)`
+        }}
         whileTap={{ scale: 0.98 }}
-        transition={{ duration: 0.18, ease: [0.22, 0.61, 0.36, 1] }}
+        transition={{ duration: 0.20, ease: [0.22, 0.61, 0.36, 1] }}
         onClick={handleToggle}
       >
-        <div 
-          className="relative p-6 rounded-[15px]"
-          style={{
-            background: 'rgba(20, 25, 35, 0.5)',
-            backdropFilter: 'blur(24px)',
-            border: '1px solid rgba(255, 255, 255, 0.08)'
-          }}
-        >
+        {/* Top specular edge */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '12%',
+          right: '12%',
+          height: '1px',
+          background: `linear-gradient(90deg, transparent, rgba(${accentRgb}, 0.25), transparent)`,
+          pointerEvents: 'none'
+        }} />
+        
+        <div className="relative p-6">
           <div className="flex items-start gap-4 mb-4">
             {/* Enhanced Priority Marker - Thin Vertical Bar */}
             <div className={`w-1 h-8 rounded-full ${priorityStyle.bar} ${priorityStyle.glow} mr-2 flex-shrink-0`} />
