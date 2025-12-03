@@ -6,22 +6,22 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Shield, TrendingUp, AlertTriangle } from 'lucide-react';
 
 // ============================================================================
-// OS HORIZON LIQUID GLASS SYSTEM — TAHOE (White Transparent Frosted Glass)
+// OS HORIZON LIQUID GLASS SYSTEM — TAHOE (Light Transparent Frosted Glass)
 // ============================================================================
 const GLASS = {
   card: {
-    bg: 'rgba(255, 255, 255, 0.12)',
-    blur: 'blur(32px) saturate(130%)',
+    bg: 'rgba(255, 255, 255, 0.06)',
+    blur: 'blur(24px) saturate(120%)',
     radius: '20px',
-    border: '1px solid rgba(255,255,255,0.18)',
-    innerGlow: 'inset 0 1px 0 rgba(255,255,255,0.20)'
+    border: '1px solid rgba(255,255,255,0.10)',
+    innerGlow: 'inset 0 1px 0 rgba(255,255,255,0.12)'
   },
   innerCard: {
-    bg: 'rgba(255, 255, 255, 0.08)',
-    blur: 'blur(24px) saturate(120%)',
+    bg: 'rgba(255, 255, 255, 0.04)',
+    blur: 'blur(20px) saturate(110%)',
     radius: '14px',
-    border: '1px solid rgba(255,255,255,0.14)',
-    innerGlow: 'inset 0 1px 0 rgba(255,255,255,0.16)'
+    border: '1px solid rgba(255,255,255,0.08)',
+    innerGlow: 'inset 0 1px 0 rgba(255,255,255,0.10)'
   }
 };
 
@@ -66,14 +66,14 @@ const AnglePill = ({ icon: Icon, title, text, color, delay }) => (
       boxShadow: `${GLASS.innerCard.innerGlow}, 0 12px 30px -10px rgba(0,0,0,0.35), 0 0 20px ${color}15`
     }}
   >
-    {/* Top specular — white frosted */}
+    {/* Top specular — light frosted */}
     <div style={{
       position: 'absolute',
       top: 0,
-      left: '10%',
-      right: '10%',
+      left: '12%',
+      right: '12%',
       height: '1px',
-      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent)',
+      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
       pointerEvents: 'none'
     }} />
     <div className="flex items-center mb-2 relative z-10">
@@ -279,14 +279,14 @@ export default function SourceAccordion({ source, density, index = 0 }) {
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
     >
-      {/* Top specular edge — white frosted */}
+      {/* Top specular edge — light frosted */}
       <div style={{
         position: 'absolute',
         top: 0,
-        left: '5%',
-        right: '5%',
+        left: '8%',
+        right: '8%',
         height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent)',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent)',
         pointerEvents: 'none',
         borderRadius: '20px 20px 0 0'
       }} />
