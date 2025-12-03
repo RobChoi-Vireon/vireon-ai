@@ -1,7 +1,23 @@
+// 🔒 DESIGN LOCKED — OS HORIZON LIQUID GLASS (macOS Tahoe)
+// Strict Compliance with Vireon Design System
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Lightbulb, AlertTriangle, TrendingUp, Clock, Zap, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+
+// ============================================================================
+// OS HORIZON LIQUID GLASS SYSTEM — TAHOE
+// ============================================================================
+const GLASS = {
+  card: {
+    bg: 'rgba(18, 26, 46, 0.50)',
+    blur: 'blur(40px) saturate(165%)',
+    radius: '20px',
+    border: '1px solid rgba(255,255,255,0.08)',
+    innerGlow: 'inset 0 0 30px rgba(255,255,255,0.02), inset 0 1px 0 rgba(255,255,255,0.08)'
+  }
+};
 
 const icons = {
   risk: AlertTriangle,
