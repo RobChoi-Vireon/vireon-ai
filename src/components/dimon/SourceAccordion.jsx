@@ -279,16 +279,16 @@ export default function SourceAccordion({ source, density, index = 0 }) {
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
     >
-      {/* Top specular edge */}
+      {/* Subtle top edge — muted for darker glass */}
       <div style={{
         position: 'absolute',
         top: 0,
-        left: '10%',
-        right: '10%',
-        height: '1.5px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
+        left: '12%',
+        right: '12%',
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)',
         pointerEvents: 'none',
-        borderRadius: '24px 24px 0 0'
+        borderRadius: '20px 20px 0 0'
       }} />
       
       <header
