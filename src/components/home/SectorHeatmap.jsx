@@ -207,14 +207,53 @@ function SectorHeatmap({ setSelectedSector }) {
     }
   };
 
+  // OS Horizon Liquid Glass styling
+  const GLASS = {
+    panel: {
+      bg: 'rgba(255, 255, 255, 0.03)',
+      blur: 'blur(40px) saturate(160%)',
+      radius: '28px',
+      border: '1px solid rgba(255,255,255,0.08)',
+      innerGlow: 'inset 0 1px 0 rgba(255,255,255,0.10), inset 0 0 50px rgba(255,255,255,0.02)'
+    },
+    tile: {
+      bg: 'rgba(255, 255, 255, 0.04)',
+      blur: 'blur(24px) saturate(140%)',
+      radius: '20px',
+      border: '1px solid rgba(255,255,255,0.08)'
+    }
+  };
+
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1A1D29]/90 to-[#12141C]/90 backdrop-blur-2xl shadow-2xl p-8">
-      <div className="flex items-center justify-between mb-2">
+    <div 
+      className="relative overflow-hidden p-8"
+      style={{
+        background: GLASS.panel.bg,
+        backdropFilter: GLASS.panel.blur,
+        WebkitBackdropFilter: GLASS.panel.blur,
+        borderRadius: GLASS.panel.radius,
+        border: GLASS.panel.border,
+        boxShadow: `${GLASS.panel.innerGlow}, 0 20px 60px -20px rgba(0,0,0,0.40)`
+      }}
+    >
+      {/* Top specular edge */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '10%',
+        right: '10%',
+        height: '1.5px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+        pointerEvents: 'none',
+        borderRadius: '28px 28px 0 0'
+      }} />
+      
+      <div className="flex items-center justify-between mb-2 relative z-10">
         <h2 className="text-2xl font-bold tracking-[-0.01em] text-white">Sector Heatmap</h2>
         <ViewModeToggle viewMode={viewMode} setViewMode={setViewMode} timeframe={timeframe} setTimeframe={setTimeframe} />
       </div>
 
-      <div className="h-8 flex items-center mb-6">
+      <div className="h-8 flex items-center mb-6 relative z-10">
         <AnimatePresence mode="wait">
           <motion.p 
             key={`${viewMode}-${timeframe}`} 
@@ -229,7 +268,7 @@ function SectorHeatmap({ setSelectedSector }) {
         </AnimatePresence>
       </div>
       
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 relative z-10">
         {processedData.map((sector, index) => {
           const isLeader = sector.name === topGainer.name;
           const isLaggard = sector.name === topLoser.name;
@@ -251,14 +290,27 @@ function SectorHeatmap({ setSelectedSector }) {
                 boxShadow: `0 12px 40px rgba(0, 0, 0, 0.3), ${style.glow}`,
                 transition: { duration: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }
               }}
-              className="group relative p-6 rounded-2xl cursor-pointer border overflow-hidden"
+              className="group relative p-6 cursor-pointer overflow-hidden"
               style={{ 
-                background: style.background, 
-                borderColor: style.border, 
-                boxShadow: `inset 0 1px 1px rgba(255, 255, 255, 0.08), ${style.glow}`,
+                background: `linear-gradient(135deg, ${style.background.replace('linear-gradient(145deg, ', '').replace(')', '')})`,
+                backdropFilter: 'blur(24px) saturate(140%)',
+                WebkitBackdropFilter: 'blur(24px) saturate(140%)',
+                borderRadius: '20px',
+                border: `1px solid ${style.border}`,
+                boxShadow: `inset 0 1px 0 rgba(255, 255, 255, 0.10), ${style.glow}`,
                 transition: 'all 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
               }}
             >
+              {/* Top specular edge for each tile */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: '12%',
+                right: '12%',
+                height: '1px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+                pointerEvents: 'none'
+              }} />
               {(isLeader || isLaggard) && (
                 <motion.div 
                   className="absolute top-3 right-3"
