@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, TrendingUp, TrendingDown, BrainCircuit, DollarSign, Users, Zap, AlertTriangle, Target, Calendar, ArrowUpRight, Info, ChevronRight, ChevronDown, ArrowRight, Cpu, Cloud, Scale, Globe, TrendingDown as Decline, Bot, Server, Gavel, Building2, Scroll, Clock, FileText, HelpCircle, DollarSign as Cash, Sun, Droplets, Recycle, BarChart3, Construction, Cog, Factory, CreditCard, Scissors, ShoppingBag, Truck, HardHat } from 'lucide-react';
@@ -878,34 +879,20 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
             animate="visible"
             exit="exit"
             onClick={e => e.stopPropagation()}
-            className="relative w-full max-w-7xl max-h-[95vh] flex flex-col overflow-hidden"
+            className="relative w-full max-w-7xl max-h-[95vh] flex flex-col rounded-3xl shadow-2xl overflow-hidden"
             style={{ 
-              background: 'rgba(12, 18, 32, 0.75)', 
-              backdropFilter: 'blur(60px) saturate(175%)', 
-              WebkitBackdropFilter: 'blur(60px) saturate(175%)', 
-              borderRadius: '28px',
-              border: '1px solid rgba(255, 255, 255, 0.10)',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 60px rgba(255,255,255,0.02), 0 25px 80px -20px rgba(0,0,0,0.50)'
+              background: 'rgba(15, 23, 42, 0.85)', 
+              backdropFilter: 'blur(32px)', 
+              WebkitBackdropFilter: 'blur(32px)', 
+              border: '1px solid rgba(255, 255, 255, 0.08)' 
             }}
           >
-            {/* Top specular edge */}
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: '10%',
-              right: '10%',
-              height: '1.5px',
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
-              pointerEvents: 'none',
-              borderRadius: '28px 28px 0 0',
-              zIndex: 10
-            }} />
-            {/* OS Horizon Liquid Glass Header */}
+            {/* Frosted Glass Header */}
             <div className="relative border-b border-white/8 flex-shrink-0" 
                  style={{ 
-                   background: 'rgba(255, 255, 255, 0.03)',
-                   backdropFilter: 'blur(40px) saturate(160%)',
-                   WebkitBackdropFilter: 'blur(40px) saturate(160%)'
+                   background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.8))',
+                   backdropFilter: 'blur(24px)',
+                   WebkitBackdropFilter: 'blur(24px)'
                  }}>
               
               {/* Soft gradient accent glow */}
@@ -956,12 +943,12 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
               </div>
             </div>
             
-            {/* OS Horizon Liquid Glass Drawer Tabs */}
+            {/* Frosted Glass Drawer Tabs */}
             <div className="px-8 pt-2 pb-4 flex-shrink-0"
                  style={{ 
-                   background: 'rgba(255, 255, 255, 0.02)',
-                   backdropFilter: 'blur(24px) saturate(150%)',
-                   WebkitBackdropFilter: 'blur(24px) saturate(150%)'
+                   background: 'rgba(30, 41, 59, 0.3)',
+                   backdropFilter: 'blur(16px)',
+                   WebkitBackdropFilter: 'blur(16px)'
                  }}>
               <div className="flex space-x-6">
                 {tabs.map((tab) => {
