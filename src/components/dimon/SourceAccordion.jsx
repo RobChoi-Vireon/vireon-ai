@@ -200,28 +200,42 @@ export default function SourceAccordion({ source, density, index = 0 }) {
   return (
     <motion.div
       layout
-      className="rounded-2xl border overflow-hidden"
+      className="overflow-hidden relative"
       style={{
-        background: 'linear-gradient(145deg, rgba(35, 38, 48, 0.9), rgba(25, 28, 38, 0.9))',
-        boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
-        borderColor: 'rgba(255,255,255,0.1)'
+        background: GLASS.card.bg,
+        backdropFilter: GLASS.card.blur,
+        WebkitBackdropFilter: GLASS.card.blur,
+        borderRadius: GLASS.card.radius,
+        border: GLASS.card.border,
+        boxShadow: `${GLASS.card.innerGlow}, 0 12px 40px -15px rgba(0,0,0,0.35)`
       }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ 
         opacity: 1, 
         y: 0,
+        boxShadow: isHovered 
+          ? `${GLASS.card.innerGlow}, 0 18px 50px -15px rgba(0,0,0,0.45), 0 0 35px rgba(99, 102, 241, 0.10)`
+          : `${GLASS.card.innerGlow}, 0 12px 40px -15px rgba(0,0,0,0.35)`,
         transition: { delay: index * 0.05, type: 'spring', stiffness: 200, damping: 25 } 
       }}
-      whileHover={{ 
-        y: -5,
-        borderColor: 'rgba(99, 102, 241, 0.4)',
-        boxShadow: '0 15px 40px rgba(99, 102, 241, 0.15)'
-      }}
+      whileHover={{ y: -4 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
     >
+      {/* Top specular edge */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '10%',
+        right: '10%',
+        height: '1.5px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
+        pointerEvents: 'none',
+        borderRadius: '24px 24px 0 0'
+      }} />
+      
       <header
-        className="flex items-center p-4 cursor-pointer"
+        className="flex items-center p-5 cursor-pointer relative z-10"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         {/* Left Side: Logo and Weight */}
