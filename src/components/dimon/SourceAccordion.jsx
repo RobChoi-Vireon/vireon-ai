@@ -86,9 +86,9 @@ const AnglePill = ({ icon: Icon, title, text, color, delay }) => (
 
 const RiskFlagPill = ({ flag, delay }) => {
   const riskLevels = {
-    'high': { icon: AlertTriangle, color: '#F87171' },
-    'medium': { icon: AlertTriangle, color: '#FBBF24' },
-    'low': { icon: Shield, color: '#34D399' },
+    'high': { icon: AlertTriangle, color: '#F87171', rgb: '248, 113, 113' },
+    'medium': { icon: AlertTriangle, color: '#FBBF24', rgb: '251, 191, 36' },
+    'low': { icon: Shield, color: '#34D399', rgb: '52, 211, 153' },
   };
 
   const getLevel = (f) => {
@@ -98,14 +98,18 @@ const RiskFlagPill = ({ flag, delay }) => {
   }
   
   const level = getLevel(flag);
-  const { icon: Icon, color } = riskLevels[level];
+  const { icon: Icon, color, rgb } = riskLevels[level];
 
   return (
     <motion.div
-      className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full border backdrop-blur-sm"
+      className="inline-flex items-center space-x-2 px-3.5 py-2 relative overflow-hidden"
       style={{
-        background: `linear-gradient(135deg, ${color}1A, ${color}0D)`,
-        borderColor: `${color}4D`
+        background: `linear-gradient(135deg, rgba(${rgb}, 0.12) 0%, rgba(255,255,255,0.04) 100%)`,
+        backdropFilter: 'blur(20px) saturate(150%)',
+        WebkitBackdropFilter: 'blur(20px) saturate(150%)',
+        borderRadius: '999px',
+        border: `1px solid rgba(${rgb}, 0.25)`,
+        boxShadow: `inset 0 1px 0 rgba(255,255,255,0.10), inset 0 0 15px rgba(${rgb}, 0.06)`
       }}
       variants={{
         hidden: { opacity: 0, scale: 0.8 },
@@ -115,10 +119,20 @@ const RiskFlagPill = ({ flag, delay }) => {
           transition: { delay: delay * 0.05, type: 'spring', stiffness: 300, damping: 20 }
         }
       }}
-      whileHover={{ y: -2, scale: 1.05 }}
+      whileHover={{ y: -2, scale: 1.05, boxShadow: `inset 0 1px 0 rgba(255,255,255,0.12), 0 0 20px rgba(${rgb}, 0.20)` }}
     >
-      <Icon className="w-4 h-4" style={{ color }} />
-      <span className="text-xs font-semibold capitalize" style={{ color: `${color}E6` }}>
+      {/* Top specular */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '20%',
+        right: '20%',
+        height: '1px',
+        background: `linear-gradient(90deg, transparent, rgba(${rgb}, 0.30), transparent)`,
+        pointerEvents: 'none'
+      }} />
+      <Icon className="w-3.5 h-3.5 relative z-10" style={{ color, filter: `drop-shadow(0 0 5px rgba(${rgb}, 0.50))` }} />
+      <span className="text-xs font-semibold capitalize relative z-10" style={{ color }}>
         {flag}
       </span>
     </motion.div>
