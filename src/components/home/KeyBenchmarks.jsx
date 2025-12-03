@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, TrendingDown, ArrowUpRight } from 'lucide-react';
@@ -46,6 +45,14 @@ const MiniSparkline = ({ data, positive }) => {
   );
 };
 
+// OS Horizon Liquid Glass — Tahoe
+const GLASS_CARD = {
+  bg: 'rgba(45, 55, 72, 0.45)',
+  blur: 'blur(40px) saturate(150%)',
+  border: '1px solid rgba(255,255,255,0.10)',
+  innerGlow: 'inset 0 1px 0 rgba(255,255,255,0.08)'
+};
+
 const BenchmarkCard = ({ item, index }) => {
   const [isHovered, setIsHovered] = useState(false);
   const positive = item.changeValue >= 0;
@@ -64,12 +71,30 @@ const BenchmarkCard = ({ item, index }) => {
       initial={{ opacity: 0, y: 20, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay: index * 0.07, type: 'spring', stiffness: 100, damping: 20 }}
-      whileHover={{ y: -5, scale: 1.05, boxShadow: '0 10px 40px rgba(0,0,0,0.3)' }}
+      whileHover={{ y: -5, scale: 1.03 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      className="group relative p-6 rounded-3xl cursor-pointer border border-white/10 overflow-hidden"
-      style={{ background: 'linear-gradient(145deg, rgba(38, 43, 58, 0.9), rgba(22, 25, 35, 0.9))' }}
+      className="group relative p-6 rounded-3xl cursor-pointer overflow-hidden"
+      style={{ 
+        background: GLASS_CARD.bg,
+        backdropFilter: GLASS_CARD.blur,
+        WebkitBackdropFilter: GLASS_CARD.blur,
+        border: GLASS_CARD.border,
+        boxShadow: isHovered 
+          ? `${GLASS_CARD.innerGlow}, 0 16px 48px -16px rgba(0,0,0,0.40)`
+          : `${GLASS_CARD.innerGlow}, 0 8px 32px -12px rgba(0,0,0,0.30)`
+      }}
     >
+      {/* Top specular edge */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '12%',
+        right: '12%',
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+        pointerEvents: 'none'
+      }} />
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex justify-between items-start mb-4">
           <span className="text-sm font-bold tracking-widest text-gray-400 uppercase">{item.symbol}</span>

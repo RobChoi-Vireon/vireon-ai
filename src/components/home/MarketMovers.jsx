@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, TrendingDown, Activity, ChevronRight, Calendar, DollarSign, Users, Target, X, Plus, GitCompare, Bell, BarChart3, Zap, Newspaper, ArrowDown, ArrowUp } from 'lucide-react';
@@ -134,6 +133,14 @@ const FuturisticMoverItem = ({ item, type, maxVolume, onItemClick, isActive }) =
     return isPositive ? 'rgba(16, 185, 129, 0.3)' : isNegative ? 'rgba(239, 68, 68, 0.3)' : 'rgba(100, 116, 139, 0.2)';
   };
 
+  // OS Horizon Liquid Glass — Tahoe
+  const GLASS_ITEM = {
+    bg: 'rgba(50, 60, 78, 0.48)',
+    blur: 'blur(40px) saturate(150%)',
+    border: '1px solid rgba(255, 255, 255, 0.10)',
+    innerGlow: 'inset 0 1px 0 rgba(255, 255, 255, 0.08)'
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20, scale: 0.95 }}
@@ -158,19 +165,29 @@ const FuturisticMoverItem = ({ item, type, maxVolume, onItemClick, isActive }) =
         ${isActive ? 'scale-[1.02]' : ''}
       `}
       style={{
-        background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
+        background: GLASS_ITEM.bg,
+        backdropFilter: GLASS_ITEM.blur,
+        WebkitBackdropFilter: GLASS_ITEM.blur,
+        border: GLASS_ITEM.border,
         boxShadow: isActive 
-          ? `0 8px 32px ${getGlowColor()}, inset 0 1px 0 rgba(255, 255, 255, 0.1)`
-          : '0 4px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+          ? `${GLASS_ITEM.innerGlow}, 0 12px 40px -12px rgba(0,0,0,0.35)`
+          : `${GLASS_ITEM.innerGlow}, 0 6px 24px -8px rgba(0,0,0,0.28)`
       }}
       whileHover={{
-        boxShadow: `0 12px 40px ${getGlowColor()}, inset 0 1px 0 rgba(255, 255, 255, 0.15)`,
+        boxShadow: `${GLASS_ITEM.innerGlow}, 0 16px 48px -12px rgba(0,0,0,0.40)`,
         transition: { duration: 0.15 }
       }}
     >
+      {/* Top specular edge */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '10%',
+        right: '10%',
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+        pointerEvents: 'none'
+      }} />
       {/* Subtle animated background gradient */}
       <motion.div
         className="absolute inset-0 rounded-3xl opacity-30"
@@ -717,13 +734,28 @@ function MarketMovers() {
 
   return (
     <div 
-      className="space-y-12 relative"
+      className="space-y-12 relative overflow-hidden"
       style={{
-        background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.4) 0%, rgba(30, 41, 59, 0.2) 100%)',
+        background: 'rgba(45, 55, 72, 0.42)',
+        backdropFilter: 'blur(40px) saturate(150%)',
+        WebkitBackdropFilter: 'blur(40px) saturate(150%)',
         borderRadius: '2rem',
-        padding: '2rem'
+        padding: '2rem',
+        border: '1px solid rgba(255,255,255,0.10)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), inset 0 0 40px rgba(255,255,255,0.02), 0 20px 60px -20px rgba(0,0,0,0.35)'
       }}
     >
+      {/* Top specular edge */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '8%',
+        right: '8%',
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
+        pointerEvents: 'none',
+        borderRadius: '32px 32px 0 0'
+      }} />
       {/* Futuristic timeframe toggle */}
       <div className="flex items-center justify-between">
         <div 

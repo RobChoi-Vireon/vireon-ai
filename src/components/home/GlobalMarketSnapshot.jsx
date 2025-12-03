@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Globe, Clock, Activity, ArrowUpRight, BarChart3, Landmark, Sunrise, Bitcoin, AreaChart, Droplets, ChevronDown, ChevronUp, Zap, AlertTriangle, DollarSign } from 'lucide-react';
@@ -81,19 +80,18 @@ const MiniSparkline = ({ data, positive }) => {
   );
 };
 
+// OS Horizon Liquid Glass — Tahoe
+const GLASS_GLOBAL = {
+  bg: 'rgba(50, 60, 78, 0.45)',
+  blur: 'blur(40px) saturate(150%)',
+  border: '1px solid rgba(255,255,255,0.10)',
+  innerGlow: 'inset 0 1px 0 rgba(255,255,255,0.08)'
+};
+
 const GlobalMarketCard = ({ instrument, index, region }) => {
   const [isHovered, setIsHovered] = useState(false);
   const isPositive = instrument.change >= 0;
   const isOutsizedMove = Math.abs(instrument.changePercent) >= 2;
-
-  const regionThemes = {
-    US: 'from-blue-500/10 to-indigo-500/10 border-blue-500/20',
-    Europe: 'from-emerald-500/10 to-teal-500/10 border-emerald-500/20',
-    Asia: 'from-orange-500/10 to-red-500/10 border-orange-500/20',
-    Cryptocurrencies: 'from-yellow-500/10 to-amber-500/10 border-yellow-500/20',
-    Rates: 'from-purple-500/10 to-violet-500/10 border-purple-500/20',
-    Commodities: 'from-rose-500/10 to-pink-500/10 border-rose-500/20'
-  };
 
   return (
     <motion.div
@@ -105,18 +103,28 @@ const GlobalMarketCard = ({ instrument, index, region }) => {
       className="group relative"
     >
       <motion.div
-        whileHover={{ y: -4, scale: 1.03, transition: { duration: 0.2 } }}
-        className={`
-          relative overflow-hidden rounded-2xl p-6 cursor-pointer transition-all duration-300
-          bg-gradient-to-br ${regionThemes[region] || 'from-gray-500/10 to-gray-600/10 border-gray-500/20'}
-          backdrop-blur-xl border shadow-lg hover:shadow-2xl
-        `}
+        whileHover={{ y: -4, scale: 1.02, transition: { duration: 0.2 } }}
+        className="relative overflow-hidden rounded-2xl p-6 cursor-pointer transition-all duration-300"
         style={{
-          boxShadow: isOutsizedMove
-            ? `0 4px 30px ${isPositive ? 'rgba(88, 227, 164, 0.2)' : 'rgba(255, 106, 122, 0.2)'}`
-            : '0 4px 20px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1)'
+          background: GLASS_GLOBAL.bg,
+          backdropFilter: GLASS_GLOBAL.blur,
+          WebkitBackdropFilter: GLASS_GLOBAL.blur,
+          border: GLASS_GLOBAL.border,
+          boxShadow: isHovered 
+            ? `${GLASS_GLOBAL.innerGlow}, 0 16px 48px -16px rgba(0,0,0,0.40)`
+            : `${GLASS_GLOBAL.innerGlow}, 0 8px 32px -12px rgba(0,0,0,0.30)`
         }}
       >
+        {/* Top specular edge */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '12%',
+          right: '12%',
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+          pointerEvents: 'none'
+        }} />
         <div className="relative z-10 flex flex-col h-full">
           <div className="flex items-start justify-between mb-2">
             <div className="flex-1 min-w-0">

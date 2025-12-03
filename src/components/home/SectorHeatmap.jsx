@@ -207,8 +207,38 @@ function SectorHeatmap({ setSelectedSector }) {
     }
   };
 
+  // OS Horizon Liquid Glass — Tahoe
+  const GLASS = {
+    panel: {
+      bg: 'rgba(45, 55, 72, 0.42)',
+      blur: 'blur(40px) saturate(150%)',
+      border: '1px solid rgba(255,255,255,0.10)',
+      innerGlow: 'inset 0 1px 0 rgba(255,255,255,0.08), inset 0 0 40px rgba(255,255,255,0.02)'
+    }
+  };
+
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1A1D29]/90 to-[#12141C]/90 backdrop-blur-2xl shadow-2xl p-8">
+    <div 
+      className="relative overflow-hidden rounded-3xl p-8"
+      style={{
+        background: GLASS.panel.bg,
+        backdropFilter: GLASS.panel.blur,
+        WebkitBackdropFilter: GLASS.panel.blur,
+        border: GLASS.panel.border,
+        boxShadow: `${GLASS.panel.innerGlow}, 0 20px 60px -20px rgba(0,0,0,0.35)`
+      }}
+    >
+      {/* Top specular edge */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '8%',
+        right: '8%',
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
+        pointerEvents: 'none',
+        borderRadius: '24px 24px 0 0'
+      }} />
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-2xl font-bold tracking-[-0.01em] text-white">Sector Heatmap</h2>
         <ViewModeToggle viewMode={viewMode} setViewMode={setViewMode} timeframe={timeframe} setTimeframe={setTimeframe} />
