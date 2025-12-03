@@ -4,15 +4,15 @@ import { TrendingUp, TrendingDown, ChevronRight, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 // ============================================================================
-// OS HORIZON LIQUID GLASS SYSTEM — TAHOE (Light Frosted)
+// OS HORIZON LIQUID GLASS SYSTEM — TAHOE
 // ============================================================================
 const GLASS = {
   card: {
-    bg: 'rgba(255, 255, 255, 0.06)',
-    blur: 'blur(24px) saturate(120%)',
+    bg: 'rgba(255, 255, 255, 0.04)',
+    blur: 'blur(40px) saturate(160%)',
     radius: '24px',
-    border: '1px solid rgba(255,255,255,0.10)',
-    innerGlow: 'inset 0 1px 0 rgba(255,255,255,0.12)'
+    border: '1px solid rgba(255,255,255,0.08)',
+    innerGlow: 'inset 0 1px 0 rgba(255,255,255,0.10), inset 0 0 40px rgba(255,255,255,0.02)'
   }
 };
 
