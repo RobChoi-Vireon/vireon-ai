@@ -371,14 +371,40 @@ export default function CounterpointsPanel({ counterpoints = [], blindspots = []
   return (
     <motion.section
       variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.1 } } }}
-      className={`relative rounded-2xl ${spacingClass} border border-white/10 backdrop-blur-xl`}
+      className={`relative ${spacingClass}`}
       style={{ 
-        background: 'linear-gradient(180deg, rgba(18, 20, 25, 0.85) 0%, rgba(18, 20, 25, 0.7) 100%)',
-        boxShadow: '0 20px 40px -15px rgba(0,0,0,0.3)'
+        background: GLASS.panel.bg,
+        backdropFilter: GLASS.panel.blur,
+        WebkitBackdropFilter: GLASS.panel.blur,
+        borderRadius: GLASS.panel.radius,
+        border: GLASS.panel.border,
+        boxShadow: `${GLASS.panel.innerGlow}, 0 20px 60px -20px rgba(0,0,0,0.40)`
       }}
       aria-labelledby="counterpoints-heading"
     >
-      <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-orange-500/10 via-transparent to-purple-500/10 blur-xl opacity-50" />
+      {/* Top specular edge */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '10%',
+        right: '10%',
+        height: '1.5px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+        pointerEvents: 'none',
+        borderRadius: '28px 28px 0 0'
+      }} />
+      
+      {/* Ambient glow */}
+      <div style={{
+        position: 'absolute',
+        top: '-30px',
+        left: '15%',
+        width: '70%',
+        height: '80px',
+        background: 'radial-gradient(ellipse at 50% 100%, rgba(245, 158, 11, 0.06) 0%, rgba(147, 51, 234, 0.04) 50%, transparent 80%)',
+        pointerEvents: 'none',
+        filter: 'blur(20px)'
+      }} />
 
       <div className="relative z-10">
         {/* Header with Toggle */}
