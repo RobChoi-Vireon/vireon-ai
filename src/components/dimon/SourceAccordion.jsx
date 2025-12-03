@@ -66,14 +66,14 @@ const AnglePill = ({ icon: Icon, title, text, color, delay }) => (
       boxShadow: `${GLASS.innerCard.innerGlow}, 0 12px 30px -10px rgba(0,0,0,0.35), 0 0 20px ${color}15`
     }}
   >
-    {/* Top specular — muted */}
+    {/* Top specular — lighter */}
     <div style={{
       position: 'absolute',
       top: 0,
       left: '15%',
       right: '15%',
       height: '1px',
-      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent)',
+      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
       pointerEvents: 'none'
     }} />
     <div className="flex items-center mb-2 relative z-10">
