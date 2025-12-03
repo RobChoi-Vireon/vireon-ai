@@ -743,7 +743,6 @@ const GlassFieldEnvironment = ({ mouseOffset }) => {
 const VolumetricHalo = ({ mouseOffset }) => (
   <motion.div 
     className="absolute inset-0 pointer-events-none flex items-center justify-center"
-    style={{ paddingTop: '80px' }}
     animate={{
       x: mouseOffset ? -mouseOffset.x * 0.008 : 0,
       y: mouseOffset ? -mouseOffset.y * 0.008 : 0
@@ -839,12 +838,11 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+        className="fixed inset-0 z-[200] flex items-center justify-center p-4 pt-6"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.28 }}
-        style={{ paddingTop: '80px' }}
       >
         {/* Custom scrollbar styles */}
         <style>{`
@@ -868,7 +866,6 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
         {/* Liquid Glass Field Environment */}
         <div 
           className="absolute inset-0"
-          style={{ top: '80px' }}
           onClick={onClose}
         >
           <GlassFieldEnvironment mouseOffset={mouseOffset} />
