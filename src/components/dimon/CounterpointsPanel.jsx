@@ -1,8 +1,31 @@
+// 🔒 DESIGN LOCKED — OS HORIZON LIQUID GLASS (macOS Tahoe)
+// Strict Compliance with Vireon Design System
+
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GitBranch, Eye, AlertCircle, ChevronDown, ChevronUp, Scale, ArrowRight, Target, Radar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+
+// ============================================================================
+// OS HORIZON LIQUID GLASS SYSTEM — TAHOE
+// ============================================================================
+const GLASS = {
+  panel: {
+    bg: 'rgba(12, 18, 32, 0.68)',
+    blur: 'blur(60px) saturate(175%)',
+    radius: '28px',
+    border: '1px solid rgba(255,255,255,0.10)',
+    innerGlow: 'inset 0 0 60px rgba(255,255,255,0.03), inset 0 1px 0 rgba(255,255,255,0.10)'
+  },
+  card: {
+    bg: 'rgba(18, 26, 46, 0.50)',
+    blur: 'blur(40px) saturate(165%)',
+    radius: '20px',
+    border: '1px solid rgba(255,255,255,0.08)',
+    innerGlow: 'inset 0 0 30px rgba(255,255,255,0.02), inset 0 1px 0 rgba(255,255,255,0.08)'
+  }
+};
 
 const MiniConfidenceBar = ({ confidence }) => {
   const numBars = Math.max(1, Math.ceil(confidence * 5));
