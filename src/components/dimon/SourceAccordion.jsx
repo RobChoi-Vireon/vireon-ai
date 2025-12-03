@@ -297,8 +297,23 @@ export default function SourceAccordion({ source, density, index = 0 }) {
       >
         {/* Left Side: Logo and Weight */}
         <div className="flex items-center space-x-4 flex-shrink-0 pr-4">
-          <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm ${logoInfo.bg} ${logoInfo.text}`}>
-            {logoInfo.name}
+          <div 
+            className={`w-11 h-11 rounded-xl flex items-center justify-center font-bold text-sm relative overflow-hidden ${logoInfo.bg} ${logoInfo.text}`}
+            style={{
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.20), 0 4px 12px rgba(0,0,0,0.25)'
+            }}
+          >
+            {/* Logo specular */}
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: '15%',
+              right: '15%',
+              height: '1px',
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.30), transparent)',
+              pointerEvents: 'none'
+            }} />
+            <span className="relative z-10">{logoInfo.name}</span>
           </div>
           <div>
             <div className="text-white font-semibold text-lg">{weight}%</div>
