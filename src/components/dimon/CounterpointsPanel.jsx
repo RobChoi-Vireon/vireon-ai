@@ -95,27 +95,50 @@ const ConfidenceIndicator = ({ confidence, isRising = false }) => {
 
 const DebateCard = ({ counterpoint, index, isExpandedView = false }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const isRising = Math.random() > 0.7; // Simulated rising confidence
 
   return (
     <motion.div
-      className="relative rounded-2xl border border-white/10 backdrop-blur-lg overflow-hidden group"
+      className="relative overflow-hidden group"
       style={{ 
-        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))',
-        boxShadow: isRising ? '0 0 20px rgba(245, 158, 11, 0.1)' : 'none'
+        background: GLASS.card.bg,
+        backdropFilter: GLASS.card.blur,
+        WebkitBackdropFilter: GLASS.card.blur,
+        borderRadius: GLASS.card.radius,
+        border: GLASS.card.border,
+        boxShadow: `${GLASS.card.innerGlow}, 0 12px 40px -15px rgba(0,0,0,0.30)${isRising ? ', 0 0 25px rgba(245, 158, 11, 0.12)' : ''}`
       }}
       variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
-      whileHover={{ y: -3, scale: 1.01, boxShadow: '0 8px 25px rgba(0,0,0,0.2)' }}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      animate={{
+        y: isHovered ? -3 : 0,
+        boxShadow: isHovered 
+          ? `${GLASS.card.innerGlow}, 0 18px 50px -15px rgba(0,0,0,0.40), 0 0 30px rgba(245, 158, 11, 0.08)`
+          : `${GLASS.card.innerGlow}, 0 12px 40px -15px rgba(0,0,0,0.30)${isRising ? ', 0 0 25px rgba(245, 158, 11, 0.12)' : ''}`
+      }}
+      transition={{ duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
       initial={isExpandedView ? false : "hidden"}
-      animate={isExpandedView ? false : "visible"}
       custom={index}
     >
+      {/* Top specular edge */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '12%',
+        right: '12%',
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
+        pointerEvents: 'none'
+      }} />
+      
       {isRising && (
         <motion.div 
-          className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-amber-500/5"
-          animate={{ opacity: [0.3, 0.6, 0.3] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute inset-0"
+          style={{ background: 'radial-gradient(ellipse at 50% 30%, rgba(245, 158, 11, 0.08) 0%, transparent 70%)' }}
+          animate={{ opacity: [0.4, 0.7, 0.4] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
         />
       )}
 
