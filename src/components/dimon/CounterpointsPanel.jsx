@@ -236,11 +236,13 @@ const DebateCard = ({ counterpoint, index, isExpandedView = false }) => {
 };
 
 const BlindspotCard = ({ blindspot, index, isExpandedView = false }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  
   const getIntensityLevel = (significance) => {
     switch (significance) {
-      case 'high': return { label: 'Major', color: '#EF4444', bg: 'rgba(239, 68, 68, 0.1)' };
-      case 'medium': return { label: 'Moderate', color: '#F59E0B', bg: 'rgba(245, 158, 11, 0.1)' };
-      default: return { label: 'Minor', color: '#6366F1', bg: 'rgba(99, 102, 241, 0.1)' };
+      case 'high': return { label: 'Major', color: '#EF4444', bg: 'rgba(239, 68, 68, 0.12)', rgb: '239, 68, 68' };
+      case 'medium': return { label: 'Moderate', color: '#F59E0B', bg: 'rgba(245, 158, 11, 0.12)', rgb: '245, 158, 11' };
+      default: return { label: 'Minor', color: '#6366F1', bg: 'rgba(99, 102, 241, 0.12)', rgb: '99, 102, 241' };
     }
   };
 
@@ -248,24 +250,45 @@ const BlindspotCard = ({ blindspot, index, isExpandedView = false }) => {
 
   return (
     <motion.div
-      className="relative rounded-2xl border border-purple-500/20 backdrop-blur-lg overflow-hidden group"
+      className="relative overflow-hidden group"
       style={{ 
-        background: 'linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(147, 51, 234, 0.05))',
-        boxShadow: '0 0 20px rgba(147, 51, 234, 0.1)'
+        background: `linear-gradient(135deg, rgba(147, 51, 234, 0.12) 0%, ${GLASS.card.bg} 100%)`,
+        backdropFilter: GLASS.card.blur,
+        WebkitBackdropFilter: GLASS.card.blur,
+        borderRadius: GLASS.card.radius,
+        border: '1px solid rgba(147, 51, 234, 0.20)',
+        boxShadow: `${GLASS.card.innerGlow}, 0 12px 40px -15px rgba(0,0,0,0.30), 0 0 25px rgba(147, 51, 234, 0.10)`
       }}
       variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
-      whileHover={{ y: -3, scale: 1.01, boxShadow: '0 8px 25px rgba(147, 51, 234, 0.2)' }}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      animate={{
+        y: isHovered ? -3 : 0,
+        boxShadow: isHovered 
+          ? `${GLASS.card.innerGlow}, 0 18px 50px -15px rgba(0,0,0,0.40), 0 0 35px rgba(147, 51, 234, 0.15)`
+          : `${GLASS.card.innerGlow}, 0 12px 40px -15px rgba(0,0,0,0.30), 0 0 25px rgba(147, 51, 234, 0.10)`
+      }}
+      transition={{ duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
       initial={isExpandedView ? false : "hidden"}
-      animate={isExpandedView ? false : "visible"}
     >
+      {/* Top specular edge */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '12%',
+        right: '12%',
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.25), transparent)',
+        pointerEvents: 'none'
+      }} />
+      
       <motion.div 
-        className="absolute inset-0 opacity-30 group-hover:opacity-50 transition-opacity"
+        className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse at center, rgba(168, 85, 247, 0.3) 0%, transparent 70%)'
+          background: 'radial-gradient(ellipse at 50% 30%, rgba(168, 85, 247, 0.10) 0%, transparent 70%)'
         }}
-        animate={{ scale: [1, 1.05, 1] }}
-        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+        animate={{ opacity: [0.5, 0.8, 0.5] }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
       />
       
       <div className="relative z-10 p-5">
