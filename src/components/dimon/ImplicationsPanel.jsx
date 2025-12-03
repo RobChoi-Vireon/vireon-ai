@@ -302,26 +302,50 @@ export default function ImplicationsPanel({ implications = [] }) {
   );
 }
 
-const SectionHeader = ({ icon: Icon, title, count, accentColor, delay }) => (
-  <motion.div 
-    className="flex items-center space-x-3"
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
-  >
-    <Icon className="w-6 h-6" style={{ color: accentColor }} />
-    <div className="flex-1">
-      <div className="flex items-center space-x-2">
-        <h3 className="text-xl font-bold text-white">{title}</h3>
-        <span className="text-sm text-neutral-500 font-medium">({count} {count === 1 ? 'item' : 'items'})</span>
+const SectionHeader = ({ icon: Icon, title, count, accentColor, delay }) => {
+  const accentRgb = accentColor === '#EF4444' ? '239, 68, 68' : '16, 185, 129';
+  
+  return (
+    <motion.div 
+      className="flex items-center space-x-4"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div 
+        className="p-2.5 rounded-xl relative overflow-hidden"
+        style={{ 
+          background: `linear-gradient(135deg, rgba(${accentRgb}, 0.18) 0%, rgba(255,255,255,0.06) 100%)`,
+          backdropFilter: 'blur(20px)',
+          border: `1px solid rgba(${accentRgb}, 0.22)`,
+          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.12), 0 0 20px rgba(${accentRgb}, 0.10)`
+        }}
+      >
+        {/* Icon specular */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '15%',
+          right: '15%',
+          height: '1px',
+          background: `linear-gradient(90deg, transparent, rgba(${accentRgb}, 0.30), transparent)`,
+          pointerEvents: 'none'
+        }} />
+        <Icon className="w-5 h-5 relative z-10" style={{ color: accentColor, filter: `drop-shadow(0 0 8px rgba(${accentRgb}, 0.45))` }} />
       </div>
-      <motion.div 
-        className="h-0.5 mt-1.5 rounded-full"
-        style={{ background: `linear-gradient(90deg, ${accentColor} 0%, rgba(255,255,255,0.1) 60%, transparent 100%)` }}
-        initial={{ width: 0 }}
-        animate={{ width: '100%' }}
-        transition={{ delay: delay + 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      />
-    </div>
-  </motion.div>
-);
+      <div className="flex-1">
+        <div className="flex items-center space-x-2">
+          <h3 className="text-xl font-bold text-white">{title}</h3>
+          <span className="text-sm text-neutral-500 font-medium">({count} {count === 1 ? 'item' : 'items'})</span>
+        </div>
+        <motion.div 
+          className="h-0.5 mt-1.5 rounded-full"
+          style={{ background: `linear-gradient(90deg, ${accentColor} 0%, rgba(255,255,255,0.1) 60%, transparent 100%)` }}
+          initial={{ width: 0 }}
+          animate={{ width: '100%' }}
+          transition={{ delay: delay + 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        />
+      </div>
+    </motion.div>
+  );
+};
