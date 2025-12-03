@@ -162,27 +162,12 @@ const LuxuryMetricCard = ({ item, index, isEnabled, openMiniSheet }) => {
       }}
       className="group relative overflow-hidden rounded-3xl cursor-pointer"
     >
-      {/* OS Horizon Liquid Glass — Tahoe */}
-      <div 
-        className="absolute inset-0 rounded-3xl"
-        style={{
-          background: 'rgba(50, 60, 78, 0.48)',
-          backdropFilter: 'blur(40px) saturate(150%)',
-          WebkitBackdropFilter: 'blur(40px) saturate(150%)'
-        }}
-      />
-      
-      {/* Top specular edge */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: '12%',
-        right: '12%',
-        height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
-        pointerEvents: 'none',
-        zIndex: 5
-      }} />
+      {/* Premium Background with Multiple Gradients */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#1A1D29]/95 via-[#12141C]/90 to-[#0A0B0F]/95 backdrop-blur-2xl" />
+
+      {/* Luxury Border Effect */}
+      <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-20 group-hover:opacity-40 transition-opacity duration-500" />
+      <div className="absolute inset-[1px] rounded-3xl bg-gradient-to-br from-[#1A1D29] to-[#12141C]" />
 
       {/* Dynamic Glow Effect */}
       <motion.div
@@ -363,26 +348,13 @@ const NextGenWatchlistCard = ({ item, onClick, isHighMove }) => {
       onClick={() => onClick(item)}
       className="group relative flex-shrink-0 w-64 h-40 rounded-3xl cursor-pointer overflow-hidden p-6"
       style={{
-        background: 'rgba(50, 60, 78, 0.48)',
-        backdropFilter: 'blur(40px) saturate(150%)',
-        WebkitBackdropFilter: 'blur(40px) saturate(150%)',
-        border: '1px solid rgba(255, 255, 255, 0.10)',
-        boxShadow: isHovered 
-          ? 'inset 0 1px 0 rgba(255,255,255,0.10), 0 16px 48px -16px rgba(0,0,0,0.40)'
-          : 'inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 32px -12px rgba(0,0,0,0.30)'
+        background: 'linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8))',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        border: '1px solid rgba(255, 255, 255, 0.08)'
       }}
       aria-label={`${item.symbol}, price ${item.price}, change ${item.changePercent}% today.`}
     >
-      {/* Top specular edge */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: '12%',
-        right: '12%',
-        height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
-        pointerEvents: 'none'
-      }} />
       {/* Glow Pip */}
       <div className={`absolute top-4 right-4 w-2 h-2 rounded-full ${getPipColor()} ${getPipGlow()} transition-all duration-300`} />
 
@@ -612,31 +584,20 @@ export default function Home() {
         const trendIndicator = getTrendIndicator();
         return (
           <ModuleWrapper key={moduleId} title="Market Pulse" {...moduleProps}>
-            {/* OS Horizon Liquid Glass — Tahoe Hero Pulse Card */}
+            {/* Revolutionary Hero Pulse Card */}
             <motion.div
               className="relative overflow-hidden rounded-[2rem] p-8 lg:p-12"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
-              style={{
-                background: 'rgba(45, 55, 72, 0.45)',
-                backdropFilter: 'blur(40px) saturate(150%)',
-                WebkitBackdropFilter: 'blur(40px) saturate(150%)',
-                border: '1px solid rgba(255,255,255,0.10)',
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), inset 0 0 50px rgba(255,255,255,0.02), 0 24px 70px -24px rgba(0,0,0,0.40)'
-              }}
             >
-              {/* Top specular edge */}
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: '6%',
-                right: '6%',
-                height: '1.5px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
-                pointerEvents: 'none',
-                borderRadius: '32px 32px 0 0'
-              }} />
+              {/* Multiple Layer Background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[#1A1D29] via-[#12141C] to-[#0A0B0F]" />
+              <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-transparent to-blue-500/10" />
+              <div className="absolute inset-0 backdrop-blur-3xl" />
+
+              {/* Luxury Border */}
+              <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-30" />
 
               {/* Animated Orbs */}
               <motion.div
