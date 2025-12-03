@@ -1,7 +1,29 @@
+// 🔒 DESIGN LOCKED — OS HORIZON LIQUID GLASS (macOS Tahoe)
+// Strict Compliance with Vireon Design System
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Shield, TrendingUp, AlertTriangle } from 'lucide-react';
+
+// ============================================================================
+// OS HORIZON LIQUID GLASS SYSTEM — TAHOE
+// ============================================================================
+const GLASS = {
+  card: {
+    bg: 'rgba(18, 26, 46, 0.55)',
+    blur: 'blur(50px) saturate(170%)',
+    radius: '24px',
+    border: '1px solid rgba(255,255,255,0.10)',
+    innerGlow: 'inset 0 0 40px rgba(255,255,255,0.025), inset 0 1px 0 rgba(255,255,255,0.10)'
+  },
+  innerCard: {
+    bg: 'rgba(24, 32, 52, 0.50)',
+    blur: 'blur(30px) saturate(160%)',
+    radius: '16px',
+    border: '1px solid rgba(255,255,255,0.08)',
+    innerGlow: 'inset 0 0 25px rgba(255,255,255,0.02), inset 0 1px 0 rgba(255,255,255,0.08)'
+  }
+};
 
 const sourceLogos = {
   wapo: { name: "WP", bg: "bg-blue-600", text: "text-white" },
