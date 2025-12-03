@@ -251,13 +251,14 @@ const Header = ({ segment, theme, onClose, onNavigate }) => {
   
   return (
     <div 
-      className="relative overflow-hidden"
+      className="relative flex-shrink-0"
       style={{
-        padding: '28px 36px 24px',
+        padding: '32px 32px 28px',
         background: GLASS.header.bg,
         backdropFilter: GLASS.header.blur,
         WebkitBackdropFilter: GLASS.header.blur,
-        borderBottom: '1px solid rgba(255,255,255,0.06)'
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
+        borderRadius: '40px 40px 0 0'
       }}
     >
       {/* Specular highlight band */}
@@ -272,18 +273,18 @@ const Header = ({ segment, theme, onClose, onNavigate }) => {
       {/* Ambient theme glow */}
       <div style={{
         position: 'absolute',
-        top: '-20px',
+        top: '0',
         left: '10%',
         width: '80%',
-        height: '80px',
-        background: `radial-gradient(ellipse at 50% 100%, rgba(${theme.rgb}, 0.10) 0%, transparent 70%)`,
+        height: '60px',
+        background: `radial-gradient(ellipse at 50% 0%, rgba(${theme.rgb}, 0.08) 0%, transparent 70%)`,
         pointerEvents: 'none'
       }} />
       
       <div className="flex items-center justify-between relative z-10">
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-4">
           <motion.div 
-            className="w-14 h-14 rounded-2xl flex items-center justify-center relative overflow-hidden"
+            className="w-12 h-12 rounded-xl flex items-center justify-center relative flex-shrink-0"
             style={{
               background: `linear-gradient(135deg, rgba(${theme.rgb}, 0.20) 0%, rgba(255,255,255,0.06) 100%)`,
               backdropFilter: 'blur(28px) saturate(160%)',
@@ -311,11 +312,11 @@ const Header = ({ segment, theme, onClose, onNavigate }) => {
               background: `linear-gradient(90deg, transparent, rgba(${theme.rgb}, 0.35), transparent)`,
               pointerEvents: 'none'
             }} />
-            <Icon className="w-6 h-6 relative z-10" style={{ color: theme.color, filter: `drop-shadow(0 0 10px rgba(${theme.rgb}, 0.50))` }} strokeWidth={1.8} />
+            <Icon className="w-5 h-5 relative z-10" style={{ color: theme.color, filter: `drop-shadow(0 0 10px rgba(${theme.rgb}, 0.50))` }} strokeWidth={1.8} />
           </motion.div>
           <div>
             <h1 style={{ 
-              fontSize: '18px', 
+              fontSize: '17px', 
               fontWeight: 650, 
               color: 'rgba(255,255,255,0.96)', 
               letterSpacing: '-0.015em',
@@ -327,7 +328,7 @@ const Header = ({ segment, theme, onClose, onNavigate }) => {
               fontSize: '13px', 
               fontWeight: 450, 
               color: 'rgba(200,210,235,0.70)', 
-              marginTop: '4px',
+              marginTop: '3px',
               letterSpacing: '0.01em'
             }}>
               Market Pressure Analysis
@@ -335,15 +336,15 @@ const Header = ({ segment, theme, onClose, onNavigate }) => {
           </div>
         </div>
         
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 flex-shrink-0">
           <NavButton onClick={() => onNavigate('prev')}>
-            <ChevronLeft className="w-4.5 h-4.5" style={{ color: 'rgba(255,255,255,0.78)' }} strokeWidth={2} />
+            <ChevronLeft className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.78)' }} strokeWidth={2} />
           </NavButton>
           <NavButton onClick={() => onNavigate('next')}>
-            <ChevronRight className="w-4.5 h-4.5" style={{ color: 'rgba(255,255,255,0.78)' }} strokeWidth={2} />
+            <ChevronRight className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.78)' }} strokeWidth={2} />
           </NavButton>
           <NavButton onClick={onClose}>
-            <X className="w-4.5 h-4.5" style={{ color: 'rgba(255,255,255,0.78)' }} strokeWidth={2} />
+            <X className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.78)' }} strokeWidth={2} />
           </NavButton>
         </div>
       </div>
