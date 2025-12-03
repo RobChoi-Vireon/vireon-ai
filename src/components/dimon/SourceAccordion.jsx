@@ -271,8 +271,8 @@ export default function SourceAccordion({ source, density, index = 0 }) {
         opacity: 1, 
         y: 0,
         boxShadow: isHovered 
-          ? `${GLASS.card.innerGlow}, 0 20px 60px -20px rgba(0,0,0,0.55), 0 0 30px rgba(60, 70, 90, 0.08)`
-          : `${GLASS.card.innerGlow}, 0 12px 45px -18px rgba(0,0,0,0.45)`,
+          ? `${GLASS.card.innerGlow}, 0 16px 48px -16px rgba(0,0,0,0.40)`
+          : `${GLASS.card.innerGlow}, 0 8px 32px -12px rgba(0,0,0,0.30)`,
         transition: { delay: index * 0.05, type: 'spring', stiffness: 200, damping: 25 } 
       }}
       whileHover={{ y: -3 }}
