@@ -15,11 +15,11 @@ const MOTION = {
 };
 
 // ============================================================================
-// OS HORIZON LIQUID GLASS SYSTEM — TAHOE STANDARD
+// OS HORIZON LIQUID GLASS SYSTEM — TAHOE ULTRA
 // ============================================================================
 const GLASS = {
   canvas: {
-    gradient: 'linear-gradient(180deg, #070B16 0%, #0A1020 50%, #090D17 100%)',
+    gradient: 'linear-gradient(180deg, #040810 0%, #071018 50%, #050912 100%)',
     bokeh: [
       { x: '18%', y: '22%', color: 'rgba(35, 55, 110, 0.055)', size: '380px' },
       { x: '78%', y: '30%', color: 'rgba(60, 45, 120, 0.045)', size: '300px' },
@@ -28,33 +28,37 @@ const GLASS = {
     ]
   },
   drawer: {
-    bg: 'rgba(18, 24, 38, 0.57)',
-    blur: 'blur(46px)',
-    radius: '36px',
-    border: 'linear-gradient(135deg, rgba(255,255,255,0.22) 0%, rgba(120,170,255,0.05) 100%)',
-    innerGlow: '0 0 60px rgba(255,255,255,0.03)',
-    innerShadow: 'inset 0 0 45px rgba(0,0,0,0.25)'
+    bg: 'rgba(12, 18, 32, 0.72)',
+    blur: 'blur(80px) saturate(180%)',
+    radius: '40px',
+    border: 'linear-gradient(135deg, rgba(255,255,255,0.28) 0%, rgba(140,180,255,0.12) 50%, rgba(255,255,255,0.08) 100%)',
+    innerGlow: '0 0 100px rgba(255,255,255,0.04)',
+    innerShadow: 'inset 0 0 60px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.12)'
   },
   header: {
-    bg: 'rgba(28, 35, 60, 0.42)',
-    blur: 'blur(50px)',
-    highlight: 'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.14) 50%, transparent 90%)'
+    bg: 'rgba(20, 28, 48, 0.55)',
+    blur: 'blur(60px) saturate(170%)',
+    highlight: 'linear-gradient(90deg, transparent 5%, rgba(255,255,255,0.22) 50%, transparent 95%)'
   },
   hero: {
-    bg: 'rgba(32, 45, 72, 0.40)',
-    blur: 'blur(48px)',
-    radius: '28px'
+    bg: 'rgba(24, 36, 60, 0.50)',
+    blur: 'blur(60px) saturate(160%)',
+    radius: '32px',
+    border: '1px solid rgba(255,255,255,0.10)',
+    innerGlow: 'inset 0 0 50px rgba(255,255,255,0.03), inset 0 1px 0 rgba(255,255,255,0.10)'
   },
   card: {
-    bg: 'rgba(22, 30, 52, 0.38)',
-    blur: 'blur(32px)',
-    radius: '24px'
+    bg: 'rgba(18, 26, 46, 0.48)',
+    blur: 'blur(50px) saturate(165%)',
+    radius: '28px',
+    border: '1px solid rgba(255,255,255,0.08)',
+    innerGlow: 'inset 0 0 40px rgba(255,255,255,0.025), inset 0 1px 0 rgba(255,255,255,0.08)'
   },
   chip: {
-    bg: 'rgba(255, 255, 255, 0.08)',
-    border: 'rgba(255, 255, 255, 0.18)',
-    blur: 'blur(30px)',
-    innerShadow: 'inset 0 0 18px rgba(255,255,255,0.10)',
+    bg: 'rgba(255, 255, 255, 0.06)',
+    border: 'rgba(255, 255, 255, 0.20)',
+    blur: 'blur(40px) saturate(160%)',
+    innerShadow: 'inset 0 0 20px rgba(255,255,255,0.12), inset 0 1px 0 rgba(255,255,255,0.15)',
     radius: '999px'
   }
 };
@@ -145,29 +149,47 @@ const GlassChip = ({ children, isActive, theme }) => {
   
   return (
     <motion.div
-      className="flex items-center"
+      className="flex items-center relative overflow-hidden"
       style={{
-        padding: '8px 16px',
+        padding: '10px 18px',
         fontSize: '13px',
-        fontWeight: 500,
-        color: 'rgba(230, 235, 255, 0.88)',
-        background: GLASS.chip.bg,
+        fontWeight: 550,
+        letterSpacing: '0.01em',
+        color: 'rgba(235, 240, 255, 0.92)',
+        background: isActive 
+          ? `linear-gradient(135deg, rgba(${theme.rgb}, 0.18) 0%, rgba(${theme.rgb}, 0.08) 100%)`
+          : 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%)',
         backdropFilter: GLASS.chip.blur,
         WebkitBackdropFilter: GLASS.chip.blur,
-        border: `1px solid ${GLASS.chip.border}`,
+        border: `1px solid ${isActive ? `rgba(${theme.rgb}, 0.35)` : GLASS.chip.border}`,
         borderRadius: GLASS.chip.radius,
-        boxShadow: GLASS.chip.innerShadow
-      }}
-      animate={{
-        scale: isHovered ? 1.03 : 1,
-        boxShadow: isHovered 
-          ? `${GLASS.chip.innerShadow}, 0 0 22px rgba(140, 175, 255, 0.22)` 
+        boxShadow: isActive 
+          ? `${GLASS.chip.innerShadow}, 0 0 25px rgba(${theme.rgb}, 0.15)`
           : GLASS.chip.innerShadow
       }}
-      transition={{ duration: 0.15 }}
+      animate={{
+        scale: isHovered ? 1.04 : 1,
+        y: isHovered ? -1 : 0,
+        boxShadow: isHovered 
+          ? `${GLASS.chip.innerShadow}, 0 8px 32px rgba(0,0,0,0.25), 0 0 30px rgba(${theme.rgb}, 0.20)` 
+          : isActive 
+            ? `${GLASS.chip.innerShadow}, 0 0 25px rgba(${theme.rgb}, 0.15)`
+            : GLASS.chip.innerShadow
+      }}
+      transition={{ duration: 0.18, ease: [0.22, 0.61, 0.36, 1] }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
     >
+      {/* Top specular edge */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '15%',
+        right: '15%',
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent)',
+        pointerEvents: 'none'
+      }} />
       {isActive && <PulsingDot color={theme.color} />}
       {children}
     </motion.div>
@@ -183,22 +205,38 @@ const NavButton = ({ onClick, children }) => {
   return (
     <motion.button
       onClick={onClick}
-      className="w-8 h-8 rounded-full flex items-center justify-center"
+      className="w-10 h-10 rounded-full flex items-center justify-center relative overflow-hidden"
       style={{ 
-        background: 'rgba(255,255,255,0.08)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)'
+        background: 'linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.05) 100%)',
+        backdropFilter: 'blur(30px) saturate(160%)',
+        WebkitBackdropFilter: 'blur(30px) saturate(160%)',
+        border: '1px solid rgba(255,255,255,0.12)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 20px rgba(255,255,255,0.04)'
       }}
       animate={{
-        scale: isHovered ? 1.06 : 1,
-        background: isHovered ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.08)',
-        boxShadow: isHovered ? '0 0 20px rgba(150, 180, 255, 0.20)' : 'none'
+        scale: isHovered ? 1.08 : 1,
+        background: isHovered 
+          ? 'linear-gradient(135deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.08) 100%)' 
+          : 'linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.05) 100%)',
+        boxShadow: isHovered 
+          ? 'inset 0 1px 0 rgba(255,255,255,0.18), inset 0 0 20px rgba(255,255,255,0.06), 0 8px 32px rgba(0,0,0,0.20), 0 0 20px rgba(150, 180, 255, 0.15)' 
+          : 'inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 20px rgba(255,255,255,0.04)'
       }}
-      transition={{ duration: 0.16 }}
+      transition={{ duration: 0.18, ease: [0.22, 0.61, 0.36, 1] }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      whileTap={{ scale: 0.94 }}
+      whileTap={{ scale: 0.92 }}
     >
+      {/* Top specular */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '20%',
+        right: '20%',
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent)',
+        pointerEvents: 'none'
+      }} />
       {children}
     </motion.button>
   );
@@ -213,72 +251,99 @@ const Header = ({ segment, theme, onClose, onNavigate }) => {
   
   return (
     <div 
-      className="relative"
+      className="relative overflow-hidden"
       style={{
-        padding: '24px 36px 20px',
+        padding: '28px 36px 24px',
         background: GLASS.header.bg,
         backdropFilter: GLASS.header.blur,
-        WebkitBackdropFilter: GLASS.header.blur
+        WebkitBackdropFilter: GLASS.header.blur,
+        borderBottom: '1px solid rgba(255,255,255,0.06)'
       }}
     >
       {/* Specular highlight band */}
       <div 
-        className="absolute top-0 left-0 right-0 h-[3px] pointer-events-none"
+        className="absolute top-0 left-0 right-0 h-[2px] pointer-events-none"
         style={{ 
           background: GLASS.header.highlight,
-          borderRadius: '36px 36px 0 0'
+          borderRadius: '40px 40px 0 0'
         }}
       />
       
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      {/* Ambient theme glow */}
+      <div style={{
+        position: 'absolute',
+        top: '-20px',
+        left: '10%',
+        width: '80%',
+        height: '80px',
+        background: `radial-gradient(ellipse at 50% 100%, rgba(${theme.rgb}, 0.10) 0%, transparent 70%)`,
+        pointerEvents: 'none'
+      }} />
+      
+      <div className="flex items-center justify-between relative z-10">
+        <div className="flex items-center gap-5">
           <motion.div 
-            className="w-11 h-11 rounded-full flex items-center justify-center"
+            className="w-14 h-14 rounded-2xl flex items-center justify-center relative overflow-hidden"
             style={{
-              background: 'rgba(255,255,255,0.07)',
-              backdropFilter: 'blur(24px)',
-              WebkitBackdropFilter: 'blur(24px)',
-              boxShadow: 'inset 0 0 18px rgba(255,255,255,0.06)'
+              background: `linear-gradient(135deg, rgba(${theme.rgb}, 0.20) 0%, rgba(255,255,255,0.06) 100%)`,
+              backdropFilter: 'blur(28px) saturate(160%)',
+              WebkitBackdropFilter: 'blur(28px) saturate(160%)',
+              border: `1px solid rgba(${theme.rgb}, 0.25)`,
+              boxShadow: `inset 0 1px 0 rgba(255,255,255,0.15), inset 0 0 24px rgba(${theme.rgb}, 0.10)`
             }}
             animate={{
               boxShadow: iconHovered 
-                ? `0 0 26px rgba(${theme.rgb}, 0.28), inset 0 0 18px rgba(255,255,255,0.06)`
-                : 'inset 0 0 18px rgba(255,255,255,0.06)'
+                ? `0 0 35px rgba(${theme.rgb}, 0.35), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 0 24px rgba(${theme.rgb}, 0.15)`
+                : `inset 0 1px 0 rgba(255,255,255,0.15), inset 0 0 24px rgba(${theme.rgb}, 0.10)`,
+              scale: iconHovered ? 1.05 : 1
             }}
+            transition={{ duration: 0.20 }}
             onHoverStart={() => setIconHovered(true)}
             onHoverEnd={() => setIconHovered(false)}
           >
-            <Icon className="w-5 h-5" style={{ color: theme.color }} strokeWidth={1.8} />
+            {/* Icon specular */}
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: '15%',
+              right: '15%',
+              height: '1px',
+              background: `linear-gradient(90deg, transparent, rgba(${theme.rgb}, 0.35), transparent)`,
+              pointerEvents: 'none'
+            }} />
+            <Icon className="w-6 h-6 relative z-10" style={{ color: theme.color, filter: `drop-shadow(0 0 10px rgba(${theme.rgb}, 0.50))` }} strokeWidth={1.8} />
           </motion.div>
           <div>
             <h1 style={{ 
-              fontSize: '16px', 
-              fontWeight: 600, 
-              color: 'rgba(255,255,255,0.92)', 
-              letterSpacing: '-0.01em' 
+              fontSize: '18px', 
+              fontWeight: 650, 
+              color: 'rgba(255,255,255,0.96)', 
+              letterSpacing: '-0.015em',
+              textShadow: '0 2px 20px rgba(0,0,0,0.30)'
             }}>
               {segment.name}
             </h1>
             <p style={{ 
               fontSize: '13px', 
-              fontWeight: 420, 
-              color: 'rgba(215,225,255,0.68)', 
-              marginTop: '2px' 
+              fontWeight: 450, 
+              color: 'rgba(200,210,235,0.70)', 
+              marginTop: '4px',
+              letterSpacing: '0.01em'
             }}>
               Market Pressure Analysis
             </p>
           </div>
         </div>
         
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-3">
           <NavButton onClick={() => onNavigate('prev')}>
-            <ChevronLeft className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.72)' }} />
+            <ChevronLeft className="w-4.5 h-4.5" style={{ color: 'rgba(255,255,255,0.78)' }} strokeWidth={2} />
           </NavButton>
           <NavButton onClick={() => onNavigate('next')}>
-            <ChevronRight className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.72)' }} />
+            <ChevronRight className="w-4.5 h-4.5" style={{ color: 'rgba(255,255,255,0.78)' }} strokeWidth={2} />
           </NavButton>
           <NavButton onClick={onClose}>
-            <X className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.72)' }} />
+            <X className="w-4.5 h-4.5" style={{ color: 'rgba(255,255,255,0.78)' }} strokeWidth={2} />
           </NavButton>
         </div>
       </div>
@@ -294,54 +359,81 @@ const HeroCard = ({ data, theme, weight }) => {
   
   return (
     <motion.div
-      className="mx-9 mt-7"
-      initial={{ opacity: 0, y: 10 }}
+      className="mx-8 mt-8"
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.06, duration: MOTION.duration, ease: MOTION.ease }}
+      transition={{ delay: 0.08, duration: 0.45, ease: MOTION.ease }}
     >
       <motion.div
         className="relative overflow-hidden"
         style={{
-          padding: '28px 34px',
-          background: GLASS.hero.bg,
+          padding: '32px 38px',
+          background: `linear-gradient(145deg, rgba(${theme.rgb}, 0.12) 0%, ${GLASS.hero.bg} 40%, rgba(20, 30, 55, 0.45) 100%)`,
           backdropFilter: GLASS.hero.blur,
           WebkitBackdropFilter: GLASS.hero.blur,
           borderRadius: GLASS.hero.radius,
-          boxShadow: 'inset 0 0 35px rgba(255,255,255,0.025)'
+          border: GLASS.hero.border,
+          boxShadow: `${GLASS.hero.innerGlow}, 0 20px 60px -20px rgba(0,0,0,0.40)`
         }}
         animate={{
-          y: isHovered ? -2 : 0,
-          filter: isHovered ? 'brightness(1.03)' : 'brightness(1)'
+          y: isHovered ? -3 : 0,
+          boxShadow: isHovered 
+            ? `${GLASS.hero.innerGlow}, 0 25px 70px -20px rgba(0,0,0,0.50), 0 0 40px rgba(${theme.rgb}, 0.10)`
+            : `${GLASS.hero.innerGlow}, 0 20px 60px -20px rgba(0,0,0,0.40)`
         }}
-        transition={{ duration: 0.18 }}
+        transition={{ duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
       >
+        {/* Top specular edge */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '10%',
+          right: '10%',
+          height: '1.5px',
+          background: `linear-gradient(90deg, transparent, rgba(255,255,255,0.20), rgba(${theme.rgb}, 0.25), rgba(255,255,255,0.20), transparent)`,
+          pointerEvents: 'none'
+        }} />
+        
+        {/* Ambient theme glow */}
+        <div style={{
+          position: 'absolute',
+          top: '-50%',
+          left: '20%',
+          width: '60%',
+          height: '100%',
+          background: `radial-gradient(ellipse at 50% 100%, rgba(${theme.rgb}, 0.08) 0%, transparent 70%)`,
+          pointerEvents: 'none'
+        }} />
+        
         {/* Label */}
         <div style={{
-          fontSize: '12px',
-          fontWeight: 600,
-          color: 'rgba(255,255,255,0.50)',
-          letterSpacing: '0.18em',
+          fontSize: '11px',
+          fontWeight: 700,
+          color: theme.color,
+          letterSpacing: '0.20em',
           textTransform: 'uppercase',
-          marginBottom: '14px'
+          marginBottom: '16px',
+          textShadow: `0 0 20px rgba(${theme.rgb}, 0.40)`
         }}>
           TL;DR
         </div>
         
         {/* Headline */}
         <p style={{
-          fontSize: '21px',
-          fontWeight: 500,
-          color: 'rgba(255,255,255,0.95)',
-          lineHeight: 1.50,
-          marginBottom: '24px'
+          fontSize: '22px',
+          fontWeight: 520,
+          color: 'rgba(255,255,255,0.96)',
+          lineHeight: 1.55,
+          marginBottom: '28px',
+          textShadow: '0 2px 20px rgba(0,0,0,0.30)'
         }}>
           {data.tldr}
         </p>
         
         {/* Chips */}
-        <div className="flex items-center justify-end gap-2.5">
+        <div className="flex items-center justify-end gap-3">
           <GlassChip isActive theme={theme}>{data.status}</GlassChip>
           <GlassChip theme={theme}>{Math.round(weight)}% weight</GlassChip>
         </div>
@@ -359,60 +451,89 @@ const InfoCard = ({ item, theme, delay }) => {
   
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: MOTION.duration, ease: MOTION.ease }}
+      initial={{ opacity: 0, y: 14, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ delay, duration: 0.40, ease: MOTION.ease }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <motion.div
+        className="relative overflow-hidden"
         style={{
-          padding: '22px 28px',
+          padding: '26px 30px',
           background: GLASS.card.bg,
           backdropFilter: GLASS.card.blur,
           WebkitBackdropFilter: GLASS.card.blur,
           borderRadius: GLASS.card.radius,
-          boxShadow: 'inset 0 0 28px rgba(255,255,255,0.018)'
+          border: GLASS.card.border,
+          boxShadow: `${GLASS.card.innerGlow}, 0 12px 40px -15px rgba(0,0,0,0.30)`
         }}
         animate={{
-          y: isHovered ? -1.5 : 0,
-          filter: isHovered ? 'brightness(1.03)' : 'brightness(1)'
+          y: isHovered ? -2 : 0,
+          boxShadow: isHovered 
+            ? `${GLASS.card.innerGlow}, 0 18px 50px -15px rgba(0,0,0,0.40), 0 0 30px rgba(${theme.rgb}, 0.06)`
+            : `${GLASS.card.innerGlow}, 0 12px 40px -15px rgba(0,0,0,0.30)`
         }}
-        transition={{ duration: 0.16 }}
+        transition={{ duration: 0.20, ease: [0.22, 0.61, 0.36, 1] }}
       >
-        <div className="flex items-start gap-4">
+        {/* Top specular edge */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '12%',
+          right: '12%',
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
+          pointerEvents: 'none'
+        }} />
+        
+        <div className="flex items-start gap-5">
           <motion.div 
-            className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+            className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 relative overflow-hidden"
             style={{
-              background: 'rgba(255,255,255,0.065)',
-              backdropFilter: 'blur(22px)',
-              WebkitBackdropFilter: 'blur(22px)',
-              boxShadow: 'inset 0 0 16px rgba(255,255,255,0.055)'
+              background: `linear-gradient(135deg, rgba(${theme.rgb}, 0.15) 0%, rgba(255,255,255,0.06) 100%)`,
+              backdropFilter: 'blur(24px) saturate(150%)',
+              WebkitBackdropFilter: 'blur(24px) saturate(150%)',
+              border: `1px solid rgba(${theme.rgb}, 0.20)`,
+              boxShadow: `inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 20px rgba(${theme.rgb}, 0.08)`
             }}
             animate={{
               boxShadow: iconHovered 
-                ? `0 0 22px rgba(${theme.rgb}, 0.24), inset 0 0 16px rgba(255,255,255,0.055)`
-                : 'inset 0 0 16px rgba(255,255,255,0.055)'
+                ? `0 0 28px rgba(${theme.rgb}, 0.30), inset 0 1px 0 rgba(255,255,255,0.15), inset 0 0 20px rgba(${theme.rgb}, 0.12)`
+                : `inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 20px rgba(${theme.rgb}, 0.08)`,
+              scale: iconHovered ? 1.05 : 1
             }}
+            transition={{ duration: 0.18 }}
             onHoverStart={() => setIconHovered(true)}
             onHoverEnd={() => setIconHovered(false)}
           >
-            <item.icon className="w-[18px] h-[18px]" style={{ color: theme.color }} strokeWidth={1.8} />
+            {/* Icon specular */}
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: '20%',
+              right: '20%',
+              height: '1px',
+              background: `linear-gradient(90deg, transparent, rgba(${theme.rgb}, 0.30), transparent)`,
+              pointerEvents: 'none'
+            }} />
+            <item.icon className="w-5 h-5 relative z-10" style={{ color: theme.color, filter: `drop-shadow(0 0 8px rgba(${theme.rgb}, 0.40))` }} strokeWidth={1.8} />
           </motion.div>
-          <div className="flex-1 pt-0.5">
+          <div className="flex-1 pt-1">
             <h4 style={{
-              fontSize: '14px',
-              fontWeight: 600,
-              color: 'rgba(255,255,255,0.90)',
-              marginBottom: '7px'
+              fontSize: '15px',
+              fontWeight: 620,
+              color: 'rgba(255,255,255,0.94)',
+              marginBottom: '8px',
+              letterSpacing: '-0.01em'
             }}>
               {item.title}
             </h4>
             <p style={{
-              fontSize: '13px',
-              fontWeight: 400,
-              color: 'rgba(210,220,255,0.78)',
-              lineHeight: 1.58
+              fontSize: '14px',
+              fontWeight: 420,
+              color: 'rgba(210,220,255,0.80)',
+              lineHeight: 1.62
             }}>
               {item.text}
             </p>
@@ -427,13 +548,13 @@ const InfoCard = ({ item, theme, delay }) => {
 // INFO CARDS STACK
 // ============================================================================
 const InfoStack = ({ data, theme }) => (
-  <div className="mx-9 mt-7 flex flex-col" style={{ gap: '26px' }}>
+  <div className="mx-8 mt-8 flex flex-col" style={{ gap: '20px' }}>
     {data.evidence.map((item, i) => (
       <InfoCard 
         key={item.title} 
         item={item} 
         theme={theme} 
-        delay={0.12 + (i * 0.05)} 
+        delay={0.14 + (i * 0.06)} 
       />
     ))}
   </div>
@@ -447,58 +568,84 @@ const SummaryCard = ({ data, theme }) => {
   
   return (
     <motion.div
-      className="mx-9 mt-8"
-      initial={{ opacity: 0, y: 10 }}
+      className="mx-8 mt-10 mb-4"
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.28, duration: MOTION.duration, ease: MOTION.ease }}
+      transition={{ delay: 0.32, duration: 0.45, ease: MOTION.ease }}
     >
       <motion.div
         className="relative overflow-hidden"
         style={{
-          padding: '28px 34px',
-          background: GLASS.hero.bg,
+          padding: '32px 38px',
+          background: `linear-gradient(160deg, ${GLASS.hero.bg} 0%, rgba(16, 24, 44, 0.50) 50%, rgba(${theme.rgb}, 0.06) 100%)`,
           backdropFilter: GLASS.hero.blur,
           WebkitBackdropFilter: GLASS.hero.blur,
           borderRadius: GLASS.hero.radius,
-          boxShadow: 'inset 0 0 35px rgba(255,255,255,0.025)'
+          border: GLASS.hero.border,
+          boxShadow: `${GLASS.hero.innerGlow}, 0 20px 60px -20px rgba(0,0,0,0.40)`
         }}
         animate={{
-          y: isHovered ? -1.5 : 0,
-          filter: isHovered ? 'brightness(1.03)' : 'brightness(1)'
+          y: isHovered ? -3 : 0,
+          boxShadow: isHovered 
+            ? `${GLASS.hero.innerGlow}, 0 25px 70px -20px rgba(0,0,0,0.50), 0 0 40px rgba(${theme.rgb}, 0.08)`
+            : `${GLASS.hero.innerGlow}, 0 20px 60px -20px rgba(0,0,0,0.40)`
         }}
-        transition={{ duration: 0.18 }}
+        transition={{ duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
       >
+        {/* Top specular edge */}
         <div style={{
-          fontSize: '12px',
-          fontWeight: 600,
-          color: 'rgba(255,255,255,0.50)',
-          letterSpacing: '0.18em',
+          position: 'absolute',
+          top: 0,
+          left: '10%',
+          right: '10%',
+          height: '1.5px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+          pointerEvents: 'none'
+        }} />
+        
+        {/* Bottom ambient glow */}
+        <div style={{
+          position: 'absolute',
+          bottom: '-30%',
+          left: '10%',
+          width: '80%',
+          height: '60%',
+          background: `radial-gradient(ellipse at 50% 0%, rgba(${theme.rgb}, 0.06) 0%, transparent 70%)`,
+          pointerEvents: 'none'
+        }} />
+        
+        <div style={{
+          fontSize: '11px',
+          fontWeight: 700,
+          color: 'rgba(255,255,255,0.55)',
+          letterSpacing: '0.20em',
           textTransform: 'uppercase',
-          marginBottom: '14px'
+          marginBottom: '16px'
         }}>
           What This Means
         </div>
         
         <p style={{
           fontSize: '16px',
-          fontWeight: 400,
-          color: 'rgba(230,235,255,0.92)',
-          lineHeight: 1.72
+          fontWeight: 440,
+          color: 'rgba(235,240,255,0.94)',
+          lineHeight: 1.75,
+          textShadow: '0 2px 20px rgba(0,0,0,0.25)'
         }}>
           {data.summary}
         </p>
       </motion.div>
       
-      {/* Bottom chips — 16px below card */}
-      <div className="flex justify-center gap-3" style={{ marginTop: '16px' }}>
+      {/* Bottom chips — 20px below card */}
+      <div className="flex justify-center gap-3" style={{ marginTop: '20px' }}>
         <GlassChip isActive theme={theme}>
-          {data.trend === 'up' && <TrendingUp className="w-3.5 h-3.5 mr-1.5" strokeWidth={2} />}
-          {data.trend === 'down' && <TrendingDown className="w-3.5 h-3.5 mr-1.5" strokeWidth={2} />}
+          {data.trend === 'up' && <TrendingUp className="w-3.5 h-3.5 mr-1.5" strokeWidth={2.2} />}
+          {data.trend === 'down' && <TrendingDown className="w-3.5 h-3.5 mr-1.5" strokeWidth={2.2} />}
           {data.status}
         </GlassChip>
-        <GlassChip theme={theme}>{data.certainty}%</GlassChip>
+        <GlassChip theme={theme}>{data.certainty}% confidence</GlassChip>
         <GlassChip theme={theme}>
           <Clock className="w-3.5 h-3.5 mr-1.5" strokeWidth={2} />
           {data.horizon}
@@ -740,19 +887,19 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
             backdropFilter: GLASS.drawer.blur,
             WebkitBackdropFilter: GLASS.drawer.blur,
             boxShadow: `
-            ${GLASS.drawer.innerGlow}, 
-            ${GLASS.drawer.innerShadow}, 
-            0 30px 60px -15px rgba(0,0,0,0.50),
-            0 0 80px rgba(92, 155, 255, 0.12),
-            0 -2px 40px rgba(92, 155, 255, 0.08)
-          `
+              ${GLASS.drawer.innerGlow}, 
+              ${GLASS.drawer.innerShadow}, 
+              0 40px 80px -20px rgba(0,0,0,0.60),
+              0 0 120px rgba(92, 155, 255, 0.10),
+              0 0 60px rgba(130, 100, 200, 0.06)
+            `
           }}
-          initial={{ opacity: 0, scale: 0.97, y: 8, filter: 'blur(6px)' }}
+          initial={{ opacity: 0, scale: 0.94, y: 20, filter: 'blur(12px)' }}
           animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
-          exit={{ opacity: 0, scale: 0.97, y: 8, filter: 'blur(6px)' }}
-          transition={{ duration: 0.30, ease: MOTION.ease }}
+          exit={{ opacity: 0, scale: 0.96, y: 12, filter: 'blur(8px)' }}
+          transition={{ duration: 0.38, ease: MOTION.ease }}
         >
-          {/* Gradient border */}
+          {/* Gradient border — enhanced */}
           <div 
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -761,7 +908,21 @@ export default function SegmentDetailDrawer({ isOpen, onClose, segment, onNaviga
               WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
               WebkitMaskComposite: 'xor',
               maskComposite: 'exclude',
-              padding: '1px'
+              padding: '1.5px'
+            }}
+          />
+          
+          {/* Outer luminous ring */}
+          <div 
+            className="absolute -inset-[1px] pointer-events-none"
+            style={{
+              borderRadius: GLASS.drawer.radius,
+              background: 'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.04) 100%)',
+              WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+              WebkitMaskComposite: 'xor',
+              maskComposite: 'exclude',
+              padding: '1px',
+              filter: 'blur(0.5px)'
             }}
           />
           
