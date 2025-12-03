@@ -687,17 +687,42 @@ export default function StrategicTrajectory({ trajectory = [], density }) {
   return (
     <motion.section
       variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
-      className={`rounded-2xl ${spacingClass} backdrop-filter backdrop-blur-16 border border-white/10 overflow-visible`} // Fixed: Added overflow-visible
+      className={`${spacingClass} overflow-visible relative`}
       style={{ 
-        background: 'linear-gradient(145deg, rgba(15, 20, 30, 0.8), rgba(10, 15, 25, 0.9))'
+        background: GLASS.panel.bg,
+        backdropFilter: GLASS.panel.blur,
+        WebkitBackdropFilter: GLASS.panel.blur,
+        borderRadius: GLASS.panel.radius,
+        border: GLASS.panel.border,
+        boxShadow: `${GLASS.panel.innerGlow}, 0 20px 60px -20px rgba(0,0,0,0.40)`
       }}
       aria-labelledby="strategic-trajectory-heading"
     >
+      {/* Top specular edge */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '10%',
+        right: '10%',
+        height: '1.5px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+        pointerEvents: 'none',
+        borderRadius: '28px 28px 0 0'
+      }} />
+      
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 relative z-10">
         <div className="flex items-center">
-          <div className="p-2 rounded-lg mr-3" style={{ background: 'rgba(255, 255, 255, 0.1)' }}>
-            <TrendingUp className="w-5 h-5 text-blue-400" />
+          <div 
+            className="p-2.5 rounded-xl mr-3 relative overflow-hidden"
+            style={{ 
+              background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.18) 0%, rgba(255,255,255,0.06) 100%)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(99, 102, 241, 0.20)',
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12)'
+            }}
+          >
+            <TrendingUp className="w-5 h-5 text-blue-400 relative z-10" style={{ filter: 'drop-shadow(0 0 8px rgba(99, 102, 241, 0.40))' }} />
           </div>
           <div>
             <h2 id="strategic-trajectory-heading" className="text-lg font-semibold text-white">
