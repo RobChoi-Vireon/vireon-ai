@@ -43,11 +43,14 @@ const getSourceWeight = (source) => {
 
 const AnglePill = ({ icon: Icon, title, text, color, delay }) => (
   <motion.div
-    className="p-4 rounded-xl border backdrop-blur-sm"
+    className="p-4 relative overflow-hidden"
     style={{ 
-      background: `linear-gradient(135deg, ${color}1A, ${color}0D)`,
-      borderColor: `${color}33`,
-      boxShadow: `0 4px 15px ${color}1A`
+      background: GLASS.innerCard.bg,
+      backdropFilter: GLASS.innerCard.blur,
+      WebkitBackdropFilter: GLASS.innerCard.blur,
+      borderRadius: GLASS.innerCard.radius,
+      border: GLASS.innerCard.border,
+      boxShadow: `${GLASS.innerCard.innerGlow}, 0 8px 25px -10px rgba(0,0,0,0.25)`
     }}
     variants={{
       hidden: { opacity: 0, y: 15, scale: 0.95 },
@@ -60,16 +63,24 @@ const AnglePill = ({ icon: Icon, title, text, color, delay }) => (
     }}
     whileHover={{ 
       y: -3, 
-      scale: 1.03,
-      boxShadow: `0 8px 25px ${color}26`,
-      background: `linear-gradient(135deg, ${color}26, ${color}1A)`
+      boxShadow: `${GLASS.innerCard.innerGlow}, 0 12px 30px -10px rgba(0,0,0,0.35), 0 0 20px ${color}15`
     }}
   >
-    <div className="flex items-center mb-2">
-      <Icon className="w-4 h-4 mr-2" style={{ color }} />
+    {/* Top specular */}
+    <div style={{
+      position: 'absolute',
+      top: 0,
+      left: '15%',
+      right: '15%',
+      height: '1px',
+      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)',
+      pointerEvents: 'none'
+    }} />
+    <div className="flex items-center mb-2 relative z-10">
+      <Icon className="w-4 h-4 mr-2" style={{ color, filter: `drop-shadow(0 0 6px ${color}60)` }} />
       <h4 className="text-sm font-semibold" style={{ color }}>{title}</h4>
     </div>
-    <p className="text-sm text-neutral-300">{text}</p>
+    <p className="text-sm text-neutral-300 relative z-10">{text}</p>
   </motion.div>
 );
 
