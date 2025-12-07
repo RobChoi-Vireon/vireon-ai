@@ -1,19 +1,8 @@
+
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, AlertCircle, Eye, GitMerge, Target, BrainCircuit, Users, CheckCircle, XCircle, ChevronLeft, ChevronRight, Sparkles, TrendingUp, Newspaper, Zap } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-
-// ============================================================================
-// OS HORIZON LIQUID GLASS SYSTEM — TAHOE
-// ============================================================================
-const GLASS = {
-  section: {
-    bg: 'rgba(255, 255, 255, 0.04)',
-    blur: 'blur(20px) saturate(120%)',
-    border: '1px solid rgba(255,255,255,0.08)',
-    innerGlow: 'inset 0 1px 0 rgba(255,255,255,0.10)'
-  }
-};
 
 const LuxurySection = ({ icon: Icon, title, children, iconColor = "#4F46E5", delay = 0 }) => (
   <motion.div 
@@ -31,12 +20,10 @@ const LuxurySection = ({ icon: Icon, title, children, iconColor = "#4F46E5", del
   >
     <div className="flex items-center space-x-4">
       <motion.div 
-        className="relative p-3 rounded-xl overflow-hidden"
+        className="relative p-3 rounded-xl border border-white/20 overflow-hidden"
         style={{ 
-          background: `linear-gradient(135deg, ${iconColor}18, ${iconColor}08)`,
-          backdropFilter: 'blur(16px) saturate(120%)',
-          border: '1px solid rgba(255,255,255,0.10)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12)'
+          background: `linear-gradient(135deg, ${iconColor}20, ${iconColor}10)`,
+          backdropFilter: 'blur(10px)'
         }}
         whileHover={{ scale: 1.1, rotate: 5 }}
         transition={{ type: "spring", stiffness: 300 }}
@@ -44,7 +31,7 @@ const LuxurySection = ({ icon: Icon, title, children, iconColor = "#4F46E5", del
         <motion.div
           className="absolute inset-0 rounded-xl opacity-0 hover:opacity-100 transition-opacity duration-300"
           style={{ 
-            background: `radial-gradient(circle at center, ${iconColor}25 0%, transparent 70%)`
+            background: `radial-gradient(circle at center, ${iconColor}30 0%, transparent 70%)`
           }}
         />
         <Icon className="w-5 h-5 relative z-10" style={{ color: iconColor }} strokeWidth={2.5} />
@@ -269,13 +256,15 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
               border ${theme.borderColor} shadow-2xl
             `}
             style={{
-              background: 'rgba(12, 18, 32, 0.75)',
-              backdropFilter: 'blur(60px) saturate(175%)',
-              WebkitBackdropFilter: 'blur(60px) saturate(175%)',
+              background: `
+                linear-gradient(135deg, rgba(15, 15, 25, 0.95) 0%, rgba(10, 10, 15, 0.98) 100%),
+                linear-gradient(135deg, ${theme.gradient})
+              `,
+              backdropFilter: 'blur(20px)',
               boxShadow: `
                 0 25px 50px -12px rgba(0, 0, 0, 0.8),
                 0 0 50px ${theme.glowColor},
-                inset 0 1.5px 0 rgba(255, 255, 255, 0.12)
+                inset 0 1px 0 rgba(255, 255, 255, 0.1)
               `
             }}
             variants={drawerVariants}
@@ -398,12 +387,8 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                   className="p-8 rounded-3xl border-l-4 relative overflow-hidden shadow-2xl"
                   style={{ 
                     borderColor: theme.primaryColor, 
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    backdropFilter: 'blur(24px) saturate(120%)',
-                    WebkitBackdropFilter: 'blur(24px) saturate(120%)',
-                    border: '1px solid rgba(255,255,255,0.10)',
-                    borderLeft: `4px solid ${theme.primaryColor}`,
-                    boxShadow: `inset 0 1px 0 rgba(255,255,255,0.12), 0 10px 40px -10px ${theme.glowColor}`
+                    background: `linear-gradient(90deg, ${theme.primaryColor}20, ${theme.primaryColor}05 50%, transparent)`,
+                    boxShadow: `0 10px 40px -10px ${theme.glowColor}`
                   }}
                   whileHover={{ scale: 1.02, y: -2 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -433,16 +418,7 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                 iconColor={theme.primaryColor}
                 delay={0.1}
               >
-                <div 
-                  className="p-6 rounded-2xl"
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.04)',
-                    backdropFilter: 'blur(20px) saturate(120%)',
-                    WebkitBackdropFilter: 'blur(20px) saturate(120%)',
-                    border: '1px solid rgba(255,255,255,0.08)',
-                    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10)'
-                  }}
-                >
+                <div className="p-6 rounded-2xl border border-white/10 bg-black/20">
                   <p className="text-lg font-medium leading-relaxed text-gray-100">
                     {divergence.topic}
                   </p>
@@ -460,18 +436,11 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                     {details.rationale_bullets.map((bullet, i) => (
                       <motion.div
                         key={i}
-                        className="flex items-start p-4 rounded-lg"
-                        style={{
-                          background: 'rgba(255, 255, 255, 0.04)',
-                          backdropFilter: 'blur(20px) saturate(120%)',
-                          WebkitBackdropFilter: 'blur(20px) saturate(120%)',
-                          border: '1px solid rgba(255,255,255,0.08)',
-                          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10)'
-                        }}
+                        className="flex items-start p-4 rounded-lg bg-white/5 border border-white/10"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.1 * i }}
-                        whileHover={{ scale: 1.02 }}
+                        whileHover={{ scale: 1.02, backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
                       >
                         <motion.div 
                           className="w-1.5 h-1.5 rounded-full mt-2 mr-4 flex-shrink-0"
@@ -503,17 +472,8 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                 delay={0.3}
               >
                 <div className="space-y-6">
-                {/* Coverage Skew + Confidence - Connected Design */}
-                <div 
-                  className="p-6 rounded-2xl space-y-4"
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.04)',
-                    backdropFilter: 'blur(20px) saturate(120%)',
-                    WebkitBackdropFilter: 'blur(20px) saturate(120%)',
-                    border: '1px solid rgba(255,255,255,0.08)',
-                    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10)'
-                  }}
-                >
+                  {/* Coverage Skew + Confidence - Connected Design */}
+                  <div className="p-6 rounded-2xl border border-white/10 bg-black/20 space-y-4">
                     {/* Coverage Skew Header */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
@@ -552,16 +512,7 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
 
                   {/* Source Breakdown */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div 
-                      className="p-5 rounded-2xl"
-                      style={{
-                        background: 'rgba(16, 185, 129, 0.08)',
-                        backdropFilter: 'blur(20px) saturate(120%)',
-                        WebkitBackdropFilter: 'blur(20px) saturate(120%)',
-                        border: '1px solid rgba(16, 185, 129, 0.20)',
-                        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10)'
-                      }}
-                    >
+                    <div className="p-5 rounded-2xl border border-green-500/20 bg-green-900/10">
                       <div className="flex items-center text-green-400 mb-4">
                         <CheckCircle className="w-5 h-5 mr-3" />
                         <h4 className="font-semibold text-lg">Present In</h4>
@@ -572,16 +523,7 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                         ))}
                       </div>
                     </div>
-                     <div 
-                       className="p-5 rounded-2xl"
-                       style={{
-                         background: 'rgba(239, 68, 68, 0.08)',
-                         backdropFilter: 'blur(20px) saturate(120%)',
-                         WebkitBackdropFilter: 'blur(20px) saturate(120%)',
-                         border: '1px solid rgba(239, 68, 68, 0.20)',
-                         boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10)'
-                       }}
-                     >
+                     <div className="p-5 rounded-2xl border border-red-500/20 bg-red-900/10">
                       <div className="flex items-center text-red-400 mb-4">
                         <XCircle className="w-5 h-5 mr-3" />
                         <h4 className="font-semibold text-lg">Missing In</h4>
@@ -651,15 +593,11 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                 </div>
                 
                 <motion.div
-                  className="p-8 rounded-3xl relative overflow-hidden shadow-2xl"
+                  className="p-8 rounded-3xl bg-violet-500/15 border-2 border-violet-500/30 relative overflow-hidden shadow-2xl"
                   style={{ 
-                    background: 'rgba(139, 92, 246, 0.10)',
-                    backdropFilter: 'blur(24px) saturate(120%)',
-                    WebkitBackdropFilter: 'blur(24px) saturate(120%)',
-                    border: '2px solid rgba(139, 92, 246, 0.30)',
-                    boxShadow: `inset 0 1px 0 rgba(255,255,255,0.12), 0 15px 50px -10px rgba(139, 92, 246, 0.4)`
+                    boxShadow: `0 15px 50px -10px rgba(139, 92, 246, 0.4)`
                   }}
-                  whileHover={{ scale: 1.02, y: -3 }}
+                  whileHover={{ scale: 1.02, y: -3, borderColor: 'rgba(139, 92, 246, 0.5)' }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 >
                   <motion.div
