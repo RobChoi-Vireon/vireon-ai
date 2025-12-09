@@ -10,7 +10,7 @@ export default function NoviceLevelCard({ data, theme }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-      className="p-6 rounded-2xl elevation-1 backdrop-blur-xl"
+      className="p-4 sm:p-6 rounded-2xl elevation-1 backdrop-blur-xl mb-8"
       style={{
         backgroundColor: theme === 'dark' ? 'rgba(26, 29, 41, 0.8)' : 'rgba(255, 255, 255, 0.9)',
         border: `1px solid ${theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)'}`

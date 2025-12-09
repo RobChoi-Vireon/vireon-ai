@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useFeatureFlags } from '../components/core/FeatureFlags';
 import { useMiniSheet } from '../components/core/MiniSheetProvider';
@@ -472,7 +471,7 @@ export default function CapitalVault() {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 flex-1 min-h-0">
             {/* Content Area */}
             <div className="lg:col-span-3 min-h-0">
-              <div className="h-full overflow-y-auto pr-2 pb-8">
+              <div className="h-full overflow-y-auto pr-2 pb-24 lg:pb-8">
                 <AnimatePresence mode="wait">
                   {currentTermData ? (
                     <motion.div 
@@ -528,7 +527,7 @@ export default function CapitalVault() {
 
             {/* Sidebar */}
             <div className="lg:col-span-1">
-              <div className="h-full">
+              <div className="h-full overflow-y-auto pb-24 lg:pb-8">
                 <SidePanel 
                   viewMode={viewMode}
                   setViewMode={setViewMode}
