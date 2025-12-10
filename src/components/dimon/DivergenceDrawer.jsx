@@ -1,8 +1,30 @@
+// 🔒 DESIGN LOCKED — OS HORIZON LIQUID GLASS (macOS Tahoe)
+// Strict Compliance with Vireon Design System
 
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, AlertCircle, Eye, GitMerge, Target, BrainCircuit, Users, CheckCircle, XCircle, ChevronLeft, ChevronRight, Sparkles, TrendingUp, Newspaper, Zap } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+
+// ============================================================================
+// OS HORIZON LIQUID GLASS SYSTEM — TAHOE
+// ============================================================================
+const GLASS = {
+  drawer: {
+    bg: 'rgba(12, 16, 28, 0.85)',
+    blur: 'blur(80px) saturate(180%)',
+    radius: '32px',
+    border: '1px solid rgba(255,255,255,0.10)',
+    innerGlow: 'inset 0 0 80px rgba(255,255,255,0.02), inset 0 1.5px 0 rgba(255,255,255,0.12)'
+  },
+  card: {
+    bg: 'rgba(255, 255, 255, 0.04)',
+    blur: 'blur(24px) saturate(150%)',
+    radius: '20px',
+    border: '1px solid rgba(255,255,255,0.08)',
+    innerGlow: 'inset 0 1px 0 rgba(255,255,255,0.10)'
+  }
+};
 
 const LuxurySection = ({ icon: Icon, title, children, iconColor = "#4F46E5", delay = 0 }) => (
   <motion.div 
@@ -20,34 +42,40 @@ const LuxurySection = ({ icon: Icon, title, children, iconColor = "#4F46E5", del
   >
     <div className="flex items-center space-x-4">
       <motion.div 
-        className="relative p-3 rounded-xl border border-white/20 overflow-hidden"
+        className="relative p-3 rounded-xl overflow-hidden"
         style={{ 
-          background: `linear-gradient(135deg, ${iconColor}20, ${iconColor}10)`,
-          backdropFilter: 'blur(10px)'
+          background: `linear-gradient(135deg, rgba(${iconColor.replace('#', '').match(/.{2}/g).map(x => parseInt(x, 16)).join(', ')}, 0.18) 0%, rgba(255,255,255,0.06) 100%)`,
+          backdropFilter: GLASS.card.blur,
+          WebkitBackdropFilter: GLASS.card.blur,
+          border: `1px solid rgba(${iconColor.replace('#', '').match(/.{2}/g).map(x => parseInt(x, 16)).join(', ')}, 0.22)`,
+          boxShadow: `${GLASS.card.innerGlow}, 0 0 20px rgba(${iconColor.replace('#', '').match(/.{2}/g).map(x => parseInt(x, 16)).join(', ')}, 0.10)`
         }}
-        whileHover={{ scale: 1.1, rotate: 5 }}
-        transition={{ type: "spring", stiffness: 300 }}
+        whileHover={{ scale: 1.05 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >
-        <motion.div
-          className="absolute inset-0 rounded-xl opacity-0 hover:opacity-100 transition-opacity duration-300"
-          style={{ 
-            background: `radial-gradient(circle at center, ${iconColor}30 0%, transparent 70%)`
-          }}
-        />
-        <Icon className="w-5 h-5 relative z-10" style={{ color: iconColor }} strokeWidth={2.5} />
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '15%',
+          right: '15%',
+          height: '1px',
+          background: `linear-gradient(90deg, transparent, rgba(${iconColor.replace('#', '').match(/.{2}/g).map(x => parseInt(x, 16)).join(', ')}, 0.30), transparent)`,
+          pointerEvents: 'none'
+        }} />
+        <Icon className="w-5 h-5 relative z-10" style={{ color: iconColor, filter: `drop-shadow(0 0 8px rgba(${iconColor.replace('#', '').match(/.{2}/g).map(x => parseInt(x, 16)).join(', ')}, 0.45))` }} strokeWidth={2} />
       </motion.div>
       
-      <div>
+      <div className="flex-1">
         <h3 className="text-xl font-bold text-white tracking-tight"
            style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
           {title}
         </h3>
         <motion.div 
-          className="h-0.5 mt-1 rounded-full"
-          style={{ background: `linear-gradient(90deg, ${iconColor} 0%, transparent 100%)` }}
+          className="h-0.5 mt-1.5 rounded-full"
+          style={{ background: `linear-gradient(90deg, ${iconColor} 0%, rgba(255,255,255,0.1) 60%, transparent 100%)` }}
           initial={{ width: 0 }}
           animate={{ width: '100%' }}
-          transition={{ delay: delay + 0.2, duration: 0.8, ease: "easeOut" }}
+          transition={{ delay: delay + 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         />
       </div>
     </div>
@@ -250,51 +278,64 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
           />
           
           <motion.div
-            key={divergence.id} // Key change triggers re-animation
-            className={`
-              relative w-full max-w-4xl max-h-[90vh] rounded-3xl overflow-hidden
-              border ${theme.borderColor} shadow-2xl
-            `}
+            key={divergence.id}
+            className="relative w-full max-w-4xl max-h-[90vh] overflow-hidden"
             style={{
-              background: `
-                linear-gradient(135deg, rgba(15, 15, 25, 0.95) 0%, rgba(10, 10, 15, 0.98) 100%),
-                linear-gradient(135deg, ${theme.gradient})
-              `,
-              backdropFilter: 'blur(20px)',
-              boxShadow: `
-                0 25px 50px -12px rgba(0, 0, 0, 0.8),
-                0 0 50px ${theme.glowColor},
-                inset 0 1px 0 rgba(255, 255, 255, 0.1)
-              `
+              background: GLASS.drawer.bg,
+              backdropFilter: GLASS.drawer.blur,
+              WebkitBackdropFilter: GLASS.drawer.blur,
+              borderRadius: GLASS.drawer.radius,
+              border: GLASS.drawer.border,
+              boxShadow: `${GLASS.drawer.innerGlow}, 0 30px 80px -20px rgba(0,0,0,0.60), 0 0 60px ${theme.glowColor}`
             }}
             variants={drawerVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
           >
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: '10%',
+              right: '10%',
+              height: '2px',
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
+              pointerEvents: 'none',
+              borderRadius: '32px 32px 0 0'
+            }} />
+
             <motion.div
-              className="absolute inset-0 rounded-3xl pointer-events-none"
+              className="absolute inset-0 pointer-events-none"
               style={{
-                background: `linear-gradient(135deg, ${theme.glowColor} 0%, transparent 50%, ${theme.glowColor} 100%)`
+                background: `radial-gradient(ellipse at 50% 20%, ${theme.glowColor} 0%, transparent 70%)`,
+                borderRadius: GLASS.drawer.radius
               }}
               animate={{ 
-                opacity: [0.3, 0.6, 0.3],
-                scale: [1, 1.005, 1]
+                opacity: [0.15, 0.30, 0.15]
               }}
               transition={{ 
-                duration: 3, 
+                duration: 4, 
                 repeat: Infinity, 
                 ease: "easeInOut" 
               }}
             />
 
             <motion.div 
-              className="relative p-8 border-b border-white/10"
+              className="relative p-8 border-b border-white/5"
               variants={{
                 hidden: { opacity: 0, y: -20 },
                 visible: { opacity: 1, y: 0 }
               }}
             >
+              <div style={{
+                position: 'absolute',
+                bottom: 0,
+                left: '15%',
+                right: '15%',
+                height: '1px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)',
+                pointerEvents: 'none'
+              }} />
               <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-5">
                   <motion.div 
@@ -340,29 +381,50 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                   <div className="flex items-center space-x-2">
                     <motion.button
                       onClick={() => onNavigate('prev')}
-                      className="relative p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-all duration-300"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
+                      className="relative p-3 rounded-2xl overflow-hidden group"
+                      style={{
+                        background: GLASS.card.bg,
+                        backdropFilter: GLASS.card.blur,
+                        WebkitBackdropFilter: GLASS.card.blur,
+                        border: GLASS.card.border,
+                        boxShadow: GLASS.card.innerGlow
+                      }}
+                      whileHover={{ scale: 1.05, boxShadow: `${GLASS.card.innerGlow}, 0 4px 15px rgba(0,0,0,0.20)` }}
+                      whileTap={{ scale: 0.95 }}
                       aria-label="Previous Divergence"
                     >
-                      <ChevronLeft className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors" strokeWidth={2} />
+                      <ChevronLeft className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors relative z-10" strokeWidth={2} />
                     </motion.button>
                     <motion.button
                       onClick={() => onNavigate('next')}
-                      className="relative p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-all duration-300"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
+                      className="relative p-3 rounded-2xl overflow-hidden group"
+                      style={{
+                        background: GLASS.card.bg,
+                        backdropFilter: GLASS.card.blur,
+                        WebkitBackdropFilter: GLASS.card.blur,
+                        border: GLASS.card.border,
+                        boxShadow: GLASS.card.innerGlow
+                      }}
+                      whileHover={{ scale: 1.05, boxShadow: `${GLASS.card.innerGlow}, 0 4px 15px rgba(0,0,0,0.20)` }}
+                      whileTap={{ scale: 0.95 }}
                       aria-label="Next Divergence"
                     >
-                      <ChevronRight className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors" strokeWidth={2} />
+                      <ChevronRight className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors relative z-10" strokeWidth={2} />
                     </motion.button>
                     <motion.button
                       onClick={onClose}
-                      className="relative p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-all duration-300"
-                      whileHover={{ scale: 1.1, rotate: 90 }}
-                      whileTap={{ scale: 0.9 }}
+                      className="relative p-3 rounded-2xl overflow-hidden group"
+                      style={{
+                        background: GLASS.card.bg,
+                        backdropFilter: GLASS.card.blur,
+                        WebkitBackdropFilter: GLASS.card.blur,
+                        border: GLASS.card.border,
+                        boxShadow: GLASS.card.innerGlow
+                      }}
+                      whileHover={{ scale: 1.05, rotate: 90, boxShadow: `${GLASS.card.innerGlow}, 0 4px 15px rgba(0,0,0,0.20)` }}
+                      whileTap={{ scale: 0.95 }}
                     >
-                      <X className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors" strokeWidth={2} />
+                      <X className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors relative z-10" strokeWidth={2} />
                     </motion.button>
                   </div>
                 </div>
@@ -384,21 +446,34 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                 delay={0}
               >
                 <motion.div 
-                  className="p-8 rounded-3xl border-l-4 relative overflow-hidden shadow-2xl"
+                  className="p-8 rounded-3xl relative overflow-hidden"
                   style={{ 
-                    borderColor: theme.primaryColor, 
-                    background: `linear-gradient(90deg, ${theme.primaryColor}20, ${theme.primaryColor}05 50%, transparent)`,
-                    boxShadow: `0 10px 40px -10px ${theme.glowColor}`
+                    background: GLASS.card.bg,
+                    backdropFilter: GLASS.card.blur,
+                    WebkitBackdropFilter: GLASS.card.blur,
+                    borderRadius: GLASS.card.radius,
+                    border: GLASS.card.border,
+                    boxShadow: `${GLASS.card.innerGlow}, 0 12px 40px -15px rgba(0,0,0,0.30), 0 0 30px ${theme.glowColor}`
                   }}
-                  whileHover={{ scale: 1.02, y: -2 }}
+                  whileHover={{ y: -3, boxShadow: `${GLASS.card.innerGlow}, 0 18px 50px -15px rgba(0,0,0,0.40), 0 0 40px ${theme.glowColor}` }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 >
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: '12%',
+                    right: '12%',
+                    height: '1.5px',
+                    background: `linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)`,
+                    pointerEvents: 'none'
+                  }} />
                   <motion.div
-                    className="absolute inset-0 opacity-30"
+                    className="absolute inset-0 pointer-events-none"
                     style={{ 
-                      background: `radial-gradient(circle at left, ${theme.glowColor} 0%, transparent 60%)`
+                      background: `radial-gradient(ellipse at 50% 30%, ${theme.glowColor} 0%, transparent 70%)`,
+                      borderRadius: GLASS.card.radius
                     }}
-                    animate={{ opacity: [0.2, 0.5, 0.2] }}
+                    animate={{ opacity: [0.12, 0.25, 0.12] }}
                     transition={{ duration: 4, repeat: Infinity }}
                   />
                   <div className="text-center relative z-10">
@@ -418,8 +493,24 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                 iconColor={theme.primaryColor}
                 delay={0.1}
               >
-                <div className="p-6 rounded-2xl border border-white/10 bg-black/20">
-                  <p className="text-lg font-medium leading-relaxed text-gray-100">
+                <div className="p-6 rounded-2xl relative overflow-hidden"
+                     style={{
+                       background: GLASS.card.bg,
+                       backdropFilter: GLASS.card.blur,
+                       WebkitBackdropFilter: GLASS.card.blur,
+                       border: GLASS.card.border,
+                       boxShadow: GLASS.card.innerGlow
+                     }}>
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: '12%',
+                    right: '12%',
+                    height: '1px',
+                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
+                    pointerEvents: 'none'
+                  }} />
+                  <p className="text-lg font-medium leading-relaxed text-gray-100 relative z-10">
                     {divergence.topic}
                   </p>
                 </div>
@@ -435,30 +526,50 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                  <div className="space-y-4">
                     {details.rationale_bullets.map((bullet, i) => (
                       <motion.div
-                        key={i}
-                        className="flex items-start p-4 rounded-lg bg-white/5 border border-white/10"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 * i }}
-                        whileHover={{ scale: 1.02, backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
+                       key={i}
+                       className="flex items-start p-4 rounded-lg relative overflow-hidden"
+                       style={{
+                         background: GLASS.card.bg,
+                         backdropFilter: GLASS.card.blur,
+                         WebkitBackdropFilter: GLASS.card.blur,
+                         border: GLASS.card.border,
+                         boxShadow: GLASS.card.innerGlow
+                       }}
+                       initial={{ opacity: 0, x: -20 }}
+                       animate={{ opacity: 1, x: 0 }}
+                       transition={{ delay: 0.1 * i }}
+                       whileHover={{ y: -2, boxShadow: `${GLASS.card.innerGlow}, 0 8px 25px -10px rgba(0,0,0,0.30)` }}
                       >
-                        <motion.div 
-                          className="w-1.5 h-1.5 rounded-full mt-2 mr-4 flex-shrink-0"
-                          style={{ background: theme.primaryColor }}
-                          animate={{ 
-                            scale: [1, 1.2, 1],
-                            opacity: [0.7, 1, 0.7]
-                          }}
-                          transition={{ 
-                            duration: 2, 
-                            repeat: Infinity, 
-                            delay: i * 0.3 
-                          }}
-                        />
-                        <p 
-                          className="text-base text-gray-300 leading-relaxed" 
-                          dangerouslySetInnerHTML={{ __html: bullet }}
-                        />
+                       <div style={{
+                         position: 'absolute',
+                         top: 0,
+                         left: '12%',
+                         right: '12%',
+                         height: '1px',
+                         background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
+                         pointerEvents: 'none'
+                       }} />
+                       <motion.div 
+                         className="w-1.5 h-1.5 rounded-full mt-2 mr-4 flex-shrink-0"
+                         style={{ background: theme.primaryColor, boxShadow: `0 0 6px ${theme.primaryColor}` }}
+                         animate={{ 
+                           scale: [1, 1.2, 1],
+                           boxShadow: [
+                             `0 0 6px ${theme.primaryColor}`,
+                             `0 0 12px ${theme.primaryColor}`,
+                             `0 0 6px ${theme.primaryColor}`
+                           ]
+                         }}
+                         transition={{ 
+                           duration: 2, 
+                           repeat: Infinity, 
+                           delay: i * 0.3 
+                         }}
+                       />
+                       <p 
+                         className="text-base text-gray-300 leading-relaxed relative z-10" 
+                         dangerouslySetInnerHTML={{ __html: bullet }}
+                       />
                       </motion.div>
                     ))}
                  </div>
@@ -473,7 +584,23 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
               >
                 <div className="space-y-6">
                   {/* Coverage Skew + Confidence - Connected Design */}
-                  <div className="p-6 rounded-2xl border border-white/10 bg-black/20 space-y-4">
+                  <div className="p-6 rounded-2xl relative overflow-hidden space-y-4"
+                      style={{
+                        background: GLASS.card.bg,
+                        backdropFilter: GLASS.card.blur,
+                        WebkitBackdropFilter: GLASS.card.blur,
+                        border: GLASS.card.border,
+                        boxShadow: GLASS.card.innerGlow
+                      }}>
+                   <div style={{
+                     position: 'absolute',
+                     top: 0,
+                     left: '12%',
+                     right: '12%',
+                     height: '1px',
+                     background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
+                     pointerEvents: 'none'
+                   }} />
                     {/* Coverage Skew Header */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
@@ -512,23 +639,55 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
 
                   {/* Source Breakdown */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="p-5 rounded-2xl border border-green-500/20 bg-green-900/10">
-                      <div className="flex items-center text-green-400 mb-4">
-                        <CheckCircle className="w-5 h-5 mr-3" />
+                   <div className="p-5 rounded-2xl relative overflow-hidden"
+                        style={{
+                          background: 'linear-gradient(135deg, rgba(52, 211, 153, 0.12) 0%, rgba(255,255,255,0.04) 100%)',
+                          backdropFilter: GLASS.card.blur,
+                          WebkitBackdropFilter: GLASS.card.blur,
+                          border: '1px solid rgba(52, 211, 153, 0.22)',
+                          boxShadow: `${GLASS.card.innerGlow}, 0 0 20px rgba(52, 211, 153, 0.08)`
+                        }}>
+                     <div style={{
+                       position: 'absolute',
+                       top: 0,
+                       left: '12%',
+                       right: '12%',
+                       height: '1px',
+                       background: 'linear-gradient(90deg, transparent, rgba(52, 211, 153, 0.30), transparent)',
+                       pointerEvents: 'none'
+                     }} />
+                      <div className="flex items-center text-green-400 mb-4 relative z-10">
+                        <CheckCircle className="w-5 h-5 mr-3" style={{ filter: 'drop-shadow(0 0 6px rgba(52, 211, 153, 0.40))' }} />
                         <h4 className="font-semibold text-lg">Present In</h4>
                       </div>
-                      <div className="flex flex-wrap gap-3">
+                      <div className="flex flex-wrap gap-3 relative z-10">
                         {(divergence.present_in || []).map(src => (
                           <SourceLogo key={src} source={src} />
                         ))}
                       </div>
                     </div>
-                     <div className="p-5 rounded-2xl border border-red-500/20 bg-red-900/10">
-                      <div className="flex items-center text-red-400 mb-4">
-                        <XCircle className="w-5 h-5 mr-3" />
+                     <div className="p-5 rounded-2xl relative overflow-hidden"
+                          style={{
+                            background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(255,255,255,0.04) 100%)',
+                            backdropFilter: GLASS.card.blur,
+                            WebkitBackdropFilter: GLASS.card.blur,
+                            border: '1px solid rgba(239, 68, 68, 0.22)',
+                            boxShadow: `${GLASS.card.innerGlow}, 0 0 20px rgba(239, 68, 68, 0.08)`
+                          }}>
+                       <div style={{
+                         position: 'absolute',
+                         top: 0,
+                         left: '12%',
+                         right: '12%',
+                         height: '1px',
+                         background: 'linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.30), transparent)',
+                         pointerEvents: 'none'
+                       }} />
+                      <div className="flex items-center text-red-400 mb-4 relative z-10">
+                        <XCircle className="w-5 h-5 mr-3" style={{ filter: 'drop-shadow(0 0 6px rgba(239, 68, 68, 0.40))' }} />
                         <h4 className="font-semibold text-lg">Missing In</h4>
                       </div>
-                      <div className="flex flex-wrap gap-3">
+                      <div className="flex flex-wrap gap-3 relative z-10">
                          {(divergence.missing_in || []).map(src => (
                           <SourceLogo key={src} source={src} />
                         ))}
@@ -593,19 +752,33 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                 </div>
                 
                 <motion.div
-                  className="p-8 rounded-3xl bg-violet-500/15 border-2 border-violet-500/30 relative overflow-hidden shadow-2xl"
+                  className="p-8 rounded-3xl relative overflow-hidden"
                   style={{ 
-                    boxShadow: `0 15px 50px -10px rgba(139, 92, 246, 0.4)`
+                    background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.14) 0%, rgba(255,255,255,0.04) 100%)',
+                    backdropFilter: GLASS.card.blur,
+                    WebkitBackdropFilter: GLASS.card.blur,
+                    border: '1px solid rgba(139, 92, 246, 0.25)',
+                    boxShadow: `${GLASS.card.innerGlow}, 0 12px 40px -15px rgba(0,0,0,0.30), 0 0 35px rgba(139, 92, 246, 0.15)`
                   }}
-                  whileHover={{ scale: 1.02, y: -3, borderColor: 'rgba(139, 92, 246, 0.5)' }}
+                  whileHover={{ y: -3, boxShadow: `${GLASS.card.innerGlow}, 0 18px 50px -15px rgba(0,0,0,0.40), 0 0 45px rgba(139, 92, 246, 0.20)` }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 >
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: '12%',
+                    right: '12%',
+                    height: '1.5px',
+                    background: 'linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.35), transparent)',
+                    pointerEvents: 'none'
+                  }} />
                   <motion.div
-                    className="absolute inset-0 opacity-25"
+                    className="absolute inset-0 pointer-events-none"
                     style={{ 
-                      background: `radial-gradient(circle at center, rgba(139, 92, 246, 0.4) 0%, transparent 70%)`
+                      background: 'radial-gradient(ellipse at 50% 30%, rgba(139, 92, 246, 0.12) 0%, transparent 70%)',
+                      borderRadius: GLASS.card.radius
                     }}
-                    animate={{ opacity: [0.25, 0.45, 0.25] }}
+                    animate={{ opacity: [0.15, 0.30, 0.15] }}
                     transition={{ duration: 5, repeat: Infinity }}
                   />
                   <p 
