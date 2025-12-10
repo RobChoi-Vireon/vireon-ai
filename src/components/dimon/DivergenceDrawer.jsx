@@ -1,84 +1,63 @@
-// 🔒 DESIGN LOCKED — OS HORIZON LIQUID GLASS (macOS Tahoe)
-// Strict Compliance with Vireon Design System
+// 🔒 DESIGN LOCKED — OS HORIZON V4.0
+// Matches MemoDrawer design system
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, AlertCircle, Eye, GitMerge, Target, BrainCircuit, Users, CheckCircle, XCircle, ChevronLeft, ChevronRight, Sparkles, TrendingUp, Newspaper, Zap } from 'lucide-react';
+import { X, AlertCircle, Eye, GitMerge, Target, BrainCircuit, Users, CheckCircle, XCircle, ChevronLeft, ChevronRight, Sparkles, TrendingUp, Newspaper, Zap, BookOpen } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 // ============================================================================
-// OS HORIZON LIQUID GLASS SYSTEM — TAHOE
+// HORIZON OS TOKENS — Matching MemoDrawer
 // ============================================================================
-const GLASS = {
-  drawer: {
-    bg: 'rgba(12, 16, 28, 0.85)',
-    blur: 'blur(80px) saturate(180%)',
-    radius: '32px',
-    border: '1px solid rgba(255,255,255,0.10)',
-    innerGlow: 'inset 0 0 80px rgba(255,255,255,0.02), inset 0 1.5px 0 rgba(255,255,255,0.12)'
+const HORIZON = {
+  glass: {
+    radius: 24,
+    blur: 26,
   },
-  card: {
-    bg: 'rgba(255, 255, 255, 0.04)',
-    blur: 'blur(24px) saturate(150%)',
-    radius: '20px',
-    border: '1px solid rgba(255,255,255,0.08)',
-    innerGlow: 'inset 0 1px 0 rgba(255,255,255,0.10)'
-  }
+  type: {
+    h1: { size: 22, weight: 600, tracking: -0.03, opacity: 0.92 },
+    drawerTitle: { size: 15.5, lh: 20, weight: 600, opacity: 0.70 },
+    body: { size: 14.5, lh: 22, weight: 500, opacity: 0.82 },
+    meta: { size: 12, weight: 500, tracking: 0.06, opacity: 0.65 },
+  },
+  color: {
+    accent: '#7DD3FC',
+    textBodyDark: 'rgba(255, 255, 255, 0.90)',
+    textSecondaryDark: 'rgba(255, 255, 255, 0.75)',
+    textTertiaryDark: 'rgba(255, 255, 255, 0.65)',
+  },
+  spacing: {
+    sectionGap: 20,
+  },
+  motion: {
+    ease: [0.18, 0.82, 0.23, 1],
+    dur: { open: 260, close: 260 },
+  },
 };
+
+// ============================================================================
+// SECTION DIVIDER
+// ============================================================================
+const SectionDivider = () => (
+  <div 
+    className="my-6"
+    style={{
+      height: '1px',
+      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)'
+    }}
+    aria-hidden="true"
+  />
+);
 
 const LuxurySection = ({ icon: Icon, title, children, iconColor = "#4F46E5", delay = 0 }) => (
   <motion.div 
-    className="space-y-6"
-    variants={{
-      hidden: { opacity: 0, y: 30 },
-      visible: { opacity: 1, y: 0 }
-    }}
-    transition={{ 
-      delay,
-      type: "spring",
-      stiffness: 200,
-      damping: 20
-    }}
+    className="ri-section"
+    style={{ marginBottom: `${HORIZON.spacing.sectionGap}px` }}
   >
-    <div className="flex items-center space-x-4">
-      <motion.div 
-        className="relative p-3 rounded-xl overflow-hidden"
-        style={{ 
-          background: `linear-gradient(135deg, rgba(${iconColor.replace('#', '').match(/.{2}/g).map(x => parseInt(x, 16)).join(', ')}, 0.18) 0%, rgba(255,255,255,0.06) 100%)`,
-          backdropFilter: GLASS.card.blur,
-          WebkitBackdropFilter: GLASS.card.blur,
-          border: `1px solid rgba(${iconColor.replace('#', '').match(/.{2}/g).map(x => parseInt(x, 16)).join(', ')}, 0.22)`,
-          boxShadow: `${GLASS.card.innerGlow}, 0 0 20px rgba(${iconColor.replace('#', '').match(/.{2}/g).map(x => parseInt(x, 16)).join(', ')}, 0.10)`
-        }}
-        whileHover={{ scale: 1.05 }}
-        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      >
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: '15%',
-          right: '15%',
-          height: '1px',
-          background: `linear-gradient(90deg, transparent, rgba(${iconColor.replace('#', '').match(/.{2}/g).map(x => parseInt(x, 16)).join(', ')}, 0.30), transparent)`,
-          pointerEvents: 'none'
-        }} />
-        <Icon className="w-5 h-5 relative z-10" style={{ color: iconColor, filter: `drop-shadow(0 0 8px rgba(${iconColor.replace('#', '').match(/.{2}/g).map(x => parseInt(x, 16)).join(', ')}, 0.45))` }} strokeWidth={2} />
-      </motion.div>
-      
-      <div className="flex-1">
-        <h3 className="text-xl font-bold text-white tracking-tight"
-           style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
-          {title}
-        </h3>
-        <motion.div 
-          className="h-0.5 mt-1.5 rounded-full"
-          style={{ background: `linear-gradient(90deg, ${iconColor} 0%, rgba(255,255,255,0.1) 60%, transparent 100%)` }}
-          initial={{ width: 0 }}
-          animate={{ width: '100%' }}
-          transition={{ delay: delay + 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        />
-      </div>
-    </div>
+    <h3 className="ri-section-title">
+      <Icon className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+      {title}
+    </h3>
     {children}
   </motion.div>
 );
@@ -102,8 +81,23 @@ const SourceLogo = ({ source }) => {
 };
 
 export default function DivergenceDrawer({ isOpen, onClose, divergence, onNavigate }) {
+  const [isAnimatingIn, setIsAnimatingIn] = useState(false);
+  const containerRef = useRef(null);
+  const previousFocusRef = useRef(null);
+
   useEffect(() => {
     if (isOpen) {
+      requestAnimationFrame(() => {
+        setIsAnimatingIn(true);
+      });
+    } else {
+      setIsAnimatingIn(false);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen) {
+      previousFocusRef.current = document.activeElement;
       document.body.style.overflow = 'hidden';
       const handleKeyDown = (e) => {
         if (e.key === 'Escape') onClose?.();
@@ -112,6 +106,9 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
       return () => {
         document.body.style.overflow = '';
         document.removeEventListener('keydown', handleKeyDown);
+        if (previousFocusRef.current && typeof previousFocusRef.current.focus === 'function') {
+          previousFocusRef.current.focus();
+        }
       };
     }
   }, [isOpen, onClose]);
@@ -223,574 +220,501 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
     }
   };
 
-  const backdropVariants = {
-    hidden: { opacity: 0, backdropFilter: 'blur(0px)' },
-    visible: { 
-      opacity: 1, 
-      backdropFilter: 'blur(12px)',
-      transition: { duration: 0.4 }
-    }
-  };
 
-  const drawerVariants = {
-    hidden: { 
-      opacity: 0, 
-      scale: 0.9, 
-      y: 50,
-      rotateX: -15
-    },
-    visible: { 
-      opacity: 1, 
-      scale: 1, 
-      y: 0,
-      rotateX: 0,
-      transition: { 
-        type: 'spring', 
-        stiffness: 300, 
-        damping: 30,
-        duration: 0.6
-      }
-    },
-    exit: { 
-      opacity: 0, 
-      scale: 0.95, 
-      y: 30,
-      transition: { duration: 0.25, ease: 'easeIn' }
-    }
-  };
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          key="divergence-drawer-backdrop"
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4"
-          variants={backdropVariants}
-          initial="hidden"
-          animate="visible"
-          exit="hidden"
-          style={{ paddingTop: '80px' }} // Add top padding to avoid header
-        >
-          <motion.div
-            className="absolute left-0 right-0 bottom-0 bg-black/60"
-            style={{ top: '80px' }} // Start below header
-            onClick={onClose}
+        <>
+          <style>{`
+            /* Header Scrim */
+            .hzn-header-scrim {
+              position: fixed;
+              inset-inline: 0;
+              top: 0;
+              height: 72px;
+              z-index: 95;
+              pointer-events: none;
+              background: linear-gradient(to bottom, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.22) 35%, rgba(0, 0, 0, 0.00) 100%);
+              box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+              mix-blend-mode: normal;
+              opacity: 0;
+              transition: opacity ${HORIZON.motion.dur.open}ms cubic-bezier(0.19, 1, 0.22, 1);
+              will-change: opacity;
+            }
+            
+            .hzn-header-scrim--open {
+              opacity: 1;
+            }
+
+            .hzn-frosted-backdrop {
+              position: fixed;
+              inset: 0;
+              z-index: 80;
+              background: rgba(24, 26, 29, 0.55);
+              backdrop-filter: blur(26px) saturate(1.3) brightness(1.15);
+              -webkit-backdrop-filter: blur(26px) saturate(1.3) brightness(1.15);
+              opacity: 0;
+              transition: opacity ${HORIZON.motion.dur.open}ms cubic-bezier(0.19, 1, 0.22, 1);
+              will-change: opacity;
+              mask-image: linear-gradient(to bottom, transparent 0, black calc(72px + 8px));
+              -webkit-mask-image: linear-gradient(to bottom, transparent 0, black calc(72px + 8px));
+            }
+            
+            .hzn-frosted-backdrop--open {
+              opacity: 1;
+            }
+
+            .hzn-drawer {
+              position: fixed;
+              z-index: 90;
+              left: 0;
+              right: 0;
+              margin-inline: auto;
+              top: calc(72px + 14px);
+              max-width: min(820px, 90vw);
+              border: 1px solid rgba(255, 255, 255, 0.06);
+              background: linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(0,0,0,0.12));
+              box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+              border-radius: calc(${HORIZON.glass.radius}px);
+              overflow: visible;
+              
+              transform: translateY(8px) scale(0.96);
+              opacity: 0;
+              will-change: transform, opacity;
+              transition: 
+                transform ${HORIZON.motion.dur.open}ms cubic-bezier(0.19, 1, 0.22, 1),
+                opacity ${HORIZON.motion.dur.open}ms cubic-bezier(0.19, 1, 0.22, 1);
+            }
+            
+            .hzn-drawer--open {
+              transform: translateY(0) scale(1);
+              opacity: 1;
+            }
+
+            .hzn-drawer::before {
+              content: "";
+              position: absolute;
+              left: 0;
+              right: 0;
+              top: 0;
+              height: 24px;
+              pointer-events: none;
+              background: linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.03) 50%, rgba(255, 255, 255, 0.00) 100%);
+              mix-blend-mode: screen;
+              opacity: 0.75;
+              z-index: 1;
+              border-radius: ${HORIZON.glass.radius}px ${HORIZON.glass.radius}px 0 0;
+            }
+            
+            .hzn-drawer::after {
+              content: "";
+              position: absolute;
+              left: 12px;
+              right: 12px;
+              top: 0;
+              height: 1px;
+              pointer-events: none;
+              background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.08), transparent);
+              opacity: 0.9;
+              z-index: 1;
+            }
+
+            .ri-section {
+              margin-bottom: ${HORIZON.spacing.sectionGap}px;
+              line-height: 1.55;
+              opacity: 0;
+            }
+
+            .hzn-drawer--open .ri-section {
+              animation: giFadeUp 180ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
+            }
+            
+            .hzn-drawer--open .ri-section:nth-of-type(1) { animation-delay: 0ms; }
+            .hzn-drawer--open .ri-section:nth-of-type(2) { animation-delay: 60ms; }
+            .hzn-drawer--open .ri-section:nth-of-type(3) { animation-delay: 120ms; }
+            .hzn-drawer--open .ri-section:nth-of-type(4) { animation-delay: 180ms; }
+            
+            @keyframes giFadeUp {
+              from { opacity: 0; }
+              to { opacity: 1; }
+            }
+
+            .ri-section-title {
+              font-size: ${HORIZON.type.drawerTitle.size}px;
+              line-height: ${HORIZON.type.drawerTitle.lh}px;
+              font-weight: ${HORIZON.type.drawerTitle.weight};
+              letter-spacing: -0.01em;
+              text-transform: uppercase;
+              color: ${HORIZON.color.textTertiaryDark};
+              opacity: ${HORIZON.type.drawerTitle.opacity};
+              margin-bottom: 6px;
+              display: flex;
+              align-items: center;
+              gap: 6px;
+            }
+          `}</style>
+
+          {/* Header Scrim */}
+          <div
+            className={`hzn-header-scrim ${isAnimatingIn ? 'hzn-header-scrim--open' : ''}`}
+            aria-hidden="true"
           />
-          
-          <motion.div
-            key={divergence.id}
-            className="relative w-full max-w-4xl max-h-[90vh] overflow-hidden"
-            style={{
-              background: GLASS.drawer.bg,
-              backdropFilter: GLASS.drawer.blur,
-              WebkitBackdropFilter: GLASS.drawer.blur,
-              borderRadius: GLASS.drawer.radius,
-              border: GLASS.drawer.border,
-              boxShadow: `${GLASS.drawer.innerGlow}, 0 30px 80px -20px rgba(0,0,0,0.60), 0 0 60px ${theme.glowColor}`
-            }}
-            variants={drawerVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
+
+          {/* Frosted Backdrop */}
+          <div
+            className={`hzn-frosted-backdrop ${isAnimatingIn ? 'hzn-frosted-backdrop--open' : ''}`}
+            onClick={onClose}
+            role="presentation"
+            aria-hidden={!isOpen}
+          />
+
+          {/* Drawer Panel */}
+          <aside
+            ref={containerRef}
+            className={`hzn-drawer ${isAnimatingIn ? 'hzn-drawer--open' : ''}`}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Divergence Analysis"
+            onClick={(e) => e.stopPropagation()}
           >
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: '10%',
-              right: '10%',
-              height: '2px',
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
-              pointerEvents: 'none',
-              borderRadius: '32px 32px 0 0'
-            }} />
-
-            <motion.div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background: `radial-gradient(ellipse at 50% 20%, ${theme.glowColor} 0%, transparent 70%)`,
-                borderRadius: GLASS.drawer.radius
-              }}
-              animate={{ 
-                opacity: [0.15, 0.30, 0.15]
-              }}
-              transition={{ 
-                duration: 4, 
-                repeat: Infinity, 
-                ease: "easeInOut" 
-              }}
-            />
-
-            <motion.div 
-              className="relative p-8 border-b border-white/5"
-              variants={{
-                hidden: { opacity: 0, y: -20 },
-                visible: { opacity: 1, y: 0 }
-              }}
-            >
-              <div style={{
-                position: 'absolute',
-                bottom: 0,
-                left: '15%',
-                right: '15%',
-                height: '1px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)',
-                pointerEvents: 'none'
-              }} />
-              <div className="flex items-start justify-between">
-                <div className="flex items-start space-x-5">
-                  <motion.div 
-                    className="relative p-4 rounded-2xl border border-white/20 overflow-hidden"
-                    style={{ 
-                      background: `linear-gradient(135deg, ${theme.primaryColor}30, ${theme.primaryColor}15)`,
-                      backdropFilter: 'blur(10px)'
-                    }}
-                    whileHover={{ scale: 1.05, rotate: 5 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <Icon className="w-7 h-7 relative z-10" style={{ color: theme.primaryColor }} strokeWidth={2} />
-                  </motion.div>
-                  
-                  <div>
-                    <motion.h2 
-                      className="text-2xl font-black tracking-tight text-white mb-2"
-                      style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.2 }}
+            <div className="relative w-full max-h-[88vh]" style={{ overflow: 'hidden' }}>
+              {/* HEADER */}
+              <div
+                className="relative z-10 p-8 pb-4"
+                style={{
+                  borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+                }}
+              >
+                <div className="flex items-start justify-between gap-6 mb-4">
+                  <div className="flex-1 min-w-0">
+                    <h1
+                      className="mb-1"
+                      style={{
+                        fontSize: HORIZON.type.h1.size,
+                        fontWeight: HORIZON.type.h1.weight,
+                        letterSpacing: `${HORIZON.type.h1.tracking}em`,
+                        color: '#FFFFFF',
+                        opacity: HORIZON.type.h1.opacity,
+                      }}
                     >
-                      Divergence Analysis
-                    </motion.h2>
+                      {theme.label}
+                    </h1>
+                    
+                    <p
+                      className="mb-2"
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 500,
+                        color: '#AAB1B8',
+                        letterSpacing: '0.02em',
+                        opacity: 0.70,
+                      }}
+                    >
+                      {divergence.topic}
+                    </p>
+                    
+                    <p
+                      className="mb-0"
+                      style={{
+                        fontSize: HORIZON.type.meta.size,
+                        fontWeight: HORIZON.type.meta.weight,
+                        color: '#AAB1B8',
+                        opacity: HORIZON.type.meta.opacity,
+                        textTransform: 'uppercase',
+                        letterSpacing: `${HORIZON.type.meta.tracking}em`,
+                      }}
+                    >
+                      Generated today • Divergence Analysis • {(divergence.present_in || []).length + (divergence.missing_in || []).length} sources analyzed
+                    </p>
                   </div>
-                </div>
-                
-                <div className="flex items-center space-x-4">
-                  {/* Divergence Type Badge (moved from confidence spot) */}
-                  <motion.span 
-                    className={`px-4 py-2 text-sm font-bold rounded-full capitalize ${theme.textColor}`}
-                    style={{ 
-                      background: `linear-gradient(135deg, ${theme.primaryColor}25, ${theme.primaryColor}15)`,
-                      border: `1px solid ${theme.primaryColor}40`
-                    }}
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ delay: 0.3, type: "spring" }}
-                  >
-                    {theme.label}
-                  </motion.span>
 
-                  <div className="flex items-center space-x-2">
-                    <motion.button
-                      onClick={() => onNavigate('prev')}
-                      className="relative p-3 rounded-2xl overflow-hidden group"
+                  {/* Navigation Controls */}
+                  <div className="drawer-controls flex items-center gap-2">
+                      <button
+                      onClick={() => onNavigate?.('prev')}
+                      className="p-2.5 rounded-xl transition-all duration-180"
                       style={{
-                        background: GLASS.card.bg,
-                        backdropFilter: GLASS.card.blur,
-                        WebkitBackdropFilter: GLASS.card.blur,
-                        border: GLASS.card.border,
-                        boxShadow: GLASS.card.innerGlow
+                        background: 'rgba(255, 255, 255, 0.06)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        color: '#D7DBE0',
                       }}
-                      whileHover={{ scale: 1.05, boxShadow: `${GLASS.card.innerGlow}, 0 4px 15px rgba(0,0,0,0.20)` }}
-                      whileTap={{ scale: 0.95 }}
-                      aria-label="Previous Divergence"
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
+                        e.currentTarget.style.transform = 'scale(1.03)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                        e.currentTarget.style.transform = 'scale(1)';
+                      }}
+                      aria-label="Previous divergence"
                     >
-                      <ChevronLeft className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors relative z-10" strokeWidth={2} />
-                    </motion.button>
-                    <motion.button
-                      onClick={() => onNavigate('next')}
-                      className="relative p-3 rounded-2xl overflow-hidden group"
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+
+                    <button
+                      onClick={() => onNavigate?.('next')}
+                      className="p-2.5 rounded-xl transition-all duration-180"
                       style={{
-                        background: GLASS.card.bg,
-                        backdropFilter: GLASS.card.blur,
-                        WebkitBackdropFilter: GLASS.card.blur,
-                        border: GLASS.card.border,
-                        boxShadow: GLASS.card.innerGlow
+                        background: 'rgba(255, 255, 255, 0.06)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        color: '#D7DBE0',
                       }}
-                      whileHover={{ scale: 1.05, boxShadow: `${GLASS.card.innerGlow}, 0 4px 15px rgba(0,0,0,0.20)` }}
-                      whileTap={{ scale: 0.95 }}
-                      aria-label="Next Divergence"
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
+                        e.currentTarget.style.transform = 'scale(1.03)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                        e.currentTarget.style.transform = 'scale(1)';
+                      }}
+                      aria-label="Next divergence"
                     >
-                      <ChevronRight className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors relative z-10" strokeWidth={2} />
-                    </motion.button>
-                    <motion.button
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+
+                    <button
                       onClick={onClose}
-                      className="relative p-3 rounded-2xl overflow-hidden group"
+                      className="p-2.5 rounded-xl ml-2 transition-all duration-180"
                       style={{
-                        background: GLASS.card.bg,
-                        backdropFilter: GLASS.card.blur,
-                        WebkitBackdropFilter: GLASS.card.blur,
-                        border: GLASS.card.border,
-                        boxShadow: GLASS.card.innerGlow
+                        background: 'rgba(255, 255, 255, 0.06)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        color: '#D7DBE0',
                       }}
-                      whileHover={{ scale: 1.05, rotate: 90, boxShadow: `${GLASS.card.innerGlow}, 0 4px 15px rgba(0,0,0,0.20)` }}
-                      whileTap={{ scale: 0.95 }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
+                        e.currentTarget.style.transform = 'scale(1.03)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                        e.currentTarget.style.transform = 'scale(1)';
+                      }}
+                      aria-label="Close"
                     >
-                      <X className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors relative z-10" strokeWidth={2} />
-                    </motion.button>
+                      <X className="w-6 h-6" />
+                    </button>
                   </div>
                 </div>
               </div>
-            </motion.div>
 
-            <motion.div 
-              key={`${divergence.id}-content`}
-              className="overflow-y-auto max-h-[calc(90vh-140px)] p-8 space-y-10"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              {/* Morning Takeaway - Enhanced with Bold Keywords */}
-              <LuxurySection 
-                icon={Sparkles} 
-                title="Morning Takeaway" 
-                iconColor="#FDE68A"
-                delay={0}
+              {/* BODY */}
+              <div
+                className="relative z-10 overflow-y-auto"
+                style={{
+                  maxHeight: 'calc(88vh - 180px)',
+                  scrollbarWidth: 'thin',
+                  scrollbarColor: 'rgba(255, 255, 255, 0.18) rgba(255, 255, 255, 0.04)',
+                }}
               >
-                <motion.div 
-                  className="p-8 rounded-3xl relative overflow-hidden"
-                  style={{ 
-                    background: GLASS.card.bg,
-                    backdropFilter: GLASS.card.blur,
-                    WebkitBackdropFilter: GLASS.card.blur,
-                    borderRadius: GLASS.card.radius,
-                    border: GLASS.card.border,
-                    boxShadow: `${GLASS.card.innerGlow}, 0 12px 40px -15px rgba(0,0,0,0.30), 0 0 30px ${theme.glowColor}`
-                  }}
-                  whileHover={{ y: -3, boxShadow: `${GLASS.card.innerGlow}, 0 18px 50px -15px rgba(0,0,0,0.40), 0 0 40px ${theme.glowColor}` }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                >
-                  <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: '12%',
-                    right: '12%',
-                    height: '1.5px',
-                    background: `linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)`,
-                    pointerEvents: 'none'
-                  }} />
-                  <motion.div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{ 
-                      background: `radial-gradient(ellipse at 50% 30%, ${theme.glowColor} 0%, transparent 70%)`,
-                      borderRadius: GLASS.card.radius
-                    }}
-                    animate={{ opacity: [0.12, 0.25, 0.12] }}
-                    transition={{ duration: 4, repeat: Infinity }}
-                  />
-                  <div className="text-center relative z-10">
+                <style>{`
+                  .overflow-y-auto::-webkit-scrollbar {
+                    width: 6px;
+                  }
+                  .overflow-y-auto::-webkit-scrollbar-track {
+                    background: rgba(255, 255, 255, 0.04);
+                    border-radius: 6px;
+                  }
+                  .overflow-y-auto::-webkit-scrollbar-thumb {
+                    background: rgba(255, 255, 255, 0.18);
+                    border-radius: 6px;
+                  }
+                  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+                    background: rgba(255, 255, 255, 0.25);
+                  }
+                `}</style>
+
+                <div className="p-8 pt-4">
+                  {/* MORNING TAKEAWAY */}
+                  <LuxurySection 
+                    icon={Sparkles} 
+                    title="Morning Takeaway"
+                  >
                     <p 
-                      className="text-2xl font-bold text-white leading-relaxed tracking-wide"
-                      style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+                      style={{ 
+                        fontSize: `${HORIZON.type.body.size}px`, 
+                        lineHeight: `${HORIZON.type.body.lh}px`,
+                        fontWeight: HORIZON.type.body.weight,
+                        color: HORIZON.color.textBodyDark,
+                        maxWidth: '72ch'
+                      }}
                       dangerouslySetInnerHTML={{ __html: details.morning_takeaway }}
                     />
-                  </div>
-                </motion.div>
-              </LuxurySection>
+                  </LuxurySection>
 
-              {/* Divergence Topic */}
+                  <SectionDivider />
+
+                  {/* DETAILED ANALYSIS */}
+                  <LuxurySection 
+                    icon={Target} 
+                    title="Detailed Analysis"
+                  >
+                    <p 
+                      style={{ 
+                        fontSize: `${HORIZON.type.body.size}px`, 
+                        lineHeight: `${HORIZON.type.body.lh}px`,
+                        fontWeight: HORIZON.type.body.weight,
+                        color: HORIZON.color.textBodyDark,
+                        maxWidth: '72ch'
+                      }}
+                    >
+                      {divergence.detail || divergence.rationale || 'Analysis not available'}
+                    </p>
+                  </LuxurySection>
+
+                  <SectionDivider />
+
+              {/* AI RATIONALE */}
               <LuxurySection 
-                icon={Target} 
-                title="Divergence Topic" 
-                iconColor={theme.primaryColor}
-                delay={0.1}
+                icon={BrainCircuit} 
+                title="AI Rationale"
               >
-                <div className="p-6 rounded-2xl relative overflow-hidden"
-                     style={{
-                       background: GLASS.card.bg,
-                       backdropFilter: GLASS.card.blur,
-                       WebkitBackdropFilter: GLASS.card.blur,
-                       border: GLASS.card.border,
-                       boxShadow: GLASS.card.innerGlow
-                     }}>
-                  <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: '12%',
-                    right: '12%',
-                    height: '1px',
-                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
-                    pointerEvents: 'none'
-                  }} />
-                  <p className="text-lg font-medium leading-relaxed text-gray-100 relative z-10">
-                    {divergence.topic}
-                  </p>
+                <div className="space-y-3">
+                  {details.rationale_bullets.map((bullet, i) => (
+                    <motion.div
+                      key={i}
+                      className="flex items-start p-4 rounded-xl bg-white/5 border border-white/10"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.1 * i }}
+                      whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.08)' }}
+                    >
+                      <motion.div 
+                        className="w-1.5 h-1.5 rounded-full mt-2 mr-4 flex-shrink-0"
+                        style={{ background: theme.primaryColor }}
+                        animate={{ 
+                          scale: [1, 1.2, 1],
+                          opacity: [0.7, 1, 0.7]
+                        }}
+                        transition={{ 
+                          duration: 2, 
+                          repeat: Infinity, 
+                          delay: i * 0.3 
+                        }}
+                      />
+                      <p 
+                        style={{ 
+                          fontSize: `12.5px`, 
+                          lineHeight: `18px`,
+                          fontWeight: 400,
+                          color: HORIZON.color.textBodyDark
+                        }}
+                        dangerouslySetInnerHTML={{ __html: bullet }}
+                      />
+                    </motion.div>
+                  ))}
                 </div>
               </LuxurySection>
 
-              {/* AI Rationale */}
-              <LuxurySection 
-                icon={BrainCircuit} 
-                title="AI Rationale" 
-                iconColor="#34D399"
-                delay={0.2}
-              >
-                 <div className="space-y-4">
-                    {details.rationale_bullets.map((bullet, i) => (
-                      <motion.div
-                       key={i}
-                       className="flex items-start p-4 rounded-lg relative overflow-hidden"
-                       style={{
-                         background: GLASS.card.bg,
-                         backdropFilter: GLASS.card.blur,
-                         WebkitBackdropFilter: GLASS.card.blur,
-                         border: GLASS.card.border,
-                         boxShadow: GLASS.card.innerGlow
-                       }}
-                       initial={{ opacity: 0, x: -20 }}
-                       animate={{ opacity: 1, x: 0 }}
-                       transition={{ delay: 0.1 * i }}
-                       whileHover={{ y: -2, boxShadow: `${GLASS.card.innerGlow}, 0 8px 25px -10px rgba(0,0,0,0.30)` }}
-                      >
-                       <div style={{
-                         position: 'absolute',
-                         top: 0,
-                         left: '12%',
-                         right: '12%',
-                         height: '1px',
-                         background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
-                         pointerEvents: 'none'
-                       }} />
-                       <motion.div 
-                         className="w-1.5 h-1.5 rounded-full mt-2 mr-4 flex-shrink-0"
-                         style={{ background: theme.primaryColor, boxShadow: `0 0 6px ${theme.primaryColor}` }}
-                         animate={{ 
-                           scale: [1, 1.2, 1],
-                           boxShadow: [
-                             `0 0 6px ${theme.primaryColor}`,
-                             `0 0 12px ${theme.primaryColor}`,
-                             `0 0 6px ${theme.primaryColor}`
-                           ]
-                         }}
-                         transition={{ 
-                           duration: 2, 
-                           repeat: Infinity, 
-                           delay: i * 0.3 
-                         }}
-                       />
-                       <p 
-                         className="text-base text-gray-300 leading-relaxed relative z-10" 
-                         dangerouslySetInnerHTML={{ __html: bullet }}
-                       />
-                      </motion.div>
-                    ))}
-                 </div>
-              </LuxurySection>
+              <SectionDivider />
 
-              {/* Source Coverage - Unified Confidence Display */}
+              {/* SOURCE COVERAGE */}
               <LuxurySection 
                 icon={Users} 
-                title="Source Coverage" 
-                iconColor="#FBBF24"
-                delay={0.3}
+                title="Source Coverage"
               >
-                <div className="space-y-6">
-                  {/* Coverage Skew + Confidence - Connected Design */}
-                  <div className="p-6 rounded-2xl relative overflow-hidden space-y-4"
-                      style={{
-                        background: GLASS.card.bg,
-                        backdropFilter: GLASS.card.blur,
-                        WebkitBackdropFilter: GLASS.card.blur,
-                        border: GLASS.card.border,
-                        boxShadow: GLASS.card.innerGlow
-                      }}>
-                   <div style={{
-                     position: 'absolute',
-                     top: 0,
-                     left: '12%',
-                     right: '12%',
-                     height: '1px',
-                     background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
-                     pointerEvents: 'none'
-                   }} />
-                    {/* Coverage Skew Header */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <span className="text-2xl">{skew.indicator}</span>
-                        <div>
-                          <p className="text-sm font-medium text-gray-400">Coverage Skew</p>
-                          <p className={`text-lg font-bold ${skew.color}`}>
-                            {presentCount} source{presentCount !== 1 ? 's' : ''} vs. {missingCount} missing ({skew.level})
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Unified Confidence Bar */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-gray-400">Analysis Confidence</span>
-                        <span className="text-lg font-bold" style={{ color: theme.primaryColor }}>
-                          {Math.round((divergence.confidence || 0) * 100)}%
-                        </span>
-                      </div>
-                      <div className="w-full h-3 bg-black/40 rounded-full overflow-hidden">
+                <div className="space-y-4">
+                  {/* Confidence Display */}
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
+                    <span className="text-sm font-medium" style={{ color: HORIZON.color.textTertiaryDark }}>
+                      Analysis Confidence
+                    </span>
+                    <div className="flex items-center space-x-3">
+                      <div className="w-24 h-2 bg-black/40 rounded-full overflow-hidden">
                         <motion.div
                           className="h-full rounded-full"
                           style={{ 
                             background: `linear-gradient(90deg, ${theme.primaryColor}90, ${theme.primaryColor}ff)`,
-                            boxShadow: `0 0 10px ${theme.glowColor}`
                           }}
                           initial={{ width: '0%' }}
                           animate={{ width: `${(divergence.confidence || 0) * 100}%` }}
-                          transition={{ duration: 2, delay: 0.5, ease: 'easeOut' }}
+                          transition={{ duration: 1.5, delay: 0.3, ease: 'easeOut' }}
                         />
                       </div>
+                      <span className="text-lg font-bold" style={{ color: theme.primaryColor }}>
+                        {Math.round((divergence.confidence || 0) * 100)}%
+                      </span>
                     </div>
                   </div>
 
-                  {/* Source Breakdown */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                   <div className="p-5 rounded-2xl relative overflow-hidden"
-                        style={{
-                          background: 'linear-gradient(135deg, rgba(52, 211, 153, 0.12) 0%, rgba(255,255,255,0.04) 100%)',
-                          backdropFilter: GLASS.card.blur,
-                          WebkitBackdropFilter: GLASS.card.blur,
-                          border: '1px solid rgba(52, 211, 153, 0.22)',
-                          boxShadow: `${GLASS.card.innerGlow}, 0 0 20px rgba(52, 211, 153, 0.08)`
-                        }}>
-                     <div style={{
-                       position: 'absolute',
-                       top: 0,
-                       left: '12%',
-                       right: '12%',
-                       height: '1px',
-                       background: 'linear-gradient(90deg, transparent, rgba(52, 211, 153, 0.30), transparent)',
-                       pointerEvents: 'none'
-                     }} />
-                      <div className="flex items-center text-green-400 mb-4 relative z-10">
-                        <CheckCircle className="w-5 h-5 mr-3" style={{ filter: 'drop-shadow(0 0 6px rgba(52, 211, 153, 0.40))' }} />
-                        <h4 className="font-semibold text-lg">Present In</h4>
-                      </div>
-                      <div className="flex flex-wrap gap-3 relative z-10">
-                        {(divergence.present_in || []).map(src => (
-                          <SourceLogo key={src} source={src} />
-                        ))}
-                      </div>
-                    </div>
-                     <div className="p-5 rounded-2xl relative overflow-hidden"
-                          style={{
-                            background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(255,255,255,0.04) 100%)',
-                            backdropFilter: GLASS.card.blur,
-                            WebkitBackdropFilter: GLASS.card.blur,
-                            border: '1px solid rgba(239, 68, 68, 0.22)',
-                            boxShadow: `${GLASS.card.innerGlow}, 0 0 20px rgba(239, 68, 68, 0.08)`
-                          }}>
-                       <div style={{
-                         position: 'absolute',
-                         top: 0,
-                         left: '12%',
-                         right: '12%',
-                         height: '1px',
-                         background: 'linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.30), transparent)',
-                         pointerEvents: 'none'
-                       }} />
-                      <div className="flex items-center text-red-400 mb-4 relative z-10">
-                        <XCircle className="w-5 h-5 mr-3" style={{ filter: 'drop-shadow(0 0 6px rgba(239, 68, 68, 0.40))' }} />
-                        <h4 className="font-semibold text-lg">Missing In</h4>
-                      </div>
-                      <div className="flex flex-wrap gap-3 relative z-10">
-                         {(divergence.missing_in || []).map(src => (
-                          <SourceLogo key={src} source={src} />
-                        ))}
-                      </div>
+                  {/* Coverage Skew */}
+                  <div className="flex items-center space-x-3 p-4 rounded-xl bg-white/5 border border-white/10">
+                    <span className="text-2xl">{skew.indicator}</span>
+                    <div>
+                      <p className="text-xs font-medium uppercase tracking-wide" style={{ color: HORIZON.color.textTertiaryDark }}>Coverage Skew</p>
+                      <p className={`text-sm font-bold ${skew.color}`}>
+                        {presentCount} source{presentCount !== 1 ? 's' : ''} vs. {missingCount} missing
+                      </p>
                     </div>
                   </div>
                 </div>
               </LuxurySection>
 
-              {/* Forward Outlook - Enhanced Visual Weight */}
-              <motion.div
-                className="space-y-6"
-                variants={{
-                  hidden: { opacity: 0, y: 30 },
-                  visible: { opacity: 1, y: 0 }
-                }}
-                transition={{ 
-                  delay: 0.4,
-                  type: "spring",
-                  stiffness: 200,
-                  damping: 20
-                }}
-              >
-                <div className="flex items-center space-x-4">
-                  <motion.div 
-                    className="relative p-3 rounded-xl border border-white/20 overflow-hidden"
-                    style={{ 
-                      background: `linear-gradient(135deg, #C4B5FD20, #C4B5FD10)`,
-                      backdropFilter: 'blur(10px)'
-                    }}
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    transition={{ type: "spring", stiffness: 300 }}
+              <SectionDivider />
+
+                  {/* SOURCE BREAKDOWN */}
+                  <LuxurySection 
+                    icon={BookOpen} 
+                    title="Source Breakdown"
                   >
-                    <Zap className="w-5 h-5 relative z-10" style={{ color: "#C4B5FD" }} strokeWidth={2.5} />
-                  </motion.div>
-                  
-                  <div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="p-5 rounded-xl bg-green-900/10 border border-green-500/20">
+                        <div className="flex items-center text-green-400 mb-4">
+                          <CheckCircle className="w-5 h-5 mr-3" />
+                          <h4 className="font-semibold">Present In</h4>
+                        </div>
+                        <div className="flex flex-wrap gap-3">
+                          {(divergence.present_in || []).map(src => (
+                            <SourceLogo key={src} source={src} />
+                          ))}
+                        </div>
+                      </div>
+                      <div className="p-5 rounded-xl bg-red-900/10 border border-red-500/20">
+                        <div className="flex items-center text-red-400 mb-4">
+                          <XCircle className="w-5 h-5 mr-3" />
+                          <h4 className="font-semibold">Missing In</h4>
+                        </div>
+                        <div className="flex flex-wrap gap-3">
+                          {(divergence.missing_in || []).map(src => (
+                            <SourceLogo key={src} source={src} />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </LuxurySection>
+
+                  <SectionDivider />
+
+                  {/* FORWARD OUTLOOK */}
+                  <LuxurySection 
+                    icon={Zap} 
+                    title="⚡ Forward Outlook"
+                  >
                     <motion.div
-                      className="relative inline-block"
+                      className="p-6 rounded-2xl bg-violet-500/10 border border-violet-500/20"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      transition={{ delay: 0.6 }}
+                      transition={{ delay: 0.4 }}
+                      whileHover={{ scale: 1.01 }}
                     >
-                      {/* Gradient accent bar behind title */}
-                      <motion.div
-                        className="absolute inset-0 rounded-lg opacity-30"
+                      <p 
                         style={{ 
-                          background: `linear-gradient(90deg, #C4B5FD 0%, transparent 100%)`,
+                          fontSize: `${HORIZON.type.body.size}px`, 
+                          lineHeight: `${HORIZON.type.body.lh}px`,
+                          fontWeight: HORIZON.type.body.weight,
+                          color: '#E9D5FF',
+                          textAlign: 'center',
+                          maxWidth: '64ch',
+                          margin: '0 auto'
                         }}
-                        animate={{ 
-                          scaleX: [0, 1],
-                          opacity: [0, 0.3, 0.3]
-                        }}
-                        transition={{ delay: 0.8, duration: 1, ease: "easeOut" }}
+                        dangerouslySetInnerHTML={{ __html: details.forward_outlook }}
                       />
-                      <h3 className="text-xl font-bold text-white tracking-tight relative z-10 px-2 py-1"
-                         style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
-                        ⚡ Forward Outlook
-                      </h3>
                     </motion.div>
-                  </div>
+                  </LuxurySection>
                 </div>
-                
-                <motion.div
-                  className="p-8 rounded-3xl relative overflow-hidden"
-                  style={{ 
-                    background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.14) 0%, rgba(255,255,255,0.04) 100%)',
-                    backdropFilter: GLASS.card.blur,
-                    WebkitBackdropFilter: GLASS.card.blur,
-                    border: '1px solid rgba(139, 92, 246, 0.25)',
-                    boxShadow: `${GLASS.card.innerGlow}, 0 12px 40px -15px rgba(0,0,0,0.30), 0 0 35px rgba(139, 92, 246, 0.15)`
-                  }}
-                  whileHover={{ y: -3, boxShadow: `${GLASS.card.innerGlow}, 0 18px 50px -15px rgba(0,0,0,0.40), 0 0 45px rgba(139, 92, 246, 0.20)` }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                >
-                  <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: '12%',
-                    right: '12%',
-                    height: '1.5px',
-                    background: 'linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.35), transparent)',
-                    pointerEvents: 'none'
-                  }} />
-                  <motion.div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{ 
-                      background: 'radial-gradient(ellipse at 50% 30%, rgba(139, 92, 246, 0.12) 0%, transparent 70%)',
-                      borderRadius: GLASS.card.radius
-                    }}
-                    animate={{ opacity: [0.15, 0.30, 0.15] }}
-                    transition={{ duration: 5, repeat: Infinity }}
-                  />
-                  <p 
-                    className="text-xl font-semibold text-violet-100 relative z-10 leading-relaxed text-center"
-                    style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
-                    dangerouslySetInnerHTML={{ __html: details.forward_outlook }}
-                  />
-                </motion.div>
-              </motion.div>
-            </motion.div>
-          </motion.div>
-        </motion.div>
+              </div>
+            </div>
+          </aside>
+        </>
       )}
     </AnimatePresence>
   );
