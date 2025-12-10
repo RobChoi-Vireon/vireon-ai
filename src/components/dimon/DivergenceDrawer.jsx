@@ -49,18 +49,7 @@ const SectionDivider = () => (
   />
 );
 
-const LuxurySection = ({ icon: Icon, title, children, iconColor = "#4F46E5", delay = 0 }) => (
-  <motion.div 
-    className="ri-section"
-    style={{ marginBottom: `${HORIZON.spacing.sectionGap}px` }}
-  >
-    <h3 className="ri-section-title">
-      <Icon className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-      {title}
-    </h3>
-    {children}
-  </motion.div>
-);
+
 
 const SourceLogo = ({ source }) => {
   const logos = {
@@ -150,41 +139,41 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
 
   const getDivergenceDetails = (divergence) => {
     if (!divergence) return {
-      morning_takeaway: "Market **narrative divergence** detected across sources.",
-      rationale_bullets: ["Narrative inconsistency identified across publications"],
-      forward_outlook: "Monitor for narrative convergence or escalation."
+      morning_takeaway: "Different news sources are telling different stories about the same market situation.",
+      rationale_bullets: ["Major publications disagree on how to interpret recent market events"],
+      forward_outlook: "Watch to see if sources start agreeing or if the disagreement grows stronger."
     };
 
     switch (divergence.id) {
       case 'em_credit':
         return {
-          morning_takeaway: "**Credit stress** is **underreported** — Street may be **underestimating systemic risk** in emerging markets.",
+          morning_takeaway: "Only a few sources are reporting on serious borrowing problems in developing countries, which could mean bigger risks ahead.",
           rationale_bullets: [
-            "**Spread decompression** signals tightening financial conditions",
-            "**Coverage bias** leaves Street blind to systemic EM corporate risk",
-            "**Liquidity risks** threaten spillover into developed market credit"
+            "Borrowing costs are rising sharply for companies in developing countries",
+            "Most news sources aren't covering this problem, leaving investors unaware",
+            "These borrowing difficulties could spread to other markets if they get worse"
           ],
-          forward_outlook: "If **EM HY spreads breach 600 bps**, expect contagion into US high-yield and broader **risk-off flows** into Treasuries."
+          forward_outlook: "If borrowing costs keep rising in developing countries, it could start affecting corporate bonds in the US and push investors toward safer government bonds."
         };
       case 'energy_vs_industrials':
         return {
-          morning_takeaway: "**Energy resilience** masked by **industrial weakness** — sector rotation signals may be **misfiring**.",
+          morning_takeaway: "Energy companies are doing well while industrial companies struggle, but some sources aren't highlighting this important difference.",
           rationale_bullets: [
-            "**Margin dispersion** widening between energy and industrial sectors",
-            "**Commodity exposure** creating performance divergence",
-            "**Cyclical indicators** showing mixed signals across industrial verticals"
+            "Profit margins between energy and industrial companies are growing further apart",
+            "Energy companies benefit from commodity prices while industrials face higher costs",
+            "Traditional indicators that track business cycles are showing conflicting signals"
           ],
-          forward_outlook: "Watch for **industrial capex guidance revisions** in Q4 earnings — could trigger broader **cyclical sector reassessment**."
+          forward_outlook: "Pay attention to what industrial companies say about their spending plans in upcoming earnings reports - it could signal broader economic concerns."
         };
       default:
         return {
-          morning_takeaway: "Market **narrative fracture** detected across **key publications**.",
+          morning_takeaway: "Major news sources are reporting conflicting views on recent market developments.",
           rationale_bullets: [
-            "**Source disagreement** on market implications",
-            "**Coverage gaps** creating information asymmetries",
-            "**Narrative conflicts** may signal emerging market themes"
+            "Different sources disagree on what recent events mean for markets",
+            "Some sources are covering important stories that others are ignoring",
+            "These conflicts might point to new market trends that are just starting"
           ],
-          forward_outlook: "Monitor for **narrative convergence** or escalation in coming sessions."
+          forward_outlook: "Watch to see if news sources start telling the same story or if disagreements continue to grow."
         };
     }
   };
@@ -193,9 +182,9 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
     const totalCount = presentCount + missingCount;
     const ratio = Math.abs(presentCount - missingCount) / totalCount;
     
-    if (ratio >= 0.7) return { level: 'High Skew', color: 'text-red-400', indicator: '🔴' };
-    if (ratio >= 0.4) return { level: 'Moderate Skew', color: 'text-amber-400', indicator: '🟡' };
-    return { level: 'Low Skew', color: 'text-green-400', indicator: '🟢' };
+    if (ratio >= 0.7) return { level: 'High', color: 'text-red-400' };
+    if (ratio >= 0.4) return { level: 'Moderate', color: 'text-amber-400' };
+    return { level: 'Low', color: 'text-green-400' };
   };
 
   if (!isOpen || !divergence) return null;
@@ -525,57 +514,60 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
 
                 <div className="p-8 pt-4">
                   {/* MORNING TAKEAWAY */}
-                  <LuxurySection 
-                    icon={Sparkles} 
-                    title="Morning Takeaway"
-                  >
+                  <section className="ri-section">
+                    <h3 className="ri-section-title">
+                      <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                      Morning Takeaway
+                    </h3>
                     <p 
                       style={{ 
                         fontSize: `${HORIZON.type.body.size}px`, 
                         lineHeight: `${HORIZON.type.body.lh}px`,
-                        fontWeight: HORIZON.type.body.weight,
+                        fontWeight: 600,
                         color: HORIZON.color.textBodyDark,
                         maxWidth: '72ch'
                       }}
                       dangerouslySetInnerHTML={{ __html: details.morning_takeaway }}
                     />
-                  </LuxurySection>
+                  </section>
 
                   <SectionDivider />
 
-                  {/* DETAILED ANALYSIS */}
-                  <LuxurySection 
-                    icon={Target} 
-                    title="Detailed Analysis"
-                  >
+                  {/* WHAT'S HAPPENING */}
+                  <section className="ri-section">
+                    <h3 className="ri-section-title">
+                      <Target className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                      What's Happening
+                    </h3>
                     <p 
                       style={{ 
-                        fontSize: `${HORIZON.type.body.size}px`, 
-                        lineHeight: `${HORIZON.type.body.lh}px`,
-                        fontWeight: HORIZON.type.body.weight,
-                        color: HORIZON.color.textBodyDark,
+                        fontSize: `13.5px`, 
+                        lineHeight: `20px`,
+                        fontWeight: 500,
+                        color: HORIZON.color.textSecondaryDark,
                         maxWidth: '72ch'
                       }}
                     >
-                      {divergence.detail || divergence.rationale || 'Analysis not available'}
+                      {divergence.detail || divergence.rationale || 'Different sources are covering this topic differently'}
                     </p>
-                  </LuxurySection>
+                  </section>
 
                   <SectionDivider />
 
-              {/* AI RATIONALE */}
-              <LuxurySection 
-                icon={BrainCircuit} 
-                title="AI Rationale"
-              >
+              {/* WHY THIS MATTERS */}
+              <section className="ri-section">
+                <h3 className="ri-section-title">
+                  <BrainCircuit className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                  Why This Matters
+                </h3>
                 <div className="space-y-3">
                   {details.rationale_bullets.map((bullet, i) => (
                     <motion.div
                       key={i}
                       className="flex items-start p-4 rounded-xl bg-white/5 border border-white/10"
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.1 * i }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: i * 0.1 }}
                       whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.08)' }}
                     >
                       <motion.div 
@@ -593,9 +585,9 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                       />
                       <p 
                         style={{ 
-                          fontSize: `12.5px`, 
-                          lineHeight: `18px`,
-                          fontWeight: 400,
+                          fontSize: `13.5px`, 
+                          lineHeight: `20px`,
+                          fontWeight: 500,
                           color: HORIZON.color.textBodyDark
                         }}
                         dangerouslySetInnerHTML={{ __html: bullet }}
@@ -603,15 +595,16 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                     </motion.div>
                   ))}
                 </div>
-              </LuxurySection>
+              </section>
 
               <SectionDivider />
 
               {/* SOURCE COVERAGE */}
-              <LuxurySection 
-                icon={Users} 
-                title="Source Coverage"
-              >
+              <section className="ri-section">
+                <h3 className="ri-section-title">
+                  <Users className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                  Source Coverage
+                </h3>
                 <div className="space-y-4">
                   {/* Confidence Display */}
                   <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
@@ -637,30 +630,35 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                   </div>
 
                   {/* Coverage Skew */}
-                  <div className="flex items-center space-x-3 p-4 rounded-xl bg-white/5 border border-white/10">
-                    <span className="text-2xl">{skew.indicator}</span>
-                    <div>
-                      <p className="text-xs font-medium uppercase tracking-wide" style={{ color: HORIZON.color.textTertiaryDark }}>Coverage Skew</p>
-                      <p className={`text-sm font-bold ${skew.color}`}>
-                        {presentCount} source{presentCount !== 1 ? 's' : ''} vs. {missingCount} missing
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
+                    <span className="text-sm font-medium" style={{ color: HORIZON.color.textTertiaryDark }}>
+                      Coverage Skew
+                    </span>
+                    <div className="text-right">
+                      <p className={`text-base font-bold ${skew.color}`}>
+                        {presentCount} vs {missingCount}
+                      </p>
+                      <p className="text-xs" style={{ color: HORIZON.color.textTertiaryDark }}>
+                        {skew.level} imbalance
                       </p>
                     </div>
                   </div>
                 </div>
-              </LuxurySection>
+                </section>
 
               <SectionDivider />
 
                   {/* SOURCE BREAKDOWN */}
-                  <LuxurySection 
-                    icon={BookOpen} 
-                    title="Source Breakdown"
-                  >
+                  <section className="ri-section">
+                    <h3 className="ri-section-title">
+                      <BookOpen className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                      Source Breakdown
+                    </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="p-5 rounded-xl bg-green-900/10 border border-green-500/20">
                         <div className="flex items-center text-green-400 mb-4">
                           <CheckCircle className="w-5 h-5 mr-3" />
-                          <h4 className="font-semibold">Present In</h4>
+                          <h4 className="text-sm font-semibold">Reported By</h4>
                         </div>
                         <div className="flex flex-wrap gap-3">
                           {(divergence.present_in || []).map(src => (
@@ -671,7 +669,7 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                       <div className="p-5 rounded-xl bg-red-900/10 border border-red-500/20">
                         <div className="flex items-center text-red-400 mb-4">
                           <XCircle className="w-5 h-5 mr-3" />
-                          <h4 className="font-semibold">Missing In</h4>
+                          <h4 className="text-sm font-semibold">Not Covered By</h4>
                         </div>
                         <div className="flex flex-wrap gap-3">
                           {(divergence.missing_in || []).map(src => (
@@ -680,15 +678,16 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                         </div>
                       </div>
                     </div>
-                  </LuxurySection>
+                  </section>
 
                   <SectionDivider />
 
-                  {/* FORWARD OUTLOOK */}
-                  <LuxurySection 
-                    icon={Zap} 
-                    title="⚡ Forward Outlook"
-                  >
+                  {/* WHAT TO WATCH */}
+                  <section className="ri-section">
+                    <h3 className="ri-section-title">
+                      <Zap className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                      What To Watch
+                    </h3>
                     <motion.div
                       className="p-6 rounded-2xl bg-violet-500/10 border border-violet-500/20"
                       initial={{ opacity: 0 }}
@@ -698,18 +697,16 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                     >
                       <p 
                         style={{ 
-                          fontSize: `${HORIZON.type.body.size}px`, 
-                          lineHeight: `${HORIZON.type.body.lh}px`,
-                          fontWeight: HORIZON.type.body.weight,
+                          fontSize: `15px`, 
+                          lineHeight: `23px`,
+                          fontWeight: 500,
                           color: '#E9D5FF',
-                          textAlign: 'center',
-                          maxWidth: '64ch',
-                          margin: '0 auto'
+                          maxWidth: '64ch'
                         }}
                         dangerouslySetInnerHTML={{ __html: details.forward_outlook }}
                       />
                     </motion.div>
-                  </LuxurySection>
+                  </section>
                 </div>
               </div>
             </div>
