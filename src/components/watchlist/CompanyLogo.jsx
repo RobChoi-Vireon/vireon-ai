@@ -22,13 +22,15 @@ const CompanyLogo = ({ ticker, className }) => {
     return "#" + "00000".substring(0, 6 - c.length) + c;
   };
   
-  if (logoSrc) {
+  const [imageError, setImageError] = React.useState(false);
+
+  if (logoSrc && !imageError) {
     return (
       <img 
         src={logoSrc} 
         alt={`${ticker} logo`} 
-        className={`${className} rounded-xl bg-white/10 backdrop-blur-sm`}
-        onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+        className={`${className} rounded-xl bg-white/10 backdrop-blur-sm p-2`}
+        onError={() => setImageError(true)}
       />
     );
   }
