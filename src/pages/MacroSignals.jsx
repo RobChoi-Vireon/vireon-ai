@@ -321,45 +321,6 @@ const MOCK_DATA = {
       influence: 5,
       reliability: 5,
       historical_bias: "Global macro focus, emerging markets expertise"
-    },
-    {
-      source: "economist",
-      name: "The Economist",
-      specialty: "Analysis",
-      topline: "Long-term structural changes reshaping global economy",
-      policy: "Central banks facing difficult trade-offs",
-      market_macro: "Emerging markets diverging in recovery paths",
-      tones: ["neutral", "cautionary"],
-      risk_flags: ["policy", "growth", "geopolitical"],
-      influence: 4,
-      reliability: 5,
-      historical_bias: "Long-term perspective, analytical depth"
-    },
-    {
-      source: "axios",
-      name: "Axios",
-      specialty: "Breaking",
-      topline: "Key policy decisions expected this week",
-      policy: "Congressional committees preparing new legislation",
-      market_macro: "Markets reacting to latest economic data",
-      tones: ["neutral"],
-      risk_flags: ["policy", "regulatory"],
-      influence: 3,
-      reliability: 4,
-      historical_bias: "Fast-moving news, political focus"
-    },
-    {
-      source: "politico",
-      name: "Politico",
-      specialty: "Policy",
-      topline: "Political uncertainty affecting business confidence",
-      policy: "Election cycle creating regulatory uncertainty",
-      market_macro: "Policy shifts impacting investment decisions",
-      tones: ["cautionary"],
-      risk_flags: ["regulatory", "policy", "geopolitical"],
-      influence: 3,
-      reliability: 4,
-      historical_bias: "Political insider perspective"
     }
   ],
   trajectory: [

@@ -162,24 +162,24 @@ export default function ProLevelCard({ data, theme }) {
                   transition={{ delay: 0.1 * index, duration: 0.5 }}
                 >
                   <h4 className="text-xl font-bold text-purple-300 mb-6">{formula.name}</h4>
-                  <div className="bg-black/40 p-4 sm:p-6 rounded-xl border border-purple-500/40 mb-6 overflow-x-auto">
-                   <code className="text-purple-200 font-mono text-base sm:text-xl break-words">{formula.expression}</code>
+                  <div className="bg-black/40 p-6 rounded-xl border border-purple-500/40 mb-6">
+                    <code className="text-purple-200 font-mono text-xl">{formula.expression}</code>
                   </div>
                   {formula.variables && formula.variables.length > 0 && (
                     <div className="space-y-4">
                       <h5 className="text-lg font-semibold text-gray-300">Variables:</h5>
-                      <div className="grid grid-cols-1 gap-3 sm:gap-4">
-                       {formula.variables.map((variable, varIndex) => (
-                         <div key={varIndex} className="flex items-start sm:items-center space-x-3 sm:space-x-4 p-3 sm:p-4 rounded-lg bg-white/5 border border-white/10">
-                           <code className="text-purple-300 font-mono font-bold text-base sm:text-lg flex-shrink-0">{variable.symbol}</code>
-                           <div className="flex-1 min-w-0">
-                             <span className="text-gray-200 text-sm sm:text-base break-words">{variable.meaning}</span>
-                             {variable.units && (
-                               <span className="text-gray-400 text-xs sm:text-sm ml-2">({variable.units})</span>
-                             )}
-                           </div>
-                         </div>
-                       ))}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {formula.variables.map((variable, varIndex) => (
+                          <div key={varIndex} className="flex items-center space-x-4 p-4 rounded-lg bg-white/5 border border-white/10">
+                            <code className="text-purple-300 font-mono font-bold text-lg">{variable.symbol}</code>
+                            <div className="flex-1">
+                              <span className="text-gray-200 text-base">{variable.meaning}</span>
+                              {variable.units && (
+                                <span className="text-gray-400 text-sm ml-2">({variable.units})</span>
+                              )}
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   )}
@@ -191,7 +191,7 @@ export default function ProLevelCard({ data, theme }) {
       </div>
 
       {/* Enhanced bottom padding to prevent cutoff */}
-      <div className="h-20 sm:h-12" />
+      <div className="h-12" />
 
       {/* Floating accent elements */}
       <motion.div 

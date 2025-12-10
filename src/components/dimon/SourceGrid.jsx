@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import SourceAccordion from './SourceAccordion';
 
-const orderedSources = ["wapo", "nyt", "wsj", "ft", "economist", "axios", "politico"];
+const orderedSources = ["wapo", "nyt", "wsj", "ft", "economist"];
 
 const generateAggregateSkew = (sources) => {
   if (!sources || sources.length === 0) return "No source analysis available.";

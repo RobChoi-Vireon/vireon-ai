@@ -127,7 +127,7 @@ export default function TermSearch({ onSearch, theme, isLoading, history, setHis
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-full mt-4 w-full p-4 rounded-3xl z-50 backdrop-blur-2xl border border-white/20"
+              className="absolute top-full mt-4 w-full p-4 rounded-3xl z-20 backdrop-blur-2xl border border-white/20"
               style={{ 
                 background: 'linear-gradient(135deg, rgba(26, 29, 41, 0.95) 0%, rgba(18, 20, 28, 0.95) 100%)'
               }}
@@ -190,17 +190,17 @@ export default function TermSearch({ onSearch, theme, isLoading, history, setHis
       </form>
 
       {/* Working trending chips */}
-      <div className="mt-8 flex flex-wrap justify-center gap-3 sm:gap-4 max-w-3xl mx-auto px-4">
+      <div className="mt-8 flex flex-wrap justify-center gap-4 max-w-3xl mx-auto">
         {trendingChips.map((chip, index) => {
           const IconComponent = chip.icon;
           return (
             <button
               key={chip.id}
               onClick={() => handleChipClick(chip)}
-              className="flex items-center space-x-2 sm:space-x-3 px-4 sm:px-6 py-2 sm:py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all duration-200 backdrop-blur-xl border border-white/20 hover:border-white/40 text-gray-300 hover:text-white group"
+              className="flex items-center space-x-3 px-6 py-3 rounded-2xl text-sm font-bold transition-all duration-200 backdrop-blur-xl border border-white/20 hover:border-white/40 text-gray-300 hover:text-white group"
               style={{ background: 'rgba(255, 255, 255, 0.05)' }}
             >
-              <IconComponent className="w-3.5 sm:w-4 h-3.5 sm:h-4 group-hover:text-purple-400 transition-colors" />
+              <IconComponent className="w-4 h-4 group-hover:text-purple-400 transition-colors" />
               <span>{chip.label}</span>
             </button>
           );

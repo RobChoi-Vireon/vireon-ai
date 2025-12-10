@@ -1,55 +1,59 @@
-// 🔒 DESIGN LOCKED — OS HORIZON V4.0
-// Matches MemoDrawer design system
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, AlertCircle, Eye, GitMerge, Target, BrainCircuit, Users, CheckCircle, XCircle, ChevronLeft, ChevronRight, Sparkles, TrendingUp, Newspaper, Zap, BookOpen } from 'lucide-react';
+import { X, AlertCircle, Eye, GitMerge, Target, BrainCircuit, Users, CheckCircle, XCircle, ChevronLeft, ChevronRight, Sparkles, TrendingUp, Newspaper, Zap } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
-// ============================================================================
-// HORIZON OS TOKENS — Matching MemoDrawer
-// ============================================================================
-const HORIZON = {
-  glass: {
-    radius: 24,
-    blur: 26,
-  },
-  type: {
-    h1: { size: 22, weight: 600, tracking: -0.03, opacity: 0.92 },
-    drawerTitle: { size: 15.5, lh: 20, weight: 600, opacity: 0.70 },
-    body: { size: 14.5, lh: 22, weight: 500, opacity: 0.82 },
-    meta: { size: 12, weight: 500, tracking: 0.06, opacity: 0.65 },
-  },
-  color: {
-    accent: '#7DD3FC',
-    textBodyDark: 'rgba(255, 255, 255, 0.90)',
-    textSecondaryDark: 'rgba(255, 255, 255, 0.75)',
-    textTertiaryDark: 'rgba(255, 255, 255, 0.65)',
-  },
-  spacing: {
-    sectionGap: 20,
-  },
-  motion: {
-    ease: [0.18, 0.82, 0.23, 1],
-    dur: { open: 260, close: 260 },
-  },
-};
-
-// ============================================================================
-// SECTION DIVIDER
-// ============================================================================
-const SectionDivider = () => (
-  <div 
-    className="my-6"
-    style={{
-      height: '1px',
-      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)'
+const LuxurySection = ({ icon: Icon, title, children, iconColor = "#4F46E5", delay = 0 }) => (
+  <motion.div 
+    className="space-y-6"
+    variants={{
+      hidden: { opacity: 0, y: 30 },
+      visible: { opacity: 1, y: 0 }
     }}
-    aria-hidden="true"
-  />
+    transition={{ 
+      delay,
+      type: "spring",
+      stiffness: 200,
+      damping: 20
+    }}
+  >
+    <div className="flex items-center space-x-4">
+      <motion.div 
+        className="relative p-3 rounded-xl border border-white/20 overflow-hidden"
+        style={{ 
+          background: `linear-gradient(135deg, ${iconColor}20, ${iconColor}10)`,
+          backdropFilter: 'blur(10px)'
+        }}
+        whileHover={{ scale: 1.1, rotate: 5 }}
+        transition={{ type: "spring", stiffness: 300 }}
+      >
+        <motion.div
+          className="absolute inset-0 rounded-xl opacity-0 hover:opacity-100 transition-opacity duration-300"
+          style={{ 
+            background: `radial-gradient(circle at center, ${iconColor}30 0%, transparent 70%)`
+          }}
+        />
+        <Icon className="w-5 h-5 relative z-10" style={{ color: iconColor }} strokeWidth={2.5} />
+      </motion.div>
+      
+      <div>
+        <h3 className="text-xl font-bold text-white tracking-tight"
+           style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+          {title}
+        </h3>
+        <motion.div 
+          className="h-0.5 mt-1 rounded-full"
+          style={{ background: `linear-gradient(90deg, ${iconColor} 0%, transparent 100%)` }}
+          initial={{ width: 0 }}
+          animate={{ width: '100%' }}
+          transition={{ delay: delay + 0.2, duration: 0.8, ease: "easeOut" }}
+        />
+      </div>
+    </div>
+    {children}
+  </motion.div>
 );
-
-
 
 const SourceLogo = ({ source }) => {
   const logos = {
@@ -70,23 +74,8 @@ const SourceLogo = ({ source }) => {
 };
 
 export default function DivergenceDrawer({ isOpen, onClose, divergence, onNavigate }) {
-  const [isAnimatingIn, setIsAnimatingIn] = useState(false);
-  const containerRef = useRef(null);
-  const previousFocusRef = useRef(null);
-
   useEffect(() => {
     if (isOpen) {
-      requestAnimationFrame(() => {
-        setIsAnimatingIn(true);
-      });
-    } else {
-      setIsAnimatingIn(false);
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (isOpen) {
-      previousFocusRef.current = document.activeElement;
       document.body.style.overflow = 'hidden';
       const handleKeyDown = (e) => {
         if (e.key === 'Escape') onClose?.();
@@ -95,9 +84,6 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
       return () => {
         document.body.style.overflow = '';
         document.removeEventListener('keydown', handleKeyDown);
-        if (previousFocusRef.current && typeof previousFocusRef.current.focus === 'function') {
-          previousFocusRef.current.focus();
-        }
       };
     }
   }, [isOpen, onClose]);
@@ -139,41 +125,41 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
 
   const getDivergenceDetails = (divergence) => {
     if (!divergence) return {
-      morning_takeaway: "Different news sources are telling different stories about the same market situation.",
-      rationale_bullets: ["Major publications disagree on how to interpret recent market events"],
-      forward_outlook: "Watch to see if sources start agreeing or if the disagreement grows stronger."
+      morning_takeaway: "Market **narrative divergence** detected across sources.",
+      rationale_bullets: ["Narrative inconsistency identified across publications"],
+      forward_outlook: "Monitor for narrative convergence or escalation."
     };
 
     switch (divergence.id) {
       case 'em_credit':
         return {
-          morning_takeaway: "Only a few sources are reporting on serious borrowing problems in developing countries, which could mean bigger risks ahead.",
+          morning_takeaway: "**Credit stress** is **underreported** — Street may be **underestimating systemic risk** in emerging markets.",
           rationale_bullets: [
-            "Borrowing costs are rising sharply for companies in developing countries",
-            "Most news sources aren't covering this problem, leaving investors unaware",
-            "These borrowing difficulties could spread to other markets if they get worse"
+            "**Spread decompression** signals tightening financial conditions",
+            "**Coverage bias** leaves Street blind to systemic EM corporate risk",
+            "**Liquidity risks** threaten spillover into developed market credit"
           ],
-          forward_outlook: "If borrowing costs keep rising in developing countries, it could start affecting corporate bonds in the US and push investors toward safer government bonds."
+          forward_outlook: "If **EM HY spreads breach 600 bps**, expect contagion into US high-yield and broader **risk-off flows** into Treasuries."
         };
       case 'energy_vs_industrials':
         return {
-          morning_takeaway: "Energy companies are doing well while industrial companies struggle, but some sources aren't highlighting this important difference.",
+          morning_takeaway: "**Energy resilience** masked by **industrial weakness** — sector rotation signals may be **misfiring**.",
           rationale_bullets: [
-            "Profit margins between energy and industrial companies are growing further apart",
-            "Energy companies benefit from commodity prices while industrials face higher costs",
-            "Traditional indicators that track business cycles are showing conflicting signals"
+            "**Margin dispersion** widening between energy and industrial sectors",
+            "**Commodity exposure** creating performance divergence",
+            "**Cyclical indicators** showing mixed signals across industrial verticals"
           ],
-          forward_outlook: "Pay attention to what industrial companies say about their spending plans in upcoming earnings reports - it could signal broader economic concerns."
+          forward_outlook: "Watch for **industrial capex guidance revisions** in Q4 earnings — could trigger broader **cyclical sector reassessment**."
         };
       default:
         return {
-          morning_takeaway: "Major news sources are reporting conflicting views on recent market developments.",
+          morning_takeaway: "Market **narrative fracture** detected across **key publications**.",
           rationale_bullets: [
-            "Different sources disagree on what recent events mean for markets",
-            "Some sources are covering important stories that others are ignoring",
-            "These conflicts might point to new market trends that are just starting"
+            "**Source disagreement** on market implications",
+            "**Coverage gaps** creating information asymmetries",
+            "**Narrative conflicts** may signal emerging market themes"
           ],
-          forward_outlook: "Watch to see if news sources start telling the same story or if disagreements continue to grow."
+          forward_outlook: "Monitor for **narrative convergence** or escalation in coming sessions."
         };
     }
   };
@@ -182,9 +168,9 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
     const totalCount = presentCount + missingCount;
     const ratio = Math.abs(presentCount - missingCount) / totalCount;
     
-    if (ratio >= 0.7) return { level: 'High', color: 'text-red-400' };
-    if (ratio >= 0.4) return { level: 'Moderate', color: 'text-amber-400' };
-    return { level: 'Low', color: 'text-green-400' };
+    if (ratio >= 0.7) return { level: 'High Skew', color: 'text-red-400', indicator: '🔴' };
+    if (ratio >= 0.4) return { level: 'Moderate Skew', color: 'text-amber-400', indicator: '🟡' };
+    return { level: 'Low Skew', color: 'text-green-400', indicator: '🟢' };
   };
 
   if (!isOpen || !divergence) return null;
@@ -209,509 +195,429 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
     }
   };
 
+  const backdropVariants = {
+    hidden: { opacity: 0, backdropFilter: 'blur(0px)' },
+    visible: { 
+      opacity: 1, 
+      backdropFilter: 'blur(12px)',
+      transition: { duration: 0.4 }
+    }
+  };
 
+  const drawerVariants = {
+    hidden: { 
+      opacity: 0, 
+      scale: 0.9, 
+      y: 50,
+      rotateX: -15
+    },
+    visible: { 
+      opacity: 1, 
+      scale: 1, 
+      y: 0,
+      rotateX: 0,
+      transition: { 
+        type: 'spring', 
+        stiffness: 300, 
+        damping: 30,
+        duration: 0.6
+      }
+    },
+    exit: { 
+      opacity: 0, 
+      scale: 0.95, 
+      y: 30,
+      transition: { duration: 0.25, ease: 'easeIn' }
+    }
+  };
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
-          <style>{`
-            /* Header Scrim */
-            .hzn-header-scrim {
-              position: fixed;
-              inset-inline: 0;
-              top: 0;
-              height: 72px;
-              z-index: 95;
-              pointer-events: none;
-              background: linear-gradient(to bottom, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.22) 35%, rgba(0, 0, 0, 0.00) 100%);
-              box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.05);
-              mix-blend-mode: normal;
-              opacity: 0;
-              transition: opacity ${HORIZON.motion.dur.open}ms cubic-bezier(0.19, 1, 0.22, 1);
-              will-change: opacity;
-            }
-            
-            .hzn-header-scrim--open {
-              opacity: 1;
-            }
-
-            .hzn-frosted-backdrop {
-              position: fixed;
-              inset: 0;
-              z-index: 80;
-              background: rgba(24, 26, 29, 0.55);
-              backdrop-filter: blur(26px) saturate(1.3) brightness(1.15);
-              -webkit-backdrop-filter: blur(26px) saturate(1.3) brightness(1.15);
-              opacity: 0;
-              transition: opacity ${HORIZON.motion.dur.open}ms cubic-bezier(0.19, 1, 0.22, 1);
-              will-change: opacity;
-              mask-image: linear-gradient(to bottom, transparent 0, black calc(72px + 8px));
-              -webkit-mask-image: linear-gradient(to bottom, transparent 0, black calc(72px + 8px));
-            }
-            
-            .hzn-frosted-backdrop--open {
-              opacity: 1;
-            }
-
-            .hzn-drawer {
-              position: fixed;
-              z-index: 90;
-              left: 0;
-              right: 0;
-              margin-inline: auto;
-              top: calc(72px + 14px);
-              max-width: min(820px, 90vw);
-              border: 1px solid rgba(255, 255, 255, 0.06);
-              background: linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(0,0,0,0.12));
-              box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
-              border-radius: calc(${HORIZON.glass.radius}px);
-              overflow: visible;
-              
-              transform: translateY(8px) scale(0.96);
-              opacity: 0;
-              will-change: transform, opacity;
-              transition: 
-                transform ${HORIZON.motion.dur.open}ms cubic-bezier(0.19, 1, 0.22, 1),
-                opacity ${HORIZON.motion.dur.open}ms cubic-bezier(0.19, 1, 0.22, 1);
-            }
-            
-            .hzn-drawer--open {
-              transform: translateY(0) scale(1);
-              opacity: 1;
-            }
-
-            .hzn-drawer::before {
-              content: "";
-              position: absolute;
-              left: 0;
-              right: 0;
-              top: 0;
-              height: 24px;
-              pointer-events: none;
-              background: linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.03) 50%, rgba(255, 255, 255, 0.00) 100%);
-              mix-blend-mode: screen;
-              opacity: 0.75;
-              z-index: 1;
-              border-radius: ${HORIZON.glass.radius}px ${HORIZON.glass.radius}px 0 0;
-            }
-            
-            .hzn-drawer::after {
-              content: "";
-              position: absolute;
-              left: 12px;
-              right: 12px;
-              top: 0;
-              height: 1px;
-              pointer-events: none;
-              background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.08), transparent);
-              opacity: 0.9;
-              z-index: 1;
-            }
-
-            .ri-section {
-              margin-bottom: ${HORIZON.spacing.sectionGap}px;
-              line-height: 1.55;
-              opacity: 0;
-            }
-
-            .hzn-drawer--open .ri-section {
-              animation: giFadeUp 180ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
-            }
-            
-            .hzn-drawer--open .ri-section:nth-of-type(1) { animation-delay: 0ms; }
-            .hzn-drawer--open .ri-section:nth-of-type(2) { animation-delay: 60ms; }
-            .hzn-drawer--open .ri-section:nth-of-type(3) { animation-delay: 120ms; }
-            .hzn-drawer--open .ri-section:nth-of-type(4) { animation-delay: 180ms; }
-            
-            @keyframes giFadeUp {
-              from { opacity: 0; }
-              to { opacity: 1; }
-            }
-
-            .ri-section-title {
-              font-size: ${HORIZON.type.drawerTitle.size}px;
-              line-height: ${HORIZON.type.drawerTitle.lh}px;
-              font-weight: ${HORIZON.type.drawerTitle.weight};
-              letter-spacing: -0.01em;
-              text-transform: uppercase;
-              color: ${HORIZON.color.textTertiaryDark};
-              opacity: ${HORIZON.type.drawerTitle.opacity};
-              margin-bottom: 6px;
-              display: flex;
-              align-items: center;
-              gap: 6px;
-            }
-          `}</style>
-
-          {/* Header Scrim */}
-          <div
-            className={`hzn-header-scrim ${isAnimatingIn ? 'hzn-header-scrim--open' : ''}`}
-            aria-hidden="true"
-          />
-
-          {/* Frosted Backdrop */}
-          <div
-            className={`hzn-frosted-backdrop ${isAnimatingIn ? 'hzn-frosted-backdrop--open' : ''}`}
+        <motion.div
+          key="divergence-drawer-backdrop"
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+          variants={backdropVariants}
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
+          style={{ paddingTop: '80px' }} // Add top padding to avoid header
+        >
+          <motion.div
+            className="absolute left-0 right-0 bottom-0 bg-black/60"
+            style={{ top: '80px' }} // Start below header
             onClick={onClose}
-            role="presentation"
-            aria-hidden={!isOpen}
           />
-
-          {/* Drawer Panel */}
-          <aside
-            ref={containerRef}
-            className={`hzn-drawer ${isAnimatingIn ? 'hzn-drawer--open' : ''}`}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Divergence Analysis"
-            onClick={(e) => e.stopPropagation()}
+          
+          <motion.div
+            key={divergence.id} // Key change triggers re-animation
+            className={`
+              relative w-full max-w-4xl max-h-[90vh] rounded-3xl overflow-hidden
+              border ${theme.borderColor} shadow-2xl
+            `}
+            style={{
+              background: `
+                linear-gradient(135deg, rgba(15, 15, 25, 0.95) 0%, rgba(10, 10, 15, 0.98) 100%),
+                linear-gradient(135deg, ${theme.gradient})
+              `,
+              backdropFilter: 'blur(20px)',
+              boxShadow: `
+                0 25px 50px -12px rgba(0, 0, 0, 0.8),
+                0 0 50px ${theme.glowColor},
+                inset 0 1px 0 rgba(255, 255, 255, 0.1)
+              `
+            }}
+            variants={drawerVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
           >
-            <div className="relative w-full max-h-[88vh]" style={{ overflow: 'hidden' }}>
-              {/* HEADER */}
-              <div
-                className="relative z-10 p-8 pb-4"
-                style={{
-                  borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
-                }}
-              >
-                <div className="flex items-start justify-between gap-6 mb-4">
-                  <div className="flex-1 min-w-0">
-                    <h1
-                      className="mb-1"
-                      style={{
-                        fontSize: HORIZON.type.h1.size,
-                        fontWeight: HORIZON.type.h1.weight,
-                        letterSpacing: `${HORIZON.type.h1.tracking}em`,
-                        color: '#FFFFFF',
-                        opacity: HORIZON.type.h1.opacity,
-                      }}
+            <motion.div
+              className="absolute inset-0 rounded-3xl pointer-events-none"
+              style={{
+                background: `linear-gradient(135deg, ${theme.glowColor} 0%, transparent 50%, ${theme.glowColor} 100%)`
+              }}
+              animate={{ 
+                opacity: [0.3, 0.6, 0.3],
+                scale: [1, 1.005, 1]
+              }}
+              transition={{ 
+                duration: 3, 
+                repeat: Infinity, 
+                ease: "easeInOut" 
+              }}
+            />
+
+            <motion.div 
+              className="relative p-8 border-b border-white/10"
+              variants={{
+                hidden: { opacity: 0, y: -20 },
+                visible: { opacity: 1, y: 0 }
+              }}
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex items-start space-x-5">
+                  <motion.div 
+                    className="relative p-4 rounded-2xl border border-white/20 overflow-hidden"
+                    style={{ 
+                      background: `linear-gradient(135deg, ${theme.primaryColor}30, ${theme.primaryColor}15)`,
+                      backdropFilter: 'blur(10px)'
+                    }}
+                    whileHover={{ scale: 1.05, rotate: 5 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    <Icon className="w-7 h-7 relative z-10" style={{ color: theme.primaryColor }} strokeWidth={2} />
+                  </motion.div>
+                  
+                  <div>
+                    <motion.h2 
+                      className="text-2xl font-black tracking-tight text-white mb-2"
+                      style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.2 }}
                     >
-                      {theme.label}
-                    </h1>
-                    
-                    <p
-                      className="mb-2"
-                      style={{
-                        fontSize: 13,
-                        fontWeight: 500,
-                        color: '#AAB1B8',
-                        letterSpacing: '0.02em',
-                        opacity: 0.70,
-                      }}
-                    >
-                      {divergence.topic}
-                    </p>
-                    
-                    <p
-                      className="mb-0"
-                      style={{
-                        fontSize: HORIZON.type.meta.size,
-                        fontWeight: HORIZON.type.meta.weight,
-                        color: '#AAB1B8',
-                        opacity: HORIZON.type.meta.opacity,
-                        textTransform: 'uppercase',
-                        letterSpacing: `${HORIZON.type.meta.tracking}em`,
-                      }}
-                    >
-                      Generated today • Divergence Analysis • {(divergence.present_in || []).length + (divergence.missing_in || []).length} sources analyzed
-                    </p>
+                      Divergence Analysis
+                    </motion.h2>
                   </div>
+                </div>
+                
+                <div className="flex items-center space-x-4">
+                  {/* Divergence Type Badge (moved from confidence spot) */}
+                  <motion.span 
+                    className={`px-4 py-2 text-sm font-bold rounded-full capitalize ${theme.textColor}`}
+                    style={{ 
+                      background: `linear-gradient(135deg, ${theme.primaryColor}25, ${theme.primaryColor}15)`,
+                      border: `1px solid ${theme.primaryColor}40`
+                    }}
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.3, type: "spring" }}
+                  >
+                    {theme.label}
+                  </motion.span>
 
-                  {/* Navigation Controls */}
-                  <div className="drawer-controls flex items-center gap-2">
-                      <button
-                      onClick={() => onNavigate?.('prev')}
-                      className="p-2.5 rounded-xl transition-all duration-180"
-                      style={{
-                        background: 'rgba(255, 255, 255, 0.06)',
-                        border: '1px solid rgba(255, 255, 255, 0.08)',
-                        color: '#D7DBE0',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
-                        e.currentTarget.style.transform = 'scale(1.03)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
-                        e.currentTarget.style.transform = 'scale(1)';
-                      }}
-                      aria-label="Previous divergence"
+                  <div className="flex items-center space-x-2">
+                    <motion.button
+                      onClick={() => onNavigate('prev')}
+                      className="relative p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-all duration-300"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      aria-label="Previous Divergence"
                     >
-                      <ChevronLeft className="w-5 h-5" />
-                    </button>
-
-                    <button
-                      onClick={() => onNavigate?.('next')}
-                      className="p-2.5 rounded-xl transition-all duration-180"
-                      style={{
-                        background: 'rgba(255, 255, 255, 0.06)',
-                        border: '1px solid rgba(255, 255, 255, 0.08)',
-                        color: '#D7DBE0',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
-                        e.currentTarget.style.transform = 'scale(1.03)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
-                        e.currentTarget.style.transform = 'scale(1)';
-                      }}
-                      aria-label="Next divergence"
+                      <ChevronLeft className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors" strokeWidth={2} />
+                    </motion.button>
+                    <motion.button
+                      onClick={() => onNavigate('next')}
+                      className="relative p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-all duration-300"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      aria-label="Next Divergence"
                     >
-                      <ChevronRight className="w-5 h-5" />
-                    </button>
-
-                    <button
+                      <ChevronRight className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors" strokeWidth={2} />
+                    </motion.button>
+                    <motion.button
                       onClick={onClose}
-                      className="p-2.5 rounded-xl ml-2 transition-all duration-180"
-                      style={{
-                        background: 'rgba(255, 255, 255, 0.06)',
-                        border: '1px solid rgba(255, 255, 255, 0.08)',
-                        color: '#D7DBE0',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
-                        e.currentTarget.style.transform = 'scale(1.03)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
-                        e.currentTarget.style.transform = 'scale(1)';
-                      }}
-                      aria-label="Close"
+                      className="relative p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-all duration-300"
+                      whileHover={{ scale: 1.1, rotate: 90 }}
+                      whileTap={{ scale: 0.9 }}
                     >
-                      <X className="w-6 h-6" />
-                    </button>
+                      <X className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors" strokeWidth={2} />
+                    </motion.button>
                   </div>
                 </div>
               </div>
+            </motion.div>
 
-              {/* BODY */}
-              <div
-                className="relative z-10 overflow-y-auto"
-                style={{
-                  maxHeight: 'calc(88vh - 180px)',
-                  scrollbarWidth: 'thin',
-                  scrollbarColor: 'rgba(255, 255, 255, 0.18) rgba(255, 255, 255, 0.04)',
-                }}
+            <motion.div 
+              key={`${divergence.id}-content`}
+              className="overflow-y-auto max-h-[calc(90vh-140px)] p-8 space-y-10"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              {/* Morning Takeaway - Enhanced with Bold Keywords */}
+              <LuxurySection 
+                icon={Sparkles} 
+                title="Morning Takeaway" 
+                iconColor="#FDE68A"
+                delay={0}
               >
-                <style>{`
-                  .overflow-y-auto::-webkit-scrollbar {
-                    width: 6px;
-                  }
-                  .overflow-y-auto::-webkit-scrollbar-track {
-                    background: rgba(255, 255, 255, 0.04);
-                    border-radius: 6px;
-                  }
-                  .overflow-y-auto::-webkit-scrollbar-thumb {
-                    background: rgba(255, 255, 255, 0.18);
-                    border-radius: 6px;
-                  }
-                  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-                    background: rgba(255, 255, 255, 0.25);
-                  }
-                `}</style>
-
-                <div className="p-8 pt-4">
-                  {/* MORNING TAKEAWAY */}
-                  <section className="ri-section">
-                    <h3 className="ri-section-title">
-                      <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                      Morning Takeaway
-                    </h3>
+                <motion.div 
+                  className="p-8 rounded-3xl border-l-4 relative overflow-hidden shadow-2xl"
+                  style={{ 
+                    borderColor: theme.primaryColor, 
+                    background: `linear-gradient(90deg, ${theme.primaryColor}20, ${theme.primaryColor}05 50%, transparent)`,
+                    boxShadow: `0 10px 40px -10px ${theme.glowColor}`
+                  }}
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                >
+                  <motion.div
+                    className="absolute inset-0 opacity-30"
+                    style={{ 
+                      background: `radial-gradient(circle at left, ${theme.glowColor} 0%, transparent 60%)`
+                    }}
+                    animate={{ opacity: [0.2, 0.5, 0.2] }}
+                    transition={{ duration: 4, repeat: Infinity }}
+                  />
+                  <div className="text-center relative z-10">
                     <p 
-                      style={{ 
-                        fontSize: `${HORIZON.type.body.size}px`, 
-                        lineHeight: `${HORIZON.type.body.lh}px`,
-                        fontWeight: 600,
-                        color: HORIZON.color.textBodyDark,
-                        maxWidth: '72ch'
-                      }}
+                      className="text-2xl font-bold text-white leading-relaxed tracking-wide"
+                      style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
                       dangerouslySetInnerHTML={{ __html: details.morning_takeaway }}
                     />
-                  </section>
+                  </div>
+                </motion.div>
+              </LuxurySection>
 
-                  <SectionDivider />
-
-                  {/* WHAT'S HAPPENING */}
-                  <section className="ri-section">
-                    <h3 className="ri-section-title">
-                      <Target className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                      What's Happening
-                    </h3>
-                    <p 
-                      style={{ 
-                        fontSize: `13.5px`, 
-                        lineHeight: `20px`,
-                        fontWeight: 500,
-                        color: HORIZON.color.textSecondaryDark,
-                        maxWidth: '72ch'
-                      }}
-                    >
-                      {divergence.detail || divergence.rationale || 'Different sources are covering this topic differently'}
-                    </p>
-                  </section>
-
-                  <SectionDivider />
-
-              {/* WHY THIS MATTERS */}
-              <section className="ri-section">
-                <h3 className="ri-section-title">
-                  <BrainCircuit className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                  Why This Matters
-                </h3>
-                <div className="space-y-3">
-                  {details.rationale_bullets.map((bullet, i) => (
-                    <motion.div
-                      key={i}
-                      className="flex items-start p-4 rounded-xl bg-white/5 border border-white/10"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: i * 0.1 }}
-                      whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.08)' }}
-                    >
-                      <motion.div 
-                        className="w-1.5 h-1.5 rounded-full mt-2 mr-4 flex-shrink-0"
-                        style={{ background: theme.primaryColor }}
-                        animate={{ 
-                          scale: [1, 1.2, 1],
-                          opacity: [0.7, 1, 0.7]
-                        }}
-                        transition={{ 
-                          duration: 2, 
-                          repeat: Infinity, 
-                          delay: i * 0.3 
-                        }}
-                      />
-                      <p 
-                        style={{ 
-                          fontSize: `13.5px`, 
-                          lineHeight: `20px`,
-                          fontWeight: 500,
-                          color: HORIZON.color.textBodyDark
-                        }}
-                        dangerouslySetInnerHTML={{ __html: bullet }}
-                      />
-                    </motion.div>
-                  ))}
+              {/* Divergence Topic */}
+              <LuxurySection 
+                icon={Target} 
+                title="Divergence Topic" 
+                iconColor={theme.primaryColor}
+                delay={0.1}
+              >
+                <div className="p-6 rounded-2xl border border-white/10 bg-black/20">
+                  <p className="text-lg font-medium leading-relaxed text-gray-100">
+                    {divergence.topic}
+                  </p>
                 </div>
-              </section>
+              </LuxurySection>
 
-              <SectionDivider />
+              {/* AI Rationale */}
+              <LuxurySection 
+                icon={BrainCircuit} 
+                title="AI Rationale" 
+                iconColor="#34D399"
+                delay={0.2}
+              >
+                 <div className="space-y-4">
+                    {details.rationale_bullets.map((bullet, i) => (
+                      <motion.div
+                        key={i}
+                        className="flex items-start p-4 rounded-lg bg-white/5 border border-white/10"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 * i }}
+                        whileHover={{ scale: 1.02, backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
+                      >
+                        <motion.div 
+                          className="w-1.5 h-1.5 rounded-full mt-2 mr-4 flex-shrink-0"
+                          style={{ background: theme.primaryColor }}
+                          animate={{ 
+                            scale: [1, 1.2, 1],
+                            opacity: [0.7, 1, 0.7]
+                          }}
+                          transition={{ 
+                            duration: 2, 
+                            repeat: Infinity, 
+                            delay: i * 0.3 
+                          }}
+                        />
+                        <p 
+                          className="text-base text-gray-300 leading-relaxed" 
+                          dangerouslySetInnerHTML={{ __html: bullet }}
+                        />
+                      </motion.div>
+                    ))}
+                 </div>
+              </LuxurySection>
 
-              {/* SOURCE COVERAGE */}
-              <section className="ri-section">
-                <h3 className="ri-section-title">
-                  <Users className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                  Source Coverage
-                </h3>
-                <div className="space-y-4">
-                  {/* Confidence Display */}
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
-                    <span className="text-sm font-medium" style={{ color: HORIZON.color.textTertiaryDark }}>
-                      Analysis Confidence
-                    </span>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-24 h-2 bg-black/40 rounded-full overflow-hidden">
+              {/* Source Coverage - Unified Confidence Display */}
+              <LuxurySection 
+                icon={Users} 
+                title="Source Coverage" 
+                iconColor="#FBBF24"
+                delay={0.3}
+              >
+                <div className="space-y-6">
+                  {/* Coverage Skew + Confidence - Connected Design */}
+                  <div className="p-6 rounded-2xl border border-white/10 bg-black/20 space-y-4">
+                    {/* Coverage Skew Header */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <span className="text-2xl">{skew.indicator}</span>
+                        <div>
+                          <p className="text-sm font-medium text-gray-400">Coverage Skew</p>
+                          <p className={`text-lg font-bold ${skew.color}`}>
+                            {presentCount} source{presentCount !== 1 ? 's' : ''} vs. {missingCount} missing ({skew.level})
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Unified Confidence Bar */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-gray-400">Analysis Confidence</span>
+                        <span className="text-lg font-bold" style={{ color: theme.primaryColor }}>
+                          {Math.round((divergence.confidence || 0) * 100)}%
+                        </span>
+                      </div>
+                      <div className="w-full h-3 bg-black/40 rounded-full overflow-hidden">
                         <motion.div
                           className="h-full rounded-full"
                           style={{ 
                             background: `linear-gradient(90deg, ${theme.primaryColor}90, ${theme.primaryColor}ff)`,
+                            boxShadow: `0 0 10px ${theme.glowColor}`
                           }}
                           initial={{ width: '0%' }}
                           animate={{ width: `${(divergence.confidence || 0) * 100}%` }}
-                          transition={{ duration: 1.5, delay: 0.3, ease: 'easeOut' }}
+                          transition={{ duration: 2, delay: 0.5, ease: 'easeOut' }}
                         />
                       </div>
-                      <span className="text-lg font-bold" style={{ color: theme.primaryColor }}>
-                        {Math.round((divergence.confidence || 0) * 100)}%
-                      </span>
                     </div>
                   </div>
 
-                  {/* Coverage Skew */}
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
-                    <span className="text-sm font-medium" style={{ color: HORIZON.color.textTertiaryDark }}>
-                      Coverage Skew
-                    </span>
-                    <div className="text-right">
-                      <p className={`text-base font-bold ${skew.color}`}>
-                        {presentCount} vs {missingCount}
-                      </p>
-                      <p className="text-xs" style={{ color: HORIZON.color.textTertiaryDark }}>
-                        {skew.level} imbalance
-                      </p>
+                  {/* Source Breakdown */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="p-5 rounded-2xl border border-green-500/20 bg-green-900/10">
+                      <div className="flex items-center text-green-400 mb-4">
+                        <CheckCircle className="w-5 h-5 mr-3" />
+                        <h4 className="font-semibold text-lg">Present In</h4>
+                      </div>
+                      <div className="flex flex-wrap gap-3">
+                        {(divergence.present_in || []).map(src => (
+                          <SourceLogo key={src} source={src} />
+                        ))}
+                      </div>
+                    </div>
+                     <div className="p-5 rounded-2xl border border-red-500/20 bg-red-900/10">
+                      <div className="flex items-center text-red-400 mb-4">
+                        <XCircle className="w-5 h-5 mr-3" />
+                        <h4 className="font-semibold text-lg">Missing In</h4>
+                      </div>
+                      <div className="flex flex-wrap gap-3">
+                         {(divergence.missing_in || []).map(src => (
+                          <SourceLogo key={src} source={src} />
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
-                </section>
+              </LuxurySection>
 
-              <SectionDivider />
-
-                  {/* SOURCE BREAKDOWN */}
-                  <section className="ri-section">
-                    <h3 className="ri-section-title">
-                      <BookOpen className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                      Source Breakdown
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="p-5 rounded-xl bg-green-900/10 border border-green-500/20">
-                        <div className="flex items-center text-green-400 mb-4">
-                          <CheckCircle className="w-5 h-5 mr-3" />
-                          <h4 className="text-sm font-semibold">Reported By</h4>
-                        </div>
-                        <div className="flex flex-wrap gap-3">
-                          {(divergence.present_in || []).map(src => (
-                            <SourceLogo key={src} source={src} />
-                          ))}
-                        </div>
-                      </div>
-                      <div className="p-5 rounded-xl bg-red-900/10 border border-red-500/20">
-                        <div className="flex items-center text-red-400 mb-4">
-                          <XCircle className="w-5 h-5 mr-3" />
-                          <h4 className="text-sm font-semibold">Not Covered By</h4>
-                        </div>
-                        <div className="flex flex-wrap gap-3">
-                          {(divergence.missing_in || []).map(src => (
-                            <SourceLogo key={src} source={src} />
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </section>
-
-                  <SectionDivider />
-
-                  {/* WHAT TO WATCH */}
-                  <section className="ri-section">
-                    <h3 className="ri-section-title">
-                      <Zap className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                      What To Watch
-                    </h3>
+              {/* Forward Outlook - Enhanced Visual Weight */}
+              <motion.div
+                className="space-y-6"
+                variants={{
+                  hidden: { opacity: 0, y: 30 },
+                  visible: { opacity: 1, y: 0 }
+                }}
+                transition={{ 
+                  delay: 0.4,
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 20
+                }}
+              >
+                <div className="flex items-center space-x-4">
+                  <motion.div 
+                    className="relative p-3 rounded-xl border border-white/20 overflow-hidden"
+                    style={{ 
+                      background: `linear-gradient(135deg, #C4B5FD20, #C4B5FD10)`,
+                      backdropFilter: 'blur(10px)'
+                    }}
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    <Zap className="w-5 h-5 relative z-10" style={{ color: "#C4B5FD" }} strokeWidth={2.5} />
+                  </motion.div>
+                  
+                  <div>
                     <motion.div
-                      className="p-6 rounded-2xl bg-violet-500/10 border border-violet-500/20"
+                      className="relative inline-block"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      transition={{ delay: 0.4 }}
-                      whileHover={{ scale: 1.01 }}
+                      transition={{ delay: 0.6 }}
                     >
-                      <p 
+                      {/* Gradient accent bar behind title */}
+                      <motion.div
+                        className="absolute inset-0 rounded-lg opacity-30"
                         style={{ 
-                          fontSize: `15px`, 
-                          lineHeight: `23px`,
-                          fontWeight: 500,
-                          color: '#E9D5FF',
-                          maxWidth: '64ch'
+                          background: `linear-gradient(90deg, #C4B5FD 0%, transparent 100%)`,
                         }}
-                        dangerouslySetInnerHTML={{ __html: details.forward_outlook }}
+                        animate={{ 
+                          scaleX: [0, 1],
+                          opacity: [0, 0.3, 0.3]
+                        }}
+                        transition={{ delay: 0.8, duration: 1, ease: "easeOut" }}
                       />
+                      <h3 className="text-xl font-bold text-white tracking-tight relative z-10 px-2 py-1"
+                         style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+                        ⚡ Forward Outlook
+                      </h3>
                     </motion.div>
-                  </section>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </aside>
-        </>
+                
+                <motion.div
+                  className="p-8 rounded-3xl bg-violet-500/15 border-2 border-violet-500/30 relative overflow-hidden shadow-2xl"
+                  style={{ 
+                    boxShadow: `0 15px 50px -10px rgba(139, 92, 246, 0.4)`
+                  }}
+                  whileHover={{ scale: 1.02, y: -3, borderColor: 'rgba(139, 92, 246, 0.5)' }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                >
+                  <motion.div
+                    className="absolute inset-0 opacity-25"
+                    style={{ 
+                      background: `radial-gradient(circle at center, rgba(139, 92, 246, 0.4) 0%, transparent 70%)`
+                    }}
+                    animate={{ opacity: [0.25, 0.45, 0.25] }}
+                    transition={{ duration: 5, repeat: Infinity }}
+                  />
+                  <p 
+                    className="text-xl font-semibold text-violet-100 relative z-10 leading-relaxed text-center"
+                    style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+                    dangerouslySetInnerHTML={{ __html: details.forward_outlook }}
+                  />
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        </motion.div>
       )}
     </AnimatePresence>
   );

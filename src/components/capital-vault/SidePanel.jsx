@@ -33,7 +33,7 @@ export default function SidePanel({
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="lg:sticky lg:top-8 space-y-6 max-h-[calc(100vh-8rem)] overflow-y-auto"
+      className="sticky top-24 space-y-6"
     >
       {/* View Mode Selector */}
       <div className="p-5 rounded-2xl elevation-1 backdrop-blur-xl" style={{backgroundColor: theme === 'dark' ? 'rgba(26, 29, 41, 0.8)' : 'rgba(255, 255, 255, 0.9)', border: `1px solid ${theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)'}`}}>
@@ -62,12 +62,12 @@ export default function SidePanel({
           <Eye className="w-5 h-5 mr-2" />
           Categories
         </div>
-        <div className="flex flex-wrap gap-2 max-h-64 overflow-y-auto">
+        <div className="flex flex-wrap gap-2">
           {categories.map(category => (
             <button
               key={category}
               onClick={() => handleCategoryClick(category)}
-              className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 hover:scale-105 whitespace-nowrap ${theme === 'dark' ? 'bg-purple-500/10 hover:bg-purple-500/20 text-purple-300' : 'bg-purple-100 hover:bg-purple-200 text-purple-700'}`}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 ${theme === 'dark' ? 'bg-purple-500/10 hover:bg-purple-500/20 text-purple-300' : 'bg-purple-100 hover:bg-purple-200 text-purple-700'}`}
             >
               {category}
             </button>
