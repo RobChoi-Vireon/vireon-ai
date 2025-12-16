@@ -11,8 +11,10 @@ import SearchOmni from "./components/global/SearchOmni";
 import LiveCommentary from "./components/live-feed/LiveCommentary";
 import LyraChatbot from "./components/core/LyraChatbot";
 import UserMenu from "./components/core/UserMenu";
+import OnboardingModal from "./components/core/OnboardingModal";
 import { motion, AnimatePresence } from 'framer-motion';
 import NetworkErrorBoundary from "./components/core/NetworkErrorBoundary";
+import { base44 } from "@/api/base44Client";
 
 const HORIZON_SPRING = { type: "spring", stiffness: 320, damping: 82, mass: 1 };
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
@@ -426,12 +428,54 @@ function LayoutContent({ children, currentPageName }) {
   const [isDisclaimerVisible, setIsDisclaimerVisible] = useState(false);
   const [initialPinchDistance, setInitialPinchDistance] = useState(null);
   const [isPinching, setIsPinching] = useState(false);
+  
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [isCheckingOnboarding, setIsCheckingOnboarding] = useState(true);
 
   useEffect(() => {
     if (location.pathname === '/') {
       navigate(createPageUrl('MacroSignals'), { replace: true });
     }
   }, [location.pathname, navigate]);
+
+  // Check if user has accepted risk disclaimer
+  useEffect(() => {
+    const checkOnboarding = async () => {
+      try {
+        const user = await base44.auth.me();
+        if (user) {
+          const prefs = await base44.entities.UserPreference.filter({ created_by: user.email });
+          if (prefs.length > 0 && prefs[0].accepted_risk_disclaimer) {
+            setShowOnboarding(false);
+          } else {
+            setShowOnboarding(true);
+          }
+        }
+      } catch (error) {
+        console.error('Error checking onboarding status:', error);
+      } finally {
+        setIsCheckingOnboarding(false);
+      }
+    };
+    checkOnboarding();
+  }, []);
+
+  const handleOnboardingAccept = async () => {
+    try {
+      const user = await base44.auth.me();
+      if (user) {
+        const prefs = await base44.entities.UserPreference.filter({ created_by: user.email });
+        if (prefs.length > 0) {
+          await base44.entities.UserPreference.update(prefs[0].id, { accepted_risk_disclaimer: true });
+        } else {
+          await base44.entities.UserPreference.create({ accepted_risk_disclaimer: true });
+        }
+      }
+      setShowOnboarding(false);
+    } catch (error) {
+      console.error('Error saving onboarding acceptance:', error);
+    }
+  };
   
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -1223,10 +1267,12 @@ function LayoutContent({ children, currentPageName }) {
         </div>
 
         <LyraChatbot />
-      </NetworkErrorBoundary>
-    </>
-  );
-}
+
+        <OnboardingModal isOpen={showOnboarding && !isCheckingOnboarding} onAccept={handleOnboardingAccept} />
+        </NetworkErrorBoundary>
+        </>
+        );
+        }
 
 export default function Layout({ children, currentPageName }) {
   useEffect(() => {
