@@ -7,6 +7,8 @@ import { motion } from 'framer-motion';
 export default function ArticleCard({ article, theme }) {
 
   const getSentimentStyle = () => {
+    if (!article.sentiment) return null;
+    
     switch (article.sentiment) {
       case 'Bullish': return {
         icon: <TrendingUp className="w-4 h-4 text-green-400" />,
@@ -20,28 +22,31 @@ export default function ArticleCard({ article, theme }) {
         border: 'border-l-red-500/60',
         glow: 'shadow-red-500/20'
       };
-      default: return {
+      case 'Neutral': return {
         icon: <Minus className="w-4 h-4 text-gray-400" />,
         badge: 'border-gray-500/40 bg-gray-500/15 text-gray-400',
         border: 'border-l-gray-500/60',
         glow: 'shadow-gray-500/20'
       };
+      default: return null;
     }
   };
 
   const sentimentStyle = getSentimentStyle();
 
-  const impactColor = article.impact_score >= 7 
-    ? 'text-orange-400' 
-    : article.impact_score >= 4 
-    ? 'text-yellow-400' 
-    : 'text-blue-400';
+  const getImpactStyle = () => {
+    if (typeof article.impact_score !== 'number') return null;
+    
+    if (article.impact_score >= 7) {
+      return { color: 'text-orange-400', glow: 'shadow-orange-500/20' };
+    } else if (article.impact_score >= 4) {
+      return { color: 'text-yellow-400', glow: 'shadow-yellow-500/20' };
+    } else {
+      return { color: 'text-blue-400', glow: 'shadow-blue-500/20' };
+    }
+  };
 
-  const impactGlow = article.impact_score >= 7 
-    ? 'shadow-orange-500/20' 
-    : article.impact_score >= 4 
-    ? 'shadow-yellow-500/20' 
-    : 'shadow-blue-500/20';
+  const impactStyle = getImpactStyle();
 
   return (
     <motion.div
@@ -55,7 +60,7 @@ export default function ArticleCard({ article, theme }) {
           ? 'bg-gradient-to-br from-[#1A1D29]/60 to-[#12141C]/60 border-white/10 hover:border-white/25' 
           : 'bg-gradient-to-br from-white/80 to-white/60 border-black/[0.08] hover:border-black/[0.15]'
         }
-        border-l-4 ${sentimentStyle.border} ${sentimentStyle.glow}
+        ${sentimentStyle ? `border-l-4 ${sentimentStyle.border} ${sentimentStyle.glow}` : ''}
       `}
       style={{
         boxShadow: `0 10px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.05)`
@@ -103,16 +108,20 @@ export default function ArticleCard({ article, theme }) {
         
         <div className="mt-8 pt-6 border-t flex justify-between items-center" style={{borderColor: theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}}>
           <div className="flex items-center space-x-4">
-            <Badge variant="outline" className={`${sentimentStyle.badge} font-semibold px-3 py-1 rounded-full`}>
-              {sentimentStyle.icon}
-              <span className="ml-2">{article.sentiment}</span>
-            </Badge>
-            <motion.div 
-              className={`text-sm font-black flex items-center ${impactColor} ${impactGlow}`}
-              whileHover={{ scale: 1.05 }}
-            >
-              Impact: {article.impact_score}/10
-            </motion.div>
+            {sentimentStyle && (
+              <Badge variant="outline" className={`${sentimentStyle.badge} font-semibold px-3 py-1 rounded-full`}>
+                {sentimentStyle.icon}
+                <span className="ml-2">{article.sentiment}</span>
+              </Badge>
+            )}
+            {impactStyle && typeof article.impact_score === 'number' && (
+              <motion.div 
+                className={`text-sm font-black flex items-center ${impactStyle.color} ${impactStyle.glow}`}
+                whileHover={{ scale: 1.05 }}
+              >
+                Impact: {article.impact_score}/10
+              </motion.div>
+            )}
           </div>
           <motion.a 
             href={article.source_url} 

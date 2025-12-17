@@ -109,6 +109,8 @@ const AnimatedGraphic = ({ theme, index }) => {
 
 export default function TimelineArticleCard({ article, index, theme }) {
   const getSentimentStyle = () => {
+    if (!article.sentiment) return null;
+    
     switch (article.sentiment) {
       case 'Bullish': return { 
         icon: <TrendingUp className="w-4 h-4 text-green-400" />, 
@@ -120,16 +122,25 @@ export default function TimelineArticleCard({ article, index, theme }) {
         badge: 'border-red-500/40 bg-red-500/15 text-red-400',
         nodeColor: 'bg-red-500/30 border-red-500/50'
       };
-      default: return { 
+      case 'Neutral': return { 
         icon: <Minus className="w-4 h-4 text-gray-400" />, 
         badge: 'border-gray-500/40 bg-gray-500/15 text-gray-400',
         nodeColor: 'bg-blue-500/30 border-blue-500/50'
       };
+      default: return null;
     }
   };
 
   const sentimentStyle = getSentimentStyle();
-  const impactColor = article.impact_score >= 7 ? 'text-orange-400' : article.impact_score >= 4 ? 'text-yellow-400' : 'text-blue-400';
+  
+  const getImpactColor = () => {
+    if (typeof article.impact_score !== 'number') return null;
+    if (article.impact_score >= 7) return 'text-orange-400';
+    if (article.impact_score >= 4) return 'text-yellow-400';
+    return 'text-blue-400';
+  };
+  
+  const impactColor = getImpactColor();
   const isEven = index % 2 === 0;
 
   const cardVariants = {
@@ -158,7 +169,7 @@ export default function TimelineArticleCard({ article, index, theme }) {
         {/* Mobile Timeline Node */}
         <div className="relative flex-shrink-0 mt-3">
           <motion.div 
-            className={`w-8 h-8 rounded-2xl flex items-center justify-center backdrop-blur-sm border-2 ${sentimentStyle.nodeColor}`}
+            className={`w-8 h-8 rounded-2xl flex items-center justify-center backdrop-blur-sm border-2 ${sentimentStyle?.nodeColor || 'bg-gray-500/30 border-gray-500/50'}`}
             whileHover={{ scale: 1.2, rotate: 10 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
@@ -218,13 +229,17 @@ export default function TimelineArticleCard({ article, index, theme }) {
               
               <div className="flex flex-wrap gap-3 items-center justify-between pt-3 border-t" style={{borderColor: theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}}>
                 <div className="flex items-center gap-3">
-                  <Badge variant="outline" className={`${sentimentStyle.badge} text-xs font-bold px-3 py-1 rounded-full`}>
-                    {sentimentStyle.icon}
-                    <span className="ml-2">{article.sentiment}</span>
-                  </Badge>
-                  <div className={`text-xs font-black ${impactColor}`}>
-                    Impact: {article.impact_score}/10
-                  </div>
+                  {sentimentStyle && (
+                    <Badge variant="outline" className={`${sentimentStyle.badge} text-xs font-bold px-3 py-1 rounded-full`}>
+                      {sentimentStyle.icon}
+                      <span className="ml-2">{article.sentiment}</span>
+                    </Badge>
+                  )}
+                  {impactColor && typeof article.impact_score === 'number' && (
+                    <div className={`text-xs font-black ${impactColor}`}>
+                      Impact: {article.impact_score}/10
+                    </div>
+                  )}
                 </div>
                 <motion.a 
                   href={article.source_url} 
@@ -294,16 +309,20 @@ export default function TimelineArticleCard({ article, index, theme }) {
               
               <div className="flex flex-wrap gap-4 items-center justify-between pt-4 border-t" style={{borderColor: theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}}>
                 <div className="flex items-center gap-4">
-                  <Badge variant="outline" className={`${sentimentStyle.badge} font-bold px-4 py-2 rounded-full`}>
-                    {sentimentStyle.icon}
-                    <span className="ml-2">{article.sentiment}</span>
-                  </Badge>
-                  <motion.div 
-                    className={`text-sm font-black ${impactColor}`}
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    Impact: {article.impact_score}/10
-                  </motion.div>
+                  {sentimentStyle && (
+                    <Badge variant="outline" className={`${sentimentStyle.badge} font-bold px-4 py-2 rounded-full`}>
+                      {sentimentStyle.icon}
+                      <span className="ml-2">{article.sentiment}</span>
+                    </Badge>
+                  )}
+                  {impactColor && typeof article.impact_score === 'number' && (
+                    <motion.div 
+                      className={`text-sm font-black ${impactColor}`}
+                      whileHover={{ scale: 1.05 }}
+                    >
+                      Impact: {article.impact_score}/10
+                    </motion.div>
+                  )}
                 </div>
                 <motion.a 
                   href={article.source_url} 
@@ -331,7 +350,7 @@ export default function TimelineArticleCard({ article, index, theme }) {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: index * 0.1 + 0.3, type: "spring", stiffness: 400 }}
-            className={`w-12 h-12 rounded-2xl flex items-center justify-center backdrop-blur-sm border-2 ${sentimentStyle.nodeColor} shadow-lg`}
+            className={`w-12 h-12 rounded-2xl flex items-center justify-center backdrop-blur-sm border-2 ${sentimentStyle?.nodeColor || 'bg-gray-500/30 border-gray-500/50'} shadow-lg`}
             whileHover={{ scale: 1.2, rotate: 15 }}
           >
             <Newspaper className={`w-6 h-6 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
