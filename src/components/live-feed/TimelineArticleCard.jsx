@@ -200,7 +200,11 @@ export default function TimelineArticleCard({ article, index, theme }) {
                 </div>
                 <div className="flex items-center space-x-1 text-xs text-gray-400">
                   <Clock className="w-3 h-3" />
-                  <span>{formatDistanceToNow(new Date(article.published_date), { addSuffix: true })}</span>
+                  <span>
+                    {article.published_date && !isNaN(new Date(article.published_date).getTime())
+                      ? formatDistanceToNow(new Date(article.published_date), { addSuffix: true })
+                      : 'Recently'}
+                  </span>
                 </div>
               </div>
               
@@ -272,7 +276,11 @@ export default function TimelineArticleCard({ article, index, theme }) {
                 </div>
                 <div className="flex items-center space-x-2 text-sm text-gray-400">
                   <Clock className="w-4 h-4" />
-                  <span>{formatDistanceToNow(new Date(article.published_date), { addSuffix: true })}</span>
+                  <span>
+                    {article.published_date && !isNaN(new Date(article.published_date).getTime())
+                      ? formatDistanceToNow(new Date(article.published_date), { addSuffix: true })
+                      : 'Recently'}
+                  </span>
                 </div>
               </div>
               
