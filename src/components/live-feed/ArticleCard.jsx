@@ -84,7 +84,11 @@ export default function ArticleCard({ article, theme }) {
               </div>
               <div className="flex items-center space-x-1 text-xs text-gray-400">
                 <Clock className="w-3 h-3" />
-                <span>{formatDistanceToNow(new Date(article.published_date), { addSuffix: true })}</span>
+                <span>
+                  {article.published_date && !isNaN(new Date(article.published_date).getTime())
+                    ? formatDistanceToNow(new Date(article.published_date), { addSuffix: true })
+                    : 'Recently'}
+                </span>
               </div>
             </div>
             <h3 className={`text-xl font-bold leading-tight group-hover:text-blue-400 transition-colors duration-300 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
