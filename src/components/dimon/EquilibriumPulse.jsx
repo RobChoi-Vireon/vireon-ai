@@ -674,15 +674,15 @@ export default function EquilibriumPulse({
 
       {/* Hover Drawer Bubble */}
       <AnimatePresence>
-        {isEquilibriumActive && !drawerOpen && (
+        {drawerOpen && (
           <motion.div
             className="absolute left-1/2 -translate-x-1/2"
             style={{
-              bottom: 'calc(100% + 4px)', // Reduced gap from 16px to 4px to minimize hit-test gap
+              bottom: 'calc(100% + 12px)',
               width: '420px',
               maxWidth: '90vw',
               zIndex: 30,
-              pointerEvents: 'auto' // CRITICAL: Enable pointer events so menu can receive hover
+              pointerEvents: 'auto'
             }}
             initial={{ opacity: 0, y: 8, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}

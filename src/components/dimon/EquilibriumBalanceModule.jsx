@@ -399,10 +399,11 @@ export default function EquilibriumBalanceModule({
       <AnimatePresence>
         {isHovered && (
           <motion.div
-            className="absolute left-1/2 -translate-x-1/2 w-full max-w-md pointer-events-none"
+            className="absolute left-1/2 -translate-x-1/2 w-full max-w-md"
             style={{
-              bottom: 'calc(100% + 16px)',
-              zIndex: 20
+              bottom: 'calc(100% + 12px)',
+              zIndex: 20,
+              pointerEvents: 'auto'
             }}
             initial={{ opacity: 0, y: 10, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -411,6 +412,8 @@ export default function EquilibriumBalanceModule({
               duration: MOTION_TOKENS.DURATIONS.drawerReveal, 
               ease: MOTION_TOKENS.CURVES.horizonIn 
             }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
           >
             <div
               className="p-5 rounded-2xl"
