@@ -496,14 +496,29 @@ export default function InflationSection({ data }) {
 
   return (
     <div className="space-y-6">
+      {/* Section Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: HORIZON_EASE }}
+        className="mb-6"
+      >
+        <h2 className="text-[28px] font-bold" style={{ 
+          color: 'rgba(255,255,255,0.95)',
+          letterSpacing: '-0.02em'
+        }}>
+          Inflation
+        </h2>
+      </motion.div>
+
       {/* Hero Insight */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: HORIZON_EASE }}
+        transition={{ duration: 0.6, ease: HORIZON_EASE, delay: 0.1 }}
         className="mb-8 text-center"
       >
-        <h2 className="text-[42px] leading-tight font-black mb-4" style={{ 
+        <h3 className="text-[42px] leading-tight font-black mb-4" style={{ 
           color: 'rgba(255,255,255,1)',
           letterSpacing: '-0.04em',
           background: 'linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.85) 100%)',
