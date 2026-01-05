@@ -383,10 +383,10 @@ const MOCK_DATA = {
     state_tag: "Sticky",
     policy_bias: "Hawkish",
     comparison_headline: "CPI running above PCE",
-    comparison_detail: "Shelter costs remain elevated in CPI, while PCE shows softer services inflation. Fed watches Core PCE most closely.",
+    comparison_detail: "Shelter costs remain elevated in CPI, while PCE shows softer services inflation. The Fed watches Core PCE most closely, which suggests less urgency than CPI implies.",
     interpretation_bullets: [
       "Core inflation remains above the Fed's 2% target, with services prices showing persistence.",
-      "Housing costs are the primary driver of CPI strength, creating a wedge between CPI and PCE measures.",
+      "Housing costs are the primary driver of CPI strength, creating a wedge between the two measures.",
       "Month-over-month readings suggest disinflation has stalled, keeping pressure on monetary policy.",
       "Labor market strength continues to support wage growth, limiting downside in services inflation."
     ],
