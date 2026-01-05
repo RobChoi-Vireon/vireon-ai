@@ -42,22 +42,25 @@ const HORIZONS = {
   now: {
     label: 'Now',
     bullets: [
-      "Fed maintains current stance while shelter costs keep headline CPI elevated.",
-      "Markets price in delayed cuts as core services inflation proves sticky."
+      "Fed maintains current stance, watching labor market closely for signs of weakening.",
+      "Markets price in potential rate cuts if inflation continues to moderate.",
+      "Corporate earnings calls emphasize cost pressures and pricing power."
     ]
   },
   quarterly: {
     label: '3–12 Months',
     bullets: [
-      "Housing costs normalize as lagged shelter components catch up to reality.",
-      "Services inflation becomes the primary driver of policy direction."
+      "Housing costs begin to cool as lagged shelter components catch up to market reality.",
+      "Services inflation becomes the primary determinant of policy direction.",
+      "Currency markets adjust to shifting rate differential expectations."
     ]
   },
   longer: {
     label: '12–36 Months',
     bullets: [
-      "Structural forces like deglobalization anchor inflation above pre-pandemic norms.",
-      "Central banks recalibrate neutral rate assumptions upward."
+      "Structural factors like deglobalization and labor market tightness anchor inflation above pre-pandemic levels.",
+      "Central banks recalibrate long-term neutral rate assumptions.",
+      "Asset allocation shifts toward inflation-protected securities gain momentum."
     ]
   }
 };
@@ -344,64 +347,28 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer'
+            justifyContent: 'center'
           }}
         >
-          <AnimatePresence mode="wait">
-            {!isHovered ? (
-              <motion.div
-                key="gap"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="flex flex-col items-center"
-              >
-                <div style={{ 
-                  color: 'rgba(255,255,255,0.60)',
-                  fontSize: TYPOGRAPHY.scale.label.size,
-                  fontWeight: TYPOGRAPHY.scale.label.weight,
-                  letterSpacing: TYPOGRAPHY.scale.label.letterSpacing,
-                  marginBottom: '4px',
-                  ...TYPOGRAPHY.smoothing
-                }}>
-                  GAP
-                </div>
-                <div style={{ 
-                  color: 'rgba(255,255,255,0.95)',
-                  fontSize: '24px',
-                  fontWeight: 700,
-                  letterSpacing: '-0.02em',
-                  ...TYPOGRAPHY.smoothing
-                }}>
-                  {cpiValue && pceValue ? `${Math.abs(cpiValue - pceValue).toFixed(1)}%` : '—'}
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="meaning"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-                className="text-center px-3"
-              >
-                <div style={{ 
-                  color: 'rgba(255,255,255,0.92)',
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  letterSpacing: '0.01em',
-                  lineHeight: 1.4,
-                  ...TYPOGRAPHY.smoothing
-                }}>
-                  Fed watches PCE
-                  <br />
-                  Consumers feel CPI
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <div style={{ 
+            color: 'rgba(255,255,255,0.60)',
+            fontSize: TYPOGRAPHY.scale.label.size,
+            fontWeight: TYPOGRAPHY.scale.label.weight,
+            letterSpacing: TYPOGRAPHY.scale.label.letterSpacing,
+            marginBottom: '4px',
+            ...TYPOGRAPHY.smoothing
+          }}>
+            GAP
+          </div>
+          <div style={{ 
+            color: 'rgba(255,255,255,0.95)',
+            fontSize: '24px',
+            fontWeight: 700,
+            letterSpacing: '-0.02em',
+            ...TYPOGRAPHY.smoothing
+          }}>
+            {cpiValue && pceValue ? `${Math.abs(cpiValue - pceValue).toFixed(1)}%` : '—'}
+          </div>
         </motion.div>
 
         {/* Gap intensity glow */}
@@ -415,16 +382,41 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
         }} />
       </motion.div>
 
-
+      {/* Hover tooltip */}
+      <AnimatePresence>
+        {isHovered && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.2 }}
+            className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap"
+            style={{
+              padding: '8px 16px',
+              background: 'rgba(0, 0, 0, 0.85)',
+              backdropFilter: 'blur(20px)',
+              borderRadius: '12px',
+              fontSize: TYPOGRAPHY.scale.caption.size,
+              fontWeight: TYPOGRAPHY.scale.caption.weight,
+              color: 'rgba(255,255,255,0.90)',
+              border: '1px solid rgba(255,255,255,0.10)',
+              ...TYPOGRAPHY.smoothing
+            }}
+          >
+            <Info className="w-3 h-3 inline mr-1.5" style={{ marginTop: '-2px' }} />
+            Outer: CPI • Inner: PCE • Glow: Divergence
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
 
 const SegmentedControl = ({ segments, active, onChange }) => {
   const getModeHue = (segmentId) => {
-    if (segmentId === 'overview') return THERMAL.cool.subtle;
-    if (segmentId === 'timeline') return 'rgba(150, 120, 255, 0.025)';
-    if (segmentId === 'impact') return THERMAL.warm.subtle;
+    if (segmentId === 'overview') return 'rgba(100, 180, 255, 0.03)';
+    if (segmentId === 'timeline') return 'rgba(150, 120, 255, 0.03)';
+    if (segmentId === 'impact') return 'rgba(255, 160, 90, 0.03)';
     return 'transparent';
   };
 
@@ -594,37 +586,29 @@ export default function InflationSection({ data }) {
         transition={{ duration: 0.6, ease: HORIZON_EASE, delay: 0.1 }}
         className="mb-8 text-center"
       >
-        <h3 className="mb-5" style={{ 
+        <h3 className="mb-4" style={{ 
           color: 'rgba(255,255,255,1)',
-          fontSize: '52px',
-          fontWeight: 900,
-          letterSpacing: '-0.045em',
-          lineHeight: 1.1,
+          fontSize: TYPOGRAPHY.scale.hero.size,
+          fontWeight: TYPOGRAPHY.scale.hero.weight,
+          letterSpacing: TYPOGRAPHY.scale.hero.letterSpacing,
+          lineHeight: TYPOGRAPHY.scale.hero.lineHeight,
           background: 'linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.85) 100%)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           backgroundClip: 'text',
           ...TYPOGRAPHY.smoothing
         }}>
-          {data.state_tag === 'Sticky' 
-            ? 'Inflation proves stubborn' 
-            : data.state_tag === 'Cooling' 
-            ? 'Inflation begins to ease'
-            : data.state_tag === 'Re-accelerating'
-            ? 'Inflation pressure returns'
-            : 'Inflation landscape shifts'}
+          {data.comparison_headline || "Inflation remains sticky as housing keeps CPI elevated"}
         </h3>
-        <p className="max-w-2xl mx-auto" style={{ 
-          color: 'rgba(255,255,255,0.70)',
-          fontSize: '17px',
-          fontWeight: 400,
-          letterSpacing: '0',
-          lineHeight: 1.6,
+        <p className="max-w-3xl mx-auto" style={{ 
+          color: 'rgba(255,255,255,0.65)',
+          fontSize: TYPOGRAPHY.scale.bodyEmphasis.size,
+          fontWeight: TYPOGRAPHY.scale.bodyEmphasis.weight,
+          letterSpacing: TYPOGRAPHY.scale.bodyEmphasis.letterSpacing,
+          lineHeight: TYPOGRAPHY.scale.bodyEmphasis.lineHeight,
           ...TYPOGRAPHY.smoothing
         }}>
-          {cpiValue && pceValue && cpiValue > pceValue 
-            ? `CPI runs ${(cpiValue - pceValue).toFixed(1)}% above PCE—shelter drives consumer pressure while the Fed watches core services.`
-            : 'The Fed targets PCE for policy while households experience CPI inflation.'}
+          {data.comparison_detail || "Shelter costs remain elevated in CPI, while PCE shows softer services inflation. The Fed watches Core PCE most closely."}
         </p>
       </motion.div>
 
@@ -834,10 +818,10 @@ export default function InflationSection({ data }) {
                     fontSize: TYPOGRAPHY.scale.body.size,
                     fontWeight: TYPOGRAPHY.scale.body.weight,
                     letterSpacing: TYPOGRAPHY.scale.body.letterSpacing,
-                    lineHeight: 1.65,
+                    lineHeight: TYPOGRAPHY.scale.body.lineHeight,
                     ...TYPOGRAPHY.smoothing
                   }}>
-                    What <span style={{ color: THERMAL.warm.accent }}>households</span> feel (rent, essentials)
+                    What households feel (rent, essentials)
                   </p>
                 </motion.div>
                 <motion.div
@@ -861,10 +845,10 @@ export default function InflationSection({ data }) {
                     fontSize: TYPOGRAPHY.scale.body.size,
                     fontWeight: TYPOGRAPHY.scale.body.weight,
                     letterSpacing: TYPOGRAPHY.scale.body.letterSpacing,
-                    lineHeight: 1.65,
+                    lineHeight: TYPOGRAPHY.scale.body.lineHeight,
                     ...TYPOGRAPHY.smoothing
                   }}>
-                    What <span style={{ color: THERMAL.cool.accent }}>policy</span> watches (adaptive spending)
+                    What policy watches (adaptive spending)
                   </p>
                 </motion.div>
               </div>
@@ -891,17 +875,17 @@ export default function InflationSection({ data }) {
                   fontSize: TYPOGRAPHY.scale.body.size,
                   fontWeight: TYPOGRAPHY.scale.body.weight,
                   letterSpacing: TYPOGRAPHY.scale.body.letterSpacing,
-                  lineHeight: 1.65,
+                  lineHeight: TYPOGRAPHY.scale.body.lineHeight,
                   ...TYPOGRAPHY.smoothing
                 }}>
-                  CPI above PCE → <span style={{ color: THERMAL.warm.accent }}>consumer pressure</span>
+                  CPI above PCE → consumer pressure
                 </p>
                 <p style={{ 
                   color: 'rgba(255,255,255,0.80)', 
                   fontSize: TYPOGRAPHY.scale.body.size,
                   fontWeight: TYPOGRAPHY.scale.body.weight,
                   letterSpacing: TYPOGRAPHY.scale.body.letterSpacing,
-                  lineHeight: 1.65,
+                  lineHeight: TYPOGRAPHY.scale.body.lineHeight,
                   ...TYPOGRAPHY.smoothing
                 }}>
                   PCE above CPI → broad demand inflation
@@ -911,10 +895,10 @@ export default function InflationSection({ data }) {
                   fontSize: TYPOGRAPHY.scale.body.size,
                   fontWeight: TYPOGRAPHY.scale.body.weight,
                   letterSpacing: TYPOGRAPHY.scale.body.letterSpacing,
-                  lineHeight: 1.65,
+                  lineHeight: TYPOGRAPHY.scale.body.lineHeight,
                   ...TYPOGRAPHY.smoothing
                 }}>
-                  Gap informs <span style={{ color: THERMAL.cool.accent }}>Fed policy</span> bias
+                  Gap informs Fed policy bias
                 </p>
               </motion.div>
             </div>
@@ -930,20 +914,20 @@ export default function InflationSection({ data }) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.2, ease: HORIZON_EASE }}
-                  className="space-y-6 text-center max-w-2xl mx-auto"
+                  className="space-y-4"
                 >
                   {HORIZONS[selectedHorizon].bullets.map((bullet, idx) => (
                     <motion.p 
                       key={idx} 
-                      initial={{ opacity: 0, y: 5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: idx * 0.06 }}
+                      initial={{ opacity: 0, x: -5 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.05 }}
                       style={{ 
                         color: 'rgba(255,255,255,0.84)', 
                         fontSize: TYPOGRAPHY.scale.body.size,
                         fontWeight: TYPOGRAPHY.scale.body.weight,
                         letterSpacing: TYPOGRAPHY.scale.body.letterSpacing,
-                        lineHeight: 1.6,
+                        lineHeight: TYPOGRAPHY.scale.body.lineHeight,
                         ...TYPOGRAPHY.smoothing
                       }}
                     >
