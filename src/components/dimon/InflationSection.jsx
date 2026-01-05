@@ -255,7 +255,7 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
   const isConsumerPressure = cpiValue && pceValue && cpiValue > pceValue;
   
   return (
-    <div className="relative flex items-center justify-center" style={{ height: '240px', pointerEvents: 'none' }}>
+    <div className="relative flex items-center justify-center" style={{ height: '240px' }}>
       <motion.div
         onHoverStart={() => {
           setIsHovered(true);
@@ -266,12 +266,7 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
           onHover && onHover(false);
         }}
         className="relative"
-        style={{ 
-          width: '200px', 
-          height: '200px',
-          pointerEvents: 'auto',
-          willChange: 'transform'
-        }}
+        style={{ width: '200px', height: '200px' }}
       >
         {/* Breathing animation base */}
         <motion.div
@@ -289,8 +284,7 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
             inset: '-20px',
             background: `radial-gradient(circle, ${THERMAL.warm.subtle} 0%, transparent 70%)`,
             filter: 'blur(20px)',
-            pointerEvents: 'none',
-            willChange: 'transform, opacity'
+            pointerEvents: 'none'
           }}
         />
 
@@ -312,9 +306,7 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
             borderTopColor: THERMAL.warm.accent,
             borderRightColor: THERMAL.warm.accent,
             opacity: 0.7,
-            boxShadow: `0 0 ${gapIntensity * 30}px ${THERMAL.warm.glow}`,
-            pointerEvents: 'none',
-            willChange: 'transform'
+            boxShadow: `0 0 ${gapIntensity * 30}px ${THERMAL.warm.glow}`
           }}
         />
 
@@ -336,16 +328,13 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
             borderTopColor: THERMAL.cool.accent,
             borderLeftColor: THERMAL.cool.accent,
             opacity: 0.7,
-            boxShadow: `0 0 ${gapIntensity * 25}px ${THERMAL.cool.glow}`,
-            pointerEvents: 'none',
-            willChange: 'transform'
+            boxShadow: `0 0 ${gapIntensity * 25}px ${THERMAL.cool.glow}`
           }}
         />
 
         {/* Center glass panel - transforms on hover */}
         <motion.div
-          animate={{ scale: isHovered ? 1.05 : 1 }}
-          transition={{ duration: 0.35, ease: HORIZON_EASE }}
+          whileHover={{ scale: 1.05 }}
           style={{
             position: 'absolute',
             inset: '40px',
@@ -359,91 +348,74 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '12px',
-            pointerEvents: 'none',
-            willChange: 'transform'
+            padding: '12px'
           }}
         >
-          <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-            <motion.div
-              animate={{ 
-                opacity: isHovered ? 0 : 1,
-                scale: isHovered ? 0.95 : 1
-              }}
-              transition={{ duration: 0.3, ease: HORIZON_EASE }}
-              style={{ 
-                textAlign: 'center',
-                position: 'absolute',
-                inset: 0,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <div style={{ 
-                color: 'rgba(255,255,255,0.60)',
-                fontSize: TYPOGRAPHY.scale.label.size,
-                fontWeight: TYPOGRAPHY.scale.label.weight,
-                letterSpacing: TYPOGRAPHY.scale.label.letterSpacing,
-                marginBottom: '4px',
-                ...TYPOGRAPHY.smoothing
-              }}>
-                GAP
-              </div>
-              <div style={{ 
-                color: 'rgba(255,255,255,0.95)',
-                fontSize: '24px',
-                fontWeight: 700,
-                letterSpacing: '-0.02em',
-                ...TYPOGRAPHY.smoothing
-              }}>
-                {gap ? `${gap}%` : '—'}
-              </div>
-            </motion.div>
-
-            <motion.div
-              animate={{ 
-                opacity: isHovered ? 1 : 0,
-                scale: isHovered ? 1 : 0.95
-              }}
-              transition={{ duration: 0.3, ease: HORIZON_EASE }}
-              style={{ 
-                textAlign: 'center',
-                position: 'absolute',
-                inset: 0,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                pointerEvents: isHovered ? 'auto' : 'none'
-              }}
-            >
-              <div style={{ 
-                color: isConsumerPressure ? THERMAL.warm.accent.replace('0.45', '1') : THERMAL.cool.accent.replace('0.45', '1'),
-                fontSize: '11px',
-                fontWeight: 600,
-                letterSpacing: '0.04em',
-                marginBottom: '6px',
-                textTransform: 'uppercase',
-                ...TYPOGRAPHY.smoothing
-              }}>
-                {isConsumerPressure ? 'Consumer Pressure' : 'Policy Signal'}
-              </div>
-              <div style={{ 
-                color: 'rgba(255,255,255,0.85)',
-                fontSize: '10px',
-                fontWeight: 500,
-                lineHeight: 1.5,
-                letterSpacing: '0.01em',
-                ...TYPOGRAPHY.smoothing
-              }}>
-                {isConsumerPressure 
-                  ? 'CPI leads → households feel it first'
-                  : 'PCE leads → Fed sees broad demand'}
-              </div>
-            </motion.div>
-          </div>
+          <AnimatePresence mode="wait">
+            {!isHovered ? (
+              <motion.div
+                key="gap"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                style={{ textAlign: 'center' }}
+              >
+                <div style={{ 
+                  color: 'rgba(255,255,255,0.60)',
+                  fontSize: TYPOGRAPHY.scale.label.size,
+                  fontWeight: TYPOGRAPHY.scale.label.weight,
+                  letterSpacing: TYPOGRAPHY.scale.label.letterSpacing,
+                  marginBottom: '4px',
+                  ...TYPOGRAPHY.smoothing
+                }}>
+                  GAP
+                </div>
+                <div style={{ 
+                  color: 'rgba(255,255,255,0.95)',
+                  fontSize: '24px',
+                  fontWeight: 700,
+                  letterSpacing: '-0.02em',
+                  ...TYPOGRAPHY.smoothing
+                }}>
+                  {gap ? `${gap}%` : '—'}
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="meaning"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.25, ease: HORIZON_EASE }}
+                style={{ textAlign: 'center' }}
+              >
+                <div style={{ 
+                  color: isConsumerPressure ? THERMAL.warm.accent.replace('0.45', '1') : THERMAL.cool.accent.replace('0.45', '1'),
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  letterSpacing: '0.04em',
+                  marginBottom: '6px',
+                  textTransform: 'uppercase',
+                  ...TYPOGRAPHY.smoothing
+                }}>
+                  {isConsumerPressure ? 'Consumer Pressure' : 'Policy Signal'}
+                </div>
+                <div style={{ 
+                  color: 'rgba(255,255,255,0.85)',
+                  fontSize: '10px',
+                  fontWeight: 500,
+                  lineHeight: 1.5,
+                  letterSpacing: '0.01em',
+                  ...TYPOGRAPHY.smoothing
+                }}>
+                  {isConsumerPressure 
+                    ? 'CPI leads → households feel it first'
+                    : 'PCE leads → Fed sees broad demand'}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
 
         {/* Gap intensity glow */}
@@ -453,8 +425,7 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
           background: `radial-gradient(circle, ${THERMAL.warm.glow} 0%, ${THERMAL.cool.glow} 50%, transparent 70%)`,
           filter: 'blur(15px)',
           opacity: gapIntensity * 0.6,
-          pointerEvents: 'none',
-          willChange: 'opacity'
+          pointerEvents: 'none'
         }} />
       </motion.div>
 

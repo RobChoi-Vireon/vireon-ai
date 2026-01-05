@@ -89,39 +89,24 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
     };
   }, [shouldReduceMotion, isLowPower]);
 
-  // Mouse parallax effect with throttling
+  // Mouse parallax effect
   useEffect(() => {
     if (shouldReduceMotion || !parentRef?.current) return;
 
-    let rafId;
-    let lastX = 0;
-    let lastY = 0;
-
     const handleMouseMove = (e) => {
-      lastX = e.clientX;
-      lastY = e.clientY;
+      const rect = parentRef.current.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
       
-      if (!rafId) {
-        rafId = requestAnimationFrame(() => {
-          const rect = parentRef.current?.getBoundingClientRect();
-          if (rect) {
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            
-            mouseX.set(lastX - centerX);
-            mouseY.set(lastY - centerY);
-          }
-          rafId = null;
-        });
-      }
+      mouseX.set(e.clientX - centerX);
+      mouseY.set(e.clientY - centerY);
     };
 
     const parent = parentRef.current;
-    parent.addEventListener('mousemove', handleMouseMove, { passive: true });
+    parent.addEventListener('mousemove', handleMouseMove);
     
     return () => {
       parent.removeEventListener('mousemove', handleMouseMove);
-      if (rafId) cancelAnimationFrame(rafId);
     };
   }, [shouldReduceMotion, parentRef, mouseX, mouseY]);
 
@@ -299,7 +284,7 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
             0 0 45px rgba(142, 187, 255, 0.095),
             0 0 0 1px rgba(255, 255, 255, 0.045)
           `,
-          willChange: 'transform, filter',
+          willChange: 'transform',
           rotateX: 0,
           rotateY: 0
         }}
@@ -325,9 +310,7 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
         transition={{
           scale: { duration: isHovered ? MOTION.DURATIONS.base : MOTION.DURATIONS.breathing, ease: MOTION.CURVES.primary },
           filter: { duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.primary },
-          boxShadow: { duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.primary },
-          rotateX: { type: 'spring', stiffness: 150, damping: 30, mass: 0.5 },
-          rotateY: { type: 'spring', stiffness: 150, damping: 30, mass: 0.5 }
+          boxShadow: { duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.primary }
         }}
       >
         {/* Inner Layer */}
