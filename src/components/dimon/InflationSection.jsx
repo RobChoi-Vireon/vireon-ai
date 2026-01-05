@@ -4,266 +4,144 @@ import { TrendingUp, TrendingDown, Minus, Info } from 'lucide-react';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
 
-// Apple-grade typography system
-const TYPOGRAPHY = {
-  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-  smoothing: {
-    WebkitFontSmoothing: 'antialiased',
-    MozOsxFontSmoothing: 'grayscale'
+// OS Horizon palette - cool tones only
+const PALETTE = {
+  cpi: {
+    ring: 'rgba(120, 140, 160, 0.45)',
+    glow: 'rgba(120, 140, 160, 0.20)',
+    text: '#8B9AAD'
   },
-  scale: {
-    hero: { size: '54px', weight: 900, lineHeight: 1.05, letterSpacing: '-0.05em' },
-    heading1: { size: '28px', weight: 700, lineHeight: 1.2, letterSpacing: '-0.025em' },
-    heading2: { size: '20px', weight: 700, lineHeight: 1.3, letterSpacing: '-0.02em' },
-    heading3: { size: '17px', weight: 600, lineHeight: 1.4, letterSpacing: '-0.01em' },
-    body: { size: '17px', weight: 400, lineHeight: 1.65, letterSpacing: '0' },
-    bodyEmphasis: { size: '15px', weight: 500, lineHeight: 1.6, letterSpacing: '0.01em' },
-    caption: { size: '13px', weight: 500, lineHeight: 1.4, letterSpacing: '0.01em' },
-    label: { size: '11px', weight: 600, lineHeight: 1.2, letterSpacing: '0.06em' },
-    micro: { size: '10px', weight: 700, lineHeight: 1.2, letterSpacing: '0.08em' }
+  pce: {
+    ring: 'rgba(90, 130, 170, 0.45)',
+    glow: 'rgba(90, 130, 170, 0.20)',
+    text: '#6B95C0'
+  },
+  neutral: {
+    bg: 'rgba(18, 22, 28, 0.45)',
+    border: 'rgba(255, 255, 255, 0.08)',
+    text: 'rgba(255, 255, 255, 0.70)',
+    textBright: 'rgba(255, 255, 255, 0.95)',
+    textDim: 'rgba(255, 255, 255, 0.50)'
   }
 };
 
-// Thermal color system
-const THERMAL = {
-  warm: {
-    glow: 'rgba(255, 160, 90, 0.35)',
-    accent: 'rgba(255, 140, 70, 0.45)',
-    subtle: 'rgba(255, 150, 80, 0.18)'
+// Apple typography system
+const TYPE = {
+  systemLabel: {
+    fontSize: '22px',
+    fontWeight: 700,
+    letterSpacing: '-0.015em',
+    lineHeight: 1.3
   },
-  cool: {
-    glow: 'rgba(100, 180, 255, 0.35)',
-    accent: 'rgba(90, 170, 255, 0.45)',
-    subtle: 'rgba(95, 175, 255, 0.18)'
+  systemSubtext: {
+    fontSize: '14px',
+    fontWeight: 500,
+    letterSpacing: '0',
+    lineHeight: 1.5
+  },
+  systemNote: {
+    fontSize: '13px',
+    fontWeight: 400,
+    letterSpacing: '0',
+    lineHeight: 1.65
+  },
+  kpiValue: {
+    fontSize: '36px',
+    fontWeight: 700,
+    letterSpacing: '-0.025em',
+    lineHeight: 1
+  },
+  kpiLabel: {
+    fontSize: '11px',
+    fontWeight: 600,
+    letterSpacing: '0.06em',
+    lineHeight: 1.2
   }
 };
 
-const TIME_HORIZONS = {
-  now: {
-    label: 'Now',
-    insight: 'Housing keeps inflation sticky'
-  },
-  quarterly: {
-    label: '3–12 Months',
-    insight: 'Services guide policy shifts'
-  },
-  longer: {
-    label: '12–36 Months',
-    insight: 'Higher inflation baseline persists'
-  }
-};
+// Component 1: InflationStateHeader
+const InflationStateHeader = ({ state, descriptor }) => (
+  <motion.div
+    initial={{ opacity: 0, y: -10 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.4, ease: HORIZON_EASE }}
+    className="mb-6"
+  >
+    <h2 style={{ 
+      color: PALETTE.neutral.textBright,
+      ...TYPE.systemLabel,
+      marginBottom: '8px'
+    }}>
+      {state}
+    </h2>
+    <p style={{ 
+      color: PALETTE.neutral.text,
+      ...TYPE.systemSubtext
+    }}>
+      {descriptor}
+    </p>
+  </motion.div>
+);
 
-const CONSEQUENCES = {
-  consumer: {
-    label: 'Consumer',
-    insight: 'Living costs stay elevated even as growth slows'
-  },
-  worker: {
-    label: 'Worker',
-    insight: 'Wage gains offset but do not erase pressure'
-  },
-  business: {
-    label: 'Business',
-    insight: 'Pricing power weakens'
-  },
-  government: {
-    label: 'Government',
-    insight: 'Policy flexibility constrained'
-  },
-  investor: {
-    label: 'Investor',
-    insight: 'Volatility tied to inflation surprises'
-  }
-};
+// Component 2: InflationSystemNote
+const InflationSystemNote = () => (
+  <motion.div
+    initial={{ opacity: 0, y: -5 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5, ease: HORIZON_EASE, delay: 0.1 }}
+    className="mb-8 relative overflow-hidden"
+    style={{
+      padding: '14px 18px',
+      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.025) 0%, rgba(255, 255, 255, 0.015) 100%)',
+      backdropFilter: 'blur(32px) saturate(165%)',
+      WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+      borderRadius: '14px',
+      border: `1px solid ${PALETTE.neutral.border}`,
+      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 2px 12px rgba(0,0,0,0.08)'
+    }}
+  >
+    <div style={{
+      position: 'absolute',
+      top: 0,
+      left: '15%',
+      right: '15%',
+      height: '1px',
+      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)',
+      pointerEvents: 'none'
+    }} />
+    <div style={{ 
+      color: PALETTE.neutral.text,
+      ...TYPE.systemNote
+    }}>
+      CPI reflects prices households feel.<br />
+      PCE reflects prices policy responds to.<br />
+      The gap explains why inflation can feel worse than policy data suggests.
+    </div>
+  </motion.div>
+);
 
-const StatePillColors = {
-  "Cooling": { bg: "rgba(88, 227, 164, 0.12)", border: "rgba(88, 227, 164, 0.24)", text: "#58E3A4" },
-  "Sticky": { bg: "rgba(255, 180, 100, 0.12)", border: "rgba(255, 180, 100, 0.24)", text: "#FFB464" },
-  "Re-accelerating": { bg: "rgba(255, 106, 122, 0.12)", border: "rgba(255, 106, 122, 0.24)", text: "#FF6A7A" },
-  "Mixed": { bg: "rgba(168, 179, 199, 0.12)", border: "rgba(168, 179, 199, 0.24)", text: "#A8B3C7" }
-};
-
-const PolicyBiasColors = {
-  "Dovish": { bg: "rgba(88, 227, 164, 0.12)", border: "rgba(88, 227, 164, 0.24)", text: "#58E3A4" },
-  "Neutral": { bg: "rgba(168, 179, 199, 0.12)", border: "rgba(168, 179, 199, 0.24)", text: "#A8B3C7" },
-  "Hawkish": { bg: "rgba(255, 106, 122, 0.12)", border: "rgba(255, 106, 122, 0.24)", text: "#FF6A7A" }
-};
-
-const KPIChip = ({ label, value, isCore = false }) => {
-  const [isHovered, setIsHovered] = React.useState(false);
-  
-  return (
-    <motion.div
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      whileHover={{ y: -4, transition: { duration: 0.4, ease: HORIZON_EASE } }}
-      className="relative flex flex-col items-center justify-center rounded-3xl overflow-hidden group"
-      style={{
-        padding: '28px 32px',
-        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.065) 0%, rgba(255, 255, 255, 0.038) 100%)',
-        backdropFilter: 'blur(64px) saturate(180%)',
-        WebkitBackdropFilter: 'blur(64px) saturate(180%)',
-        border: '1px solid rgba(255,255,255,0.12)',
-        boxShadow: isHovered 
-          ? 'inset 0 2px 0 rgba(255,255,255,0.14), 0 12px 48px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.08)'
-          : 'inset 0 2px 0 rgba(255,255,255,0.12), 0 8px 32px rgba(0,0,0,0.14)',
-        minWidth: '160px',
-        transition: 'box-shadow 0.4s ease'
-      }}
-    >
-      {/* Specular Highlight */}
-      <motion.div 
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: '12%',
-          right: '12%',
-          height: '2px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.24), transparent)',
-          pointerEvents: 'none',
-          filter: 'blur(1px)'
-        }}
-        animate={{ opacity: isHovered ? 1 : 0.8 }}
-      />
-
-      {/* Ambient Glow */}
-      <div style={{
-        position: 'absolute',
-        inset: 0,
-        background: 'radial-gradient(ellipse at 50% 40%, rgba(255, 255, 255, 0.08) 0%, transparent 70%)',
-        pointerEvents: 'none',
-        opacity: isHovered ? 1 : 0.6,
-        transition: 'opacity 0.4s ease'
-      }} />
-      
-      <div style={{ 
-        color: 'rgba(255,255,255,0.70)', 
-        fontSize: TYPOGRAPHY.scale.label.size,
-        fontWeight: TYPOGRAPHY.scale.label.weight,
-        letterSpacing: TYPOGRAPHY.scale.label.letterSpacing,
-        lineHeight: TYPOGRAPHY.scale.label.lineHeight,
-        textTransform: 'uppercase',
-        marginBottom: '12px',
-        ...TYPOGRAPHY.smoothing
-      }}>
-        {label}
-      </div>
-      
-      <motion.div 
-        className="relative"
-        style={{ 
-          color: 'rgba(255,255,255,1)',
-          fontSize: '36px',
-          fontWeight: 700,
-          letterSpacing: '-0.025em',
-          lineHeight: 1,
-          ...TYPOGRAPHY.smoothing
-        }}
-        animate={{ scale: isHovered ? 1.05 : 1 }}
-        transition={{ duration: 0.4, ease: HORIZON_EASE }}
-      >
-        {value ?? '—'}
-        <div style={{
-          position: 'absolute',
-          inset: '-8px',
-          background: isHovered ? 'radial-gradient(ellipse, rgba(110, 185, 255, 0.12) 0%, transparent 60%)' : 'none',
-          filter: 'blur(12px)',
-          pointerEvents: 'none',
-          transition: 'background 0.4s ease'
-        }} />
-      </motion.div>
-      
-      {isCore && (
-        <motion.div 
-          className="px-2 py-1 rounded-md"
-          style={{ 
-            color: 'rgba(255,255,255,0.55)', 
-            fontSize: TYPOGRAPHY.scale.micro.size,
-            fontWeight: TYPOGRAPHY.scale.micro.weight,
-            letterSpacing: TYPOGRAPHY.scale.micro.letterSpacing,
-            lineHeight: TYPOGRAPHY.scale.micro.lineHeight,
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            marginTop: '8px',
-            ...TYPOGRAPHY.smoothing
-          }}
-          animate={{ opacity: isHovered ? 1 : 0.7 }}
-        >
-          CORE
-        </motion.div>
-      )}
-    </motion.div>
-  );
-};
-
-const ImplicationPill = ({ label, direction, note }) => {
-  const Icon = direction === 'up' ? TrendingUp : direction === 'down' ? TrendingDown : Minus;
-  const color = direction === 'up' ? '#58E3A4' : direction === 'down' ? '#FF6A7A' : '#A8B3C7';
-  
-  return (
-    <motion.div
-      whileHover={{ scale: 1.025, y: -2, transition: { duration: 0.3, ease: HORIZON_EASE } }}
-      className="relative flex items-center gap-2.5 rounded-xl overflow-hidden"
-      style={{
-        padding: '12px 18px',
-        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.052) 0%, rgba(255, 255, 255, 0.032) 100%)',
-        backdropFilter: 'blur(36px) saturate(170%)',
-        WebkitBackdropFilter: 'blur(36px) saturate(170%)',
-        border: '1px solid rgba(255,255,255,0.10)',
-        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10), 0 3px 12px rgba(0,0,0,0.08)'
-      }}
-    >
-      <Icon className="w-4 h-4 flex-shrink-0" style={{ color, strokeWidth: 2.5 }} />
-      <div className="flex flex-col">
-        <span style={{ 
-          color: 'rgba(255,255,255,0.92)',
-          fontSize: '14px',
-          fontWeight: 600,
-          letterSpacing: '-0.005em',
-          ...TYPOGRAPHY.smoothing
-        }}>{label}</span>
-        {note && <span style={{ 
-          color: 'rgba(255,255,255,0.55)',
-          fontSize: TYPOGRAPHY.scale.caption.size,
-          fontWeight: TYPOGRAPHY.scale.caption.weight,
-          letterSpacing: TYPOGRAPHY.scale.caption.letterSpacing,
-          ...TYPOGRAPHY.smoothing
-        }}>{note}</span>}
-      </div>
-    </motion.div>
-  );
-};
-
-const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
+// Component 3: InflationPressureRing
+const InflationPressureRing = ({ cpiValue, pceValue }) => {
   const [isHovered, setIsHovered] = useState(false);
   
-  // Calculate gap intensity (0-1)
+  const gap = cpiValue && pceValue ? Math.abs(cpiValue - pceValue).toFixed(1) : null;
   const gapIntensity = cpiValue && pceValue 
     ? Math.min(Math.abs(cpiValue - pceValue) / 2, 1) 
     : 0.3;
   
-  const gap = cpiValue && pceValue ? Math.abs(cpiValue - pceValue).toFixed(1) : null;
-  const isConsumerPressure = cpiValue && pceValue && cpiValue > pceValue;
-  
   return (
     <div className="relative flex items-center justify-center" style={{ height: '240px' }}>
       <motion.div
-        onHoverStart={() => {
-          setIsHovered(true);
-          onHover && onHover(true);
-        }}
-        onHoverEnd={() => {
-          setIsHovered(false);
-          onHover && onHover(false);
-        }}
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
         className="relative"
         style={{ width: '200px', height: '200px' }}
       >
-        {/* Breathing animation base */}
+        {/* Breathing base glow */}
         <motion.div
           animate={{
             scale: [1, 1.02, 1],
-            opacity: [0.6, 0.8, 0.6]
+            opacity: [0.4, 0.6, 0.4]
           }}
           transition={{
             duration: 4,
@@ -273,13 +151,13 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
           style={{
             position: 'absolute',
             inset: '-20px',
-            background: `radial-gradient(circle, ${THERMAL.warm.subtle} 0%, transparent 70%)`,
+            background: `radial-gradient(circle, ${PALETTE.cpi.glow} 0%, transparent 70%)`,
             filter: 'blur(20px)',
             pointerEvents: 'none'
           }}
         />
 
-        {/* Outer ring - CPI (warm) */}
+        {/* Outer ring - CPI */}
         <motion.div
           animate={{
             rotate: [0, 360],
@@ -294,14 +172,14 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
             inset: 0,
             borderRadius: '50%',
             border: '3px solid transparent',
-            borderTopColor: THERMAL.warm.accent,
-            borderRightColor: THERMAL.warm.accent,
+            borderTopColor: PALETTE.cpi.ring,
+            borderRightColor: PALETTE.cpi.ring,
             opacity: 0.7,
-            boxShadow: `0 0 ${gapIntensity * 30}px ${THERMAL.warm.glow}`
+            boxShadow: `0 0 ${gapIntensity * 30}px ${PALETTE.cpi.glow}`
           }}
         />
 
-        {/* Inner ring - PCE (cool) */}
+        {/* Inner ring - PCE */}
         <motion.div
           animate={{
             rotate: [360, 0],
@@ -316,25 +194,25 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
             inset: '20px',
             borderRadius: '50%',
             border: '2.5px solid transparent',
-            borderTopColor: THERMAL.cool.accent,
-            borderLeftColor: THERMAL.cool.accent,
+            borderTopColor: PALETTE.pce.ring,
+            borderLeftColor: PALETTE.pce.ring,
             opacity: 0.7,
-            boxShadow: `0 0 ${gapIntensity * 25}px ${THERMAL.cool.glow}`
+            boxShadow: `0 0 ${gapIntensity * 25}px ${PALETTE.pce.glow}`
           }}
         />
 
-        {/* Center glass panel - transforms on hover */}
+        {/* Center glass panel */}
         <motion.div
           whileHover={{ scale: 1.05 }}
           style={{
             position: 'absolute',
             inset: '40px',
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.03) 100%)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255,255,255,0.15)',
-            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.2), 0 8px 32px rgba(0,0,0,0.2)',
+            border: '1px solid rgba(255,255,255,0.12)',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.15), 0 8px 32px rgba(0,0,0,0.2)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -353,21 +231,17 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
                 style={{ textAlign: 'center' }}
               >
                 <div style={{ 
-                  color: 'rgba(255,255,255,0.60)',
-                  fontSize: TYPOGRAPHY.scale.label.size,
-                  fontWeight: TYPOGRAPHY.scale.label.weight,
-                  letterSpacing: TYPOGRAPHY.scale.label.letterSpacing,
-                  marginBottom: '4px',
-                  ...TYPOGRAPHY.smoothing
+                  color: PALETTE.neutral.textDim,
+                  ...TYPE.kpiLabel,
+                  marginBottom: '4px'
                 }}>
                   GAP
                 </div>
                 <div style={{ 
-                  color: 'rgba(255,255,255,0.95)',
+                  color: PALETTE.neutral.textBright,
                   fontSize: '24px',
                   fontWeight: 700,
-                  letterSpacing: '-0.02em',
-                  ...TYPOGRAPHY.smoothing
+                  letterSpacing: '-0.02em'
                 }}>
                   {gap ? `${gap}%` : '—'}
                 </div>
@@ -382,188 +256,441 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
                 style={{ textAlign: 'center' }}
               >
                 <div style={{ 
-                  color: isConsumerPressure ? THERMAL.warm.accent.replace('0.45', '1') : THERMAL.cool.accent.replace('0.45', '1'),
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  letterSpacing: '0.04em',
-                  marginBottom: '6px',
-                  textTransform: 'uppercase',
-                  ...TYPOGRAPHY.smoothing
-                }}>
-                  {isConsumerPressure ? 'Consumer Pressure' : 'Policy Signal'}
-                </div>
-                <div style={{ 
-                  color: 'rgba(255,255,255,0.85)',
+                  color: PALETTE.neutral.textBright,
                   fontSize: '10px',
                   fontWeight: 500,
                   lineHeight: 1.5,
-                  letterSpacing: '0.01em',
-                  ...TYPOGRAPHY.smoothing
+                  letterSpacing: '0.01em'
                 }}>
-                  {isConsumerPressure 
-                    ? 'CPI leads → households feel it first'
-                    : 'PCE leads → Fed sees broad demand'}
+                  Consumer prices hotter than policy inflation
+                </div>
+                <div style={{ 
+                  color: PALETTE.neutral.textDim,
+                  fontSize: '9px',
+                  fontWeight: 500,
+                  marginTop: '4px'
+                }}>
+                  Policy follows PCE
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
         </motion.div>
-
-        {/* Gap intensity glow */}
-        <div style={{
-          position: 'absolute',
-          inset: '-10px',
-          background: `radial-gradient(circle, ${THERMAL.warm.glow} 0%, ${THERMAL.cool.glow} 50%, transparent 70%)`,
-          filter: 'blur(15px)',
-          opacity: gapIntensity * 0.6,
-          pointerEvents: 'none'
-        }} />
       </motion.div>
-
-
     </div>
   );
 };
 
-const LensSwitcher = ({ lenses, active, onChange }) => {
-  const getModeHue = (lensId) => {
-    if (lensId === 'understanding') return THERMAL.cool.subtle;
-    if (lensId === 'time') return 'rgba(150, 120, 255, 0.03)';
-    if (lensId === 'consequences') return THERMAL.warm.subtle;
-    return 'transparent';
-  };
+// Component 4: InflationSnapshotKPIs
+const KPIChip = ({ label, value, isCore = false }) => {
+  const [isHovered, setIsHovered] = React.useState(false);
+  
+  return (
+    <motion.div
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      whileHover={{ y: -2, transition: { duration: 0.3, ease: HORIZON_EASE } }}
+      className="relative flex flex-col items-center justify-center rounded-2xl overflow-hidden"
+      style={{
+        padding: '24px 28px',
+        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.02) 100%)',
+        backdropFilter: 'blur(48px) saturate(170%)',
+        WebkitBackdropFilter: 'blur(48px) saturate(170%)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        boxShadow: isHovered 
+          ? 'inset 0 2px 0 rgba(255,255,255,0.10), 0 8px 28px rgba(0,0,0,0.15)'
+          : 'inset 0 2px 0 rgba(255,255,255,0.08), 0 4px 18px rgba(0,0,0,0.12)',
+        minWidth: '140px',
+        transition: 'box-shadow 0.3s ease'
+      }}
+    >
+      <motion.div 
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: '12%',
+          right: '12%',
+          height: '1.5px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+          pointerEvents: 'none',
+          filter: 'blur(0.5px)'
+        }}
+        animate={{ opacity: isHovered ? 1 : 0.8 }}
+      />
+      
+      <div style={{ 
+        color: PALETTE.neutral.textDim,
+        ...TYPE.kpiLabel,
+        textTransform: 'uppercase',
+        marginBottom: '10px'
+      }}>
+        {label}
+      </div>
+      
+      <motion.div 
+        className="relative"
+        style={{ 
+          color: PALETTE.neutral.textBright,
+          ...TYPE.kpiValue
+        }}
+        animate={{ scale: isHovered ? 1.03 : 1 }}
+        transition={{ duration: 0.3, ease: HORIZON_EASE }}
+      >
+        {value ?? '—'}
+      </motion.div>
+      
+      {isCore && (
+        <motion.div 
+          className="px-2 py-1 rounded-md"
+          style={{ 
+            color: PALETTE.neutral.textDim,
+            fontSize: '9px',
+            fontWeight: 700,
+            letterSpacing: '0.08em',
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.06)',
+            marginTop: '8px'
+          }}
+          animate={{ opacity: isHovered ? 1 : 0.7 }}
+        >
+          CORE
+        </motion.div>
+      )}
+    </motion.div>
+  );
+};
+
+const InflationSnapshotKPIs = ({ cpi_headline_yoy, cpi_core_yoy, pce_headline_yoy, pce_core_yoy }) => (
+  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 opacity-85 mb-8">
+    <KPIChip label="CPI YoY" value={cpi_headline_yoy ? `${cpi_headline_yoy}%` : null} />
+    <KPIChip label="Core CPI YoY" value={cpi_core_yoy ? `${cpi_core_yoy}%` : null} isCore />
+    <KPIChip label="PCE YoY" value={pce_headline_yoy ? `${pce_headline_yoy}%` : null} />
+    <KPIChip label="Core PCE YoY" value={pce_core_yoy ? `${pce_core_yoy}%` : null} isCore />
+  </div>
+);
+
+// Component 5: InflationLensSwitcher
+const InflationLensSwitcher = ({ lenses, active, onChange }) => (
+  <div className="relative flex items-center justify-center gap-1 p-1.5 rounded-[20px] mb-10" style={{
+    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.025) 100%)',
+    backdropFilter: 'blur(48px) saturate(175%)',
+    WebkitBackdropFilter: 'blur(48px) saturate(175%)',
+    border: '1px solid rgba(255,255,255,0.08)',
+    boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.10)'
+  }}>
+    <div style={{
+      position: 'absolute',
+      top: 0,
+      left: '15%',
+      right: '15%',
+      height: '1.5px',
+      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
+      pointerEvents: 'none',
+      filter: 'blur(0.5px)'
+    }} />
+
+    {lenses.map(lens => (
+      <motion.button
+        key={lens.id}
+        onClick={() => onChange(lens.id)}
+        className="relative px-7 py-3 rounded-[16px] overflow-hidden"
+        whileHover={{ scale: active === lens.id ? 1 : 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        transition={{ duration: 0.2, ease: HORIZON_EASE }}
+        style={{
+          background: active === lens.id 
+            ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.07) 100%)'
+            : 'transparent',
+          color: active === lens.id ? PALETTE.neutral.textBright : PALETTE.neutral.text,
+          fontWeight: active === lens.id ? 600 : 500,
+          fontSize: '15px',
+          letterSpacing: active === lens.id ? '-0.01em' : '0',
+          boxShadow: active === lens.id 
+            ? 'inset 0 1.5px 0 rgba(255,255,255,0.12), 0 3px 12px rgba(0,0,0,0.10)' 
+            : 'none',
+          transition: 'all 0.3s ease'
+        }}
+      >
+        {active === lens.id && (
+          <>
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: '12%',
+              right: '12%',
+              height: '1.5px',
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent)',
+              pointerEvents: 'none'
+            }} />
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'radial-gradient(ellipse at 50% 30%, rgba(90, 130, 170, 0.08) 0%, transparent 70%)',
+              pointerEvents: 'none'
+            }} />
+          </>
+        )}
+        <span className="relative z-10">{lens.label}</span>
+      </motion.button>
+    ))}
+  </div>
+);
+
+// Component 6: InflationUnderstandingLens
+const InflationUnderstandingLens = () => (
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+    {[
+      { label: 'CPI', text: 'What households feel (rent, essentials)' },
+      { label: 'PCE', text: 'What policy watches (adaptive spending)' },
+      { label: 'Meaning', text: 'Policy responds to demand, not pain' }
+    ].map((item, i) => (
+      <motion.div 
+        key={item.label}
+        initial={{ opacity: 0, y: 10 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ delay: 0.1 + i * 0.05 }}
+      >
+        <div style={{ 
+          color: PALETTE.neutral.textDim,
+          ...TYPE.kpiLabel,
+          textTransform: 'uppercase',
+          marginBottom: '12px'
+        }}>
+          {item.label}
+        </div>
+        <p style={{ 
+          color: PALETTE.neutral.textBright, 
+          fontSize: '15px',
+          fontWeight: 400,
+          lineHeight: 1.6
+        }}>
+          {item.text}
+        </p>
+      </motion.div>
+    ))}
+  </div>
+);
+
+// Component 7: InflationTimeLens
+const TIME_HORIZONS = {
+  now: { label: 'Now', text: 'Housing keeps inflation sticky' },
+  quarterly: { label: '3–12 Months', text: 'Services guide policy shifts' },
+  longer: { label: '12–36 Months', text: 'Higher inflation baseline persists' }
+};
+
+const InflationTimeLens = () => {
+  const [selected, setSelected] = useState('now');
 
   return (
-    <div className="relative flex items-center justify-center gap-1 p-1.5 rounded-[20px]" style={{
-      background: `linear-gradient(135deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.035) 100%), ${getModeHue(active)}`,
-      backdropFilter: 'blur(48px) saturate(175%)',
-      WebkitBackdropFilter: 'blur(48px) saturate(175%)',
-      border: '1px solid rgba(255,255,255,0.10)',
-      boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.10), 0 4px 20px rgba(0,0,0,0.10)',
-      transition: 'background 0.4s ease'
-    }}>
-      {/* Top Specular Rim */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: '15%',
-        right: '15%',
-        height: '1.5px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
-        pointerEvents: 'none',
-        filter: 'blur(0.5px)'
-      }} />
-
-      {lenses.map(lens => (
-        <motion.button
-          key={lens.id}
-          onClick={() => onChange(lens.id)}
-          className="relative px-7 py-3 rounded-[16px] overflow-hidden"
-          whileHover={{ scale: active === lens.id ? 1 : 1.02 }}
-          whileTap={{ scale: 0.98 }}
+    <div>
+      <div className="flex items-center justify-center gap-4 mb-6">
+        {Object.entries(TIME_HORIZONS).map(([key, horizon]) => (
+          <button
+            key={key}
+            onClick={() => setSelected(key)}
+            className="relative px-5 py-2 rounded-xl transition-all duration-200"
+            style={{
+              background: selected === key 
+                ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%)'
+                : 'linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.02) 100%)',
+              backdropFilter: 'blur(32px) saturate(165%)',
+              WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+              border: `1px solid ${selected === key ? 'rgba(255,255,255,0.10)' : 'rgba(255,255,255,0.06)'}`,
+              color: selected === key ? PALETTE.neutral.textBright : PALETTE.neutral.text,
+              fontWeight: selected === key ? 600 : 500,
+              fontSize: '14px'
+            }}
+          >
+            {horizon.label}
+          </button>
+        ))}
+      </div>
+      <AnimatePresence mode="wait">
+        <motion.div 
+          key={selected}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.2, ease: HORIZON_EASE }}
-          style={{
-            background: active === lens.id 
-              ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.10) 100%)'
-              : 'transparent',
-            color: active === lens.id ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.65)',
-            fontWeight: active === lens.id ? 600 : 500,
-            fontSize: '15px',
-            letterSpacing: active === lens.id ? '-0.01em' : '0',
-            ...TYPOGRAPHY.smoothing,
-            boxShadow: active === lens.id 
-              ? 'inset 0 1.5px 0 rgba(255,255,255,0.16), 0 3px 12px rgba(0,0,0,0.12), 0 0 0 1px rgba(255,255,255,0.08)' 
-              : 'none',
-            transition: 'all 0.3s ease'
-          }}
+          className="text-center max-w-2xl mx-auto"
         >
-          {active === lens.id && (
-            <>
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: '12%',
-                right: '12%',
-                height: '1.5px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent)',
-                pointerEvents: 'none'
-              }} />
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                background: 'radial-gradient(ellipse at 50% 30%, rgba(110, 185, 255, 0.10) 0%, transparent 70%)',
-                pointerEvents: 'none'
-              }} />
-            </>
-          )}
-          <span className="relative z-10">{lens.label}</span>
-        </motion.button>
-      ))}
+          <p style={{ 
+            color: PALETTE.neutral.textBright, 
+            fontSize: '17px',
+            fontWeight: 400,
+            lineHeight: 1.65
+          }}>
+            {TIME_HORIZONS[selected].text}
+          </p>
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 };
 
-const TimelineSelector = ({ horizons, active, onChange }) => (
-  <div className="flex items-center justify-center gap-4 mb-6">
-    {Object.entries(horizons).map(([key, horizon]) => (
-      <button
-        key={key}
-        onClick={() => onChange(key)}
-        className="relative px-5 py-2 rounded-xl transition-all duration-200"
-        style={{
-          background: active === key 
-            ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.06) 100%)'
-            : 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
-          backdropFilter: 'blur(32px) saturate(165%)',
-          WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-          border: `1px solid ${active === key ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.08)'}`,
-          color: active === key ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.65)',
-          fontWeight: active === key ? 600 : 500,
-          fontSize: '14px'
-        }}
-      >
-        {horizon.label}
-      </button>
-    ))}
-  </div>
+// Component 8: InflationConsequencesLens
+const CONSEQUENCES = {
+  consumer: { label: 'Consumer', text: 'Living costs stay elevated even as growth slows' },
+  worker: { label: 'Worker', text: 'Wage gains offset but do not erase pressure' },
+  business: { label: 'Business', text: 'Pricing power weakens' },
+  government: { label: 'Government', text: 'Policy flexibility constrained' },
+  investor: { label: 'Investor', text: 'Volatility tied to inflation surprises' }
+};
+
+const InflationConsequencesLens = () => {
+  const [selected, setSelected] = useState('consumer');
+
+  return (
+    <div>
+      <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
+        {Object.entries(CONSEQUENCES).map(([key, consequence]) => (
+          <button
+            key={key}
+            onClick={() => setSelected(key)}
+            className="relative px-5 py-2 rounded-xl transition-all duration-200"
+            style={{
+              background: selected === key 
+                ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%)'
+                : 'linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.02) 100%)',
+              backdropFilter: 'blur(32px) saturate(165%)',
+              WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+              border: `1px solid ${selected === key ? 'rgba(255,255,255,0.10)' : 'rgba(255,255,255,0.06)'}`,
+              color: selected === key ? PALETTE.neutral.textBright : PALETTE.neutral.text,
+              fontWeight: selected === key ? 600 : 500,
+              fontSize: '15px',
+              letterSpacing: '-0.005em'
+            }}
+          >
+            {consequence.label}
+          </button>
+        ))}
+      </div>
+      <AnimatePresence mode="wait">
+        <motion.div 
+          key={selected}
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.98 }}
+          transition={{ duration: 0.2, ease: HORIZON_EASE }}
+          className="text-center max-w-2xl mx-auto"
+        >
+          <p style={{ 
+            color: PALETTE.neutral.textBright, 
+            fontSize: '17px',
+            fontWeight: 400,
+            lineHeight: 1.65
+          }}>
+            {CONSEQUENCES[selected].text}
+          </p>
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+};
+
+// Component 9: InflationImplicationsStrip
+const ImplicationPill = ({ label, direction, note, because }) => {
+  const Icon = direction === 'up' ? TrendingUp : direction === 'down' ? TrendingDown : Minus;
+  const color = direction === 'up' ? '#6B95C0' : direction === 'down' ? '#8B9AAD' : '#78899A';
+  
+  return (
+    <motion.div
+      whileHover={{ scale: 1.02, y: -2, transition: { duration: 0.3, ease: HORIZON_EASE } }}
+      className="relative flex flex-col gap-2 rounded-xl overflow-hidden"
+      style={{
+        padding: '12px 18px',
+        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.02) 100%)',
+        backdropFilter: 'blur(36px) saturate(170%)',
+        WebkitBackdropFilter: 'blur(36px) saturate(170%)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 3px 12px rgba(0,0,0,0.08)'
+      }}
+    >
+      <div className="flex items-center gap-2.5">
+        <Icon className="w-4 h-4 flex-shrink-0" style={{ color, strokeWidth: 2.5 }} />
+        <span style={{ 
+          color: PALETTE.neutral.textBright,
+          fontSize: '14px',
+          fontWeight: 600,
+          letterSpacing: '-0.005em'
+        }}>{label}</span>
+        {note && <span style={{ 
+          color: PALETTE.neutral.textDim,
+          fontSize: '13px',
+          fontWeight: 500
+        }}>— {note}</span>}
+      </div>
+      {because && (
+        <div style={{ 
+          color: PALETTE.neutral.text,
+          fontSize: '13px',
+          fontWeight: 400,
+          lineHeight: 1.5,
+          paddingLeft: '28px'
+        }}>
+          Because {because}
+        </div>
+      )}
+    </motion.div>
+  );
+};
+
+const InflationImplicationsStrip = ({ implications }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6, ease: HORIZON_EASE, delay: 0.2 }}
+    className="relative rounded-3xl overflow-hidden opacity-90"
+    style={{
+      padding: '24px 28px',
+      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.02) 100%)',
+      backdropFilter: 'blur(48px) saturate(165%)',
+      WebkitBackdropFilter: 'blur(48px) saturate(165%)',
+      border: '1px solid rgba(255,255,255,0.06)',
+      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(0,0,0,0.10)'
+    }}
+  >
+    <div style={{
+      position: 'absolute',
+      top: 0,
+      left: '12%',
+      right: '12%',
+      height: '1.5px',
+      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
+      pointerEvents: 'none',
+      filter: 'blur(0.5px)'
+    }} />
+
+    <h3 style={{ 
+      color: PALETTE.neutral.textBright,
+      fontSize: '17px',
+      fontWeight: 600,
+      letterSpacing: '-0.01em',
+      lineHeight: 1.4,
+      marginBottom: '16px'
+    }}>
+      Downstream Effects
+    </h3>
+
+    <div className="flex flex-wrap gap-3">
+      {implications.map((impl, idx) => (
+        <ImplicationPill 
+          key={idx}
+          label={impl.label}
+          direction={impl.direction}
+          note={impl.note}
+          because={impl.because}
+        />
+      ))}
+    </div>
+  </motion.div>
 );
 
-const ConsequenceSelector = ({ consequences, active, onChange }) => (
-  <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
-    {Object.entries(consequences).map(([key, consequence]) => (
-      <button
-        key={key}
-        onClick={() => onChange(key)}
-        className="relative px-5 py-2 rounded-xl transition-all duration-200"
-        style={{
-          background: active === key 
-            ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.06) 100%)'
-            : 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
-          backdropFilter: 'blur(32px) saturate(165%)',
-          WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-          border: `1px solid ${active === key ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.08)'}`,
-          color: active === key ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.65)',
-          fontWeight: active === key ? 600 : 500,
-          fontSize: '15px',
-          letterSpacing: '-0.005em',
-          ...TYPOGRAPHY.smoothing
-        }}
-      >
-        {consequence.label}
-      </button>
-    ))}
-  </div>
-);
-
+// Main Section Component
 export default function InflationSection({ data }) {
   const [activeLens, setActiveLens] = useState('understanding');
-  const [selectedHorizon, setSelectedHorizon] = useState('now');
-  const [selectedConsequence, setSelectedConsequence] = useState('consumer');
 
   if (!data) return null;
-
-  const stateColors = StatePillColors[data.state_tag] || StatePillColors.Mixed;
-  const policyColors = PolicyBiasColors[data.policy_bias] || PolicyBiasColors.Neutral;
 
   const lenses = [
     { id: 'understanding', label: 'Understanding' },
@@ -573,76 +700,13 @@ export default function InflationSection({ data }) {
 
   return (
     <div className="space-y-6">
-      {/* State-Based Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: HORIZON_EASE }}
-        className="mb-3"
-      >
-        <h2 style={{ 
-          color: 'rgba(255,255,255,0.95)',
-          fontSize: '22px',
-          fontWeight: 700,
-          letterSpacing: '-0.015em',
-          lineHeight: 1.3,
-          marginBottom: '8px',
-          ...TYPOGRAPHY.smoothing
-        }}>
-          Inflation — Sticky
-        </h2>
-        <p style={{ 
-          color: 'rgba(255,255,255,0.60)',
-          fontSize: '14px',
-          fontWeight: 500,
-          letterSpacing: '0',
-          lineHeight: 1.5,
-          ...TYPOGRAPHY.smoothing
-        }}>
-          Consumer prices remain elevated while policy inflation cools.
-        </p>
-      </motion.div>
+      <InflationStateHeader 
+        state="Inflation — Sticky" 
+        descriptor="Consumer prices remain elevated while policy inflation cools."
+      />
 
-      {/* System Note — CPI vs PCE */}
-      <motion.div
-        initial={{ opacity: 0, y: -5 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: HORIZON_EASE, delay: 0.1 }}
-        className="mb-8 relative overflow-hidden"
-        style={{
-          padding: '14px 18px',
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.035) 0%, rgba(255, 255, 255, 0.02) 100%)',
-          backdropFilter: 'blur(32px) saturate(165%)',
-          WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-          borderRadius: '14px',
-          border: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 2px 12px rgba(0,0,0,0.08)'
-        }}
-      >
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: '15%',
-          right: '15%',
-          height: '1px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
-          pointerEvents: 'none'
-        }} />
-        <div style={{ 
-          color: 'rgba(255,255,255,0.75)',
-          fontSize: '13px',
-          fontWeight: 400,
-          letterSpacing: '0',
-          lineHeight: 1.65,
-          ...TYPOGRAPHY.smoothing
-        }}>
-          CPI reflects prices households feel.<br />
-          PCE reflects prices policy responds to.<br />
-          The gap explains why inflation can feel worse than policy data suggests.
-        </div>
-      </motion.div>
+      <InflationSystemNote />
 
-      {/* Hero Visual - Inflation Pressure Ring */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -655,151 +719,15 @@ export default function InflationSection({ data }) {
         />
       </motion.div>
 
-      {/* Snapshot: KPI Chips (de-emphasized) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 opacity-90">
-        <KPIChip 
-          label="CPI YoY" 
-          value={data.cpi_headline_yoy ? `${data.cpi_headline_yoy}%` : null} 
-        />
-        <KPIChip 
-          label="Core CPI YoY" 
-          value={data.cpi_core_yoy ? `${data.cpi_core_yoy}%` : null}
-          isCore 
-        />
-        <KPIChip 
-          label="PCE YoY" 
-          value={data.pce_headline_yoy ? `${data.pce_headline_yoy}%` : null} 
-        />
-        <KPIChip 
-          label="Core PCE YoY" 
-          value={data.pce_core_yoy ? `${data.pce_core_yoy}%` : null}
-          isCore 
-        />
-      </div>
+      <InflationSnapshotKPIs 
+        cpi_headline_yoy={data.cpi_headline_yoy}
+        cpi_core_yoy={data.cpi_core_yoy}
+        pce_headline_yoy={data.pce_headline_yoy}
+        pce_core_yoy={data.pce_core_yoy}
+      />
 
-      {/* State Badge (minimal) */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="flex items-center justify-center gap-3 mb-6"
-      >
-        <motion.div 
-          className="px-4 py-2 rounded-xl"
-          whileHover={{ scale: 1.05 }}
-          style={{
-            background: stateColors.bg,
-            border: `1.5px solid ${stateColors.border}`,
-            color: stateColors.text,
-            fontSize: TYPOGRAPHY.scale.micro.size,
-            fontWeight: TYPOGRAPHY.scale.micro.weight,
-            letterSpacing: TYPOGRAPHY.scale.micro.letterSpacing,
-            boxShadow: `0 0 24px ${stateColors.bg}`,
-            ...TYPOGRAPHY.smoothing
-          }}
-        >
-          {data.state_tag}
-        </motion.div>
-        {data.last_updated && (
-          <div style={{ 
-            color: 'rgba(255,255,255,0.45)',
-            fontSize: TYPOGRAPHY.scale.label.size,
-            fontWeight: 500,
-            letterSpacing: '0.02em',
-            ...TYPOGRAPHY.smoothing
-          }}>
-            {data.last_updated}
-          </div>
-        )}
-      </motion.div>
+      <InflationLensSwitcher lenses={lenses} active={activeLens} onChange={setActiveLens} />
 
-      {/* Implications Strip (de-emphasized) */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: HORIZON_EASE, delay: 0.2 }}
-        className="relative rounded-3xl overflow-hidden opacity-85"
-        style={{
-          padding: '24px 28px',
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
-          backdropFilter: 'blur(48px) saturate(165%)',
-          WebkitBackdropFilter: 'blur(48px) saturate(165%)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 24px rgba(0,0,0,0.10)'
-        }}
-      >
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: '12%',
-          right: '12%',
-          height: '2px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.20), transparent)',
-          pointerEvents: 'none',
-          filter: 'blur(0.5px)'
-        }} />
-
-        <div className="flex items-center justify-between mb-5">
-          <h3 style={{ 
-            color: 'rgba(255,255,255,0.85)',
-            fontSize: TYPOGRAPHY.scale.heading3.size,
-            fontWeight: TYPOGRAPHY.scale.heading3.weight,
-            letterSpacing: TYPOGRAPHY.scale.heading3.letterSpacing,
-            lineHeight: TYPOGRAPHY.scale.heading3.lineHeight,
-            ...TYPOGRAPHY.smoothing
-          }}>
-            Implications
-          </h3>
-          <motion.div 
-            className="px-3.5 py-2 rounded-xl"
-            whileHover={{ scale: 1.05 }}
-            style={{
-              background: policyColors.bg,
-              border: `1.5px solid ${policyColors.border}`,
-              color: policyColors.text,
-              fontSize: TYPOGRAPHY.scale.micro.size,
-              fontWeight: TYPOGRAPHY.scale.micro.weight,
-              letterSpacing: TYPOGRAPHY.scale.micro.letterSpacing,
-              boxShadow: `0 0 16px ${policyColors.bg}`,
-              ...TYPOGRAPHY.smoothing
-            }}
-          >
-            Policy: {data.policy_bias}
-          </motion.div>
-        </div>
-
-        <div className="flex flex-wrap gap-3">
-          {(data.market_implications || []).map((implication, idx) => (
-            <div key={idx} className="flex flex-col">
-              <ImplicationPill 
-                label={implication.label}
-                direction={implication.direction}
-                note={implication.note}
-              />
-              {implication.because && (
-                <div style={{
-                  color: 'rgba(255,255,255,0.60)',
-                  fontSize: '12px',
-                  fontWeight: 400,
-                  lineHeight: 1.5,
-                  marginTop: '6px',
-                  marginLeft: '8px',
-                  ...TYPOGRAPHY.smoothing
-                }}>
-                  Because {implication.because}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* Lens Switcher */}
-      <div className="flex justify-center my-10">
-        <LensSwitcher lenses={lenses} active={activeLens} onChange={setActiveLens} />
-      </div>
-
-      {/* Lens Content Panel */}
       <AnimatePresence mode="wait">
         <motion.div
           key={activeLens}
@@ -810,183 +738,41 @@ export default function InflationSection({ data }) {
           className="relative rounded-3xl overflow-hidden"
           style={{
             padding: '48px',
-            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.065) 0%, rgba(255, 255, 255, 0.038) 100%)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.025) 100%)',
             backdropFilter: 'blur(64px) saturate(180%)',
             WebkitBackdropFilter: 'blur(64px) saturate(180%)',
-            border: '1px solid rgba(255,255,255,0.12)',
-            boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.12), 0 12px 48px rgba(0,0,0,0.16)',
+            border: '1px solid rgba(255,255,255,0.10)',
+            boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.10), 0 12px 48px rgba(0,0,0,0.16)',
             minHeight: '280px'
           }}
         >
-          {/* Enhanced Specular */}
           <div style={{
             position: 'absolute',
             top: 0,
             left: '12%',
             right: '12%',
             height: '2px',
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.24), transparent)',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.20), transparent)',
             pointerEvents: 'none',
             filter: 'blur(1px)'
           }} />
 
-          {/* Ambient Atmosphere */}
           <div style={{
             position: 'absolute',
             inset: 0,
-            background: 'radial-gradient(ellipse at 50% 35%, rgba(255, 255, 255, 0.06) 0%, transparent 70%)',
+            background: 'radial-gradient(ellipse at 50% 35%, rgba(255, 255, 255, 0.04) 0%, transparent 70%)',
             pointerEvents: 'none'
           }} />
 
-          {activeLens === 'understanding' && (
-            <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-                <div style={{ 
-                  color: 'rgba(255,255,255,0.65)',
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  letterSpacing: '0.06em',
-                  textTransform: 'uppercase',
-                  marginBottom: '12px',
-                  ...TYPOGRAPHY.smoothing
-                }}>
-                  CPI
-                </div>
-                <p style={{ 
-                  color: 'rgba(255,255,255,0.85)', 
-                  fontSize: '15px',
-                  fontWeight: 400,
-                  lineHeight: 1.6,
-                  ...TYPOGRAPHY.smoothing
-                }}>
-                  What households feel (rent, essentials)
-                </p>
-              </motion.div>
-
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
-                <div style={{ 
-                  color: 'rgba(255,255,255,0.65)',
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  letterSpacing: '0.06em',
-                  textTransform: 'uppercase',
-                  marginBottom: '12px',
-                  ...TYPOGRAPHY.smoothing
-                }}>
-                  PCE
-                </div>
-                <p style={{ 
-                  color: 'rgba(255,255,255,0.85)', 
-                  fontSize: '15px',
-                  fontWeight: 400,
-                  lineHeight: 1.6,
-                  ...TYPOGRAPHY.smoothing
-                }}>
-                  What policy watches (adaptive spending)
-                </p>
-              </motion.div>
-
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-                <div style={{ 
-                  color: 'rgba(255,255,255,0.65)',
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  letterSpacing: '0.06em',
-                  textTransform: 'uppercase',
-                  marginBottom: '12px',
-                  ...TYPOGRAPHY.smoothing
-                }}>
-                  Meaning
-                </div>
-                <p style={{ 
-                  color: 'rgba(255,255,255,0.85)', 
-                  fontSize: '15px',
-                  fontWeight: 400,
-                  lineHeight: 1.6,
-                  ...TYPOGRAPHY.smoothing
-                }}>
-                  Policy responds to demand, not pain
-                </p>
-              </motion.div>
-            </div>
-          )}
-
-          {activeLens === 'time' && (
-            <div className="relative z-10">
-              <div className="flex items-center justify-center gap-4 mb-6">
-                {Object.entries(TIME_HORIZONS).map(([key, horizon]) => (
-                  <button
-                    key={key}
-                    onClick={() => setSelectedHorizon(key)}
-                    className="relative px-5 py-2 rounded-xl transition-all duration-200"
-                    style={{
-                      background: selectedHorizon === key 
-                        ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.06) 100%)'
-                        : 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
-                      backdropFilter: 'blur(32px) saturate(165%)',
-                      WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-                      border: `1px solid ${selectedHorizon === key ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.08)'}`,
-                      color: selectedHorizon === key ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.65)',
-                      fontWeight: selectedHorizon === key ? 600 : 500,
-                      fontSize: '15px',
-                      letterSpacing: '-0.005em',
-                      ...TYPOGRAPHY.smoothing
-                    }}
-                  >
-                    {horizon.label}
-                  </button>
-                ))}
-              </div>
-              <AnimatePresence mode="wait">
-                <motion.div 
-                  key={selectedHorizon}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.2, ease: HORIZON_EASE }}
-                  className="text-center max-w-2xl mx-auto"
-                >
-                  <p style={{ 
-                    color: 'rgba(255,255,255,0.88)', 
-                    fontSize: '17px',
-                    fontWeight: 400,
-                    lineHeight: 1.65,
-                    ...TYPOGRAPHY.smoothing
-                  }}>
-                    {TIME_HORIZONS[selectedHorizon].insight}
-                  </p>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          )}
-
-          {activeLens === 'consequences' && (
-            <div className="relative z-10">
-              <ConsequenceSelector consequences={CONSEQUENCES} active={selectedConsequence} onChange={setSelectedConsequence} />
-              <AnimatePresence mode="wait">
-                <motion.div 
-                  key={selectedConsequence}
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.98 }}
-                  transition={{ duration: 0.2, ease: HORIZON_EASE }}
-                  className="text-center max-w-2xl mx-auto"
-                >
-                  <p style={{ 
-                    color: 'rgba(255,255,255,0.88)', 
-                    fontSize: '17px',
-                    fontWeight: 400,
-                    lineHeight: 1.65,
-                    ...TYPOGRAPHY.smoothing
-                  }}>
-                    {CONSEQUENCES[selectedConsequence].insight}
-                  </p>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          )}
+          {activeLens === 'understanding' && <InflationUnderstandingLens />}
+          {activeLens === 'time' && <InflationTimeLens />}
+          {activeLens === 'consequences' && <InflationConsequencesLens />}
         </motion.div>
       </AnimatePresence>
+
+      {data.market_implications && data.market_implications.length > 0 && (
+        <InflationImplicationsStrip implications={data.market_implications} />
+      )}
     </div>
   );
 }
