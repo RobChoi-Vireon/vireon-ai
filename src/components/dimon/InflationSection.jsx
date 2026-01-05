@@ -289,7 +289,8 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
             inset: '-20px',
             background: `radial-gradient(circle, ${THERMAL.warm.subtle} 0%, transparent 70%)`,
             filter: 'blur(20px)',
-            pointerEvents: 'none'
+            pointerEvents: 'none',
+            willChange: 'transform, opacity'
           }}
         />
 
