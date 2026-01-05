@@ -17,15 +17,28 @@ const PALETTE = {
     text: '#6B95C0'
   },
   neutral: {
-    bg: 'rgba(28, 32, 38, 0.40)',
+    bg: 'rgba(32, 36, 42, 0.40)',
     border: 'rgba(255, 255, 255, 0.08)',
     text: 'rgba(255, 255, 255, 0.70)',
-    textBright: 'rgba(255, 255, 255, 0.95)',
-    textDim: 'rgba(255, 255, 255, 0.50)'
+    textBright: 'rgba(255, 255, 255, 0.98)',
+    textDim: 'rgba(255, 255, 255, 0.50)',
+    textCausal: 'rgba(180, 200, 220, 0.68)'
   },
   ambient: {
     horizonBlue: 'rgba(90, 130, 170, 0.06)',
-    horizonBloom: 'rgba(110, 150, 190, 0.08)'
+    horizonBloom: 'rgba(110, 150, 190, 0.08)',
+    horizonGlow: 'rgba(100, 140, 180, 0.12)'
+  },
+  accent: {
+    active: 'rgba(100, 160, 220, 0.95)',
+    marker: 'rgba(100, 160, 220, 0.40)'
+  },
+  semantic: {
+    rates: 'rgba(100, 160, 220, 0.70)',
+    equities: 'rgba(180, 190, 200, 0.70)',
+    credit: 'rgba(140, 150, 165, 0.70)',
+    usd: 'rgba(110, 200, 220, 0.70)',
+    risk: 'rgba(200, 170, 130, 0.70)'
   }
 };
 
@@ -138,25 +151,17 @@ const InflationPressureRing = ({ cpiValue, pceValue }) => {
   
   return (
     <div className="relative flex items-center justify-center" style={{ height: '240px' }}>
-      {/* Horizon light source - subtle background bloom */}
-      <motion.div
-        animate={{
-          opacity: [0.3, 0.5, 0.3],
-          scale: [1, 1.05, 1]
-        }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
+      {/* Horizon light source - static daylight intelligence */}
+      <div
         style={{
           position: 'absolute',
-          width: '300px',
-          height: '300px',
-          background: `radial-gradient(circle, ${PALETTE.ambient.horizonBloom} 0%, ${PALETTE.ambient.horizonBlue} 40%, transparent 70%)`,
-          filter: 'blur(40px)',
+          width: '320px',
+          height: '320px',
+          background: `radial-gradient(circle, ${PALETTE.ambient.horizonGlow} 0%, ${PALETTE.ambient.horizonBlue} 35%, transparent 65%)`,
+          filter: 'blur(60px)',
           pointerEvents: 'none',
-          zIndex: 0
+          zIndex: 0,
+          opacity: 0.35
         }}
       />
 
@@ -371,7 +376,8 @@ const KPIChip = ({ label, value, isCore = false }) => {
         className="relative"
         style={{ 
           color: PALETTE.neutral.textBright,
-          ...TYPE.kpiValue
+          ...TYPE.kpiValue,
+          letterSpacing: '-0.03em'
         }}
         animate={{ scale: isHovered ? 1.03 : 1 }}
         transition={{ duration: 0.3, ease: HORIZON_EASE }}
@@ -411,7 +417,7 @@ const InflationSnapshotKPIs = ({ cpi_headline_yoy, cpi_core_yoy, pce_headline_yo
 
 // Component 5: InflationLensSwitcher
 const InflationLensSwitcher = ({ lenses, active, onChange }) => (
-  <div className="relative flex items-center justify-center gap-1 p-1.5 rounded-[20px] mb-10" style={{
+  <div className="relative flex items-center justify-center gap-1 p-1.5 rounded-[20px] mb-12" style={{
     background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.025) 100%)',
     backdropFilter: 'blur(48px) saturate(175%)',
     WebkitBackdropFilter: 'blur(48px) saturate(175%)',
@@ -441,7 +447,7 @@ const InflationLensSwitcher = ({ lenses, active, onChange }) => (
           background: active === lens.id 
             ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.07) 100%)'
             : 'transparent',
-          color: active === lens.id ? PALETTE.neutral.textBright : PALETTE.neutral.text,
+          color: active === lens.id ? PALETTE.accent.active : PALETTE.neutral.text,
           fontWeight: active === lens.id ? 600 : 500,
           fontSize: '15px',
           letterSpacing: active === lens.id ? '-0.01em' : '0',
@@ -513,21 +519,31 @@ const InflationUnderstandingLens = () => {
           }}>
             {item.label}
           </div>
+          <div className="relative" style={{ paddingLeft: '8px', marginBottom: '10px' }}>
+            <div style={{
+              position: 'absolute',
+              left: 0,
+              top: '4px',
+              bottom: '4px',
+              width: '2px',
+              background: PALETTE.accent.marker,
+              borderRadius: '2px'
+            }} />
+            <p style={{ 
+              color: PALETTE.neutral.textBright, 
+              fontSize: '15px',
+              fontWeight: 400,
+              lineHeight: 1.7,
+              letterSpacing: '-0.005em'
+            }}>
+              {item.text}
+            </p>
+          </div>
           <p style={{ 
-            color: PALETTE.neutral.textBright, 
-            fontSize: '15px',
-            fontWeight: 400,
-            lineHeight: 1.6,
-            marginBottom: '10px'
-          }}>
-            {item.text}
-          </p>
-          <p style={{ 
-            color: PALETTE.neutral.text,
+            color: PALETTE.neutral.textCausal,
             fontSize: '13px',
             fontWeight: 400,
-            lineHeight: 1.75,
-            opacity: 0.68
+            lineHeight: 1.85
           }}>
             {item.why}
           </p>
@@ -566,7 +582,7 @@ const InflationTimeLens = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-center gap-4 mb-6">
+      <div className="flex items-center justify-center gap-4 mb-8">
         {Object.entries(TIME_HORIZONS).map(([key, horizon]) => (
           <button
             key={key}
@@ -579,7 +595,7 @@ const InflationTimeLens = () => {
               backdropFilter: 'blur(32px) saturate(165%)',
               WebkitBackdropFilter: 'blur(32px) saturate(165%)',
               border: `1px solid ${selected === key ? 'rgba(255,255,255,0.10)' : 'rgba(255,255,255,0.06)'}`,
-              color: selected === key ? PALETTE.neutral.textBright : PALETTE.neutral.text,
+              color: selected === key ? PALETTE.accent.active : PALETTE.neutral.text,
               fontWeight: selected === key ? 600 : 500,
               fontSize: '14px'
             }}
@@ -594,24 +610,34 @@ const InflationTimeLens = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.3, ease: HORIZON_EASE }}
+          transition={{ duration: 0.35, ease: HORIZON_EASE }}
           className="text-center max-w-2xl mx-auto"
         >
+          <div className="relative" style={{ paddingLeft: '8px', marginBottom: '12px' }}>
+            <div style={{
+              position: 'absolute',
+              left: 0,
+              top: '5px',
+              bottom: '5px',
+              width: '2px',
+              background: PALETTE.accent.marker,
+              borderRadius: '2px'
+            }} />
+            <p style={{ 
+              color: PALETTE.neutral.textBright, 
+              fontSize: '17px',
+              fontWeight: 400,
+              lineHeight: 1.75,
+              letterSpacing: '-0.005em'
+            }}>
+              {TIME_HORIZONS[selected].text}
+            </p>
+          </div>
           <p style={{ 
-            color: PALETTE.neutral.textBright, 
-            fontSize: '17px',
-            fontWeight: 400,
-            lineHeight: 1.65,
-            marginBottom: '10px'
-          }}>
-            {TIME_HORIZONS[selected].text}
-          </p>
-          <p style={{ 
-            color: PALETTE.neutral.text,
+            color: PALETTE.neutral.textCausal,
             fontSize: '14px',
             fontWeight: 400,
-            lineHeight: 1.75,
-            opacity: 0.68
+            lineHeight: 1.85
           }}>
             {TIME_HORIZONS[selected].why}
           </p>
@@ -655,7 +681,7 @@ const InflationConsequencesLens = () => {
 
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
+      <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
         {Object.entries(CONSEQUENCES).map(([key, consequence]) => (
           <button
             key={key}
@@ -668,7 +694,7 @@ const InflationConsequencesLens = () => {
               backdropFilter: 'blur(32px) saturate(165%)',
               WebkitBackdropFilter: 'blur(32px) saturate(165%)',
               border: `1px solid ${selected === key ? 'rgba(255,255,255,0.10)' : 'rgba(255,255,255,0.06)'}`,
-              color: selected === key ? PALETTE.neutral.textBright : PALETTE.neutral.text,
+              color: selected === key ? PALETTE.accent.active : PALETTE.neutral.text,
               fontWeight: selected === key ? 600 : 500,
               fontSize: '15px',
               letterSpacing: '-0.005em'
@@ -684,24 +710,34 @@ const InflationConsequencesLens = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.3, ease: HORIZON_EASE }}
+          transition={{ duration: 0.35, ease: HORIZON_EASE }}
           className="text-center max-w-2xl mx-auto"
         >
+          <div className="relative" style={{ paddingLeft: '8px', marginBottom: '12px' }}>
+            <div style={{
+              position: 'absolute',
+              left: 0,
+              top: '5px',
+              bottom: '5px',
+              width: '2px',
+              background: PALETTE.accent.marker,
+              borderRadius: '2px'
+            }} />
+            <p style={{ 
+              color: PALETTE.neutral.textBright, 
+              fontSize: '17px',
+              fontWeight: 400,
+              lineHeight: 1.75,
+              letterSpacing: '-0.005em'
+            }}>
+              {CONSEQUENCES[selected].text}
+            </p>
+          </div>
           <p style={{ 
-            color: PALETTE.neutral.textBright, 
-            fontSize: '17px',
-            fontWeight: 400,
-            lineHeight: 1.65,
-            marginBottom: '10px'
-          }}>
-            {CONSEQUENCES[selected].text}
-          </p>
-          <p style={{ 
-            color: PALETTE.neutral.text,
+            color: PALETTE.neutral.textCausal,
             fontSize: '14px',
             fontWeight: 400,
-            lineHeight: 1.75,
-            opacity: 0.68
+            lineHeight: 1.85
           }}>
             {CONSEQUENCES[selected].why}
           </p>
@@ -714,14 +750,24 @@ const InflationConsequencesLens = () => {
 // Component 9: InflationImplicationsStrip
 const ImplicationPill = ({ label, direction, note, because }) => {
   const Icon = direction === 'up' ? TrendingUp : direction === 'down' ? TrendingDown : Minus;
-  const color = direction === 'up' ? '#6B95C0' : direction === 'down' ? '#8B9AAD' : '#78899A';
+  
+  // Semantic icon colors
+  const getIconColor = () => {
+    const labelLower = label.toLowerCase();
+    if (labelLower.includes('rate')) return PALETTE.semantic.rates;
+    if (labelLower.includes('equit')) return PALETTE.semantic.equities;
+    if (labelLower.includes('credit')) return PALETTE.semantic.credit;
+    if (labelLower.includes('usd')) return PALETTE.semantic.usd;
+    if (labelLower.includes('risk')) return PALETTE.semantic.risk;
+    return direction === 'up' ? '#6B95C0' : direction === 'down' ? '#8B9AAD' : '#78899A';
+  };
   
   return (
     <motion.div
       whileHover={{ scale: 1.02, y: -2, transition: { duration: 0.3, ease: HORIZON_EASE } }}
-      className="relative flex flex-col gap-2 rounded-xl overflow-hidden"
+      className="relative flex flex-col gap-2.5 rounded-xl overflow-hidden"
       style={{
-        padding: '12px 18px',
+        padding: '14px 18px',
         background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.02) 100%)',
         backdropFilter: 'blur(36px) saturate(170%)',
         WebkitBackdropFilter: 'blur(36px) saturate(170%)',
@@ -730,7 +776,7 @@ const ImplicationPill = ({ label, direction, note, because }) => {
       }}
     >
       <div className="flex items-center gap-2.5">
-        <Icon className="w-4 h-4 flex-shrink-0" style={{ color, strokeWidth: 2.5 }} />
+        <Icon className="w-4 h-4 flex-shrink-0" style={{ color: getIconColor(), strokeWidth: 2.5 }} />
         <span style={{ 
           color: PALETTE.neutral.textBright,
           fontSize: '14px',
@@ -745,10 +791,10 @@ const ImplicationPill = ({ label, direction, note, because }) => {
       </div>
       {because && (
         <div style={{ 
-        color: PALETTE.neutral.text,
+        color: PALETTE.neutral.textCausal,
         fontSize: '13px',
         fontWeight: 400,
-        lineHeight: 1.6,
+        lineHeight: 1.75,
         paddingLeft: '28px'
         }}>
         Because {because}.
@@ -854,19 +900,19 @@ export default function InflationSection({ data }) {
       <AnimatePresence mode="wait">
         <motion.div
           key={activeLens}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.25, ease: HORIZON_EASE }}
+          transition={{ duration: 0.35, ease: HORIZON_EASE }}
           className="relative rounded-3xl overflow-hidden"
           style={{
-            padding: '48px',
+            padding: '52px',
             background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.025) 100%)',
             backdropFilter: 'blur(64px) saturate(180%)',
             WebkitBackdropFilter: 'blur(64px) saturate(180%)',
             border: '1px solid rgba(255,255,255,0.10)',
             boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.10), 0 16px 52px rgba(0,0,0,0.08), 0 6px 24px rgba(90,130,170,0.04)',
-            minHeight: '280px'
+            minHeight: '300px'
           }}
         >
           <div style={{
