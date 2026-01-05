@@ -343,6 +343,19 @@ const MOCK_DATA = {
       confidence: 0.55
     }
   ],
+  inflation: {
+    cpi_yoy: 3.2,
+    cpi_core_yoy: 3.8,
+    pce_yoy: 2.8,
+    pce_core_yoy: 3.1,
+    cpi_mom: 0.3,
+    pce_mom: 0.2,
+    last_updated: 'Dec 2025',
+    interpretation: 'Core measures remain sticky despite headline cooling. Services inflation holding up while goods prices moderate.',
+    state_tag: 'Mixed',
+    policy_bias: 'Neutral',
+    market_implications: ['Rates', 'Equities', 'Credit', 'USD']
+  },
   strategic_implications: [
     { 
       type: 'risk', 
