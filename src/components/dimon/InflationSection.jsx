@@ -621,10 +621,11 @@ export default function InflationSection({ data }) {
           ...TYPOGRAPHY.smoothing
         }}>
           Housing Keeps <span style={{ 
-            background: `linear-gradient(135deg, ${THERMAL.warm.accent.replace('0.45', '1')} 0%, ${THERMAL.warm.accent.replace('0.45', '0.75')} 100%)`,
+            background: 'linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.75) 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
+            backgroundClip: 'text',
+            fontWeight: 900
           }}>Inflation</span> Sticky
         </h3>
         <p className="max-w-2xl mx-auto" style={{ 
