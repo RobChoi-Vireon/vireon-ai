@@ -745,7 +745,7 @@ export default function EquilibriumPulse({
                           height: '6px',
                           borderRadius: '999px',
                           background: force.color,
-                          boxShadow: `0 0 12px ${force.glow}`
+                          boxShadow: `0 0 8px ${force.glow}`
                         }} />
                         <span style={{
                           fontSize: '12px',
