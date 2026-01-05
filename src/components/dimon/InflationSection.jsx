@@ -4,6 +4,26 @@ import { TrendingUp, TrendingDown, Minus, Info } from 'lucide-react';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
 
+// Apple-grade typography system
+const TYPOGRAPHY = {
+  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
+  smoothing: {
+    WebkitFontSmoothing: 'antialiased',
+    MozOsxFontSmoothing: 'grayscale'
+  },
+  scale: {
+    hero: { size: '44px', weight: 900, lineHeight: 1.1, letterSpacing: '-0.045em' },
+    heading1: { size: '28px', weight: 700, lineHeight: 1.2, letterSpacing: '-0.025em' },
+    heading2: { size: '20px', weight: 700, lineHeight: 1.3, letterSpacing: '-0.02em' },
+    heading3: { size: '17px', weight: 600, lineHeight: 1.4, letterSpacing: '-0.01em' },
+    body: { size: '17px', weight: 400, lineHeight: 1.5, letterSpacing: '0' },
+    bodyEmphasis: { size: '15px', weight: 500, lineHeight: 1.53, letterSpacing: '0.01em' },
+    caption: { size: '13px', weight: 500, lineHeight: 1.4, letterSpacing: '0.01em' },
+    label: { size: '11px', weight: 600, lineHeight: 1.2, letterSpacing: '0.06em' },
+    micro: { size: '10px', weight: 700, lineHeight: 1.2, letterSpacing: '0.08em' }
+  }
+};
+
 // Thermal color system
 const THERMAL = {
   warm: {
@@ -128,17 +148,29 @@ const KPIChip = ({ label, value, isCore = false }) => {
         transition: 'opacity 0.4s ease'
       }} />
       
-      <div className="text-[11px] font-bold tracking-wider mb-3" style={{ 
+      <div style={{ 
         color: 'rgba(255,255,255,0.70)', 
-        letterSpacing: '0.08em',
-        textTransform: 'uppercase'
+        fontSize: TYPOGRAPHY.scale.label.size,
+        fontWeight: TYPOGRAPHY.scale.label.weight,
+        letterSpacing: TYPOGRAPHY.scale.label.letterSpacing,
+        lineHeight: TYPOGRAPHY.scale.label.lineHeight,
+        textTransform: 'uppercase',
+        marginBottom: '12px',
+        ...TYPOGRAPHY.smoothing
       }}>
         {label}
       </div>
       
       <motion.div 
-        className="text-4xl font-bold tracking-tight relative"
-        style={{ color: 'rgba(255,255,255,1)' }}
+        className="relative"
+        style={{ 
+          color: 'rgba(255,255,255,1)',
+          fontSize: '36px',
+          fontWeight: 700,
+          letterSpacing: '-0.025em',
+          lineHeight: 1,
+          ...TYPOGRAPHY.smoothing
+        }}
         animate={{ scale: isHovered ? 1.05 : 1 }}
         transition={{ duration: 0.4, ease: HORIZON_EASE }}
       >
@@ -155,12 +187,17 @@ const KPIChip = ({ label, value, isCore = false }) => {
       
       {isCore && (
         <motion.div 
-          className="text-[9px] font-black mt-2 px-2 py-1 rounded-md"
+          className="px-2 py-1 rounded-md"
           style={{ 
             color: 'rgba(255,255,255,0.55)', 
-            letterSpacing: '0.1em',
+            fontSize: TYPOGRAPHY.scale.micro.size,
+            fontWeight: TYPOGRAPHY.scale.micro.weight,
+            letterSpacing: TYPOGRAPHY.scale.micro.letterSpacing,
+            lineHeight: TYPOGRAPHY.scale.micro.lineHeight,
             background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.08)'
+            border: '1px solid rgba(255,255,255,0.08)',
+            marginTop: '8px',
+            ...TYPOGRAPHY.smoothing
           }}
           animate={{ opacity: isHovered ? 1 : 0.7 }}
         >
@@ -190,8 +227,20 @@ const ImplicationPill = ({ label, direction, note }) => {
     >
       <Icon className="w-4 h-4 flex-shrink-0" style={{ color, strokeWidth: 2.5 }} />
       <div className="flex flex-col">
-        <span className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.92)' }}>{label}</span>
-        {note && <span className="text-xs" style={{ color: 'rgba(255,255,255,0.55)' }}>{note}</span>}
+        <span style={{ 
+          color: 'rgba(255,255,255,0.92)',
+          fontSize: '14px',
+          fontWeight: 600,
+          letterSpacing: '-0.005em',
+          ...TYPOGRAPHY.smoothing
+        }}>{label}</span>
+        {note && <span style={{ 
+          color: 'rgba(255,255,255,0.55)',
+          fontSize: TYPOGRAPHY.scale.caption.size,
+          fontWeight: TYPOGRAPHY.scale.caption.weight,
+          letterSpacing: TYPOGRAPHY.scale.caption.letterSpacing,
+          ...TYPOGRAPHY.smoothing
+        }}>{note}</span>}
       </div>
     </motion.div>
   );
@@ -301,13 +350,23 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
             justifyContent: 'center'
           }}
         >
-          <div className="text-xs font-bold mb-1" style={{ 
+          <div style={{ 
             color: 'rgba(255,255,255,0.60)',
-            letterSpacing: '0.08em'
+            fontSize: TYPOGRAPHY.scale.label.size,
+            fontWeight: TYPOGRAPHY.scale.label.weight,
+            letterSpacing: TYPOGRAPHY.scale.label.letterSpacing,
+            marginBottom: '4px',
+            ...TYPOGRAPHY.smoothing
           }}>
             GAP
           </div>
-          <div className="text-2xl font-bold" style={{ color: 'rgba(255,255,255,0.95)' }}>
+          <div style={{ 
+            color: 'rgba(255,255,255,0.95)',
+            fontSize: '24px',
+            fontWeight: 700,
+            letterSpacing: '-0.02em',
+            ...TYPOGRAPHY.smoothing
+          }}>
             {cpiValue && pceValue ? `${Math.abs(cpiValue - pceValue).toFixed(1)}%` : '—'}
           </div>
         </motion.div>
@@ -337,9 +396,11 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
               background: 'rgba(0, 0, 0, 0.85)',
               backdropFilter: 'blur(20px)',
               borderRadius: '12px',
-              fontSize: '12px',
+              fontSize: TYPOGRAPHY.scale.caption.size,
+              fontWeight: TYPOGRAPHY.scale.caption.weight,
               color: 'rgba(255,255,255,0.90)',
-              border: '1px solid rgba(255,255,255,0.10)'
+              border: '1px solid rgba(255,255,255,0.10)',
+              ...TYPOGRAPHY.smoothing
             }}
           >
             <Info className="w-3 h-3 inline mr-1.5" style={{ marginTop: '-2px' }} />
@@ -393,9 +454,10 @@ const SegmentedControl = ({ segments, active, onChange }) => {
               ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.10) 100%)'
               : 'transparent',
             color: active === segment.id ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.65)',
-            fontWeight: active === segment.id ? 700 : 600,
-            fontSize: '14px',
+            fontWeight: active === segment.id ? 600 : 500,
+            fontSize: '15px',
             letterSpacing: active === segment.id ? '-0.01em' : '0',
+            ...TYPOGRAPHY.smoothing,
             boxShadow: active === segment.id 
               ? 'inset 0 1.5px 0 rgba(255,255,255,0.16), 0 3px 12px rgba(0,0,0,0.12), 0 0 0 1px rgba(255,255,255,0.08)' 
               : 'none',
@@ -469,7 +531,9 @@ const StakeholderSelector = ({ stakeholders, active, onChange }) => (
           border: `1px solid ${active === key ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.08)'}`,
           color: active === key ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.65)',
           fontWeight: active === key ? 600 : 500,
-          fontSize: '14px'
+          fontSize: '15px',
+          letterSpacing: '-0.005em',
+          ...TYPOGRAPHY.smoothing
         }}
       >
         {stakeholder.label}
@@ -503,9 +567,13 @@ export default function InflationSection({ data }) {
         transition={{ duration: 0.4, ease: HORIZON_EASE }}
         className="mb-6"
       >
-        <h2 className="text-[28px] font-bold" style={{ 
+        <h2 style={{ 
           color: 'rgba(255,255,255,0.95)',
-          letterSpacing: '-0.02em'
+          fontSize: TYPOGRAPHY.scale.heading1.size,
+          fontWeight: TYPOGRAPHY.scale.heading1.weight,
+          letterSpacing: TYPOGRAPHY.scale.heading1.letterSpacing,
+          lineHeight: TYPOGRAPHY.scale.heading1.lineHeight,
+          ...TYPOGRAPHY.smoothing
         }}>
           Inflation
         </h2>
@@ -518,20 +586,27 @@ export default function InflationSection({ data }) {
         transition={{ duration: 0.6, ease: HORIZON_EASE, delay: 0.1 }}
         className="mb-8 text-center"
       >
-        <h3 className="text-[42px] leading-tight font-black mb-4" style={{ 
+        <h3 className="mb-4" style={{ 
           color: 'rgba(255,255,255,1)',
-          letterSpacing: '-0.04em',
+          fontSize: TYPOGRAPHY.scale.hero.size,
+          fontWeight: TYPOGRAPHY.scale.hero.weight,
+          letterSpacing: TYPOGRAPHY.scale.hero.letterSpacing,
+          lineHeight: TYPOGRAPHY.scale.hero.lineHeight,
           background: 'linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.85) 100%)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text'
+          backgroundClip: 'text',
+          ...TYPOGRAPHY.smoothing
         }}>
           {data.comparison_headline || "Inflation remains sticky as housing keeps CPI elevated"}
         </h3>
-        <p className="text-[15px] font-medium max-w-3xl mx-auto" style={{ 
+        <p className="max-w-3xl mx-auto" style={{ 
           color: 'rgba(255,255,255,0.65)',
-          letterSpacing: '0.01em',
-          lineHeight: '1.6'
+          fontSize: TYPOGRAPHY.scale.bodyEmphasis.size,
+          fontWeight: TYPOGRAPHY.scale.bodyEmphasis.weight,
+          letterSpacing: TYPOGRAPHY.scale.bodyEmphasis.letterSpacing,
+          lineHeight: TYPOGRAPHY.scale.bodyEmphasis.lineHeight,
+          ...TYPOGRAPHY.smoothing
         }}>
           {data.comparison_detail || "Shelter costs remain elevated in CPI, while PCE shows softer services inflation. The Fed watches Core PCE most closely."}
         </p>
@@ -580,22 +655,28 @@ export default function InflationSection({ data }) {
         className="flex items-center justify-center gap-3 mb-6"
       >
         <motion.div 
-          className="text-[10px] font-black tracking-wider px-4 py-2 rounded-xl"
+          className="px-4 py-2 rounded-xl"
           whileHover={{ scale: 1.05 }}
           style={{
             background: stateColors.bg,
             border: `1.5px solid ${stateColors.border}`,
             color: stateColors.text,
-            letterSpacing: '0.08em',
-            boxShadow: `0 0 24px ${stateColors.bg}`
+            fontSize: TYPOGRAPHY.scale.micro.size,
+            fontWeight: TYPOGRAPHY.scale.micro.weight,
+            letterSpacing: TYPOGRAPHY.scale.micro.letterSpacing,
+            boxShadow: `0 0 24px ${stateColors.bg}`,
+            ...TYPOGRAPHY.smoothing
           }}
         >
           {data.state_tag}
         </motion.div>
         {data.last_updated && (
-          <div className="text-[11px] font-medium" style={{ 
+          <div style={{ 
             color: 'rgba(255,255,255,0.45)',
-            letterSpacing: '0.02em'
+            fontSize: TYPOGRAPHY.scale.label.size,
+            fontWeight: 500,
+            letterSpacing: '0.02em',
+            ...TYPOGRAPHY.smoothing
           }}>
             {data.last_updated}
           </div>
@@ -629,21 +710,28 @@ export default function InflationSection({ data }) {
         }} />
 
         <div className="flex items-center justify-between mb-5">
-          <h3 className="text-[16px] font-bold" style={{ 
+          <h3 style={{ 
             color: 'rgba(255,255,255,0.85)',
-            letterSpacing: '-0.01em'
+            fontSize: TYPOGRAPHY.scale.heading3.size,
+            fontWeight: TYPOGRAPHY.scale.heading3.weight,
+            letterSpacing: TYPOGRAPHY.scale.heading3.letterSpacing,
+            lineHeight: TYPOGRAPHY.scale.heading3.lineHeight,
+            ...TYPOGRAPHY.smoothing
           }}>
             Implications
           </h3>
           <motion.div 
-            className="text-[10px] font-black tracking-wider px-3.5 py-2 rounded-xl"
+            className="px-3.5 py-2 rounded-xl"
             whileHover={{ scale: 1.05 }}
             style={{
               background: policyColors.bg,
               border: `1.5px solid ${policyColors.border}`,
               color: policyColors.text,
-              letterSpacing: '0.08em',
-              boxShadow: `0 0 16px ${policyColors.bg}`
+              fontSize: TYPOGRAPHY.scale.micro.size,
+              fontWeight: TYPOGRAPHY.scale.micro.weight,
+              letterSpacing: TYPOGRAPHY.scale.micro.letterSpacing,
+              boxShadow: `0 0 16px ${policyColors.bg}`,
+              ...TYPOGRAPHY.smoothing
             }}
           >
             Policy: {data.policy_bias}
@@ -714,15 +802,24 @@ export default function InflationSection({ data }) {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.1 }}
                 >
-                  <h4 className="text-[19px] font-bold mb-3" style={{ 
+                  <h4 style={{ 
                     color: 'rgba(255,255,255,0.98)',
-                    letterSpacing: '-0.02em'
+                    fontSize: TYPOGRAPHY.scale.heading2.size,
+                    fontWeight: TYPOGRAPHY.scale.heading2.weight,
+                    letterSpacing: TYPOGRAPHY.scale.heading2.letterSpacing,
+                    lineHeight: TYPOGRAPHY.scale.heading2.lineHeight,
+                    marginBottom: '12px',
+                    ...TYPOGRAPHY.smoothing
                   }}>
                     CPI
                   </h4>
-                  <p className="text-[17px] leading-relaxed" style={{ 
+                  <p style={{ 
                     color: 'rgba(255,255,255,0.80)', 
-                    lineHeight: '1.75'
+                    fontSize: TYPOGRAPHY.scale.body.size,
+                    fontWeight: TYPOGRAPHY.scale.body.weight,
+                    letterSpacing: TYPOGRAPHY.scale.body.letterSpacing,
+                    lineHeight: TYPOGRAPHY.scale.body.lineHeight,
+                    ...TYPOGRAPHY.smoothing
                   }}>
                     What households feel (rent, essentials)
                   </p>
@@ -732,15 +829,24 @@ export default function InflationSection({ data }) {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.15 }}
                 >
-                  <h4 className="text-[19px] font-bold mb-3" style={{ 
+                  <h4 style={{ 
                     color: 'rgba(255,255,255,0.98)',
-                    letterSpacing: '-0.02em'
+                    fontSize: TYPOGRAPHY.scale.heading2.size,
+                    fontWeight: TYPOGRAPHY.scale.heading2.weight,
+                    letterSpacing: TYPOGRAPHY.scale.heading2.letterSpacing,
+                    lineHeight: TYPOGRAPHY.scale.heading2.lineHeight,
+                    marginBottom: '12px',
+                    ...TYPOGRAPHY.smoothing
                   }}>
                     PCE
                   </h4>
-                  <p className="text-[17px] leading-relaxed" style={{ 
+                  <p style={{ 
                     color: 'rgba(255,255,255,0.80)', 
-                    lineHeight: '1.75'
+                    fontSize: TYPOGRAPHY.scale.body.size,
+                    fontWeight: TYPOGRAPHY.scale.body.weight,
+                    letterSpacing: TYPOGRAPHY.scale.body.letterSpacing,
+                    lineHeight: TYPOGRAPHY.scale.body.lineHeight,
+                    ...TYPOGRAPHY.smoothing
                   }}>
                     What policy watches (adaptive spending)
                   </p>
@@ -753,27 +859,44 @@ export default function InflationSection({ data }) {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                <h4 className="text-[19px] font-bold mb-5" style={{ 
+                <h4 style={{ 
                   color: 'rgba(255,255,255,0.98)',
-                  letterSpacing: '-0.02em'
+                  fontSize: TYPOGRAPHY.scale.heading2.size,
+                  fontWeight: TYPOGRAPHY.scale.heading2.weight,
+                  letterSpacing: TYPOGRAPHY.scale.heading2.letterSpacing,
+                  lineHeight: TYPOGRAPHY.scale.heading2.lineHeight,
+                  marginBottom: '20px',
+                  ...TYPOGRAPHY.smoothing
                 }}>
                   Why the gap matters
                 </h4>
-                <p className="text-[17px] leading-relaxed" style={{ 
+                <p style={{ 
                   color: 'rgba(255,255,255,0.80)', 
-                  lineHeight: '1.8'
+                  fontSize: TYPOGRAPHY.scale.body.size,
+                  fontWeight: TYPOGRAPHY.scale.body.weight,
+                  letterSpacing: TYPOGRAPHY.scale.body.letterSpacing,
+                  lineHeight: TYPOGRAPHY.scale.body.lineHeight,
+                  ...TYPOGRAPHY.smoothing
                 }}>
                   CPI above PCE → consumer pressure
                 </p>
-                <p className="text-[17px] leading-relaxed" style={{ 
+                <p style={{ 
                   color: 'rgba(255,255,255,0.80)', 
-                  lineHeight: '1.8'
+                  fontSize: TYPOGRAPHY.scale.body.size,
+                  fontWeight: TYPOGRAPHY.scale.body.weight,
+                  letterSpacing: TYPOGRAPHY.scale.body.letterSpacing,
+                  lineHeight: TYPOGRAPHY.scale.body.lineHeight,
+                  ...TYPOGRAPHY.smoothing
                 }}>
                   PCE above CPI → broad demand inflation
                 </p>
-                <p className="text-[17px] leading-relaxed" style={{ 
+                <p style={{ 
                   color: 'rgba(255,255,255,0.80)', 
-                  lineHeight: '1.8'
+                  fontSize: TYPOGRAPHY.scale.body.size,
+                  fontWeight: TYPOGRAPHY.scale.body.weight,
+                  letterSpacing: TYPOGRAPHY.scale.body.letterSpacing,
+                  lineHeight: TYPOGRAPHY.scale.body.lineHeight,
+                  ...TYPOGRAPHY.smoothing
                 }}>
                   Gap informs Fed policy bias
                 </p>
@@ -799,10 +922,13 @@ export default function InflationSection({ data }) {
                       initial={{ opacity: 0, x: -5 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: idx * 0.05 }}
-                      className="text-[17px] leading-relaxed" 
                       style={{ 
                         color: 'rgba(255,255,255,0.84)', 
-                        lineHeight: '1.8'
+                        fontSize: TYPOGRAPHY.scale.body.size,
+                        fontWeight: TYPOGRAPHY.scale.body.weight,
+                        letterSpacing: TYPOGRAPHY.scale.body.letterSpacing,
+                        lineHeight: TYPOGRAPHY.scale.body.lineHeight,
+                        ...TYPOGRAPHY.smoothing
                       }}
                     >
                       {bullet}
@@ -825,15 +951,24 @@ export default function InflationSection({ data }) {
                   transition={{ duration: 0.2, ease: HORIZON_EASE }}
                   className="text-center max-w-2xl mx-auto"
                 >
-                  <h4 className="text-[20px] font-bold mb-5" style={{ 
+                  <h4 style={{ 
                     color: 'rgba(255,255,255,0.98)',
-                    letterSpacing: '-0.02em'
+                    fontSize: TYPOGRAPHY.scale.heading2.size,
+                    fontWeight: TYPOGRAPHY.scale.heading2.weight,
+                    letterSpacing: TYPOGRAPHY.scale.heading2.letterSpacing,
+                    lineHeight: TYPOGRAPHY.scale.heading2.lineHeight,
+                    marginBottom: '20px',
+                    ...TYPOGRAPHY.smoothing
                   }}>
                     {STAKEHOLDERS[selectedStakeholder].label}
                   </h4>
-                  <p className="text-[17px] leading-relaxed" style={{ 
+                  <p style={{ 
                     color: 'rgba(255,255,255,0.84)', 
-                    lineHeight: '1.8'
+                    fontSize: TYPOGRAPHY.scale.body.size,
+                    fontWeight: TYPOGRAPHY.scale.body.weight,
+                    letterSpacing: TYPOGRAPHY.scale.body.letterSpacing,
+                    lineHeight: TYPOGRAPHY.scale.body.lineHeight,
+                    ...TYPOGRAPHY.smoothing
                   }}>
                     {STAKEHOLDERS[selectedStakeholder].description}
                   </p>
