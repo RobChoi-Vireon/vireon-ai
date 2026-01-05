@@ -598,7 +598,9 @@ const TIME_HORIZONS = {
     arrowColor: PALETTE.teaching.friction,
     state: 'Housing keeps inflation elevated',
     driver: 'Rent and shelter reset slowly',
-    sparkline: [2.8, 2.9, 3.1, 3.2, 3.4]
+    arcSegment: 0.25,
+    arcOpacity: 0.35,
+    arcGaps: []
   },
   near: { 
     label: 'Near Term (~3m)',
@@ -606,7 +608,9 @@ const TIME_HORIZONS = {
     arrowColor: PALETTE.teaching.easing,
     state: 'Goods inflation fades further',
     driver: 'Supply chains normalize faster than services',
-    sparkline: [3.4, 3.2, 3.0, 2.8, 2.6]
+    arcSegment: 0.50,
+    arcOpacity: 0.45,
+    arcGaps: []
   },
   medium: { 
     label: 'Medium Term (~6m)',
@@ -614,7 +618,9 @@ const TIME_HORIZONS = {
     arrowColor: PALETTE.teaching.policy,
     state: 'Services inflation cools unevenly',
     driver: 'Wage pressure eases gradually',
-    sparkline: [2.6, 2.5, 2.5, 2.4, 2.3]
+    arcSegment: 0.70,
+    arcOpacity: 0.40,
+    arcGaps: [0.35, 0.45]
   },
   confirmation: { 
     label: 'Confirmation (~12m)',
@@ -622,36 +628,75 @@ const TIME_HORIZONS = {
     arrowColor: PALETTE.teaching.confidence,
     state: 'Policy easing becomes possible',
     driver: 'Confidence matters more than speed',
-    sparkline: [2.3, 2.2, 2.1, 2.1, 2.0]
+    arcSegment: 0.85,
+    arcOpacity: 0.50,
+    arcGaps: []
   }
 };
 
-const MicroSparkline = ({ data, color }) => {
-  if (!data || data.length < 2) return null;
+const SegmentedProgressArc = ({ segment, opacity, gaps = [], color }) => {
+  const radius = 16;
+  const strokeWidth = 2;
+  const size = (radius + strokeWidth) * 2;
+  const center = size / 2;
   
-  const max = Math.max(...data);
-  const min = Math.min(...data);
-  const range = max - min;
+  const startAngle = -90;
+  const endAngle = startAngle + (segment * 360);
   
-  const points = data.map((val, i) => ({
-    x: (i / (data.length - 1)) * 100,
-    y: range > 0 ? ((max - val) / range) * 100 : 50
-  }));
+  const createArc = (start, end) => {
+    const startRad = (start * Math.PI) / 180;
+    const endRad = (end * Math.PI) / 180;
+    const x1 = center + radius * Math.cos(startRad);
+    const y1 = center + radius * Math.sin(startRad);
+    const x2 = center + radius * Math.cos(endRad);
+    const y2 = center + radius * Math.sin(endRad);
+    const largeArc = end - start > 180 ? 1 : 0;
+    return `M ${x1} ${y1} A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2}`;
+  };
   
-  const pathData = points.map((p, i) => 
-    `${i === 0 ? 'M' : 'L'} ${p.x},${p.y}`
-  ).join(' ');
+  if (gaps.length === 0) {
+    return (
+      <svg width={size} height={size} style={{ opacity }}>
+        <path
+          d={createArc(startAngle, endAngle)}
+          fill="none"
+          stroke={color}
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+        />
+      </svg>
+    );
+  }
+  
+  const segments = [];
+  const gapAngles = gaps.map(g => startAngle + (g * 360));
+  
+  let currentStart = startAngle;
+  gapAngles.forEach((gapAngle, i) => {
+    const gapEnd = i < gapAngles.length - 1 ? gapAngles[i + 1] - 10 : endAngle;
+    if (gapAngle > currentStart) {
+      segments.push({ start: currentStart, end: gapAngle - 5, opacity: i % 2 === 0 ? opacity : opacity * 0.5 });
+    }
+    currentStart = gapAngle + 5;
+  });
+  
+  if (currentStart < endAngle) {
+    segments.push({ start: currentStart, end: endAngle, opacity: opacity * 0.7 });
+  }
   
   return (
-    <svg width="60" height="24" viewBox="0 0 100 100" style={{ opacity: 0.6 }}>
-      <path
-        d={pathData}
-        fill="none"
-        stroke={color}
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <svg width={size} height={size}>
+      {segments.map((seg, i) => (
+        <path
+          key={i}
+          d={createArc(seg.start, seg.end)}
+          fill="none"
+          stroke={color}
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          opacity={seg.opacity}
+        />
+      ))}
     </svg>
   );
 };
@@ -692,7 +737,7 @@ const InflationTimeLens = () => {
           transition={{ duration: 0.35, ease: HORIZON_EASE }}
           className="text-center max-w-2xl mx-auto"
         >
-          <div className="flex items-center justify-center gap-3 mb-6">
+          <div className="flex items-center justify-center gap-4 mb-6">
             <span style={{ 
               fontSize: '18px', 
               color: TIME_HORIZONS[selected].arrowColor,
@@ -700,9 +745,11 @@ const InflationTimeLens = () => {
             }}>
               {TIME_HORIZONS[selected].arrow}
             </span>
-            <MicroSparkline 
-              data={TIME_HORIZONS[selected].sparkline} 
-              color={TIME_HORIZONS[selected].arrowColor}
+            <SegmentedProgressArc 
+              segment={TIME_HORIZONS[selected].arcSegment}
+              opacity={TIME_HORIZONS[selected].arcOpacity}
+              gaps={TIME_HORIZONS[selected].arcGaps}
+              color={PALETTE.accent.active}
             />
           </div>
           
