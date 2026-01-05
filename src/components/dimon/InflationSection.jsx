@@ -4,7 +4,7 @@ import { TrendingUp, TrendingDown, Minus, Info } from 'lucide-react';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
 
-// OS Horizon palette - cool tones only
+// OS Horizon palette - cool tones with subtle life
 const PALETTE = {
   cpi: {
     ring: 'rgba(120, 140, 160, 0.45)',
@@ -17,11 +17,15 @@ const PALETTE = {
     text: '#6B95C0'
   },
   neutral: {
-    bg: 'rgba(18, 22, 28, 0.45)',
+    bg: 'rgba(28, 32, 38, 0.40)',
     border: 'rgba(255, 255, 255, 0.08)',
     text: 'rgba(255, 255, 255, 0.70)',
     textBright: 'rgba(255, 255, 255, 0.95)',
     textDim: 'rgba(255, 255, 255, 0.50)'
+  },
+  ambient: {
+    horizonBlue: 'rgba(90, 130, 170, 0.06)',
+    horizonBloom: 'rgba(110, 150, 190, 0.08)'
   }
 };
 
@@ -91,13 +95,13 @@ const InflationSystemNote = () => (
     transition={{ duration: 0.5, ease: HORIZON_EASE, delay: 0.1 }}
     className="mb-8 relative overflow-hidden"
     style={{
-      padding: '14px 18px',
+      padding: '16px 20px',
       background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.025) 0%, rgba(255, 255, 255, 0.015) 100%)',
       backdropFilter: 'blur(32px) saturate(165%)',
       WebkitBackdropFilter: 'blur(32px) saturate(165%)',
       borderRadius: '14px',
       border: `1px solid ${PALETTE.neutral.border}`,
-      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 2px 12px rgba(0,0,0,0.08)'
+      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 16px rgba(0,0,0,0.06)'
     }}
   >
     <div style={{
@@ -111,11 +115,14 @@ const InflationSystemNote = () => (
     }} />
     <div style={{ 
       color: PALETTE.neutral.text,
-      ...TYPE.systemNote
+      fontSize: '13px',
+      fontWeight: 400,
+      letterSpacing: '0',
+      lineHeight: 1.75
     }}>
       CPI reflects prices households feel.<br />
       PCE reflects prices policy responds to.<br />
-      The gap explains why inflation can feel worse than policy data suggests.
+      The gap explains why inflation can feel worse than policy suggests.
     </div>
   </motion.div>
 );
@@ -131,11 +138,33 @@ const InflationPressureRing = ({ cpiValue, pceValue }) => {
   
   return (
     <div className="relative flex items-center justify-center" style={{ height: '240px' }}>
+      {/* Horizon light source - subtle background bloom */}
+      <motion.div
+        animate={{
+          opacity: [0.3, 0.5, 0.3],
+          scale: [1, 1.05, 1]
+        }}
+        transition={{
+          duration: 6,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        style={{
+          position: 'absolute',
+          width: '300px',
+          height: '300px',
+          background: `radial-gradient(circle, ${PALETTE.ambient.horizonBloom} 0%, ${PALETTE.ambient.horizonBlue} 40%, transparent 70%)`,
+          filter: 'blur(40px)',
+          pointerEvents: 'none',
+          zIndex: 0
+        }}
+      />
+
       <motion.div
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
         className="relative"
-        style={{ width: '200px', height: '200px' }}
+        style={{ width: '200px', height: '200px', zIndex: 1 }}
       >
         {/* Breathing base glow */}
         <motion.div
@@ -201,9 +230,21 @@ const InflationPressureRing = ({ cpiValue, pceValue }) => {
           }}
         />
 
-        {/* Center glass panel */}
+        {/* Center glass panel with subtle pulse */}
         <motion.div
           whileHover={{ scale: 1.05 }}
+          animate={{
+            boxShadow: [
+              'inset 0 1px 0 rgba(255,255,255,0.15), 0 8px 32px rgba(0,0,0,0.2)',
+              'inset 0 1px 0 rgba(255,255,255,0.18), 0 10px 36px rgba(90,130,170,0.08)',
+              'inset 0 1px 0 rgba(255,255,255,0.15), 0 8px 32px rgba(0,0,0,0.2)'
+            ]
+          }}
+          transition={{
+            duration: 5,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
           style={{
             position: 'absolute',
             inset: '40px',
@@ -212,7 +253,6 @@ const InflationPressureRing = ({ cpiValue, pceValue }) => {
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
             border: '1px solid rgba(255,255,255,0.12)',
-            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.15), 0 8px 32px rgba(0,0,0,0.2)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -298,8 +338,8 @@ const KPIChip = ({ label, value, isCore = false }) => {
         WebkitBackdropFilter: 'blur(48px) saturate(170%)',
         border: '1px solid rgba(255,255,255,0.08)',
         boxShadow: isHovered 
-          ? 'inset 0 2px 0 rgba(255,255,255,0.10), 0 8px 28px rgba(0,0,0,0.15)'
-          : 'inset 0 2px 0 rgba(255,255,255,0.08), 0 4px 18px rgba(0,0,0,0.12)',
+          ? 'inset 0 2px 0 rgba(255,255,255,0.10), 0 12px 32px rgba(0,0,0,0.10), 0 4px 16px rgba(90,130,170,0.06)'
+          : 'inset 0 2px 0 rgba(255,255,255,0.08), 0 6px 22px rgba(0,0,0,0.08)',
         minWidth: '140px',
         transition: 'box-shadow 0.3s ease'
       }}
@@ -473,9 +513,9 @@ const InflationUnderstandingLens = () => (
 
 // Component 7: InflationTimeLens
 const TIME_HORIZONS = {
-  now: { label: 'Now', text: 'Housing keeps inflation sticky' },
-  quarterly: { label: '3–12 Months', text: 'Services guide policy shifts' },
-  longer: { label: '12–36 Months', text: 'Higher inflation baseline persists' }
+  now: { label: 'Now', text: 'Housing keeps inflation elevated.' },
+  quarterly: { label: '3–12 Months', text: 'Services inflation guides policy.' },
+  longer: { label: '12–36 Months', text: 'Inflation stays above target.' }
 };
 
 const InflationTimeLens = () => {
@@ -530,11 +570,11 @@ const InflationTimeLens = () => {
 
 // Component 8: InflationConsequencesLens
 const CONSEQUENCES = {
-  consumer: { label: 'Consumer', text: 'Living costs stay elevated even as growth slows' },
-  worker: { label: 'Worker', text: 'Wage gains offset but do not erase pressure' },
-  business: { label: 'Business', text: 'Pricing power weakens' },
-  government: { label: 'Government', text: 'Policy flexibility constrained' },
-  investor: { label: 'Investor', text: 'Volatility tied to inflation surprises' }
+  consumer: { label: 'Consumer', text: 'Living costs stay elevated even as growth slows.' },
+  worker: { label: 'Worker', text: 'Wage gains offset but do not erase pressure.' },
+  business: { label: 'Business', text: 'Pricing power weakens.' },
+  government: { label: 'Government', text: 'Policy flexibility shrinks.' },
+  investor: { label: 'Investor', text: 'Volatility tied to inflation surprises.' }
 };
 
 const InflationConsequencesLens = () => {
@@ -622,13 +662,13 @@ const ImplicationPill = ({ label, direction, note, because }) => {
       </div>
       {because && (
         <div style={{ 
-          color: PALETTE.neutral.text,
-          fontSize: '13px',
-          fontWeight: 400,
-          lineHeight: 1.5,
-          paddingLeft: '28px'
+        color: PALETTE.neutral.text,
+        fontSize: '13px',
+        fontWeight: 400,
+        lineHeight: 1.6,
+        paddingLeft: '28px'
         }}>
-          Because {because}
+        Because {because}.
         </div>
       )}
     </motion.div>
@@ -647,7 +687,7 @@ const InflationImplicationsStrip = ({ implications }) => (
       backdropFilter: 'blur(48px) saturate(165%)',
       WebkitBackdropFilter: 'blur(48px) saturate(165%)',
       border: '1px solid rgba(255,255,255,0.06)',
-      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(0,0,0,0.10)'
+      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 28px rgba(0,0,0,0.06), 0 2px 12px rgba(90,130,170,0.04)'
     }}
   >
     <div style={{
@@ -693,9 +733,9 @@ export default function InflationSection({ data }) {
   if (!data) return null;
 
   const lenses = [
-    { id: 'understanding', label: 'Understanding' },
-    { id: 'time', label: 'Time' },
-    { id: 'consequences', label: 'Consequences' }
+    { id: 'understanding', label: 'What This Means' },
+    { id: 'time', label: 'How This Evolves' },
+    { id: 'consequences', label: 'What This Leads To' }
   ];
 
   return (
@@ -742,7 +782,7 @@ export default function InflationSection({ data }) {
             backdropFilter: 'blur(64px) saturate(180%)',
             WebkitBackdropFilter: 'blur(64px) saturate(180%)',
             border: '1px solid rgba(255,255,255,0.10)',
-            boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.10), 0 12px 48px rgba(0,0,0,0.16)',
+            boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.10), 0 16px 52px rgba(0,0,0,0.08), 0 6px 24px rgba(90,130,170,0.04)',
             minHeight: '280px'
           }}
         >
