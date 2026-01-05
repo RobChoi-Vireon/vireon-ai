@@ -360,72 +360,73 @@ const SegmentedControl = ({ segments, active, onChange }) => {
   };
 
   return (
-  <div className="relative flex items-center justify-center gap-1 p-1.5 rounded-[20px]" style={{
-  background: `linear-gradient(135deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.035) 100%), ${getModeHue(active)}`,
-  backdropFilter: 'blur(48px) saturate(175%)',
-  WebkitBackdropFilter: 'blur(48px) saturate(175%)',
-  border: '1px solid rgba(255,255,255,0.10)',
-  boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.10), 0 4px 20px rgba(0,0,0,0.10)',
-  transition: 'background 0.4s ease'
-  }}>
-    {/* Top Specular Rim */}
-    <div style={{
-      position: 'absolute',
-      top: 0,
-      left: '15%',
-      right: '15%',
-      height: '1.5px',
-      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
-      pointerEvents: 'none',
-      filter: 'blur(0.5px)'
-    }} />
+    <div className="relative flex items-center justify-center gap-1 p-1.5 rounded-[20px]" style={{
+      background: `linear-gradient(135deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.035) 100%), ${getModeHue(active)}`,
+      backdropFilter: 'blur(48px) saturate(175%)',
+      WebkitBackdropFilter: 'blur(48px) saturate(175%)',
+      border: '1px solid rgba(255,255,255,0.10)',
+      boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.10), 0 4px 20px rgba(0,0,0,0.10)',
+      transition: 'background 0.4s ease'
+    }}>
+      {/* Top Specular Rim */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '15%',
+        right: '15%',
+        height: '1.5px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+        pointerEvents: 'none',
+        filter: 'blur(0.5px)'
+      }} />
 
-    {segments.map(segment => (
-      <motion.button
-        key={segment.id}
-        onClick={() => onChange(segment.id)}
-        className="relative px-7 py-3 rounded-[16px] overflow-hidden"
-        whileHover={{ scale: active === segment.id ? 1 : 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        transition={{ duration: 0.2, ease: HORIZON_EASE }}
-        style={{
-          background: active === segment.id 
-            ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.10) 100%)'
-            : 'transparent',
-          color: active === segment.id ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.65)',
-          fontWeight: active === segment.id ? 700 : 600,
-          fontSize: '14px',
-          letterSpacing: active === segment.id ? '-0.01em' : '0',
-          boxShadow: active === segment.id 
-            ? 'inset 0 1.5px 0 rgba(255,255,255,0.16), 0 3px 12px rgba(0,0,0,0.12), 0 0 0 1px rgba(255,255,255,0.08)' 
-            : 'none',
-          transition: 'all 0.3s ease'
-        }}
-      >
-        {active === segment.id && (
-          <>
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: '12%',
-              right: '12%',
-              height: '1.5px',
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent)',
-              pointerEvents: 'none'
-            }} />
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'radial-gradient(ellipse at 50% 30%, rgba(110, 185, 255, 0.10) 0%, transparent 70%)',
-              pointerEvents: 'none'
-            }} />
-          </>
-        )}
-        <span className="relative z-10">{segment.label}</span>
-      </motion.button>
-    ))}
-  </div>
-);
+      {segments.map(segment => (
+        <motion.button
+          key={segment.id}
+          onClick={() => onChange(segment.id)}
+          className="relative px-7 py-3 rounded-[16px] overflow-hidden"
+          whileHover={{ scale: active === segment.id ? 1 : 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          transition={{ duration: 0.2, ease: HORIZON_EASE }}
+          style={{
+            background: active === segment.id 
+              ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.10) 100%)'
+              : 'transparent',
+            color: active === segment.id ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.65)',
+            fontWeight: active === segment.id ? 700 : 600,
+            fontSize: '14px',
+            letterSpacing: active === segment.id ? '-0.01em' : '0',
+            boxShadow: active === segment.id 
+              ? 'inset 0 1.5px 0 rgba(255,255,255,0.16), 0 3px 12px rgba(0,0,0,0.12), 0 0 0 1px rgba(255,255,255,0.08)' 
+              : 'none',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          {active === segment.id && (
+            <>
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: '12%',
+                right: '12%',
+                height: '1.5px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent)',
+                pointerEvents: 'none'
+              }} />
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'radial-gradient(ellipse at 50% 30%, rgba(110, 185, 255, 0.10) 0%, transparent 70%)',
+                pointerEvents: 'none'
+              }} />
+            </>
+          )}
+          <span className="relative z-10">{segment.label}</span>
+        </motion.button>
+      ))}
+    </div>
+  );
+};
 
 const TimelineSelector = ({ horizons, active, onChange }) => (
   <div className="flex items-center justify-center gap-4 mb-6">
