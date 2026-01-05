@@ -654,7 +654,7 @@ const CONSEQUENCES = {
   },
   worker: { 
     label: 'Worker', 
-    text: 'Wage gains help but don't restore purchasing power.',
+    text: 'Wage gains help but don\'t restore purchasing power.',
     why: 'Because inflation erodes gains before they compound.'
   },
   business: { 
