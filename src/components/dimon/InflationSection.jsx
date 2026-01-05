@@ -336,7 +336,9 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
             borderTopColor: THERMAL.cool.accent,
             borderLeftColor: THERMAL.cool.accent,
             opacity: 0.7,
-            boxShadow: `0 0 ${gapIntensity * 25}px ${THERMAL.cool.glow}`
+            boxShadow: `0 0 ${gapIntensity * 25}px ${THERMAL.cool.glow}`,
+            pointerEvents: 'none',
+            willChange: 'transform'
           }}
         />
 
