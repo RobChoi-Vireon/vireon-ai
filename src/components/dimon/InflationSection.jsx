@@ -527,7 +527,7 @@ export default function InflationSection({ data }) {
           backgroundClip: 'text'
         }}>
           {data.comparison_headline || "Inflation remains sticky as housing keeps CPI elevated"}
-        </h2>
+        </h3>
         <p className="text-[15px] font-medium max-w-3xl mx-auto" style={{ 
           color: 'rgba(255,255,255,0.65)',
           letterSpacing: '0.01em',
