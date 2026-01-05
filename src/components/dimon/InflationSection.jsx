@@ -344,7 +344,8 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
 
         {/* Center glass panel - transforms on hover */}
         <motion.div
-          whileHover={{ scale: 1.05 }}
+          animate={{ scale: isHovered ? 1.05 : 1 }}
+          transition={{ duration: 0.35, ease: HORIZON_EASE }}
           style={{
             position: 'absolute',
             inset: '40px',
@@ -358,7 +359,9 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '12px'
+            padding: '12px',
+            pointerEvents: 'none',
+            willChange: 'transform'
           }}
         >
           <AnimatePresence mode="wait">
