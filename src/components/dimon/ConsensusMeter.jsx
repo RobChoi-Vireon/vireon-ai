@@ -299,7 +299,7 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
             0 0 45px rgba(142, 187, 255, 0.095),
             0 0 0 1px rgba(255, 255, 255, 0.045)
           `,
-          willChange: 'transform',
+          willChange: 'transform, filter',
           rotateX: 0,
           rotateY: 0
         }}
@@ -325,7 +325,9 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
         transition={{
           scale: { duration: isHovered ? MOTION.DURATIONS.base : MOTION.DURATIONS.breathing, ease: MOTION.CURVES.primary },
           filter: { duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.primary },
-          boxShadow: { duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.primary }
+          boxShadow: { duration: MOTION.DURATIONS.base, ease: MOTION.CURVES.primary },
+          rotateX: { type: 'spring', stiffness: 150, damping: 30, mass: 0.5 },
+          rotateY: { type: 'spring', stiffness: 150, damping: 30, mass: 0.5 }
         }}
       >
         {/* Inner Layer */}
