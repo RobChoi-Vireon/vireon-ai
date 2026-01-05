@@ -438,7 +438,8 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
           background: `radial-gradient(circle, ${THERMAL.warm.glow} 0%, ${THERMAL.cool.glow} 50%, transparent 70%)`,
           filter: 'blur(15px)',
           opacity: gapIntensity * 0.6,
-          pointerEvents: 'none'
+          pointerEvents: 'none',
+          willChange: 'opacity'
         }} />
       </motion.div>
 
