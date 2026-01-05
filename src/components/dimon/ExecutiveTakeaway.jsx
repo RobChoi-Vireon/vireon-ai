@@ -6,7 +6,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Scale, DollarSign, Globe, ExternalLink } from 'lucide-react';
-import InflationCard from './InflationCard';
 
 const icons = { Scale, DollarSign, Globe };
 
@@ -736,20 +735,12 @@ export default function ExecutiveTakeaway({ digest, onOpenMemo, isLoading = fals
         {/* Responsive grid with Horizon OS spacing */}
         <div className="grid grid-cols-1 gap-y-6 gap-x-8 sm:grid-cols-2 xl:grid-cols-3 relative z-10">
           {digest.executive_takeaway.map((item, index) => (
-            <React.Fragment key={index}>
-              <TakeawayItem 
-                item={item}
-                index={index}
-                onOpenMemo={onOpenMemo}
-              />
-              {/* Insert Inflation card after first US Business & Markets card */}
-              {index === 0 && digest.inflation && (
-                <InflationCard 
-                  data={digest.inflation}
-                  index={index + 0.5}
-                />
-              )}
-            </React.Fragment>
+            <TakeawayItem 
+              key={index} 
+              item={item}
+              index={index}
+              onOpenMemo={onOpenMemo}
+            />
           ))}
         </div>
       </div>
