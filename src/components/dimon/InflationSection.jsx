@@ -579,7 +579,6 @@ const TIME_HORIZONS = {
 
 const InflationTimeLens = () => {
   const [selected, setSelected] = useState('now');
-  const [showWhy, setShowWhy] = useState(false);
 
   return (
     <div>
@@ -608,42 +607,30 @@ const InflationTimeLens = () => {
       <AnimatePresence mode="wait">
         <motion.div 
           key={selected}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.2, ease: HORIZON_EASE }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3, ease: HORIZON_EASE }}
           className="text-center max-w-2xl mx-auto"
-          onHoverStart={() => setShowWhy(true)}
-          onHoverEnd={() => setShowWhy(false)}
-          style={{ cursor: 'default' }}
         >
           <p style={{ 
             color: PALETTE.neutral.textBright, 
             fontSize: '17px',
             fontWeight: 400,
             lineHeight: 1.65,
-            marginBottom: '8px'
+            marginBottom: '10px'
           }}>
             {TIME_HORIZONS[selected].text}
           </p>
-          <AnimatePresence>
-            {showWhy && (
-              <motion.p
-                initial={{ opacity: 0, y: -4 }}
-                animate={{ opacity: 0.7, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                transition={{ duration: 0.2, ease: HORIZON_EASE }}
-                style={{ 
-                  color: PALETTE.neutral.text,
-                  fontSize: '14px',
-                  fontWeight: 400,
-                  lineHeight: 1.6
-                }}
-              >
-                {TIME_HORIZONS[selected].why}
-              </motion.p>
-            )}
-          </AnimatePresence>
+          <p style={{ 
+            color: PALETTE.neutral.text,
+            fontSize: '14px',
+            fontWeight: 400,
+            lineHeight: 1.75,
+            opacity: 0.68
+          }}>
+            {TIME_HORIZONS[selected].why}
+          </p>
         </motion.div>
       </AnimatePresence>
     </div>
