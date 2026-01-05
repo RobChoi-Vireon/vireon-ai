@@ -38,41 +38,50 @@ const THERMAL = {
   }
 };
 
-const TIME_HORIZONS = {
+const HORIZONS = {
   now: {
     label: 'Now',
-    insight: 'Housing keeps inflation sticky'
+    bullets: [
+      "Fed maintains current stance, watching labor market closely.",
+      "Markets price in rate cuts if inflation continues moderating."
+    ]
   },
   quarterly: {
     label: '3–12 Months',
-    insight: 'Services guide policy shifts'
+    bullets: [
+      "Housing costs begin cooling as shelter components catch up to reality.",
+      "Services inflation becomes the primary policy determinant."
+    ]
   },
   longer: {
     label: '12–36 Months',
-    insight: 'Higher inflation baseline persists'
+    bullets: [
+      "Deglobalization and labor tightness keep inflation above pre-pandemic norms.",
+      "Central banks recalibrate long-term neutral rate assumptions."
+    ]
   }
 };
 
-const CONSEQUENCES = {
-  consumer: {
-    label: 'Consumer',
-    insight: 'Living costs stay elevated even as growth slows'
+const STAKEHOLDERS = {
+  consumers: {
+    label: 'Consumers',
+    description: 'Purchasing power erodes when wage growth lags inflation. Essentials like food and shelter consume a larger share of household budgets.'
   },
-  worker: {
-    label: 'Worker',
-    insight: 'Wage gains offset but do not erase pressure'
+  workers: {
+    label: 'Workers',
+    description: 'Real wage growth determines living standards. Tight labor markets give workers leverage to demand raises that match or exceed inflation.'
   },
-  business: {
-    label: 'Business',
-    insight: 'Pricing power weakens'
+  businesses: {
+    label: 'Businesses',
+    description: 'Margin compression when input costs rise faster than pricing power allows. Small businesses face disproportionate pressure from higher borrowing costs.'
   },
   government: {
     label: 'Government',
-    insight: 'Policy flexibility constrained'
+    description: 'Social Security and federal benefits adjust to CPI, creating fiscal pressures. Higher interest payments on national debt compound budget challenges.'
   },
-  investor: {
-    label: 'Investor',
-    insight: 'Volatility tied to inflation surprises'
+  investors: {
+    label: 'Investors',
+    description: 'Fixed-income returns lose real value. Equities face multiple compression as discount rates rise. Inflation-linked assets and commodities become portfolio anchors.'
   }
 };
 
@@ -425,11 +434,11 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
   );
 };
 
-const LensSwitcher = ({ lenses, active, onChange }) => {
-  const getModeHue = (lensId) => {
-    if (lensId === 'understanding') return THERMAL.cool.subtle;
-    if (lensId === 'time') return 'rgba(150, 120, 255, 0.03)';
-    if (lensId === 'consequences') return THERMAL.warm.subtle;
+const SegmentedControl = ({ segments, active, onChange }) => {
+  const getModeHue = (segmentId) => {
+    if (segmentId === 'overview') return THERMAL.cool.subtle;
+    if (segmentId === 'timeline') return 'rgba(150, 120, 255, 0.03)';
+    if (segmentId === 'impact') return THERMAL.warm.subtle;
     return 'transparent';
   };
 
@@ -454,30 +463,30 @@ const LensSwitcher = ({ lenses, active, onChange }) => {
         filter: 'blur(0.5px)'
       }} />
 
-      {lenses.map(lens => (
+      {segments.map(segment => (
         <motion.button
-          key={lens.id}
-          onClick={() => onChange(lens.id)}
+          key={segment.id}
+          onClick={() => onChange(segment.id)}
           className="relative px-7 py-3 rounded-[16px] overflow-hidden"
-          whileHover={{ scale: active === lens.id ? 1 : 1.02 }}
+          whileHover={{ scale: active === segment.id ? 1 : 1.02 }}
           whileTap={{ scale: 0.98 }}
           transition={{ duration: 0.2, ease: HORIZON_EASE }}
           style={{
-            background: active === lens.id 
+            background: active === segment.id 
               ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.10) 100%)'
               : 'transparent',
-            color: active === lens.id ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.65)',
-            fontWeight: active === lens.id ? 600 : 500,
+            color: active === segment.id ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.65)',
+            fontWeight: active === segment.id ? 600 : 500,
             fontSize: '15px',
-            letterSpacing: active === lens.id ? '-0.01em' : '0',
+            letterSpacing: active === segment.id ? '-0.01em' : '0',
             ...TYPOGRAPHY.smoothing,
-            boxShadow: active === lens.id 
+            boxShadow: active === segment.id 
               ? 'inset 0 1.5px 0 rgba(255,255,255,0.16), 0 3px 12px rgba(0,0,0,0.12), 0 0 0 1px rgba(255,255,255,0.08)' 
               : 'none',
             transition: 'all 0.3s ease'
           }}
         >
-          {active === lens.id && (
+          {active === segment.id && (
             <>
               <div style={{
                 position: 'absolute',
@@ -496,7 +505,7 @@ const LensSwitcher = ({ lenses, active, onChange }) => {
               }} />
             </>
           )}
-          <span className="relative z-10">{lens.label}</span>
+          <span className="relative z-10">{segment.label}</span>
         </motion.button>
       ))}
     </div>
@@ -528,9 +537,9 @@ const TimelineSelector = ({ horizons, active, onChange }) => (
   </div>
 );
 
-const ConsequenceSelector = ({ consequences, active, onChange }) => (
+const StakeholderSelector = ({ stakeholders, active, onChange }) => (
   <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
-    {Object.entries(consequences).map(([key, consequence]) => (
+    {Object.entries(stakeholders).map(([key, stakeholder]) => (
       <button
         key={key}
         onClick={() => onChange(key)}
@@ -549,97 +558,85 @@ const ConsequenceSelector = ({ consequences, active, onChange }) => (
           ...TYPOGRAPHY.smoothing
         }}
       >
-        {consequence.label}
+        {stakeholder.label}
       </button>
     ))}
   </div>
 );
 
 export default function InflationSection({ data }) {
-  const [activeLens, setActiveLens] = useState('understanding');
+  const [activeSegment, setActiveSegment] = useState('overview');
   const [selectedHorizon, setSelectedHorizon] = useState('now');
-  const [selectedConsequence, setSelectedConsequence] = useState('consumer');
+  const [selectedStakeholder, setSelectedStakeholder] = useState('consumers');
 
   if (!data) return null;
 
   const stateColors = StatePillColors[data.state_tag] || StatePillColors.Mixed;
   const policyColors = PolicyBiasColors[data.policy_bias] || PolicyBiasColors.Neutral;
 
-  const lenses = [
-    { id: 'understanding', label: 'Understanding' },
-    { id: 'time', label: 'Time' },
-    { id: 'consequences', label: 'Consequences' }
+  const segments = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'timeline', label: 'Timeline' },
+    { id: 'impact', label: 'Impact' }
   ];
 
   return (
     <div className="space-y-6">
-      {/* State-Based Header */}
+      {/* Section Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: HORIZON_EASE }}
-        className="mb-3"
+        className="mb-6"
       >
         <h2 style={{ 
           color: 'rgba(255,255,255,0.95)',
-          fontSize: '22px',
-          fontWeight: 700,
-          letterSpacing: '-0.015em',
-          lineHeight: 1.3,
-          marginBottom: '8px',
+          fontSize: TYPOGRAPHY.scale.heading1.size,
+          fontWeight: TYPOGRAPHY.scale.heading1.weight,
+          letterSpacing: TYPOGRAPHY.scale.heading1.letterSpacing,
+          lineHeight: TYPOGRAPHY.scale.heading1.lineHeight,
           ...TYPOGRAPHY.smoothing
         }}>
-          Inflation — Sticky
+          Inflation
         </h2>
-        <p style={{ 
-          color: 'rgba(255,255,255,0.60)',
-          fontSize: '14px',
-          fontWeight: 500,
-          letterSpacing: '0',
-          lineHeight: 1.5,
-          ...TYPOGRAPHY.smoothing
-        }}>
-          Consumer prices remain elevated while policy inflation cools.
-        </p>
       </motion.div>
 
-      {/* System Note — CPI vs PCE */}
+      {/* Hero Insight */}
       <motion.div
-        initial={{ opacity: 0, y: -5 }}
+        initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: HORIZON_EASE, delay: 0.1 }}
-        className="mb-8 relative overflow-hidden"
-        style={{
-          padding: '14px 18px',
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.035) 0%, rgba(255, 255, 255, 0.02) 100%)',
-          backdropFilter: 'blur(32px) saturate(165%)',
-          WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-          borderRadius: '14px',
-          border: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 2px 12px rgba(0,0,0,0.08)'
-        }}
+        transition={{ duration: 0.6, ease: HORIZON_EASE, delay: 0.1 }}
+        className="mb-8 text-center"
       >
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: '15%',
-          right: '15%',
-          height: '1px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
-          pointerEvents: 'none'
-        }} />
-        <div style={{ 
-          color: 'rgba(255,255,255,0.75)',
-          fontSize: '13px',
-          fontWeight: 400,
-          letterSpacing: '0',
-          lineHeight: 1.65,
+        <h3 className="mb-5" style={{ 
+          color: 'rgba(255,255,255,1)',
+          fontSize: TYPOGRAPHY.scale.hero.size,
+          fontWeight: TYPOGRAPHY.scale.hero.weight,
+          letterSpacing: TYPOGRAPHY.scale.hero.letterSpacing,
+          lineHeight: TYPOGRAPHY.scale.hero.lineHeight,
+          background: 'linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.85) 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
           ...TYPOGRAPHY.smoothing
         }}>
-          CPI reflects prices households feel.<br />
-          PCE reflects prices policy responds to.<br />
-          The gap explains why inflation can feel worse than policy data suggests.
-        </div>
+          Housing Keeps <span style={{ 
+            background: `linear-gradient(135deg, ${THERMAL.warm.accent.replace('0.45', '1')} 0%, ${THERMAL.warm.accent.replace('0.45', '0.75')} 100%)`,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text'
+          }}>Inflation</span> Sticky
+        </h3>
+        <p className="max-w-2xl mx-auto" style={{ 
+          color: 'rgba(255,255,255,0.70)',
+          fontSize: TYPOGRAPHY.scale.bodyEmphasis.size,
+          fontWeight: TYPOGRAPHY.scale.bodyEmphasis.weight,
+          letterSpacing: TYPOGRAPHY.scale.bodyEmphasis.letterSpacing,
+          lineHeight: TYPOGRAPHY.scale.bodyEmphasis.lineHeight,
+          ...TYPOGRAPHY.smoothing
+        }}>
+          CPI runs hot from shelter costs. Fed watches PCE for true demand signals.
+        </p>
       </motion.div>
 
       {/* Hero Visual - Inflation Pressure Ring */}
@@ -770,39 +767,25 @@ export default function InflationSection({ data }) {
 
         <div className="flex flex-wrap gap-3">
           {(data.market_implications || []).map((implication, idx) => (
-            <div key={idx} className="flex flex-col">
-              <ImplicationPill 
-                label={implication.label}
-                direction={implication.direction}
-                note={implication.note}
-              />
-              {implication.because && (
-                <div style={{
-                  color: 'rgba(255,255,255,0.60)',
-                  fontSize: '12px',
-                  fontWeight: 400,
-                  lineHeight: 1.5,
-                  marginTop: '6px',
-                  marginLeft: '8px',
-                  ...TYPOGRAPHY.smoothing
-                }}>
-                  Because {implication.because}
-                </div>
-              )}
-            </div>
+            <ImplicationPill 
+              key={idx}
+              label={implication.label}
+              direction={implication.direction}
+              note={implication.note}
+            />
           ))}
         </div>
       </motion.div>
 
-      {/* Lens Switcher */}
+      {/* Segmented Control - Modes */}
       <div className="flex justify-center my-10">
-        <LensSwitcher lenses={lenses} active={activeLens} onChange={setActiveLens} />
+        <SegmentedControl segments={segments} active={activeSegment} onChange={setActiveSegment} />
       </div>
 
-      {/* Lens Content Panel */}
+      {/* Depth Panel - Modes */}
       <AnimatePresence mode="wait">
         <motion.div
-          key={activeLens}
+          key={activeSegment}
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0 }}
@@ -815,7 +798,7 @@ export default function InflationSection({ data }) {
             WebkitBackdropFilter: 'blur(64px) saturate(180%)',
             border: '1px solid rgba(255,255,255,0.12)',
             boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.12), 0 12px 48px rgba(0,0,0,0.16)',
-            minHeight: '280px'
+            minHeight: '360px'
           }}
         >
           {/* Enhanced Specular */}
@@ -838,105 +821,119 @@ export default function InflationSection({ data }) {
             pointerEvents: 'none'
           }} />
 
-          {activeLens === 'understanding' && (
-            <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-                <div style={{ 
-                  color: 'rgba(255,255,255,0.65)',
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  letterSpacing: '0.06em',
-                  textTransform: 'uppercase',
-                  marginBottom: '12px',
-                  ...TYPOGRAPHY.smoothing
-                }}>
-                  CPI
-                </div>
-                <p style={{ 
-                  color: 'rgba(255,255,255,0.85)', 
-                  fontSize: '15px',
-                  fontWeight: 400,
-                  lineHeight: 1.6,
-                  ...TYPOGRAPHY.smoothing
-                }}>
-                  What households feel (rent, essentials)
-                </p>
-              </motion.div>
+          {activeSegment === 'overview' && (
+            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12">
+              <div className="space-y-8">
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  <h4 style={{ 
+                    color: 'rgba(255,255,255,0.98)',
+                    fontSize: TYPOGRAPHY.scale.heading2.size,
+                    fontWeight: TYPOGRAPHY.scale.heading2.weight,
+                    letterSpacing: TYPOGRAPHY.scale.heading2.letterSpacing,
+                    lineHeight: TYPOGRAPHY.scale.heading2.lineHeight,
+                    marginBottom: '12px',
+                    ...TYPOGRAPHY.smoothing
+                  }}>
+                    CPI
+                  </h4>
+                  <p style={{ 
+                    color: 'rgba(255,255,255,0.80)', 
+                    fontSize: TYPOGRAPHY.scale.body.size,
+                    fontWeight: TYPOGRAPHY.scale.body.weight,
+                    letterSpacing: TYPOGRAPHY.scale.body.letterSpacing,
+                    lineHeight: TYPOGRAPHY.scale.body.lineHeight,
+                    ...TYPOGRAPHY.smoothing
+                  }}>
+                    What households feel (rent, essentials)
+                  </p>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.15 }}
+                >
+                  <h4 style={{ 
+                    color: 'rgba(255,255,255,0.98)',
+                    fontSize: TYPOGRAPHY.scale.heading2.size,
+                    fontWeight: TYPOGRAPHY.scale.heading2.weight,
+                    letterSpacing: TYPOGRAPHY.scale.heading2.letterSpacing,
+                    lineHeight: TYPOGRAPHY.scale.heading2.lineHeight,
+                    marginBottom: '12px',
+                    ...TYPOGRAPHY.smoothing
+                  }}>
+                    PCE
+                  </h4>
+                  <p style={{ 
+                    color: 'rgba(255,255,255,0.80)', 
+                    fontSize: TYPOGRAPHY.scale.body.size,
+                    fontWeight: TYPOGRAPHY.scale.body.weight,
+                    letterSpacing: TYPOGRAPHY.scale.body.letterSpacing,
+                    lineHeight: TYPOGRAPHY.scale.body.lineHeight,
+                    ...TYPOGRAPHY.smoothing
+                  }}>
+                    What policy watches (adaptive spending)
+                  </p>
+                </motion.div>
+              </div>
 
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
-                <div style={{ 
-                  color: 'rgba(255,255,255,0.65)',
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  letterSpacing: '0.06em',
-                  textTransform: 'uppercase',
-                  marginBottom: '12px',
+              <motion.div 
+                className="space-y-5"
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <h4 style={{ 
+                  color: 'rgba(255,255,255,0.98)',
+                  fontSize: TYPOGRAPHY.scale.heading2.size,
+                  fontWeight: TYPOGRAPHY.scale.heading2.weight,
+                  letterSpacing: TYPOGRAPHY.scale.heading2.letterSpacing,
+                  lineHeight: TYPOGRAPHY.scale.heading2.lineHeight,
+                  marginBottom: '20px',
                   ...TYPOGRAPHY.smoothing
                 }}>
-                  PCE
-                </div>
+                  Why the gap matters
+                </h4>
                 <p style={{ 
-                  color: 'rgba(255,255,255,0.85)', 
-                  fontSize: '15px',
-                  fontWeight: 400,
-                  lineHeight: 1.6,
+                  color: 'rgba(255,255,255,0.80)', 
+                  fontSize: TYPOGRAPHY.scale.body.size,
+                  fontWeight: TYPOGRAPHY.scale.body.weight,
+                  letterSpacing: TYPOGRAPHY.scale.body.letterSpacing,
+                  lineHeight: TYPOGRAPHY.scale.body.lineHeight,
                   ...TYPOGRAPHY.smoothing
                 }}>
-                  What policy watches (adaptive spending)
+                  CPI above PCE → consumer pressure
                 </p>
-              </motion.div>
-
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-                <div style={{ 
-                  color: 'rgba(255,255,255,0.65)',
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  letterSpacing: '0.06em',
-                  textTransform: 'uppercase',
-                  marginBottom: '12px',
-                  ...TYPOGRAPHY.smoothing
-                }}>
-                  Meaning
-                </div>
                 <p style={{ 
-                  color: 'rgba(255,255,255,0.85)', 
-                  fontSize: '15px',
-                  fontWeight: 400,
-                  lineHeight: 1.6,
+                  color: 'rgba(255,255,255,0.80)', 
+                  fontSize: TYPOGRAPHY.scale.body.size,
+                  fontWeight: TYPOGRAPHY.scale.body.weight,
+                  letterSpacing: TYPOGRAPHY.scale.body.letterSpacing,
+                  lineHeight: TYPOGRAPHY.scale.body.lineHeight,
                   ...TYPOGRAPHY.smoothing
                 }}>
-                  Policy responds to demand, not pain
+                  PCE above CPI → broad demand inflation
+                </p>
+                <p style={{ 
+                  color: 'rgba(255,255,255,0.80)', 
+                  fontSize: TYPOGRAPHY.scale.body.size,
+                  fontWeight: TYPOGRAPHY.scale.body.weight,
+                  letterSpacing: TYPOGRAPHY.scale.body.letterSpacing,
+                  lineHeight: TYPOGRAPHY.scale.body.lineHeight,
+                  ...TYPOGRAPHY.smoothing
+                }}>
+                  Gap informs Fed policy bias
                 </p>
               </motion.div>
             </div>
           )}
 
-          {activeLens === 'time' && (
+          {activeSegment === 'timeline' && (
             <div className="relative z-10">
-              <div className="flex items-center justify-center gap-4 mb-6">
-                {Object.entries(TIME_HORIZONS).map(([key, horizon]) => (
-                  <button
-                    key={key}
-                    onClick={() => setSelectedHorizon(key)}
-                    className="relative px-5 py-2 rounded-xl transition-all duration-200"
-                    style={{
-                      background: selectedHorizon === key 
-                        ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.06) 100%)'
-                        : 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
-                      backdropFilter: 'blur(32px) saturate(165%)',
-                      WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-                      border: `1px solid ${selectedHorizon === key ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.08)'}`,
-                      color: selectedHorizon === key ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.65)',
-                      fontWeight: selectedHorizon === key ? 600 : 500,
-                      fontSize: '15px',
-                      letterSpacing: '-0.005em',
-                      ...TYPOGRAPHY.smoothing
-                    }}
-                  >
-                    {horizon.label}
-                  </button>
-                ))}
-              </div>
+              <TimelineSelector horizons={HORIZONS} active={selectedHorizon} onChange={setSelectedHorizon} />
               <AnimatePresence mode="wait">
                 <motion.div 
                   key={selectedHorizon}
@@ -944,42 +941,63 @@ export default function InflationSection({ data }) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.2, ease: HORIZON_EASE }}
-                  className="text-center max-w-2xl mx-auto"
+                  className="space-y-5 text-center max-w-2xl mx-auto"
                 >
-                  <p style={{ 
-                    color: 'rgba(255,255,255,0.88)', 
-                    fontSize: '17px',
-                    fontWeight: 400,
-                    lineHeight: 1.65,
-                    ...TYPOGRAPHY.smoothing
-                  }}>
-                    {TIME_HORIZONS[selectedHorizon].insight}
-                  </p>
+                  {HORIZONS[selectedHorizon].bullets.map((bullet, idx) => (
+                    <motion.p 
+                      key={idx} 
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.08, ease: HORIZON_EASE }}
+                      style={{ 
+                        color: 'rgba(255,255,255,0.84)', 
+                        fontSize: TYPOGRAPHY.scale.body.size,
+                        fontWeight: TYPOGRAPHY.scale.body.weight,
+                        letterSpacing: TYPOGRAPHY.scale.body.letterSpacing,
+                        lineHeight: TYPOGRAPHY.scale.body.lineHeight,
+                        ...TYPOGRAPHY.smoothing
+                      }}
+                    >
+                      {bullet}
+                    </motion.p>
+                  ))}
                 </motion.div>
               </AnimatePresence>
             </div>
           )}
 
-          {activeLens === 'consequences' && (
+          {activeSegment === 'impact' && (
             <div className="relative z-10">
-              <ConsequenceSelector consequences={CONSEQUENCES} active={selectedConsequence} onChange={setSelectedConsequence} />
+              <StakeholderSelector stakeholders={STAKEHOLDERS} active={selectedStakeholder} onChange={setSelectedStakeholder} />
               <AnimatePresence mode="wait">
                 <motion.div 
-                  key={selectedConsequence}
+                  key={selectedStakeholder}
                   initial={{ opacity: 0, scale: 0.98 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.98 }}
                   transition={{ duration: 0.2, ease: HORIZON_EASE }}
                   className="text-center max-w-2xl mx-auto"
                 >
-                  <p style={{ 
-                    color: 'rgba(255,255,255,0.88)', 
-                    fontSize: '17px',
-                    fontWeight: 400,
-                    lineHeight: 1.65,
+                  <h4 style={{ 
+                    color: 'rgba(255,255,255,0.98)',
+                    fontSize: TYPOGRAPHY.scale.heading2.size,
+                    fontWeight: TYPOGRAPHY.scale.heading2.weight,
+                    letterSpacing: TYPOGRAPHY.scale.heading2.letterSpacing,
+                    lineHeight: TYPOGRAPHY.scale.heading2.lineHeight,
+                    marginBottom: '20px',
                     ...TYPOGRAPHY.smoothing
                   }}>
-                    {CONSEQUENCES[selectedConsequence].insight}
+                    {STAKEHOLDERS[selectedStakeholder].label}
+                  </h4>
+                  <p style={{ 
+                    color: 'rgba(255,255,255,0.84)', 
+                    fontSize: TYPOGRAPHY.scale.body.size,
+                    fontWeight: TYPOGRAPHY.scale.body.weight,
+                    letterSpacing: TYPOGRAPHY.scale.body.letterSpacing,
+                    lineHeight: TYPOGRAPHY.scale.body.lineHeight,
+                    ...TYPOGRAPHY.smoothing
+                  }}>
+                    {STAKEHOLDERS[selectedStakeholder].description}
                   </p>
                 </motion.div>
               </AnimatePresence>
