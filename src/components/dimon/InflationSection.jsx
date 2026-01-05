@@ -255,7 +255,7 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
   const isConsumerPressure = cpiValue && pceValue && cpiValue > pceValue;
   
   return (
-    <div className="relative flex items-center justify-center" style={{ height: '240px' }}>
+    <div className="relative flex items-center justify-center" style={{ height: '240px', pointerEvents: 'none' }}>
       <motion.div
         onHoverStart={() => {
           setIsHovered(true);
@@ -266,7 +266,12 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
           onHover && onHover(false);
         }}
         className="relative"
-        style={{ width: '200px', height: '200px' }}
+        style={{ 
+          width: '200px', 
+          height: '200px',
+          pointerEvents: 'auto',
+          willChange: 'transform'
+        }}
       >
         {/* Breathing animation base */}
         <motion.div
