@@ -477,49 +477,104 @@ const InflationLensSwitcher = ({ lenses, active, onChange }) => (
 );
 
 // Component 6: InflationUnderstandingLens
-const InflationUnderstandingLens = () => (
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-    {[
-      { label: 'CPI', text: 'What households feel (rent, essentials)' },
-      { label: 'PCE', text: 'What policy watches (adaptive spending)' },
-      { label: 'Meaning', text: 'Policy responds to demand, not pain' }
-    ].map((item, i) => (
-      <motion.div 
-        key={item.label}
-        initial={{ opacity: 0, y: 10 }} 
-        animate={{ opacity: 1, y: 0 }} 
-        transition={{ delay: 0.1 + i * 0.05 }}
-      >
-        <div style={{ 
-          color: PALETTE.neutral.textDim,
-          ...TYPE.kpiLabel,
-          textTransform: 'uppercase',
-          marginBottom: '12px'
-        }}>
-          {item.label}
-        </div>
-        <p style={{ 
-          color: PALETTE.neutral.textBright, 
-          fontSize: '15px',
-          fontWeight: 400,
-          lineHeight: 1.6
-        }}>
-          {item.text}
-        </p>
-      </motion.div>
-    ))}
-  </div>
-);
+const InflationUnderstandingLens = () => {
+  const items = [
+    { 
+      label: 'CPI', 
+      text: 'Higher rent and essentials',
+      why: 'Because housing and services reset slowly.'
+    },
+    { 
+      label: 'PCE', 
+      text: 'Adaptive spending',
+      why: 'Because consumers substitute rather than stop spending.'
+    },
+    { 
+      label: 'Meaning', 
+      text: 'Policy responds to demand, not pain',
+      why: 'Because inflation is measured by behavior.'
+    }
+  ];
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+      {items.map((item, i) => {
+        const [isHovered, setIsHovered] = React.useState(false);
+        
+        return (
+          <motion.div 
+            key={item.label}
+            initial={{ opacity: 0, y: 10 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ delay: 0.1 + i * 0.05 }}
+            onHoverStart={() => setIsHovered(true)}
+            onHoverEnd={() => setIsHovered(false)}
+            style={{ cursor: 'default' }}
+          >
+            <div style={{ 
+              color: PALETTE.neutral.textDim,
+              ...TYPE.kpiLabel,
+              textTransform: 'uppercase',
+              marginBottom: '12px'
+            }}>
+              {item.label}
+            </div>
+            <p style={{ 
+              color: PALETTE.neutral.textBright, 
+              fontSize: '15px',
+              fontWeight: 400,
+              lineHeight: 1.6,
+              marginBottom: '8px'
+            }}>
+              {item.text}
+            </p>
+            <AnimatePresence>
+              {isHovered && (
+                <motion.p
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 0.7, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.2, ease: HORIZON_EASE }}
+                  style={{ 
+                    color: PALETTE.neutral.text,
+                    fontSize: '13px',
+                    fontWeight: 400,
+                    lineHeight: 1.6
+                  }}
+                >
+                  {item.why}
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+};
 
 // Component 7: InflationTimeLens
 const TIME_HORIZONS = {
-  now: { label: 'Now', text: 'Housing keeps inflation elevated.' },
-  quarterly: { label: '3–12 Months', text: 'Services inflation guides policy.' },
-  longer: { label: '12–36 Months', text: 'Inflation stays above target.' }
+  now: { 
+    label: 'Now', 
+    text: 'Housing keeps inflation elevated.',
+    why: 'Because rent resets lag rate hikes.'
+  },
+  next: { 
+    label: 'Next', 
+    text: 'Services inflation cools slowly.',
+    why: 'Because wages normalize after goods.'
+  },
+  later: { 
+    label: 'Later', 
+    text: 'Policy waits for confirmation.',
+    why: 'Because easing too early risks reversal.'
+  }
 };
 
 const InflationTimeLens = () => {
   const [selected, setSelected] = useState('now');
+  const [showWhy, setShowWhy] = useState(false);
 
   return (
     <div>
@@ -553,15 +608,37 @@ const InflationTimeLens = () => {
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.2, ease: HORIZON_EASE }}
           className="text-center max-w-2xl mx-auto"
+          onHoverStart={() => setShowWhy(true)}
+          onHoverEnd={() => setShowWhy(false)}
+          style={{ cursor: 'default' }}
         >
           <p style={{ 
             color: PALETTE.neutral.textBright, 
             fontSize: '17px',
             fontWeight: 400,
-            lineHeight: 1.65
+            lineHeight: 1.65,
+            marginBottom: '8px'
           }}>
             {TIME_HORIZONS[selected].text}
           </p>
+          <AnimatePresence>
+            {showWhy && (
+              <motion.p
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 0.7, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.2, ease: HORIZON_EASE }}
+                style={{ 
+                  color: PALETTE.neutral.text,
+                  fontSize: '14px',
+                  fontWeight: 400,
+                  lineHeight: 1.6
+                }}
+              >
+                {TIME_HORIZONS[selected].why}
+              </motion.p>
+            )}
+          </AnimatePresence>
         </motion.div>
       </AnimatePresence>
     </div>
@@ -570,15 +647,36 @@ const InflationTimeLens = () => {
 
 // Component 8: InflationConsequencesLens
 const CONSEQUENCES = {
-  consumer: { label: 'Consumer', text: 'Living costs stay elevated even as growth slows.' },
-  worker: { label: 'Worker', text: 'Wage gains offset but do not erase pressure.' },
-  business: { label: 'Business', text: 'Pricing power weakens.' },
-  government: { label: 'Government', text: 'Policy flexibility shrinks.' },
-  investor: { label: 'Investor', text: 'Volatility tied to inflation surprises.' }
+  consumer: { 
+    label: 'Consumer', 
+    text: 'Living costs stay elevated as growth slows.',
+    why: 'Because incomes adjust slower than prices.'
+  },
+  worker: { 
+    label: 'Worker', 
+    text: 'Wage gains help but don't restore purchasing power.',
+    why: 'Because inflation erodes gains before they compound.'
+  },
+  business: { 
+    label: 'Business', 
+    text: 'Pricing power weakens.',
+    why: 'Because demand softens while costs remain high.'
+  },
+  government: { 
+    label: 'Government', 
+    text: 'Policy flexibility shrinks.',
+    why: 'Because easing risks reigniting inflation.'
+  },
+  investor: { 
+    label: 'Investor', 
+    text: 'Valuations stay compressed longer.',
+    why: 'Because discount rates stabilize, not fall.'
+  }
 };
 
 const InflationConsequencesLens = () => {
   const [selected, setSelected] = useState('consumer');
+  const [showWhy, setShowWhy] = useState(false);
 
   return (
     <div>
@@ -613,15 +711,37 @@ const InflationConsequencesLens = () => {
           exit={{ opacity: 0, scale: 0.98 }}
           transition={{ duration: 0.2, ease: HORIZON_EASE }}
           className="text-center max-w-2xl mx-auto"
+          onHoverStart={() => setShowWhy(true)}
+          onHoverEnd={() => setShowWhy(false)}
+          style={{ cursor: 'default' }}
         >
           <p style={{ 
             color: PALETTE.neutral.textBright, 
             fontSize: '17px',
             fontWeight: 400,
-            lineHeight: 1.65
+            lineHeight: 1.65,
+            marginBottom: '8px'
           }}>
             {CONSEQUENCES[selected].text}
           </p>
+          <AnimatePresence>
+            {showWhy && (
+              <motion.p
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 0.7, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.2, ease: HORIZON_EASE }}
+                style={{ 
+                  color: PALETTE.neutral.text,
+                  fontSize: '14px',
+                  fontWeight: 400,
+                  lineHeight: 1.6
+                }}
+              >
+                {CONSEQUENCES[selected].why}
+              </p>
+            )}
+          </AnimatePresence>
         </motion.div>
       </AnimatePresence>
     </div>
