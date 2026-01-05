@@ -739,7 +739,7 @@ const InflationConsequencesLens = () => {
                 }}
               >
                 {CONSEQUENCES[selected].why}
-              </p>
+              </motion.p>
             )}
           </AnimatePresence>
         </motion.div>
