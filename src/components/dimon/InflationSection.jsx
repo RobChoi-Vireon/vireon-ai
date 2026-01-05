@@ -1,8 +1,58 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, Minus, ChevronRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
+
+const HORIZONS = {
+  now: {
+    label: 'Now',
+    bullets: [
+      "Fed maintains current stance, watching labor market closely for signs of weakening.",
+      "Markets price in potential rate cuts if inflation continues to moderate.",
+      "Corporate earnings calls emphasize cost pressures and pricing power."
+    ]
+  },
+  quarterly: {
+    label: '3–12 Months',
+    bullets: [
+      "Housing costs begin to cool as lagged shelter components catch up to market reality.",
+      "Services inflation becomes the primary determinant of policy direction.",
+      "Currency markets adjust to shifting rate differential expectations."
+    ]
+  },
+  longer: {
+    label: '12–36 Months',
+    bullets: [
+      "Structural factors like deglobalization and labor market tightness anchor inflation above pre-pandemic levels.",
+      "Central banks recalibrate long-term neutral rate assumptions.",
+      "Asset allocation shifts toward inflation-protected securities gain momentum."
+    ]
+  }
+};
+
+const STAKEHOLDERS = {
+  consumers: {
+    label: 'Consumers',
+    description: 'Purchasing power erodes when wage growth lags inflation. Essentials like food and shelter consume a larger share of household budgets.'
+  },
+  workers: {
+    label: 'Workers',
+    description: 'Real wage growth determines living standards. Tight labor markets give workers leverage to demand raises that match or exceed inflation.'
+  },
+  businesses: {
+    label: 'Businesses',
+    description: 'Margin compression when input costs rise faster than pricing power allows. Small businesses face disproportionate pressure from higher borrowing costs.'
+  },
+  government: {
+    label: 'Government',
+    description: 'Social Security and federal benefits adjust to CPI, creating fiscal pressures. Higher interest payments on national debt compound budget challenges.'
+  },
+  investors: {
+    label: 'Investors',
+    description: 'Fixed-income returns lose real value. Equities face multiple compression as discount rates rise. Inflation-linked assets and commodities become portfolio anchors.'
+  }
+};
 
 const StatePillColors = {
   "Cooling": { bg: "rgba(88, 227, 164, 0.12)", border: "rgba(88, 227, 164, 0.24)", text: "#58E3A4" },
@@ -81,82 +131,100 @@ const ImplicationPill = ({ label, direction, note }) => {
   );
 };
 
-const HorizonCard = ({ title, bullets, delay = 0 }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.6, ease: HORIZON_EASE, delay }}
-    whileHover={{ y: -3, transition: { duration: 0.35, ease: HORIZON_EASE } }}
-    className="relative rounded-2xl overflow-hidden"
-    style={{
-      padding: '28px',
-      background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.052) 0%, rgba(255, 255, 255, 0.032) 100%)',
-      backdropFilter: 'blur(48px) saturate(175%)',
-      WebkitBackdropFilter: 'blur(48px) saturate(175%)',
-      border: '1px solid rgba(255,255,255,0.10)',
-      boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.10), 0 8px 32px rgba(0,0,0,0.12)'
-    }}
-  >
-    <div style={{
-      position: 'absolute',
-      top: 0,
-      left: '15%',
-      right: '15%',
-      height: '1.5px',
-      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
-      pointerEvents: 'none'
-    }} />
-    
-    <h4 className="text-base font-bold mb-4" style={{ color: 'rgba(255,255,255,0.95)', letterSpacing: '-0.01em' }}>
-      {title}
-    </h4>
-    <div className="space-y-2.5">
-      {bullets.map((bullet, idx) => (
-        <p key={idx} className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>
-          {bullet}
-        </p>
-      ))}
-    </div>
-  </motion.div>
+const SegmentedControl = ({ segments, active, onChange }) => (
+  <div className="flex items-center justify-center gap-2 p-2 rounded-2xl" style={{
+    background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
+    backdropFilter: 'blur(36px) saturate(170%)',
+    WebkitBackdropFilter: 'blur(36px) saturate(170%)',
+    border: '1px solid rgba(255,255,255,0.08)',
+    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)'
+  }}>
+    {segments.map(segment => (
+      <button
+        key={segment.id}
+        onClick={() => onChange(segment.id)}
+        className="relative px-6 py-2.5 rounded-xl transition-all duration-200"
+        style={{
+          background: active === segment.id 
+            ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.08) 100%)'
+            : 'transparent',
+          color: active === segment.id ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.60)',
+          fontWeight: active === segment.id ? 600 : 500,
+          fontSize: '14px',
+          boxShadow: active === segment.id ? 'inset 0 1px 0 rgba(255,255,255,0.12), 0 2px 8px rgba(0,0,0,0.08)' : 'none'
+        }}
+      >
+        {segment.label}
+      </button>
+    ))}
+  </div>
 );
 
-const ImpactCard = ({ label, description }) => (
-  <motion.div
-    whileHover={{ scale: 1.015, y: -2, transition: { duration: 0.35, ease: HORIZON_EASE } }}
-    className="relative rounded-xl overflow-hidden"
-    style={{
-      padding: '20px 24px',
-      background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.028) 100%)',
-      backdropFilter: 'blur(40px) saturate(170%)',
-      WebkitBackdropFilter: 'blur(40px) saturate(170%)',
-      border: '1px solid rgba(255,255,255,0.09)',
-      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.09), 0 4px 16px rgba(0,0,0,0.10)'
-    }}
-  >
-    <div style={{
-      position: 'absolute',
-      top: 0,
-      left: '12%',
-      right: '12%',
-      height: '1px',
-      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-      pointerEvents: 'none'
-    }} />
-    
-    <h4 className="text-sm font-bold mb-2" style={{ color: 'rgba(255,255,255,0.92)', letterSpacing: '0.01em' }}>
-      {label}
-    </h4>
-    <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.70)' }}>
-      {description}
-    </p>
-  </motion.div>
+const TimelineSelector = ({ horizons, active, onChange }) => (
+  <div className="flex items-center justify-center gap-4 mb-6">
+    {Object.entries(horizons).map(([key, horizon]) => (
+      <button
+        key={key}
+        onClick={() => onChange(key)}
+        className="relative px-5 py-2 rounded-xl transition-all duration-200"
+        style={{
+          background: active === key 
+            ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.06) 100%)'
+            : 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
+          backdropFilter: 'blur(32px) saturate(165%)',
+          WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+          border: `1px solid ${active === key ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.08)'}`,
+          color: active === key ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.65)',
+          fontWeight: active === key ? 600 : 500,
+          fontSize: '14px'
+        }}
+      >
+        {horizon.label}
+      </button>
+    ))}
+  </div>
+);
+
+const StakeholderSelector = ({ stakeholders, active, onChange }) => (
+  <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
+    {Object.entries(stakeholders).map(([key, stakeholder]) => (
+      <button
+        key={key}
+        onClick={() => onChange(key)}
+        className="relative px-5 py-2 rounded-xl transition-all duration-200"
+        style={{
+          background: active === key 
+            ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.06) 100%)'
+            : 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
+          backdropFilter: 'blur(32px) saturate(165%)',
+          WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+          border: `1px solid ${active === key ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.08)'}`,
+          color: active === key ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.65)',
+          fontWeight: active === key ? 600 : 500,
+          fontSize: '14px'
+        }}
+      >
+        {stakeholder.label}
+      </button>
+    ))}
+  </div>
 );
 
 export default function InflationSection({ data }) {
+  const [activeSegment, setActiveSegment] = useState('overview');
+  const [selectedHorizon, setSelectedHorizon] = useState('now');
+  const [selectedStakeholder, setSelectedStakeholder] = useState('consumers');
+
   if (!data) return null;
 
   const stateColors = StatePillColors[data.state_tag] || StatePillColors.Mixed;
   const policyColors = PolicyBiasColors[data.policy_bias] || PolicyBiasColors.Neutral;
+
+  const segments = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'timeline', label: 'Timeline' },
+    { id: 'impact', label: 'Impact' }
+  ];
 
   return (
     <div className="space-y-6">
@@ -192,113 +260,57 @@ export default function InflationSection({ data }) {
         />
       </div>
 
-      {data.last_updated && (
-        <div className="text-xs pl-2" style={{ color: 'rgba(255,255,255,0.40)' }}>
-          Last updated: {data.last_updated}
-        </div>
-      )}
+      {/* Gap Visual & Insight */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: HORIZON_EASE }}
+        className="relative rounded-2xl overflow-hidden"
+        style={{
+          padding: '24px 28px',
+          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.052) 0%, rgba(255, 255, 255, 0.032) 100%)',
+          backdropFilter: 'blur(48px) saturate(175%)',
+          WebkitBackdropFilter: 'blur(48px) saturate(175%)',
+          border: '1px solid rgba(255,255,255,0.10)',
+          boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.10), 0 6px 24px rgba(0,0,0,0.12)'
+        }}
+      >
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '15%',
+          right: '15%',
+          height: '1.5px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+          pointerEvents: 'none'
+        }} />
 
-      {/* 2) Compare + 3) Meaning */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        {/* Compare Card */}
-        <div className="lg:col-span-5">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: HORIZON_EASE }}
-            className="relative rounded-2xl overflow-hidden h-full"
-            style={{
-              padding: '24px',
-              background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
-              backdropFilter: 'blur(32px) saturate(165%)',
-              WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.08)'
-            }}
-          >
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: '15%',
-              right: '15%',
-              height: '1.5px',
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-              pointerEvents: 'none'
-            }} />
-
-            <div className="flex items-center gap-3 mb-4">
-              <div 
-                className="text-xs font-bold px-3 py-1.5 rounded-full"
-                style={{
-                  background: stateColors.bg,
-                  border: `1px solid ${stateColors.border}`,
-                  color: stateColors.text
-                }}
-              >
-                {data.state_tag}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div 
+              className="text-xs font-bold px-3 py-1.5 rounded-full"
+              style={{
+                background: stateColors.bg,
+                border: `1px solid ${stateColors.border}`,
+                color: stateColors.text
+              }}
+            >
+              {data.state_tag}
+            </div>
+            {data.last_updated && (
+              <div className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                {data.last_updated}
               </div>
-            </div>
-
-            <h3 className="text-lg font-bold mb-4" style={{ color: 'rgba(255,255,255,0.96)' }}>
-              Compare
-            </h3>
-
-            <div className="space-y-3">
-              <p className="text-[17px] font-semibold leading-snug" style={{ color: 'rgba(255,255,255,0.92)', letterSpacing: '-0.01em' }}>
-                {data.comparison_headline || "CPI and PCE tracking closely"}
-              </p>
-              <p className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.68)', lineHeight: '1.6' }}>
-                {data.comparison_detail || "Both measures showing similar trends across major categories."}
-              </p>
-            </div>
-          </motion.div>
+            )}
+          </div>
         </div>
 
-        {/* Meaning Card */}
-        <div className="lg:col-span-7">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: HORIZON_EASE, delay: 0.1 }}
-            className="relative rounded-2xl overflow-hidden h-full"
-            style={{
-              padding: '24px',
-              background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
-              backdropFilter: 'blur(32px) saturate(165%)',
-              WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.08)'
-            }}
-          >
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: '15%',
-              right: '15%',
-              height: '1.5px',
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-              pointerEvents: 'none'
-            }} />
+        <p className="text-[17px] font-medium leading-relaxed" style={{ color: 'rgba(255,255,255,0.88)', lineHeight: '1.6' }}>
+          {data.comparison_headline || "Inflation remains sticky as housing keeps CPI elevated while services soften in PCE."}
+        </p>
+      </motion.div>
 
-            <h3 className="text-lg font-bold mb-5" style={{ color: 'rgba(255,255,255,0.96)' }}>
-              Meaning
-            </h3>
-
-            <div className="space-y-4">
-              {(data.interpretation_bullets || []).map((bullet, idx) => (
-                <div key={idx} className="flex items-start gap-3">
-                  <ChevronRight className="w-4 h-4 flex-shrink-0 mt-1" style={{ color: 'rgba(255,255,255,0.45)' }} />
-                  <p className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.80)', lineHeight: '1.65' }}>
-                    {bullet}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* 4) Implications: Horizontal Pill Strip */}
+      {/* Implications Strip */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -351,156 +363,106 @@ export default function InflationSection({ data }) {
         </div>
       </motion.div>
 
-      {/* What This Measures */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: HORIZON_EASE, delay: 0.3 }}
-        className="relative rounded-2xl overflow-hidden"
-        style={{
-          padding: '32px',
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.052) 0%, rgba(255, 255, 255, 0.032) 100%)',
-          backdropFilter: 'blur(48px) saturate(175%)',
-          WebkitBackdropFilter: 'blur(48px) saturate(175%)',
-          border: '1px solid rgba(255,255,255,0.10)',
-          boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.10), 0 8px 32px rgba(0,0,0,0.12)'
-        }}
-      >
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: '15%',
-          right: '15%',
-          height: '1.5px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
-          pointerEvents: 'none'
-        }} />
-
-        <h3 className="text-xl font-bold mb-6" style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.02em' }}>
-          What This Measures
-        </h3>
-
-        <div className="space-y-5">
-          <div>
-            <h4 className="text-base font-bold mb-2" style={{ color: 'rgba(255,255,255,0.90)' }}>
-              CPI (Consumer Price Index)
-            </h4>
-            <p className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.72)', lineHeight: '1.65' }}>
-              Tracks the price of a fixed basket of goods and services households buy. Emphasizes shelter costs heavily, which tend to lag real-time market changes.
-            </p>
-          </div>
-
-          <div>
-            <h4 className="text-base font-bold mb-2" style={{ color: 'rgba(255,255,255,0.90)' }}>
-              PCE (Personal Consumption Expenditures)
-            </h4>
-            <p className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.72)', lineHeight: '1.65' }}>
-              Measures actual spending patterns that shift as prices change. The Fed's preferred gauge because it adapts to how people substitute goods when prices rise.
-            </p>
-          </div>
-
-          <div>
-            <h4 className="text-base font-bold mb-2" style={{ color: 'rgba(255,255,255,0.90)' }}>
-              Why Divergence Matters
-            </h4>
-            <p className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.72)', lineHeight: '1.65' }}>
-              When CPI runs above PCE, it often signals housing cost pressure. When PCE runs hotter, broader consumption inflation is accelerating. The gap shapes policy decisions and market expectations.
-            </p>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* What Happens Next */}
-      <div className="space-y-3">
-        <div className="pl-2 mb-4">
-          <h3 className="text-xl font-bold" style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.02em' }}>
-            What Happens Next
-          </h3>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          <HorizonCard 
-            title="Now (0–3 months)"
-            delay={0.35}
-            bullets={[
-              "Fed maintains current stance, watching labor market closely for signs of weakening.",
-              "Markets price in potential rate cuts if inflation continues to moderate.",
-              "Corporate earnings calls emphasize cost pressures and pricing power."
-            ]}
-          />
-          <HorizonCard 
-            title="Quarterly (3–12 months)"
-            delay={0.4}
-            bullets={[
-              "Housing costs begin to cool as lagged shelter components catch up to market reality.",
-              "Services inflation becomes the primary determinant of policy direction.",
-              "Currency markets adjust to shifting rate differential expectations."
-            ]}
-          />
-          <HorizonCard 
-            title="Longer Term (12–36 months)"
-            delay={0.45}
-            bullets={[
-              "Structural factors like deglobalization and labor market tightness anchor inflation above pre-pandemic levels.",
-              "Central banks recalibrate long-term neutral rate assumptions.",
-              "Asset allocation shifts toward inflation-protected securities gain momentum."
-            ]}
-          />
-        </div>
+      {/* Segmented Control */}
+      <div className="flex justify-center my-6">
+        <SegmentedControl segments={segments} active={activeSegment} onChange={setActiveSegment} />
       </div>
 
-      {/* Who This Affects */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: HORIZON_EASE, delay: 0.5 }}
-        className="relative rounded-2xl overflow-hidden"
-        style={{
-          padding: '32px',
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.052) 0%, rgba(255, 255, 255, 0.032) 100%)',
-          backdropFilter: 'blur(48px) saturate(175%)',
-          WebkitBackdropFilter: 'blur(48px) saturate(175%)',
-          border: '1px solid rgba(255,255,255,0.10)',
-          boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.10), 0 8px 32px rgba(0,0,0,0.12)'
-        }}
-      >
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: '15%',
-          right: '15%',
-          height: '1.5px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
-          pointerEvents: 'none'
-        }} />
+      {/* Depth Panel */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeSegment}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.15, ease: HORIZON_EASE }}
+          className="relative rounded-2xl overflow-hidden"
+          style={{
+            padding: '32px',
+            background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.052) 0%, rgba(255, 255, 255, 0.032) 100%)',
+            backdropFilter: 'blur(48px) saturate(175%)',
+            WebkitBackdropFilter: 'blur(48px) saturate(175%)',
+            border: '1px solid rgba(255,255,255,0.10)',
+            boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.10), 0 8px 32px rgba(0,0,0,0.12)',
+            minHeight: '280px'
+          }}
+        >
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: '15%',
+            right: '15%',
+            height: '1.5px',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+            pointerEvents: 'none'
+          }} />
 
-        <h3 className="text-xl font-bold mb-6" style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.02em' }}>
-          Who This Affects
-        </h3>
+          {activeSegment === 'overview' && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="space-y-4">
+                <div>
+                  <h4 className="text-base font-bold mb-2" style={{ color: 'rgba(255,255,255,0.92)' }}>
+                    CPI
+                  </h4>
+                  <p className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)', lineHeight: '1.65' }}>
+                    What households feel (rent, essentials)
+                  </p>
+                </div>
+                <div>
+                  <h4 className="text-base font-bold mb-2" style={{ color: 'rgba(255,255,255,0.92)' }}>
+                    PCE
+                  </h4>
+                  <p className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)', lineHeight: '1.65' }}>
+                    What policy watches (adaptive spending)
+                  </p>
+                </div>
+              </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <ImpactCard 
-            label="Consumers"
-            description="Purchasing power erodes when wage growth lags inflation. Essentials like food and shelter consume a larger share of household budgets."
-          />
-          <ImpactCard 
-            label="Workers"
-            description="Real wage growth determines living standards. Tight labor markets give workers leverage to demand raises that match or exceed inflation."
-          />
-          <ImpactCard 
-            label="Businesses"
-            description="Margin compression when input costs rise faster than pricing power allows. Small businesses face disproportionate pressure from higher borrowing costs."
-          />
-          <ImpactCard 
-            label="Government"
-            description="Social Security and federal benefits adjust to CPI, creating fiscal pressures. Higher interest payments on national debt compound budget challenges."
-          />
-          <ImpactCard 
-            label="Investors"
-            description="Fixed-income returns lose real value. Equities face multiple compression as discount rates rise. Inflation-linked assets and commodities become portfolio anchors."
-          />
-        </div>
-      </motion.div>
+              <div className="space-y-3">
+                <h4 className="text-base font-bold mb-3" style={{ color: 'rgba(255,255,255,0.92)' }}>
+                  Why the gap matters
+                </h4>
+                <p className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)', lineHeight: '1.65' }}>
+                  CPI above PCE → consumer pressure
+                </p>
+                <p className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)', lineHeight: '1.65' }}>
+                  PCE above CPI → broad demand inflation
+                </p>
+                <p className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)', lineHeight: '1.65' }}>
+                  Gap informs Fed policy bias
+                </p>
+              </div>
+            </div>
+          )}
+
+          {activeSegment === 'timeline' && (
+            <div>
+              <TimelineSelector horizons={HORIZONS} active={selectedHorizon} onChange={setSelectedHorizon} />
+              <div className="space-y-3">
+                {HORIZONS[selectedHorizon].bullets.map((bullet, idx) => (
+                  <p key={idx} className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.78)', lineHeight: '1.65' }}>
+                    {bullet}
+                  </p>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeSegment === 'impact' && (
+            <div>
+              <StakeholderSelector stakeholders={STAKEHOLDERS} active={selectedStakeholder} onChange={setSelectedStakeholder} />
+              <div className="text-center max-w-2xl mx-auto">
+                <h4 className="text-base font-bold mb-3" style={{ color: 'rgba(255,255,255,0.92)' }}>
+                  {STAKEHOLDERS[selectedStakeholder].label}
+                </h4>
+                <p className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.78)', lineHeight: '1.7' }}>
+                  {STAKEHOLDERS[selectedStakeholder].description}
+                </p>
+              </div>
+            </div>
+          )}
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }
