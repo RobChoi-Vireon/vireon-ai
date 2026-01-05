@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, ChevronRight } from 'lucide-react';
-import InflationGapVisual from './InflationGapVisual';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
 
@@ -198,13 +197,6 @@ export default function InflationSection({ data }) {
           Last updated: {data.last_updated}
         </div>
       )}
-
-      {/* Visual: CPI-PCE Gap */}
-      <InflationGapVisual 
-        cpi={data.cpi_core_yoy} 
-        pce={data.pce_core_yoy}
-        insight="Core CPI running 1.0pp above Core PCE—housing costs create the wedge"
-      />
 
       {/* 2) Compare + 3) Meaning */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
