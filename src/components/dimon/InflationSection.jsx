@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, ChevronRight } from 'lucide-react';
+import InflationGapVisual from './InflationGapVisual';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
 
