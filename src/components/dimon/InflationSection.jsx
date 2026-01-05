@@ -27,9 +27,9 @@ const TYPOGRAPHY = {
 // Thermal color system
 const THERMAL = {
   warm: {
-    glow: 'rgba(255, 160, 90, 0.35)',
-    accent: 'rgba(255, 140, 70, 0.45)',
-    subtle: 'rgba(255, 150, 80, 0.18)'
+    glow: 'rgba(88, 227, 164, 0.35)',
+    accent: 'rgba(70, 220, 150, 0.45)',
+    subtle: 'rgba(80, 225, 155, 0.18)'
   },
   cool: {
     glow: 'rgba(100, 180, 255, 0.35)',
