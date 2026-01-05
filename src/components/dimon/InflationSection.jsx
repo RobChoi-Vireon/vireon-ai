@@ -39,6 +39,12 @@ const PALETTE = {
     credit: 'rgba(140, 150, 165, 0.70)',
     usd: 'rgba(110, 200, 220, 0.70)',
     risk: 'rgba(200, 170, 130, 0.70)'
+  },
+  teaching: {
+    policy: 'rgba(100, 160, 220, 0.55)',
+    easing: 'rgba(110, 200, 200, 0.55)',
+    friction: 'rgba(200, 180, 140, 0.55)',
+    confidence: 'rgba(120, 180, 220, 0.55)'
   }
 };
 
@@ -486,24 +492,33 @@ const InflationLensSwitcher = ({ lenses, active, onChange }) => (
 const InflationUnderstandingLens = () => {
   const items = [
     { 
-      label: 'CPI', 
-      text: 'Higher rent and essentials',
-      why: 'Because housing and services reset slowly.'
+      label: 'CPI',
+      arrow: '↗',
+      arrowColor: PALETTE.teaching.friction,
+      insight: 'Higher rent and essentials',
+      driver: 'Housing and services reset slowly',
+      impact: 'Living costs stay elevated for longer'
     },
     { 
-      label: 'PCE', 
-      text: 'Adaptive spending',
-      why: 'Because consumers substitute rather than stop spending.'
+      label: 'PCE',
+      arrow: '→',
+      arrowColor: PALETTE.teaching.easing,
+      insight: 'Adaptive spending',
+      driver: 'Consumers substitute rather than stop spending',
+      impact: 'Demand shifts but doesn\'t collapse'
     },
     { 
-      label: 'Meaning', 
-      text: 'Policy responds to demand, not pain',
-      why: 'Because inflation is measured by behavior.'
+      label: 'Meaning',
+      arrow: '↗',
+      arrowColor: PALETTE.teaching.policy,
+      insight: 'Policy responds to demand, not pain',
+      driver: 'Inflation is measured by behavior',
+      impact: 'Fed focuses on PCE trends'
     }
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
       {items.map((item, i) => (
         <motion.div 
           key={item.label}
@@ -511,15 +526,24 @@ const InflationUnderstandingLens = () => {
           animate={{ opacity: 1, y: 0 }} 
           transition={{ delay: 0.1 + i * 0.05 }}
         >
-          <div style={{ 
-            color: PALETTE.neutral.textDim,
-            ...TYPE.kpiLabel,
-            textTransform: 'uppercase',
-            marginBottom: '12px'
-          }}>
-            {item.label}
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <div style={{ 
+              color: PALETTE.neutral.textDim,
+              ...TYPE.kpiLabel,
+              textTransform: 'uppercase'
+            }}>
+              {item.label}
+            </div>
+            <span style={{ 
+              fontSize: '16px', 
+              color: item.arrowColor,
+              fontWeight: 500
+            }}>
+              {item.arrow}
+            </span>
           </div>
-          <div className="relative" style={{ paddingLeft: '8px', marginBottom: '10px' }}>
+          
+          <div className="relative" style={{ paddingLeft: '8px', marginBottom: '12px' }}>
             <div style={{
               position: 'absolute',
               left: 0,
@@ -534,18 +558,31 @@ const InflationUnderstandingLens = () => {
               fontSize: '15px',
               fontWeight: 400,
               lineHeight: 1.7,
-              letterSpacing: '-0.005em'
+              letterSpacing: '-0.005em',
+              marginBottom: '10px'
             }}>
-              {item.text}
+              {item.insight}
             </p>
           </div>
+          
           <p style={{ 
             color: PALETTE.neutral.textCausal,
             fontSize: '13px',
             fontWeight: 400,
-            lineHeight: 1.85
+            lineHeight: 1.75,
+            marginBottom: '8px'
           }}>
-            {item.why}
+            {item.driver}
+          </p>
+          
+          <p style={{ 
+            color: PALETTE.neutral.textDim,
+            fontSize: '12px',
+            fontWeight: 400,
+            lineHeight: 1.7,
+            opacity: 0.75
+          }}>
+            {item.impact}
           </p>
         </motion.div>
       ))}
@@ -556,25 +593,67 @@ const InflationUnderstandingLens = () => {
 // Component 7: InflationTimeLens
 const TIME_HORIZONS = {
   now: { 
-    label: 'Now', 
-    text: 'Housing keeps inflation elevated.',
-    why: 'Because rent and shelter reset slowly.'
+    label: 'Now',
+    arrow: '↗',
+    arrowColor: PALETTE.teaching.friction,
+    state: 'Housing keeps inflation elevated',
+    driver: 'Rent and shelter reset slowly',
+    sparkline: [2.8, 2.9, 3.1, 3.2, 3.4]
   },
   near: { 
-    label: 'Near Term (~3m)', 
-    text: 'Goods inflation fades further.',
-    why: 'Because supply chains normalize faster than services.'
+    label: 'Near Term (~3m)',
+    arrow: '↘',
+    arrowColor: PALETTE.teaching.easing,
+    state: 'Goods inflation fades further',
+    driver: 'Supply chains normalize faster than services',
+    sparkline: [3.4, 3.2, 3.0, 2.8, 2.6]
   },
   medium: { 
-    label: 'Medium Term (~6m)', 
-    text: 'Services inflation cools unevenly.',
-    why: 'Because wage pressure eases later.'
+    label: 'Medium Term (~6m)',
+    arrow: '→',
+    arrowColor: PALETTE.teaching.policy,
+    state: 'Services inflation cools unevenly',
+    driver: 'Wage pressure eases gradually',
+    sparkline: [2.6, 2.5, 2.5, 2.4, 2.3]
   },
   confirmation: { 
-    label: 'Confirmation (~12m)', 
-    text: 'Policy easing becomes possible, not assured.',
-    why: 'Because confidence matters more than speed.'
+    label: 'Confirmation (~12m)',
+    arrow: '↘',
+    arrowColor: PALETTE.teaching.confidence,
+    state: 'Policy easing becomes possible',
+    driver: 'Confidence matters more than speed',
+    sparkline: [2.3, 2.2, 2.1, 2.1, 2.0]
   }
+};
+
+const MicroSparkline = ({ data, color }) => {
+  if (!data || data.length < 2) return null;
+  
+  const max = Math.max(...data);
+  const min = Math.min(...data);
+  const range = max - min;
+  
+  const points = data.map((val, i) => ({
+    x: (i / (data.length - 1)) * 100,
+    y: range > 0 ? ((max - val) / range) * 100 : 50
+  }));
+  
+  const pathData = points.map((p, i) => 
+    `${i === 0 ? 'M' : 'L'} ${p.x},${p.y}`
+  ).join(' ');
+  
+  return (
+    <svg width="60" height="24" viewBox="0 0 100 100" style={{ opacity: 0.6 }}>
+      <path
+        d={pathData}
+        fill="none"
+        stroke={color}
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
 };
 
 const InflationTimeLens = () => {
@@ -582,7 +661,7 @@ const InflationTimeLens = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-center gap-4 mb-8">
+      <div className="flex items-center justify-center gap-4 mb-10">
         {Object.entries(TIME_HORIZONS).map(([key, horizon]) => (
           <button
             key={key}
@@ -613,6 +692,20 @@ const InflationTimeLens = () => {
           transition={{ duration: 0.35, ease: HORIZON_EASE }}
           className="text-center max-w-2xl mx-auto"
         >
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <span style={{ 
+              fontSize: '18px', 
+              color: TIME_HORIZONS[selected].arrowColor,
+              fontWeight: 500
+            }}>
+              {TIME_HORIZONS[selected].arrow}
+            </span>
+            <MicroSparkline 
+              data={TIME_HORIZONS[selected].sparkline} 
+              color={TIME_HORIZONS[selected].arrowColor}
+            />
+          </div>
+          
           <div className="relative" style={{ paddingLeft: '8px', marginBottom: '12px' }}>
             <div style={{
               position: 'absolute',
@@ -630,7 +723,7 @@ const InflationTimeLens = () => {
               lineHeight: 1.75,
               letterSpacing: '-0.005em'
             }}>
-              {TIME_HORIZONS[selected].text}
+              {TIME_HORIZONS[selected].state}
             </p>
           </div>
           <p style={{ 
@@ -639,7 +732,7 @@ const InflationTimeLens = () => {
             fontWeight: 400,
             lineHeight: 1.85
           }}>
-            {TIME_HORIZONS[selected].why}
+            {TIME_HORIZONS[selected].driver}
           </p>
         </motion.div>
       </AnimatePresence>
@@ -650,29 +743,44 @@ const InflationTimeLens = () => {
 // Component 8: InflationConsequencesLens
 const CONSEQUENCES = {
   consumer: { 
-    label: 'Consumer', 
-    text: 'Living costs stay elevated as growth slows.',
-    why: 'Because incomes adjust slower than prices.'
+    label: 'Consumer',
+    arrow: '↗',
+    arrowColor: PALETTE.teaching.friction,
+    outcome: 'Living costs stay elevated as growth slows',
+    mechanism: 'Incomes adjust slower than prices',
+    watch: 'Wage growth vs core CPI'
   },
   worker: { 
-    label: 'Worker', 
-    text: 'Wage gains help but don\'t restore purchasing power.',
-    why: 'Because inflation erodes gains before they compound.'
+    label: 'Worker',
+    arrow: '→',
+    arrowColor: PALETTE.teaching.policy,
+    outcome: 'Wage gains help but don\'t restore purchasing power',
+    mechanism: 'Inflation erodes gains before they compound',
+    watch: 'Real wage trends'
   },
   business: { 
-    label: 'Business', 
-    text: 'Pricing power weakens.',
-    why: 'Because demand softens while costs remain high.'
+    label: 'Business',
+    arrow: '↘',
+    arrowColor: PALETTE.teaching.easing,
+    outcome: 'Pricing power weakens',
+    mechanism: 'Demand softens while costs remain high',
+    watch: 'Margin compression signals'
   },
   government: { 
-    label: 'Government', 
-    text: 'Policy flexibility shrinks.',
-    why: 'Because easing risks reigniting inflation.'
+    label: 'Government',
+    arrow: '→',
+    arrowColor: PALETTE.teaching.friction,
+    outcome: 'Policy flexibility shrinks',
+    mechanism: 'Easing risks reigniting inflation',
+    watch: 'Fed forward guidance shifts'
   },
   investor: { 
-    label: 'Investor', 
-    text: 'Valuations stay compressed longer.',
-    why: 'Because discount rates stabilize, not fall.'
+    label: 'Investor',
+    arrow: '→',
+    arrowColor: PALETTE.teaching.confidence,
+    outcome: 'Valuations stay compressed longer',
+    mechanism: 'Discount rates stabilize, not fall',
+    watch: 'Long-term yield expectations'
   }
 };
 
@@ -681,7 +789,7 @@ const InflationConsequencesLens = () => {
 
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
+      <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
         {Object.entries(CONSEQUENCES).map(([key, consequence]) => (
           <button
             key={key}
@@ -713,7 +821,17 @@ const InflationConsequencesLens = () => {
           transition={{ duration: 0.35, ease: HORIZON_EASE }}
           className="text-center max-w-2xl mx-auto"
         >
-          <div className="relative" style={{ paddingLeft: '8px', marginBottom: '12px' }}>
+          <div className="flex items-center justify-center gap-2 mb-6">
+            <span style={{ 
+              fontSize: '18px', 
+              color: CONSEQUENCES[selected].arrowColor,
+              fontWeight: 500
+            }}>
+              {CONSEQUENCES[selected].arrow}
+            </span>
+          </div>
+          
+          <div className="relative" style={{ paddingLeft: '8px', marginBottom: '14px' }}>
             <div style={{
               position: 'absolute',
               left: 0,
@@ -730,16 +848,28 @@ const InflationConsequencesLens = () => {
               lineHeight: 1.75,
               letterSpacing: '-0.005em'
             }}>
-              {CONSEQUENCES[selected].text}
+              {CONSEQUENCES[selected].outcome}
             </p>
           </div>
+          
           <p style={{ 
             color: PALETTE.neutral.textCausal,
             fontSize: '14px',
             fontWeight: 400,
-            lineHeight: 1.85
+            lineHeight: 1.75,
+            marginBottom: '10px'
           }}>
-            {CONSEQUENCES[selected].why}
+            {CONSEQUENCES[selected].mechanism}
+          </p>
+          
+          <p style={{ 
+            color: PALETTE.neutral.textDim,
+            fontSize: '12px',
+            fontWeight: 500,
+            lineHeight: 1.7,
+            opacity: 0.75
+          }}>
+            Watch: {CONSEQUENCES[selected].watch}
           </p>
         </motion.div>
       </AnimatePresence>
