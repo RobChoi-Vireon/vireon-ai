@@ -913,7 +913,30 @@ export default function InflationSection({ data }) {
 
           {activeLens === 'time' && (
             <div className="relative z-10">
-              <HorizonSelector horizons={TIME_HORIZONS} active={selectedHorizon} onChange={setSelectedHorizon} />
+              <div className="flex items-center justify-center gap-4 mb-6">
+                {Object.entries(TIME_HORIZONS).map(([key, horizon]) => (
+                  <button
+                    key={key}
+                    onClick={() => setSelectedHorizon(key)}
+                    className="relative px-5 py-2 rounded-xl transition-all duration-200"
+                    style={{
+                      background: selectedHorizon === key 
+                        ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.06) 100%)'
+                        : 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
+                      backdropFilter: 'blur(32px) saturate(165%)',
+                      WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+                      border: `1px solid ${selectedHorizon === key ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.08)'}`,
+                      color: selectedHorizon === key ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.65)',
+                      fontWeight: selectedHorizon === key ? 600 : 500,
+                      fontSize: '15px',
+                      letterSpacing: '-0.005em',
+                      ...TYPOGRAPHY.smoothing
+                    }}
+                  >
+                    {horizon.label}
+                  </button>
+                ))}
+              </div>
               <AnimatePresence mode="wait">
                 <motion.div 
                   key={selectedHorizon}
