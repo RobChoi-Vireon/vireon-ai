@@ -1,284 +1,359 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, Minus, ChevronRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
 
-const StatePillColors = {
-  "Cooling": { bg: "rgba(88, 227, 164, 0.12)", border: "rgba(88, 227, 164, 0.24)", text: "#58E3A4" },
-  "Sticky": { bg: "rgba(255, 180, 100, 0.12)", border: "rgba(255, 180, 100, 0.24)", text: "#FFB464" },
-  "Re-accelerating": { bg: "rgba(255, 106, 122, 0.12)", border: "rgba(255, 106, 122, 0.24)", text: "#FF6A7A" },
-  "Mixed": { bg: "rgba(168, 179, 199, 0.12)", border: "rgba(168, 179, 199, 0.24)", text: "#A8B3C7" }
+// Micro color system - extremely low saturation
+const SEMANTIC_COLORS = {
+  policy: 'rgba(110, 180, 255, 0.75)',
+  cooling: 'rgba(122, 237, 207, 0.70)',
+  sticky: 'rgba(255, 211, 122, 0.70)'
 };
 
-const PolicyBiasColors = {
-  "Dovish": { bg: "rgba(88, 227, 164, 0.12)", border: "rgba(88, 227, 164, 0.24)", text: "#58E3A4" },
-  "Neutral": { bg: "rgba(168, 179, 199, 0.12)", border: "rgba(168, 179, 199, 0.24)", text: "#A8B3C7" },
-  "Hawkish": { bg: "rgba(255, 106, 122, 0.12)", border: "rgba(255, 106, 122, 0.24)", text: "#FF6A7A" }
-};
-
-const KPIChip = ({ label, value, isCore = false }) => (
-  <motion.div
-    whileHover={{ scale: 1.02, y: -1 }}
-    className="relative flex flex-col items-center justify-center rounded-2xl overflow-hidden"
-    style={{
-      padding: '20px 24px',
-      background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
-      backdropFilter: 'blur(32px) saturate(165%)',
-      WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-      border: '1px solid rgba(255,255,255,0.08)',
-      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.08)',
-      minWidth: '140px'
-    }}
-  >
-    <div style={{
-      position: 'absolute',
-      top: 0,
-      left: '15%',
-      right: '15%',
-      height: '1px',
-      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
-      pointerEvents: 'none'
-    }} />
-    
-    <div className="text-xs font-medium mb-1" style={{ color: 'rgba(255,255,255,0.60)', letterSpacing: '0.02em' }}>
-      {label}
-    </div>
-    <div className="text-2xl font-bold tracking-tight" style={{ color: 'rgba(255,255,255,0.95)' }}>
-      {value ?? '—'}
-    </div>
-    {isCore && (
-      <div className="text-[10px] font-medium mt-0.5" style={{ color: 'rgba(255,255,255,0.40)' }}>
-        CORE
+const GAPIndicator = ({ gap }) => {
+  return (
+    <div className="flex flex-col items-center justify-center relative" style={{ height: '200px' }}>
+      {/* Concentric rings */}
+      <div className="absolute" style={{
+        width: '160px',
+        height: '160px',
+        borderRadius: '50%',
+        border: '1px solid rgba(255,255,255,0.06)',
+        filter: 'blur(0.5px)'
+      }} />
+      <div className="absolute" style={{
+        width: '120px',
+        height: '120px',
+        borderRadius: '50%',
+        border: '1px solid rgba(255,255,255,0.08)',
+        filter: 'blur(0.5px)'
+      }} />
+      <div className="absolute" style={{
+        width: '80px',
+        height: '80px',
+        borderRadius: '50%',
+        border: '1px solid rgba(255,255,255,0.10)',
+        filter: 'blur(0.5px)'
+      }} />
+      
+      {/* Center state */}
+      <div className="relative z-10 flex flex-col items-center">
+        <div className="text-4xl font-bold mb-2" style={{ color: 'rgba(255,255,255,0.95)' }}>
+          {gap}bp
+        </div>
+        <div className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.50)', letterSpacing: '0.05em' }}>
+          CPI - PCE GAP
+        </div>
       </div>
-    )}
-  </motion.div>
-);
+      
+      {/* Horizon bloom */}
+      <div className="absolute" style={{
+        width: '200px',
+        height: '200px',
+        background: 'radial-gradient(ellipse at center, rgba(110, 180, 255, 0.08) 0%, transparent 70%)',
+        filter: 'blur(20px)',
+        pointerEvents: 'none'
+      }} />
+    </div>
+  );
+};
 
-const ImplicationPill = ({ label, direction, note }) => {
-  const Icon = direction === 'up' ? TrendingUp : direction === 'down' ? TrendingDown : Minus;
-  const color = direction === 'up' ? '#58E3A4' : direction === 'down' ? '#FF6A7A' : '#A8B3C7';
+const LearningColumn = ({ title, primary, secondary }) => {
+  return (
+    <div className="space-y-3">
+      <h4 className="text-sm font-semibold mb-3" style={{ color: 'rgba(255,255,255,0.85)' }}>
+        {title}
+      </h4>
+      <div className="space-y-2">
+        <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.95)' }}>
+          {primary}
+        </p>
+        <p className="text-sm leading-relaxed" style={{ color: 'rgba(170,185,205,0.70)' }}>
+          {secondary}
+        </p>
+      </div>
+    </div>
+  );
+};
+
+const TimeHorizon = ({ label, lines, arcProgress }) => {
+  const arcLength = 100;
+  const dashOffset = arcLength - (arcLength * arcProgress);
   
   return (
+    <div className="relative">
+      {/* Segmented progress arc */}
+      <div className="absolute -top-6 left-1/2 transform -translate-x-1/2">
+        <svg width="60" height="30" viewBox="0 0 60 30" fill="none">
+          <path
+            d="M 10 25 Q 30 5, 50 25"
+            stroke={SEMANTIC_COLORS.policy}
+            strokeWidth="1.5"
+            strokeDasharray="4 2"
+            strokeDashoffset={dashOffset}
+            opacity="0.35"
+            fill="none"
+          />
+        </svg>
+      </div>
+      
+      <div className="space-y-2 pt-2">
+        <div className="text-xs font-semibold" style={{ color: SEMANTIC_COLORS.policy }}>
+          {label}
+        </div>
+        {lines.map((line, idx) => (
+          <p key={idx} className="text-sm leading-relaxed" style={{ 
+            color: 'rgba(255,255,255,0.85)'
+          }}>
+            {line}
+          </p>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const DownstreamCard = ({ outcome, mechanism, icon: Icon, tint }) => {
+  return (
     <motion.div
-      whileHover={{ scale: 1.02, y: -1 }}
-      className="relative flex items-center gap-2 rounded-xl overflow-hidden"
+      whileHover={{ y: -2, scale: 1.01 }}
+      className="relative rounded-2xl overflow-hidden"
       style={{
-        padding: '10px 16px',
-        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
+        padding: '20px',
+        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0%, rgba(255, 255, 255, 0.022) 100%)',
         backdropFilter: 'blur(28px) saturate(165%)',
         WebkitBackdropFilter: 'blur(28px) saturate(165%)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 2px 8px rgba(0,0,0,0.06)'
+        border: '1px solid rgba(255,255,255,0.07)',
+        boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 2px 12px rgba(0,0,0,0.08)'
       }}
     >
-      <Icon className="w-4 h-4 flex-shrink-0" style={{ color, strokeWidth: 2 }} />
-      <div className="flex flex-col">
-        <span className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.90)' }}>{label}</span>
-        {note && <span className="text-xs" style={{ color: 'rgba(255,255,255,0.50)' }}>{note}</span>}
+      <div className="flex items-center gap-3 mb-3">
+        {Icon && (
+          <div style={{ color: tint, opacity: 0.6 }}>
+            <Icon className="w-4 h-4" strokeWidth={2} />
+          </div>
+        )}
+        <h4 className="font-semibold text-sm" style={{ color: 'rgba(255,255,255,0.95)' }}>
+          {outcome}
+        </h4>
       </div>
+      <p className="text-sm leading-relaxed" style={{ color: 'rgba(170,185,205,0.75)' }}>
+        {mechanism}
+      </p>
     </motion.div>
   );
 };
 
 export default function InflationSection({ data }) {
+  const [activeTab, setActiveTab] = useState('meaning');
+  
   if (!data) return null;
 
-  const stateColors = StatePillColors[data.state_tag] || StatePillColors.Mixed;
-  const policyColors = PolicyBiasColors[data.policy_bias] || PolicyBiasColors.Neutral;
+  const gap = Math.abs(data.cpi_core_yoy - data.pce_core_yoy).toFixed(1);
 
   return (
-    <div className="space-y-6">
+    <div 
+      className="relative" 
+      style={{
+        background: 'linear-gradient(180deg, rgba(25,28,33,1) 0%, rgba(22,25,30,1) 100%)',
+        padding: '56px 32px 80px 32px',
+        borderRadius: '28px',
+        marginBottom: '48px'
+      }}
+    >
+      {/* Subtle vertical daylight gradient */}
+      <div className="absolute inset-0 pointer-events-none" style={{
+        background: 'linear-gradient(180deg, rgba(255,255,255,0.012) 0%, transparent 50%)',
+        borderRadius: '28px'
+      }} />
+      
       {/* Header */}
-      <div className="pl-2">
-        <h2 className="text-2xl font-bold mb-1" style={{ color: 'rgba(255,255,255,0.95)' }}>
+      <div className="text-center mb-12">
+        <h2 className="text-2xl font-bold mb-2" style={{ color: 'rgba(255,255,255,0.98)' }}>
           Inflation
         </h2>
-        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.60)' }}>
+        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>
           CPI • PCE
         </p>
       </div>
 
-      {/* 1) Snapshot: KPI Chips */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <KPIChip 
-          label="CPI YoY" 
-          value={data.cpi_headline_yoy ? `${data.cpi_headline_yoy}%` : null} 
-        />
-        <KPIChip 
-          label="Core CPI YoY" 
-          value={data.cpi_core_yoy ? `${data.cpi_core_yoy}%` : null}
-          isCore 
-        />
-        <KPIChip 
-          label="PCE YoY" 
-          value={data.pce_headline_yoy ? `${data.pce_headline_yoy}%` : null} 
-        />
-        <KPIChip 
-          label="Core PCE YoY" 
-          value={data.pce_core_yoy ? `${data.pce_core_yoy}%` : null}
-          isCore 
-        />
+      {/* GAP Visual Hero */}
+      <div className="flex justify-center mb-16">
+        <GAPIndicator gap={gap} />
       </div>
 
-      {data.last_updated && (
-        <div className="text-xs pl-2" style={{ color: 'rgba(255,255,255,0.40)' }}>
-          Last updated: {data.last_updated}
-        </div>
-      )}
-
-      {/* 2) Compare + 3) Meaning */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        {/* Compare Card */}
-        <div className="lg:col-span-5">
+      {/* KPI Strip - Softer */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+        {[
+          { label: 'CPI YoY', value: `${data.cpi_headline_yoy}%` },
+          { label: 'Core CPI', value: `${data.cpi_core_yoy}%` },
+          { label: 'PCE YoY', value: `${data.pce_headline_yoy}%` },
+          { label: 'Core PCE', value: `${data.pce_core_yoy}%` }
+        ].map((kpi, idx) => (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: HORIZON_EASE }}
-            className="relative rounded-2xl overflow-hidden h-full"
+            key={idx}
+            className="flex flex-col items-center justify-center rounded-xl"
             style={{
-              padding: '24px',
-              background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
-              backdropFilter: 'blur(32px) saturate(165%)',
-              WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.08)'
+              padding: '18px',
+              background: 'rgba(255,255,255,0.028)',
+              border: '1px solid rgba(255,255,255,0.06)',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
             }}
           >
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: '15%',
-              right: '15%',
-              height: '1.5px',
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-              pointerEvents: 'none'
-            }} />
-
-            <div className="flex items-center gap-3 mb-4">
-              <div 
-                className="text-xs font-bold px-3 py-1.5 rounded-full"
-                style={{
-                  background: stateColors.bg,
-                  border: `1px solid ${stateColors.border}`,
-                  color: stateColors.text
-                }}
-              >
-                {data.state_tag}
-              </div>
+            <div className="text-xs mb-1" style={{ color: 'rgba(255,255,255,0.50)' }}>
+              {kpi.label}
             </div>
-
-            <h3 className="text-lg font-bold mb-3" style={{ color: 'rgba(255,255,255,0.95)' }}>
-              Compare
-            </h3>
-
-            <div className="space-y-2">
-              <p className="text-base font-medium" style={{ color: 'rgba(255,255,255,0.85)' }}>
-                {data.comparison_headline || "CPI and PCE tracking closely"}
-              </p>
-              <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.60)' }}>
-                {data.comparison_detail || "Both measures showing similar trends across major categories."}
-              </p>
+            <div className="text-2xl font-bold" style={{ color: 'rgba(255,255,255,0.95)' }}>
+              {kpi.value}
             </div>
           </motion.div>
-        </div>
-
-        {/* Meaning Card */}
-        <div className="lg:col-span-7">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: HORIZON_EASE, delay: 0.1 }}
-            className="relative rounded-2xl overflow-hidden h-full"
-            style={{
-              padding: '24px',
-              background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
-              backdropFilter: 'blur(32px) saturate(165%)',
-              WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.08)'
-            }}
-          >
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: '15%',
-              right: '15%',
-              height: '1.5px',
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-              pointerEvents: 'none'
-            }} />
-
-            <h3 className="text-lg font-bold mb-4" style={{ color: 'rgba(255,255,255,0.95)' }}>
-              Meaning
-            </h3>
-
-            <div className="space-y-3">
-              {(data.interpretation_bullets || []).map((bullet, idx) => (
-                <div key={idx} className="flex items-start gap-3">
-                  <ChevronRight className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: 'rgba(255,255,255,0.40)' }} />
-                  <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>
-                    {bullet}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
+        ))}
       </div>
 
-      {/* 4) Implications: Horizontal Pill Strip */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: HORIZON_EASE, delay: 0.2 }}
-        className="relative rounded-2xl overflow-hidden"
-        style={{
-          padding: '24px',
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
-          backdropFilter: 'blur(32px) saturate(165%)',
-          WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.08)'
-        }}
-      >
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: '15%',
-          right: '15%',
-          height: '1.5px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-          pointerEvents: 'none'
-        }} />
-
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold" style={{ color: 'rgba(255,255,255,0.95)' }}>
-            Implications
-          </h3>
-          <div 
-            className="text-xs font-bold px-3 py-1.5 rounded-full"
+      {/* Section Navigation Tabs */}
+      <div className="flex justify-center gap-8 mb-10 border-b border-white/5 pb-4">
+        {[
+          { id: 'meaning', label: 'What This Means' },
+          { id: 'evolves', label: 'How This Evolves' },
+          { id: 'leads', label: 'What This Leads To' }
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className="text-sm font-medium transition-all"
             style={{
-              background: policyColors.bg,
-              border: `1px solid ${policyColors.border}`,
-              color: policyColors.text
+              color: activeTab === tab.id ? SEMANTIC_COLORS.policy : 'rgba(255,255,255,0.50)',
+              paddingBottom: '12px',
+              borderBottom: activeTab === tab.id ? `2px solid ${SEMANTIC_COLORS.policy}` : 'none'
             }}
           >
-            Policy: {data.policy_bias}
-          </div>
-        </div>
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
-        <div className="flex flex-wrap gap-3">
-          {(data.market_implications || []).map((implication, idx) => (
-            <ImplicationPill 
-              key={idx}
-              label={implication.label}
-              direction={implication.direction}
-              note={implication.note}
+      {/* Tab Content */}
+      <AnimatePresence mode="wait">
+        {activeTab === 'meaning' && (
+          <motion.div
+            key="meaning"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3, ease: HORIZON_EASE }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          >
+            <LearningColumn
+              title="CPI"
+              primary="Higher rent and essentials"
+              secondary="Because housing and services reset slowly."
             />
-          ))}
-        </div>
-      </motion.div>
+            <LearningColumn
+              title="PCE"
+              primary="Adaptive spending"
+              secondary="Because consumers substitute rather than stop spending."
+            />
+            <LearningColumn
+              title="Meaning"
+              primary="Policy responds to demand, not pain"
+              secondary="Because inflation is measured by behavior."
+            />
+          </motion.div>
+        )}
+
+        {activeTab === 'evolves' && (
+          <motion.div
+            key="evolves"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3, ease: HORIZON_EASE }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+          >
+            <TimeHorizon
+              label="Now"
+              lines={[
+                "Core inflation elevated",
+                "Services prices sticky"
+              ]}
+              arcProgress={0.25}
+            />
+            <TimeHorizon
+              label="Near Term (~3m)"
+              lines={[
+                "Housing costs normalize slowly",
+                "Fed holds restrictive stance"
+              ]}
+              arcProgress={0.45}
+            />
+            <TimeHorizon
+              label="Medium Term (~6m)"
+              lines={[
+                "Services inflation cools unevenly",
+                "Wage pressure eases gradually"
+              ]}
+              arcProgress={0.65}
+            />
+            <TimeHorizon
+              label="Confirmation (~12m)"
+              lines={[
+                "Sustained return toward 2%",
+                "Policy easing begins"
+              ]}
+              arcProgress={0.85}
+            />
+          </motion.div>
+        )}
+
+        {activeTab === 'leads' && (
+          <motion.div
+            key="leads"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3, ease: HORIZON_EASE }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+          >
+            <DownstreamCard
+              outcome="Rates — Higher for longer"
+              mechanism="Because services inflation constrains easing."
+              icon={TrendingUp}
+              tint={SEMANTIC_COLORS.sticky}
+            />
+            <DownstreamCard
+              outcome="Equities — Multiple compression"
+              mechanism="Because elevated discount rates persist."
+              icon={TrendingDown}
+              tint={SEMANTIC_COLORS.sticky}
+            />
+            <DownstreamCard
+              outcome="Credit — Spreads stable"
+              mechanism="Because growth holds while policy waits."
+              icon={Minus}
+              tint="rgba(255,255,255,0.45)"
+            />
+            <DownstreamCard
+              outcome="USD — Rate differential support"
+              mechanism="Because US rates stay elevated vs peers."
+              icon={TrendingUp}
+              tint={SEMANTIC_COLORS.policy}
+            />
+            <DownstreamCard
+              outcome="Risk — Policy uncertainty"
+              mechanism="Because inflation path remains unclear."
+              icon={Minus}
+              tint="rgba(255,255,255,0.45)"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Transition zone fade at bottom */}
+      <div className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none" style={{
+        background: 'linear-gradient(180deg, transparent 0%, rgba(16,18,22,0.6) 100%)',
+        borderRadius: '0 0 28px 28px'
+      }} />
     </div>
   );
 }
