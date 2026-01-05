@@ -67,43 +67,95 @@ const PolicyBiasColors = {
   "Hawkish": { bg: "rgba(255, 106, 122, 0.12)", border: "rgba(255, 106, 122, 0.24)", text: "#FF6A7A" }
 };
 
-const KPIChip = ({ label, value, isCore = false }) => (
-  <motion.div
-    whileHover={{ scale: 1.018, y: -2, transition: { duration: 0.35, ease: HORIZON_EASE } }}
-    className="relative flex flex-col items-center justify-center rounded-2xl overflow-hidden"
-    style={{
-      padding: '24px 28px',
-      background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.052) 0%, rgba(255, 255, 255, 0.032) 100%)',
-      backdropFilter: 'blur(48px) saturate(175%)',
-      WebkitBackdropFilter: 'blur(48px) saturate(175%)',
-      border: '1px solid rgba(255,255,255,0.10)',
-      boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.10), 0 6px 24px rgba(0,0,0,0.12)',
-      minWidth: '150px'
-    }}
-  >
-    <div style={{
-      position: 'absolute',
-      top: 0,
-      left: '15%',
-      right: '15%',
-      height: '1.5px',
-      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
-      pointerEvents: 'none'
-    }} />
-    
-    <div className="text-xs font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.65)', letterSpacing: '0.03em' }}>
-      {label}
-    </div>
-    <div className="text-3xl font-bold tracking-tight" style={{ color: 'rgba(255,255,255,0.98)' }}>
-      {value ?? '—'}
-    </div>
-    {isCore && (
-      <div className="text-[10px] font-bold mt-1" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.05em' }}>
-        CORE
+const KPIChip = ({ label, value, isCore = false }) => {
+  const [isHovered, setIsHovered] = React.useState(false);
+  
+  return (
+    <motion.div
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      whileHover={{ y: -4, transition: { duration: 0.4, ease: HORIZON_EASE } }}
+      className="relative flex flex-col items-center justify-center rounded-3xl overflow-hidden group"
+      style={{
+        padding: '28px 32px',
+        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.065) 0%, rgba(255, 255, 255, 0.038) 100%)',
+        backdropFilter: 'blur(64px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(64px) saturate(180%)',
+        border: '1px solid rgba(255,255,255,0.12)',
+        boxShadow: isHovered 
+          ? 'inset 0 2px 0 rgba(255,255,255,0.14), 0 12px 48px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.08)'
+          : 'inset 0 2px 0 rgba(255,255,255,0.12), 0 8px 32px rgba(0,0,0,0.14)',
+        minWidth: '160px',
+        transition: 'box-shadow 0.4s ease'
+      }}
+    >
+      {/* Specular Highlight */}
+      <motion.div 
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: '12%',
+          right: '12%',
+          height: '2px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.24), transparent)',
+          pointerEvents: 'none',
+          filter: 'blur(1px)'
+        }}
+        animate={{ opacity: isHovered ? 1 : 0.8 }}
+      />
+
+      {/* Ambient Glow */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: 'radial-gradient(ellipse at 50% 40%, rgba(255, 255, 255, 0.08) 0%, transparent 70%)',
+        pointerEvents: 'none',
+        opacity: isHovered ? 1 : 0.6,
+        transition: 'opacity 0.4s ease'
+      }} />
+      
+      <div className="text-[11px] font-bold tracking-wider mb-3" style={{ 
+        color: 'rgba(255,255,255,0.70)', 
+        letterSpacing: '0.08em',
+        textTransform: 'uppercase'
+      }}>
+        {label}
       </div>
-    )}
-  </motion.div>
-);
+      
+      <motion.div 
+        className="text-4xl font-bold tracking-tight relative"
+        style={{ color: 'rgba(255,255,255,1)' }}
+        animate={{ scale: isHovered ? 1.05 : 1 }}
+        transition={{ duration: 0.4, ease: HORIZON_EASE }}
+      >
+        {value ?? '—'}
+        <div style={{
+          position: 'absolute',
+          inset: '-8px',
+          background: isHovered ? 'radial-gradient(ellipse, rgba(110, 185, 255, 0.12) 0%, transparent 60%)' : 'none',
+          filter: 'blur(12px)',
+          pointerEvents: 'none',
+          transition: 'background 0.4s ease'
+        }} />
+      </motion.div>
+      
+      {isCore && (
+        <motion.div 
+          className="text-[9px] font-black mt-2 px-2 py-1 rounded-md"
+          style={{ 
+            color: 'rgba(255,255,255,0.55)', 
+            letterSpacing: '0.1em',
+            background: 'rgba(255,255,255,0.05)',
+            border: '1px solid rgba(255,255,255,0.08)'
+          }}
+          animate={{ opacity: isHovered ? 1 : 0.7 }}
+        >
+          CORE
+        </motion.div>
+      )}
+    </motion.div>
+  );
+};
 
 const ImplicationPill = ({ label, direction, note }) => {
   const Icon = direction === 'up' ? TrendingUp : direction === 'down' ? TrendingDown : Minus;
@@ -132,30 +184,68 @@ const ImplicationPill = ({ label, direction, note }) => {
 };
 
 const SegmentedControl = ({ segments, active, onChange }) => (
-  <div className="flex items-center justify-center gap-2 p-2 rounded-2xl" style={{
-    background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
-    backdropFilter: 'blur(36px) saturate(170%)',
-    WebkitBackdropFilter: 'blur(36px) saturate(170%)',
-    border: '1px solid rgba(255,255,255,0.08)',
-    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)'
+  <div className="relative flex items-center justify-center gap-1 p-1.5 rounded-[20px]" style={{
+    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.035) 100%)',
+    backdropFilter: 'blur(48px) saturate(175%)',
+    WebkitBackdropFilter: 'blur(48px) saturate(175%)',
+    border: '1px solid rgba(255,255,255,0.10)',
+    boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.10), 0 4px 20px rgba(0,0,0,0.10)'
   }}>
+    {/* Top Specular Rim */}
+    <div style={{
+      position: 'absolute',
+      top: 0,
+      left: '15%',
+      right: '15%',
+      height: '1.5px',
+      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+      pointerEvents: 'none',
+      filter: 'blur(0.5px)'
+    }} />
+
     {segments.map(segment => (
-      <button
+      <motion.button
         key={segment.id}
         onClick={() => onChange(segment.id)}
-        className="relative px-6 py-2.5 rounded-xl transition-all duration-200"
+        className="relative px-7 py-3 rounded-[16px] overflow-hidden"
+        whileHover={{ scale: active === segment.id ? 1 : 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        transition={{ duration: 0.2, ease: HORIZON_EASE }}
         style={{
           background: active === segment.id 
-            ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.08) 100%)'
+            ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.10) 100%)'
             : 'transparent',
-          color: active === segment.id ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.60)',
-          fontWeight: active === segment.id ? 600 : 500,
+          color: active === segment.id ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.65)',
+          fontWeight: active === segment.id ? 700 : 600,
           fontSize: '14px',
-          boxShadow: active === segment.id ? 'inset 0 1px 0 rgba(255,255,255,0.12), 0 2px 8px rgba(0,0,0,0.08)' : 'none'
+          letterSpacing: active === segment.id ? '-0.01em' : '0',
+          boxShadow: active === segment.id 
+            ? 'inset 0 1.5px 0 rgba(255,255,255,0.16), 0 3px 12px rgba(0,0,0,0.12), 0 0 0 1px rgba(255,255,255,0.08)' 
+            : 'none',
+          transition: 'all 0.3s ease'
         }}
       >
-        {segment.label}
-      </button>
+        {active === segment.id && (
+          <>
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: '12%',
+              right: '12%',
+              height: '1.5px',
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent)',
+              pointerEvents: 'none'
+            }} />
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'radial-gradient(ellipse at 50% 30%, rgba(110, 185, 255, 0.10) 0%, transparent 70%)',
+              pointerEvents: 'none'
+            }} />
+          </>
+        )}
+        <span className="relative z-10">{segment.label}</span>
+      </motion.button>
     ))}
   </div>
 );
@@ -229,11 +319,19 @@ export default function InflationSection({ data }) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="pl-2">
-        <h2 className="text-2xl font-bold mb-1" style={{ color: 'rgba(255,255,255,0.95)' }}>
+      <div className="pl-2 mb-2">
+        <h2 className="text-3xl font-bold mb-2" style={{ 
+          color: 'rgba(255,255,255,0.98)',
+          letterSpacing: '-0.03em',
+          fontWeight: 800
+        }}>
           Inflation
         </h2>
-        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.60)' }}>
+        <p className="text-[13px] font-medium" style={{ 
+          color: 'rgba(255,255,255,0.55)',
+          letterSpacing: '0.05em',
+          textTransform: 'uppercase'
+        }}>
           CPI • PCE
         </p>
       </div>
@@ -265,49 +363,73 @@ export default function InflationSection({ data }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: HORIZON_EASE }}
-        className="relative rounded-2xl overflow-hidden"
+        whileHover={{ y: -2 }}
+        className="relative rounded-3xl overflow-hidden group"
         style={{
-          padding: '24px 28px',
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.052) 0%, rgba(255, 255, 255, 0.032) 100%)',
-          backdropFilter: 'blur(48px) saturate(175%)',
-          WebkitBackdropFilter: 'blur(48px) saturate(175%)',
-          border: '1px solid rgba(255,255,255,0.10)',
-          boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.10), 0 6px 24px rgba(0,0,0,0.12)'
+          padding: '32px 36px',
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.065) 0%, rgba(255, 255, 255, 0.038) 100%)',
+          backdropFilter: 'blur(64px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(64px) saturate(180%)',
+          border: '1px solid rgba(255,255,255,0.12)',
+          boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.12), 0 8px 40px rgba(0,0,0,0.14)'
         }}
       >
+        {/* Specular Highlight */}
         <div style={{
           position: 'absolute',
           top: 0,
-          left: '15%',
-          right: '15%',
-          height: '1.5px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
-          pointerEvents: 'none'
+          left: '12%',
+          right: '12%',
+          height: '2px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.24), transparent)',
+          pointerEvents: 'none',
+          filter: 'blur(1px)'
         }} />
 
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div 
-              className="text-xs font-bold px-3 py-1.5 rounded-full"
-              style={{
-                background: stateColors.bg,
-                border: `1px solid ${stateColors.border}`,
-                color: stateColors.text
-              }}
-            >
-              {data.state_tag}
-            </div>
-            {data.last_updated && (
-              <div className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                {data.last_updated}
-              </div>
-            )}
-          </div>
-        </div>
+        {/* Ambient Glow */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'radial-gradient(ellipse at 50% 30%, rgba(255, 255, 255, 0.06) 0%, transparent 70%)',
+          pointerEvents: 'none',
+          opacity: 0.8
+        }} />
 
-        <p className="text-[17px] font-medium leading-relaxed" style={{ color: 'rgba(255,255,255,0.88)', lineHeight: '1.6' }}>
-          {data.comparison_headline || "Inflation remains sticky as housing keeps CPI elevated while services soften in PCE."}
-        </p>
+        <div className="relative z-10">
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-3">
+              <motion.div 
+                className="text-[10px] font-black tracking-wider px-3.5 py-2 rounded-xl"
+                whileHover={{ scale: 1.05 }}
+                style={{
+                  background: stateColors.bg,
+                  border: `1.5px solid ${stateColors.border}`,
+                  color: stateColors.text,
+                  letterSpacing: '0.08em',
+                  boxShadow: `0 0 20px ${stateColors.bg}`
+                }}
+              >
+                {data.state_tag}
+              </motion.div>
+              {data.last_updated && (
+                <div className="text-[11px] font-medium" style={{ 
+                  color: 'rgba(255,255,255,0.50)',
+                  letterSpacing: '0.02em'
+                }}>
+                  {data.last_updated}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <p className="text-[18px] font-semibold leading-relaxed" style={{ 
+            color: 'rgba(255,255,255,0.95)', 
+            lineHeight: '1.65',
+            letterSpacing: '-0.01em'
+          }}>
+            {data.comparison_headline || "Inflation remains sticky as housing keeps CPI elevated while services soften in PCE."}
+          </p>
+        </div>
       </motion.div>
 
       {/* Implications Strip */}
@@ -315,40 +437,47 @@ export default function InflationSection({ data }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: HORIZON_EASE, delay: 0.2 }}
-        className="relative rounded-2xl overflow-hidden"
+        className="relative rounded-3xl overflow-hidden"
         style={{
-          padding: '24px',
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
-          backdropFilter: 'blur(32px) saturate(165%)',
-          WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.08)'
+          padding: '28px 32px',
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.035) 100%)',
+          backdropFilter: 'blur(56px) saturate(175%)',
+          WebkitBackdropFilter: 'blur(56px) saturate(175%)',
+          border: '1px solid rgba(255,255,255,0.10)',
+          boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.10), 0 6px 32px rgba(0,0,0,0.12)'
         }}
       >
         <div style={{
           position: 'absolute',
           top: 0,
-          left: '15%',
-          right: '15%',
-          height: '1.5px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-          pointerEvents: 'none'
+          left: '12%',
+          right: '12%',
+          height: '2px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.20), transparent)',
+          pointerEvents: 'none',
+          filter: 'blur(0.5px)'
         }} />
 
-        <div className="flex items-center justify-between mb-5">
-          <h3 className="text-lg font-bold" style={{ color: 'rgba(255,255,255,0.96)' }}>
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-[19px] font-bold" style={{ 
+            color: 'rgba(255,255,255,0.98)',
+            letterSpacing: '-0.02em'
+          }}>
             Implications
           </h3>
-          <div 
-            className="text-xs font-bold px-3 py-1.5 rounded-full"
+          <motion.div 
+            className="text-[10px] font-black tracking-wider px-3.5 py-2 rounded-xl"
+            whileHover={{ scale: 1.05 }}
             style={{
               background: policyColors.bg,
-              border: `1px solid ${policyColors.border}`,
-              color: policyColors.text
+              border: `1.5px solid ${policyColors.border}`,
+              color: policyColors.text,
+              letterSpacing: '0.08em',
+              boxShadow: `0 0 16px ${policyColors.bg}`
             }}
           >
             Policy: {data.policy_bias}
-          </div>
+          </motion.div>
         </div>
 
         <div className="flex flex-wrap gap-3">
@@ -364,7 +493,7 @@ export default function InflationSection({ data }) {
       </motion.div>
 
       {/* Segmented Control */}
-      <div className="flex justify-center my-6">
+      <div className="flex justify-center my-8">
         <SegmentedControl segments={segments} active={activeSegment} onChange={setActiveSegment} />
       </div>
 
@@ -372,93 +501,174 @@ export default function InflationSection({ data }) {
       <AnimatePresence mode="wait">
         <motion.div
           key={activeSegment}
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.15, ease: HORIZON_EASE }}
-          className="relative rounded-2xl overflow-hidden"
+          exit={{ opacity: 0, y: -12 }}
+          transition={{ duration: 0.18, ease: HORIZON_EASE }}
+          className="relative rounded-3xl overflow-hidden"
           style={{
-            padding: '32px',
-            background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.052) 0%, rgba(255, 255, 255, 0.032) 100%)',
-            backdropFilter: 'blur(48px) saturate(175%)',
-            WebkitBackdropFilter: 'blur(48px) saturate(175%)',
-            border: '1px solid rgba(255,255,255,0.10)',
-            boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.10), 0 8px 32px rgba(0,0,0,0.12)',
-            minHeight: '280px'
+            padding: '40px',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.065) 0%, rgba(255, 255, 255, 0.038) 100%)',
+            backdropFilter: 'blur(64px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(64px) saturate(180%)',
+            border: '1px solid rgba(255,255,255,0.12)',
+            boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.12), 0 12px 48px rgba(0,0,0,0.16)',
+            minHeight: '320px'
           }}
         >
+          {/* Enhanced Specular */}
           <div style={{
             position: 'absolute',
             top: 0,
-            left: '15%',
-            right: '15%',
-            height: '1.5px',
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+            left: '12%',
+            right: '12%',
+            height: '2px',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.24), transparent)',
+            pointerEvents: 'none',
+            filter: 'blur(1px)'
+          }} />
+
+          {/* Ambient Atmosphere */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'radial-gradient(ellipse at 50% 35%, rgba(255, 255, 255, 0.06) 0%, transparent 70%)',
             pointerEvents: 'none'
           }} />
 
           {activeSegment === 'overview' && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div className="space-y-4">
-                <div>
-                  <h4 className="text-base font-bold mb-2" style={{ color: 'rgba(255,255,255,0.92)' }}>
+            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-10">
+              <div className="space-y-6">
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  <h4 className="text-[17px] font-bold mb-2.5" style={{ 
+                    color: 'rgba(255,255,255,0.96)',
+                    letterSpacing: '-0.01em'
+                  }}>
                     CPI
                   </h4>
-                  <p className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)', lineHeight: '1.65' }}>
+                  <p className="text-[16px] leading-relaxed" style={{ 
+                    color: 'rgba(255,255,255,0.78)', 
+                    lineHeight: '1.7'
+                  }}>
                     What households feel (rent, essentials)
                   </p>
-                </div>
-                <div>
-                  <h4 className="text-base font-bold mb-2" style={{ color: 'rgba(255,255,255,0.92)' }}>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.15 }}
+                >
+                  <h4 className="text-[17px] font-bold mb-2.5" style={{ 
+                    color: 'rgba(255,255,255,0.96)',
+                    letterSpacing: '-0.01em'
+                  }}>
                     PCE
                   </h4>
-                  <p className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)', lineHeight: '1.65' }}>
+                  <p className="text-[16px] leading-relaxed" style={{ 
+                    color: 'rgba(255,255,255,0.78)', 
+                    lineHeight: '1.7'
+                  }}>
                     What policy watches (adaptive spending)
                   </p>
-                </div>
+                </motion.div>
               </div>
 
-              <div className="space-y-3">
-                <h4 className="text-base font-bold mb-3" style={{ color: 'rgba(255,255,255,0.92)' }}>
+              <motion.div 
+                className="space-y-4"
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <h4 className="text-[17px] font-bold mb-4" style={{ 
+                  color: 'rgba(255,255,255,0.96)',
+                  letterSpacing: '-0.01em'
+                }}>
                   Why the gap matters
                 </h4>
-                <p className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)', lineHeight: '1.65' }}>
+                <p className="text-[16px] leading-relaxed" style={{ 
+                  color: 'rgba(255,255,255,0.78)', 
+                  lineHeight: '1.7'
+                }}>
                   CPI above PCE → consumer pressure
                 </p>
-                <p className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)', lineHeight: '1.65' }}>
+                <p className="text-[16px] leading-relaxed" style={{ 
+                  color: 'rgba(255,255,255,0.78)', 
+                  lineHeight: '1.7'
+                }}>
                   PCE above CPI → broad demand inflation
                 </p>
-                <p className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)', lineHeight: '1.65' }}>
+                <p className="text-[16px] leading-relaxed" style={{ 
+                  color: 'rgba(255,255,255,0.78)', 
+                  lineHeight: '1.7'
+                }}>
                   Gap informs Fed policy bias
                 </p>
-              </div>
+              </motion.div>
             </div>
           )}
 
           {activeSegment === 'timeline' && (
-            <div>
+            <div className="relative z-10">
               <TimelineSelector horizons={HORIZONS} active={selectedHorizon} onChange={setSelectedHorizon} />
-              <div className="space-y-3">
-                {HORIZONS[selectedHorizon].bullets.map((bullet, idx) => (
-                  <p key={idx} className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.78)', lineHeight: '1.65' }}>
-                    {bullet}
-                  </p>
-                ))}
-              </div>
+              <AnimatePresence mode="wait">
+                <motion.div 
+                  key={selectedHorizon}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.2, ease: HORIZON_EASE }}
+                  className="space-y-4"
+                >
+                  {HORIZONS[selectedHorizon].bullets.map((bullet, idx) => (
+                    <motion.p 
+                      key={idx} 
+                      initial={{ opacity: 0, x: -5 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.05 }}
+                      className="text-[16px] leading-relaxed" 
+                      style={{ 
+                        color: 'rgba(255,255,255,0.82)', 
+                        lineHeight: '1.75'
+                      }}
+                    >
+                      {bullet}
+                    </motion.p>
+                  ))}
+                </motion.div>
+              </AnimatePresence>
             </div>
           )}
 
           {activeSegment === 'impact' && (
-            <div>
+            <div className="relative z-10">
               <StakeholderSelector stakeholders={STAKEHOLDERS} active={selectedStakeholder} onChange={setSelectedStakeholder} />
-              <div className="text-center max-w-2xl mx-auto">
-                <h4 className="text-base font-bold mb-3" style={{ color: 'rgba(255,255,255,0.92)' }}>
-                  {STAKEHOLDERS[selectedStakeholder].label}
-                </h4>
-                <p className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.78)', lineHeight: '1.7' }}>
-                  {STAKEHOLDERS[selectedStakeholder].description}
-                </p>
-              </div>
+              <AnimatePresence mode="wait">
+                <motion.div 
+                  key={selectedStakeholder}
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 0.2, ease: HORIZON_EASE }}
+                  className="text-center max-w-2xl mx-auto"
+                >
+                  <h4 className="text-[18px] font-bold mb-4" style={{ 
+                    color: 'rgba(255,255,255,0.96)',
+                    letterSpacing: '-0.01em'
+                  }}>
+                    {STAKEHOLDERS[selectedStakeholder].label}
+                  </h4>
+                  <p className="text-[16px] leading-relaxed" style={{ 
+                    color: 'rgba(255,255,255,0.82)', 
+                    lineHeight: '1.75'
+                  }}>
+                    {STAKEHOLDERS[selectedStakeholder].description}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
             </div>
           )}
         </motion.div>
