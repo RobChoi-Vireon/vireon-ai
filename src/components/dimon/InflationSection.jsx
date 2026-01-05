@@ -498,57 +498,41 @@ const InflationUnderstandingLens = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-      {items.map((item, i) => {
-        const [isHovered, setIsHovered] = React.useState(false);
-        
-        return (
-          <motion.div 
-            key={item.label}
-            initial={{ opacity: 0, y: 10 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ delay: 0.1 + i * 0.05 }}
-            onHoverStart={() => setIsHovered(true)}
-            onHoverEnd={() => setIsHovered(false)}
-            style={{ cursor: 'default' }}
-          >
-            <div style={{ 
-              color: PALETTE.neutral.textDim,
-              ...TYPE.kpiLabel,
-              textTransform: 'uppercase',
-              marginBottom: '12px'
-            }}>
-              {item.label}
-            </div>
-            <p style={{ 
-              color: PALETTE.neutral.textBright, 
-              fontSize: '15px',
-              fontWeight: 400,
-              lineHeight: 1.6,
-              marginBottom: '8px'
-            }}>
-              {item.text}
-            </p>
-            <AnimatePresence>
-              {isHovered && (
-                <motion.p
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 0.7, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.2, ease: HORIZON_EASE }}
-                  style={{ 
-                    color: PALETTE.neutral.text,
-                    fontSize: '13px',
-                    fontWeight: 400,
-                    lineHeight: 1.6
-                  }}
-                >
-                  {item.why}
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        );
-      })}
+      {items.map((item, i) => (
+        <motion.div 
+          key={item.label}
+          initial={{ opacity: 0, y: 10 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ delay: 0.1 + i * 0.05 }}
+        >
+          <div style={{ 
+            color: PALETTE.neutral.textDim,
+            ...TYPE.kpiLabel,
+            textTransform: 'uppercase',
+            marginBottom: '12px'
+          }}>
+            {item.label}
+          </div>
+          <p style={{ 
+            color: PALETTE.neutral.textBright, 
+            fontSize: '15px',
+            fontWeight: 400,
+            lineHeight: 1.6,
+            marginBottom: '10px'
+          }}>
+            {item.text}
+          </p>
+          <p style={{ 
+            color: PALETTE.neutral.text,
+            fontSize: '13px',
+            fontWeight: 400,
+            lineHeight: 1.75,
+            opacity: 0.68
+          }}>
+            {item.why}
+          </p>
+        </motion.div>
+      ))}
     </div>
   );
 };
@@ -668,7 +652,6 @@ const CONSEQUENCES = {
 
 const InflationConsequencesLens = () => {
   const [selected, setSelected] = useState('consumer');
-  const [showWhy, setShowWhy] = useState(false);
 
   return (
     <div>
@@ -698,42 +681,30 @@ const InflationConsequencesLens = () => {
       <AnimatePresence mode="wait">
         <motion.div 
           key={selected}
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.98 }}
-          transition={{ duration: 0.2, ease: HORIZON_EASE }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3, ease: HORIZON_EASE }}
           className="text-center max-w-2xl mx-auto"
-          onHoverStart={() => setShowWhy(true)}
-          onHoverEnd={() => setShowWhy(false)}
-          style={{ cursor: 'default' }}
         >
           <p style={{ 
             color: PALETTE.neutral.textBright, 
             fontSize: '17px',
             fontWeight: 400,
             lineHeight: 1.65,
-            marginBottom: '8px'
+            marginBottom: '10px'
           }}>
             {CONSEQUENCES[selected].text}
           </p>
-          <AnimatePresence>
-            {showWhy && (
-              <motion.p
-                initial={{ opacity: 0, y: -4 }}
-                animate={{ opacity: 0.7, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                transition={{ duration: 0.2, ease: HORIZON_EASE }}
-                style={{ 
-                  color: PALETTE.neutral.text,
-                  fontSize: '14px',
-                  fontWeight: 400,
-                  lineHeight: 1.6
-                }}
-              >
-                {CONSEQUENCES[selected].why}
-              </motion.p>
-            )}
-          </AnimatePresence>
+          <p style={{ 
+            color: PALETTE.neutral.text,
+            fontSize: '14px',
+            fontWeight: 400,
+            lineHeight: 1.75,
+            opacity: 0.68
+          }}>
+            {CONSEQUENCES[selected].why}
+          </p>
         </motion.div>
       </AnimatePresence>
     </div>
