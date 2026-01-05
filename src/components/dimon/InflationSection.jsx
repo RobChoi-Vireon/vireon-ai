@@ -558,17 +558,22 @@ const TIME_HORIZONS = {
   now: { 
     label: 'Now', 
     text: 'Housing keeps inflation elevated.',
-    why: 'Because rent resets lag rate hikes.'
+    why: 'Because rent and shelter reset slowly.'
   },
-  next: { 
-    label: 'Next', 
-    text: 'Services inflation cools slowly.',
-    why: 'Because wages normalize after goods.'
+  near: { 
+    label: 'Near Term (~3m)', 
+    text: 'Goods inflation fades further.',
+    why: 'Because supply chains normalize faster than services.'
   },
-  later: { 
-    label: 'Later', 
-    text: 'Policy waits for confirmation.',
-    why: 'Because easing too early risks reversal.'
+  medium: { 
+    label: 'Medium Term (~6m)', 
+    text: 'Services inflation cools unevenly.',
+    why: 'Because wage pressure eases later.'
+  },
+  confirmation: { 
+    label: 'Confirmation (~12m)', 
+    text: 'Policy easing becomes possible, not assured.',
+    why: 'Because confidence matters more than speed.'
   }
 };
 
