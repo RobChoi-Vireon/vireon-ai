@@ -89,24 +89,39 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
     };
   }, [shouldReduceMotion, isLowPower]);
 
-  // Mouse parallax effect
+  // Mouse parallax effect with throttling
   useEffect(() => {
     if (shouldReduceMotion || !parentRef?.current) return;
 
+    let rafId;
+    let lastX = 0;
+    let lastY = 0;
+
     const handleMouseMove = (e) => {
-      const rect = parentRef.current.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
+      lastX = e.clientX;
+      lastY = e.clientY;
       
-      mouseX.set(e.clientX - centerX);
-      mouseY.set(e.clientY - centerY);
+      if (!rafId) {
+        rafId = requestAnimationFrame(() => {
+          const rect = parentRef.current?.getBoundingClientRect();
+          if (rect) {
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            mouseX.set(lastX - centerX);
+            mouseY.set(lastY - centerY);
+          }
+          rafId = null;
+        });
+      }
     };
 
     const parent = parentRef.current;
-    parent.addEventListener('mousemove', handleMouseMove);
+    parent.addEventListener('mousemove', handleMouseMove, { passive: true });
     
     return () => {
       parent.removeEventListener('mousemove', handleMouseMove);
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, [shouldReduceMotion, parentRef, mouseX, mouseY]);
 
