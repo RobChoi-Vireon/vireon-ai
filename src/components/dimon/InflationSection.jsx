@@ -137,11 +137,11 @@ const InflationSystemNote = () => (
       fontSize: '13px',
       fontWeight: 400,
       letterSpacing: '0',
-      lineHeight: 1.75
+      lineHeight: 1.85
     }}>
-      CPI reflects prices households feel.<br />
-      PCE reflects prices policy responds to.<br />
-      The gap explains why inflation can feel worse than policy suggests.
+      CPI captures household price pressure.<br />
+      PCE captures spending behavior.<br />
+      The gap shows where inflation feels stronger than policy suggests.
     </div>
   </motion.div>
 );
@@ -941,15 +941,15 @@ const ImplicationPill = ({ label, direction, note, because }) => {
   
   return (
     <motion.div
-      whileHover={{ scale: 1.02, y: -2, transition: { duration: 0.3, ease: HORIZON_EASE } }}
-      className="relative flex flex-col gap-2.5 rounded-xl overflow-hidden"
+      whileHover={{ scale: 1.01, y: -1, transition: { duration: 0.3, ease: HORIZON_EASE } }}
+      className="relative flex flex-col gap-2.5 rounded-2xl overflow-hidden"
       style={{
-        padding: '14px 18px',
-        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.02) 100%)',
-        backdropFilter: 'blur(36px) saturate(170%)',
-        WebkitBackdropFilter: 'blur(36px) saturate(170%)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 3px 12px rgba(0,0,0,0.08)'
+        padding: '16px 20px',
+        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.015) 100%)',
+        backdropFilter: 'blur(48px) saturate(160%)',
+        WebkitBackdropFilter: 'blur(48px) saturate(160%)',
+        border: '1px solid rgba(255,255,255,0.05)',
+        boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.05), 0 2px 8px rgba(0,0,0,0.04)'
       }}
     >
       <div className="flex items-center gap-2.5">
@@ -986,14 +986,14 @@ const InflationImplicationsStrip = ({ implications }) => (
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.6, ease: HORIZON_EASE, delay: 0.2 }}
-    className="relative rounded-3xl overflow-hidden opacity-90"
+    className="relative rounded-3xl overflow-hidden"
     style={{
-      padding: '24px 28px',
-      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.02) 100%)',
-      backdropFilter: 'blur(48px) saturate(165%)',
-      WebkitBackdropFilter: 'blur(48px) saturate(165%)',
-      border: '1px solid rgba(255,255,255,0.06)',
-      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 28px rgba(0,0,0,0.06), 0 2px 12px rgba(90,130,170,0.04)'
+      padding: '28px 32px',
+      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.025) 0%, rgba(255, 255, 255, 0.015) 100%)',
+      backdropFilter: 'blur(60px) saturate(160%)',
+      WebkitBackdropFilter: 'blur(60px) saturate(160%)',
+      border: '1px solid rgba(255,255,255,0.05)',
+      boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.04), 0 6px 24px rgba(0,0,0,0.04)'
     }}
   >
     <div style={{
@@ -1009,16 +1009,16 @@ const InflationImplicationsStrip = ({ implications }) => (
 
     <h3 style={{ 
       color: PALETTE.neutral.textBright,
-      fontSize: '17px',
+      fontSize: '16px',
       fontWeight: 600,
       letterSpacing: '-0.01em',
       lineHeight: 1.4,
-      marginBottom: '16px'
+      marginBottom: '18px'
     }}>
-      Downstream Effects
+      Pressure Effects
     </h3>
 
-    <div className="flex flex-wrap gap-3">
+    <div className="flex flex-wrap gap-4">
       {implications.map((impl, idx) => (
         <ImplicationPill 
           key={idx}
@@ -1045,34 +1045,67 @@ export default function InflationSection({ data }) {
   ];
 
   return (
-    <div className="space-y-6">
-      <InflationStateHeader 
-        state="Inflation — Sticky" 
-        descriptor="Consumer prices remain elevated while policy inflation cools."
-      />
+    <div className="relative space-y-8">
+      {/* Vertical daylight gradient */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: '60%',
+        background: 'linear-gradient(180deg, rgba(36, 40, 46, 0.4) 0%, transparent 100%)',
+        pointerEvents: 'none',
+        zIndex: 0
+      }} />
+      
+      <div className="relative z-10">
+        <InflationStateHeader 
+          state="Inflation — Sticky" 
+          descriptor="Price pressure remains elevated, feeding into broader equilibrium."
+        />
+      </div>
 
       <InflationSystemNote />
 
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.7, ease: HORIZON_EASE }}
-        className="mb-8"
-      >
-        <InflationPressureRing 
-          cpiValue={data.cpi_headline_yoy} 
-          pceValue={data.pce_headline_yoy}
+      <div className="relative mb-12">
+        {/* Subtle pressure field background */}
+        <div style={{
+          position: 'absolute',
+          inset: '-40px',
+          opacity: 0.03,
+          pointerEvents: 'none',
+          background: `
+            linear-gradient(45deg, transparent 48%, ${PALETTE.teaching.friction} 49%, ${PALETTE.teaching.friction} 51%, transparent 52%),
+            linear-gradient(-45deg, transparent 48%, ${PALETTE.teaching.policy} 49%, ${PALETTE.teaching.policy} 51%, transparent 52%)
+          `,
+          backgroundSize: '80px 80px',
+          filter: 'blur(1px)'
+        }} />
+        
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.7, ease: HORIZON_EASE }}
+        >
+          <InflationPressureRing 
+            cpiValue={data.cpi_headline_yoy} 
+            pceValue={data.pce_headline_yoy}
+          />
+        </motion.div>
+      </div>
+
+      <div className="relative z-10">
+        <InflationSnapshotKPIs 
+          cpi_headline_yoy={data.cpi_headline_yoy}
+          cpi_core_yoy={data.cpi_core_yoy}
+          pce_headline_yoy={data.pce_headline_yoy}
+          pce_core_yoy={data.pce_core_yoy}
         />
-      </motion.div>
+      </div>
 
-      <InflationSnapshotKPIs 
-        cpi_headline_yoy={data.cpi_headline_yoy}
-        cpi_core_yoy={data.cpi_core_yoy}
-        pce_headline_yoy={data.pce_headline_yoy}
-        pce_core_yoy={data.pce_core_yoy}
-      />
-
-      <InflationLensSwitcher lenses={lenses} active={activeLens} onChange={setActiveLens} />
+      <div className="relative z-10">
+        <InflationLensSwitcher lenses={lenses} active={activeLens} onChange={setActiveLens} />
+      </div>
 
       <AnimatePresence mode="wait">
         <motion.div
@@ -1081,15 +1114,15 @@ export default function InflationSection({ data }) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.35, ease: HORIZON_EASE }}
-          className="relative rounded-3xl overflow-hidden"
+          className="relative rounded-3xl overflow-hidden z-10"
           style={{
             padding: '52px',
-            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.025) 100%)',
-            backdropFilter: 'blur(64px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(64px) saturate(180%)',
-            border: '1px solid rgba(255,255,255,0.10)',
-            boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.10), 0 16px 52px rgba(0,0,0,0.08), 0 6px 24px rgba(90,130,170,0.04)',
-            minHeight: '300px'
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.018) 100%)',
+            backdropFilter: 'blur(80px) saturate(165%)',
+            WebkitBackdropFilter: 'blur(80px) saturate(165%)',
+            border: '1px solid rgba(255,255,255,0.06)',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 32px rgba(0,0,0,0.04)',
+            minHeight: '320px'
           }}
         >
           <div style={{
@@ -1117,8 +1150,28 @@ export default function InflationSection({ data }) {
       </AnimatePresence>
 
       {data.market_implications && data.market_implications.length > 0 && (
-        <InflationImplicationsStrip implications={data.market_implications} />
+        <div className="relative z-10">
+          <InflationImplicationsStrip implications={data.market_implications} />
+        </div>
       )}
+      
+      {/* Transition zone into Equilibrium */}
+      <div style={{
+        height: '120px',
+        background: 'linear-gradient(180deg, transparent 0%, rgba(36, 40, 46, 0.2) 50%, rgba(36, 40, 46, 0.4) 100%)',
+        marginTop: '60px',
+        marginBottom: '-40px',
+        pointerEvents: 'none',
+        position: 'relative',
+        zIndex: 1
+      }}>
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'radial-gradient(ellipse at center, rgba(100, 140, 180, 0.04) 0%, transparent 60%)',
+          filter: 'blur(40px)'
+        }} />
+      </div>
     </div>
   );
 }
