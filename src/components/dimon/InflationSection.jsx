@@ -199,6 +199,13 @@ export default function InflationSection({ data }) {
         </div>
       )}
 
+      {/* Visual: CPI-PCE Gap */}
+      <InflationGapVisual 
+        cpi={data.cpi_core_yoy} 
+        pce={data.pce_core_yoy}
+        insight="Core CPI running 1.0pp above Core PCE—housing costs create the wedge"
+      />
+
       {/* 2) Compare + 3) Meaning */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Compare Card */}
