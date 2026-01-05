@@ -342,9 +342,10 @@ const KPIChip = ({ label, value, isCore = false }) => {
         backdropFilter: 'blur(48px) saturate(170%)',
         WebkitBackdropFilter: 'blur(48px) saturate(170%)',
         border: '1px solid rgba(255,255,255,0.08)',
+        borderRadius: '18px',
         boxShadow: isHovered 
-          ? 'inset 0 2px 0 rgba(255,255,255,0.10), 0 12px 32px rgba(0,0,0,0.10), 0 4px 16px rgba(90,130,170,0.06)'
-          : 'inset 0 2px 0 rgba(255,255,255,0.08), 0 6px 22px rgba(0,0,0,0.08)',
+          ? 'inset 0 2px 0 rgba(255,255,255,0.10), 0 16px 40px rgba(0,0,0,0.06), 0 6px 20px rgba(90,130,170,0.04)'
+          : 'inset 0 2px 0 rgba(255,255,255,0.08), 0 8px 28px rgba(0,0,0,0.05)',
         minWidth: '140px',
         transition: 'box-shadow 0.3s ease'
       }}
@@ -487,18 +488,18 @@ const InflationUnderstandingLens = () => {
   const items = [
     { 
       label: 'CPI', 
-      text: 'Higher rent and essentials',
-      why: 'Because housing and services reset slowly.'
+      text: 'Rent and essentials stay high.',
+      why: 'Housing and services reset slowly.'
     },
     { 
       label: 'PCE', 
-      text: 'Adaptive spending',
-      why: 'Because consumers substitute rather than stop spending.'
+      text: 'Spending adapts to cost.',
+      why: 'Consumers substitute rather than stop.'
     },
     { 
       label: 'Meaning', 
-      text: 'Policy responds to demand, not pain',
-      why: 'Because inflation is measured by behavior.'
+      text: 'Policy follows spending, not pain.',
+      why: 'Inflation is measured by behavior.'
     }
   ];
 
@@ -519,25 +520,23 @@ const InflationUnderstandingLens = () => {
           }}>
             {item.label}
           </div>
-          <div className="relative" style={{ paddingLeft: '8px', marginBottom: '10px' }}>
-            <div style={{
-              position: 'absolute',
-              left: 0,
-              top: '4px',
-              bottom: '4px',
-              width: '2px',
-              background: PALETTE.accent.marker,
-              borderRadius: '2px'
-            }} />
+          <div style={{ marginBottom: '12px' }}>
             <p style={{ 
               color: PALETTE.neutral.textBright, 
               fontSize: '15px',
               fontWeight: 400,
               lineHeight: 1.7,
-              letterSpacing: '-0.005em'
+              letterSpacing: '-0.005em',
+              marginBottom: '6px'
             }}>
               {item.text}
             </p>
+            <div style={{
+              width: '48px',
+              height: '1px',
+              background: 'rgba(100, 160, 220, 0.20)',
+              borderRadius: '1px'
+            }} />
           </div>
           <p style={{ 
             color: PALETTE.neutral.textCausal,
@@ -613,25 +612,24 @@ const InflationTimeLens = () => {
           transition={{ duration: 0.35, ease: HORIZON_EASE }}
           className="text-center max-w-2xl mx-auto"
         >
-          <div className="relative" style={{ paddingLeft: '8px', marginBottom: '12px' }}>
-            <div style={{
-              position: 'absolute',
-              left: 0,
-              top: '5px',
-              bottom: '5px',
-              width: '2px',
-              background: PALETTE.accent.marker,
-              borderRadius: '2px'
-            }} />
+          <div style={{ marginBottom: '14px' }}>
             <p style={{ 
               color: PALETTE.neutral.textBright, 
               fontSize: '17px',
               fontWeight: 400,
               lineHeight: 1.75,
-              letterSpacing: '-0.005em'
+              letterSpacing: '-0.005em',
+              marginBottom: '8px'
             }}>
               {TIME_HORIZONS[selected].text}
             </p>
+            <div style={{
+              width: '56px',
+              height: '1px',
+              background: 'rgba(100, 160, 220, 0.20)',
+              borderRadius: '1px',
+              margin: '0 auto'
+            }} />
           </div>
           <p style={{ 
             color: PALETTE.neutral.textCausal,
@@ -713,25 +711,24 @@ const InflationConsequencesLens = () => {
           transition={{ duration: 0.35, ease: HORIZON_EASE }}
           className="text-center max-w-2xl mx-auto"
         >
-          <div className="relative" style={{ paddingLeft: '8px', marginBottom: '12px' }}>
-            <div style={{
-              position: 'absolute',
-              left: 0,
-              top: '5px',
-              bottom: '5px',
-              width: '2px',
-              background: PALETTE.accent.marker,
-              borderRadius: '2px'
-            }} />
+          <div style={{ marginBottom: '14px' }}>
             <p style={{ 
               color: PALETTE.neutral.textBright, 
               fontSize: '17px',
               fontWeight: 400,
               lineHeight: 1.75,
-              letterSpacing: '-0.005em'
+              letterSpacing: '-0.005em',
+              marginBottom: '8px'
             }}>
               {CONSEQUENCES[selected].text}
             </p>
+            <div style={{
+              width: '56px',
+              height: '1px',
+              background: 'rgba(100, 160, 220, 0.20)',
+              borderRadius: '1px',
+              margin: '0 auto'
+            }} />
           </div>
           <p style={{ 
             color: PALETTE.neutral.textCausal,
@@ -811,12 +808,13 @@ const InflationImplicationsStrip = ({ implications }) => (
     transition={{ duration: 0.6, ease: HORIZON_EASE, delay: 0.2 }}
     className="relative rounded-3xl overflow-hidden opacity-90"
     style={{
-      padding: '24px 28px',
+      padding: '28px 32px',
       background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.02) 100%)',
       backdropFilter: 'blur(48px) saturate(165%)',
       WebkitBackdropFilter: 'blur(48px) saturate(165%)',
       border: '1px solid rgba(255,255,255,0.06)',
-      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 28px rgba(0,0,0,0.06), 0 2px 12px rgba(90,130,170,0.04)'
+      borderRadius: '24px',
+      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 12px 36px rgba(0,0,0,0.05), 0 4px 16px rgba(90,130,170,0.02)'
     }}
   >
     <div style={{
@@ -831,14 +829,14 @@ const InflationImplicationsStrip = ({ implications }) => (
     }} />
 
     <h3 style={{ 
-      color: PALETTE.neutral.textBright,
+      color: 'rgba(255, 255, 255, 0.92)',
       fontSize: '17px',
       fontWeight: 600,
       letterSpacing: '-0.01em',
       lineHeight: 1.4,
-      marginBottom: '16px'
+      marginBottom: '18px'
     }}>
-      Downstream Effects
+      What This Changes
     </h3>
 
     <div className="flex flex-wrap gap-3">
@@ -868,11 +866,21 @@ export default function InflationSection({ data }) {
   ];
 
   return (
-    <div className="space-y-6">
-      <InflationStateHeader 
-        state="Inflation — Sticky" 
-        descriptor="Consumer prices remain elevated while policy inflation cools."
-      />
+    <div className="relative space-y-8">
+      {/* Daylight-through-glass backdrop */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: 'linear-gradient(180deg, rgba(40, 44, 50, 0.30) 0%, rgba(28, 32, 38, 0.15) 100%)',
+        pointerEvents: 'none',
+        zIndex: 0
+      }} />
+
+      <div className="relative z-10">
+        <InflationStateHeader 
+          state="Inflation — Sticky" 
+          descriptor="Consumer prices remain elevated while policy inflation cools."
+        />
 
       <InflationSystemNote />
 
@@ -880,12 +888,29 @@ export default function InflationSection({ data }) {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.7, ease: HORIZON_EASE }}
-        className="mb-8"
+        className="relative mb-10"
       >
-        <InflationPressureRing 
-          cpiValue={data.cpi_headline_yoy} 
-          pceValue={data.pce_headline_yoy}
-        />
+        {/* Focal energy zone - emotional anchor */}
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '420px',
+          height: '420px',
+          background: 'radial-gradient(circle, rgba(100, 140, 180, 0.08) 0%, rgba(90, 130, 170, 0.04) 40%, transparent 70%)',
+          filter: 'blur(50px)',
+          pointerEvents: 'none',
+          zIndex: 0,
+          opacity: 0.6
+        }} />
+
+        <div className="relative z-10">
+          <InflationPressureRing 
+            cpiValue={data.cpi_headline_yoy} 
+            pceValue={data.pce_headline_yoy}
+          />
+        </div>
       </motion.div>
 
       <InflationSnapshotKPIs 
@@ -900,18 +925,19 @@ export default function InflationSection({ data }) {
       <AnimatePresence mode="wait">
         <motion.div
           key={activeLens}
-          initial={{ opacity: 0 }}
+          initial={{ opacity: 0.7 }}
           animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          exit={{ opacity: 0.7 }}
           transition={{ duration: 0.35, ease: HORIZON_EASE }}
-          className="relative rounded-3xl overflow-hidden"
+          className="relative overflow-hidden"
           style={{
             padding: '52px',
             background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.025) 100%)',
             backdropFilter: 'blur(64px) saturate(180%)',
             WebkitBackdropFilter: 'blur(64px) saturate(180%)',
             border: '1px solid rgba(255,255,255,0.10)',
-            boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.10), 0 16px 52px rgba(0,0,0,0.08), 0 6px 24px rgba(90,130,170,0.04)',
+            borderRadius: '28px',
+            boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.10), 0 20px 60px rgba(0,0,0,0.06), 0 8px 32px rgba(90,130,170,0.03)',
             minHeight: '300px'
           }}
         >
@@ -940,8 +966,11 @@ export default function InflationSection({ data }) {
       </AnimatePresence>
 
       {data.market_implications && data.market_implications.length > 0 && (
-        <InflationImplicationsStrip implications={data.market_implications} />
+        <div className="mt-10">
+          <InflationImplicationsStrip implications={data.market_implications} />
+        </div>
       )}
-    </div>
-  );
-}
+      </div>
+      </div>
+      );
+      }
