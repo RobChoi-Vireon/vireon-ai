@@ -27,9 +27,9 @@ const TYPOGRAPHY = {
 // Thermal color system
 const THERMAL = {
   warm: {
-    glow: 'rgba(88, 227, 164, 0.35)',
-    accent: 'rgba(70, 220, 150, 0.45)',
-    subtle: 'rgba(80, 225, 155, 0.18)'
+    glow: 'rgba(255, 160, 90, 0.35)',
+    accent: 'rgba(255, 140, 70, 0.45)',
+    subtle: 'rgba(255, 150, 80, 0.18)'
   },
   cool: {
     glow: 'rgba(100, 180, 255, 0.35)',
@@ -601,67 +601,42 @@ export default function InflationSection({ data }) {
         </h2>
       </motion.div>
 
-      {/* Hero State Display */}
+      {/* Hero Insight */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: HORIZON_EASE, delay: 0.1 }}
-        className="mb-10 text-center"
+        className="mb-8 text-center"
       >
-        <div className="flex items-center justify-center gap-3 mb-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.15, duration: 0.4, ease: HORIZON_EASE }}
-            className="px-4 py-2 rounded-xl"
-            style={{
-              background: stateColors.bg,
-              border: `1px solid ${stateColors.border}`,
-              color: stateColors.text,
-              fontSize: TYPOGRAPHY.scale.micro.size,
-              fontWeight: TYPOGRAPHY.scale.micro.weight,
-              letterSpacing: TYPOGRAPHY.scale.micro.letterSpacing,
-              boxShadow: `0 0 20px ${stateColors.bg}, inset 0 1px 0 rgba(255,255,255,0.1)`,
-              ...TYPOGRAPHY.smoothing
-            }}
-          >
-            {data.state_tag?.toUpperCase() || 'STICKY'}
-          </motion.div>
-        </div>
-
-        <motion.h3 
-          className="mb-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          style={{ 
-            color: 'rgba(255,255,255,0.96)',
-            fontSize: '32px',
-            fontWeight: 700,
-            letterSpacing: '-0.03em',
-            lineHeight: 1.15,
-            ...TYPOGRAPHY.smoothing
-          }}
-        >
-          Inflation Pressure
-        </motion.h3>
-        
-        <motion.p 
-          className="max-w-xl mx-auto"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.25 }}
-          style={{ 
-            color: 'rgba(255,255,255,0.68)',
-            fontSize: TYPOGRAPHY.scale.bodyEmphasis.size,
-            fontWeight: TYPOGRAPHY.scale.bodyEmphasis.weight,
-            letterSpacing: TYPOGRAPHY.scale.bodyEmphasis.letterSpacing,
-            lineHeight: TYPOGRAPHY.scale.bodyEmphasis.lineHeight,
-            ...TYPOGRAPHY.smoothing
-          }}
-        >
-          CPI elevated by shelter costs. PCE shows softer demand.
-        </motion.p>
+        <h3 className="mb-5" style={{ 
+          color: 'rgba(255,255,255,1)',
+          fontSize: TYPOGRAPHY.scale.hero.size,
+          fontWeight: TYPOGRAPHY.scale.hero.weight,
+          letterSpacing: TYPOGRAPHY.scale.hero.letterSpacing,
+          lineHeight: TYPOGRAPHY.scale.hero.lineHeight,
+          background: 'linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.85) 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+          ...TYPOGRAPHY.smoothing
+        }}>
+          Housing Keeps <span style={{ 
+            background: `linear-gradient(135deg, ${THERMAL.warm.accent.replace('0.45', '1')} 0%, ${THERMAL.warm.accent.replace('0.45', '0.75')} 100%)`,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text'
+          }}>Inflation</span> Sticky
+        </h3>
+        <p className="max-w-2xl mx-auto" style={{ 
+          color: 'rgba(255,255,255,0.70)',
+          fontSize: TYPOGRAPHY.scale.bodyEmphasis.size,
+          fontWeight: TYPOGRAPHY.scale.bodyEmphasis.weight,
+          letterSpacing: TYPOGRAPHY.scale.bodyEmphasis.letterSpacing,
+          lineHeight: TYPOGRAPHY.scale.bodyEmphasis.lineHeight,
+          ...TYPOGRAPHY.smoothing
+        }}>
+          CPI runs hot from shelter costs. Fed watches PCE for true demand signals.
+        </p>
       </motion.div>
 
       {/* Hero Visual - Inflation Pressure Ring */}
