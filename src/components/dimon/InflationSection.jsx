@@ -12,12 +12,12 @@ const TYPOGRAPHY = {
     MozOsxFontSmoothing: 'grayscale'
   },
   scale: {
-    hero: { size: '44px', weight: 900, lineHeight: 1.1, letterSpacing: '-0.045em' },
+    hero: { size: '54px', weight: 900, lineHeight: 1.05, letterSpacing: '-0.05em' },
     heading1: { size: '28px', weight: 700, lineHeight: 1.2, letterSpacing: '-0.025em' },
     heading2: { size: '20px', weight: 700, lineHeight: 1.3, letterSpacing: '-0.02em' },
     heading3: { size: '17px', weight: 600, lineHeight: 1.4, letterSpacing: '-0.01em' },
-    body: { size: '17px', weight: 400, lineHeight: 1.5, letterSpacing: '0' },
-    bodyEmphasis: { size: '15px', weight: 500, lineHeight: 1.53, letterSpacing: '0.01em' },
+    body: { size: '17px', weight: 400, lineHeight: 1.65, letterSpacing: '0' },
+    bodyEmphasis: { size: '15px', weight: 500, lineHeight: 1.6, letterSpacing: '0.01em' },
     caption: { size: '13px', weight: 500, lineHeight: 1.4, letterSpacing: '0.01em' },
     label: { size: '11px', weight: 600, lineHeight: 1.2, letterSpacing: '0.06em' },
     micro: { size: '10px', weight: 700, lineHeight: 1.2, letterSpacing: '0.08em' }
@@ -42,25 +42,22 @@ const HORIZONS = {
   now: {
     label: 'Now',
     bullets: [
-      "Fed maintains current stance, watching labor market closely for signs of weakening.",
-      "Markets price in potential rate cuts if inflation continues to moderate.",
-      "Corporate earnings calls emphasize cost pressures and pricing power."
+      "Fed maintains current stance, watching labor market closely.",
+      "Markets price in rate cuts if inflation continues moderating."
     ]
   },
   quarterly: {
     label: '3–12 Months',
     bullets: [
-      "Housing costs begin to cool as lagged shelter components catch up to market reality.",
-      "Services inflation becomes the primary determinant of policy direction.",
-      "Currency markets adjust to shifting rate differential expectations."
+      "Housing costs begin cooling as shelter components catch up to reality.",
+      "Services inflation becomes the primary policy determinant."
     ]
   },
   longer: {
     label: '12–36 Months',
     bullets: [
-      "Structural factors like deglobalization and labor market tightness anchor inflation above pre-pandemic levels.",
-      "Central banks recalibrate long-term neutral rate assumptions.",
-      "Asset allocation shifts toward inflation-protected securities gain momentum."
+      "Deglobalization and labor tightness keep inflation above pre-pandemic norms.",
+      "Central banks recalibrate long-term neutral rate assumptions."
     ]
   }
 };
@@ -254,6 +251,9 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
     ? Math.min(Math.abs(cpiValue - pceValue) / 2, 1) 
     : 0.3;
   
+  const gap = cpiValue && pceValue ? Math.abs(cpiValue - pceValue).toFixed(1) : null;
+  const isConsumerPressure = cpiValue && pceValue && cpiValue > pceValue;
+  
   return (
     <div className="relative flex items-center justify-center" style={{ height: '240px' }}>
       <motion.div
@@ -332,7 +332,7 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
           }}
         />
 
-        {/* Center glass panel */}
+        {/* Center glass panel - transforms on hover */}
         <motion.div
           whileHover={{ scale: 1.05 }}
           style={{
@@ -347,28 +347,75 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            padding: '12px'
           }}
         >
-          <div style={{ 
-            color: 'rgba(255,255,255,0.60)',
-            fontSize: TYPOGRAPHY.scale.label.size,
-            fontWeight: TYPOGRAPHY.scale.label.weight,
-            letterSpacing: TYPOGRAPHY.scale.label.letterSpacing,
-            marginBottom: '4px',
-            ...TYPOGRAPHY.smoothing
-          }}>
-            GAP
-          </div>
-          <div style={{ 
-            color: 'rgba(255,255,255,0.95)',
-            fontSize: '24px',
-            fontWeight: 700,
-            letterSpacing: '-0.02em',
-            ...TYPOGRAPHY.smoothing
-          }}>
-            {cpiValue && pceValue ? `${Math.abs(cpiValue - pceValue).toFixed(1)}%` : '—'}
-          </div>
+          <AnimatePresence mode="wait">
+            {!isHovered ? (
+              <motion.div
+                key="gap"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                style={{ textAlign: 'center' }}
+              >
+                <div style={{ 
+                  color: 'rgba(255,255,255,0.60)',
+                  fontSize: TYPOGRAPHY.scale.label.size,
+                  fontWeight: TYPOGRAPHY.scale.label.weight,
+                  letterSpacing: TYPOGRAPHY.scale.label.letterSpacing,
+                  marginBottom: '4px',
+                  ...TYPOGRAPHY.smoothing
+                }}>
+                  GAP
+                </div>
+                <div style={{ 
+                  color: 'rgba(255,255,255,0.95)',
+                  fontSize: '24px',
+                  fontWeight: 700,
+                  letterSpacing: '-0.02em',
+                  ...TYPOGRAPHY.smoothing
+                }}>
+                  {gap ? `${gap}%` : '—'}
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="meaning"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.25, ease: HORIZON_EASE }}
+                style={{ textAlign: 'center' }}
+              >
+                <div style={{ 
+                  color: isConsumerPressure ? THERMAL.warm.accent.replace('0.45', '1') : THERMAL.cool.accent.replace('0.45', '1'),
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  letterSpacing: '0.04em',
+                  marginBottom: '6px',
+                  textTransform: 'uppercase',
+                  ...TYPOGRAPHY.smoothing
+                }}>
+                  {isConsumerPressure ? 'Consumer Pressure' : 'Policy Signal'}
+                </div>
+                <div style={{ 
+                  color: 'rgba(255,255,255,0.85)',
+                  fontSize: '10px',
+                  fontWeight: 500,
+                  lineHeight: 1.5,
+                  letterSpacing: '0.01em',
+                  ...TYPOGRAPHY.smoothing
+                }}>
+                  {isConsumerPressure 
+                    ? 'CPI leads → households feel it first'
+                    : 'PCE leads → Fed sees broad demand'}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
 
         {/* Gap intensity glow */}
@@ -382,41 +429,16 @@ const InflationPressureRing = ({ cpiValue, pceValue, onHover }) => {
         }} />
       </motion.div>
 
-      {/* Hover tooltip */}
-      <AnimatePresence>
-        {isHovered && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            transition={{ duration: 0.2 }}
-            className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap"
-            style={{
-              padding: '8px 16px',
-              background: 'rgba(0, 0, 0, 0.85)',
-              backdropFilter: 'blur(20px)',
-              borderRadius: '12px',
-              fontSize: TYPOGRAPHY.scale.caption.size,
-              fontWeight: TYPOGRAPHY.scale.caption.weight,
-              color: 'rgba(255,255,255,0.90)',
-              border: '1px solid rgba(255,255,255,0.10)',
-              ...TYPOGRAPHY.smoothing
-            }}
-          >
-            <Info className="w-3 h-3 inline mr-1.5" style={{ marginTop: '-2px' }} />
-            Outer: CPI • Inner: PCE • Glow: Divergence
-          </motion.div>
-        )}
-      </AnimatePresence>
+
     </div>
   );
 };
 
 const SegmentedControl = ({ segments, active, onChange }) => {
   const getModeHue = (segmentId) => {
-    if (segmentId === 'overview') return 'rgba(100, 180, 255, 0.03)';
+    if (segmentId === 'overview') return THERMAL.cool.subtle;
     if (segmentId === 'timeline') return 'rgba(150, 120, 255, 0.03)';
-    if (segmentId === 'impact') return 'rgba(255, 160, 90, 0.03)';
+    if (segmentId === 'impact') return THERMAL.warm.subtle;
     return 'transparent';
   };
 
@@ -586,7 +608,7 @@ export default function InflationSection({ data }) {
         transition={{ duration: 0.6, ease: HORIZON_EASE, delay: 0.1 }}
         className="mb-8 text-center"
       >
-        <h3 className="mb-4" style={{ 
+        <h3 className="mb-5" style={{ 
           color: 'rgba(255,255,255,1)',
           fontSize: TYPOGRAPHY.scale.hero.size,
           fontWeight: TYPOGRAPHY.scale.hero.weight,
@@ -598,17 +620,22 @@ export default function InflationSection({ data }) {
           backgroundClip: 'text',
           ...TYPOGRAPHY.smoothing
         }}>
-          {data.comparison_headline || "Inflation remains sticky as housing keeps CPI elevated"}
+          Housing Keeps <span style={{ 
+            background: `linear-gradient(135deg, ${THERMAL.warm.accent.replace('0.45', '1')} 0%, ${THERMAL.warm.accent.replace('0.45', '0.75')} 100%)`,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text'
+          }}>Inflation</span> Sticky
         </h3>
-        <p className="max-w-3xl mx-auto" style={{ 
-          color: 'rgba(255,255,255,0.65)',
+        <p className="max-w-2xl mx-auto" style={{ 
+          color: 'rgba(255,255,255,0.70)',
           fontSize: TYPOGRAPHY.scale.bodyEmphasis.size,
           fontWeight: TYPOGRAPHY.scale.bodyEmphasis.weight,
           letterSpacing: TYPOGRAPHY.scale.bodyEmphasis.letterSpacing,
           lineHeight: TYPOGRAPHY.scale.bodyEmphasis.lineHeight,
           ...TYPOGRAPHY.smoothing
         }}>
-          {data.comparison_detail || "Shelter costs remain elevated in CPI, while PCE shows softer services inflation. The Fed watches Core PCE most closely."}
+          CPI runs hot from shelter costs. Fed watches PCE for true demand signals.
         </p>
       </motion.div>
 
@@ -914,14 +941,14 @@ export default function InflationSection({ data }) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.2, ease: HORIZON_EASE }}
-                  className="space-y-4"
+                  className="space-y-5 text-center max-w-2xl mx-auto"
                 >
                   {HORIZONS[selectedHorizon].bullets.map((bullet, idx) => (
                     <motion.p 
                       key={idx} 
-                      initial={{ opacity: 0, x: -5 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: idx * 0.05 }}
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.08, ease: HORIZON_EASE }}
                       style={{ 
                         color: 'rgba(255,255,255,0.84)', 
                         fontSize: TYPOGRAPHY.scale.body.size,
