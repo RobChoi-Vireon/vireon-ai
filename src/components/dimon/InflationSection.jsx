@@ -413,7 +413,7 @@ const EvolvesContent = () => (
   </motion.div>
 );
 
-const ConsequencesContent = ({ activeStakeholder, setActiveStakeholder }) => {
+const LeadsContent = ({ activeStakeholder, setActiveStakeholder }) => {
   const stakeholderHeadlines = {
     consumer: 'Purchasing power erodes despite wage gains',
     worker: 'Wage gains offset but do not erase pressure',
