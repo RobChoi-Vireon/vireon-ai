@@ -11,86 +11,158 @@ const SEMANTIC_COLORS = {
   sticky: 'rgba(255, 211, 122, 0.70)'
 };
 
-const GAPIndicator = ({ gap }) => {
+const GAPIndicator = ({ gap, activeTab = 'meaning' }) => {
+  // Context-aware ring emphasis
+  const getRingOpacity = (ringIndex) => {
+    const baseOpacity = [0.03, 0.05, 0.08, 0.12, 0.16];
+    if (activeTab === 'evolves' && ringIndex === 2) return baseOpacity[ringIndex] * 1.4;
+    if (activeTab === 'leads' && ringIndex === 4) return baseOpacity[ringIndex] * 1.3;
+    if (activeTab === 'meaning') return baseOpacity[ringIndex] * 0.92;
+    return baseOpacity[ringIndex];
+  };
+
   return (
     <motion.div 
       className="flex flex-col items-center justify-center relative" 
-      style={{ height: '260px' }}
+      style={{ height: '280px' }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
     >
-      {/* Enhanced horizon bloom - stronger presence */}
+      {/* Soft radial glow - energy concentration */}
       <div className="absolute" style={{
-        width: '280px',
-        height: '280px',
-        background: 'radial-gradient(ellipse at center, rgba(110, 180, 255, 0.14) 0%, rgba(110, 180, 255, 0.06) 40%, transparent 70%)',
-        filter: 'blur(32px)',
+        width: '320px',
+        height: '320px',
+        background: 'radial-gradient(ellipse at center, rgba(110, 180, 255, 0.16) 0%, rgba(110, 180, 255, 0.08) 35%, rgba(110, 180, 255, 0.02) 60%, transparent 75%)',
+        filter: 'blur(40px)',
         pointerEvents: 'none'
       }} />
       
-      {/* Concentric rings with depth fade */}
+      {/* Intelligence Core Rings — Varying thickness, opacity, radius */}
+      {/* Outer Ring 1 - Thinnest, fades into charcoal */}
+      <motion.div 
+        className="absolute" 
+        style={{
+          width: '240px',
+          height: '240px',
+          borderRadius: '50%',
+          border: '0.5px solid rgba(255,255,255,0.03)',
+          filter: 'blur(0.3px)'
+        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: getRingOpacity(0) }}
+        transition={{ duration: 0.28, delay: 0.25, ease: 'easeOut' }}
+      />
+      
+      {/* Outer Ring 2 */}
       <motion.div 
         className="absolute" 
         style={{
           width: '200px',
           height: '200px',
           borderRadius: '50%',
-          border: '1px solid rgba(255,255,255,0.04)',
-          filter: 'blur(0.5px)'
+          border: '0.75px solid rgba(255,255,255,0.05)',
+          filter: 'blur(0.4px)'
         }}
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-      />
-      <motion.div 
-        className="absolute" 
-        style={{
-          width: '150px',
-          height: '150px',
-          borderRadius: '50%',
-          border: '1px solid rgba(255,255,255,0.06)',
-          filter: 'blur(0.5px)'
-        }}
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      />
-      <motion.div 
-        className="absolute" 
-        style={{
-          width: '100px',
-          height: '100px',
-          borderRadius: '50%',
-          border: '1px solid rgba(255,255,255,0.10)',
-          filter: 'blur(0.5px)'
-        }}
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: getRingOpacity(1) }}
+        transition={{ duration: 0.26, delay: 0.30, ease: 'easeOut' }}
       />
       
-      {/* Luminance falloff layer */}
+      {/* Middle Ring - Context emphasis ring */}
+      <motion.div 
+        className="absolute" 
+        style={{
+          width: '160px',
+          height: '160px',
+          borderRadius: '50%',
+          border: '1px solid rgba(255,255,255,0.08)',
+          filter: 'blur(0.4px)'
+        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: getRingOpacity(2) }}
+        transition={{ duration: 0.24, delay: 0.35, ease: 'easeOut' }}
+      />
+      
+      {/* Inner Ring 1 - Brighter, thicker */}
+      <motion.div 
+        className="absolute" 
+        style={{
+          width: '120px',
+          height: '120px',
+          borderRadius: '50%',
+          border: '1.25px solid rgba(255,255,255,0.12)',
+          filter: 'blur(0.3px)'
+        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: getRingOpacity(3) }}
+        transition={{ duration: 0.22, delay: 0.40, ease: 'easeOut' }}
+      />
+      
+      {/* Core Ring - Brightest, with signature arc notch */}
+      <motion.div 
+        className="absolute" 
+        style={{
+          width: '80px',
+          height: '80px',
+          borderRadius: '50%'
+        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: getRingOpacity(4) }}
+        transition={{ duration: 0.20, delay: 0.45, ease: 'easeOut' }}
+      >
+        {/* Main ring */}
+        <svg width="80" height="80" viewBox="0 0 80 80" style={{ position: 'absolute', top: 0, left: 0 }}>
+          <circle
+            cx="40"
+            cy="40"
+            r="39"
+            fill="none"
+            stroke="rgba(255,255,255,0.16)"
+            strokeWidth="1.5"
+            style={{ filter: 'blur(0.3px)' }}
+          />
+          {/* Signature segmented arc - Vireon fingerprint */}
+          <path
+            d="M 40 1 A 39 39 0 0 1 68 12"
+            fill="none"
+            stroke="rgba(110, 180, 255, 0.22)"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeDasharray="2 3"
+            style={{ filter: 'blur(0.2px)' }}
+          />
+        </svg>
+      </motion.div>
+      
+      {/* Luminance concentration - inner glow */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div style={{
-          width: '240px',
-          height: '240px',
-          background: 'radial-gradient(circle at center, rgba(255,255,255,0.015) 0%, transparent 65%)',
+          width: '140px',
+          height: '140px',
+          background: 'radial-gradient(circle at center, rgba(255,255,255,0.020) 0%, rgba(255,255,255,0.008) 40%, transparent 70%)',
           borderRadius: '50%'
         }} />
       </div>
       
-      {/* Center state */}
+      {/* Center Intelligence Value - Anchored Typography */}
       <motion.div 
         className="relative z-10 flex flex-col items-center"
-        initial={{ opacity: 0, y: 4 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        initial={{ opacity: 0, filter: 'blur(3px)' }}
+        animate={{ opacity: 1, filter: 'blur(0px)' }}
+        transition={{ duration: 0.35, delay: 0.50, ease: 'easeOut' }}
       >
-        <div className="text-5xl font-bold mb-3" style={{ color: 'rgba(255,255,255,0.98)' }}>
-          {gap} pts
+        <div className="text-[56px] font-bold leading-none mb-2" style={{ 
+          color: 'rgba(255,255,255,0.98)',
+          letterSpacing: '-0.02em'
+        }}>
+          {gap}
         </div>
-        <div className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.55)', letterSpacing: '0.06em' }}>
+        <div className="text-[11px] font-medium tracking-wider" style={{ 
+          color: 'rgba(255,255,255,0.52)',
+          letterSpacing: '0.08em',
+          marginTop: '-2px'
+        }}>
           CPI vs PCE gap
         </div>
       </motion.div>
@@ -229,7 +301,7 @@ export default function InflationSection({ data }) {
 
       {/* GAP Visual Hero */}
       <div className="flex justify-center mb-16">
-        <GAPIndicator gap={gap} />
+        <GAPIndicator gap={gap} activeTab={activeTab} />
       </div>
 
       {/* KPI Strip - Softer */}
