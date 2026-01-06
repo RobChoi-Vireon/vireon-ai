@@ -11,86 +11,178 @@ const SEMANTIC_COLORS = {
   sticky: 'rgba(255, 211, 122, 0.70)'
 };
 
-const GAPIndicator = ({ gap }) => {
+const GAPIndicator = ({ gap, activeTab }) => {
+  // Contextual ring emphasis based on active tab
+  const getRingOpacity = (ring, baseOpacity) => {
+    if (activeTab === 'meaning') return baseOpacity * 0.85; // Calmer
+    if (activeTab === 'evolves' && ring === 'middle') return baseOpacity * 1.2; // Middle ring emphasized
+    if (activeTab === 'leads' && ring === 'outer') return baseOpacity * 1.15; // Outer ring more visible
+    return baseOpacity;
+  };
+
   return (
     <motion.div 
       className="flex flex-col items-center justify-center relative" 
-      style={{ height: '260px' }}
+      style={{ height: '280px' }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.5, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
     >
-      {/* Enhanced horizon bloom - stronger presence */}
-      <div className="absolute" style={{
-        width: '280px',
-        height: '280px',
-        background: 'radial-gradient(ellipse at center, rgba(110, 180, 255, 0.14) 0%, rgba(110, 180, 255, 0.06) 40%, transparent 70%)',
-        filter: 'blur(32px)',
-        pointerEvents: 'none'
-      }} />
-      
-      {/* Concentric rings with depth fade */}
+      {/* Soft radial glow - energy concentration */}
       <motion.div 
         className="absolute" 
         style={{
-          width: '200px',
-          height: '200px',
-          borderRadius: '50%',
-          border: '1px solid rgba(255,255,255,0.04)',
-          filter: 'blur(0.5px)'
+          width: '320px',
+          height: '320px',
+          background: 'radial-gradient(ellipse at center, rgba(110, 180, 255, 0.09) 0%, rgba(110, 180, 255, 0.04) 35%, transparent 65%)',
+          filter: 'blur(40px)',
+          pointerEvents: 'none'
         }}
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
       />
+      
+      {/* Concentric Intelligence Rings - Varying Properties */}
+      
+      {/* Outer Ring 1 - Thinnest, Most Transparent */}
+      <motion.div 
+        className="absolute" 
+        style={{
+          width: '240px',
+          height: '240px',
+          borderRadius: '50%',
+          border: '0.5px solid rgba(255,255,255,0.03)',
+          opacity: getRingOpacity('outer', 1)
+        }}
+        initial={{ opacity: 0, filter: 'blur(2px)' }}
+        animate={{ opacity: getRingOpacity('outer', 1), filter: 'blur(0px)' }}
+        transition={{ duration: 0.25, delay: 0.25, ease: 'easeOut' }}
+      />
+      
+      {/* Outer Ring 2 - With Signature Segmented Arc */}
+      <motion.div 
+        className="absolute" 
+        style={{
+          width: '195px',
+          height: '195px',
+          borderRadius: '50%',
+          position: 'relative'
+        }}
+        initial={{ opacity: 0, filter: 'blur(2px)' }}
+        animate={{ opacity: 1, filter: 'blur(0px)' }}
+        transition={{ duration: 0.25, delay: 0.3, ease: 'easeOut' }}
+      >
+        <svg 
+          width="195" 
+          height="195" 
+          style={{ 
+            position: 'absolute', 
+            top: 0, 
+            left: 0,
+            transform: 'rotate(-45deg)'
+          }}
+        >
+          {/* Main ring */}
+          <circle
+            cx="97.5"
+            cy="97.5"
+            r="97"
+            fill="none"
+            stroke="rgba(255,255,255,0.045)"
+            strokeWidth="0.8"
+            opacity={getRingOpacity('outer', 1)}
+          />
+          {/* Vireon Signature: Faint segmented arc (30 degrees) */}
+          <circle
+            cx="97.5"
+            cy="97.5"
+            r="97"
+            fill="none"
+            stroke="rgba(110, 180, 255, 0.12)"
+            strokeWidth="1.5"
+            strokeDasharray="52 560"
+            strokeDashoffset="0"
+            opacity={getRingOpacity('outer', 0.8)}
+          />
+        </svg>
+      </motion.div>
+      
+      {/* Middle Ring - Emphasized */}
       <motion.div 
         className="absolute" 
         style={{
           width: '150px',
           height: '150px',
           borderRadius: '50%',
-          border: '1px solid rgba(255,255,255,0.06)',
-          filter: 'blur(0.5px)'
+          border: '1px solid rgba(255,255,255,0.055)',
+          opacity: getRingOpacity('middle', 1)
         }}
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        initial={{ opacity: 0, filter: 'blur(2px)' }}
+        animate={{ opacity: getRingOpacity('middle', 1), filter: 'blur(0px)' }}
+        transition={{ duration: 0.25, delay: 0.35, ease: 'easeOut' }}
       />
+      
+      {/* Inner Ring 1 - Brighter */}
       <motion.div 
         className="absolute" 
         style={{
-          width: '100px',
-          height: '100px',
+          width: '108px',
+          height: '108px',
           borderRadius: '50%',
-          border: '1px solid rgba(255,255,255,0.10)',
-          filter: 'blur(0.5px)'
+          border: '1.2px solid rgba(255,255,255,0.075)',
+          opacity: getRingOpacity('inner', 1)
         }}
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        initial={{ opacity: 0, filter: 'blur(2px)' }}
+        animate={{ opacity: getRingOpacity('inner', 1), filter: 'blur(0px)' }}
+        transition={{ duration: 0.25, delay: 0.4, ease: 'easeOut' }}
       />
       
-      {/* Luminance falloff layer */}
+      {/* Inner Ring 2 - Brightest, Thickest */}
+      <motion.div 
+        className="absolute" 
+        style={{
+          width: '70px',
+          height: '70px',
+          borderRadius: '50%',
+          border: '1.5px solid rgba(255,255,255,0.095)',
+          boxShadow: 'inset 0 0 12px rgba(110, 180, 255, 0.05)',
+          opacity: getRingOpacity('inner', 1)
+        }}
+        initial={{ opacity: 0, filter: 'blur(2px)' }}
+        animate={{ opacity: getRingOpacity('inner', 1), filter: 'blur(0px)' }}
+        transition={{ duration: 0.25, delay: 0.45, ease: 'easeOut' }}
+      />
+      
+      {/* Depth concentration layer */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div style={{
-          width: '240px',
-          height: '240px',
-          background: 'radial-gradient(circle at center, rgba(255,255,255,0.015) 0%, transparent 65%)',
+          width: '220px',
+          height: '220px',
+          background: 'radial-gradient(circle at center, rgba(255,255,255,0.012) 0%, transparent 60%)',
           borderRadius: '50%'
         }} />
       </div>
       
-      {/* Center state */}
+      {/* Center Intelligence State */}
       <motion.div 
         className="relative z-10 flex flex-col items-center"
-        initial={{ opacity: 0, y: 4 }}
+        initial={{ opacity: 0, y: 3 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.3, delay: 0.5, ease: 'easeOut' }}
+        style={{ gap: '6px' }}
       >
-        <div className="text-5xl font-bold mb-3" style={{ color: 'rgba(255,255,255,0.98)' }}>
+        <div className="text-[56px] font-black leading-none tracking-tight" style={{ 
+          color: 'rgba(255,255,255,0.98)',
+          textShadow: '0 1px 3px rgba(0,0,0,0.3)'
+        }}>
           {gap} pts
         </div>
-        <div className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.55)', letterSpacing: '0.06em' }}>
+        <div className="text-[11px] font-medium tracking-wide" style={{ 
+          color: 'rgba(255,255,255,0.48)',
+          letterSpacing: '0.08em',
+          textTransform: 'uppercase'
+        }}>
           CPI vs PCE gap
         </div>
       </motion.div>
@@ -229,7 +321,7 @@ export default function InflationSection({ data }) {
 
       {/* GAP Visual Hero */}
       <div className="flex justify-center mb-16">
-        <GAPIndicator gap={gap} />
+        <GAPIndicator gap={gap} activeTab={activeTab} />
       </div>
 
       {/* KPI Strip - Softer */}
