@@ -7,8 +7,6 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import DigestHeader from '@/components/dimon/DigestHeader';
 import PrioritySignalStrip from '@/components/dimon/PrioritySignalStrip';
 import ExecutiveTakeaway from '@/components/dimon/ExecutiveTakeaway';
-import InflationSection from '@/components/dimon/InflationSection';
-import EquilibriumPulse from '@/components/dimon/EquilibriumPulse';
 import ConsensusMeter from '@/components/dimon/ConsensusMeter';
 import DivergenceReport from '@/components/dimon/DivergenceReport';
 import CounterpointsPanel from '@/components/dimon/CounterpointsPanel';
@@ -19,6 +17,7 @@ import ImplicationsPanel from '@/components/dimon/ImplicationsPanel';
 import DigestSkeleton from '@/components/dimon/DigestSkeleton';
 import DegradedBanner from '@/components/dimon/DegradedBanner';
 import RetryWrapper from '@/components/core/RetryWrapper';
+import InflationSection from '@/components/dimon/InflationSection';
 
 // NOTE: Lazy loading components is a key performance optimization.
 // In a real build setup, these would be loaded asynchronously.
@@ -57,37 +56,6 @@ const MOCK_DATA = {
   target_date: '2025-01-20',
   model_version: 'mock-v1.0',
   sources_hash: 'sha256:mock-digest-hash-stable-seed',
-  inflation: {
-    cpi_headline_yoy: 3.4,
-    cpi_core_yoy: 3.9,
-    pce_headline_yoy: 2.6,
-    pce_core_yoy: 2.9,
-    cpi_mom: 0.3,
-    pce_mom: 0.2,
-    last_updated: '2025-01-15T08:30:00Z',
-    interpretation: 'Consumer prices remain elevated even as policy inflation cools.',
-    state_tag: 'Sticky',
-    policy_bias: 'Hawkish',
-    market_implications: [
-      'Rates stay higher longer',
-      'Valuations compressed',
-      'Dollar supported'
-    ]
-  },
-  equilibrium: {
-    score: 0.58,
-    volatility: 0.42,
-    dominant_force: 'rates',
-    forces: {
-      growth: 0.35,
-      rates: -0.52,
-      fx: 0.18,
-      geopolitics: -0.31
-    },
-    stability_index: 68,
-    summary: 'Tight policy offsetting growth resilience',
-    trend: 'deteriorating'
-  },
   priority_signals: [
     {
       tag: "Policy Shock",
@@ -403,7 +371,33 @@ const MOCK_DATA = {
   missing_sources: [],
   sla_adherence: true,
   sentiment_flow: { green: 28, blue: 44, red: 28 },
-  insight_line: "Markets are playing it safe — we found three areas where experts disagree about borrowing conditions."
+  insight_line: "Markets are playing it safe — we found three areas where experts disagree about borrowing conditions.",
+  inflation: {
+    cpi_headline_yoy: 3.4,
+    cpi_core_yoy: 3.9,
+    pce_headline_yoy: 2.6,
+    pce_core_yoy: 2.9,
+    cpi_mom: 0.3,
+    pce_mom: 0.2,
+    last_updated: "December 2025",
+    state_tag: "Sticky",
+    policy_bias: "Hawkish",
+    comparison_headline: "CPI running above PCE",
+    comparison_detail: "Shelter costs remain elevated in CPI, while PCE shows softer services inflation. Fed watches Core PCE most closely.",
+    interpretation_bullets: [
+      "Core inflation remains above the Fed's 2% target, with services prices showing persistence.",
+      "Housing costs are the primary driver of CPI strength, creating a wedge between CPI and PCE measures.",
+      "Month-over-month readings suggest disinflation has stalled, keeping pressure on monetary policy.",
+      "Labor market strength continues to support wage growth, limiting downside in services inflation."
+    ],
+    market_implications: [
+      { label: "Rates", direction: "up", note: "Higher for longer" },
+      { label: "Equities", direction: "down", note: "Multiple compression" },
+      { label: "Credit", direction: "neutral", note: "Spreads stable" },
+      { label: "USD", direction: "up", note: "Rate differential support" },
+      { label: "Risk", direction: "down", note: "Policy uncertainty" }
+    ]
+  }
 };
 
 // Main page component
@@ -696,7 +690,7 @@ export default function MacroSignalsPage() {
                   </motion.div>
                 )}
 
-                {/* 2.5) Inflation — NEW STANDALONE SECTION */}
+                {/* 2.5) Inflation Section */}
                 {digest.inflation && (
                   <motion.div 
                     variants={sectionVariants}
@@ -708,37 +702,18 @@ export default function MacroSignalsPage() {
                   </motion.div>
                 )}
 
-                {/* 3) Equilibrium — GLOBAL MACRO FORCES */}
-                {digest.equilibrium && (
-                  <motion.div 
-                    variants={sectionVariants}
-                    id="section-equilibrium" 
-                    data-section-order="3"
-                    className="col-span-12"
-                  >
-                    <EquilibriumPulse
-                      equilibriumScore={digest.equilibrium.score}
-                      volatility={digest.equilibrium.volatility}
-                      dominantForce={digest.equilibrium.dominant_force}
-                      forces={digest.equilibrium.forces}
-                      stabilityIndex={digest.equilibrium.stability_index}
-                      summary={digest.equilibrium.summary}
-                    />
-                  </motion.div>
-                )}
-
-                {/* 4) Global Holographic Map */}
+                {/* 3) Global Holographic Map */}
                 <motion.div 
                   variants={sectionVariants}
                   id="section-global-holographic-map" 
-                  data-section-order="4"
+                  data-section-order="3"
                   className="col-span-12"
                 >
                   <GlobalSignalLattice onOpenSignalDrawer={setSelectedSignal} />
                 </motion.div>
                 
-                {/* 5) Global Signals — OS HORIZON REFINED LAYOUT */}
-                <motion.div className="col-span-12" variants={sectionVariants} id="section-global-signals" data-section-order="5">
+                {/* 4) Global Signals — OS HORIZON REFINED LAYOUT */}
+                <motion.div className="col-span-12" variants={sectionVariants} id="section-global-signals" data-section-order="4">
                     <div className="mb-6 pl-2">
                         <h2 className="text-2xl font-bold mb-2" style={{ color: 'rgba(255,255,255,0.95)' }}>
                           Global Signals
@@ -766,38 +741,38 @@ export default function MacroSignalsPage() {
                     </div>
                 </motion.div>
 
-                {/* 6) Narrative Map */}
+                {/* 5) Narrative Map */}
                 {/* NOTE: NarrativeMap would be a great candidate for React.lazy() to code-split it */}
                 {digest.synthesis && (
                   <motion.div 
                     variants={sectionVariants}
                     id="section-narrative-map" 
-                    data-section-order="6"
+                    data-section-order="5"
                     className="col-span-12 relative z-10"
                   >
                     <NarrativeMap synthesis={digest.synthesis} density="compact" />
                   </motion.div>
                 )}
                 
-                {/* 7) Trusted Source Weighting */}
+                {/* 6) Trusted Source Weighting */}
                 {digest.sources && digest.sources.length > 0 && (
                    <motion.div 
                     variants={sectionVariants}
                     id="section-source-weighting" 
-                    data-section-order="7"
+                    data-section-order="6"
                     className="col-span-12"
                   >
                     <SourceGrid sources={digest.sources} density="compact" />
                   </motion.div>
                 )}
 
-                {/* 8) Strategic Implications & Trajectory */}
+                {/* 7) Strategic Implications & Trajectory */}
                  <div className="col-span-12 grid grid-cols-1 gap-6 md:gap-8">
                     {digest.strategic_implications && digest.strategic_implications.length > 0 && (
                       <motion.div 
                         variants={sectionVariants}
                         id="section-strategic-implications" 
-                        data-section-order="8"
+                        data-section-order="7"
                       >
                         <ImplicationsPanel implications={digest.strategic_implications} />
                       </motion.div>
@@ -806,19 +781,19 @@ export default function MacroSignalsPage() {
                       <motion.div 
                         variants={sectionVariants}
                         id="section-strategic-trajectory" 
-                        data-section-order="8"
+                        data-section-order="7"
                       >
                         <StrategicTrajectory trajectory={digest.trajectory} density="compact" />
                       </motion.div>
                     )}
                  </div>
 
-                {/* 9) Counterpoints & Blindspots */}
+                {/* 8) Counterpoints & Blindspots */}
                 {((digest.counterpoints && digest.counterpoints.length > 0) || (digest.blindspots && digest.blindspots.length > 0)) && (
                   <motion.div 
                     variants={sectionVariants}
                     id="section-counterpoints" 
-                    data-section-order="9"
+                    data-section-order="8"
                     className="col-span-12"
                   >
                     <CounterpointsPanel 
