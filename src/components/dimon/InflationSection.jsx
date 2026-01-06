@@ -13,49 +13,88 @@ const SEMANTIC_COLORS = {
 
 const GAPIndicator = ({ gap }) => {
   return (
-    <div className="flex flex-col items-center justify-center relative" style={{ height: '200px' }}>
-      {/* Concentric rings */}
+    <motion.div 
+      className="flex flex-col items-center justify-center relative" 
+      style={{ height: '260px' }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {/* Enhanced horizon bloom - stronger presence */}
       <div className="absolute" style={{
-        width: '160px',
-        height: '160px',
-        borderRadius: '50%',
-        border: '1px solid rgba(255,255,255,0.06)',
-        filter: 'blur(0.5px)'
-      }} />
-      <div className="absolute" style={{
-        width: '120px',
-        height: '120px',
-        borderRadius: '50%',
-        border: '1px solid rgba(255,255,255,0.08)',
-        filter: 'blur(0.5px)'
-      }} />
-      <div className="absolute" style={{
-        width: '80px',
-        height: '80px',
-        borderRadius: '50%',
-        border: '1px solid rgba(255,255,255,0.10)',
-        filter: 'blur(0.5px)'
-      }} />
-      
-      {/* Center state */}
-      <div className="relative z-10 flex flex-col items-center">
-        <div className="text-4xl font-bold mb-2" style={{ color: 'rgba(255,255,255,0.95)' }}>
-          {gap} pts
-        </div>
-        <div className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.50)', letterSpacing: '0.05em' }}>
-          CPI vs PCE gap
-        </div>
-      </div>
-      
-      {/* Horizon bloom */}
-      <div className="absolute" style={{
-        width: '200px',
-        height: '200px',
-        background: 'radial-gradient(ellipse at center, rgba(110, 180, 255, 0.08) 0%, transparent 70%)',
-        filter: 'blur(20px)',
+        width: '280px',
+        height: '280px',
+        background: 'radial-gradient(ellipse at center, rgba(110, 180, 255, 0.14) 0%, rgba(110, 180, 255, 0.06) 40%, transparent 70%)',
+        filter: 'blur(32px)',
         pointerEvents: 'none'
       }} />
-    </div>
+      
+      {/* Concentric rings with depth fade */}
+      <motion.div 
+        className="absolute" 
+        style={{
+          width: '200px',
+          height: '200px',
+          borderRadius: '50%',
+          border: '1px solid rgba(255,255,255,0.04)',
+          filter: 'blur(0.5px)'
+        }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+      />
+      <motion.div 
+        className="absolute" 
+        style={{
+          width: '150px',
+          height: '150px',
+          borderRadius: '50%',
+          border: '1px solid rgba(255,255,255,0.06)',
+          filter: 'blur(0.5px)'
+        }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      />
+      <motion.div 
+        className="absolute" 
+        style={{
+          width: '100px',
+          height: '100px',
+          borderRadius: '50%',
+          border: '1px solid rgba(255,255,255,0.10)',
+          filter: 'blur(0.5px)'
+        }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      />
+      
+      {/* Luminance falloff layer */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div style={{
+          width: '240px',
+          height: '240px',
+          background: 'radial-gradient(circle at center, rgba(255,255,255,0.015) 0%, transparent 65%)',
+          borderRadius: '50%'
+        }} />
+      </div>
+      
+      {/* Center state */}
+      <motion.div 
+        className="relative z-10 flex flex-col items-center"
+        initial={{ opacity: 0, y: 4 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <div className="text-5xl font-bold mb-3" style={{ color: 'rgba(255,255,255,0.98)' }}>
+          {gap} pts
+        </div>
+        <div className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.55)', letterSpacing: '0.06em' }}>
+          CPI vs PCE gap
+        </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
@@ -122,7 +161,6 @@ const TimeHorizon = ({ label, lines, arcProgress }) => {
 const DownstreamCard = ({ outcome, mechanism, icon: Icon, tint }) => {
   return (
     <motion.div
-      whileHover={{ y: -2, scale: 1.01 }}
       className="relative rounded-2xl overflow-hidden"
       style={{
         padding: '20px',
@@ -130,7 +168,13 @@ const DownstreamCard = ({ outcome, mechanism, icon: Icon, tint }) => {
         backdropFilter: 'blur(28px) saturate(165%)',
         WebkitBackdropFilter: 'blur(28px) saturate(165%)',
         border: '1px solid rgba(255,255,255,0.07)',
-        boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 2px 12px rgba(0,0,0,0.08)'
+        boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 2px 12px rgba(0,0,0,0.08)',
+        cursor: 'default'
+      }}
+      whileHover={{
+        y: -2,
+        boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 6px 24px rgba(0,0,0,0.12)',
+        transition: { duration: 0.20, ease: 'easeOut' }
       }}
     >
       <div className="flex items-center gap-3 mb-3">
@@ -198,12 +242,21 @@ export default function InflationSection({ data }) {
         ].map((kpi, idx) => (
           <motion.div
             key={idx}
-            className="flex flex-col items-center justify-center rounded-xl"
+            className="flex flex-col items-center justify-center rounded-xl transition-all"
             style={{
               padding: '18px',
               background: 'rgba(255,255,255,0.028)',
               border: '1px solid rgba(255,255,255,0.06)',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
+              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+              cursor: 'default'
+            }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.1 + (idx * 0.05), ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{
+              y: -2,
+              boxShadow: '0 6px 20px rgba(0,0,0,0.10)',
+              transition: { duration: 0.18, ease: 'easeOut' }
             }}
           >
             <div className="text-xs mb-1 text-center leading-tight" style={{ color: 'rgba(255,255,255,0.50)', whiteSpace: 'pre-line' }}>
@@ -228,18 +281,32 @@ export default function InflationSection({ data }) {
           { id: 'evolves', label: 'How This Evolves' },
           { id: 'leads', label: 'What This Leads To' }
         ].map((tab) => (
-          <button
+          <motion.button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className="text-sm font-medium transition-all"
+            className="text-sm font-medium relative"
             style={{
               color: activeTab === tab.id ? SEMANTIC_COLORS.policy : 'rgba(255,255,255,0.50)',
-              paddingBottom: '12px',
-              borderBottom: activeTab === tab.id ? `2px solid ${SEMANTIC_COLORS.policy}` : 'none'
+              paddingBottom: '12px'
+            }}
+            whileHover={{
+              color: activeTab === tab.id ? SEMANTIC_COLORS.policy : 'rgba(255,255,255,0.70)',
+              transition: { duration: 0.18, ease: 'easeOut' }
             }}
           >
             {tab.label}
-          </button>
+            {activeTab === tab.id && (
+              <motion.div
+                layoutId="activeTab"
+                className="absolute bottom-0 left-0 right-0"
+                style={{
+                  height: '2px',
+                  background: SEMANTIC_COLORS.policy
+                }}
+                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              />
+            )}
+          </motion.button>
         ))}
       </div>
 
@@ -248,10 +315,10 @@ export default function InflationSection({ data }) {
         {activeTab === 'meaning' && (
           <motion.div
             key="meaning"
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3, ease: HORIZON_EASE }}
+            exit={{ opacity: 0, y: -3 }}
+            transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
             className="grid grid-cols-1 md:grid-cols-3 gap-8"
           >
             <LearningColumn
@@ -278,10 +345,10 @@ export default function InflationSection({ data }) {
         {activeTab === 'evolves' && (
           <motion.div
             key="evolves"
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3, ease: HORIZON_EASE }}
+            exit={{ opacity: 0, y: -3 }}
+            transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
           >
             <TimeHorizon
@@ -322,10 +389,10 @@ export default function InflationSection({ data }) {
         {activeTab === 'leads' && (
           <motion.div
             key="leads"
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3, ease: HORIZON_EASE }}
+            exit={{ opacity: 0, y: -3 }}
+            transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
           >
             <DownstreamCard
@@ -362,10 +429,16 @@ export default function InflationSection({ data }) {
         )}
       </AnimatePresence>
 
-      {/* Transition zone fade at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none" style={{
-        background: 'linear-gradient(180deg, transparent 0%, rgba(16,18,22,0.8) 70%, rgba(11,14,19,1) 100%)',
+      {/* Enhanced transition zone - dissolve into background */}
+      <div className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none" style={{
+        background: 'linear-gradient(180deg, transparent 0%, rgba(16,18,22,0.6) 50%, rgba(13,15,19,0.9) 85%, rgba(11,14,19,1) 100%)',
         borderRadius: '0 0 28px 28px'
+      }} />
+      
+      {/* Quiet light diffusion at transition */}
+      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-3/4 h-20 pointer-events-none" style={{
+        background: 'radial-gradient(ellipse at center top, rgba(255,255,255,0.008) 0%, transparent 70%)',
+        filter: 'blur(20px)'
       }} />
     </div>
   );
