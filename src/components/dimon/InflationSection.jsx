@@ -1,437 +1,194 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
-import { TrendingUp, TrendingDown, Minus, DollarSign, Home, Activity } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
-const HORIZON_EASE = [0.22, 1, 0.36, 1];
-const HORIZON_SPRING = { stiffness: 60, damping: 20, mass: 1 };
+const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
 
-// OS Horizon liquid glass material tokens
-const GLASS = {
-  panel: {
-    background: 'rgba(18, 22, 28, 0.35)',
-    backdropFilter: 'blur(22px) saturate(170%) brightness(1.05)',
-    border: '1px solid rgba(255,255,255,0.08)',
-    boxShadow: 'inset 0 2px 16px rgba(0, 0, 0, 0.36), 0 24px 48px rgba(0, 0, 0, 0.32)'
-  },
-  card: {
-    background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)',
-    backdropFilter: 'blur(18px) saturate(165%)',
-    border: '1px solid rgba(255,255,255,0.08)',
-    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10), 0 4px 16px rgba(0,0,0,0.12)'
-  }
-};
-
+// Micro color system - extremely low saturation
 const SEMANTIC_COLORS = {
-  policy: '#6EB4FF',
-  consumer: '#C9B46B',
-  neutral: 'rgba(255,255,255,0.68)'
+  policy: 'rgba(110, 180, 255, 0.75)',
+  cooling: 'rgba(122, 237, 207, 0.70)',
+  sticky: 'rgba(255, 211, 122, 0.70)'
 };
 
-const InflationPressureCore = ({ gap, cpi, pce }) => {
-  const containerRef = useRef(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
-  
-  const x = useSpring(0, HORIZON_SPRING);
-  const y = useSpring(0, HORIZON_SPRING);
-
-  const handleMouseMove = (e) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    const deltaX = (e.clientX - centerX) / rect.width;
-    const deltaY = (e.clientY - centerY) / rect.height;
-    
-    x.set(deltaX * 8);
-    y.set(deltaY * 8);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    x.set(0);
-    y.set(0);
-  };
-
+const GAPIndicator = ({ gap }) => {
   return (
     <motion.div 
-      ref={containerRef}
-      className="relative flex flex-col items-center justify-center"
-      style={{ height: '420px' }}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={handleMouseLeave}
+      className="flex flex-col items-center justify-center relative" 
+      style={{ height: '260px' }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.6, delay: 0.2, ease: HORIZON_EASE }}
+      transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
     >
-      {/* Ambient glow environment */}
+      {/* Enhanced horizon bloom - stronger presence */}
+      <div className="absolute" style={{
+        width: '280px',
+        height: '280px',
+        background: 'radial-gradient(ellipse at center, rgba(110, 180, 255, 0.14) 0%, rgba(110, 180, 255, 0.06) 40%, transparent 70%)',
+        filter: 'blur(32px)',
+        pointerEvents: 'none'
+      }} />
+      
+      {/* Concentric rings with depth fade */}
       <motion.div 
-        className="absolute"
+        className="absolute" 
         style={{
-          width: '480px',
-          height: '480px',
-          background: 'radial-gradient(ellipse at center, rgba(201, 180, 107, 0.12) 0%, rgba(110, 180, 255, 0.08) 40%, transparent 70%)',
-          filter: 'blur(48px)',
-          pointerEvents: 'none'
+          width: '200px',
+          height: '200px',
+          borderRadius: '50%',
+          border: '1px solid rgba(255,255,255,0.04)',
+          filter: 'blur(0.5px)'
         }}
-        animate={{
-          opacity: [0.6, 0.8, 0.6],
-          scale: [1, 1.05, 1]
-        }}
-        transition={{
-          duration: 7,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
       />
-
-      {/* Outer ring - CPI (consumer inflation) */}
-      <motion.div
-        className="absolute"
+      <motion.div 
+        className="absolute" 
         style={{
-          width: '280px',
-          height: '280px',
+          width: '150px',
+          height: '150px',
           borderRadius: '50%',
-          border: '1.5px solid rgba(201, 180, 107, 0.25)',
-          background: 'radial-gradient(circle at 30% 30%, rgba(201, 180, 107, 0.08) 0%, transparent 50%)',
-          backdropFilter: 'blur(8px)',
-          boxShadow: 'inset 0 0 40px rgba(201, 180, 107, 0.06), 0 8px 32px rgba(0,0,0,0.2)',
-          x,
-          y
+          border: '1px solid rgba(255,255,255,0.06)',
+          filter: 'blur(0.5px)'
         }}
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ 
-          opacity: 1, 
-          scale: [1, 1.02, 1],
-        }}
-        transition={{
-          opacity: { duration: 0.5, delay: 0.3 },
-          scale: { duration: 6, repeat: Infinity, ease: "easeInOut" }
-        }}
-      >
-        {/* Specular highlight */}
-        <div style={{
-          position: 'absolute',
-          top: '18%',
-          left: '22%',
-          width: '35%',
-          height: '35%',
-          background: 'radial-gradient(ellipse at center, rgba(255,255,255,0.15) 0%, transparent 60%)',
-          borderRadius: '50%',
-          filter: 'blur(12px)'
-        }} />
-      </motion.div>
-
-      {/* Middle ring spacer */}
-      <motion.div
-        className="absolute"
-        style={{
-          width: '210px',
-          height: '210px',
-          borderRadius: '50%',
-          border: '1px solid rgba(255,255,255,0.04)'
-        }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.5 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
       />
-
-      {/* Inner core - PCE (policy inflation) */}
-      <motion.div
-        className="absolute"
+      <motion.div 
+        className="absolute" 
         style={{
-          width: '160px',
-          height: '160px',
+          width: '100px',
+          height: '100px',
           borderRadius: '50%',
-          border: '1.5px solid rgba(110, 180, 255, 0.30)',
-          background: 'radial-gradient(circle at 35% 35%, rgba(110, 180, 255, 0.12) 0%, rgba(110, 180, 255, 0.04) 50%, transparent 70%)',
-          backdropFilter: 'blur(12px)',
-          boxShadow: 'inset 0 0 40px rgba(110, 180, 255, 0.10), 0 4px 24px rgba(0,0,0,0.25)',
-          x: x.get() * 0.5,
-          y: y.get() * 0.5
+          border: '1px solid rgba(255,255,255,0.10)',
+          filter: 'blur(0.5px)'
         }}
-        initial={{ opacity: 0, scale: 0.85 }}
-        animate={{ 
-          opacity: 1, 
-          scale: [1, 1.03, 1]
-        }}
-        transition={{
-          opacity: { duration: 0.5, delay: 0.5 },
-          scale: { duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }
-        }}
-      >
-        {/* Inner glow */}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      />
+      
+      {/* Luminance falloff layer */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div style={{
-          position: 'absolute',
-          top: '20%',
-          left: '25%',
-          width: '40%',
-          height: '40%',
-          background: 'radial-gradient(ellipse at center, rgba(255,255,255,0.18) 0%, transparent 65%)',
-          borderRadius: '50%',
-          filter: 'blur(10px)'
+          width: '240px',
+          height: '240px',
+          background: 'radial-gradient(circle at center, rgba(255,255,255,0.015) 0%, transparent 65%)',
+          borderRadius: '50%'
         }} />
-      </motion.div>
-
-      {/* Center content */}
-      <motion.div
-        className="relative z-20 flex flex-col items-center"
-        style={{ x: x.get() * 0.3, y: y.get() * 0.3 }}
-        initial={{ opacity: 0, y: 8 }}
+      </div>
+      
+      {/* Center state */}
+      <motion.div 
+        className="relative z-10 flex flex-col items-center"
+        initial={{ opacity: 0, y: 4 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.7, ease: HORIZON_EASE }}
+        transition={{ duration: 0.5, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
       >
-        <div 
-          className="text-xs font-semibold mb-2 tracking-wider"
-          style={{ color: 'rgba(255,255,255,0.55)', letterSpacing: '0.08em' }}
-        >
-          GAP
+        <div className="text-5xl font-bold mb-3" style={{ color: 'rgba(255,255,255,0.98)' }}>
+          {gap} pts
         </div>
-        <div 
-          className="text-6xl font-bold mb-2"
-          style={{ 
-            color: 'rgba(255,255,255,0.98)',
-            textShadow: '0 4px 12px rgba(0,0,0,0.3)'
-          }}
-        >
-          {gap}%
+        <div className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.55)', letterSpacing: '0.06em' }}>
+          CPI vs PCE gap
         </div>
-        <motion.div
-          className="text-xs text-center px-4"
-          style={{ 
-            color: 'rgba(255,255,255,0.65)',
-            lineHeight: '1.5',
-            maxWidth: '240px'
-          }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 1.2 }}
-        >
-          Consumer inflation remains above policy comfort
-        </motion.div>
       </motion.div>
-
-      {/* Atmospheric particles */}
-      {[...Array(3)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute"
-          style={{
-            width: '4px',
-            height: '4px',
-            borderRadius: '50%',
-            background: 'rgba(255,255,255,0.3)',
-            filter: 'blur(1px)',
-            top: `${30 + i * 15}%`,
-            left: `${25 + i * 20}%`
-          }}
-          animate={{
-            y: [0, -20, 0],
-            opacity: [0.3, 0.6, 0.3]
-          }}
-          transition={{
-            duration: 4 + i,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: i * 0.8
-          }}
-        />
-      ))}
     </motion.div>
   );
 };
 
-const MetricCard = ({ label, value, description, icon: Icon }) => {
+const LearningColumn = ({ title, primary, secondary, watch }) => {
+  return (
+    <div className="space-y-3">
+      <h4 className="text-sm font-semibold mb-3" style={{ color: 'rgba(255,255,255,0.85)' }}>
+        {title}
+      </h4>
+      <div className="space-y-2">
+        <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.95)' }}>
+          {primary}
+        </p>
+        <p className="text-sm leading-relaxed" style={{ color: 'rgba(170,185,205,0.70)' }}>
+          {secondary}
+        </p>
+        {watch && (
+          <p className="text-xs mt-3" style={{ color: 'rgba(140,160,185,0.55)' }}>
+            {watch}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const TimeHorizon = ({ label, lines, arcProgress }) => {
+  const arcLength = 100;
+  const dashOffset = arcLength - (arcLength * arcProgress);
+  
+  return (
+    <div className="relative">
+      {/* Segmented progress arc */}
+      <div className="absolute -top-6 left-1/2 transform -translate-x-1/2">
+        <svg width="60" height="30" viewBox="0 0 60 30" fill="none">
+          <path
+            d="M 10 25 Q 30 5, 50 25"
+            stroke={SEMANTIC_COLORS.policy}
+            strokeWidth="1.5"
+            strokeDasharray="4 2"
+            strokeDashoffset={dashOffset}
+            opacity="0.35"
+            fill="none"
+          />
+        </svg>
+      </div>
+      
+      <div className="space-y-2 pt-2">
+        <div className="text-xs font-semibold" style={{ color: SEMANTIC_COLORS.policy }}>
+          {label}
+        </div>
+        {lines.map((line, idx) => (
+          <p key={idx} className="text-sm leading-relaxed" style={{ 
+            color: 'rgba(255,255,255,0.85)'
+          }}>
+            {line}
+          </p>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const DownstreamCard = ({ outcome, mechanism, icon: Icon, tint }) => {
   return (
     <motion.div
       className="relative rounded-2xl overflow-hidden"
       style={{
         padding: '20px',
-        ...GLASS.card,
+        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0%, rgba(255, 255, 255, 0.022) 100%)',
+        backdropFilter: 'blur(28px) saturate(165%)',
+        WebkitBackdropFilter: 'blur(28px) saturate(165%)',
+        border: '1px solid rgba(255,255,255,0.07)',
+        boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 2px 12px rgba(0,0,0,0.08)',
         cursor: 'default'
       }}
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: HORIZON_EASE }}
-      whileHover={{
-        y: -3,
-        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), 0 8px 32px rgba(0,0,0,0.16)',
-        transition: { duration: 0.22, ease: 'easeOut' }
-      }}
-    >
-      {/* Top rim light */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: '20%',
-        right: '20%',
-        height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
-        pointerEvents: 'none'
-      }} />
-
-      <div className="flex items-center justify-between mb-3">
-        <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.55)', letterSpacing: '0.05em', fontWeight: 500 }}>
-          {label}
-        </span>
-        {Icon && <Icon className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.35)' }} />}
-      </div>
-      
-      <div className="text-3xl font-bold mb-2" style={{ color: 'rgba(255,255,255,0.98)' }}>
-        {value}%
-      </div>
-      
-      <motion.div
-        className="text-xs"
-        style={{ color: 'rgba(255,255,255,0.48)', lineHeight: '1.4' }}
-        initial={{ opacity: 0 }}
-        whileHover={{ opacity: 1 }}
-        transition={{ duration: 0.2 }}
-      >
-        {description}
-      </motion.div>
-    </motion.div>
-  );
-};
-
-const IntelligenceSummary = () => {
-  return (
-    <motion.div
-      className="relative rounded-2xl overflow-hidden"
-      style={{
-        padding: '28px 32px',
-        ...GLASS.card,
-        maxWidth: '680px',
-        margin: '0 auto'
-      }}
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.3, ease: HORIZON_EASE }}
-    >
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: '15%',
-        right: '15%',
-        height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)'
-      }} />
-
-      <h3 
-        className="text-sm font-semibold mb-4" 
-        style={{ 
-          color: SEMANTIC_COLORS.neutral,
-          letterSpacing: '0.02em'
-        }}
-      >
-        Inflation — Sticky
-      </h3>
-      
-      <p 
-        className="text-base leading-relaxed"
-        style={{ 
-          color: 'rgba(255,255,255,0.85)',
-          lineHeight: '1.65'
-        }}
-      >
-        Consumer prices remain elevated even as policy inflation cools. The gap explains why inflation still feels high despite easing data.
-      </p>
-    </motion.div>
-  );
-};
-
-const ValuePill = ({ id, label, isActive, onClick }) => {
-  return (
-    <motion.button
-      onClick={() => onClick(id)}
-      className="relative px-5 py-2.5 rounded-full"
-      style={{
-        background: isActive 
-          ? 'rgba(110, 180, 255, 0.15)'
-          : 'rgba(255,255,255,0.04)',
-        border: `1px solid ${isActive ? 'rgba(110, 180, 255, 0.30)' : 'rgba(255,255,255,0.08)'}`,
-        color: isActive ? 'rgba(110, 180, 255, 0.95)' : 'rgba(255,255,255,0.60)',
-        fontSize: '13px',
-        fontWeight: 500,
-        cursor: 'pointer'
-      }}
-      whileHover={{
-        background: isActive 
-          ? 'rgba(110, 180, 255, 0.18)'
-          : 'rgba(255,255,255,0.06)',
-        transition: { duration: 0.18 }
-      }}
-      whileTap={{ scale: 0.97 }}
-    >
-      {label}
-      {isActive && (
-        <motion.div
-          layoutId="activePill"
-          className="absolute inset-0 rounded-full"
-          style={{
-            background: 'rgba(110, 180, 255, 0.08)',
-            zIndex: -1
-          }}
-          transition={{ duration: 0.25, ease: HORIZON_EASE }}
-        />
-      )}
-    </motion.button>
-  );
-};
-
-const ConsequenceCard = ({ title, description, icon: Icon }) => {
-  return (
-    <motion.div
-      className="relative rounded-2xl overflow-hidden"
-      style={{
-        padding: '24px',
-        ...GLASS.card,
-        cursor: 'default'
-      }}
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: HORIZON_EASE }}
       whileHover={{
         y: -2,
-        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), 0 6px 28px rgba(0,0,0,0.18)',
+        boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 6px 24px rgba(0,0,0,0.12)',
         transition: { duration: 0.20, ease: 'easeOut' }
       }}
     >
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: '20%',
-        right: '20%',
-        height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)'
-      }} />
-
-      <div className="flex items-start gap-3 mb-3">
+      <div className="flex items-center gap-3 mb-3">
         {Icon && (
-          <div 
-            className="w-8 h-8 rounded-full flex items-center justify-center"
-            style={{
-              background: 'rgba(255,255,255,0.06)',
-              border: '1px solid rgba(255,255,255,0.08)'
-            }}
-          >
-            <Icon className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.55)' }} strokeWidth={2} />
+          <div style={{ color: tint, opacity: 0.6 }}>
+            <Icon className="w-4 h-4" strokeWidth={2} />
           </div>
         )}
-        <h4 
-          className="font-semibold text-sm flex-1"
-          style={{ color: 'rgba(255,255,255,0.92)', lineHeight: '1.5' }}
-        >
-          {title}
+        <h4 className="font-semibold text-sm" style={{ color: 'rgba(255,255,255,0.95)' }}>
+          {outcome}
         </h4>
       </div>
-      
-      <p 
-        className="text-sm leading-relaxed"
-        style={{ color: 'rgba(255,255,255,0.68)', paddingLeft: '44px' }}
-      >
-        {description}
+      <p className="text-sm leading-relaxed" style={{ color: 'rgba(170,185,205,0.75)' }}>
+        {mechanism}
       </p>
     </motion.div>
   );
@@ -448,78 +205,112 @@ export default function InflationSection({ data }) {
     <div 
       className="relative" 
       style={{
-        background: 'linear-gradient(180deg, rgba(15,17,22,1) 0%, rgba(18,21,26,1) 60%, rgba(13,16,20,1) 100%)',
-        padding: '64px 40px 100px 40px',
+        background: 'linear-gradient(180deg, rgba(25,28,33,1) 0%, rgba(22,25,30,1) 100%)',
+        padding: '56px 32px 80px 32px',
         borderRadius: '28px',
         marginBottom: '48px'
       }}
     >
-      {/* Ambient environment glow */}
+      {/* Subtle vertical daylight gradient */}
       <div className="absolute inset-0 pointer-events-none" style={{
-        background: 'radial-gradient(ellipse at 50% 20%, rgba(201, 180, 107, 0.04) 0%, transparent 60%)',
+        background: 'linear-gradient(180deg, rgba(255,255,255,0.012) 0%, transparent 50%)',
         borderRadius: '28px'
       }} />
       
-      {/* Quiet top light */}
-      <div className="absolute top-0 left-0 right-0 h-32 pointer-events-none" style={{
-        background: 'linear-gradient(180deg, rgba(255,255,255,0.015) 0%, transparent 100%)',
-        borderRadius: '28px 28px 0 0'
-      }} />
-
-      {/* Hero: Inflation Pressure Core */}
-      <div className="mb-20">
-        <InflationPressureCore gap={gap} cpi={data.cpi_core_yoy} pce={data.pce_core_yoy} />
+      {/* Header */}
+      <div className="text-center mb-12">
+        <h2 className="text-2xl font-bold mb-2" style={{ color: 'rgba(255,255,255,0.98)' }}>
+          Inflation
+        </h2>
+        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>
+          CPI • PCE
+        </p>
       </div>
 
-      {/* Supporting metrics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
-        <MetricCard
-          label="CPI YoY"
-          value={data.cpi_headline_yoy}
-          description="What households feel"
-          icon={Home}
-        />
-        <MetricCard
-          label="Core CPI"
-          value={data.cpi_core_yoy}
-          description="Without food & energy"
-        />
-        <MetricCard
-          label="PCE YoY"
-          value={data.pce_headline_yoy}
-          description="What policy tracks"
-          icon={Activity}
-        />
-        <MetricCard
-          label="Core PCE"
-          value={data.pce_core_yoy}
-          description="Fed's preferred gauge"
-        />
+      {/* GAP Visual Hero */}
+      <div className="flex justify-center mb-16">
+        <GAPIndicator gap={gap} />
       </div>
 
-      {/* Intelligence summary */}
-      <div className="mb-16">
-        <IntelligenceSummary />
+      {/* KPI Strip - Softer */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+        {[
+          { label: 'CPI YoY', value: `${data.cpi_headline_yoy}%` },
+          { label: 'CPI (without food &\nenergy swings)', value: `${data.cpi_core_yoy}%` },
+          { label: 'PCE YoY', value: `${data.pce_headline_yoy}%` },
+          { label: 'PCE (without food &\nenergy swings)', value: `${data.pce_core_yoy}%` }
+        ].map((kpi, idx) => (
+          <motion.div
+            key={idx}
+            className="flex flex-col items-center justify-center rounded-xl transition-all"
+            style={{
+              padding: '18px',
+              background: 'rgba(255,255,255,0.028)',
+              border: '1px solid rgba(255,255,255,0.06)',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+              cursor: 'default'
+            }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.1 + (idx * 0.05), ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{
+              y: -2,
+              boxShadow: '0 6px 20px rgba(0,0,0,0.10)',
+              transition: { duration: 0.18, ease: 'easeOut' }
+            }}
+          >
+            <div className="text-xs mb-1 text-center leading-tight" style={{ color: 'rgba(255,255,255,0.50)', whiteSpace: 'pre-line' }}>
+              {kpi.label}
+            </div>
+            <div className="text-2xl font-bold" style={{ color: 'rgba(255,255,255,0.95)' }}>
+              {kpi.value}
+            </div>
+          </motion.div>
+        ))}
       </div>
 
-      {/* Value layers - pill navigation */}
-      <div className="flex justify-center gap-3 mb-14">
+      {/* Section Navigation Tabs */}
+      <div className="flex justify-center gap-8 mb-10 pb-4 relative">
+        <div className="absolute bottom-0 left-0 right-0 h-px" style={{
+          background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%)'
+        }} />
+      </div>
+      <div className="flex justify-center gap-8 mb-10">
         {[
           { id: 'meaning', label: 'What This Means' },
           { id: 'evolves', label: 'How This Evolves' },
           { id: 'leads', label: 'What This Leads To' }
-        ].map((mode) => (
-          <ValuePill
-            key={mode.id}
-            id={mode.id}
-            label={mode.label}
-            isActive={activeTab === mode.id}
-            onClick={setActiveTab}
-          />
+        ].map((tab) => (
+          <motion.button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className="text-sm font-medium relative"
+            style={{
+              color: activeTab === tab.id ? SEMANTIC_COLORS.policy : 'rgba(255,255,255,0.50)',
+              paddingBottom: '12px'
+            }}
+            whileHover={{
+              color: activeTab === tab.id ? SEMANTIC_COLORS.policy : 'rgba(255,255,255,0.70)',
+              transition: { duration: 0.18, ease: 'easeOut' }
+            }}
+          >
+            {tab.label}
+            {activeTab === tab.id && (
+              <motion.div
+                layoutId="activeTab"
+                className="absolute bottom-0 left-0 right-0"
+                style={{
+                  height: '2px',
+                  background: SEMANTIC_COLORS.policy
+                }}
+                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              />
+            )}
+          </motion.button>
         ))}
       </div>
 
-      {/* Mode content */}
+      {/* Tab Content */}
       <AnimatePresence mode="wait">
         {activeTab === 'meaning' && (
           <motion.div
@@ -527,26 +318,27 @@ export default function InflationSection({ data }) {
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -3 }}
-            transition={{ duration: 0.26, ease: HORIZON_EASE }}
-            className="max-w-4xl mx-auto space-y-6"
+            transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
           >
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <ConsequenceCard
-                title="CPI"
-                description="Everyday costs still feel high because rent and services change slowly."
-                icon={Home}
-              />
-              <ConsequenceCard
-                title="PCE"
-                description="People switch what they buy, so prices rise less in policy measures."
-                icon={Activity}
-              />
-              <ConsequenceCard
-                title="Meaning"
-                description="Rate decisions follow spending patterns, not consumer frustration."
-                icon={TrendingDown}
-              />
-            </div>
+            <LearningColumn
+              title="CPI"
+              primary="Everyday costs still feel high."
+              secondary="Because rent and services change slowly."
+              watch="Watch: rent and services."
+            />
+            <LearningColumn
+              title="PCE"
+              primary="People switch what they buy, so prices rise less."
+              secondary="Because people switch what they buy when prices rise."
+              watch="Watch: spending pullback."
+            />
+            <LearningColumn
+              title="Meaning"
+              primary="Rate decisions follow spending, not frustration."
+              secondary="Because inflation is tracked by what people keep buying."
+              watch="Watch: rate-cut timing."
+            />
           </motion.div>
         )}
 
@@ -556,24 +348,40 @@ export default function InflationSection({ data }) {
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -3 }}
-            transition={{ duration: 0.26, ease: HORIZON_EASE }}
-            className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5"
+            transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
           >
-            <ConsequenceCard
-              title="Now"
-              description="Prices stay stubborn in services because rent and wages take time to cool."
+            <TimeHorizon
+              label="Now"
+              lines={[
+                "Prices stay stubborn in services.",
+                "Because rent and wages take time to cool."
+              ]}
+              arcProgress={0.25}
             />
-            <ConsequenceCard
-              title="Near Term (~3m)"
-              description="Goods prices cool faster than services as supply improves."
+            <TimeHorizon
+              label="Near Term (~3m)"
+              lines={[
+                "Goods prices cool faster than services.",
+                "Because supply improves sooner than wages."
+              ]}
+              arcProgress={0.45}
             />
-            <ConsequenceCard
-              title="Medium Term (~6m)"
-              description="Services cool, but not evenly, as wage pressure fades gradually."
+            <TimeHorizon
+              label="Medium Term (~6m)"
+              lines={[
+                "Services cool, but not evenly.",
+                "Because wage pressure fades gradually."
+              ]}
+              arcProgress={0.65}
             />
-            <ConsequenceCard
-              title="Confirmation (~12m)"
-              description="Inflation moves closer to normal as slower demand shows up in prices."
+            <TimeHorizon
+              label="Confirmation (~12m)"
+              lines={[
+                "Inflation moves closer to normal.",
+                "Because slower demand finally shows up in prices."
+              ]}
+              arcProgress={0.85}
             />
           </motion.div>
         )}
@@ -584,33 +392,38 @@ export default function InflationSection({ data }) {
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -3 }}
-            transition={{ duration: 0.26, ease: HORIZON_EASE }}
-            className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-5"
+            transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
           >
-            <ConsequenceCard
-              title="Rates — Stay higher, longer"
-              description="Inflation cools slowly, keeping policy restrictive."
+            <DownstreamCard
+              outcome="Rates — Rates stay high longer"
+              mechanism="Because inflation cools slowly."
               icon={TrendingUp}
+              tint={SEMANTIC_COLORS.sticky}
             />
-            <ConsequenceCard
-              title="Stocks — Valuations remain compressed"
-              description="Higher rates reduce what investors will pay for future earnings."
+            <DownstreamCard
+              outcome="Stocks — Stock prices stay less 'expensive'"
+              mechanism="Because higher rates reduce what investors will pay."
               icon={TrendingDown}
+              tint={SEMANTIC_COLORS.sticky}
             />
-            <ConsequenceCard
-              title="Dollar — Stays supported"
-              description="US rates remain elevated relative to global peers."
-              icon={DollarSign}
-            />
-            <ConsequenceCard
-              title="Credit — Conditions remain tight"
-              description="Banks and markets wait for clearer signs of cooling."
-              icon={Activity}
-            />
-            <ConsequenceCard
-              title="Risk — Path remains uneven"
-              description="Cooling happens in waves, not straight lines."
+            <DownstreamCard
+              outcome="Loans — Borrowing stays tight"
+              mechanism="Because banks and markets wait for clearer cooling."
               icon={Minus}
+              tint="rgba(255,255,255,0.45)"
+            />
+            <DownstreamCard
+              outcome="Dollar — Dollar stays firm"
+              mechanism="Because US rates stay high compared to others."
+              icon={TrendingUp}
+              tint={SEMANTIC_COLORS.policy}
+            />
+            <DownstreamCard
+              outcome="Risk — The path stays uncertain"
+              mechanism="Because cooling happens in waves."
+              icon={Minus}
+              tint="rgba(255,255,255,0.45)"
             />
           </motion.div>
         )}
