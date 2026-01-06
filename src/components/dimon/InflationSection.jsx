@@ -4,9 +4,9 @@ import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
 
-// Micro color system - extremely low saturation
+// Micro color system - muted blues
 const SEMANTIC_COLORS = {
-  policy: 'rgba(110, 180, 255, 0.75)',
+  policy: 'rgba(100, 160, 240, 0.85)',
   cooling: 'rgba(122, 237, 207, 0.70)',
   sticky: 'rgba(255, 211, 122, 0.70)'
 };
@@ -15,29 +15,20 @@ const GAPIndicator = ({ gap }) => {
   return (
     <motion.div 
       className="flex flex-col items-center justify-center relative" 
-      style={{ height: '260px' }}
+      style={{ height: '280px' }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
     >
-      {/* Enhanced horizon bloom - stronger presence */}
-      <div className="absolute" style={{
-        width: '280px',
-        height: '280px',
-        background: 'radial-gradient(ellipse at center, rgba(110, 180, 255, 0.14) 0%, rgba(110, 180, 255, 0.06) 40%, transparent 70%)',
-        filter: 'blur(32px)',
-        pointerEvents: 'none'
-      }} />
-      
-      {/* Concentric rings with depth fade */}
+      {/* Concentric rings - more prominent */}
       <motion.div 
         className="absolute" 
         style={{
-          width: '200px',
-          height: '200px',
+          width: '240px',
+          height: '240px',
           borderRadius: '50%',
-          border: '1px solid rgba(255,255,255,0.04)',
-          filter: 'blur(0.5px)'
+          border: '1px solid rgba(100,130,180,0.25)',
+          boxShadow: '0 0 40px rgba(100,130,180,0.15)'
         }}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -46,11 +37,11 @@ const GAPIndicator = ({ gap }) => {
       <motion.div 
         className="absolute" 
         style={{
-          width: '150px',
-          height: '150px',
+          width: '180px',
+          height: '180px',
           borderRadius: '50%',
-          border: '1px solid rgba(255,255,255,0.06)',
-          filter: 'blur(0.5px)'
+          border: '1px solid rgba(100,130,180,0.30)',
+          boxShadow: '0 0 30px rgba(100,130,180,0.18)'
         }}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -59,26 +50,16 @@ const GAPIndicator = ({ gap }) => {
       <motion.div 
         className="absolute" 
         style={{
-          width: '100px',
-          height: '100px',
+          width: '120px',
+          height: '120px',
           borderRadius: '50%',
-          border: '1px solid rgba(255,255,255,0.10)',
-          filter: 'blur(0.5px)'
+          border: '1px solid rgba(100,130,180,0.35)',
+          boxShadow: '0 0 20px rgba(100,130,180,0.20)'
         }}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.4, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
       />
-      
-      {/* Luminance falloff layer */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div style={{
-          width: '240px',
-          height: '240px',
-          background: 'radial-gradient(circle at center, rgba(255,255,255,0.015) 0%, transparent 65%)',
-          borderRadius: '50%'
-        }} />
-      </div>
       
       {/* Center state */}
       <motion.div 
@@ -87,11 +68,11 @@ const GAPIndicator = ({ gap }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
       >
-        <div className="text-5xl font-bold mb-3" style={{ color: 'rgba(255,255,255,0.98)' }}>
-          {gap} pts
+        <div className="text-xs font-medium mb-2" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em' }}>
+          GAP
         </div>
-        <div className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.55)', letterSpacing: '0.06em' }}>
-          CPI vs PCE gap
+        <div className="text-5xl font-bold" style={{ color: 'rgba(255,255,255,0.95)' }}>
+          {gap}%
         </div>
       </motion.div>
     </motion.div>
@@ -164,16 +145,14 @@ const DownstreamCard = ({ outcome, mechanism, icon: Icon, tint }) => {
       className="relative rounded-2xl overflow-hidden"
       style={{
         padding: '20px',
-        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0%, rgba(255, 255, 255, 0.022) 100%)',
-        backdropFilter: 'blur(28px) saturate(165%)',
-        WebkitBackdropFilter: 'blur(28px) saturate(165%)',
-        border: '1px solid rgba(255,255,255,0.07)',
-        boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 2px 12px rgba(0,0,0,0.08)',
+        background: 'rgba(255,255,255,0.02)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        boxShadow: '0 2px 12px rgba(0,0,0,0.15)',
         cursor: 'default'
       }}
       whileHover={{
         y: -2,
-        boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 6px 24px rgba(0,0,0,0.12)',
+        boxShadow: '0 6px 24px rgba(0,0,0,0.25)',
         transition: { duration: 0.20, ease: 'easeOut' }
       }}
     >
@@ -205,25 +184,25 @@ export default function InflationSection({ data }) {
     <div 
       className="relative" 
       style={{
-        background: 'linear-gradient(180deg, rgba(25,28,33,1) 0%, rgba(22,25,30,1) 100%)',
+        background: 'linear-gradient(180deg, rgba(16,18,22,1) 0%, rgba(14,16,20,1) 100%)',
         padding: '56px 32px 80px 32px',
         borderRadius: '28px',
         marginBottom: '48px'
       }}
     >
-      {/* Subtle vertical daylight gradient */}
+      {/* Subtle vertical gradient */}
       <div className="absolute inset-0 pointer-events-none" style={{
-        background: 'linear-gradient(180deg, rgba(255,255,255,0.012) 0%, transparent 50%)',
+        background: 'linear-gradient(180deg, rgba(255,255,255,0.008) 0%, transparent 50%)',
         borderRadius: '28px'
       }} />
       
       {/* Header */}
-      <div className="text-center mb-12">
-        <h2 className="text-2xl font-bold mb-2" style={{ color: 'rgba(255,255,255,0.98)' }}>
-          Inflation
+      <div className="mb-12">
+        <h2 className="text-2xl font-bold mb-2" style={{ color: 'rgba(255,255,255,0.95)' }}>
+          Inflation — Sticky
         </h2>
-        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>
-          CPI • PCE
+        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.50)' }}>
+          Consumer prices remain elevated while policy inflation cools.
         </p>
       </div>
 
@@ -232,22 +211,22 @@ export default function InflationSection({ data }) {
         <GAPIndicator gap={gap} />
       </div>
 
-      {/* KPI Strip - Softer */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+      {/* KPI Strip */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         {[
-          { label: 'CPI YoY', value: `${data.cpi_headline_yoy}%` },
-          { label: 'CPI (without food &\nenergy swings)', value: `${data.cpi_core_yoy}%` },
-          { label: 'PCE YoY', value: `${data.pce_headline_yoy}%` },
-          { label: 'PCE (without food &\nenergy swings)', value: `${data.pce_core_yoy}%` }
+          { label: 'CPI YOY', value: `${data.cpi_headline_yoy}%`, sublabel: null },
+          { label: 'CORE CPI YOY', value: `${data.cpi_core_yoy}%`, sublabel: 'CORE' },
+          { label: 'PCE YOY', value: `${data.pce_headline_yoy}%`, sublabel: null },
+          { label: 'CORE PCE YOY', value: `${data.pce_core_yoy}%`, sublabel: 'CORE' }
         ].map((kpi, idx) => (
           <motion.div
             key={idx}
             className="flex flex-col items-center justify-center rounded-xl transition-all"
             style={{
-              padding: '18px',
-              background: 'rgba(255,255,255,0.028)',
-              border: '1px solid rgba(255,255,255,0.06)',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+              padding: '24px 18px',
+              background: 'rgba(255,255,255,0.015)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
               cursor: 'default'
             }}
             initial={{ opacity: 0, y: 8 }}
@@ -255,24 +234,29 @@ export default function InflationSection({ data }) {
             transition={{ duration: 0.4, delay: 0.1 + (idx * 0.05), ease: [0.22, 1, 0.36, 1] }}
             whileHover={{
               y: -2,
-              boxShadow: '0 6px 20px rgba(0,0,0,0.10)',
+              boxShadow: '0 6px 20px rgba(0,0,0,0.25)',
               transition: { duration: 0.18, ease: 'easeOut' }
             }}
           >
-            <div className="text-xs mb-1 text-center leading-tight" style={{ color: 'rgba(255,255,255,0.50)', whiteSpace: 'pre-line' }}>
+            <div className="text-xs mb-3 text-center font-medium" style={{ color: 'rgba(255,255,255,0.40)', letterSpacing: '0.05em' }}>
               {kpi.label}
             </div>
-            <div className="text-2xl font-bold" style={{ color: 'rgba(255,255,255,0.95)' }}>
+            <div className="text-3xl font-bold" style={{ color: 'rgba(255,255,255,0.95)' }}>
               {kpi.value}
             </div>
+            {kpi.sublabel && (
+              <div className="text-xs mt-2" style={{ color: 'rgba(255,255,255,0.35)', letterSpacing: '0.05em' }}>
+                {kpi.sublabel}
+              </div>
+            )}
           </motion.div>
         ))}
       </div>
 
       {/* Section Navigation Tabs */}
-      <div className="flex justify-center gap-8 mb-10 pb-4 relative">
+      <div className="flex justify-center gap-8 mb-10 pb-3 relative">
         <div className="absolute bottom-0 left-0 right-0 h-px" style={{
-          background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%)'
+          background: 'linear-gradient(90deg, transparent 0%, rgba(100,130,180,0.15) 50%, transparent 100%)'
         }} />
       </div>
       <div className="flex justify-center gap-8 mb-10">
