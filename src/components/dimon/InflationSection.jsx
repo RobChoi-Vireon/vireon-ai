@@ -59,7 +59,7 @@ const GAPIndicator = ({ gap }) => {
   );
 };
 
-const LearningColumn = ({ title, primary, secondary }) => {
+const LearningColumn = ({ title, primary, secondary, watch }) => {
   return (
     <div className="space-y-3">
       <h4 className="text-sm font-semibold mb-3" style={{ color: 'rgba(255,255,255,0.85)' }}>
@@ -72,6 +72,11 @@ const LearningColumn = ({ title, primary, secondary }) => {
         <p className="text-sm leading-relaxed" style={{ color: 'rgba(170,185,205,0.70)' }}>
           {secondary}
         </p>
+        {watch && (
+          <p className="text-xs mt-3" style={{ color: 'rgba(140,160,185,0.55)' }}>
+            {watch}
+          </p>
+        )}
       </div>
     </div>
   );
@@ -253,16 +258,19 @@ export default function InflationSection({ data }) {
               title="CPI"
               primary="Everyday costs still feel high."
               secondary="Because rent and services change slowly."
+              watch="Watch: rent and services."
             />
             <LearningColumn
               title="PCE"
-              primary="Spending shifts, so inflation looks cooler."
+              primary="People switch what they buy, so prices rise less."
               secondary="Because people switch what they buy when prices rise."
+              watch="Watch: spending pullback."
             />
             <LearningColumn
               title="Meaning"
-              primary="The Fed reacts to demand, not pain."
+              primary="Rate decisions follow spending, not frustration."
               secondary="Because inflation is tracked by what people keep buying."
+              watch="Watch: rate-cut timing."
             />
           </motion.div>
         )}
