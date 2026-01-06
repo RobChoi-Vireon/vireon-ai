@@ -1,41 +1,41 @@
-import Watchlist from './pages/Watchlist';
-import Reports from './pages/Reports';
-import SentimentHeatmap from './pages/SentimentHeatmap';
-import SmartTracker from './pages/SmartTracker';
+import Alerts from './pages/Alerts';
 import AlphaGeneration from './pages/AlphaGeneration';
+import AscensionDemo from './pages/AscensionDemo';
+import CapitalVault from './pages/CapitalVault';
 import EmergingThemes from './pages/EmergingThemes';
 import EventTracker from './pages/EventTracker';
 import Explore from './pages/Explore';
+import FinanceDictionary from './pages/FinanceDictionary';
 import Home from './pages/Home';
-import Alerts from './pages/Alerts';
 import Insights from './pages/Insights';
 import LiveFeed from './pages/LiveFeed';
-import FinanceDictionary from './pages/FinanceDictionary';
-import CapitalVault from './pages/CapitalVault';
-import MacroSignals from './pages/MacroSignals';
 import Me from './pages/Me';
-import AscensionDemo from './pages/AscensionDemo';
+import Reports from './pages/Reports';
+import SentimentHeatmap from './pages/SentimentHeatmap';
+import SmartTracker from './pages/SmartTracker';
+import Watchlist from './pages/Watchlist';
+import MacroSignals from './pages/MacroSignals';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Watchlist": Watchlist,
-    "Reports": Reports,
-    "SentimentHeatmap": SentimentHeatmap,
-    "SmartTracker": SmartTracker,
+    "Alerts": Alerts,
     "AlphaGeneration": AlphaGeneration,
+    "AscensionDemo": AscensionDemo,
+    "CapitalVault": CapitalVault,
     "EmergingThemes": EmergingThemes,
     "EventTracker": EventTracker,
     "Explore": Explore,
+    "FinanceDictionary": FinanceDictionary,
     "Home": Home,
-    "Alerts": Alerts,
     "Insights": Insights,
     "LiveFeed": LiveFeed,
-    "FinanceDictionary": FinanceDictionary,
-    "CapitalVault": CapitalVault,
-    "MacroSignals": MacroSignals,
     "Me": Me,
-    "AscensionDemo": AscensionDemo,
+    "Reports": Reports,
+    "SentimentHeatmap": SentimentHeatmap,
+    "SmartTracker": SmartTracker,
+    "Watchlist": Watchlist,
+    "MacroSignals": MacroSignals,
 }
 
 export const pagesConfig = {
