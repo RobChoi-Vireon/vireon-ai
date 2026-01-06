@@ -303,7 +303,51 @@ const SegmentedControl = ({ options, active, onChange }) => {
   );
 };
 
-const MeaningContent = () => (
+const StakeholderPills = ({ active, onChange }) => {
+  const stakeholders = [
+    { id: 'consumer', label: 'Consumer' },
+    { id: 'worker', label: 'Worker' },
+    { id: 'business', label: 'Business' },
+    { id: 'government', label: 'Government' },
+    { id: 'investor', label: 'Investor' }
+  ];
+
+  return (
+    <div className="flex flex-wrap gap-2 justify-center mb-8">
+      {stakeholders.map((stakeholder) => (
+        <motion.button
+          key={stakeholder.id}
+          onClick={() => onChange(stakeholder.id)}
+          className="px-5 py-2 rounded-full text-sm font-medium transition-all"
+          style={{
+            background: active === stakeholder.id 
+              ? 'rgba(110, 180, 255, 0.18)' 
+              : 'rgba(28, 32, 40, 0.45)',
+            border: active === stakeholder.id 
+              ? '1px solid rgba(110, 180, 255, 0.32)' 
+              : '1px solid rgba(255,255,255,0.06)',
+            color: active === stakeholder.id 
+              ? 'rgba(255,255,255,0.98)' 
+              : 'rgba(255,255,255,0.55)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)'
+          }}
+          whileHover={{
+            background: active === stakeholder.id 
+              ? 'rgba(110, 180, 255, 0.22)' 
+              : 'rgba(28, 32, 40, 0.60)',
+            color: 'rgba(255,255,255,0.92)'
+          }}
+          whileTap={{ scale: 0.96 }}
+        >
+          {stakeholder.label}
+        </motion.button>
+      ))}
+    </div>
+  );
+};
+
+const UnderstandingContent = () => (
   <motion.div
     initial={{ opacity: 0, y: 6 }}
     animate={{ opacity: 1, y: 0 }}
@@ -352,7 +396,7 @@ const MeaningContent = () => (
   </motion.div>
 );
 
-const EvolvesContent = () => (
+const TimeContent = () => (
   <motion.div
     initial={{ opacity: 0, y: 6 }}
     animate={{ opacity: 1, y: 0 }}
@@ -377,6 +421,149 @@ const EvolvesContent = () => (
     ))}
   </motion.div>
 );
+
+const ConsequencesContent = ({ activeStakeholder, setActiveStakeholder }) => {
+  const stakeholderHeadlines = {
+    consumer: 'Purchasing power erodes despite wage gains',
+    worker: 'Wage gains offset but do not erase pressure',
+    business: 'Margins compressed by input cost stickiness',
+    government: 'Fiscal space narrows as debt servicing rises',
+    investor: 'Asset returns lag inflation-adjusted expectations'
+  };
+
+  const downstreamEffects = [
+    { 
+      title: 'Rates', 
+      subtitle: 'Higher for longer',
+      desc: 'Because services inflation constrains policy easing',
+      icon: TrendingUp, 
+      color: 'rgba(255, 180, 120, 0.85)' 
+    },
+    { 
+      title: 'Equities', 
+      subtitle: 'Multiple compression',
+      desc: 'Because elevated discount rates persist',
+      icon: TrendingDown, 
+      color: 'rgba(180, 140, 255, 0.75)' 
+    },
+    { 
+      title: 'Credit', 
+      subtitle: 'Spreads stable',
+      desc: 'Because growth holds while policy waits',
+      icon: Minus, 
+      color: 'rgba(110, 200, 180, 0.80)' 
+    },
+    { 
+      title: 'USD', 
+      subtitle: 'Rate differential support',
+      desc: 'Because US rates stay elevated vs peers',
+      icon: DollarSign, 
+      color: 'rgba(110, 180, 255, 0.75)' 
+    },
+    { 
+      title: 'Risk', 
+      subtitle: 'Policy uncertainty',
+      desc: 'Because inflation path remains unclear',
+      icon: TrendingDown, 
+      color: 'rgba(255, 160, 140, 0.75)' 
+    }
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -4 }}
+      transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+      className="max-w-6xl mx-auto"
+    >
+      {/* Stakeholder Pills */}
+      <StakeholderPills active={activeStakeholder} onChange={setActiveStakeholder} />
+
+      {/* Headline */}
+      <motion.div 
+        className="text-center mb-12"
+        key={activeStakeholder}
+        initial={{ opacity: 0, y: 4 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.22 }}
+      >
+        <p className="text-base" style={{ 
+          color: 'rgba(255,255,255,0.92)',
+          fontWeight: 500,
+          letterSpacing: '-0.005em'
+        }}>
+          {stakeholderHeadlines[activeStakeholder]}
+        </p>
+      </motion.div>
+
+      {/* Downstream Effects */}
+      <div className="mb-8">
+        <h3 className="text-sm font-semibold mb-6" style={{ 
+          color: 'rgba(255,255,255,0.65)',
+          letterSpacing: '0.02em'
+        }}>
+          Downstream Effects
+        </h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {downstreamEffects.map((item, idx) => (
+            <motion.div
+              key={idx}
+              className="relative rounded-2xl overflow-hidden p-5"
+              style={{
+                background: 'rgba(28, 32, 40, 0.38)',
+                backdropFilter: 'blur(22px)',
+                WebkitBackdropFilter: 'blur(22px)',
+                border: '1px solid rgba(255,255,255,0.06)',
+                boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.06), 0 3px 14px rgba(0,0,0,0.18)'
+              }}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: idx * 0.05 }}
+              whileHover={{
+                y: -1.5,
+                boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 6px 24px rgba(0,0,0,0.24)',
+                transition: { duration: 0.22, ease: 'easeOut' }
+              }}
+            >
+              <div className="flex items-start gap-3.5 mb-3">
+                <div 
+                  className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+                  style={{ 
+                    background: `${item.color}14`,
+                    border: `1px solid ${item.color}22`
+                  }}
+                >
+                  <item.icon className="w-4 h-4" style={{ color: item.color }} strokeWidth={2} />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-sm mb-0.5" style={{ 
+                    color: 'rgba(255,255,255,0.96)',
+                    letterSpacing: '-0.005em'
+                  }}>
+                    {item.title}
+                  </h4>
+                  <p className="text-xs" style={{ 
+                    color: 'rgba(180,195,215,0.65)'
+                  }}>
+                    {item.subtitle}
+                  </p>
+                </div>
+              </div>
+              <p className="text-sm leading-relaxed" style={{ 
+                color: 'rgba(185,200,220,0.76)',
+                lineHeight: '1.52'
+              }}>
+                {item.desc}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
 const LeadsContent = () => (
   <motion.div
@@ -441,16 +628,17 @@ const LeadsContent = () => (
 );
 
 export default function InflationSection({ data }) {
-  const [activeTab, setActiveTab] = useState('meaning');
+  const [activeTab, setActiveTab] = useState('understanding');
+  const [activeStakeholder, setActiveStakeholder] = useState('worker');
   
   if (!data) return null;
 
   const gap = Math.abs(data.cpi_core_yoy - data.pce_core_yoy).toFixed(1);
 
   const tabs = [
-    { id: 'meaning', label: 'What This Means' },
-    { id: 'evolves', label: 'How This Evolves' },
-    { id: 'leads', label: 'What This Leads To' }
+    { id: 'understanding', label: 'Understanding' },
+    { id: 'time', label: 'Time' },
+    { id: 'consequences', label: 'Consequences' }
   ];
 
   return (
@@ -526,9 +714,15 @@ export default function InflationSection({ data }) {
 
       {/* Tab Content */}
       <AnimatePresence mode="wait">
-        {activeTab === 'meaning' && <MeaningContent key="meaning" />}
-        {activeTab === 'evolves' && <EvolvesContent key="evolves" />}
-        {activeTab === 'leads' && <LeadsContent key="leads" />}
+        {activeTab === 'understanding' && <UnderstandingContent key="understanding" />}
+        {activeTab === 'time' && <TimeContent key="time" />}
+        {activeTab === 'consequences' && (
+          <ConsequencesContent 
+            key="consequences" 
+            activeStakeholder={activeStakeholder}
+            setActiveStakeholder={setActiveStakeholder}
+          />
+        )}
       </AnimatePresence>
 
       {/* Bottom fade transition */}
