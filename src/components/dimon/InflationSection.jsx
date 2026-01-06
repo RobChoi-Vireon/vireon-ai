@@ -1,98 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
-import { Info, ChevronDown, ChevronUp, ArrowRight } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, DollarSign } from 'lucide-react';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
-
-// OS Horizon Palette — No Orange
-const HORIZON_COLORS = {
-  deepBlue: 'rgba(110, 180, 255, 0.85)',
-  coolTeal: 'rgba(122, 237, 207, 0.70)',
-  fogGray: 'rgba(180, 195, 215, 0.65)',
-  graphite: 'rgba(140, 160, 185, 0.50)'
-};
-
-const CollapsibleDisclaimer = () => {
-  const [isExpanded, setIsExpanded] = useState(true);
-
-  return (
-    <motion.div
-      className="mb-10 max-w-3xl mx-auto"
-      initial={{ opacity: 0, y: -6 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: HORIZON_EASE }}
-    >
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full text-left rounded-2xl p-4 transition-colors"
-        style={{
-          background: 'rgba(22, 26, 34, 0.55)',
-          border: '1px solid rgba(110, 180, 255, 0.15)',
-          backdropFilter: 'blur(18px)',
-          WebkitBackdropFilter: 'blur(18px)'
-        }}
-      >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <Info className="w-4 h-4" style={{ color: HORIZON_COLORS.deepBlue }} />
-            <span className="text-xs font-medium" style={{ 
-              color: HORIZON_COLORS.deepBlue,
-              fontFamily: 'SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif'
-            }}>
-              About These Metrics
-            </span>
-          </div>
-          {isExpanded ? (
-            <ChevronUp className="w-4 h-4" style={{ color: HORIZON_COLORS.fogGray }} />
-          ) : (
-            <ChevronDown className="w-4 h-4" style={{ color: HORIZON_COLORS.fogGray }} />
-          )}
-        </div>
-      </button>
-      
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: HORIZON_EASE }}
-            className="overflow-hidden"
-          >
-            <div className="pt-3 pb-1 px-4">
-              <div className="space-y-2 text-sm leading-relaxed" style={{ 
-                color: 'rgba(200,210,225,0.80)',
-                fontFamily: 'SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif'
-              }}>
-                <p>CPI shows how prices are moving.</p>
-                <p>PCE shows how people are actually spending.</p>
-                <p>Together, they reveal whether inflation is easing or just shifting.</p>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  );
-};
-
-const SignalCapsule = ({ text }) => (
-  <motion.div
-    className="text-center mb-12"
-    initial={{ opacity: 0, y: 10 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.6, delay: 0.15, ease: HORIZON_EASE }}
-  >
-    <h3 className="text-lg font-medium tracking-wide" style={{
-      color: 'rgba(255,255,255,0.92)',
-      fontFamily: 'SF Pro Display, -apple-system, BlinkMacSystemFont, sans-serif',
-      letterSpacing: '0.02em',
-      lineHeight: '1.4'
-    }}>
-      {text}
-    </h3>
-  </motion.div>
-);
 
 const InflationHeroOrb = ({ gap }) => {
   const containerRef = useRef(null);
@@ -141,10 +51,11 @@ const InflationHeroOrb = ({ gap }) => {
     <div 
       ref={containerRef}
       className="flex items-center justify-center relative" 
-      style={{ height: '400px', width: '100%', marginTop: '30px', marginBottom: '50px' }}
+      style={{ height: '420px', width: '100%', marginTop: '40px', marginBottom: '60px' }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
+      {/* Ambient foundation glow */}
       <motion.div 
         className="absolute pointer-events-none" 
         style={{
@@ -158,6 +69,7 @@ const InflationHeroOrb = ({ gap }) => {
         transition={{ duration: 1.2, ease: 'easeInOut' }}
       />
       
+      {/* Orb system */}
       <motion.div
         className="relative"
         style={{
@@ -165,6 +77,7 @@ const InflationHeroOrb = ({ gap }) => {
           y: parallaxY
         }}
       >
+        {/* Outer ring - largest, most subtle */}
         <motion.div 
           style={{
             width: '320px',
@@ -180,9 +93,10 @@ const InflationHeroOrb = ({ gap }) => {
           }}
           initial={{ opacity: 0, scale: 0.88 }}
           animate={{ opacity: 0.30, scale: breathScale * 0.997 }}
-          transition={{ duration: 1, delay: 0.1, ease: HORIZON_EASE }}
+          transition={{ duration: 1, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
         />
 
+        {/* Middle ring */}
         <motion.div 
           style={{
             width: '240px',
@@ -198,9 +112,10 @@ const InflationHeroOrb = ({ gap }) => {
           }}
           initial={{ opacity: 0, scale: 0.88 }}
           animate={{ opacity: 0.45, scale: breathScale * 0.998 }}
-          transition={{ duration: 1, delay: 0.2, ease: HORIZON_EASE }}
+          transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
         />
 
+        {/* Inner ring - brightest */}
         <motion.div 
           style={{
             width: '180px',
@@ -216,9 +131,10 @@ const InflationHeroOrb = ({ gap }) => {
           }}
           initial={{ opacity: 0, scale: 0.88 }}
           animate={{ opacity: 0.60, scale: breathScale * 0.999 }}
-          transition={{ duration: 1, delay: 0.3, ease: HORIZON_EASE }}
+          transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
         />
 
+        {/* Core orb */}
         <motion.div 
           style={{
             width: '140px',
@@ -244,8 +160,9 @@ const InflationHeroOrb = ({ gap }) => {
           }}
           initial={{ opacity: 0, scale: 0.80 }}
           animate={{ opacity: 1, scale: breathScale }}
-          transition={{ duration: 1, delay: 0.4, ease: HORIZON_EASE }}
+          transition={{ duration: 1, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
         >
+          {/* Glass specular highlight */}
           <div style={{
             position: 'absolute',
             top: '20%',
@@ -258,6 +175,7 @@ const InflationHeroOrb = ({ gap }) => {
             pointerEvents: 'none'
           }} />
 
+          {/* Core text */}
           <motion.div 
             className="relative z-10 text-center"
             initial={{ opacity: 0 }}
@@ -300,7 +218,7 @@ const MetricCard = ({ label, value, isCore, delay }) => {
       }}
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.55, delay, ease: HORIZON_EASE }}
+      transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{
         y: -2,
         boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 32px rgba(0,0,0,0.28)',
@@ -339,223 +257,201 @@ const MetricCard = ({ label, value, isCore, delay }) => {
   );
 };
 
-const InsightCard = ({ text, delay }) => (
-  <motion.div
-    className="flex-shrink-0 w-80 p-6 rounded-2xl"
-    style={{
-      background: 'rgba(28, 32, 40, 0.40)',
-      backdropFilter: 'blur(24px)',
-      WebkitBackdropFilter: 'blur(24px)',
-      border: '1px solid rgba(110, 180, 255, 0.12)',
-      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04), 0 4px 16px rgba(0,0,0,0.18)'
-    }}
-    initial={{ opacity: 0, x: 20 }}
-    animate={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.5, delay, ease: HORIZON_EASE }}
-    whileHover={{
-      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 28px rgba(110, 180, 255, 0.15)',
-      transition: { duration: 0.22 }
-    }}
-  >
-    <p className="text-sm leading-relaxed" style={{
-      color: 'rgba(220,230,245,0.92)',
-      fontFamily: 'SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif',
-      lineHeight: '1.6'
-    }}>
-      {text}
-    </p>
-  </motion.div>
-);
-
-const InsightCardsRow = () => (
-  <div className="mb-16">
-    <div className="overflow-x-auto pb-4 -mx-8 px-8" style={{ scrollbarWidth: 'thin' }}>
-      <div className="flex gap-4 min-w-max">
-        <InsightCard text="Inflation is cooling, but not evenly." delay={0.1} />
-        <InsightCard text="Housing remains the main source of pressure." delay={0.15} />
-        <InsightCard text="Goods inflation is no longer the problem." delay={0.2} />
-        <InsightCard text="Services keep overall inflation elevated." delay={0.25} />
-      </div>
+const SegmentedControl = ({ options, active, onChange }) => {
+  return (
+    <div 
+      className="inline-flex rounded-2xl p-1.5"
+      style={{
+        background: 'rgba(22, 26, 34, 0.65)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04), 0 4px 16px rgba(0,0,0,0.15)'
+      }}
+    >
+      {options.map((option) => (
+        <motion.button
+          key={option.id}
+          onClick={() => onChange(option.id)}
+          className="relative px-7 py-2.5 rounded-xl text-sm font-medium"
+          style={{
+            color: active === option.id ? 'rgba(255,255,255,0.98)' : 'rgba(255,255,255,0.48)',
+            fontFamily: 'SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif',
+            zIndex: active === option.id ? 2 : 1
+          }}
+          whileHover={{
+            color: active === option.id ? 'rgba(255,255,255,0.98)' : 'rgba(255,255,255,0.72)'
+          }}
+          whileTap={{ scale: 0.97 }}
+        >
+          {active === option.id && (
+            <motion.div
+              layoutId="activeSegmentGlow"
+              className="absolute inset-0 rounded-xl"
+              style={{
+                background: 'linear-gradient(135deg, rgba(110, 180, 255, 0.24) 0%, rgba(110, 180, 255, 0.16) 100%)',
+                border: '1px solid rgba(110, 180, 255, 0.32)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), 0 4px 18px rgba(110, 180, 255, 0.20)'
+              }}
+              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            />
+          )}
+          <span className="relative z-10">{option.label}</span>
+        </motion.button>
+      ))}
     </div>
-  </div>
-);
+  );
+};
 
-const FlowCard = ({ number, text, delay }) => (
+const MeaningContent = () => (
   <motion.div
-    className="relative p-6 rounded-2xl"
-    style={{
-      background: 'rgba(28, 32, 40, 0.38)',
-      border: '1px solid rgba(110, 180, 255, 0.10)',
-      backdropFilter: 'blur(20px)',
-      WebkitBackdropFilter: 'blur(20px)',
-      boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.04)'
-    }}
-    initial={{ opacity: 0, y: 12 }}
+    initial={{ opacity: 0, y: 6 }}
     animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5, delay, ease: HORIZON_EASE }}
+    exit={{ opacity: 0, y: -4 }}
+    transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+    className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-5xl mx-auto"
   >
-    <div className="flex items-start gap-4">
-      <div 
-        className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
-        style={{
-          background: 'rgba(110, 180, 255, 0.15)',
-          color: HORIZON_COLORS.deepBlue
-        }}
-      >
-        {number}
-      </div>
-      <p className="text-sm leading-relaxed flex-1" style={{
-        color: 'rgba(210,220,235,0.88)',
-        fontFamily: 'SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif',
-        lineHeight: '1.6'
-      }}>
-        {text}
+    <div className="space-y-3">
+      <h4 className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.88)' }}>CPI</h4>
+      <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.95)' }}>
+        Everyday costs still feel high.
+      </p>
+      <p className="text-sm leading-relaxed" style={{ color: 'rgba(170,185,205,0.68)' }}>
+        Because rent and services change slowly.
+      </p>
+      <p className="text-xs mt-3" style={{ color: 'rgba(140,160,185,0.52)' }}>
+        Watch: rent and services.
+      </p>
+    </div>
+    
+    <div className="space-y-3">
+      <h4 className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.88)' }}>PCE</h4>
+      <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.95)' }}>
+        People switch what they buy, so prices rise less.
+      </p>
+      <p className="text-sm leading-relaxed" style={{ color: 'rgba(170,185,205,0.68)' }}>
+        Because people switch what they buy when prices rise.
+      </p>
+      <p className="text-xs mt-3" style={{ color: 'rgba(140,160,185,0.52)' }}>
+        Watch: spending pullback.
+      </p>
+    </div>
+    
+    <div className="space-y-3">
+      <h4 className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.88)' }}>Meaning</h4>
+      <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.95)' }}>
+        Rate decisions follow spending, not frustration.
+      </p>
+      <p className="text-sm leading-relaxed" style={{ color: 'rgba(170,185,205,0.68)' }}>
+        Because inflation is tracked by what people keep buying.
+      </p>
+      <p className="text-xs mt-3" style={{ color: 'rgba(140,160,185,0.52)' }}>
+        Watch: rate-cut timing.
       </p>
     </div>
   </motion.div>
 );
 
-const WhyThisMattersFlow = () => (
-  <div className="max-w-3xl mx-auto space-y-4 mb-16">
-    <FlowCard 
-      number="1" 
-      text="CPI shows inflation slowing, but unevenly." 
-      delay={0.1} 
-    />
-    <FlowCard 
-      number="2" 
-      text="PCE confirms pressure is easing faster beneath the surface." 
-      delay={0.15} 
-    />
-    <FlowCard 
-      number="3" 
-      text="Policymakers focus more on PCE than headlines." 
-      delay={0.2} 
-    />
-    <FlowCard 
-      number="4" 
-      text="Markets react to persistence, not direction." 
-      delay={0.25} 
-    />
-  </div>
-);
-
-const EffectTile = ({ cause, effect, delay }) => (
+const EvolvesContent = () => (
   <motion.div
-    className="p-6 rounded-2xl"
-    style={{
-      background: 'rgba(28, 32, 40, 0.35)',
-      border: '1px solid rgba(110, 180, 255, 0.08)',
-      backdropFilter: 'blur(20px)',
-      WebkitBackdropFilter: 'blur(20px)'
-    }}
-    initial={{ opacity: 0, y: 10 }}
+    initial={{ opacity: 0, y: 6 }}
     animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5, delay, ease: HORIZON_EASE }}
-    whileHover={{
-      boxShadow: '0 6px 24px rgba(110, 180, 255, 0.12)',
-      transition: { duration: 0.22 }
-    }}
+    exit={{ opacity: 0, y: -4 }}
+    transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto"
   >
-    <div className="space-y-3">
-      <div>
-        <div className="text-[10px] font-semibold tracking-wider mb-1.5" style={{ 
-          color: HORIZON_COLORS.graphite,
-          textTransform: 'uppercase'
-        }}>
-          Cause
+    {[
+      { label: 'Now', text: 'Prices stay stubborn in services. Because rent and wages take time to cool.' },
+      { label: 'Near Term (~3m)', text: 'Goods prices cool faster than services. Because supply improves sooner than wages.' },
+      { label: 'Medium Term (~6m)', text: 'Services cool, but not evenly. Because wage pressure fades gradually.' },
+      { label: 'Confirmation (~12m)', text: 'Inflation moves closer to normal. Because slower demand finally shows up in prices.' }
+    ].map((horizon, idx) => (
+      <div key={idx} className="space-y-2.5">
+        <div className="text-xs font-semibold tracking-wide" style={{ color: 'rgba(110, 180, 255, 0.85)' }}>
+          {horizon.label}
         </div>
-        <p className="text-sm font-medium" style={{ 
-          color: 'rgba(200,210,225,0.85)',
-          fontFamily: 'SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif'
-        }}>
-          {cause}
+        <p className="text-sm leading-relaxed" style={{ color: 'rgba(220,230,245,0.88)' }}>
+          {horizon.text}
         </p>
       </div>
-      <div className="flex items-center justify-center py-1">
-        <ArrowRight className="w-4 h-4" style={{ color: HORIZON_COLORS.deepBlue }} />
-      </div>
-      <div>
-        <div className="text-[10px] font-semibold tracking-wider mb-1.5" style={{ 
-          color: HORIZON_COLORS.graphite,
-          textTransform: 'uppercase'
-        }}>
-          Effect
-        </div>
-        <p className="text-sm font-medium" style={{ 
-          color: 'rgba(220,230,245,0.90)',
-          fontFamily: 'SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif'
-        }}>
-          {effect}
-        </p>
-      </div>
-    </div>
+    ))}
   </motion.div>
 );
 
-const DownstreamEffects = () => (
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto mb-16">
-    <EffectTile 
-      cause="Sticky housing" 
-      effect="Rate cuts get delayed." 
-      delay={0.1} 
-    />
-    <EffectTile 
-      cause="Services inflation" 
-      effect="Policy stays cautious." 
-      delay={0.15} 
-    />
-    <EffectTile 
-      cause="Cooling PCE" 
-      effect="Confidence builds slowly." 
-      delay={0.2} 
-    />
-  </div>
-);
-
-const LearningOutcome = ({ text, delay }) => (
+const LeadsContent = () => (
   <motion.div
-    className="p-5 rounded-xl"
-    style={{
-      background: 'rgba(28, 32, 40, 0.32)',
-      border: '1px solid rgba(110, 180, 255, 0.08)',
-      backdropFilter: 'blur(16px)',
-      WebkitBackdropFilter: 'blur(16px)'
-    }}
-    initial={{ opacity: 0, x: -10 }}
-    animate={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.5, delay, ease: HORIZON_EASE }}
+    initial={{ opacity: 0, y: 6 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -4 }}
+    transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto"
   >
-    <p className="text-sm leading-relaxed" style={{
-      color: 'rgba(210,220,235,0.88)',
-      fontFamily: 'SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif',
-      lineHeight: '1.6'
-    }}>
-      {text}
-    </p>
+    {[
+      { title: 'Rates — Stay higher, longer', desc: 'Borrowing costs remain elevated as inflation persists.', icon: TrendingUp, color: 'rgba(255, 180, 120, 0.85)' },
+      { title: 'Stocks — Valuations remain compressed', desc: 'Higher discount rates weigh on future earnings multiples.', icon: TrendingDown, color: 'rgba(180, 140, 255, 0.75)' },
+      { title: 'Dollar — Stays supported', desc: 'Rate differentials keep the dollar elevated against peers.', icon: DollarSign, color: 'rgba(110, 200, 180, 0.80)' },
+      { title: 'Credit — Conditions remain tight', desc: 'Lenders maintain caution until inflation clarity emerges.', icon: Minus, color: 'rgba(200, 200, 210, 0.65)' },
+      { title: 'Risk — Path remains uneven', desc: 'Volatility persists as policy uncertainty lingers.', icon: TrendingDown, color: 'rgba(255, 160, 140, 0.75)' }
+    ].map((item, idx) => (
+      <motion.div
+        key={idx}
+        className="relative rounded-2xl overflow-hidden p-6"
+        style={{
+          background: 'rgba(28, 32, 40, 0.38)',
+          backdropFilter: 'blur(22px)',
+          WebkitBackdropFilter: 'blur(22px)',
+          border: '1px solid rgba(255,255,255,0.06)',
+          boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.06), 0 3px 14px rgba(0,0,0,0.18)'
+        }}
+        whileHover={{
+          y: -1.5,
+          boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 6px 24px rgba(0,0,0,0.24)',
+          transition: { duration: 0.22, ease: 'easeOut' }
+        }}
+      >
+        <div className="flex items-start gap-3.5">
+          <div 
+            className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+            style={{ 
+              background: `${item.color}14`,
+              border: `1px solid ${item.color}22`
+            }}
+          >
+            <item.icon className="w-4.5 h-4.5" style={{ color: item.color }} strokeWidth={2} />
+          </div>
+          <div className="flex-1">
+            <h4 className="font-semibold text-sm mb-2" style={{ 
+              color: 'rgba(255,255,255,0.96)',
+              letterSpacing: '-0.005em',
+              fontFamily: 'SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif'
+            }}>
+              {item.title}
+            </h4>
+            <p className="text-sm leading-relaxed" style={{ 
+              color: 'rgba(185,200,220,0.76)',
+              lineHeight: '1.52'
+            }}>
+              {item.desc}
+            </p>
+          </div>
+        </div>
+      </motion.div>
+    ))}
   </motion.div>
-);
-
-const WhatYouShouldKnow = () => (
-  <div className="max-w-3xl mx-auto space-y-3">
-    <h4 className="text-base font-semibold mb-6 text-center" style={{
-      color: 'rgba(255,255,255,0.88)',
-      fontFamily: 'SF Pro Display, -apple-system, BlinkMacSystemFont, sans-serif',
-      letterSpacing: '0.01em'
-    }}>
-      What You Should Know
-    </h4>
-    <LearningOutcome text="CPI reacts slower than reality." delay={0.1} />
-    <LearningOutcome text="PCE reflects real consumer behavior." delay={0.15} />
-    <LearningOutcome text="Markets trust PCE more than headlines." delay={0.2} />
-    <LearningOutcome text="Sticky inflation delays policy relief." delay={0.25} />
-  </div>
 );
 
 export default function InflationSection({ data }) {
+  const [activeTab, setActiveTab] = useState('meaning');
+  
   if (!data) return null;
 
   const gap = Math.abs(data.cpi_core_yoy - data.pce_core_yoy).toFixed(1);
+
+  const tabs = [
+    { id: 'meaning', label: 'What This Means' },
+    { id: 'evolves', label: 'How This Evolves' },
+    { id: 'leads', label: 'What This Leads To' }
+  ];
 
   return (
     <div 
@@ -565,12 +461,57 @@ export default function InflationSection({ data }) {
         marginBottom: '64px'
       }}
     >
-      <CollapsibleDisclaimer />
+      {/* Section Header */}
+      <motion.div 
+        className="mb-8"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <h2 className="text-3xl font-semibold mb-4" style={{ 
+          color: 'rgba(255,255,255,0.98)',
+          letterSpacing: '-0.02em',
+          fontFamily: 'SF Pro Display, -apple-system, BlinkMacSystemFont, sans-serif'
+        }}>
+          Inflation — Sticky
+        </h2>
+        <p className="text-sm mb-6 leading-relaxed" style={{ 
+          color: 'rgba(255,255,255,0.62)',
+          lineHeight: '1.5',
+          maxWidth: '600px'
+        }}>
+          Consumer prices remain elevated while policy inflation cools.
+        </p>
 
-      <SignalCapsule text="Housing costs are delaying inflation's cooldown." />
+        {/* Info capsule */}
+        <motion.div
+          className="rounded-xl p-5 max-w-2xl"
+          style={{
+            background: 'rgba(22, 26, 34, 0.58)',
+            border: '1px solid rgba(255,255,255,0.06)',
+            backdropFilter: 'blur(18px)',
+            WebkitBackdropFilter: 'blur(18px)',
+            boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.04)'
+          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <div className="space-y-2 text-xs leading-relaxed" style={{ 
+            color: 'rgba(200,210,225,0.75)',
+            fontFamily: 'SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif'
+          }}>
+            <p>• CPI reflects prices households feel.</p>
+            <p>• PCE reflects prices policy responds to.</p>
+            <p>• The gap explains why inflation can feel worse than policy suggests.</p>
+          </div>
+        </motion.div>
+      </motion.div>
 
+      {/* PRIMARY HERO ARTIFACT */}
       <InflationHeroOrb gap={gap} />
 
+      {/* Supporting Metric Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-16 max-w-5xl mx-auto">
         <MetricCard label="CPI YoY" value={`${data.cpi_headline_yoy}%`} isCore={false} delay={0.1} />
         <MetricCard label="Core CPI YoY" value={`${data.cpi_core_yoy}%`} isCore={true} delay={0.15} />
@@ -578,14 +519,19 @@ export default function InflationSection({ data }) {
         <MetricCard label="Core PCE YoY" value={`${data.pce_core_yoy}%`} isCore={true} delay={0.25} />
       </div>
 
-      <InsightCardsRow />
+      {/* Segmented Control */}
+      <div className="flex justify-center mb-14">
+        <SegmentedControl options={tabs} active={activeTab} onChange={setActiveTab} />
+      </div>
 
-      <WhyThisMattersFlow />
+      {/* Tab Content */}
+      <AnimatePresence mode="wait">
+        {activeTab === 'meaning' && <MeaningContent key="meaning" />}
+        {activeTab === 'evolves' && <EvolvesContent key="evolves" />}
+        {activeTab === 'leads' && <LeadsContent key="leads" />}
+      </AnimatePresence>
 
-      <DownstreamEffects />
-
-      <WhatYouShouldKnow />
-
+      {/* Bottom fade transition */}
       <div className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none" style={{
         background: 'linear-gradient(180deg, transparent 0%, rgba(11,14,19,0.65) 55%, rgba(11,14,19,0.92) 85%, rgba(11,14,19,1) 100%)'
       }} />
