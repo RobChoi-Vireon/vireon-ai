@@ -391,11 +391,11 @@ const MOCK_DATA = {
       "Labor market strength continues to support wage growth, limiting downside in services inflation."
     ],
     market_implications: [
-      { label: "Rates", direction: "up", note: "Higher for longer", explanation: "Fed forced to maintain restrictive policy as core inflation remains sticky above target." },
-      { label: "Equities", direction: "down", note: "Multiple pressure", explanation: "Higher rates compress valuations while margin pressure builds from elevated input costs." },
-      { label: "Credit", direction: "neutral", note: "Conditions tight", explanation: "Spreads remain stable but issuance slows as companies defer refinancing in high-rate environment." },
-      { label: "USD", direction: "up", note: "Rate support", explanation: "Dollar benefits from yield advantage as Fed maintains hawkish stance relative to global peers." },
-      { label: "Risk", direction: "down", note: "Policy uncertainty", explanation: "Markets face volatility as policy path remains unclear with inflation proving more persistent than expected." }
+      { label: "Rates", direction: "up", note: "Higher for longer" },
+      { label: "Equities", direction: "down", note: "Multiple compression" },
+      { label: "Credit", direction: "neutral", note: "Spreads stable" },
+      { label: "USD", direction: "up", note: "Rate differential support" },
+      { label: "Risk", direction: "down", note: "Policy uncertainty" }
     ]
   }
 };
