@@ -40,10 +40,10 @@ const GAPIndicator = ({ gap }) => {
       {/* Center state */}
       <div className="relative z-10 flex flex-col items-center">
         <div className="text-4xl font-bold mb-2" style={{ color: 'rgba(255,255,255,0.95)' }}>
-          {gap}bp
+          {gap} pts
         </div>
         <div className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.50)', letterSpacing: '0.05em' }}>
-          CPI - PCE GAP
+          CPI vs PCE gap
         </div>
       </div>
       
@@ -187,9 +187,9 @@ export default function InflationSection({ data }) {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
         {[
           { label: 'CPI YoY', value: `${data.cpi_headline_yoy}%` },
-          { label: 'Core CPI', value: `${data.cpi_core_yoy}%` },
+          { label: 'CPI (without food &\nenergy swings)', value: `${data.cpi_core_yoy}%` },
           { label: 'PCE YoY', value: `${data.pce_headline_yoy}%` },
-          { label: 'Core PCE', value: `${data.pce_core_yoy}%` }
+          { label: 'PCE (without food &\nenergy swings)', value: `${data.pce_core_yoy}%` }
         ].map((kpi, idx) => (
           <motion.div
             key={idx}
@@ -201,7 +201,7 @@ export default function InflationSection({ data }) {
               boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
             }}
           >
-            <div className="text-xs mb-1" style={{ color: 'rgba(255,255,255,0.50)' }}>
+            <div className="text-xs mb-1 text-center leading-tight" style={{ color: 'rgba(255,255,255,0.50)', whiteSpace: 'pre-line' }}>
               {kpi.label}
             </div>
             <div className="text-2xl font-bold" style={{ color: 'rgba(255,255,255,0.95)' }}>
@@ -212,7 +212,12 @@ export default function InflationSection({ data }) {
       </div>
 
       {/* Section Navigation Tabs */}
-      <div className="flex justify-center gap-8 mb-10 border-b border-white/5 pb-4">
+      <div className="flex justify-center gap-8 mb-10 pb-4 relative">
+        <div className="absolute bottom-0 left-0 right-0 h-px" style={{
+          background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%)'
+        }} />
+      </div>
+      <div className="flex justify-center gap-8 mb-10">
         {[
           { id: 'meaning', label: 'What This Means' },
           { id: 'evolves', label: 'How This Evolves' },
@@ -246,18 +251,18 @@ export default function InflationSection({ data }) {
           >
             <LearningColumn
               title="CPI"
-              primary="Higher rent and essentials"
-              secondary="Because housing and services reset slowly."
+              primary="Everyday costs still feel high."
+              secondary="Because rent and services change slowly."
             />
             <LearningColumn
               title="PCE"
-              primary="Adaptive spending"
-              secondary="Because consumers substitute rather than stop spending."
+              primary="Spending shifts, so inflation looks cooler."
+              secondary="Because people switch what they buy when prices rise."
             />
             <LearningColumn
               title="Meaning"
-              primary="Policy responds to demand, not pain"
-              secondary="Because inflation is measured by behavior."
+              primary="The Fed reacts to demand, not pain."
+              secondary="Because inflation is tracked by what people keep buying."
             />
           </motion.div>
         )}
@@ -274,32 +279,32 @@ export default function InflationSection({ data }) {
             <TimeHorizon
               label="Now"
               lines={[
-                "Core inflation elevated",
-                "Services prices sticky"
+                "Prices stay stubborn in services.",
+                "Because rent and wages take time to cool."
               ]}
               arcProgress={0.25}
             />
             <TimeHorizon
               label="Near Term (~3m)"
               lines={[
-                "Housing costs normalize slowly",
-                "Fed holds restrictive stance"
+                "Goods prices cool faster than services.",
+                "Because supply improves sooner than wages."
               ]}
               arcProgress={0.45}
             />
             <TimeHorizon
               label="Medium Term (~6m)"
               lines={[
-                "Services inflation cools unevenly",
-                "Wage pressure eases gradually"
+                "Services cool, but not evenly.",
+                "Because wage pressure fades gradually."
               ]}
               arcProgress={0.65}
             />
             <TimeHorizon
               label="Confirmation (~12m)"
               lines={[
-                "Sustained return toward 2%",
-                "Policy easing begins"
+                "Inflation moves closer to normal.",
+                "Because slower demand finally shows up in prices."
               ]}
               arcProgress={0.85}
             />
@@ -316,32 +321,32 @@ export default function InflationSection({ data }) {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
           >
             <DownstreamCard
-              outcome="Rates — Higher for longer"
-              mechanism="Because services inflation constrains easing."
+              outcome="Rates — Rates stay high longer"
+              mechanism="Because inflation cools slowly."
               icon={TrendingUp}
               tint={SEMANTIC_COLORS.sticky}
             />
             <DownstreamCard
-              outcome="Equities — Multiple compression"
-              mechanism="Because elevated discount rates persist."
+              outcome="Stocks — Stock prices stay less 'expensive'"
+              mechanism="Because higher rates reduce what investors will pay."
               icon={TrendingDown}
               tint={SEMANTIC_COLORS.sticky}
             />
             <DownstreamCard
-              outcome="Credit — Spreads stable"
-              mechanism="Because growth holds while policy waits."
+              outcome="Loans — Borrowing stays tight"
+              mechanism="Because banks and markets wait for clearer cooling."
               icon={Minus}
               tint="rgba(255,255,255,0.45)"
             />
             <DownstreamCard
-              outcome="USD — Rate differential support"
-              mechanism="Because US rates stay elevated vs peers."
+              outcome="Dollar — Dollar stays firm"
+              mechanism="Because US rates stay high compared to others."
               icon={TrendingUp}
               tint={SEMANTIC_COLORS.policy}
             />
             <DownstreamCard
-              outcome="Risk — Policy uncertainty"
-              mechanism="Because inflation path remains unclear."
+              outcome="Risk — The path stays uncertain"
+              mechanism="Because cooling happens in waves."
               icon={Minus}
               tint="rgba(255,255,255,0.45)"
             />
@@ -350,8 +355,8 @@ export default function InflationSection({ data }) {
       </AnimatePresence>
 
       {/* Transition zone fade at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none" style={{
-        background: 'linear-gradient(180deg, transparent 0%, rgba(16,18,22,0.6) 100%)',
+      <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none" style={{
+        background: 'linear-gradient(180deg, transparent 0%, rgba(16,18,22,0.8) 70%, rgba(11,14,19,1) 100%)',
         borderRadius: '0 0 28px 28px'
       }} />
     </div>
