@@ -347,12 +347,12 @@ const StakeholderPills = ({ active, onChange }) => {
   );
 };
 
-const UnderstandingContent = () => (
+const MeaningContent = () => (
   <motion.div
     initial={{ opacity: 0, y: 6 }}
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0, y: -4 }}
-    transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+    transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
     className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-5xl mx-auto"
   >
     <div className="space-y-3">
@@ -363,51 +363,42 @@ const UnderstandingContent = () => (
       <p className="text-sm leading-relaxed" style={{ color: 'rgba(170,185,205,0.68)' }}>
         Because rent and services change slowly.
       </p>
-      <p className="text-xs mt-3" style={{ color: 'rgba(140,160,185,0.52)' }}>
-        Watch: rent and services.
-      </p>
     </div>
     
     <div className="space-y-3">
       <h4 className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.88)' }}>PCE</h4>
       <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.95)' }}>
-        People switch what they buy, so prices rise less.
+        Spending shifts, so inflation looks cooler.
       </p>
       <p className="text-sm leading-relaxed" style={{ color: 'rgba(170,185,205,0.68)' }}>
         Because people switch what they buy when prices rise.
-      </p>
-      <p className="text-xs mt-3" style={{ color: 'rgba(140,160,185,0.52)' }}>
-        Watch: spending pullback.
       </p>
     </div>
     
     <div className="space-y-3">
       <h4 className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.88)' }}>Meaning</h4>
       <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.95)' }}>
-        Rate decisions follow spending, not frustration.
+        The Fed reacts to demand, not pain.
       </p>
       <p className="text-sm leading-relaxed" style={{ color: 'rgba(170,185,205,0.68)' }}>
         Because inflation is tracked by what people keep buying.
-      </p>
-      <p className="text-xs mt-3" style={{ color: 'rgba(140,160,185,0.52)' }}>
-        Watch: rate-cut timing.
       </p>
     </div>
   </motion.div>
 );
 
-const TimeContent = () => (
+const EvolvesContent = () => (
   <motion.div
     initial={{ opacity: 0, y: 6 }}
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0, y: -4 }}
-    transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+    transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto"
   >
     {[
       { label: 'Now', text: 'Prices stay stubborn in services. Because rent and wages take time to cool.' },
-      { label: 'Near Term (~3m)', text: 'Goods prices cool faster than services. Because supply improves sooner than wages.' },
-      { label: 'Medium Term (~6m)', text: 'Services cool, but not evenly. Because wage pressure fades gradually.' },
+      { label: 'Near Term (~3m)', text: 'Goods cool faster than services. Because supply improves before wages do.' },
+      { label: 'Medium Term (~6m)', text: 'Services cool, but unevenly. Because wage pressure fades gradually.' },
       { label: 'Confirmation (~12m)', text: 'Inflation moves closer to normal. Because slower demand finally shows up in prices.' }
     ].map((horizon, idx) => (
       <div key={idx} className="space-y-2.5">
@@ -565,70 +556,10 @@ const ConsequencesContent = ({ activeStakeholder, setActiveStakeholder }) => {
   );
 };
 
-const LeadsContent = () => (
-  <motion.div
-    initial={{ opacity: 0, y: 6 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: -4 }}
-    transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
-    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto"
-  >
-    {[
-      { title: 'Rates — Stay higher, longer', desc: 'Borrowing costs remain elevated as inflation persists.', icon: TrendingUp, color: 'rgba(255, 180, 120, 0.85)' },
-      { title: 'Stocks — Valuations remain compressed', desc: 'Higher discount rates weigh on future earnings multiples.', icon: TrendingDown, color: 'rgba(180, 140, 255, 0.75)' },
-      { title: 'Dollar — Stays supported', desc: 'Rate differentials keep the dollar elevated against peers.', icon: DollarSign, color: 'rgba(110, 200, 180, 0.80)' },
-      { title: 'Credit — Conditions remain tight', desc: 'Lenders maintain caution until inflation clarity emerges.', icon: Minus, color: 'rgba(200, 200, 210, 0.65)' },
-      { title: 'Risk — Path remains uneven', desc: 'Volatility persists as policy uncertainty lingers.', icon: TrendingDown, color: 'rgba(255, 160, 140, 0.75)' }
-    ].map((item, idx) => (
-      <motion.div
-        key={idx}
-        className="relative rounded-2xl overflow-hidden p-6"
-        style={{
-          background: 'rgba(28, 32, 40, 0.38)',
-          backdropFilter: 'blur(22px)',
-          WebkitBackdropFilter: 'blur(22px)',
-          border: '1px solid rgba(255,255,255,0.06)',
-          boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.06), 0 3px 14px rgba(0,0,0,0.18)'
-        }}
-        whileHover={{
-          y: -1.5,
-          boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 6px 24px rgba(0,0,0,0.24)',
-          transition: { duration: 0.22, ease: 'easeOut' }
-        }}
-      >
-        <div className="flex items-start gap-3.5">
-          <div 
-            className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ 
-              background: `${item.color}14`,
-              border: `1px solid ${item.color}22`
-            }}
-          >
-            <item.icon className="w-4.5 h-4.5" style={{ color: item.color }} strokeWidth={2} />
-          </div>
-          <div className="flex-1">
-            <h4 className="font-semibold text-sm mb-2" style={{ 
-              color: 'rgba(255,255,255,0.96)',
-              letterSpacing: '-0.005em',
-              fontFamily: 'SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif'
-            }}>
-              {item.title}
-            </h4>
-            <p className="text-sm leading-relaxed" style={{ 
-              color: 'rgba(185,200,220,0.76)',
-              lineHeight: '1.52'
-            }}>
-              {item.desc}
-            </p>
-          </div>
-        </div>
-      </motion.div>
-    ))}
-  </motion.div>
-);
+
 
 export default function InflationSection({ data }) {
-  const [activeTab, setActiveTab] = useState('understanding');
+  const [activeTab, setActiveTab] = useState('meaning');
   const [activeStakeholder, setActiveStakeholder] = useState('worker');
   
   if (!data) return null;
@@ -636,9 +567,9 @@ export default function InflationSection({ data }) {
   const gap = Math.abs(data.cpi_core_yoy - data.pce_core_yoy).toFixed(1);
 
   const tabs = [
-    { id: 'understanding', label: 'Understanding' },
-    { id: 'time', label: 'Time' },
-    { id: 'consequences', label: 'Consequences' }
+    { id: 'meaning', label: 'What This Means' },
+    { id: 'evolves', label: 'How This Evolves' },
+    { id: 'leads', label: 'What This Leads To' }
   ];
 
   return (
@@ -714,11 +645,11 @@ export default function InflationSection({ data }) {
 
       {/* Tab Content */}
       <AnimatePresence mode="wait">
-        {activeTab === 'understanding' && <UnderstandingContent key="understanding" />}
-        {activeTab === 'time' && <TimeContent key="time" />}
-        {activeTab === 'consequences' && (
-          <ConsequencesContent 
-            key="consequences" 
+        {activeTab === 'meaning' && <MeaningContent key="meaning" />}
+        {activeTab === 'evolves' && <EvolvesContent key="evolves" />}
+        {activeTab === 'leads' && (
+          <LeadsContent 
+            key="leads" 
             activeStakeholder={activeStakeholder}
             setActiveStakeholder={setActiveStakeholder}
           />
