@@ -1211,9 +1211,6 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                 className="relative z-10 p-8 pb-6"
                 style={{
                   borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
-                  backdropFilter: 'blur(32px) saturate(165%)',
-                  WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-                  borderRadius: '24px 24px 0 0'
                 }}
               >
                 <div className="flex items-start justify-between gap-6 mb-4">
