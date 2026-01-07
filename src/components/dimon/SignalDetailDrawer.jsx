@@ -1182,7 +1182,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             {/* Center Light Beam */}
             <div ref={beamRef} className="li-beam" aria-hidden="true" />
 
-            <div className="relative w-full max-h-[88vh]" style={{ overflow: 'hidden' }}>
+            <div className="relative w-full max-h-[88vh]" style={{ overflow: 'hidden', borderRadius: '24px' }}>
               {/* Keyboard Hints */}
               <AnimatePresence>
                 {showHint && (
