@@ -777,8 +777,8 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
               border: 1px solid rgba(255, 255, 255, 0.06);
               background: linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(0,0,0,0.12));
               box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
-              border-radius: calc(var(--mp-radius) + 8px);
-              overflow: visible;
+              border-radius: 24px;
+              overflow: hidden;
               
               transform: translateY(var(--hzn-open-translate)) scale(var(--hzn-open-scale));
               opacity: 0;
@@ -806,7 +806,7 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
               mix-blend-mode: screen;
               opacity: 0.75;
               z-index: 1;
-              border-radius: calc(var(--mp-radius) + 8px) calc(var(--mp-radius) + 8px) 0 0;
+              border-radius: 24px 24px 0 0;
             }
             
             .hzn-drawer::after {
@@ -1304,9 +1304,12 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
             <div className="relative w-full max-h-[88vh]" style={{ overflow: 'hidden' }}>
               {/* HEADER */}
               <div
-                className="relative z-10 p-8 pb-4" // Changed pb-6 to pb-4
+                className="relative z-10 p-8 pb-4"
                 style={{
                   borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+                  backdropFilter: 'blur(32px) saturate(165%)',
+                  WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+                  borderRadius: '24px 24px 0 0'
                 }}
               >
                 <div className="flex items-start justify-between gap-6 mb-4">
