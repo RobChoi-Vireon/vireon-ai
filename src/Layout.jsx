@@ -422,6 +422,7 @@ function LayoutContent({ children, currentPageName }) {
   const [isAlertsOpen, setIsAlertsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCommentaryOpen, setIsCommentaryOpen] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { isEnabled } = useFeatureFlags();
 
@@ -1015,20 +1016,34 @@ function LayoutContent({ children, currentPageName }) {
             {/* OS Horizon V2 Top-Right HUD — Luminous Glass with Cursor-Aware Drift */}
             <motion.div 
               className="fixed z-[250] flex items-center"
+              animate={{
+                background: isScrolling 
+                  ? 'linear-gradient(180deg, rgba(35, 40, 48, 0.66) 0%, rgba(28, 33, 40, 0.63) 100%)'
+                  : 'linear-gradient(180deg, rgba(35, 40, 48, 0.78) 0%, rgba(28, 33, 40, 0.74) 100%)',
+                boxShadow: isScrolling
+                  ? `
+                    inset 0 1.5px 0 rgba(255,255,255,0.08),
+                    inset 0 -1px 0 rgba(0,0,0,0.08),
+                    0 3px 14px rgba(0,0,0,0.04)
+                  `
+                  : `
+                    inset 0 1.5px 0 rgba(255,255,255,0.10),
+                    inset 0 -1px 0 rgba(0,0,0,0.10),
+                    0 5px 20px rgba(0,0,0,0.06)
+                  `
+              }}
+              transition={{
+                duration: 0.2,
+                ease: [0.25, 0.1, 0.25, 1]
+              }}
               style={{
                 top: '18px',
                 right: '20px',
                 padding: '16px 20px',
-                background: 'linear-gradient(180deg, rgba(35, 40, 48, 0.78) 0%, rgba(28, 33, 40, 0.74) 100%)',
                 backdropFilter: 'blur(56px) saturate(185%)',
                 WebkitBackdropFilter: 'blur(56px) saturate(185%)',
                 borderRadius: '44px',
-                border: '1px solid rgba(255,255,255,0.12)',
-                boxShadow: `
-                  inset 0 1.5px 0 rgba(255,255,255,0.10),
-                  inset 0 -1px 0 rgba(0,0,0,0.10),
-                  0 5px 20px rgba(0,0,0,0.06)
-                `
+                border: '1px solid rgba(255,255,255,0.12)'
               }}
               onMouseMove={(e) => {
                 const rect = e.currentTarget.getBoundingClientRect();
