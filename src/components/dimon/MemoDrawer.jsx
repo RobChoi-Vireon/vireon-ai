@@ -1307,8 +1307,9 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
                 className="relative z-10 p-8 pb-4"
                 style={{
                   borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
-                  backdropFilter: 'blur(32px) saturate(165%)',
-                  WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+                  background: 'rgba(24, 26, 29, 0.55)',
+                  backdropFilter: 'blur(26px) saturate(1.3) brightness(1.15)',
+                  WebkitBackdropFilter: 'blur(26px) saturate(1.3) brightness(1.15)',
                   borderRadius: '24px 24px 0 0'
                 }}
               >
