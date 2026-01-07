@@ -758,8 +758,8 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               border: 1px solid rgba(255, 255, 255, 0.06);
               background: linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(0,0,0,0.12));
               box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
-              border-radius: calc(var(--mp-radius) + 8px);
-              overflow: visible;
+              border-radius: 24px;
+              overflow: hidden;
               
               transform: translateY(var(--hzn-open-translate)) scale(var(--hzn-open-scale));
               opacity: 0;
@@ -1182,7 +1182,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             {/* Center Light Beam */}
             <div ref={beamRef} className="li-beam" aria-hidden="true" />
 
-            <div className="relative w-full max-h-[88vh]" style={{ overflow: 'hidden', borderRadius: '24px' }}>
+            <div className="relative w-full max-h-[88vh]" style={{ overflow: 'hidden' }}>
               {/* Keyboard Hints */}
               <AnimatePresence>
                 {showHint && (
