@@ -775,7 +775,9 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
               top: calc(72px + 14px);
               max-width: min(820px, 90vw);
               border: 1px solid rgba(255, 255, 255, 0.06);
-              background: linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(0,0,0,0.12));
+              background: linear-gradient(to bottom, rgba(35, 38, 42, 0.75), rgba(28, 31, 35, 0.82));
+              backdrop-filter: blur(32px) saturate(165%);
+              -webkit-backdrop-filter: blur(32px) saturate(165%);
               box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
               border-radius: 24px;
               overflow: hidden;
@@ -1306,10 +1308,7 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
               <div
                 className="relative z-10 p-8 pb-4"
                 style={{
-                  borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
-                  backdropFilter: 'blur(32px) saturate(165%)',
-                  WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-                  borderRadius: '24px 24px 0 0'
+                  borderBottom: '1px solid rgba(255, 255, 255, 0.06)'
                 }}
               >
                 <div className="flex items-start justify-between gap-6 mb-4">
