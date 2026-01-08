@@ -1031,120 +1031,45 @@ function LayoutContent({ children, currentPageName }) {
           </aside>
 
           <div className="flex-1 flex flex-col overflow-hidden">
-            {/* OS Horizon V2 Top-Right HUD — Luminous Glass with Cursor-Aware Drift */}
-            <motion.div 
-              className="fixed z-[250] flex items-center"
-              animate={{
-                background: isScrolling 
-                  ? 'linear-gradient(180deg, rgba(35, 40, 48, 0.66) 0%, rgba(28, 33, 40, 0.63) 100%)'
-                  : 'linear-gradient(180deg, rgba(35, 40, 48, 0.78) 0%, rgba(28, 33, 40, 0.74) 100%)',
-                boxShadow: isScrolling
-                  ? `
-                    inset 0 1.5px 0 rgba(255,255,255,0.08),
-                    inset 0 -1px 0 rgba(0,0,0,0.08),
-                    0 3px 14px rgba(0,0,0,0.04)
-                  `
-                  : `
-                    inset 0 1.5px 0 rgba(255,255,255,0.10),
-                    inset 0 -1px 0 rgba(0,0,0,0.10),
-                    0 5px 20px rgba(0,0,0,0.06)
-                  `
-              }}
-              transition={{
-                duration: 0.2,
-                ease: [0.25, 0.1, 0.25, 1]
-              }}
-              style={{
-                top: '18px',
-                right: '20px',
-                padding: '16px 20px',
-                backdropFilter: 'blur(56px) saturate(185%)',
-                WebkitBackdropFilter: 'blur(56px) saturate(185%)',
-                borderRadius: '44px',
-                border: '1px solid rgba(255,255,255,0.12)'
-              }}
-              onMouseMove={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                const x = (e.clientX - rect.left) / rect.width;
-                const gradientAngle = 180 + (x - 0.5) * 2;
-                e.currentTarget.style.background = `linear-gradient(${gradientAngle}deg, rgba(35, 40, 48, 0.78) 0%, rgba(28, 33, 40, 0.74) 100%)`;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(180deg, rgba(35, 40, 48, 0.78) 0%, rgba(28, 33, 40, 0.74) 100%)';
-              }}
-            >
-              {/* Refined Noise Haze */}
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-                opacity: 0.024,
-                mixBlendMode: 'overlay',
-                borderRadius: '44px',
-                pointerEvents: 'none'
-              }} />
-
-              {/* Vertical Gradient Depth */}
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                background: 'linear-gradient(180deg, rgba(0,0,0,0.05) 0%, transparent 35%, rgba(255,255,255,0.04) 100%)',
-                borderRadius: '44px',
-                pointerEvents: 'none'
-              }} />
-
-              {/* Glass Rim Edge Highlight */}
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: '10%',
-                right: '10%',
-                height: '1.5px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
-                borderRadius: '44px 44px 0 0',
-                pointerEvents: 'none',
-                filter: 'blur(0.5px)'
-              }} />
-
-              <div className="flex items-center relative z-[260]">
-                {/* OS Horizon V2 Semantic Grouping: Cluster A (Search + Commentary) */}
-                {isEnabled('labs_modules') && (
-                  <div className="flex items-center" style={{ gap: '12px', marginRight: '32px' }}>
-                    <GlassIconButton
-                      onClick={() => setIsSearchOpen(true)}
-                      icon={Search}
-                      label="Search stocks and market data"
-                    />
-
-                    <GlassIconButton
-                      onClick={() => setIsCommentaryOpen(!isCommentaryOpen)}
-                      icon={MessageSquare}
-                      label={`${isCommentaryOpen ? 'Close' : 'Open'} live commentary`}
-                      isActive={isCommentaryOpen}
-                    />
-                  </div>
-                )}
-
-                {/* OS Horizon V2 Semantic Grouping: Cluster B (Labs + Notifications) */}
+            {/* OS Horizon V2 Utility Tray — Dynamic Scroll-Reactive HUD */}
+            <UtilityTrayPill isOverlayOpen={isAlertsOpen || isSearchOpen || isCommentaryOpen}>
+              {/* OS Horizon V2 Semantic Grouping: Cluster A (Search + Commentary) */}
+              {isEnabled('labs_modules') && (
                 <div className="flex items-center" style={{ gap: '12px', marginRight: '32px' }}>
-                  <div className="relative z-[260] group">
-                    <LabsToggle />
-                  </div>
+                  <GlassIconButton
+                    onClick={() => setIsSearchOpen(true)}
+                    icon={Search}
+                    label="Search stocks and market data"
+                  />
 
                   <GlassIconButton
-                    onClick={() => setIsAlertsOpen(true)}
-                    icon={Bell}
-                    label="View alerts"
-                    hasNotification={true}
+                    onClick={() => setIsCommentaryOpen(!isCommentaryOpen)}
+                    icon={MessageSquare}
+                    label={`${isCommentaryOpen ? 'Close' : 'Open'} live commentary`}
+                    isActive={isCommentaryOpen}
                   />
                 </div>
+              )}
 
-                {/* OS Horizon V2 Semantic Grouping: Cluster C (Profile Capsule) */}
+              {/* OS Horizon V2 Semantic Grouping: Cluster B (Labs + Notifications) */}
+              <div className="flex items-center" style={{ gap: '12px', marginRight: '32px' }}>
                 <div className="relative z-[260] group">
-                  <UserMenu theme="dark" toggleTheme={() => {}} />
+                  <LabsToggle />
                 </div>
+
+                <GlassIconButton
+                  onClick={() => setIsAlertsOpen(true)}
+                  icon={Bell}
+                  label="View alerts"
+                  hasNotification={true}
+                />
               </div>
-            </motion.div>
+
+              {/* OS Horizon V2 Semantic Grouping: Cluster C (Profile Capsule) */}
+              <div className="relative z-[260] group">
+                <UserMenu theme="dark" toggleTheme={() => {}} />
+              </div>
+            </UtilityTrayPill>
 
             {/* Mobile Logo Header — Not Sticky */}
             <div className="md:hidden flex items-center justify-between px-4 py-4">
