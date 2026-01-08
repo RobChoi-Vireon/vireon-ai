@@ -188,7 +188,7 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
         style={{
           top: '18px',
           right: '20px',
-          padding: '14px 18px',
+          padding: '16px 20px',
           borderRadius: '44px',
           border: '1px solid rgba(255,255,255,0.12)',
           willChange: 'transform, opacity, backdrop-filter',
@@ -199,7 +199,7 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
         <motion.div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: 'linear-gradient(180deg, rgba(35, 40, 48, 0.82) 0%, rgba(28, 33, 40, 0.78) 100%)',
+            background: 'linear-gradient(180deg, rgba(35, 40, 48, 0.78) 0%, rgba(28, 33, 40, 0.74) 100%)',
             borderRadius: '44px',
             opacity: smoothOpacity,
             backdropFilter: useSpring(
@@ -215,13 +215,7 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
               { stiffness: 200, damping: 30 }
             ),
             scale: smoothScale,
-            y: smoothTranslateY,
-            boxShadow: `
-              0 8px 24px rgba(0,0,0,0.35),
-              0 22px 60px rgba(0,0,0,0.55),
-              inset 0 0 0 0.5px rgba(0,0,0,0.28),
-              inset 0 0 0 1px rgba(255,255,255,0.10)
-            `
+            y: smoothTranslateY
           }}
         />
 
@@ -229,8 +223,8 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-            opacity: 0.020,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+            opacity: 0.024,
             mixBlendMode: 'overlay',
             borderRadius: '44px'
           }}
@@ -240,7 +234,7 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 30%, rgba(0,0,0,0.05) 100%)',
+            background: 'linear-gradient(180deg, rgba(0,0,0,0.05) 0%, transparent 35%, rgba(255,255,255,0.04) 100%)',
             borderRadius: '44px'
           }}
         />
@@ -250,7 +244,7 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
           className="absolute top-0 left-0 right-0 pointer-events-none"
           style={{
             height: '1.5px',
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
             borderRadius: '44px 44px 0 0',
             filter: 'blur(0.5px)'
           }}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Home, Eye, TrendingUp, Bell, AlertCircle, Plus, Download, Newspaper, Search, MessageSquare, X, Calendar, BookOpen, Brain, Globe, Activity, User } from "lucide-react";
+import { Home, Eye, TrendingUp, Bell, AlertCircle, Plus, Download, Newspaper, Search, MessageSquare, X, Calendar, BookOpen, Brain, Globe, Activity } from "lucide-react";
 import { FeatureFlagsProvider, useFeatureFlags } from "./components/core/FeatureFlags";
 import { MiniSheetProvider, useMiniSheet } from './components/core/MiniSheetProvider';
 import { AccessibilityProvider } from "./components/core/AccessibilityProvider";
@@ -11,7 +11,6 @@ import SearchOmni from "./components/global/SearchOmni";
 import LiveCommentary from "./components/live-feed/LiveCommentary";
 import LyraChatbot from "./components/core/LyraChatbot";
 import UserMenu from "./components/core/UserMenu";
-import GlassIconButton from "./components/core/GlassIconButton";
 import OnboardingModal from "./components/core/OnboardingModal";
 import UtilityTrayPill from "./components/core/UtilityTrayPill";
 import { motion, AnimatePresence } from 'framer-motion';
@@ -128,6 +127,295 @@ const NavLink = ({ href, icon: Icon, title, isActive }) => (
     </motion.div>
   </Link>
 );
+
+const GlassIconButton = ({ onClick, icon: Icon, label, isActive = false, hasNotification = false, className = "" }) => {
+  const [isFocused, setIsFocused] = React.useState(false);
+  const [isHovered, setIsHovered] = React.useState(false);
+  const [isPressed, setIsPressed] = React.useState(false);
+
+  const handleHoverStart = () => {
+    setIsHovered(true);
+  };
+
+  const handleHoverEnd = () => {
+    setIsHovered(false);
+  };
+
+  return (
+    <motion.button
+      onClick={onClick}
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setIsFocused(false)}
+      onMouseEnter={handleHoverStart}
+      onMouseLeave={handleHoverEnd}
+      onMouseDown={() => setIsPressed(true)}
+      onMouseUp={() => setIsPressed(false)}
+      className={`relative rounded-[24px] flex items-center justify-center group ${className}`}
+      style={{
+        width: '44px',
+        height: '44px',
+        padding: '12px',
+        background: isActive
+          ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.105) 0%, rgba(255, 255, 255, 0.082) 100%)'
+          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.078) 0%, rgba(255, 255, 255, 0.058) 100%)',
+        backdropFilter: 'blur(48px) saturate(175%)',
+        WebkitBackdropFilter: 'blur(48px) saturate(175%)',
+        border: '1px solid rgba(255,255,255,0.10)',
+        boxShadow: isActive
+          ? `
+            0 3px 16px rgba(0,0,0,0.05),
+            inset 0 1.5px 0 rgba(255,255,255,0.12),
+            inset 0 0 22px rgba(110, 180, 255, 0.06)
+          `
+          : `
+            0 3px 16px rgba(0,0,0,0.04),
+            inset 0 1px 0 rgba(255,255,255,0.08)
+          `
+      }}
+      whileHover={{
+        scale: 1.04,
+        backdropFilter: 'blur(50px) saturate(178%)',
+        WebkitBackdropFilter: 'blur(50px) saturate(178%)',
+        background: isActive
+          ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.115) 0%, rgba(255, 255, 255, 0.092) 100%)'
+          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.088) 0%, rgba(255, 255, 255, 0.068) 100%)',
+        boxShadow: isActive
+          ? `
+            0 5px 20px rgba(0,0,0,0.07),
+            inset 0 1.5px 0 rgba(255,255,255,0.14),
+            inset 0 0 24px rgba(110, 180, 255, 0.07)
+          `
+          : `
+            0 5px 20px rgba(0,0,0,0.06),
+            inset 0 1.5px 0 rgba(255,255,255,0.11)
+          `,
+        transition: { type: "spring", stiffness: 300, damping: 30, mass: 1 }
+      }}
+      whileTap={{ 
+        scale: 0.96,
+        y: 1,
+        background: isActive
+          ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.055) 100%)'
+          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.038) 100%)',
+        boxShadow: isActive
+          ? `
+            0 1px 6px rgba(0,0,0,0.04),
+            inset 0 2px 5px rgba(0,0,0,0.12),
+            inset 0 0 18px rgba(110, 180, 255, 0.04)
+          `
+          : `
+            0 1px 6px rgba(0,0,0,0.03),
+            inset 0 2px 4px rgba(0,0,0,0.10)
+          `,
+        transition: { type: "spring", stiffness: 320, damping: 26, mass: 0.8 }
+      }}
+      aria-label={label}
+    >
+      {/* Focus Ring */}
+      <AnimatePresence>
+        {isFocused && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            style={{
+              position: 'absolute',
+              inset: '-4px',
+              borderRadius: '28px',
+              background: 'radial-gradient(circle, rgba(77, 143, 251, 0.10) 0%, transparent 70%)',
+              filter: 'blur(5px)',
+              pointerEvents: 'none'
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Specular Highlight - gentle shift */}
+      <motion.div 
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: '14%',
+          right: '14%',
+          height: '1.5px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+          pointerEvents: 'none',
+          filter: 'blur(0.5px)'
+        }}
+        animate={{
+          y: isPressed ? 1.5 : 0,
+          opacity: isPressed ? 0.6 : (isHovered ? 0.95 : 0.85)
+        }}
+        transition={{ 
+          type: "spring", 
+          stiffness: 280, 
+          damping: 28,
+          mass: 1
+        }}
+      />
+
+      {/* Internal Haze - subtle luminance */}
+      <motion.div 
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'radial-gradient(ellipse at 50% 30%, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.03) 50%, transparent 75%)',
+          borderRadius: '24px',
+          pointerEvents: 'none'
+        }}
+        animate={{ 
+          opacity: isPressed ? 0.4 : (isHovered ? 0.65 : 0.5)
+        }}
+        transition={{ 
+          type: "spring", 
+          stiffness: 280, 
+          damping: 30
+        }}
+      />
+
+
+
+      {/* Active State Ambient Glow */}
+      {isActive && (
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'radial-gradient(ellipse at 50% 35%, rgba(110, 180, 255, 0.07) 0%, transparent 75%)',
+          borderRadius: '24px',
+          pointerEvents: 'none'
+        }} />
+      )}
+
+      {/* Icon with Gentle Drift - Apple-grade restraint */}
+      <motion.div 
+        className="relative z-10 flex items-center justify-center"
+        animate={{
+          y: isPressed ? 0.5 : (isHovered ? -0.5 : 0)
+        }}
+        transition={{ 
+          type: "spring", 
+          stiffness: 290, 
+          damping: 28,
+          mass: 1
+        }}
+      >
+        <motion.div
+          animate={{
+            filter: isPressed
+              ? (isActive 
+                ? 'drop-shadow(0 0 6px rgba(110, 180, 255, 0.24)) brightness(1.02)'
+                : 'brightness(1.00)')
+              : (isHovered 
+                ? (isActive 
+                  ? 'drop-shadow(0 0 9px rgba(110, 180, 255, 0.32)) brightness(1.08)'
+                  : 'brightness(1.08)')
+                : (isActive 
+                  ? 'drop-shadow(0 0 7px rgba(110, 180, 255, 0.28)) brightness(1.06)'
+                  : 'brightness(1.04)'))
+          }}
+          transition={{ 
+            type: "spring", 
+            stiffness: 300, 
+            damping: 28
+          }}
+        >
+          <Icon 
+            className="w-5 h-5 relative" 
+            style={{ 
+              color: isActive ? '#D7E8FF' : (isHovered ? '#BEC9D5' : '#B2BDC7'),
+              strokeWidth: 2.0,
+              opacity: isActive ? 1 : 0.98
+            }} 
+          />
+        </motion.div>
+      </motion.div>
+
+      {/* OS Horizon V4 Photonic Badge - Quiet Elegance */}
+      {hasNotification && (
+        <motion.div
+          className="absolute"
+          style={{
+            top: '-2px',
+            right: '-2px',
+            width: '9px',
+            height: '9px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, rgba(148, 110, 233, 0.92) 0%, rgba(118, 85, 210, 0.88) 100%)',
+            border: '0.5px solid rgba(0, 0, 0, 0.16)',
+            boxShadow: '0 0 9px rgba(138, 100, 223, 0.32), inset 0 0.5px 1px rgba(255,255,255,0.26)'
+          }}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={isPressed ? {
+            scale: 0.90,
+            opacity: 0.88,
+            boxShadow: '0 0 7px rgba(138, 100, 223, 0.28), inset 0 0.5px 1px rgba(255,255,255,0.22)'
+          } : (isHovered ? {
+            scale: 1.08,
+            opacity: 0.96,
+            boxShadow: '0 0 13px rgba(138, 100, 223, 0.42), inset 0 0.5px 1px rgba(255,255,255,0.28)'
+          } : { 
+            scale: 1, 
+            opacity: [0.88, 0.96, 0.88],
+            boxShadow: [
+              '0 0 9px rgba(138, 100, 223, 0.32), inset 0 0.5px 1px rgba(255,255,255,0.26)',
+              '0 0 12px rgba(138, 100, 223, 0.38), inset 0 0.5px 1px rgba(255,255,255,0.28)',
+              '0 0 9px rgba(138, 100, 223, 0.32), inset 0 0.5px 1px rgba(255,255,255,0.26)'
+            ]
+          })}
+          transition={isPressed ? {
+            type: "spring",
+            stiffness: 300,
+            damping: 26
+          } : (isHovered ? { 
+            type: "spring", 
+            stiffness: 320, 
+            damping: 28,
+            mass: 0.9
+          } : { 
+            scale: { duration: 0.28, ease: [0.26, 0.11, 0.26, 1.0] },
+            opacity: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+            boxShadow: { duration: 3, repeat: Infinity, ease: "easeInOut" }
+          })}
+        >
+          {/* Photonic Core */}
+          <div style={{
+            position: 'absolute',
+            top: '1px',
+            left: '1px',
+            width: '2px',
+            height: '2px',
+            borderRadius: '50%',
+            background: 'rgba(255,255,255,0.52)',
+            filter: 'blur(0.5px)',
+            pointerEvents: 'none'
+          }} />
+
+          {/* Soft Outer Bloom */}
+          <motion.div 
+            style={{
+              position: 'absolute',
+              inset: '-4px',
+              background: 'radial-gradient(circle, rgba(148, 110, 233, 0.28) 0%, transparent 75%)',
+              borderRadius: '50%',
+              filter: 'blur(5px)',
+              pointerEvents: 'none'
+            }}
+            animate={{
+              opacity: isPressed ? 0.12 : (isHovered ? 0.40 : [0.20, 0.32, 0.20]),
+              scale: isPressed ? 0.88 : [1.0, 1.05, 1.0]
+            }}
+            transition={{
+              duration: 3,
+              repeat: isPressed ? 0 : Infinity,
+              ease: "easeInOut"
+            }}
+          />
+        </motion.div>
+      )}
+    </motion.button>
+  );
+};
 
 function LayoutContent({ children, currentPageName }) {
   const location = useLocation();
@@ -745,30 +1033,26 @@ function LayoutContent({ children, currentPageName }) {
           <div className="flex-1 flex flex-col overflow-hidden">
             {/* OS Horizon V2 Utility Tray — Dynamic Scroll-Reactive HUD */}
             <UtilityTrayPill isOverlayOpen={isAlertsOpen || isSearchOpen || isCommentaryOpen}>
-              {/* OS Horizon V3 Semantic Grouping: Cluster A (Search + Commentary) */}
+              {/* OS Horizon V2 Semantic Grouping: Cluster A (Search + Commentary) */}
               {isEnabled('labs_modules') && (
-                <div className="flex items-center" style={{ gap: '12px', marginRight: '16px' }}>
+                <div className="flex items-center" style={{ gap: '12px', marginRight: '32px' }}>
                   <GlassIconButton
                     onClick={() => setIsSearchOpen(true)}
                     icon={Search}
-                    label="Search"
-                    subtitle="Tickers, news, macro data"
-                    shortcut="⌘K"
+                    label="Search stocks and market data"
                   />
 
                   <GlassIconButton
                     onClick={() => setIsCommentaryOpen(!isCommentaryOpen)}
                     icon={MessageSquare}
-                    label="Live Commentary"
-                    subtitle="Real-time market tape"
-                    shortcut="⌥C"
+                    label={`${isCommentaryOpen ? 'Close' : 'Open'} live commentary`}
                     isActive={isCommentaryOpen}
                   />
                 </div>
               )}
 
-              {/* OS Horizon V3 Semantic Grouping: Cluster B (Labs + Notifications) */}
-              <div className="flex items-center" style={{ gap: '12px', marginRight: '16px' }}>
+              {/* OS Horizon V2 Semantic Grouping: Cluster B (Labs + Notifications) */}
+              <div className="flex items-center" style={{ gap: '12px', marginRight: '32px' }}>
                 <div className="relative z-[260] group">
                   <LabsToggle />
                 </div>
@@ -776,22 +1060,14 @@ function LayoutContent({ children, currentPageName }) {
                 <GlassIconButton
                   onClick={() => setIsAlertsOpen(true)}
                   icon={Bell}
-                  label="Alerts"
-                  subtitle="Signals & notifications"
-                  shortcut="⌥A"
+                  label="View alerts"
                   hasNotification={true}
-                  notificationCount={3}
                 />
               </div>
 
-              {/* OS Horizon V3 Semantic Grouping: Cluster C (Account) */}
-              <div className="relative z-[260]">
-                <GlassIconButton
-                  onClick={() => {/* Open account menu */}}
-                  icon={User}
-                  label="Account"
-                  subtitle="Profile, settings, logout"
-                />
+              {/* OS Horizon V2 Semantic Grouping: Cluster C (Profile Capsule) */}
+              <div className="relative z-[260] group">
+                <UserMenu theme="dark" toggleTheme={() => {}} />
               </div>
             </UtilityTrayPill>
 
