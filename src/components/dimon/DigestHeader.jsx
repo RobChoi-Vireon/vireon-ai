@@ -633,12 +633,12 @@ export default function DigestHeader({
         aria-hidden="true"
       />
 
-      <div className="relative container mx-auto px-6 lg:px-10 pt-6 pb-3" style={{ zIndex: 10 }}>
+      <div className="relative container mx-auto px-6 lg:px-10 pt-6 pb-4" style={{ zIndex: 10 }}>
 
-        <div className="flex flex-col lg:flex-row items-start justify-between gap-5">
+        <div className="flex flex-col lg:flex-row items-start justify-between gap-6">
 
           <motion.div
-            className="flex-1 space-y-2 w-full"
+            className="flex-1 space-y-2.5 w-full"
           >
 
             {/* OS Horizon V2 Typography — System-Level Hero */}
@@ -647,7 +647,7 @@ export default function DigestHeader({
               animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 8 }}
               transition={{ duration: 0.36, delay: 0.12, ease: [0.22, 0.61, 0.36, 1] }}
               className="relative"
-              style={{ marginBottom: '16px', marginTop: '0px' }}
+              style={{ marginBottom: '20px', marginTop: '0px' }}
             >
               <h1
                 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
@@ -685,7 +685,7 @@ export default function DigestHeader({
                 color: 'rgba(255,255,255,0.78)',
                 fontWeight: 500,
                 letterSpacing: '0.01em',
-                marginBottom: '14px'
+                marginBottom: '16px'
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
@@ -697,7 +697,7 @@ export default function DigestHeader({
             {/* OS Horizon V2 Info Capsules — Unified Glass Pills */}
             <motion.div
               className="flex flex-wrap items-center gap-2.5"
-              style={{ marginBottom: '14px' }}
+              style={{ marginBottom: '18px' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
               transition={{ duration: 0.22, delay: 0.28, ease: [0.22, 0.61, 0.36, 1] }}
@@ -814,7 +814,7 @@ export default function DigestHeader({
 
             {/* Halo Spectrum Arc with Macro Insight Capsule */}
             <motion.div
-              className="relative pt-2 pb-1 w-full"
+              className="relative pt-2 pb-2 w-full"
               style={{ transform: 'translateY(0px)' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
@@ -824,7 +824,7 @@ export default function DigestHeader({
                 className="text-sm font-semibold tracking-wide block"
                 style={{
                   color: 'rgba(255,255,255,0.63)',
-                  marginBottom: '18px'
+                  marginBottom: '20px'
                 }}
               >
                 How markets are feeling today, based on {stats.sources} sources
@@ -1182,7 +1182,7 @@ export default function DigestHeader({
                     fontWeight: 500,
                     letterSpacing: '0.04em',
                     textTransform: 'uppercase',
-                    marginTop: '14px',
+                    marginTop: '18px',
                     transition: 'color 160ms ease'
                   }}>
                     <span>Risk-On</span>
@@ -1193,7 +1193,7 @@ export default function DigestHeader({
                   {/* Current Macro Posture Label */}
                   <motion.div
                     className="text-center"
-                    style={{ marginTop: '8px' }}
+                    style={{ marginTop: '10px' }}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: isLoaded ? 1 : 0 }}
                     transition={{ duration: 0.28, delay: 1.2 }}
@@ -1240,7 +1240,7 @@ export default function DigestHeader({
                 fontWeight: 550,
                 letterSpacing: '-0.01em',
                 maxWidth: '700px',
-                marginTop: '10px'
+                marginTop: '12px'
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
