@@ -703,12 +703,12 @@ export default function CPIvsPCEOrb({ data }) {
           }}
         />
 
-        {/* CPI Satellite - Top Left */}
+        {/* CPI Satellite - Left */}
         <MetricSatellite
           label="CPI Core"
           value={cpiValue}
           trend={cpiTrend}
-          position={{ top: '40px', left: '5%' }}
+          position={{ top: '50%', left: '0', transform: 'translate(0, -50%)' }}
           delay={1.8}
           color="#62CFFF"
           tldr="Everyday living costs are rising — renters and city households feel it most."
@@ -717,12 +717,12 @@ export default function CPIvsPCEOrb({ data }) {
           whoIcon={Home}
         />
 
-        {/* PCE Satellite - Top Right */}
+        {/* PCE Satellite - Right */}
         <MetricSatellite
           label="PCE Core"
           value={pceValue}
           trend={pceTrend}
-          position={{ top: '40px', right: '5%' }}
+          position={{ top: '50%', right: '0', transform: 'translate(0, -50%)' }}
           delay={2.0}
           color="#C9A2FF"
           tldr="Daily spending is cooling — higher-income and flexible spenders feel relief first."
