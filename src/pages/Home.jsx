@@ -649,73 +649,193 @@ export default function Home() {
                 transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
               />
 
-        const trendIndicator = getTrendIndicator();
-        return (
-          <ModuleWrapper key={moduleId} title="Market Pulse" {...moduleProps}>
-            {/* OS Horizon V4 Pulse Hero */}
-            <motion.div
-              className="relative overflow-hidden rounded-[28px]"
-              style={{
-                padding: '40px 44px',
-                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.028) 100%)',
-                backdropFilter: 'blur(32px) saturate(165%)',
-                WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-                border: '1px solid rgba(255,255,255,0.08)',
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 32px rgba(0,0,0,0.12)'
-              }}
-              initial={{ opacity: 0, scale: 0.97 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, ease: [0.22, 0.61, 0.36, 1] }}
-            >
-              {/* Top specular highlight */}
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: '15%',
-                right: '15%',
-                height: '1.5px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-                pointerEvents: 'none'
-              }} />
+              <div className="relative z-10">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10">
+                  <div className="flex-1 space-y-7">
+                    {/* OS Horizon Score Display */}
+                    <div className="flex flex-col sm:flex-row sm:items-baseline gap-6">
+                      <div className="relative flex items-baseline">
+                        <motion.div
+                          key={Math.round(animatedScore)}
+                          initial={{ opacity: 0, scale: 0.88 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
+                          className="relative flex items-baseline"
+                        >
+                          <div className="text-7xl sm:text-8xl lg:text-9xl font-bold tracking-[-0.04em]" style={{
+                            color: 'rgba(255,255,255,0.98)',
+                            fontVariantNumeric: 'tabular-nums',
+                            textShadow: '0 2px 12px rgba(0,0,0,0.15)'
+                          }}>
+                            {Math.round(animatedScore)}
+                          </div>
 
-              {/* Refined ambient blooms */}
-              <motion.div
-                style={{
-                  position: 'absolute',
-                  top: '10%',
-                  right: '8%',
-                  width: '300px',
-                  height: '300px',
-                  borderRadius: '50%',
-                  background: 'radial-gradient(circle, rgba(88, 227, 164, 0.06) 0%, transparent 70%)',
-                  filter: 'blur(52px)',
-                  pointerEvents: 'none'
-                }}
-                animate={{
-                  scale: [1, 1.12, 1],
-                  opacity: [0.35, 0.50, 0.35]
-                }}
-                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-              />
+                          <motion.div
+                            className="flex items-center ml-3 -mt-6"
+                            initial={{ opacity: 0, scale: 0.85 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.3, delay: 0.4, ease: [0.22, 0.61, 0.36, 1] }}
+                          >
+                            <span className="text-xl font-bold" style={{ 
+                              color: trendIndicator.color.includes('green') ? '#58E3A4' : trendIndicator.color.includes('red') ? '#FF6A7A' : 'rgba(168, 179, 199, 1)',
+                              fontVariantNumeric: 'tabular-nums'
+                            }}>
+                              ({trendIndicator.label} {trendIndicator.symbol})
+                            </span>
+                          </motion.div>
+                        </motion.div>
+                      </div>
 
-              <motion.div
-                style={{
-                  position: 'absolute',
-                  bottom: '12%',
-                  left: '6%',
-                  width: '260px',
-                  height: '260px',
-                  borderRadius: '50%',
-                  background: 'radial-gradient(circle, rgba(77, 143, 251, 0.05) 0%, transparent 70%)',
-                  filter: 'blur(56px)',
-                  pointerEvents: 'none'
-                }}
-                animate={{
-                  scale: [1.08, 1, 1.08],
-                  opacity: [0.28, 0.42, 0.28]
-                }}
-                transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-              />
+                      {/* OS Horizon Sentiment Pill */}
+                      <motion.div
+                        key={pulseData.trend}
+                        initial={{ opacity: 0, scale: 0.92 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.4, delay: 0.2, ease: [0.22, 0.61, 0.36, 1] }}
+                        className="relative group"
+                        onMouseEnter={() => setShowTooltip(true)}
+                        onMouseLeave={() => setShowTooltip(false)}
+                      >
+                        <div className="flex items-center gap-2.5 rounded-[18px]" style={{
+                          padding: '10px 18px',
+                          background: 'linear-gradient(180deg, rgba(88, 227, 164, 0.14) 0%, rgba(88, 227, 164, 0.10) 100%)',
+                          backdropFilter: 'blur(12px)',
+                          border: '1px solid rgba(88, 227, 164, 0.24)',
+                          boxShadow: 'inset 0 0.5px 0 rgba(88, 227, 164, 0.12)'
+                        }}>
+                          <TrendingUp className="w-4 h-4" style={{ color: '#58E3A4' }} strokeWidth={2.2} />
+                          <span className="text-[14px] font-bold tracking-tight" style={{ 
+                            color: '#58E3A4',
+                            letterSpacing: '0.01em'
+                          }}>
+                            {pulseData.trend}
+                          </span>
+                        </div>
+
+                        <AnimatePresence>
+                          {showTooltip && (
+                            <motion.div
+                              initial={{ opacity: 0, y: 6, scale: 0.94 }}
+                              animate={{ opacity: 1, y: 0, scale: 1 }}
+                              exit={{ opacity: 0, y: 6, scale: 0.94 }}
+                              className="absolute top-full mt-3 left-1/2 -translate-x-1/2 z-50 rounded-[14px] pointer-events-none"
+                              style={{
+                                padding: '12px 14px',
+                                background: 'linear-gradient(135deg, rgba(12, 16, 22, 0.94), rgba(18, 22, 30, 0.92))',
+                                backdropFilter: 'blur(24px) saturate(165%)',
+                                WebkitBackdropFilter: 'blur(24px) saturate(165%)',
+                                border: '1px solid rgba(255, 255, 255, 0.12)',
+                                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10), 0 8px 24px rgba(0,0,0,0.25)',
+                                maxWidth: '320px'
+                              }}
+                              transition={{ duration: 0.16, ease: [0.22, 0.61, 0.36, 1] }}
+                            >
+                              <div className="text-[12px] font-medium text-center leading-relaxed" style={{ color: 'rgba(255,255,255,0.88)' }}>
+                                {pulseData.sectorBreakdown}
+                              </div>
+                              <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 rotate-45" style={{
+                                background: 'linear-gradient(135deg, rgba(12, 16, 22, 0.94), rgba(18, 22, 30, 0.92))',
+                                borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
+                                borderRight: '1px solid rgba(255, 255, 255, 0.12)'
+                              }} />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </motion.div>
+                    </div>
+
+                    <motion.p
+                      className="text-base leading-relaxed max-w-2xl"
+                      style={{ 
+                        color: 'rgba(255,255,255,0.78)',
+                        fontWeight: 500,
+                        letterSpacing: '-0.005em'
+                      }}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
+                    >
+                      {pulseData.insight}
+                    </motion.p>
+                  </div>
+
+                  {/* Mini Sparkline */}
+                  <div className="relative mx-auto lg:mx-0 flex items-center justify-center">
+                    <MiniSparkline data={pulseData.sparklineData} currentValue={pulseData.score} />
+                  </div>
+                </div>
+
+                {/* OS Horizon Progress Bar */}
+                <div className="relative" style={{ marginTop: '36px' }}>
+                  <div className="h-3 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                    <motion.div
+                      className="h-full rounded-full relative overflow-hidden"
+                      style={{
+                        background: 'linear-gradient(90deg, #58E3A4 0%, #73E6D2 100%)',
+                        boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.20)'
+                      }}
+                      initial={{ width: 0 }}
+                      animate={{ width: `${animatedScore}%` }}
+                      transition={{
+                        duration: 1.0,
+                        ease: [0.22, 0.61, 0.36, 1],
+                        delay: 0.4
+                      }}
+                    >
+                      <div className="absolute inset-0 rounded-full" style={{
+                        background: 'linear-gradient(90deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.28) 100%)'
+                      }} />
+
+                      <motion.div
+                        className="absolute top-0 right-0 w-16 h-full rounded-full"
+                        style={{
+                          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent)'
+                        }}
+                        animate={{
+                          x: ['-120%', '220%'],
+                        }}
+                        transition={{
+                          duration: 3,
+                          ease: "easeInOut",
+                          repeat: Infinity,
+                          repeatDelay: 6,
+                        }}
+                      />
+                    </motion.div>
+                  </div>
+
+                  <motion.div
+                    className="absolute -top-9 left-0 rounded-[12px]"
+                    style={{
+                      padding: '6px 10px',
+                      background: 'linear-gradient(180deg, rgba(88, 227, 164, 0.12) 0%, rgba(88, 227, 164, 0.08) 100%)',
+                      border: '1px solid rgba(88, 227, 164, 0.18)',
+                      backdropFilter: 'blur(12px)'
+                    }}
+                    initial={{ opacity: 0, x: 0 }}
+                    animate={{
+                      opacity: 1,
+                      x: `${(animatedScore / 100) * 100}%`
+                    }}
+                    transition={{
+                      duration: 1.0,
+                      ease: [0.22, 0.61, 0.36, 1],
+                      delay: 0.6
+                    }}
+                  >
+                    <span className="text-[11px] font-bold" style={{ 
+                      color: '#58E3A4',
+                      fontVariantNumeric: 'tabular-nums',
+                      letterSpacing: '0.01em'
+                    }}>
+                      Confidence: {Math.round(animatedScore)}%
+                    </span>
+                  </motion.div>
+                </div>
+              </div>
+            </motion.div>
+          </ModuleWrapper>
+        );
 
       case 'heatmap':
         return isEnabled('labs_modules') ? (
