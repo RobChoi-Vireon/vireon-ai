@@ -1492,8 +1492,6 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
                     </p>
                   </section>
 
-                  <SectionDivider />
-
                   {/* MORNING TAKEAWAY + Enhanced Confidence */}
                   <section className="ri-section confidence-section">
                     <h3 className="ri-section-title">
@@ -1608,8 +1606,6 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
                     </div>
                   </section>
 
-                  <SectionDivider />
-
                   {/* IMPACT OVERVIEW - with Signal Equilibrium Bar */}
                   <section className="ri-section impact-section">
                     <h3 className="ri-section-title">
@@ -1694,8 +1690,6 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
 
                   {/* AUTO-REVEAL DETAILS */}
                   <div className="ri-details">
-                    <SectionDivider />
-
                     {/* CONTEXT AND SOURCE - with timestamp coloring */}
                     <div style={{ marginBottom: `${HORIZON.spacing.sectionGap}px` }}>
                       <h4 className="ri-section-title">
@@ -1743,8 +1737,6 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
                         })}
                       </div>
                     </div>
-
-                    <SectionDivider />
 
                     {/* MARKET IMPACT - with trend arrows and gradient bars */}
                     <div className="mb-6">
@@ -1808,8 +1800,6 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
                       </div>
                     </div>
 
-                    <SectionDivider />
-
                     {/* LUMINOUS RISK/OPPORTUNITY CARDS - with header glow */}
                     <div className="ri-grid mb-6">
                       {/* Downside Risk */}
@@ -1848,8 +1838,6 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
                         </div>
                       </div>
                     </div>
-
-                    <SectionDivider />
 
                     {/* KEY TAKEAWAY - Enhanced */}
                     <motion.div
