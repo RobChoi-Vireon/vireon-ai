@@ -427,7 +427,6 @@ function LayoutContent({ children, currentPageName }) {
   const { theme, toggleTheme } = useTheme();
   const { isEnabled } = useFeatureFlags();
 
-  const [isDisclaimerVisible, setIsDisclaimerVisible] = useState(false);
   const [initialPinchDistance, setInitialPinchDistance] = useState(null);
   const [isPinching, setIsPinching] = useState(false);
   
@@ -478,15 +477,6 @@ function LayoutContent({ children, currentPageName }) {
       console.error('Error saving onboarding acceptance:', error);
     }
   };
-  
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const dismissed = localStorage.getItem('vireon-disclaimer-dismissed');
-      if (!dismissed) {
-        setIsDisclaimerVisible(true);
-      }
-    }
-  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -589,16 +579,9 @@ function LayoutContent({ children, currentPageName }) {
       document.removeEventListener('touchmove', handleTouchMove);
       document.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [isAlertsOpen, isSearchOpen, isCommentaryOpen, isPinching, initialPinchDistance]);
+    }, [isAlertsOpen, isSearchOpen, isCommentaryOpen, isPinching, initialPinchDistance]);
 
-  const handleDismissDisclaimer = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('vireon-disclaimer-dismissed', 'true');
-    }
-    setIsDisclaimerVisible(false);
-  };
-
-  const navItems = [
+    const navItems = [
     { id: 'macrosignals', title: 'Macro Signals', href: createPageUrl('MacroSignals'), icon: Globe },
     { id: 'home', title: 'Market Pulse', href: createPageUrl('Home'), icon: Activity },
     { id: 'insights', title: 'AI Insights', href: createPageUrl('Insights'), icon: Brain },
@@ -1099,36 +1082,6 @@ function LayoutContent({ children, currentPageName }) {
               relative
               ${isCommentaryOpen && isEnabled('labs_modules') ? 'md:pr-[340px]' : ''}
             `}>
-              <AnimatePresence>
-                {isDisclaimerVisible && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -20, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -20, scale: 0.95, transition: { duration: 0.2 } }}
-                    transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-                    className="flex items-center justify-between gap-4 p-4 mb-6 rounded-2xl border backdrop-blur-xl"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(80, 140, 255, 0.10) 0%, rgba(120, 90, 255, 0.08) 100%)',
-                      borderColor: 'rgba(80, 140, 255, 0.20)'
-                    }}
-                  >
-                    <div className="flex items-center space-x-3">
-                      <AlertCircle className="w-5 h-5 flex-shrink-0 text-blue-400" />
-                      <p className="text-sm font-medium text-gray-300">
-                        Welcome to Vireon. Please note this is a prototype using mock data for demonstration purposes.
-                      </p>
-                    </div>
-                    <button
-                      onClick={handleDismissDisclaimer}
-                      className="p-2 rounded-lg transition-colors hover:bg-white/10"
-                      aria-label="Dismiss disclaimer"
-                    >
-                      <X className="w-4 h-4 text-gray-400" />
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              
               <div className="max-w-[1400px] mx-auto">
                 {children}
               </div>
