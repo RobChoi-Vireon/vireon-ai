@@ -615,8 +615,8 @@ export default function InflationSection({ data }) {
         </p>
       </motion.div>
 
-      {/* Hero Card */}
-      <InflationHeroCard state={heroState} subline={heroSubline} />
+      {/* Reality Split Hero */}
+      <InflationRealitySplit />
 
       {/* Secondary Metrics Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
