@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Home, Eye, TrendingUp, Bell, AlertCircle, Plus, Download, Newspaper, Search, MessageSquare, X, Calendar, BookOpen, Brain, Globe, Activity } from "lucide-react";
+import { Home, Eye, TrendingUp, Bell, AlertCircle, Plus, Download, Newspaper, Search, MessageSquare, X, Calendar, BookOpen, Brain, Globe, Activity, User } from "lucide-react";
 import { FeatureFlagsProvider, useFeatureFlags } from "./components/core/FeatureFlags";
 import { MiniSheetProvider, useMiniSheet } from './components/core/MiniSheetProvider';
 import { AccessibilityProvider } from "./components/core/AccessibilityProvider";
@@ -11,6 +11,7 @@ import SearchOmni from "./components/global/SearchOmni";
 import LiveCommentary from "./components/live-feed/LiveCommentary";
 import LyraChatbot from "./components/core/LyraChatbot";
 import UserMenu from "./components/core/UserMenu";
+import GlassIconButton from "./components/core/GlassIconButton";
 import OnboardingModal from "./components/core/OnboardingModal";
 import UtilityTrayPill from "./components/core/UtilityTrayPill";
 import { motion, AnimatePresence } from 'framer-motion';
@@ -1033,26 +1034,30 @@ function LayoutContent({ children, currentPageName }) {
           <div className="flex-1 flex flex-col overflow-hidden">
             {/* OS Horizon V2 Utility Tray — Dynamic Scroll-Reactive HUD */}
             <UtilityTrayPill isOverlayOpen={isAlertsOpen || isSearchOpen || isCommentaryOpen}>
-              {/* OS Horizon V2 Semantic Grouping: Cluster A (Search + Commentary) */}
+              {/* OS Horizon V3 Semantic Grouping: Cluster A (Search + Commentary) */}
               {isEnabled('labs_modules') && (
-                <div className="flex items-center" style={{ gap: '12px', marginRight: '32px' }}>
+                <div className="flex items-center" style={{ gap: '12px', marginRight: '16px' }}>
                   <GlassIconButton
                     onClick={() => setIsSearchOpen(true)}
                     icon={Search}
-                    label="Search stocks and market data"
+                    label="Search"
+                    subtitle="Tickers, news, macro data"
+                    shortcut="⌘K"
                   />
 
                   <GlassIconButton
                     onClick={() => setIsCommentaryOpen(!isCommentaryOpen)}
                     icon={MessageSquare}
-                    label={`${isCommentaryOpen ? 'Close' : 'Open'} live commentary`}
+                    label="Live Commentary"
+                    subtitle="Real-time market tape"
+                    shortcut="⌥C"
                     isActive={isCommentaryOpen}
                   />
                 </div>
               )}
 
-              {/* OS Horizon V2 Semantic Grouping: Cluster B (Labs + Notifications) */}
-              <div className="flex items-center" style={{ gap: '12px', marginRight: '32px' }}>
+              {/* OS Horizon V3 Semantic Grouping: Cluster B (Labs + Notifications) */}
+              <div className="flex items-center" style={{ gap: '12px', marginRight: '16px' }}>
                 <div className="relative z-[260] group">
                   <LabsToggle />
                 </div>
@@ -1060,14 +1065,22 @@ function LayoutContent({ children, currentPageName }) {
                 <GlassIconButton
                   onClick={() => setIsAlertsOpen(true)}
                   icon={Bell}
-                  label="View alerts"
+                  label="Alerts"
+                  subtitle="Signals & notifications"
+                  shortcut="⌥A"
                   hasNotification={true}
+                  notificationCount={3}
                 />
               </div>
 
-              {/* OS Horizon V2 Semantic Grouping: Cluster C (Profile Capsule) */}
-              <div className="relative z-[260] group">
-                <UserMenu theme="dark" toggleTheme={() => {}} />
+              {/* OS Horizon V3 Semantic Grouping: Cluster C (Account) */}
+              <div className="relative z-[260]">
+                <GlassIconButton
+                  onClick={() => {/* Open account menu */}}
+                  icon={User}
+                  label="Account"
+                  subtitle="Profile, settings, logout"
+                />
               </div>
             </UtilityTrayPill>
 
