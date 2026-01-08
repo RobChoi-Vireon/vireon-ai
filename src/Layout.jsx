@@ -12,6 +12,7 @@ import LiveCommentary from "./components/live-feed/LiveCommentary";
 import LyraChatbot from "./components/core/LyraChatbot";
 import UserMenu from "./components/core/UserMenu";
 import OnboardingModal from "./components/core/OnboardingModal";
+import UtilityTrayPill from "./components/core/UtilityTrayPill";
 import { motion, AnimatePresence } from 'framer-motion';
 import NetworkErrorBoundary from "./components/core/NetworkErrorBoundary";
 import { base44 } from "@/api/base44Client";
