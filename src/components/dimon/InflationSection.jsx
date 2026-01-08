@@ -91,7 +91,7 @@ export default function InflationSection({ data }) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="pl-2">
+      <div className="pl-2 mb-3">
         <h2 className="text-2xl font-bold mb-1" style={{ color: 'rgba(255,255,255,0.95)' }}>
           Inflation
         </h2>
