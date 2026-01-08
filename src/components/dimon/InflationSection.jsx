@@ -5,6 +5,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, DollarSign, Home, ShoppingCart, ChevronDown, ChevronUp } from 'lucide-react';
+import InflationConsensusField from './InflationConsensusField';
 
 // ============================================================================
 // MOTION DNA — Apple-Grade Easing
@@ -615,8 +616,8 @@ export default function InflationSection({ data }) {
         </p>
       </motion.div>
 
-      {/* Hero Card */}
-      <InflationHeroCard state={heroState} subline={heroSubline} />
+      {/* Consensus Field Hero */}
+      <InflationConsensusField />
 
       {/* Secondary Metrics Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
