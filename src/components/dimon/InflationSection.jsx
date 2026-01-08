@@ -587,10 +587,6 @@ export default function InflationSection({ data }) {
     { icon: Home, text: "Dollar stays supported" }
   ];
 
-  // Remove unused variables
-  const heroState = heroState;
-  const heroSubline = heroSubline;
-
   return (
     <div className="space-y-6">
       {/* Section Title */}
