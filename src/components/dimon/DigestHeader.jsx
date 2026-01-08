@@ -834,15 +834,13 @@ export default function DigestHeader({
               <div className="relative flex items-start gap-0">
                 {/* Arc Visualization */}
                 <div
-                  className="flex-1 max-w-xl relative"
+                  className="flex-1 max-w-lg relative mx-auto"
                   ref={arcRef}
                   onPointerMove={handlePointerMove}
                   style={{
                     background: 'transparent',
                     border: 'none',
-                    outline: 'none',
-                    transform: 'scale(0.7)',
-                    transformOrigin: 'top left'
+                    outline: 'none'
                   }}
                 >
                   {/* Error State */}
@@ -900,7 +898,8 @@ export default function DigestHeader({
                       className="w-full h-auto"
                       style={{
                         overflow: 'visible',
-                        background: 'transparent'
+                        background: 'transparent',
+                        maxHeight: '180px'
                       }}
                       preserveAspectRatio="xMidYMid meet"
                       aria-label="Market mood visualization"
@@ -1179,12 +1178,12 @@ export default function DigestHeader({
                   )}
 
                   {/* OS Horizon V2 Arc Context Labels — Refined Positioning */}
-                  <div className="flex justify-between text-[9px] px-1 arc-labels" style={{
+                  <div className="flex justify-between text-[10px] px-2 arc-labels" style={{
                     color: 'rgba(255,255,255,0.56)',
                     fontWeight: 500,
                     letterSpacing: '0.04em',
                     textTransform: 'uppercase',
-                    marginTop: '20px',
+                    marginTop: '12px',
                     transition: 'color 160ms ease'
                   }}>
                     <span>Risk-On</span>
@@ -1195,13 +1194,13 @@ export default function DigestHeader({
                   {/* Current Macro Posture Label */}
                   <motion.div
                     className="text-center"
-                    style={{ marginTop: '6px' }}
+                    style={{ marginTop: '8px' }}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: isLoaded ? 1 : 0 }}
                     transition={{ duration: 0.28, delay: 1.2 }}
                   >
                     <span 
-                      className="inline-block px-2.5 py-0.5 rounded-full text-[9px] font-semibold uppercase"
+                      className="inline-block px-3 py-1 rounded-full text-[10px] font-semibold uppercase"
                       style={{
                         background: 'rgba(255, 255, 255, 0.04)',
                         border: '1px solid rgba(255, 255, 255, 0.06)',
@@ -1219,8 +1218,8 @@ export default function DigestHeader({
                   <div
                     className="hidden lg:block absolute"
                     style={{
-                      top: '20px',
-                      right: '16px',
+                      top: '-8px',
+                      right: '0px',
                       zIndex: 20
                     }}
                   >
@@ -1242,7 +1241,7 @@ export default function DigestHeader({
                 fontWeight: 550,
                 letterSpacing: '-0.01em',
                 maxWidth: '700px',
-                marginTop: '20px'
+                marginTop: '12px'
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
