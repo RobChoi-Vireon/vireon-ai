@@ -639,7 +639,7 @@ export default function MacroSignalsPage() {
       <main 
         className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pb-6 md:pb-8" 
         style={{ 
-          paddingTop: '8px',
+          paddingTop: '12px',
           filter: isAnyDrawerOpen ? 'blur(26px) saturate(1.3) brightness(1.15)' : 'none',
           transition: 'filter 280ms cubic-bezier(0.19, 1, 0.22, 1)',
           willChange: 'filter'

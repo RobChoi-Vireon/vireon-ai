@@ -633,7 +633,7 @@ export default function DigestHeader({
         aria-hidden="true"
       />
 
-      <div className="relative container mx-auto px-6 lg:px-10 pt-4 pb-3" style={{ zIndex: 10 }}>
+      <div className="relative container mx-auto px-6 lg:px-10 pt-6 pb-3" style={{ zIndex: 10 }}>
 
         <div className="flex flex-col lg:flex-row items-start justify-between gap-5">
 
@@ -647,7 +647,7 @@ export default function DigestHeader({
               animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 8 }}
               transition={{ duration: 0.36, delay: 0.12, ease: [0.22, 0.61, 0.36, 1] }}
               className="relative"
-              style={{ marginBottom: '14px', marginTop: '0px' }}
+              style={{ marginBottom: '16px', marginTop: '0px' }}
             >
               <h1
                 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
@@ -685,7 +685,7 @@ export default function DigestHeader({
                 color: 'rgba(255,255,255,0.78)',
                 fontWeight: 500,
                 letterSpacing: '0.01em',
-                marginBottom: '12px'
+                marginBottom: '14px'
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
@@ -814,7 +814,7 @@ export default function DigestHeader({
 
             {/* Halo Spectrum Arc with Macro Insight Capsule */}
             <motion.div
-              className="relative pt-1 pb-1 w-full"
+              className="relative pt-2 pb-1 w-full"
               style={{ transform: 'translateY(0px)' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
@@ -824,7 +824,7 @@ export default function DigestHeader({
                 className="text-sm font-semibold tracking-wide block"
                 style={{
                   color: 'rgba(255,255,255,0.63)',
-                  marginBottom: '16px'
+                  marginBottom: '18px'
                 }}
               >
                 How markets are feeling today, based on {stats.sources} sources
