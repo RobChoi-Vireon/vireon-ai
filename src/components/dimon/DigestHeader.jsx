@@ -824,7 +824,7 @@ export default function DigestHeader({
                 className="text-sm font-semibold tracking-wide block"
                 style={{
                   color: 'rgba(255,255,255,0.63)',
-                  marginBottom: '20px'
+                  marginBottom: '32px'
                 }}
               >
                 How markets are feeling today, based on {stats.sources} sources
