@@ -708,7 +708,7 @@ export default function CPIvsPCEOrb({ data }) {
           label="CPI Core"
           value={cpiValue}
           trend={cpiTrend}
-          position={{ top: '50%', left: '0', transform: 'translate(0, -50%)' }}
+          position={{ top: '50%', left: '40px', transform: 'translateY(-50%)' }}
           delay={1.8}
           color="#62CFFF"
           tldr="Everyday living costs are rising — renters and city households feel it most."
@@ -722,7 +722,7 @@ export default function CPIvsPCEOrb({ data }) {
           label="PCE Core"
           value={pceValue}
           trend={pceTrend}
-          position={{ top: '50%', right: '0', transform: 'translate(0, -50%)' }}
+          position={{ top: '50%', right: '40px', transform: 'translateY(-50%)' }}
           delay={2.0}
           color="#C9A2FF"
           tldr="Daily spending is cooling — higher-income and flexible spenders feel relief first."
