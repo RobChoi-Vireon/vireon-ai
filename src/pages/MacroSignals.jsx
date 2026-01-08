@@ -637,9 +637,9 @@ export default function MacroSignalsPage() {
       </div>
 
       <main 
-        className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pb-8 md:pb-12" 
+        className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pb-6 md:pb-8" 
         style={{ 
-          paddingTop: '28px',
+          paddingTop: '16px',
           filter: isAnyDrawerOpen ? 'blur(26px) saturate(1.3) brightness(1.15)' : 'none',
           transition: 'filter 280ms cubic-bezier(0.19, 1, 0.22, 1)',
           willChange: 'filter'
@@ -674,7 +674,7 @@ export default function MacroSignalsPage() {
                 initial="hidden"
                 animate="visible"
                 exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.3 } }}
-                className="grid grid-cols-12 gap-6 md:gap-8"
+                className="grid grid-cols-12 gap-4 md:gap-5"
                 id="dimon-digest-container"
               >
                 {isDegraded && (
@@ -731,18 +731,18 @@ export default function MacroSignalsPage() {
                 
                 {/* 4) Global Signals — OS HORIZON REFINED LAYOUT */}
                 <motion.div className="col-span-12" variants={sectionVariants} id="section-global-signals" data-section-order="4">
-                    <div className="mb-6 pl-2">
-                        <h2 className="text-2xl font-bold mb-2" style={{ color: 'rgba(255,255,255,0.95)' }}>
+                    <div className="mb-4 pl-2">
+                        <h2 className="text-xl font-bold mb-1" style={{ color: 'rgba(255,255,255,0.95)' }}>
                           Global Signals
                         </h2>
-                        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.70)' }}>
+                        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.70)' }}>
                           Consensus and divergence across key sources.
                         </p>
                     </div>
                     
                     {/* Enhanced Grid with Breathing Room */}
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
-                        <div className="lg:col-span-5 min-h-[600px]">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+                        <div className="lg:col-span-5 min-h-[400px]">
                             <ConsensusMeter 
                                 score={digest.consensus_score} 
                                 breakdown={digest.consensus_breakdown} 

@@ -633,12 +633,12 @@ export default function DigestHeader({
         aria-hidden="true"
       />
 
-      <div className="relative container mx-auto px-8 lg:px-12 pt-12 pb-6" style={{ zIndex: 10 }}>
+      <div className="relative container mx-auto px-6 lg:px-8 pt-6 pb-4" style={{ zIndex: 10 }}>
 
-        <div className="flex flex-col lg:flex-row items-start justify-between gap-8">
+        <div className="flex flex-col lg:flex-row items-start justify-between gap-5">
 
           <motion.div
-            className="flex-1 space-y-3 w-full"
+            className="flex-1 space-y-2 w-full"
           >
 
             {/* OS Horizon V2 Typography — System-Level Hero */}
@@ -647,10 +647,10 @@ export default function DigestHeader({
               animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 8 }}
               transition={{ duration: 0.36, delay: 0.12, ease: [0.22, 0.61, 0.36, 1] }}
               className="relative"
-              style={{ marginBottom: '32px', marginTop: '4px' }}
+              style={{ marginBottom: '16px', marginTop: '2px' }}
             >
               <h1
-                className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight"
+                className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight"
                 style={{
                   fontWeight: 700,
                   letterSpacing: '-0.02em'
@@ -680,12 +680,12 @@ export default function DigestHeader({
 
             {/* OS Horizon V2 Tagline — Improved Contrast */}
             <motion.p
-              className="text-sm italic"
+              className="text-xs italic"
               style={{
                 color: 'rgba(255,255,255,0.78)',
                 fontWeight: 500,
                 letterSpacing: '0.01em',
-                marginBottom: '24px'
+                marginBottom: '12px'
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
@@ -696,8 +696,8 @@ export default function DigestHeader({
 
             {/* OS Horizon V2 Info Capsules — Unified Glass Pills */}
             <motion.div
-              className="flex flex-wrap items-center gap-3"
-              style={{ marginBottom: '28px' }}
+              className="flex flex-wrap items-center gap-2"
+              style={{ marginBottom: '14px' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
               transition={{ duration: 0.22, delay: 0.28, ease: [0.22, 0.61, 0.36, 1] }}
@@ -814,17 +814,17 @@ export default function DigestHeader({
 
             {/* Halo Spectrum Arc with Macro Insight Capsule */}
             <motion.div
-              className="relative pt-8 pb-4 w-full"
-              style={{ transform: 'translateY(42px)' }}
+              className="relative pt-3 pb-2 w-full"
+              style={{ transform: 'translateY(0px)' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
               transition={{ duration: 0.22, delay: 0.42, ease: [0.22, 0.61, 0.36, 1] }}
             >
               <label
-                className="text-sm font-semibold tracking-wide block"
+                className="text-xs font-semibold tracking-wide block"
                 style={{
                   color: 'rgba(255,255,255,0.63)',
-                  marginBottom: '56px'
+                  marginBottom: '24px'
                 }}
               >
                 How markets are feeling today, based on {stats.sources} sources
@@ -834,13 +834,15 @@ export default function DigestHeader({
               <div className="relative flex items-start gap-0">
                 {/* Arc Visualization */}
                 <div
-                  className="flex-1 max-w-2xl relative"
+                  className="flex-1 max-w-xl relative"
                   ref={arcRef}
                   onPointerMove={handlePointerMove}
                   style={{
                     background: 'transparent',
                     border: 'none',
-                    outline: 'none'
+                    outline: 'none',
+                    transform: 'scale(0.7)',
+                    transformOrigin: 'top left'
                   }}
                 >
                   {/* Error State */}
@@ -1177,12 +1179,12 @@ export default function DigestHeader({
                   )}
 
                   {/* OS Horizon V2 Arc Context Labels — Refined Positioning */}
-                  <div className="flex justify-between text-[11px] px-1 arc-labels" style={{
+                  <div className="flex justify-between text-[9px] px-1 arc-labels" style={{
                     color: 'rgba(255,255,255,0.56)',
                     fontWeight: 500,
                     letterSpacing: '0.04em',
                     textTransform: 'uppercase',
-                    marginTop: '48px',
+                    marginTop: '20px',
                     transition: 'color 160ms ease'
                   }}>
                     <span>Risk-On</span>
@@ -1193,13 +1195,13 @@ export default function DigestHeader({
                   {/* Current Macro Posture Label */}
                   <motion.div
                     className="text-center"
-                    style={{ marginTop: '12px' }}
+                    style={{ marginTop: '6px' }}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: isLoaded ? 1 : 0 }}
                     transition={{ duration: 0.28, delay: 1.2 }}
                   >
                     <span 
-                      className="inline-block px-3 py-1 rounded-full text-[10px] font-semibold uppercase"
+                      className="inline-block px-2.5 py-0.5 rounded-full text-[9px] font-semibold uppercase"
                       style={{
                         background: 'rgba(255, 255, 255, 0.04)',
                         border: '1px solid rgba(255, 255, 255, 0.06)',
@@ -1234,13 +1236,13 @@ export default function DigestHeader({
 
             {/* Summary Line - OS Horizon V2 Spacing */}
             <motion.p
-              className="text-lg leading-relaxed"
+              className="text-sm leading-relaxed"
               style={{
                 color: 'rgba(255,255,255,0.88)',
                 fontWeight: 550,
                 letterSpacing: '-0.01em',
                 maxWidth: '700px',
-                marginTop: '56px'
+                marginTop: '20px'
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
@@ -1252,8 +1254,8 @@ export default function DigestHeader({
 
           {/* OS Horizon V2 Analysis Panel — Unified Glass Stack */}
           <motion.div
-            className="flex flex-col gap-3 flex-shrink-0"
-            style={{ marginRight: '28px', marginTop: '14px' }}
+            className="flex flex-col gap-2 flex-shrink-0"
+            style={{ marginRight: '16px', marginTop: '8px' }}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: isLoaded ? 1 : 0, x: isLoaded ? 0 : 20 }}
             transition={{ duration: 0.4, delay: 1.3, ease: [0.22, 0.61, 0.36, 1] }}
@@ -1271,7 +1273,7 @@ export default function DigestHeader({
                   inset 0 1.5px 0 rgba(255,255,255,0.07),
                   inset 0 -1px 1px rgba(0,0,0,0.03)
                 `,
-                padding: '20px 22px',
+                padding: '14px 16px',
                 transform: 'perspective(800px) rotateY(0.8deg)'
               }}
               animate={{
@@ -1400,8 +1402,8 @@ export default function DigestHeader({
 
             {/* OS Horizon V4 Enhanced Matte-Silk Capsule Buttons */}
             <motion.div
-              className="flex flex-col gap-3 relative"
-              style={{ marginTop: '8px' }}
+              className="flex flex-col gap-2 relative"
+              style={{ marginTop: '6px' }}
             >
               <TooltipProvider>
                 {[
@@ -1435,7 +1437,7 @@ export default function DigestHeader({
                           ref={buttonRef}
                           className="horizon-control-tile w-full flex items-center justify-center rounded-[25px] relative overflow-hidden"
                           style={{
-                            height: '44px',
+                            height: '36px',
                             background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.15) 100%)',
                             backdropFilter: 'blur(32px) saturate(165%)',
                             WebkitBackdropFilter: 'blur(32px) saturate(165%)',
