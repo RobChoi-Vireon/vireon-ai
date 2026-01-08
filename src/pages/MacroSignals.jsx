@@ -585,13 +585,22 @@ export default function MacroSignalsPage() {
     },
   };
   
+  const isAnyDrawerOpen = selectedSignal || selectedTakeaway || selectedDivergence || isConsensusDrawerOpen || selectedSegment;
+
   return (
     <div className="min-h-screen font-sans overflow-x-hidden" style={{ 
       background: '#0B0E13',
       color: '#F8FAFC'
     }}>
       {/* OS Horizon V2 Canvas Atmosphere */}
-      <div className="fixed inset-0 pointer-events-none">
+      <div 
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          filter: isAnyDrawerOpen ? 'blur(26px) saturate(1.3) brightness(1.15)' : 'none',
+          transition: 'filter 280ms cubic-bezier(0.19, 1, 0.22, 1)',
+          willChange: 'filter'
+        }}
+      >
         {/* Large-Scale Atmospheric Gradient */}
         <div 
           className="absolute inset-0"
@@ -631,9 +640,7 @@ export default function MacroSignalsPage() {
         className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pb-8 md:pb-12" 
         style={{ 
           paddingTop: '28px',
-          filter: (selectedSignal || selectedTakeaway || selectedDivergence || isConsensusDrawerOpen || selectedSegment) 
-            ? 'blur(26px) saturate(1.3) brightness(1.15)' 
-            : 'none',
+          filter: isAnyDrawerOpen ? 'blur(26px) saturate(1.3) brightness(1.15)' : 'none',
           transition: 'filter 280ms cubic-bezier(0.19, 1, 0.22, 1)',
           willChange: 'filter'
         }}
