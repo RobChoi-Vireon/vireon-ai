@@ -289,7 +289,6 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
     if (isOpen) {
       previousFocusRef.current = document.activeElement;
       document.body.style.overflow = 'hidden';
-      document.body.setAttribute('data-drawer-open', 'true');
       
       setShowHint(true);
       setViewMode('simplified');
@@ -323,7 +322,6 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
 
       return () => {
         document.body.style.overflow = '';
-        document.body.removeAttribute('data-drawer-open');
         document.removeEventListener('keydown', handleKeyDown);
         
         if (previousFocusRef.current && typeof previousFocusRef.current.focus === 'function') {
