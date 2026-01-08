@@ -14,11 +14,10 @@ const mockSectorData = [
 const SP500_CHANGE = 1.10;
 
 const RefinedSparkline = ({ data, positive, isHovered }) => {
-  const width = 110;
-  const height = 28;
+  const width = 120;
+  const height = 30;
   const padding = 2;
-  // Desaturated, natural tones
-  const strokeColor = positive ? 'rgba(100, 130, 115, 0.72)' : 'rgba(135, 95, 90, 0.72)';
+  const strokeColor = positive ? '#22C55E' : '#EF4444';
   const gradientId = `sparkline-gradient-${positive ? 'green' : 'red'}-${Math.random()}`;
 
   const points = useMemo(() => {
@@ -38,12 +37,12 @@ const RefinedSparkline = ({ data, positive, isHovered }) => {
   const pathD = `M${points}`;
 
   return (
-    <div className="absolute bottom-5 right-5 opacity-48 group-hover:opacity-68 transition-opacity duration-200">
+    <div className="absolute bottom-5 right-5 opacity-70 group-hover:opacity-100 transition-opacity duration-200">
       <svg width={width} height={height} className="overflow-visible">
         <defs>
           <linearGradient id={`${gradientId}-fill`} x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" style={{ stopColor: strokeColor, stopOpacity: 0.12 }} />
-            <stop offset="100%" style={{ stopColor: strokeColor, stopOpacity: 0.02 }} />
+            <stop offset="0%" style={{ stopColor: strokeColor, stopOpacity: 0.3 }} />
+            <stop offset="100%" style={{ stopColor: strokeColor, stopOpacity: 0.05 }} />
           </linearGradient>
         </defs>
         <motion.path 
@@ -51,19 +50,35 @@ const RefinedSparkline = ({ data, positive, isHovered }) => {
           fill={`url(#${gradientId}-fill)`} 
           initial={{ opacity: 0 }} 
           animate={{ opacity: 1 }} 
-          transition={{ duration: 0.4 }} 
+          transition={{ duration: 0.5 }} 
         />
         <motion.path 
           d={pathD} 
           fill="none" 
           stroke={strokeColor} 
-          strokeWidth="1.5" 
+          strokeWidth="2" 
           strokeLinecap="round" 
           strokeLinejoin="round" 
           initial={{ pathLength: 0 }} 
           animate={{ pathLength: 1 }} 
-          transition={{ duration: 1.0, ease: 'easeOut' }} 
+          transition={{ duration: 1.2, ease: "easeOut" }} 
         />
+        <AnimatePresence>
+          {isHovered && (
+            <motion.circle 
+              cx={points.split(' ').slice(-1)[0].split(',')[0]} 
+              cy={points.split(' ').slice(-1)[0].split(',')[1]} 
+              r="3" 
+              fill={strokeColor} 
+              stroke="rgba(255,255,255,0.8)" 
+              strokeWidth="1" 
+              initial={{ scale: 0 }} 
+              animate={{ scale: 1 }} 
+              exit={{ scale: 0 }} 
+              transition={{ duration: 0.2 }}
+            />
+          )}
+        </AnimatePresence>
       </svg>
     </div>
   );
@@ -175,42 +190,47 @@ function SectorHeatmap({ setSelectedSector }) {
 
   const getTileStyle = (change, maxChange) => {
     const magnitude = Math.min(Math.abs(change) / (maxChange || 1), 1);
-    const tintOpacity = 0.022 + magnitude * 0.028;
+    const baseOpacity = 0.1 + magnitude * 0.2;
+    const secondaryOpacity = 0.05 + magnitude * 0.1;
+    const borderOpacity = 0.2 + magnitude * 0.3;
+    const glowOpacity = 0.1 + magnitude * 0.4;
+    const glowRadius = 8 + magnitude * 20;
     
     if (change > 0) {
-      // Deep forest green / slate-green — desaturated
       return {
-        background: `linear-gradient(180deg, rgba(88, 120, 105, ${tintOpacity}), rgba(65, 95, 82, ${tintOpacity * 0.7}))`,
-        border: `rgba(255, 255, 255, 0.08)`,
-        shadow: `0 4px 16px rgba(0, 0, 0, 0.10), inset 0 1px 0 rgba(255,255,255,0.06)`
+        background: `linear-gradient(145deg, rgba(16, 185, 129, ${baseOpacity}), rgba(16, 185, 129, ${secondaryOpacity}))`,
+        border: `rgba(16, 185, 129, ${borderOpacity})`,
+        glow: `0 0 ${glowRadius}px rgba(16, 185, 129, ${glowOpacity})`
       };
     } else {
-      // Muted clay / burgundy-gray — desaturated
       return {
-        background: `linear-gradient(180deg, rgba(128, 90, 88, ${tintOpacity}), rgba(105, 72, 70, ${tintOpacity * 0.7}))`,
-        border: `rgba(255, 255, 255, 0.08)`,
-        shadow: `0 4px 16px rgba(0, 0, 0, 0.10), inset 0 1px 0 rgba(255,255,255,0.06)`
+        background: `linear-gradient(145deg, rgba(239, 68, 68, ${baseOpacity}), rgba(239, 68, 68, ${secondaryOpacity}))`,
+        border: `rgba(239, 68, 68, ${borderOpacity})`,
+        glow: `0 0 ${glowRadius}px rgba(239, 68, 68, ${glowOpacity})`
       };
     }
   };
 
-  // Magnitude-based styling helper — Calm authority
+  // Magnitude-based styling helper
   const getMagnitudeStyling = (change) => {
     const absChange = Math.abs(change);
     if (absChange > 2) {
       return {
         fontSize: '2.75rem',
-        fontWeight: 'font-bold'
+        fontWeight: 'font-black',
+        textShadow: change > 0 ? '0 0 20px rgba(34, 197, 94, 0.6)' : '0 0 20px rgba(239, 68, 68, 0.6)'
       };
     } else if (absChange > 0.5) {
       return {
         fontSize: '2.5rem',
-        fontWeight: 'font-semibold'
+        fontWeight: 'font-extrabold',
+        textShadow: change > 0 ? '0 0 12px rgba(34, 197, 94, 0.4)' : '0 0 12px rgba(239, 68, 68, 0.4)'
       };
     } else {
       return {
         fontSize: '2.25rem',
-        fontWeight: 'font-medium'
+        fontWeight: 'font-bold',
+        textShadow: change > 0 ? '0 0 6px rgba(34, 197, 94, 0.2)' : '0 0 6px rgba(239, 68, 68, 0.2)'
       };
     }
   };
@@ -280,38 +300,40 @@ function SectorHeatmap({ setSelectedSector }) {
               onHoverStart={() => setHoveredSector(sector.name)}
               onHoverEnd={() => setHoveredSector(null)}
               whileHover={{ 
-                y: -2, 
-                scale: 1.008,
-                transition: { duration: 0.18, ease: 'easeOut' }
+                y: -3, 
+                scale: 1.015,
+                transition: { duration: 0.18, ease: [0.26, 0.11, 0.26, 1.0] }
               }}
-              whileTap={{ scale: 0.992, transition: { duration: 0.10 } }}
+              whileTap={{ scale: 0.985, transition: { duration: 0.10 } }}
               className="group relative rounded-[22px] cursor-pointer overflow-hidden"
               style={{ 
                 padding: '24px',
-                background: `${style.background}, linear-gradient(180deg, rgba(255, 255, 255, 0.028) 0%, rgba(255, 255, 255, 0.018) 100%)`, 
-                backdropFilter: 'blur(32px) saturate(155%)',
-                WebkitBackdropFilter: 'blur(32px) saturate(155%)',
+                background: style.background, 
+                backdropFilter: 'blur(28px) saturate(160%)',
+                WebkitBackdropFilter: 'blur(28px) saturate(160%)',
                 border: `1px solid ${style.border}`, 
-                boxShadow: style.shadow,
-                transition: 'all 0.18s ease-out'
+                boxShadow: `inset 0 1px 0 rgba(255, 255, 255, 0.08), ${style.glow}`,
+                transition: 'all 0.18s cubic-bezier(0.26, 0.11, 0.26, 1.0)'
               }}
             >
               {(isLeader || isLaggard) && (
                 <motion.div 
                   className="absolute top-4 right-4"
-                  initial={{ opacity: 0, scale: 0.92 }}
+                  initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.3, duration: 0.24, ease: 'easeOut' }}
+                  transition={{ delay: 0.3, duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
                 >
                   <div 
-                    className="text-[10px] font-semibold px-2.5 py-1 rounded-full"
+                    className="text-[11px] font-bold px-3 py-1.5 rounded-full"
                     style={{
-                      background: 'rgba(255, 255, 255, 0.048)',
-                      border: '1px solid rgba(255, 255, 255, 0.08)',
-                      color: 'rgba(255,255,255,0.72)',
-                      backdropFilter: 'blur(16px)',
-                      letterSpacing: '0.04em',
-                      textTransform: 'uppercase'
+                      background: isLeader 
+                        ? 'linear-gradient(180deg, rgba(88, 227, 164, 0.16) 0%, rgba(88, 227, 164, 0.10) 100%)'
+                        : 'linear-gradient(180deg, rgba(255, 106, 122, 0.16) 0%, rgba(255, 106, 122, 0.10) 100%)',
+                      border: isLeader ? '1px solid rgba(88, 227, 164, 0.24)' : '1px solid rgba(255, 106, 122, 0.24)',
+                      color: isLeader ? '#58E3A4' : '#FF6A7A',
+                      textShadow: isLeader ? '0 0 8px rgba(88, 227, 164, 0.4)' : '0 0 8px rgba(255, 106, 122, 0.4)',
+                      backdropFilter: 'blur(12px)',
+                      letterSpacing: '0.02em'
                     }}
                   >
                     {isLeader ? 'Leader' : 'Laggard'}
@@ -388,9 +410,10 @@ function SectorHeatmap({ setSelectedSector }) {
                       style={{ 
                         fontSize: magnitudeStyle.fontSize, 
                         lineHeight: 1,
-                        color: 'rgba(255,255,255,0.96)',
+                        color: 'rgba(255,255,255,0.98)',
                         fontVariantNumeric: 'tabular-nums',
-                        letterSpacing: '-0.025em'
+                        textShadow: magnitudeStyle.textShadow,
+                        letterSpacing: '-0.02em'
                       }}
                     >
                       {sector.displayChange >= 0 ? '+' : ''}{sector.displayChange.toFixed(2)}%
@@ -399,7 +422,7 @@ function SectorHeatmap({ setSelectedSector }) {
                 </div>
 
                 <div className="space-y-1.5" style={{ 
-                  opacity: 0.68,
+                  opacity: 0.78,
                   transition: 'opacity 0.18s ease'
                 }}>
                   {sector.movers.slice(0, 2).map((mover, i) => {
@@ -407,19 +430,19 @@ function SectorHeatmap({ setSelectedSector }) {
                     return (
                       <motion.div 
                         key={i} 
-                        className="flex items-center gap-2 text-xs font-medium"
-                        style={{ color: 'rgba(255,255,255,0.62)' }}
-                        initial={{ opacity: 0, x: -6 }}
+                        className="flex items-center gap-2 text-xs font-semibold"
+                        style={{ color: 'rgba(255,255,255,0.72)' }}
+                        initial={{ opacity: 0, x: -8 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 + i * 0.05, duration: 0.28, ease: 'easeOut' }}
+                        transition={{ delay: 0.1 + i * 0.05, duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
                       >
                         {isMoverPositive ? 
-                          <TrendingUp className="w-3 h-3" style={{ color: 'rgba(100, 130, 115, 0.82)' }} strokeWidth={2.0}/> : 
-                          <TrendingDown className="w-3 h-3" style={{ color: 'rgba(135, 95, 90, 0.82)' }} strokeWidth={2.0}/>
+                          <TrendingUp className="w-3.5 h-3.5" style={{ color: '#58E3A4' }} strokeWidth={2.2}/> : 
+                          <TrendingDown className="w-3.5 h-3.5" style={{ color: '#FF6A7A' }} strokeWidth={2.2}/>
                         }
-                        <span style={{ color: 'rgba(255,255,255,0.76)' }}>{mover.s}</span>
+                        <span style={{ color: 'rgba(255,255,255,0.80)' }}>{mover.s}</span>
                         <span style={{ 
-                          color: 'rgba(255,255,255,0.88)',
+                          color: isMoverPositive ? '#58E3A4' : '#FF6A7A',
                           fontVariantNumeric: 'tabular-nums'
                         }}>
                           {mover.c}
