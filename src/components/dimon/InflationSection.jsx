@@ -2,10 +2,10 @@
 // Compliance: CEP Engine, Steve Jobs Clarity, Calm Technology, macOS Tahoe
 // Last Updated: 2026-01-08
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, DollarSign, Home, ShoppingCart, ChevronDown, ChevronUp } from 'lucide-react';
-import InflationConsensusField from './InflationConsensusField';
+import { TrendingUp, DollarSign, Home, ShoppingCart, ChevronDown } from 'lucide-react';
+import InflationConsensusFlow from './InflationConsensusFlow';
 
 // ============================================================================
 // MOTION DNA — Apple-Grade Easing
@@ -613,8 +613,8 @@ export default function InflationSection({ data }) {
         </p>
       </motion.div>
 
-      {/* Consensus Field Hero */}
-      <InflationConsensusField />
+      {/* Consensus Flow Hero */}
+      <InflationConsensusFlow />
 
       {/* Secondary Metrics Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
