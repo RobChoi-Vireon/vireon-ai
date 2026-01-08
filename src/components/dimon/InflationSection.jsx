@@ -53,156 +53,368 @@ const GLASS = {
 };
 
 // ============================================================================
-// HERO CARD — Dominant Signal
+// REALITY SPLIT HERO — OS Horizon Signature Visual Intelligence
 // ============================================================================
-const InflationHeroCard = ({ state, subline }) => {
-  const [isHovered, setIsHovered] = useState(false);
+const InflationRealitySplit = () => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const cardRef = useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
+  const heroRef = useRef(null);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setShouldReduceMotion(mediaQuery.matches);
+    const handler = (e) => setShouldReduceMotion(e.matches);
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
 
   const handleMouseMove = (e) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 20;
-    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 20;
-    setMousePos({ x, y });
+    if (!heroRef.current || shouldReduceMotion) return;
+    const rect = heroRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    setMousePos({ x: x - 0.5, y: y - 0.5 });
   };
+
+  // Calculate seam convergence based on cursor proximity to center
+  const distanceFromCenter = Math.abs(mousePos.x);
+  const convergence = Math.max(0, 1 - (distanceFromCenter * 2));
 
   return (
     <motion.div
-      ref={cardRef}
+      ref={heroRef}
       className="relative overflow-hidden cursor-default"
       style={{
-        padding: '48px 44px',
-        background: GLASS.hero.bg,
-        backdropFilter: GLASS.hero.blur,
-        WebkitBackdropFilter: GLASS.hero.blur,
-        border: GLASS.hero.border,
-        borderRadius: GLASS.hero.radius,
-        boxShadow: GLASS.hero.shadow
+        minHeight: '360px',
+        background: 'transparent',
+        borderRadius: '36px',
+        isolation: 'isolate'
       }}
-      initial={{ opacity: 0, y: 30, scale: 0.96 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: MOTION.duration.slow, delay: 0.3, ease: MOTION.ease }}
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1.2, delay: 0.3, ease: MOTION.ease }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onMouseMove={handleMouseMove}
-      whileHover={{
-        y: -4,
-        boxShadow: `
-          inset 0 2px 0 rgba(255,255,255,0.10),
-          inset 0 0 45px rgba(255, 200, 100, 0.06),
-          0 28px 70px -20px rgba(0,0,0,0.60),
-          0 0 50px rgba(255, 180, 80, 0.10)
-        `
-      }}
     >
-      {/* Top Specular Edge */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: '10%',
-        right: '10%',
-        height: '2px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), rgba(255,200,100,0.12), rgba(255,255,255,0.18), transparent)',
-        pointerEvents: 'none'
-      }} />
-
-      {/* Ambient Theme Glow */}
-      <motion.div 
+      {/* Unified Glass Surface */}
+      <div
+        className="absolute inset-0"
         style={{
-          position: 'absolute',
-          top: '-30%',
-          left: '20%',
-          width: '60%',
-          height: '80%',
-          background: 'radial-gradient(ellipse at 50% 100%, rgba(255, 190, 90, 0.10) 0%, transparent 70%)',
-          pointerEvents: 'none'
-        }}
-        animate={{
-          opacity: [0.6, 0.8, 0.6],
-          scale: [1, 1.05, 1]
-        }}
-        transition={{
-          duration: MOTION.duration.breathe,
-          repeat: Infinity,
-          ease: 'easeInOut'
+          background: 'linear-gradient(180deg, rgba(30, 35, 45, 0.75) 0%, rgba(20, 24, 32, 0.85) 100%)',
+          backdropFilter: 'blur(50px) saturate(165%)',
+          WebkitBackdropFilter: 'blur(50px) saturate(165%)',
+          borderRadius: '36px',
+          boxShadow: `
+            0 30px 80px -25px rgba(0,0,0,0.60),
+            inset 0 0 60px rgba(0,0,0,0.25)
+          `
         }}
       />
-
-      {/* Parallax Glow Layer */}
-      <motion.div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'radial-gradient(circle at 50% 50%, rgba(255, 200, 100, 0.08) 0%, transparent 65%)',
-          pointerEvents: 'none',
-          borderRadius: GLASS.hero.radius
-        }}
-        animate={{
-          x: mousePos.x,
-          y: mousePos.y
-        }}
-        transition={{
-          type: 'spring',
-          stiffness: 150,
-          damping: 30
-        }}
-      />
-
-      {/* Label */}
-      <motion.div
-        className="text-xs font-bold uppercase tracking-wider mb-4"
-        style={{
-          color: 'rgba(255, 190, 90, 0.85)',
-          letterSpacing: '0.18em',
-          textShadow: '0 0 16px rgba(255, 190, 90, 0.30)'
-        }}
-        initial={{ opacity: 0, y: -5 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5, ease: MOTION.easeSoft }}
-      >
-        Inflation Pressure
-      </motion.div>
-
-      {/* State */}
-      <motion.h3
-        className="text-5xl font-bold mb-5"
-        style={{
-          color: 'rgba(255,255,255,0.98)',
-          letterSpacing: '-0.02em',
-          textShadow: '0 2px 24px rgba(0,0,0,0.35)'
-        }}
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 0.6, ease: MOTION.ease }}
-      >
-        {state}
-      </motion.h3>
-
-      {/* Subline */}
-      <motion.p
-        className="text-lg leading-relaxed"
-        style={{
-          color: 'rgba(235, 240, 255, 0.88)',
-          fontWeight: 450,
-          maxWidth: '520px'
-        }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.8, ease: MOTION.easeSoft }}
-      >
-        {subline}
-      </motion.p>
 
       {/* Ambient Noise Texture */}
       <div style={{
         position: 'absolute',
         inset: 0,
-        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-        opacity: 0.015,
+        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+        opacity: 0.018,
         mixBlendMode: 'overlay',
-        borderRadius: GLASS.hero.radius,
+        borderRadius: '36px',
+        pointerEvents: 'none'
+      }} />
+
+      {/* LEFT SIDE — Official Data (Cool, Sharp, Stable) */}
+      <motion.div
+        className="absolute inset-0"
+        style={{
+          clipPath: 'polygon(0 0, 50% 0, 50% 100%, 0 100%)',
+          background: 'linear-gradient(135deg, rgba(70, 90, 120, 0.35) 0%, rgba(45, 55, 70, 0.50) 100%)',
+          borderRadius: '36px 0 0 36px'
+        }}
+        animate={shouldReduceMotion ? {} : {
+          opacity: [0.92, 0.96, 0.92]
+        }}
+        transition={{
+          duration: 9,
+          repeat: Infinity,
+          ease: 'easeInOut'
+        }}
+      >
+        {/* Cool Subsurface Glow */}
+        <div style={{
+          position: 'absolute',
+          top: '20%',
+          left: '15%',
+          width: '60%',
+          height: '50%',
+          background: 'radial-gradient(ellipse, rgba(100, 140, 200, 0.10) 0%, transparent 70%)',
+          filter: 'blur(40px)',
+          pointerEvents: 'none'
+        }} />
+
+        {/* Clarity Overlay */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 40%, rgba(0,0,0,0.03) 100%)',
+          pointerEvents: 'none'
+        }} />
+      </motion.div>
+
+      {/* RIGHT SIDE — Everyday Experience (Warm, Soft, Heavy) */}
+      <motion.div
+        className="absolute inset-0"
+        style={{
+          clipPath: 'polygon(50% 0, 100% 0, 100% 100%, 50% 100%)',
+          background: 'linear-gradient(135deg, rgba(90, 70, 50, 0.45) 0%, rgba(60, 50, 45, 0.60) 100%)',
+          borderRadius: '0 36px 36px 0'
+        }}
+        animate={shouldReduceMotion ? {} : {
+          opacity: [0.88, 0.94, 0.88]
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: 'easeInOut',
+          delay: 0.5
+        }}
+      >
+        {/* Warm Subsurface Glow */}
+        <div style={{
+          position: 'absolute',
+          top: '25%',
+          right: '15%',
+          width: '60%',
+          height: '50%',
+          background: 'radial-gradient(ellipse, rgba(255, 170, 90, 0.14) 0%, transparent 70%)',
+          filter: 'blur(45px)',
+          pointerEvents: 'none'
+        }} />
+
+        {/* Density Overlay */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(180deg, rgba(0,0,0,0.04) 0%, transparent 40%, rgba(0,0,0,0.06) 100%)',
+          pointerEvents: 'none'
+        }} />
+      </motion.div>
+
+      {/* SEAM — Soft Blended Gradient */}
+      <motion.div
+        className="absolute top-0 bottom-0"
+        style={{
+          left: '48%',
+          width: '4%',
+          background: 'linear-gradient(to right, transparent 0%, rgba(255,255,255,0.02) 50%, transparent 100%)',
+          filter: 'blur(8px)',
+          pointerEvents: 'none'
+        }}
+        animate={shouldReduceMotion ? {} : {
+          opacity: [0.5, 0.7, 0.5],
+          x: convergence * -2
+        }}
+        transition={{
+          opacity: { duration: 7, repeat: Infinity, ease: 'easeInOut' },
+          x: { type: 'spring', stiffness: 100, damping: 25 }
+        }}
+      />
+
+      {/* Subtle Vertical Breathing Line */}
+      <motion.div
+        className="absolute top-0 bottom-0"
+        style={{
+          left: '50%',
+          width: '1px',
+          background: 'linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%)',
+          pointerEvents: 'none'
+        }}
+        animate={shouldReduceMotion ? {} : {
+          opacity: [0.3, 0.5, 0.3]
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: 'easeInOut'
+        }}
+      />
+
+      {/* Content Container */}
+      <div className="relative h-full flex items-center" style={{ padding: '48px 0', minHeight: '360px' }}>
+        
+        {/* LEFT SIDE CONTENT — Official Data */}
+        <motion.div
+          className="absolute left-0 w-1/2 flex items-center justify-center"
+          style={{ padding: '0 6%' }}
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ 
+            opacity: isHovered ? 1 : 0.94, 
+            x: 0,
+            filter: isHovered ? 'brightness(1.08)' : 'brightness(1.04)'
+          }}
+          transition={{ 
+            opacity: { duration: 0.4 },
+            x: { duration: 0.9, delay: 0.5, ease: MOTION.ease },
+            filter: { duration: 0.3 }
+          }}
+        >
+          <div className="text-left">
+            <motion.div
+              className="text-sm font-semibold uppercase tracking-wider mb-3"
+              style={{
+                color: 'rgba(140, 180, 230, 0.75)',
+                letterSpacing: '0.14em'
+              }}
+            >
+              Official Data
+            </motion.div>
+            
+            <motion.h3
+              className="text-4xl font-bold mb-4"
+              style={{
+                color: 'rgba(200, 220, 255, 0.96)',
+                letterSpacing: '-0.015em',
+                textShadow: '0 2px 20px rgba(100, 140, 200, 0.25)'
+              }}
+            >
+              Cooling Slowly
+            </motion.h3>
+            
+            <motion.p
+              className="text-base"
+              style={{
+                color: 'rgba(180, 200, 230, 0.80)',
+                fontWeight: 440,
+                lineHeight: 1.6,
+                maxWidth: '240px'
+              }}
+            >
+              Inflation is easing in the data.
+            </motion.p>
+          </div>
+        </motion.div>
+
+        {/* RIGHT SIDE CONTENT — Everyday Experience */}
+        <motion.div
+          className="absolute right-0 w-1/2 flex items-center justify-center"
+          style={{ padding: '0 6%' }}
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ 
+            opacity: isHovered ? 1 : 0.94, 
+            x: 0,
+            filter: isHovered ? 'brightness(1.08)' : 'brightness(1.04)'
+          }}
+          transition={{ 
+            opacity: { duration: 0.4 },
+            x: { duration: 0.9, delay: 0.6, ease: MOTION.ease },
+            filter: { duration: 0.3 }
+          }}
+        >
+          <div className="text-right">
+            <motion.div
+              className="text-sm font-semibold uppercase tracking-wider mb-3"
+              style={{
+                color: 'rgba(255, 190, 120, 0.75)',
+                letterSpacing: '0.14em'
+              }}
+            >
+              Everyday Experience
+            </motion.div>
+            
+            <motion.h3
+              className="text-4xl font-bold mb-4"
+              style={{
+                color: 'rgba(255, 225, 200, 0.96)',
+                letterSpacing: '-0.015em',
+                textShadow: '0 2px 20px rgba(255, 160, 80, 0.25)'
+              }}
+            >
+              Still Feels Expensive
+            </motion.h3>
+            
+            <motion.p
+              className="text-base ml-auto"
+              style={{
+                color: 'rgba(240, 210, 190, 0.80)',
+                fontWeight: 440,
+                lineHeight: 1.6,
+                maxWidth: '240px'
+              }}
+            >
+              Rent and services change slowly.
+            </motion.p>
+          </div>
+        </motion.div>
+
+        {/* SEAM UNDERSTANDING — Centered Micro-Text */}
+        <motion.div
+          className="absolute top-1/2 left-1/2"
+          style={{
+            transform: 'translate(-50%, -50%)',
+            textAlign: 'center',
+            pointerEvents: 'none'
+          }}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ 
+            opacity: [0, 0.65, 0.65],
+            scale: 1,
+            y: convergence * -3
+          }}
+          transition={{
+            opacity: { duration: 1.0, delay: 2.2, times: [0, 0.5, 1] },
+            scale: { duration: 0.8, delay: 2.2, ease: MOTION.ease },
+            y: { type: 'spring', stiffness: 100, damping: 25 }
+          }}
+        >
+          <div
+            className="px-4 py-2 rounded-full text-[11px] font-medium"
+            style={{
+              background: 'rgba(255, 255, 255, 0.06)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              color: 'rgba(255,255,255,0.75)',
+              letterSpacing: '0.04em',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.06)'
+            }}
+          >
+            Why inflation feels sticky
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Top Specular Highlight */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '8%',
+        right: '8%',
+        height: '2px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
+        pointerEvents: 'none',
+        filter: 'blur(1px)',
+        borderRadius: '36px 36px 0 0'
+      }} />
+
+      {/* Bottom Depth Shadow */}
+      <div style={{
+        position: 'absolute',
+        bottom: '-10%',
+        left: '10%',
+        right: '10%',
+        height: '30%',
+        background: 'radial-gradient(ellipse at 50% 0%, rgba(0,0,0,0.20) 0%, transparent 70%)',
+        filter: 'blur(30px)',
+        pointerEvents: 'none'
+      }} />
+
+      {/* Subtle Border Rim */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        borderRadius: '36px',
+        border: '1px solid rgba(255,255,255,0.06)',
         pointerEvents: 'none'
       }} />
     </motion.div>
