@@ -633,7 +633,7 @@ export default function DigestHeader({
         aria-hidden="true"
       />
 
-      <div className="relative container mx-auto px-6 lg:px-10 pt-6 pb-4" style={{ zIndex: 10 }}>
+      <div className="relative container mx-auto px-6 lg:px-10 pt-10 pb-4" style={{ zIndex: 10 }}>
 
         <div className="flex flex-col lg:flex-row items-start justify-between gap-6">
 
