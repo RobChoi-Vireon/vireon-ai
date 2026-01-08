@@ -987,10 +987,10 @@ export default function DigestHeader({
                         strokeWidth="16"
                         strokeLinecap="round"
                         filter="url(#atmosphereGlow)"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: isLoaded ? 1 : 0 }}
-                        transition={{ duration: 0.52, delay: 0.42, ease: [0.2, 0.8, 0.2, 1] }}
-                        style={{ mixBlendMode: 'screen' }}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: isLoaded ? 1 : 0, scale: isLoaded ? 1 : 0.95 }}
+                        transition={{ duration: 1.2, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                        style={{ mixBlendMode: 'screen', transformOrigin: 'center' }}
                       />
 
                       {/* Rim Light Layer — Softened */}
@@ -1001,10 +1001,10 @@ export default function DigestHeader({
                         strokeWidth="18"
                         strokeLinecap="round"
                         filter="url(#rimLight)"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: isLoaded ? 0.95 : 0 }}
-                        transition={{ duration: 0.52, delay: 0.50, ease: [0.2, 0.8, 0.2, 1] }}
-                        style={{ mixBlendMode: 'screen' }}
+                        initial={{ opacity: 0, scale: 0.96 }}
+                        animate={{ opacity: isLoaded ? 0.95 : 0, scale: isLoaded ? 1 : 0.96 }}
+                        transition={{ duration: 1.1, delay: 0.75, ease: [0.16, 1, 0.3, 1] }}
+                        style={{ mixBlendMode: 'screen', transformOrigin: 'center' }}
                       />
 
                       {/* Core Stroke — Refined Opacity */}
@@ -1015,12 +1015,22 @@ export default function DigestHeader({
                         strokeWidth="15"
                         strokeLinecap="round"
                         opacity="0.95"
-                        initial={{ pathLength: 0 }}
-                        animate={{ pathLength: shouldReduceMotion ? 1 : (isLoaded ? 1 : 0) }}
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ 
+                          pathLength: shouldReduceMotion ? 1 : (isLoaded ? 1 : 0),
+                          opacity: shouldReduceMotion ? 1 : (isLoaded ? 0.95 : 0)
+                        }}
                         transition={shouldReduceMotion ? {} : {
-                          duration: 0.52,
-                          delay: 0.42,
-                          ease: [0.2, 0.8, 0.2, 1]
+                          pathLength: {
+                            duration: 1.4,
+                            delay: 0.8,
+                            ease: [0.16, 1, 0.3, 1]
+                          },
+                          opacity: {
+                            duration: 0.8,
+                            delay: 0.8,
+                            ease: [0.16, 1, 0.3, 1]
+                          }
                         }}
                       />
 
@@ -1080,17 +1090,19 @@ export default function DigestHeader({
                             cy={110}
                             r="16"
                             fill={nucleusColor}
-                            initial={{ opacity: 0 }}
+                            initial={{ opacity: 0, scale: 0.8 }}
                             animate={{
-                              opacity: isLoaded ? 0.15 : 0
+                              opacity: isLoaded ? 0.15 : 0,
+                              scale: isLoaded ? 1 : 0.8
                             }}
                             transition={{
-                              duration: 0.5,
-                              delay: 0.72,
-                              ease: [0.2, 0.8, 0.2, 1]
+                              duration: 1.0,
+                              delay: 2.0,
+                              ease: [0.16, 1, 0.3, 1]
                             }}
                             style={{
-                              filter: 'blur(12px)'
+                              filter: 'blur(12px)',
+                              transformOrigin: 'center'
                             }}
                           />
 
@@ -1103,19 +1115,19 @@ export default function DigestHeader({
                             className="cursor-pointer md:cursor-default"
                             initial={{ scale: 0, opacity: 0 }}
                             animate={{
-                              scale: isLoaded ? (isMobileMetricsExpanded ? 1.15 : [0.95, 1.0, 0.998, 1.002, 1.0]) : 0.95,
+                              scale: isLoaded ? (isMobileMetricsExpanded ? 1.15 : [0.95, 1.0, 0.998, 1.002, 1.0]) : 0,
                               opacity: isLoaded ? (isMobileMetricsExpanded ? 1 : [0, 0.9, 0.95, 0.9]) : 0
                             }}
                             transition={{
                               scale: {
                                 duration: isMobileMetricsExpanded ? 0.22 : 6,
-                                delay: isMobileMetricsExpanded ? 0 : 0.72,
+                                delay: isMobileMetricsExpanded ? 0 : 2.1,
                                 ease: isMobileMetricsExpanded ? [0.22, 0.61, 0.36, 1] : [0.25, 0.1, 0.25, 1],
                                 repeat: isMobileMetricsExpanded ? 0 : Infinity
                               },
                               opacity: {
                                 duration: isMobileMetricsExpanded ? 0.3 : 6,
-                                delay: 0.72,
+                                delay: 2.1,
                                 ease: [0.25, 0.1, 0.25, 1],
                                 repeat: isMobileMetricsExpanded ? 0 : Infinity
                               }
@@ -1128,7 +1140,8 @@ export default function DigestHeader({
                             style={{
                               touchAction: 'manipulation',
                               backdropFilter: 'blur(4px)',
-                              WebkitBackdropFilter: 'blur(4px)'
+                              WebkitBackdropFilter: 'blur(4px)',
+                              transformOrigin: 'center'
                             }}
                           />
 
@@ -1139,17 +1152,19 @@ export default function DigestHeader({
                             rx="2.5"
                             ry="3"
                             fill="rgba(255, 255, 255, 0.6)"
-                            initial={{ opacity: 0 }}
+                            initial={{ opacity: 0, scale: 0.5 }}
                             animate={{
-                              opacity: isLoaded ? 0.4 : 0
+                              opacity: isLoaded ? 0.4 : 0,
+                              scale: isLoaded ? 1 : 0.5
                             }}
                             transition={{
-                              duration: 0.4,
-                              delay: 0.9,
-                              ease: [0.2, 0.8, 0.2, 1]
+                              duration: 0.8,
+                              delay: 2.3,
+                              ease: [0.16, 1, 0.3, 1]
                             }}
                             style={{
-                              filter: 'blur(0.5px)'
+                              filter: 'blur(0.5px)',
+                              transformOrigin: 'center'
                             }}
                           />
                         </g>
