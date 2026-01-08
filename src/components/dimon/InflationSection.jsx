@@ -567,10 +567,6 @@ const MarketImpactStrip = ({ impacts }) => {
 export default function InflationSection({ data }) {
   if (!data) return null;
 
-  // Data mapping
-  const heroState = "Still Elevated";
-  const heroSubline = "Prices are cooling slowly, but not enough for the Fed to relax.";
-
   const meaningBullets = [
     "Prices are still rising faster than the Fed wants.",
     "Housing costs are the main reason inflation feels sticky.",
