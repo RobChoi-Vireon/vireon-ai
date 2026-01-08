@@ -1,10 +1,10 @@
 // 🔒 OS HORIZON V5.0 FLAGSHIP VISUAL — CPI vs PCE LIVING ORB
-// Apple-Grade Cinematic Motion System
+// Apple-Grade Cinematic Motion System + CEP Education Layer
 // Last Updated: 2026-01-08
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { TrendingUp, TrendingDown, Activity, Layers } from 'lucide-react';
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
+import { TrendingUp, TrendingDown, Activity, Layers, Home, CreditCard } from 'lucide-react';
 
 // ============================================================================
 // OS HORIZON MOTION DNA
@@ -23,11 +23,111 @@ const MOTION = {
 };
 
 // ============================================================================
+// EDUCATION POPOVER — "Why it feels different"
+// ============================================================================
+const EducationPopover = ({ isVisible, onClose }) => {
+  useEffect(() => {
+    if (!isVisible) return;
+    const handleClickOutside = (e) => {
+      if (!e.target.closest('.education-popover')) {
+        onClose();
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [isVisible, onClose]);
+
+  return (
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div
+          className="absolute education-popover z-50"
+          style={{
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '340px',
+            maxWidth: '90vw'
+          }}
+          initial={{ opacity: 0, scale: 0.94, y: -10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.96, y: -8 }}
+          transition={{ duration: 0.18, ease: [0.22, 0.61, 0.36, 1] }}
+        >
+          <div
+            className="relative rounded-2xl overflow-hidden"
+            style={{
+              padding: '24px 28px',
+              background: 'rgba(18, 22, 32, 0.96)',
+              backdropFilter: 'blur(40px) saturate(170%)',
+              WebkitBackdropFilter: 'blur(40px) saturate(170%)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              boxShadow: `
+                inset 0 1px 0 rgba(255, 255, 255, 0.10),
+                0 16px 48px rgba(0, 0, 0, 0.40),
+                0 0 60px rgba(100, 150, 220, 0.08)
+              `
+            }}
+          >
+            {/* Top Specular */}
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: '12%',
+              right: '12%',
+              height: '1.5px',
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+              pointerEvents: 'none'
+            }} />
+
+            {/* Title */}
+            <h4 
+              className="text-sm font-bold uppercase tracking-wider mb-4"
+              style={{ 
+                color: 'rgba(255, 255, 255, 0.60)',
+                letterSpacing: '0.08em'
+              }}
+            >
+              Why it feels different
+            </h4>
+
+            {/* Education Lines */}
+            <div className="space-y-3.5">
+              <p className="text-sm leading-relaxed" style={{ color: 'rgba(255, 255, 255, 0.88)' }}>
+                CPI rises with rent and housing — renters feel it most.
+              </p>
+              <p className="text-sm leading-relaxed" style={{ color: 'rgba(255, 255, 255, 0.88)' }}>
+                PCE tracks spending choices — people who can switch brands feel relief sooner.
+              </p>
+              <p className="text-sm leading-relaxed" style={{ color: 'rgba(255, 255, 255, 0.88)' }}>
+                That gap is why inflation feels uneven.
+              </p>
+            </div>
+
+            {/* Closing Note */}
+            <p 
+              className="text-xs mt-4 pt-3 border-t italic"
+              style={{ 
+                color: 'rgba(255, 255, 255, 0.45)',
+                borderColor: 'rgba(255, 255, 255, 0.06)'
+              }}
+            >
+              Inflation doesn't hit everyone the same way.
+            </p>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+// ============================================================================
 // LIVING ORB NUCLEUS — Dual Metric Comparison
 // ============================================================================
-const LivingOrbNucleus = ({ cpiValue, pceValue, consensus, isHovered }) => {
+const LivingOrbNucleus = ({ cpiValue, pceValue, consensus, isHovered, onOrbClick }) => {
   const [breathingPhase, setBreathingPhase] = useState(0);
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
+  const [isPillHovered, setIsPillHovered] = useState(false);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -142,7 +242,7 @@ const LivingOrbNucleus = ({ cpiValue, pceValue, consensus, isHovered }) => {
 
       {/* Inner Core Orb */}
       <motion.div
-        className="absolute rounded-full flex flex-col items-center justify-center"
+        className="absolute rounded-full flex flex-col items-center justify-center cursor-pointer"
         style={{
           width: '200px',
           height: '200px',
@@ -163,15 +263,18 @@ const LivingOrbNucleus = ({ cpiValue, pceValue, consensus, isHovered }) => {
           `
         }}
         animate={{
-          scale: breathingScale * 0.98
+          scale: breathingScale * 0.98,
+          filter: isHovered ? 'brightness(1.08)' : 'brightness(1)'
         }}
         transition={{
-          duration: MOTION.durations.breathing,
-          ease: 'easeInOut'
+          scale: { duration: isHovered ? MOTION.durations.interaction : MOTION.durations.breathing, ease: 'easeInOut' },
+          filter: { duration: MOTION.durations.interaction }
         }}
+        onClick={onOrbClick}
+        whileHover={{ scale: breathingScale * 1.02 }}
       >
         {/* Central Metric Display */}
-        <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-col items-center gap-2">
           {/* Consensus Reading */}
           <motion.div
             className="text-center"
@@ -194,16 +297,28 @@ const LivingOrbNucleus = ({ cpiValue, pceValue, consensus, isHovered }) => {
               style={{ 
                 color: 'rgba(255, 255, 255, 0.96)',
                 textShadow: '0 2px 20px rgba(0, 0, 0, 0.30)',
-                lineHeight: 1
+                lineHeight: 1,
+                fontVariantNumeric: 'tabular-nums'
               }}
             >
               {consensus}%
             </div>
+            
+            {/* Static Subline */}
+            <motion.p
+              className="text-xs mt-2"
+              style={{ color: 'rgba(255, 255, 255, 0.55)' }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.6, duration: 0.4 }}
+            >
+              Prices are still rising faster than normal.
+            </motion.p>
           </motion.div>
 
-          {/* Convergence State */}
+          {/* Convergence State Pill */}
           <motion.div
-            className="text-center px-4 py-2 rounded-full"
+            className="text-center px-4 py-2 rounded-full relative"
             style={{
               background: isConverging 
                 ? 'rgba(115, 230, 210, 0.15)' 
@@ -216,6 +331,8 @@ const LivingOrbNucleus = ({ cpiValue, pceValue, consensus, isHovered }) => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 1.5, duration: 0.5, ease: MOTION.curves.primary }}
+            onHoverStart={() => setIsPillHovered(true)}
+            onHoverEnd={() => setIsPillHovered(false)}
           >
             <div className="flex items-center gap-2">
               <Layers className="w-3.5 h-3.5" style={{ color: convergenceColor }} strokeWidth={2} />
@@ -223,7 +340,10 @@ const LivingOrbNucleus = ({ cpiValue, pceValue, consensus, isHovered }) => {
                 className="text-xs font-semibold"
                 style={{ color: convergenceColor }}
               >
-                {isConverging ? 'Converging' : isDiverging ? 'Diverging' : 'Tracking'}
+                {isPillHovered 
+                  ? 'Uneven impact' 
+                  : (isConverging ? 'Converging' : isDiverging ? 'Diverging' : 'Tracking')
+                }
               </span>
             </div>
           </motion.div>
@@ -267,7 +387,18 @@ const LivingOrbNucleus = ({ cpiValue, pceValue, consensus, isHovered }) => {
 // ============================================================================
 // METRIC SATELLITE — Individual CPI/PCE Display
 // ============================================================================
-const MetricSatellite = ({ label, value, trend, position, delay, color }) => {
+const MetricSatellite = ({ 
+  label, 
+  value, 
+  trend, 
+  position, 
+  delay, 
+  color, 
+  tldr, 
+  secondary, 
+  whoFeelsIt,
+  whoIcon: WhoIcon 
+}) => {
   const [isHovered, setIsHovered] = useState(false);
   const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Activity;
   
@@ -287,7 +418,7 @@ const MetricSatellite = ({ label, value, trend, position, delay, color }) => {
         className="relative rounded-2xl overflow-hidden cursor-pointer"
         style={{
           padding: '20px 24px',
-          minWidth: '160px',
+          minWidth: '200px',
           background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.04) 100%)',
           backdropFilter: 'blur(28px) saturate(160%)',
           WebkitBackdropFilter: 'blur(28px) saturate(160%)',
@@ -304,7 +435,7 @@ const MetricSatellite = ({ label, value, trend, position, delay, color }) => {
             ? `
               inset 0 1px 0 rgba(255, 255, 255, 0.12),
               0 12px 40px rgba(0, 0, 0, 0.18),
-              0 0 50px ${color}25
+              0 0 60px ${color}30
             `
             : `
               inset 0 1px 0 rgba(255, 255, 255, 0.10),
@@ -325,21 +456,27 @@ const MetricSatellite = ({ label, value, trend, position, delay, color }) => {
           pointerEvents: 'none'
         }} />
 
-        {/* Ambient Glow */}
-        <div style={{
-          position: 'absolute',
-          top: '20%',
-          left: '20%',
-          width: '60%',
-          height: '40%',
-          background: `radial-gradient(ellipse, ${color}10 0%, transparent 70%)`,
-          filter: 'blur(20px)',
-          pointerEvents: 'none'
-        }} />
+        {/* Ambient Glow - theme-specific */}
+        <motion.div 
+          style={{
+            position: 'absolute',
+            top: '20%',
+            left: '20%',
+            width: '60%',
+            height: '40%',
+            background: `radial-gradient(ellipse, ${color}${isHovered ? '18' : '10'} 0%, transparent 70%)`,
+            filter: 'blur(20px)',
+            pointerEvents: 'none'
+          }}
+          animate={{
+            opacity: isHovered ? 1 : 0.7
+          }}
+          transition={{ duration: 0.2 }}
+        />
 
         <div className="relative z-10">
           {/* Label */}
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2 mb-3">
             <TrendIcon className="w-4 h-4" style={{ color }} strokeWidth={2.5} />
             <span 
               className="text-xs font-bold uppercase tracking-wider"
@@ -354,22 +491,50 @@ const MetricSatellite = ({ label, value, trend, position, delay, color }) => {
 
           {/* Value */}
           <div 
-            className="text-3xl font-bold tracking-tight"
+            className="text-3xl font-bold tracking-tight mb-2"
             style={{ 
               color: 'rgba(255, 255, 255, 0.96)',
-              textShadow: '0 2px 12px rgba(0, 0, 0, 0.25)'
+              textShadow: '0 2px 12px rgba(0, 0, 0, 0.25)',
+              fontVariantNumeric: 'tabular-nums'
             }}
           >
             {value}%
           </div>
 
-          {/* Trend Indicator */}
-          <div 
-            className="text-xs font-medium mt-1"
-            style={{ color: 'rgba(255, 255, 255, 0.50)' }}
+          {/* TL;DR */}
+          <p 
+            className="text-xs leading-snug mb-1.5"
+            style={{ color: 'rgba(255, 255, 255, 0.78)' }}
           >
-            YoY Change
-          </div>
+            {tldr}
+          </p>
+
+          {/* Secondary */}
+          <p 
+            className="text-[10px] mb-3"
+            style={{ color: 'rgba(255, 255, 255, 0.48)' }}
+          >
+            {secondary}
+          </p>
+
+          {/* Who Feels It - Subtle Indicator */}
+          <motion.div 
+            className="flex items-center gap-1.5 pt-2 border-t"
+            style={{ 
+              borderColor: 'rgba(255, 255, 255, 0.06)'
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isHovered ? 0.85 : 0.60 }}
+            transition={{ duration: 0.16 }}
+          >
+            <WhoIcon className="w-3 h-3" style={{ color: 'rgba(255, 255, 255, 0.45)' }} strokeWidth={2} />
+            <span 
+              className="text-[10px] font-medium"
+              style={{ color: 'rgba(255, 255, 255, 0.50)' }}
+            >
+              {whoFeelsIt}
+            </span>
+          </motion.div>
         </div>
       </motion.div>
     </motion.div>
@@ -470,6 +635,8 @@ const ConsensusInsight = ({ insight, divergenceNote }) => {
 // ============================================================================
 export default function CPIvsPCEOrb({ data }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [showEducation, setShowEducation] = useState(false);
+  const [isDimmed, setIsDimmed] = useState(false);
 
   if (!data) return null;
 
@@ -479,6 +646,11 @@ export default function CPIvsPCEOrb({ data }) {
 
   const cpiTrend = cpiValue > 3.0 ? 'up' : cpiValue < 2.5 ? 'down' : 'neutral';
   const pceTrend = pceValue > 2.5 ? 'up' : pceValue < 2.0 ? 'down' : 'neutral';
+
+  const handleOrbClick = () => {
+    setShowEducation(!showEducation);
+    setIsDimmed(!showEducation);
+  };
 
   return (
     <div className="relative w-full">
@@ -492,6 +664,18 @@ export default function CPIvsPCEOrb({ data }) {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
       >
+        {/* Dim Overlay when popover is open */}
+        <motion.div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'rgba(0, 0, 0, 0.35)',
+            backdropFilter: 'blur(4px)'
+          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isDimmed ? 1 : 0 }}
+          transition={{ duration: 0.2 }}
+        />
+
         {/* Ambient Background Field */}
         <div style={{
           position: 'absolute',
@@ -507,6 +691,16 @@ export default function CPIvsPCEOrb({ data }) {
           pceValue={pceValue}
           consensus={consensus}
           isHovered={isHovered}
+          onOrbClick={handleOrbClick}
+        />
+
+        {/* Education Popover */}
+        <EducationPopover 
+          isVisible={showEducation} 
+          onClose={() => {
+            setShowEducation(false);
+            setIsDimmed(false);
+          }}
         />
 
         {/* CPI Satellite - Top Left */}
@@ -514,9 +708,13 @@ export default function CPIvsPCEOrb({ data }) {
           label="CPI Core"
           value={cpiValue}
           trend={cpiTrend}
-          position={{ top: '40px', left: '10%' }}
+          position={{ top: '40px', left: '5%' }}
           delay={1.8}
           color="#62CFFF"
+          tldr="Everyday living costs are rising — renters and city households feel it most."
+          secondary="Housing and services drive this."
+          whoFeelsIt="Renters • Urban households"
+          whoIcon={Home}
         />
 
         {/* PCE Satellite - Top Right */}
@@ -524,9 +722,13 @@ export default function CPIvsPCEOrb({ data }) {
           label="PCE Core"
           value={pceValue}
           trend={pceTrend}
-          position={{ top: '40px', right: '10%' }}
+          position={{ top: '40px', right: '5%' }}
           delay={2.0}
           color="#C9A2FF"
+          tldr="Daily spending is cooling — higher-income and flexible spenders feel relief first."
+          secondary="Tracks what people actually buy."
+          whoFeelsIt="Flexible spenders"
+          whoIcon={CreditCard}
         />
       </motion.div>
 
