@@ -187,8 +187,7 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
         onMouseLeave={() => setIsHovering(false)}
         style={{
           top: '18px',
-          left: '50%',
-          x: '-50%',
+          right: '20px',
           padding: '16px 20px',
           borderRadius: '44px',
           border: '1px solid rgba(255,255,255,0.12)',
