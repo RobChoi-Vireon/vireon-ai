@@ -584,225 +584,138 @@ export default function Home() {
         const trendIndicator = getTrendIndicator();
         return (
           <ModuleWrapper key={moduleId} title="Market Pulse" {...moduleProps}>
-            {/* Revolutionary Hero Pulse Card */}
+            {/* OS Horizon V4 Pulse Hero */}
             <motion.div
-              className="relative overflow-hidden rounded-[2rem] p-8 lg:p-12"
-              initial={{ opacity: 0, scale: 0.95 }}
+              className="relative overflow-hidden rounded-[28px]"
+              style={{
+                padding: '36px 40px',
+                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.028) 100%)',
+                backdropFilter: 'blur(32px) saturate(165%)',
+                WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 32px rgba(0,0,0,0.12)'
+              }}
+              initial={{ opacity: 0, scale: 0.97 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
+              transition={{ duration: 0.6, ease: [0.22, 0.61, 0.36, 1] }}
             >
-              {/* Multiple Layer Background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[#1A1D29] via-[#12141C] to-[#0A0B0F]" />
-              <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-transparent to-blue-500/10" />
-              <div className="absolute inset-0 backdrop-blur-3xl" />
+              {/* Top specular highlight */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: '15%',
+                right: '15%',
+                height: '1.5px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
+                pointerEvents: 'none'
+              }} />
 
-              {/* Luxury Border */}
-              <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-30" />
-
-              {/* Animated Orbs */}
+              {/* Subtle ambient bloom */}
               <motion.div
-                className="absolute top-10 right-10 w-32 h-32 rounded-full bg-gradient-to-r from-green-400/20 to-emerald-500/20 blur-2xl"
-                animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.3, 0.6, 0.3]
+                style={{
+                  position: 'absolute',
+                  top: '10%',
+                  right: '8%',
+                  width: '280px',
+                  height: '280px',
+                  borderRadius: '50%',
+                  background: 'radial-gradient(circle, rgba(88, 227, 164, 0.08) 0%, transparent 70%)',
+                  filter: 'blur(48px)',
+                  pointerEvents: 'none'
                 }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                animate={{
+                  scale: [1, 1.15, 1],
+                  opacity: [0.4, 0.6, 0.4]
+                }}
+                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
               />
+
               <motion.div
-                className="absolute bottom-10 left-10 w-24 h-24 rounded-full bg-gradient-to-r from-blue-400/20 to-purple-500/20 blur-xl"
-                animate={{
-                  scale: [1.2, 1, 1.2],
-                  opacity: [0.4, 0.7, 0.4]
+                style={{
+                  position: 'absolute',
+                  bottom: '15%',
+                  left: '5%',
+                  width: '240px',
+                  height: '240px',
+                  borderRadius: '50%',
+                  background: 'radial-gradient(circle, rgba(77, 143, 251, 0.06) 0%, transparent 70%)',
+                  filter: 'blur(52px)',
+                  pointerEvents: 'none'
                 }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                animate={{
+                  scale: [1.1, 1, 1.1],
+                  opacity: [0.3, 0.5, 0.3]
+                }}
+                transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
               />
 
-              <div className="relative z-10">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8 lg:mb-12 gap-8">
-                  <div className="space-y-6 flex-1">
-                    <div className="flex flex-col sm:flex-row sm:items-baseline space-y-6 sm:space-y-0 sm:space-x-6">
-                      {/* Enhanced Score Display with Inline Trend */}
-                      <div className="relative flex items-baseline">
-                        <motion.div
-                          key={Math.round(animatedScore)}
-                          initial={{ opacity: 0, scale: 0.8, rotateY: -30 }}
-                          animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-                          transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-                          className="relative flex items-baseline"
-                        >
-                          {/* Main Score */}
-                          <div className="text-7xl sm:text-8xl lg:text-9xl font-black tracking-[-0.05em] text-transparent bg-clip-text bg-gradient-to-br from-white via-gray-100 to-gray-300">
-                            {Math.round(animatedScore)}
-                          </div>
+        const trendIndicator = getTrendIndicator();
+        return (
+          <ModuleWrapper key={moduleId} title="Market Pulse" {...moduleProps}>
+            {/* OS Horizon V4 Pulse Hero */}
+            <motion.div
+              className="relative overflow-hidden rounded-[28px]"
+              style={{
+                padding: '40px 44px',
+                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.028) 100%)',
+                backdropFilter: 'blur(32px) saturate(165%)',
+                WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 32px rgba(0,0,0,0.12)'
+              }}
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, ease: [0.22, 0.61, 0.36, 1] }}
+            >
+              {/* Top specular highlight */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: '15%',
+                right: '15%',
+                height: '1.5px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
+                pointerEvents: 'none'
+              }} />
 
-                          {/* Inline Trend Indicator as Superscript */}
-                          <motion.div
-                            className="flex items-center ml-2 -mt-4"
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.4, delay: 0.6 }}
-                          >
-                            <span className={`text-xl font-bold ${trendIndicator.color} mr-1`}>
-                              ({trendIndicator.label}
-                            </span>
-                            <motion.span
-                              className={`text-xl ${trendIndicator.color}`}
-                              animate={{ scale: [1, 1.1, 1] }}
-                              transition={{ duration: 1.5, repeat: Infinity }}
-                            >
-                              {trendIndicator.symbol})
-                            </motion.span>
-                          </motion.div>
+              {/* Refined ambient blooms */}
+              <motion.div
+                style={{
+                  position: 'absolute',
+                  top: '10%',
+                  right: '8%',
+                  width: '300px',
+                  height: '300px',
+                  borderRadius: '50%',
+                  background: 'radial-gradient(circle, rgba(88, 227, 164, 0.06) 0%, transparent 70%)',
+                  filter: 'blur(52px)',
+                  pointerEvents: 'none'
+                }}
+                animate={{
+                  scale: [1, 1.12, 1],
+                  opacity: [0.35, 0.50, 0.35]
+                }}
+                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+              />
 
-                          {/* Glow effect behind score */}
-                          <motion.div
-                            className="absolute inset-0 text-7xl sm:text-8xl lg:text-9xl font-black tracking-[-0.05em] text-white opacity-20"
-                            animate={{
-                              textShadow: [
-                                '0 0 20px rgba(255,255,255,0.2)',
-                                '0 0 40px rgba(255,255,255,0.4)',
-                                '0 0 20px rgba(255,255,255,0.2)'
-                              ]
-                            }}
-                            transition={{ duration: 3, repeat: Infinity }}
-                          >
-                            {Math.round(animatedScore)}
-                          </motion.div>
-                        </motion.div>
-                      </div>
-
-                      {/* Enhanced Sentiment Badge with Tooltip */}
-                      <motion.div
-                        key={pulseData.trend}
-                        initial={{ opacity: 0, y: 10, scale: 0.9 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
-                        className="relative group"
-                        onMouseEnter={() => setShowTooltip(true)}
-                        onMouseLeave={() => setShowTooltip(false)}
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity duration-300" />
-                        <div className="relative flex items-center gap-2 px-4 py-3 rounded-2xl bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 backdrop-blur-sm shadow-2xl">
-                          {/* Dynamic Sentiment Icon */}
-                          <motion.div
-                            animate={{
-                              scale: [1, 1.05, 1],
-                              rotate: [0, 2, 0, -2, 0]
-                            }}
-                            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                          >
-                            <TrendingUp className="w-4 h-4 text-green-300" strokeWidth={2.5} />
-                          </motion.div>
-                          <span className="text-green-300 text-base font-bold tracking-wide">
-                            {pulseData.trend.toUpperCase()}
-                          </span>
-                        </div>
-
-                        {/* Enhanced Micro-Context Tooltip */}
-                        <AnimatePresence>
-                          {showTooltip && (
-                            <motion.div
-                              initial={{ opacity: 0, y: 10, scale: 0.9 }}
-                              animate={{ opacity: 1, y: 0, scale: 1 }}
-                              exit={{ opacity: 0, y: 10, scale: 0.9 }}
-                              className="absolute top-full mt-3 left-1/2 transform -translate-x-1/2 z-50"
-                            >
-                              <div className="px-4 py-3 rounded-xl backdrop-blur-xl border border-white/20 shadow-2xl max-w-xs"
-                                style={{
-                                  background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.90))'
-                                }}
-                              >
-                                <div className="text-xs font-medium text-white/90 text-center leading-relaxed">
-                                  {pulseData.sectorBreakdown}
-                                </div>
-                                <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 rotate-45 border-t border-l border-white/20"
-                                  style={{ background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.90))' }}
-                                ></div>
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </motion.div>
-                    </div>
-
-                    <motion.p
-                      className="text-lg leading-relaxed max-w-2xl text-gray-300"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: 0.4 }}
-                    >
-                      {pulseData.insight}
-                    </motion.p>
-                  </div>
-
-                  {/* Replace Static Icon with Dynamic Mini Sparkline */}
-                  <div className="relative mx-auto lg:mx-0 flex items-center justify-center">
-                    <MiniSparkline data={pulseData.sparklineData} currentValue={pulseData.score} />
-                  </div>
-                </div>
-
-                {/* Enhanced Progress Bar with Gradient Fill */}
-                <div className="relative">
-                  {/* Background Track */}
-                  <div className="h-4 rounded-full overflow-hidden bg-white/10 backdrop-blur-sm border border-white/20">
-                    {/* Animated Progress Fill with Gradient */}
-                    <motion.div
-                      className="h-full rounded-full relative overflow-hidden"
-                      style={{
-                        background: 'linear-gradient(90deg, #4ADE80 0%, #22C55E 50%, #16A34A 100%)',
-                        boxShadow: '0 0 10px rgba(34, 197, 94, 0.3)'
-                      }}
-                      initial={{ width: 0 }}
-                      animate={{ width: `${animatedScore}%` }}
-                      transition={{
-                        duration: 1.2,
-                        ease: [0.25, 0.46, 0.45, 0.94],
-                        delay: 0.3
-                      }}
-                    >
-                      {/* Enhanced Inner Glow */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-white/40 via-white/20 to-white/40 rounded-full" />
-
-                      {/* Refined Moving Highlight */}
-                      <motion.div
-                        className="absolute top-0 right-0 w-12 h-full rounded-full bg-gradient-to-r from-transparent via-white/50 to-transparent"
-                        animate={{
-                          x: ['-100%', '200%'],
-                        }}
-                        transition={{
-                          duration: 2.5,
-                          ease: "easeInOut",
-                          repeat: Infinity,
-                          repeatDelay: 5,
-                        }}
-                      />
-                    </motion.div>
-                  </div>
-
-                  {/* Refined Confidence Indicator with Reduced Emphasis */}
-                  <motion.div
-                    className="absolute -top-8 left-0 px-2 py-1 rounded-lg bg-green-500/10 border border-green-500/20 backdrop-blur-sm"
-                    initial={{ opacity: 0, x: 0 }}
-                    animate={{
-                      opacity: 1,
-                      x: `${(animatedScore / 100) * 100}%`
-                    }}
-                    transition={{
-                      duration: 1.2,
-                      ease: [0.25, 0.46, 0.45, 0.94],
-                      delay: 0.5
-                    }}
-                    style={{ transform: 'translateX(-50%)' }}
-                  >
-                    <span className="text-xs font-medium text-green-300/70">
-                      Confidence: {Math.round(animatedScore)}%
-                    </span>
-                  </motion.div>
-                </div>
-              </div>
-            </motion.div>
-          </ModuleWrapper>
-        );
+              <motion.div
+                style={{
+                  position: 'absolute',
+                  bottom: '12%',
+                  left: '6%',
+                  width: '260px',
+                  height: '260px',
+                  borderRadius: '50%',
+                  background: 'radial-gradient(circle, rgba(77, 143, 251, 0.05) 0%, transparent 70%)',
+                  filter: 'blur(56px)',
+                  pointerEvents: 'none'
+                }}
+                animate={{
+                  scale: [1.08, 1, 1.08],
+                  opacity: [0.28, 0.42, 0.28]
+                }}
+                transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+              />
 
       case 'heatmap':
         return isEnabled('labs_modules') ? (
@@ -908,55 +821,60 @@ export default function Home() {
   return (
     <>
       <div className="space-y-8 lg:space-y-10">
-        {/* Enhanced Header with Improved Live Indicator */}
+        {/* OS Horizon Page Header */}
         <motion.div
-          className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-          initial={{ opacity: 0, y: -20 }}
+          className="flex flex-col sm:flex-row sm:items-center justify-between gap-5"
+          initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
         >
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             <motion.h1
-              className="text-3xl md:text-5xl font-black tracking-[-0.03em] text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-100 to-gray-300"
-              initial={{ opacity: 0, x: -30 }}
+              className="text-3xl md:text-5xl font-bold tracking-[-0.03em]"
+              style={{ 
+                color: 'rgba(255,255,255,0.98)',
+                letterSpacing: '-0.02em'
+              }}
+              initial={{ opacity: 0, x: -24 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
+              transition={{ duration: 0.6, delay: 0.08, ease: [0.22, 0.61, 0.36, 1] }}
             >
               Market Pulse
             </motion.h1>
             <motion.div
-              className="flex items-center space-x-3"
-              initial={{ opacity: 0, x: -20 }}
+              className="flex items-center gap-3"
+              initial={{ opacity: 0, x: -16 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
+              transition={{ duration: 0.5, delay: 0.18, ease: [0.22, 0.61, 0.36, 1] }}
             >
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center gap-2">
                 <div className="relative">
-                  {/* Enhanced Live Indicator with Glowing Pulse */}
                   <motion.div
-                    className="w-2 h-2 rounded-full bg-green-500"
+                    className="w-2 h-2 rounded-full"
+                    style={{ background: '#58E3A4' }}
                     animate={{
                       boxShadow: [
-                        '0 0 4px rgba(34, 197, 94, 0.6)',
-                        '0 0 12px rgba(34, 197, 94, 0.9)',
-                        '0 0 4px rgba(34, 197, 94, 0.6)'
+                        '0 0 6px rgba(88, 227, 164, 0.5)',
+                        '0 0 14px rgba(88, 227, 164, 0.8)',
+                        '0 0 6px rgba(88, 227, 164, 0.5)'
                       ]
                     }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
                   />
                   <motion.div
-                    className="absolute inset-0 w-2 h-2 rounded-full bg-green-500"
+                    className="absolute inset-0 w-2 h-2 rounded-full"
+                    style={{ background: '#58E3A4' }}
                     animate={{
-                      scale: [1, 1.8, 1],
-                      opacity: [0.8, 0, 0.8]
+                      scale: [1, 2, 1],
+                      opacity: [0.7, 0, 0.7]
                     }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
                   />
                 </div>
-                <span className="text-sm font-medium text-green-400">Live</span>
+                <span className="text-[13px] font-semibold" style={{ color: '#58E3A4' }}>Live</span>
               </div>
-              <div className="h-4 w-px bg-gray-600" />
-              <span className="text-sm text-gray-400">Updated now</span>
+              <div style={{ width: '1px', height: '14px', background: 'rgba(255,255,255,0.16)' }} />
+              <span className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.56)' }}>Updated now</span>
             </motion.div>
           </div>
 
