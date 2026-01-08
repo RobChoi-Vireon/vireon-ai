@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, ChevronRight } from 'lucide-react';
+import CPIvsPCEOrb from './CPIvsPCEOrb';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
 
@@ -99,6 +100,15 @@ export default function InflationSection({ data }) {
         </p>
       </div>
 
+      {/* Living Visual — CPI vs PCE Orb */}
+      <CPIvsPCEOrb data={data} />
+
+      {data.last_updated && (
+        <div className="text-xs text-center" style={{ color: 'rgba(255,255,255,0.40)', marginTop: '16px' }}>
+          Last updated: {data.last_updated}
+        </div>
+      )}
+
       {/* 1) Snapshot: KPI Chips */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <KPIChip 
@@ -120,12 +130,6 @@ export default function InflationSection({ data }) {
           isCore 
         />
       </div>
-
-      {data.last_updated && (
-        <div className="text-xs pl-2" style={{ color: 'rgba(255,255,255,0.40)' }}>
-          Last updated: {data.last_updated}
-        </div>
-      )}
 
       {/* 2) Compare + 3) Meaning */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
