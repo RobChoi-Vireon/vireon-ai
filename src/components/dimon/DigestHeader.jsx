@@ -633,12 +633,12 @@ export default function DigestHeader({
         aria-hidden="true"
       />
 
-      <div className="relative container mx-auto px-6 lg:px-8 pt-6 pb-4" style={{ zIndex: 10 }}>
+      <div className="relative container mx-auto px-6 lg:px-10 pt-8 pb-5" style={{ zIndex: 10 }}>
 
-        <div className="flex flex-col lg:flex-row items-start justify-between gap-5">
+        <div className="flex flex-col lg:flex-row items-start justify-between gap-6">
 
           <motion.div
-            className="flex-1 space-y-2 w-full"
+            className="flex-1 space-y-2.5 w-full"
           >
 
             {/* OS Horizon V2 Typography — System-Level Hero */}
@@ -647,10 +647,10 @@ export default function DigestHeader({
               animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 8 }}
               transition={{ duration: 0.36, delay: 0.12, ease: [0.22, 0.61, 0.36, 1] }}
               className="relative"
-              style={{ marginBottom: '16px', marginTop: '2px' }}
+              style={{ marginBottom: '20px', marginTop: '0px' }}
             >
               <h1
-                className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight"
+                className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
                 style={{
                   fontWeight: 700,
                   letterSpacing: '-0.02em'
@@ -680,12 +680,12 @@ export default function DigestHeader({
 
             {/* OS Horizon V2 Tagline — Improved Contrast */}
             <motion.p
-              className="text-xs italic"
+              className="text-sm italic"
               style={{
                 color: 'rgba(255,255,255,0.78)',
                 fontWeight: 500,
                 letterSpacing: '0.01em',
-                marginBottom: '12px'
+                marginBottom: '16px'
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
@@ -696,8 +696,8 @@ export default function DigestHeader({
 
             {/* OS Horizon V2 Info Capsules — Unified Glass Pills */}
             <motion.div
-              className="flex flex-wrap items-center gap-2"
-              style={{ marginBottom: '14px' }}
+              className="flex flex-wrap items-center gap-2.5"
+              style={{ marginBottom: '18px' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
               transition={{ duration: 0.22, delay: 0.28, ease: [0.22, 0.61, 0.36, 1] }}
@@ -814,24 +814,24 @@ export default function DigestHeader({
 
             {/* Halo Spectrum Arc with Macro Insight Capsule */}
             <motion.div
-              className="relative pt-3 pb-2 w-full"
+              className="relative pt-4 pb-3 w-full"
               style={{ transform: 'translateY(0px)' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
               transition={{ duration: 0.22, delay: 0.42, ease: [0.22, 0.61, 0.36, 1] }}
             >
               <label
-                className="text-xs font-semibold tracking-wide block"
+                className="text-sm font-semibold tracking-wide block"
                 style={{
                   color: 'rgba(255,255,255,0.63)',
-                  marginBottom: '18px'
+                  marginBottom: '28px'
                 }}
               >
                 How markets are feeling today, based on {stats.sources} sources
               </label>
 
               {/* Arc + Capsule Container with Responsive Positioning */}
-              <div className="relative flex items-start gap-0" style={{ marginBottom: '8px' }}>
+              <div className="relative flex items-start gap-0">
                 {/* Arc Visualization */}
                 <div
                   className="flex-1 max-w-2xl relative"
@@ -898,8 +898,7 @@ export default function DigestHeader({
                       className="w-full h-auto"
                       style={{
                         overflow: 'visible',
-                        background: 'transparent',
-                        maxHeight: '180px'
+                        background: 'transparent'
                       }}
                       preserveAspectRatio="xMidYMid meet"
                       aria-label="Market mood visualization"
@@ -1183,7 +1182,7 @@ export default function DigestHeader({
                     fontWeight: 500,
                     letterSpacing: '0.04em',
                     textTransform: 'uppercase',
-                    marginTop: '16px',
+                    marginTop: '24px',
                     transition: 'color 160ms ease'
                   }}>
                     <span>Risk-On</span>
@@ -1194,7 +1193,7 @@ export default function DigestHeader({
                   {/* Current Macro Posture Label */}
                   <motion.div
                     className="text-center"
-                    style={{ marginTop: '10px' }}
+                    style={{ marginTop: '12px' }}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: isLoaded ? 1 : 0 }}
                     transition={{ duration: 0.28, delay: 1.2 }}
@@ -1235,13 +1234,13 @@ export default function DigestHeader({
 
             {/* Summary Line - OS Horizon V2 Spacing */}
             <motion.p
-              className="text-sm leading-relaxed"
+              className="text-base leading-relaxed"
               style={{
                 color: 'rgba(255,255,255,0.88)',
                 fontWeight: 550,
                 letterSpacing: '-0.01em',
                 maxWidth: '700px',
-                marginTop: '6px'
+                marginTop: '16px'
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}

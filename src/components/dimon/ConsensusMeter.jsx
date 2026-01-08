@@ -151,7 +151,7 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
   const orbBrightness = isAnyChipHovered ? 0.97 : 1;
 
   return (
-    <div className="relative flex items-center justify-center" style={{ minHeight: '140px' }}>
+    <div className="relative flex items-center justify-center" style={{ minHeight: '170px' }}>
       {/* Ultra-Subtle Background Wavefield */}
       <svg 
         width="160" 
@@ -265,9 +265,9 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
       <motion.div
         className="absolute signal-orb-outer"
         style={{
-          width: '130px',
-          height: '130px',
-          borderRadius: '65px',
+          width: '160px',
+          height: '160px',
+          borderRadius: '80px',
           background: `
             linear-gradient(145deg, 
               rgba(142, 187, 255, 0.135) 0%, 
@@ -445,7 +445,7 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
           />
           
           <motion.span
-            className="text-[38px] font-bold relative z-10"
+            className="text-[46px] font-bold relative z-10"
             style={{ 
               color: scoreColor,
               textShadow: isHovered 
@@ -480,13 +480,13 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
           />
           
           <div 
-            className="text-[15px] font-semibold mb-0.5 relative z-10" 
+            className="text-[17px] font-semibold mb-1 relative z-10" 
             style={{ color: 'rgba(255,255,255,0.98)', letterSpacing: '-0.01em' }}
           >
             {scoreLabel} View
           </div>
           <div 
-            className="text-[10px] font-medium relative z-10" 
+            className="text-[11px] font-medium relative z-10" 
             style={{ color: 'rgba(255,255,255,0.65)' }}
           >
             Confidence: Moderate
@@ -537,10 +537,10 @@ const CategoryGlassChips = ({ segments, isHovered, onChipHover, onChipLeave }) =
 
   return (
     <div 
-      className="grid grid-cols-2 gap-x-4 gap-y-3 max-w-[320px] mx-auto mb-6"
+      className="grid grid-cols-2 gap-x-5 gap-y-3.5 max-w-[360px] mx-auto mb-8"
       style={{
-        rowGap: '12px',
-        columnGap: '16px'
+        rowGap: '14px',
+        columnGap: '20px'
       }}
     >
       {segments.map((segment, index) => {
@@ -756,7 +756,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
       variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
       className="h-full rounded-[30px] flex flex-col cursor-pointer relative overflow-hidden consensus-lens"
       style={{
-        padding: '20px 20px 18px 20px',
+        padding: '24px 24px 20px 24px',
         background: `
           linear-gradient(180deg, 
             rgba(20, 24, 32, 0.88) 0%,
@@ -879,9 +879,9 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
         />
       )}
 
-      <div className="flex items-center justify-between mb-4" style={{ position: 'relative', zIndex: 10 }}>
+      <div className="flex items-center justify-between mb-5" style={{ position: 'relative', zIndex: 10 }}>
         <motion.h2 
-          className="text-[15px] font-semibold"
+          className="text-[16px] font-semibold"
           style={{ 
             color: 'rgba(255,255,255,0.96)',
             letterSpacing: '-0.01em'
@@ -908,7 +908,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
         </motion.div>
       </div>
 
-      <div className="mb-5" style={{ position: 'relative', zIndex: 10 }}>
+      <div className="mb-6" style={{ position: 'relative', zIndex: 10 }}>
         <SignalLensNode 
           score={score} 
           isHovered={isHovered} 

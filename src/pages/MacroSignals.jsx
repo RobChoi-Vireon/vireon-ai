@@ -742,7 +742,7 @@ export default function MacroSignalsPage() {
                     
                     {/* Enhanced Grid with Breathing Room */}
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-                        <div className="lg:col-span-5 min-h-[400px]">
+                        <div className="lg:col-span-5 min-h-[480px]">
                             <ConsensusMeter 
                                 score={digest.consensus_score} 
                                 breakdown={digest.consensus_breakdown} 
