@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, TrendingUp, TrendingDown, BrainCircuit, DollarSign, Users, Zap, AlertTriangle, Target, Calendar, ArrowUpRight, Info, ChevronRight, ChevronDown, ArrowRight, Cpu, Cloud, Scale, Globe, TrendingDown as Decline, Bot, Server, Gavel, Building2, Scroll, Clock, FileText, HelpCircle, DollarSign as Cash, Sun, Droplets, Recycle, BarChart3, Construction, Cog, Factory, CreditCard, Scissors, ShoppingBag, Truck, HardHat } from 'lucide-react';
@@ -265,84 +264,152 @@ const DriverCard = ({ driver, theme, index, isHighlighted }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      initial={{ opacity: 0, y: 16, scale: 0.96 }}
       animate={{
         opacity: 1,
         y: 0,
-        scale: isHighlighted ? 1.05 : 1,
-        boxShadow: isHighlighted ? '0 8px 32px rgba(59, 130, 246, 0.15)' : '0 4px 16px rgba(0, 0, 0, 0.1)'
+        scale: 1
       }}
-      transition={{ delay: index * 0.1, type: "spring", stiffness: 100, damping: 15 }}
-      whileHover={{ y: -2, scale: isHighlighted ? 1.07 : 1.02 }}
-      className="group relative overflow-visible rounded-2xl p-6 backdrop-blur-2xl border border-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer"
+      transition={{ 
+        delay: index * 0.08, 
+        duration: 0.4, 
+        ease: [0.22, 0.61, 0.36, 1] 
+      }}
+      whileHover={{ 
+        y: -3, 
+        scale: 1.012,
+        transition: { duration: 0.18, ease: [0.26, 0.11, 0.26, 1.0] }
+      }}
+      whileTap={{ scale: 0.985, transition: { duration: 0.10 } }}
+      className="group relative overflow-visible rounded-[20px] cursor-pointer"
       style={{
+        padding: '24px',
         background: isHighlighted
-          ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(18, 20, 25, 0.8))'
-          : 'rgba(18, 20, 25, 0.8)'
+          ? 'linear-gradient(180deg, rgba(110, 180, 255, 0.08) 0%, rgba(18, 22, 30, 0.92) 100%)'
+          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.028) 100%)',
+        backdropFilter: 'blur(32px) saturate(165%)',
+        WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+        border: isHighlighted 
+          ? '1px solid rgba(110, 180, 255, 0.14)' 
+          : '1px solid rgba(255,255,255,0.08)',
+        boxShadow: isHighlighted
+          ? 'inset 0 1px 0 rgba(255,255,255,0.10), 0 4px 16px rgba(0,0,0,0.10), 0 0 24px rgba(110, 180, 255, 0.08)'
+          : 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.08)',
+        transition: 'all 0.18s cubic-bezier(0.26, 0.11, 0.26, 1.0)'
       }}
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
     >
-      {/* Enhanced gradient overlay */}
-      <motion.div
-        className={`absolute inset-0 bg-gradient-to-br ${getImpactColor(driver.impact)} opacity-0 group-hover:opacity-100 transition-all duration-500`}
-        style={{ filter: 'blur(20px)' }}
-      />
+      {/* Top specular */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '16%',
+        right: '16%',
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+        pointerEvents: 'none'
+      }} />
 
       <div className="relative z-10">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center">
+        <div className="flex items-start justify-between mb-5">
+          <div className="flex items-center gap-2.5">
             {getImpactIcon(driver.impact)}
-            <h4 className="font-bold text-lg text-white leading-tight">
+            <h4 className="font-bold text-[16px] leading-tight" style={{ 
+              color: 'rgba(255,255,255,0.94)',
+              letterSpacing: '-0.01em'
+            }}>
               {driver.driver}
             </h4>
           </div>
 
           <motion.div
-            className={`inline-flex items-center px-3 py-1.5 rounded-xl text-sm font-bold border bg-gradient-to-r ${getImpactColor(driver.impact)}`}
-            whileHover={{ scale: 1.05 }}
+            className="inline-flex items-center rounded-[14px]"
+            style={{
+              padding: '8px 14px',
+              fontSize: '12px',
+              fontWeight: 700,
+              background: driver.impact === 'Positive' 
+                ? 'linear-gradient(180deg, rgba(88, 227, 164, 0.12) 0%, rgba(88, 227, 164, 0.08) 100%)'
+                : driver.impact === 'Negative'
+                ? 'linear-gradient(180deg, rgba(255, 106, 122, 0.12) 0%, rgba(255, 106, 122, 0.08) 100%)'
+                : 'linear-gradient(180deg, rgba(255, 180, 100, 0.12) 0%, rgba(255, 180, 100, 0.08) 100%)',
+              border: driver.impact === 'Positive'
+                ? '1px solid rgba(88, 227, 164, 0.20)'
+                : driver.impact === 'Negative'
+                ? '1px solid rgba(255, 106, 122, 0.20)'
+                : '1px solid rgba(255, 180, 100, 0.20)',
+              color: driver.impact === 'Positive' ? '#58E3A4' : driver.impact === 'Negative' ? '#FF6A7A' : '#FFB464',
+              letterSpacing: '0.01em'
+            }}
+            whileHover={{ scale: 1.04, transition: { duration: 0.16 } }}
+            whileTap={{ scale: 0.96, transition: { duration: 0.10 } }}
           >
-            {driver.impact} Impact
+            {driver.impact}
           </motion.div>
         </div>
 
-        {/* Confidence Progress Bar */}
-        <div className="mb-4">
-          <div className="flex items-center justify-between text-xs text-gray-400 mb-2">
-            <span>Confidence Level</span>
-            <span>{driver.confidence}%</span>
+        {/* Confidence Bar */}
+        <div className="mb-5">
+          <div className="flex items-center justify-between mb-2.5" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.56)' }}>
+            <span className="font-medium">Confidence</span>
+            <span className="font-bold" style={{ 
+              color: 'rgba(255,255,255,0.88)',
+              fontVariantNumeric: 'tabular-nums'
+            }}>
+              {driver.confidence}%
+            </span>
           </div>
-          <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+          <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
             <motion.div
-              className="h-full bg-gradient-to-r from-blue-500 to-emerald-500 rounded-full"
+              className="h-full rounded-full"
+              style={{ 
+                background: 'linear-gradient(90deg, #4DA3FF 0%, #58E3A4 100%)',
+                boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.18)'
+              }}
               initial={{ width: 0 }}
               animate={{ width: `${driver.confidence}%` }}
-              transition={{ duration: 1, delay: index * 0.2, ease: "easeOut" }}
+              transition={{ duration: 0.8, delay: index * 0.15, ease: [0.22, 0.61, 0.36, 1] }}
             />
           </div>
         </div>
 
-        <p className="text-sm leading-relaxed text-gray-300 group-hover:text-white transition-colors duration-300 line-clamp-3">
+        <p className="text-[14px] leading-relaxed" style={{ 
+          color: 'rgba(255,255,255,0.72)',
+          transition: 'color 0.18s ease'
+        }}>
           {driver.detail}
         </p>
 
-        {/* Enhanced Tooltip - Positioned Below */}
+        {/* OS Horizon Tooltip */}
         <AnimatePresence>
-          {showTooltip && (
+          {showTooltip && driver.supportingData && (
             <motion.div
-              initial={{ opacity: 0, y: -10, scale: 0.9 }}
+              initial={{ opacity: 0, y: -6, scale: 0.94 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -10, scale: 0.9 }}
-              className="absolute top-full mt-3 left-4 right-4 z-50 p-3 rounded-lg backdrop-blur-xl border border-white/20 shadow-2xl"
-              style={{ background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.90))' }}
+              exit={{ opacity: 0, y: -6, scale: 0.94 }}
+              className="absolute top-full mt-3 left-4 right-4 z-50 rounded-[14px]"
+              style={{
+                padding: '12px 14px',
+                background: 'linear-gradient(135deg, rgba(12, 16, 22, 0.94), rgba(18, 22, 30, 0.92))',
+                backdropFilter: 'blur(24px) saturate(165%)',
+                WebkitBackdropFilter: 'blur(24px) saturate(165%)',
+                border: '1px solid rgba(110, 180, 255, 0.18)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10), 0 8px 24px rgba(0,0,0,0.25)'
+              }}
+              transition={{ duration: 0.16, ease: [0.22, 0.61, 0.36, 1] }}
             >
-              <div className="text-xs text-blue-300 font-semibold">
+              <div className="text-[12px] font-semibold" style={{ color: '#4DA3FF' }}>
                 {driver.supportingData}
               </div>
-              {/* Tooltip arrow pointing up */}
-              <div className="absolute -top-1 left-4 w-2 h-2 rotate-45 border-t border-l border-white/20"
-                style={{ background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.90))' }}
-              ></div>
+              <div 
+                className="absolute -top-1 left-4 w-2 h-2 rotate-45"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(12, 16, 22, 0.94), rgba(18, 22, 30, 0.92))',
+                  borderTop: '1px solid rgba(110, 180, 255, 0.18)',
+                  borderLeft: '1px solid rgba(110, 180, 255, 0.18)'
+                }}
+              />
             </motion.div>
           )}
         </AnimatePresence>
@@ -383,13 +450,16 @@ const StatCard = ({ icon: Icon, label, value, sublabel, data = {}, isEmphasized 
       const upgradePercentage = totalRevisions > 0 ? (data.upgrades / totalRevisions) * 100 : 0;
       return (
          <div className="mt-4">
-          <div className="h-3 bg-red-500/20 rounded-full overflow-hidden">
+          <div className="h-2.5 rounded-full overflow-hidden" style={{ background: 'rgba(255, 106, 122, 0.12)' }}>
             <motion.div
               className="h-full rounded-full"
-              style={{ background: 'linear-gradient(to right, #10B981, #34D399)'}}
+              style={{ 
+                background: 'linear-gradient(to right, #58E3A4, #73E6D2)',
+                boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.18)'
+              }}
               initial={{ width: 0 }}
               animate={{ width: animated ? `${upgradePercentage}%` : 0 }}
-              transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
+              transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
             />
           </div>
         </div>
@@ -400,32 +470,38 @@ const StatCard = ({ icon: Icon, label, value, sublabel, data = {}, isEmphasized 
       return (
         <div className="mt-4 space-y-3">
           <div>
-            <div className="flex justify-between text-xs text-gray-400 mb-1">
+            <div className="flex justify-between text-[12px] font-medium mb-2" style={{ color: 'rgba(255,255,255,0.58)' }}>
               <span>Retail</span>
-              <span>{data.retailScore}%</span>
+              <span style={{ fontVariantNumeric: 'tabular-nums', color: 'rgba(255,255,255,0.82)' }}>{data.retailScore}%</span>
             </div>
-            <div className="h-3 bg-white/10 rounded-full overflow-hidden">
+            <div className="h-2.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
               <motion.div
                 className="h-full rounded-full"
-                style={{ background: 'linear-gradient(to right, #3B82F6, #60A5FA)'}}
+                style={{ 
+                  background: 'linear-gradient(to right, #4DA3FF, #60A5FA)',
+                  boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.18)'
+                }}
                 initial={{ width: 0 }}
                 animate={{ width: animated ? `${data.retailScore}%` : 0 }}
-                transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 0.61, 0.36, 1] }}
               />
             </div>
           </div>
           <div>
-             <div className="flex justify-between text-xs text-gray-400 mb-1">
+             <div className="flex justify-between text-[12px] font-medium mb-2" style={{ color: 'rgba(255,255,255,0.58)' }}>
               <span>Institutional</span>
-              <span>{data.institutionalScore}%</span>
+              <span style={{ fontVariantNumeric: 'tabular-nums', color: 'rgba(255,255,255,0.82)' }}>{data.institutionalScore}%</span>
             </div>
-            <div className="h-3 bg-white/10 rounded-full overflow-hidden">
+            <div className="h-2.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
               <motion.div
                 className="h-full rounded-full"
-                style={{ background: 'linear-gradient(to right, #8B5CF6, #A78BFA)'}}
+                style={{ 
+                  background: 'linear-gradient(to right, #8B5CF6, #A78BFA)',
+                  boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.18)'
+                }}
                 initial={{ width: 0 }}
                 animate={{ width: animated ? `${data.institutionalScore}%` : 0 }}
-                transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+                transition={{ duration: 0.7, delay: 0.4, ease: [0.22, 0.61, 0.36, 1] }}
               />
             </div>
           </div>
@@ -436,13 +512,18 @@ const StatCard = ({ icon: Icon, label, value, sublabel, data = {}, isEmphasized 
     if (label.includes('Technical')) {
         return (
           <div className="mt-4">
-            <div className="h-3 bg-white/10 rounded-full overflow-hidden">
+            <div className="h-2.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
               <motion.div
                   className="h-full rounded-full"
-                  style={{ background: data.trend === 'Bullish' ? 'linear-gradient(to right, #10B981, #34D399)' : 'linear-gradient(to right, #EF4444, #F87171)'}}
+                  style={{ 
+                    background: data.trend === 'Bullish' 
+                      ? 'linear-gradient(to right, #58E3A4, #73E6D2)' 
+                      : 'linear-gradient(to right, #FF6A7A, #F87171)',
+                    boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.18)'
+                  }}
                   initial={{ width: 0 }}
                   animate={{ width: animated ? `${data.confidence}%` : 0 }}
-                  transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
+                  transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
               />
             </div>
         </div>
@@ -456,9 +537,18 @@ const StatCard = ({ icon: Icon, label, value, sublabel, data = {}, isEmphasized 
     if (label.includes('Flow')) {
       return (
         <>
-          <div className="text-3xl lg:text-4xl font-black text-white">{data.amount}</div>
-          <div className={`text-base font-bold flex items-center mt-1 ${data.vsPrior.startsWith('+') ? 'text-emerald-400' : 'text-red-400'}`}>
-             <ArrowUpRight className={`w-4 h-4 mr-1 ${!data.vsPrior.startsWith('+') && 'rotate-[135deg]'}`} />
+          <div className="text-3xl lg:text-4xl font-bold" style={{ 
+            color: 'rgba(255,255,255,0.96)',
+            fontVariantNumeric: 'tabular-nums',
+            letterSpacing: '-0.02em'
+          }}>
+            {data.amount}
+          </div>
+          <div className="text-[14px] font-bold flex items-center mt-2" style={{
+            color: data.vsPrior.startsWith('+') ? '#58E3A4' : '#FF6A7A',
+            fontVariantNumeric: 'tabular-nums'
+          }}>
+             <ArrowUpRight className={`w-3.5 h-3.5 mr-1.5 ${!data.vsPrior.startsWith('+') && 'rotate-[135deg]'}`} strokeWidth={2.2} />
              {data.vsPrior} vs last week
           </div>
         </>
@@ -466,13 +556,19 @@ const StatCard = ({ icon: Icon, label, value, sublabel, data = {}, isEmphasized 
     }
     if (label.includes('Revisions')) {
       return (
-        <div className="flex items-baseline space-x-3">
-          <div className="text-3xl lg:text-4xl font-black text-white flex items-center">
-            {data.upgrades} <TrendingUp className="w-6 h-6 ml-2 text-emerald-400" />
+        <div className="flex items-baseline gap-3">
+          <div className="text-3xl lg:text-4xl font-bold flex items-center" style={{ 
+            color: 'rgba(255,255,255,0.96)',
+            fontVariantNumeric: 'tabular-nums'
+          }}>
+            {data.upgrades} <TrendingUp className="w-5 h-5 ml-2" style={{ color: '#58E3A4' }} strokeWidth={2.2} />
           </div>
-           <div className="text-2xl font-bold text-gray-500">/</div>
-           <div className="text-3xl lg:text-4xl font-black text-white flex items-center">
-            {data.downgrades} <TrendingDown className="w-6 h-6 ml-2 text-red-400" />
+           <div className="text-2xl font-bold" style={{ color: 'rgba(155, 163, 176, 1)' }}>/</div>
+           <div className="text-3xl lg:text-4xl font-bold flex items-center" style={{ 
+            color: 'rgba(255,255,255,0.96)',
+            fontVariantNumeric: 'tabular-nums'
+          }}>
+            {data.downgrades} <TrendingDown className="w-5 h-5 ml-2" style={{ color: '#FF6A7A' }} strokeWidth={2.2} />
           </div>
         </div>
       );
@@ -480,39 +576,89 @@ const StatCard = ({ icon: Icon, label, value, sublabel, data = {}, isEmphasized 
     if (label.includes('Technical')) {
        return (
         <>
-          <div className="text-3xl lg:text-4xl font-black text-white">{data.trend}</div>
-          <div className="text-base font-bold text-gray-400 mt-1">{data.confidence}% confidence</div>
+          <div className="text-3xl lg:text-4xl font-bold" style={{ 
+            color: 'rgba(255,255,255,0.96)',
+            letterSpacing: '-0.02em'
+          }}>
+            {data.trend}
+          </div>
+          <div className="text-[14px] font-bold mt-2" style={{ 
+            color: 'rgba(255,255,255,0.58)',
+            fontVariantNumeric: 'tabular-nums'
+          }}>
+            {data.confidence}% confidence
+          </div>
         </>
       );
     }
     if (label.includes('Sentiment')) {
         return (
-            <div className="text-3xl lg:text-4xl font-black text-white">Divergence</div>
+            <div className="text-3xl lg:text-4xl font-bold" style={{ 
+              color: 'rgba(255,255,255,0.96)',
+              letterSpacing: '-0.02em'
+            }}>
+              Divergence
+            </div>
         );
     }
-    return <div className="text-3xl lg:text-4xl font-black text-white">{value}</div>;
+    return <div className="text-3xl lg:text-4xl font-bold" style={{ 
+      color: 'rgba(255,255,255,0.96)',
+      letterSpacing: '-0.02em',
+      fontVariantNumeric: 'tabular-nums'
+    }}>
+      {value}
+    </div>;
   }
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
+      initial={{ opacity: 0, scale: 0.94 }}
       animate={{ opacity: 1, scale: 1 }}
-      whileHover={{ scale: 1.03, y: -4 }}
-      transition={{ duration: 0.3 }}
-      className={`relative overflow-hidden rounded-3xl p-6 backdrop-blur-2xl border transition-all duration-300
-        ${isEmphasized ? 'border-blue-500/30' : 'border-white/10'}
-      `}
+      whileHover={{ 
+        scale: 1.018, 
+        y: -3,
+        transition: { duration: 0.18, ease: [0.26, 0.11, 0.26, 1.0] }
+      }}
+      whileTap={{ scale: 0.985, transition: { duration: 0.10 } }}
+      transition={{ duration: 0.4, ease: [0.22, 0.61, 0.36, 1] }}
+      className="relative overflow-hidden rounded-[22px]"
       style={{ 
-        background: isEmphasized ? 'rgba(59, 130, 246, 0.05)' : 'rgba(18, 20, 25, 0.8)',
+        padding: '24px',
+        background: isEmphasized 
+          ? 'linear-gradient(180deg, rgba(110, 180, 255, 0.068) 0%, rgba(18, 22, 30, 0.92) 100%)'
+          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.028) 100%)',
+        backdropFilter: 'blur(32px) saturate(165%)',
+        WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+        border: isEmphasized 
+          ? '1px solid rgba(110, 180, 255, 0.12)' 
+          : '1px solid rgba(255,255,255,0.08)',
+        boxShadow: isEmphasized
+          ? 'inset 0 1px 0 rgba(255,255,255,0.10), 0 4px 16px rgba(0,0,0,0.10)'
+          : 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.08)',
+        transition: 'all 0.18s cubic-bezier(0.26, 0.11, 0.26, 1.0)'
       }}
     >
+      {/* Top specular */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '16%',
+        right: '16%',
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+        pointerEvents: 'none'
+      }} />
+
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex-grow">
-          <div className="flex items-center justify-between mb-4">
-            <h5 className="font-semibold text-gray-300 text-base uppercase tracking-wider">
+          <div className="flex items-center justify-between mb-5">
+            <h5 className="font-semibold text-[13px] uppercase tracking-wide" style={{ 
+              color: 'rgba(255,255,255,0.62)',
+              letterSpacing: '0.04em'
+            }}>
               {label}
             </h5>
-            <Icon className={`w-6 h-6 text-gray-500`} />
+            <Icon className="w-5 h-5" style={{ color: 'rgba(155, 163, 176, 1)', strokeWidth: 2.0 }} />
           </div>
 
           <motion.div
@@ -529,7 +675,10 @@ const StatCard = ({ icon: Icon, label, value, sublabel, data = {}, isEmphasized 
           {renderDataVisualization()}
 
           {sublabel && (
-            <p className="text-sm text-gray-400 mt-4 text-center">
+            <p className="text-[13px] font-medium mt-4 text-center" style={{ 
+              color: 'rgba(255,255,255,0.58)',
+              lineHeight: 1.5
+            }}>
               {sublabel}
             </p>
           )}
@@ -583,66 +732,117 @@ const EventCard = ({ event, index }) => {
       transition={{ delay: index * 0.05, duration: 0.3 }}
       className="group relative"
     >
-      <div className="flex flex-col rounded-2xl bg-gray-800/50 border border-white/10 backdrop-blur-md transition-all duration-300 overflow-hidden">
+      <div className="flex flex-col rounded-[20px] overflow-hidden" style={{
+        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.028) 100%)',
+        backdropFilter: 'blur(28px) saturate(160%)',
+        WebkitBackdropFilter: 'blur(28px) saturate(160%)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 3px 12px rgba(0,0,0,0.08)'
+      }}>
         <motion.div
           whileHover={{
-              y: isExpanded ? 0 : -2,
-              backgroundColor: "rgba(30, 41, 59, 0.6)"
+              y: isExpanded ? 0 : -1,
+              background: isExpanded ? undefined : "linear-gradient(180deg, rgba(255, 255, 255, 0.052) 0%, rgba(255, 255, 255, 0.038) 100%)",
+              transition: { duration: 0.16 }
           }}
-          transition={{ duration: 0.2 }}
-          className="flex items-center justify-between p-6 cursor-pointer"
+          whileTap={{ scale: 0.995, transition: { duration: 0.10 } }}
+          className="flex items-center justify-between cursor-pointer"
+          style={{ padding: '24px' }}
           onClick={() => setIsExpanded(!isExpanded)}
         >
           <div className="flex items-center space-x-4">
             {/* Date Box */}
             <div className="relative flex-shrink-0">
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-700/20 to-blue-900/20 border border-blue-500/30 flex flex-col items-center justify-center overflow-hidden">
-                <span className="text-xs text-blue-300 opacity-80 uppercase leading-none">
+              <div className="w-14 h-14 rounded-[16px] flex flex-col items-center justify-center overflow-hidden" style={{
+                background: 'linear-gradient(180deg, rgba(77, 143, 251, 0.14) 0%, rgba(77, 143, 251, 0.10) 100%)',
+                border: '1px solid rgba(77, 143, 251, 0.24)',
+                backdropFilter: 'blur(12px)'
+              }}>
+                <span className="text-[11px] uppercase leading-none font-semibold" style={{ 
+                  color: 'rgba(77, 143, 251, 1)',
+                  opacity: 0.88,
+                  letterSpacing: '0.02em'
+                }}>
                   {new Date(event.date).toLocaleDateString('en-US', { month: 'short' })}
                 </span>
-                <span className="text-2xl font-extrabold text-white leading-tight">
+                <span className="text-2xl font-bold leading-tight" style={{ 
+                  color: 'rgba(255,255,255,0.96)',
+                  fontVariantNumeric: 'tabular-nums'
+                }}>
                   {event.day}
                 </span>
                 {event.daysUntil === 0 && (
-                  <span className="absolute bottom-0 w-full text-center text-[8px] uppercase font-bold bg-blue-500/30 text-blue-100 py-0.5">Today</span>
+                  <span className="absolute bottom-0 w-full text-center text-[9px] uppercase font-bold py-0.5" style={{
+                    background: 'rgba(77, 143, 251, 0.30)',
+                    color: '#D7E3FF',
+                    letterSpacing: '0.03em'
+                  }}>
+                    Today
+                  </span>
                 )}
               </div>
             </div>
 
             <div className="flex-1">
-              <p className={`text-white text-xl group-hover:text-blue-300 transition-colors duration-200 ${event.impact === 'High' ? 'font-black' : 'font-bold'}`}>
+              <p className="text-[16px] font-bold mb-3" style={{ 
+                color: 'rgba(255,255,255,0.94)',
+                letterSpacing: '-0.01em',
+                lineHeight: 1.3
+              }}>
                 {event.event}
               </p>
-              <div className="mt-2 space-y-2">
+              <div className="space-y-2">
                 {/* Urgency Timeline */}
-                <div className="w-36 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                <div className="w-36 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
                   <motion.div
-                    className="h-full bg-gradient-to-r from-orange-500 to-red-600 rounded-full"
+                    className="h-full rounded-full"
+                    style={{ 
+                      background: 'linear-gradient(to right, #FFB464, #FF6A7A)',
+                      boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.16)'
+                    }}
                     initial={{ width: 0 }}
                     animate={{ width: `${getUrgencyWidth(event.daysUntil)}%` }}
-                    transition={{ duration: 0.8, delay: index * 0.1 }}
+                    transition={{ duration: 0.7, delay: index * 0.1, ease: [0.22, 0.61, 0.36, 1] }}
                   />
                 </div>
-                <p className="text-gray-400 text-sm flex items-center">
+                <p className="text-[13px] flex items-center font-medium" style={{ color: 'rgba(255,255,255,0.58)' }}>
                   {event.daysUntil === 0 ? 'Due Today' : `${event.daysUntil} day${event.daysUntil === 1 ? '' : 's'} remaining`}
-                  <span className="mx-2 text-gray-600">•</span>
-                  <span className="font-medium">{new Date(event.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                  <span className="mx-2" style={{ color: 'rgba(255,255,255,0.24)' }}>•</span>
+                  <span style={{ fontVariantNumeric: 'tabular-nums' }}>
+                    {new Date(event.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                  </span>
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center space-x-3">
-            <span className={`flex items-center px-4 py-2 rounded-xl font-bold text-sm border ${getImpactColor(event.impact)}`}>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center rounded-[14px]" style={{
+              padding: '8px 14px',
+              fontSize: '12px',
+              fontWeight: 700,
+              background: event.impact === 'High' 
+                ? 'linear-gradient(180deg, rgba(255, 106, 122, 0.12) 0%, rgba(255, 106, 122, 0.08) 100%)'
+                : event.impact === 'Medium'
+                ? 'linear-gradient(180deg, rgba(255, 180, 100, 0.12) 0%, rgba(255, 180, 100, 0.08) 100%)'
+                : 'linear-gradient(180deg, rgba(88, 227, 164, 0.12) 0%, rgba(88, 227, 164, 0.08) 100%)',
+              border: event.impact === 'High'
+                ? '1px solid rgba(255, 106, 122, 0.20)'
+                : event.impact === 'Medium'
+                ? '1px solid rgba(255, 180, 100, 0.20)'
+                : '1px solid rgba(88, 227, 164, 0.20)',
+              color: event.impact === 'High' ? '#FF6A7A' : event.impact === 'Medium' ? '#FFB464' : '#58E3A4',
+              letterSpacing: '0.01em'
+            }}>
               {getImpactIcon(event.impact)}
-              {event.impact} Impact
-            </span>
+              {event.impact}
+            </div>
 
             <motion.div
               animate={{ rotate: isExpanded ? 90 : 0 }}
-              transition={{ duration: 0.2, ease: 'easeOut' }}
+              transition={{ duration: 0.18, ease: [0.26, 0.11, 0.26, 1.0] }}
             >
-              <ChevronRight className="w-6 h-6 text-gray-500 group-hover:text-white transition-colors" />
+              <ChevronRight className="w-5 h-5" style={{ color: 'rgba(155, 163, 176, 1)' }} strokeWidth={2.0} />
             </motion.div>
           </div>
         </motion.div>
@@ -658,12 +858,15 @@ const EventCard = ({ event, index }) => {
               transition={{ duration: 0.25, ease: 'easeInOut' }}
               className="overflow-hidden"
             >
-              <div className={`pt-1 pb-6 px-6 ml-[92px] ${accentStyle.thickness} ${accentStyle.color}`}>
+              <div className="pt-2 pb-6 px-6 ml-[92px]" style={{
+                borderLeft: event.impact === 'High' ? '3px solid rgba(255, 106, 122, 0.24)' : '2px solid rgba(255, 180, 100, 0.20)'
+              }}>
                 <motion.p
-                  initial={{ opacity: 0, y: -5 }}
+                  initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.15, duration: 0.25 }}
-                  className="text-gray-400 text-[15px] leading-relaxed"
+                  transition={{ delay: 0.12, duration: 0.20, ease: [0.22, 0.61, 0.36, 1] }}
+                  className="text-[14px] leading-relaxed"
+                  style={{ color: 'rgba(255,255,255,0.68)' }}
                 >
                   {event.context}
                 </motion.p>
@@ -744,36 +947,77 @@ const InsightCard = ({ item, type, index }) => {
       whileHover={{ y: -5, scale: selectedEmphasis.scale * 1.04, boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)' }}
     >
       <div
-        className="relative h-full flex flex-col p-6 rounded-2xl border backdrop-blur-sm cursor-pointer transition-all duration-300 overflow-hidden"
-        style={{ background: selectedStyle.bg, borderColor: selectedStyle.border }}
+        className="relative h-full flex flex-col rounded-[20px] cursor-pointer overflow-hidden"
+        style={{ 
+          padding: '22px',
+          background: selectedStyle.bg,
+          backdropFilter: 'blur(28px) saturate(160%)',
+          WebkitBackdropFilter: 'blur(28px) saturate(160%)',
+          border: `1px solid ${selectedStyle.border}`,
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 3px 12px rgba(0,0,0,0.08)',
+          transition: 'all 0.18s cubic-bezier(0.26, 0.11, 0.26, 1.0)'
+        }}
       >
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '16%',
+          right: '16%',
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)',
+          pointerEvents: 'none'
+        }} />
+
         <div className="flex items-start justify-between mb-4">
-          <IconComponent className={`w-6 h-6 ${selectedStyle.icon}`} strokeWidth={1.5} />
-          <div className={`px-2.5 py-1 rounded-md text-xs font-bold ${selectedStyle.tag.bg} ${selectedStyle.tag.text}`}>
-            {item.severity} Impact
+          <IconComponent className="w-5 h-5" style={{ color: selectedStyle.icon.replace('text-', '#'), strokeWidth: 2.0 }} />
+          <div className="px-3 py-1.5 rounded-full text-[11px] font-bold" style={{
+            background: selectedStyle.tag.bg.replace('bg-', 'rgba(') + ')',
+            color: selectedStyle.tag.text.replace('text-', '#'),
+            letterSpacing: '0.02em'
+          }}>
+            {item.severity}
           </div>
         </div>
         <div className="flex-grow">
-          <h4 className={`text-lg text-white ${selectedEmphasis.fontWeight}`}>{item.name}</h4>
-          <p className="mt-2 text-sm text-gray-400 leading-relaxed">{item.interpretation}</p>
+          <h4 className={`text-[15px] ${selectedEmphasis.fontWeight} mb-2`} style={{ 
+            color: 'rgba(255,255,255,0.92)',
+            letterSpacing: '-0.01em',
+            lineHeight: 1.3
+          }}>
+            {item.name}
+          </h4>
+          <p className="text-[13px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.68)' }}>
+            {item.interpretation}
+          </p>
         </div>
       </div>
 
       <AnimatePresence>
         {showTooltip && item.context && (
           <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            initial={{ opacity: 0, y: 8, scale: 0.94 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-            className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 w-max max-w-xs z-10 p-3 rounded-xl backdrop-blur-xl border border-white/20 shadow-2xl"
-            style={{ background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.90))' }}
+            exit={{ opacity: 0, y: 8, scale: 0.94 }}
+            transition={{ duration: 0.16, ease: [0.22, 0.61, 0.36, 1] }}
+            className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 w-max max-w-xs z-10 rounded-[14px] pointer-events-none"
+            style={{ 
+              padding: '12px 14px',
+              background: 'linear-gradient(135deg, rgba(12, 16, 22, 0.94), rgba(18, 22, 30, 0.92))',
+              backdropFilter: 'blur(24px) saturate(165%)',
+              WebkitBackdropFilter: 'blur(24px) saturate(165%)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10), 0 8px 24px rgba(0,0,0,0.25)'
+            }}
           >
-            <div className="text-xs font-medium text-blue-300 text-center leading-relaxed">
+            <div className="text-[12px] font-medium text-center leading-relaxed" style={{ color: 'rgba(255,255,255,0.88)' }}>
               {item.context}
             </div>
-            <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 rotate-45 border-b border-r border-white/20" 
-                 style={{ background: 'rgba(30, 41, 59, 0.90)' }}
+            <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 rotate-45" 
+                 style={{ 
+                   background: 'linear-gradient(135deg, rgba(12, 16, 22, 0.94), rgba(18, 22, 30, 0.92))',
+                   borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
+                   borderRight: '1px solid rgba(255, 255, 255, 0.12)'
+                 }}
             />
           </motion.div>
         )}
@@ -847,15 +1091,38 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
   ];
 
   const backdropVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
-    exit: { opacity: 0 }
+    hidden: { opacity: 0, backdropFilter: 'blur(0px)' },
+    visible: { 
+      opacity: 1, 
+      backdropFilter: 'blur(20px)',
+      transition: { duration: 0.28, ease: [0.22, 0.61, 0.36, 1] }
+    },
+    exit: { 
+      opacity: 0, 
+      backdropFilter: 'blur(0px)',
+      transition: { duration: 0.24, ease: [0.32, 0.08, 0.24, 1] }
+    }
   };
 
   const drawerVariants = {
-    hidden: { opacity: 0, scale: 0.9, y: 50, rotateX: -10 },
-    visible: { opacity: 1, scale: 1, y: 0, rotateX: 0, transition: { type: "spring", stiffness: 300, damping: 30, mass: 0.8 } },
-    exit: { opacity: 0, scale: 0.95, y: 30, rotateX: 5, transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] } }
+    hidden: { opacity: 0, scale: 0.94, y: 30 },
+    visible: { 
+      opacity: 1, 
+      scale: 1, 
+      y: 0, 
+      transition: { 
+        type: "spring", 
+        stiffness: 320, 
+        damping: 35, 
+        mass: 0.9 
+      } 
+    },
+    exit: { 
+      opacity: 0, 
+      scale: 0.96, 
+      y: 20, 
+      transition: { duration: 0.24, ease: [0.32, 0.08, 0.24, 1] } 
+    }
   };
 
   const severityOrder = { high: 1, medium: 2, low: 3 };
@@ -869,7 +1136,11 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
           animate="visible"
           exit="exit"
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(0, 0, 0, 0.8)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
+          style={{ 
+            background: 'rgba(0, 0, 0, 0.72)',
+            WebkitBackdropFilter: 'blur(20px)',
+            willChange: 'opacity, backdrop-filter'
+          }}
           onClick={handleClose}
         >
           <motion.div
@@ -879,78 +1150,133 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
             animate="visible"
             exit="exit"
             onClick={e => e.stopPropagation()}
-            className="relative w-full max-w-7xl max-h-[95vh] flex flex-col rounded-3xl shadow-2xl overflow-hidden"
+            className="relative w-full max-w-7xl max-h-[92vh] flex flex-col overflow-hidden"
             style={{ 
-              background: 'rgba(15, 23, 42, 0.85)', 
-              backdropFilter: 'blur(32px)', 
-              WebkitBackdropFilter: 'blur(32px)', 
-              border: '1px solid rgba(255, 255, 255, 0.08)' 
+              background: 'linear-gradient(180deg, rgba(18, 22, 30, 0.88) 0%, rgba(12, 16, 22, 0.92) 100%)', 
+              backdropFilter: 'blur(48px) saturate(175%)', 
+              WebkitBackdropFilter: 'blur(48px) saturate(175%)', 
+              border: '1px solid rgba(255, 255, 255, 0.10)',
+              borderRadius: '32px',
+              boxShadow: `
+                inset 0 1.5px 0 rgba(255,255,255,0.10),
+                0 24px 64px rgba(0,0,0,0.45)
+              `
             }}
           >
-            {/* Frosted Glass Header */}
-            <div className="relative border-b border-white/8 flex-shrink-0" 
+            {/* OS Horizon Header */}
+            <div className="relative flex-shrink-0" 
                  style={{ 
-                   background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.8))',
-                   backdropFilter: 'blur(24px)',
-                   WebkitBackdropFilter: 'blur(24px)'
+                   background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.038) 0%, rgba(255, 255, 255, 0.022) 100%)',
+                   backdropFilter: 'blur(28px) saturate(165%)',
+                   WebkitBackdropFilter: 'blur(28px) saturate(165%)',
+                   borderBottom: '1px solid rgba(255,255,255,0.08)',
+                   padding: '32px'
                  }}>
               
-              {/* Soft gradient accent glow */}
+              {/* Top specular */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: '16%',
+                right: '16%',
+                height: '1.5px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+                pointerEvents: 'none'
+              }} />
+
+              {/* Soft ambient bloom */}
               <div 
-                className="absolute inset-x-0 top-0 h-32"
                 style={{
-                  background: 'radial-gradient(ellipse 70% 40% at 50% -10%, rgba(34, 211, 238, 0.08), transparent 70%)',
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'radial-gradient(ellipse 65% 35% at 50% 0%, rgba(110, 180, 255, 0.05), transparent 70%)',
                   pointerEvents: 'none'
                 }}
               />
               
-              <div className="relative z-10 flex items-start justify-between p-8">
+              <div className="relative z-10 flex items-start justify-between">
                 <div>
                   <motion.h3
-                    initial={{ opacity: 0, x: -20 }}
+                    initial={{ opacity: 0, x: -16 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="text-3xl font-black text-white mb-2"
-                    style={{ textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}
+                    transition={{ duration: 0.4, ease: [0.22, 0.61, 0.36, 1] }}
+                    className="text-3xl font-bold mb-3"
+                    style={{ 
+                      color: 'rgba(255,255,255,0.96)',
+                      letterSpacing: '-0.02em'
+                    }}
                   >
-                    {sector.name} Deep Analysis
+                    {sector.name} Analysis
                   </motion.h3>
-                  <div className="flex items-center space-x-4">
+                  <div className="flex items-center gap-3">
                     <motion.div
-                      initial={{ opacity: 0, scale: 0.8 }}
+                      initial={{ opacity: 0, scale: 0.88 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.1 }}
-                      className={`flex items-center space-x-3 px-4 py-2 rounded-xl font-bold backdrop-blur-sm border ${sector.change.startsWith('+') ? 'bg-gradient-to-r from-emerald-500/15 to-green-500/15 border-emerald-500/25 text-emerald-300' : 'bg-gradient-to-r from-red-500/15 to-rose-500/15 border-red-500/25 text-red-300'}`}
+                      transition={{ delay: 0.1, duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
+                      className="flex items-center gap-2.5 rounded-[18px]"
+                      style={{
+                        padding: '10px 16px',
+                        background: sector.change.startsWith('+') 
+                          ? 'linear-gradient(180deg, rgba(88, 227, 164, 0.14) 0%, rgba(88, 227, 164, 0.10) 100%)'
+                          : 'linear-gradient(180deg, rgba(255, 106, 122, 0.14) 0%, rgba(255, 106, 122, 0.10) 100%)',
+                        border: sector.change.startsWith('+') 
+                          ? '1px solid rgba(88, 227, 164, 0.24)'
+                          : '1px solid rgba(255, 106, 122, 0.24)',
+                        backdropFilter: 'blur(12px)',
+                        boxShadow: sector.change.startsWith('+')
+                          ? 'inset 0 0.5px 0 rgba(88, 227, 164, 0.12)'
+                          : 'inset 0 0.5px 0 rgba(255, 106, 122, 0.12)'
+                      }}
                     >
-                      {sector.change.startsWith('+') ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
-                      <span className="text-lg">{sector.change}</span>
+                      {sector.change.startsWith('+') ? 
+                        <TrendingUp className="w-4 h-4" style={{ color: '#58E3A4' }} strokeWidth={2.2} /> : 
+                        <TrendingDown className="w-4 h-4" style={{ color: '#FF6A7A' }} strokeWidth={2.2} />
+                      }
+                      <span className="text-base font-bold" style={{ 
+                        color: sector.change.startsWith('+') ? '#58E3A4' : '#FF6A7A',
+                        fontVariantNumeric: 'tabular-nums'
+                      }}>
+                        {sector.change}
+                      </span>
                     </motion.div>
-                    <span className="text-sm text-gray-400">Today's Performance</span>
+                    <span className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.58)' }}>
+                      Today
+                    </span>
                   </div>
                 </div>
                 <motion.button
                   onClick={handleClose}
-                  whileHover={{ scale: 1.05, rotate: 90 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="p-3 rounded-2xl transition-all duration-200"
+                  whileHover={{ 
+                    scale: 1.04,
+                    background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.078) 0%, rgba(255, 255, 255, 0.058) 100%)',
+                    transition: { duration: 0.16 }
+                  }}
+                  whileTap={{ scale: 0.96, transition: { duration: 0.10 } }}
+                  className="rounded-[20px]"
                   style={{ 
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    backdropFilter: 'blur(8px)',
+                    padding: '12px',
+                    width: '44px',
+                    height: '44px',
+                    background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.038) 100%)',
+                    backdropFilter: 'blur(12px)',
                     border: '1px solid rgba(255, 255, 255, 0.08)'
                   }}
+                  aria-label="Close drawer"
                 >
-                  <X className="w-6 h-6 text-gray-400 hover:text-white transition-colors" />
+                  <X className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.72)' }} />
                 </motion.button>
               </div>
             </div>
             
-            {/* Frosted Glass Drawer Tabs */}
-            <div className="px-8 pt-2 pb-4 flex-shrink-0"
+            {/* OS Horizon Tabs */}
+            <div className="px-8 pt-3 pb-5 flex-shrink-0"
                  style={{ 
-                   background: 'rgba(30, 41, 59, 0.3)',
-                   backdropFilter: 'blur(16px)',
-                   WebkitBackdropFilter: 'blur(16px)'
+                   background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.028) 0%, rgba(255, 255, 255, 0.018) 100%)',
+                   backdropFilter: 'blur(24px) saturate(165%)',
+                   WebkitBackdropFilter: 'blur(24px) saturate(165%)',
+                   borderBottom: '1px solid rgba(255,255,255,0.06)'
                  }}>
-              <div className="flex space-x-6">
+              <div className="flex gap-2">
                 {tabs.map((tab) => {
                   const Icon = tab.icon;
                   const isActive = activeTab === tab.id;
@@ -958,43 +1284,58 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
                     <motion.button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`relative flex items-center space-x-3 px-3 py-4 text-sm transition-all duration-300 ${isActive ? 'text-white' : 'text-gray-400 hover:text-white'}`}
-                      whileHover={{ y: -1, scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
+                      className="relative flex items-center gap-2.5 rounded-[18px] overflow-hidden"
+                      style={{
+                        padding: '11px 18px',
+                        background: isActive 
+                          ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.082) 0%, rgba(255, 255, 255, 0.062) 100%)'
+                          : 'transparent',
+                        border: isActive ? '1px solid rgba(255,255,255,0.10)' : '1px solid transparent',
+                        boxShadow: isActive 
+                          ? 'inset 0 1px 0 rgba(255,255,255,0.08), 0 2px 8px rgba(0,0,0,0.06)'
+                          : 'none'
+                      }}
+                      whileHover={!isActive ? {
+                        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.032) 100%)',
+                        transition: { duration: 0.16 }
+                      } : {}}
+                      whileTap={{ scale: 0.97, transition: { duration: 0.10 } }}
                     >
-                      <Icon className="w-4 h-4" strokeWidth={isActive ? 2.5 : 1.8} />
-                      <span className={isActive ? 'font-semibold' : 'font-medium'}>{tab.label}</span>
-                      
-                      {/* Glowing underline for active tab */}
                       {isActive && (
-                        <motion.div
-                          layoutId="activeTabGlow"
-                          className="absolute bottom-0 left-0 right-0 h-0.5"
-                          transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                        >
-                          <div 
-                            className="h-full w-full rounded-full"
-                            style={{
-                              background: 'linear-gradient(90deg, #22D3EE, #14B8A6)',
-                              boxShadow: '0 0 12px rgba(34, 211, 238, 0.6), 0 0 24px rgba(20, 184, 166, 0.3)'
-                            }}
-                          />
-                        </motion.div>
+                        <div style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: '16%',
+                          right: '16%',
+                          height: '1px',
+                          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
+                          pointerEvents: 'none'
+                        }} />
                       )}
+                      <Icon className="w-4 h-4" style={{ 
+                        color: isActive ? 'rgba(215, 227, 255, 1)' : 'rgba(155, 163, 176, 1)',
+                        strokeWidth: 2.0
+                      }} />
+                      <span className="text-[14px] font-semibold" style={{ 
+                        color: isActive ? 'rgba(255,255,255,0.96)' : 'rgba(255,255,255,0.62)',
+                        letterSpacing: '-0.005em'
+                      }}>
+                        {tab.label}
+                      </span>
                     </motion.button>
                   );
                 })}
               </div>
             </div>
             
-            <div className="p-8 pt-6 flex-1 overflow-y-auto min-h-0">
+            <div className="p-8 pt-7 flex-1 overflow-y-auto min-h-0">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeTab}
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.25, ease: "easeInOut" }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.20, ease: [0.26, 0.11, 0.26, 1.0] }}
                 >
                   {activeTab === 'drivers' && (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-16">

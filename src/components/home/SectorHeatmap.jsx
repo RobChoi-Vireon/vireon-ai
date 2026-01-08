@@ -85,41 +85,69 @@ const RefinedSparkline = ({ data, positive, isHovered }) => {
 };
 
 const ViewModeToggle = ({ viewMode, setViewMode, timeframe, setTimeframe }) => {
+  const ToggleButton = ({ isActive, onClick, children }) => (
+    <motion.button
+      onClick={onClick}
+      className="relative rounded-[16px] overflow-hidden"
+      style={{
+        padding: '10px 16px',
+        background: isActive 
+          ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.085) 0%, rgba(255, 255, 255, 0.062) 100%)'
+          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.032) 100%)',
+        backdropFilter: 'blur(32px) saturate(165%)',
+        WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+        border: isActive ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(255,255,255,0.06)',
+        boxShadow: isActive 
+          ? 'inset 0 1px 0 rgba(255,255,255,0.10), 0 2px 8px rgba(0,0,0,0.08)'
+          : 'inset 0 0.5px 0 rgba(255,255,255,0.05), 0 1px 4px rgba(0,0,0,0.05)'
+      }}
+      whileHover={!isActive ? {
+        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.068) 0%, rgba(255, 255, 255, 0.048) 100%)',
+        transition: { duration: 0.16 }
+      } : {}}
+      whileTap={{ scale: 0.98, transition: { duration: 0.10 } }}
+    >
+      {isActive && (
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '16%',
+          right: '16%',
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
+          pointerEvents: 'none'
+        }} />
+      )}
+      <span className="text-[13px] font-semibold" style={{ 
+        color: isActive ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,0.58)',
+        letterSpacing: '0.01em'
+      }}>
+        {children}
+      </span>
+    </motion.button>
+  );
+
   return (
-    <div className="flex items-center space-x-4">
-      <div className="flex items-center space-x-1 p-1 rounded-xl bg-black/15 backdrop-blur-sm border border-white/8">
-        <button 
-          onClick={() => setViewMode('absolute')} 
-          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-200 ${viewMode === 'absolute' ? 'bg-blue-500/20 text-white border border-blue-500/30' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
-        >
+    <div className="flex items-center gap-3">
+      <div className="flex items-center gap-1.5">
+        <ToggleButton isActive={viewMode === 'absolute'} onClick={() => setViewMode('absolute')}>
           Absolute
-        </button>
-        <button 
-          onClick={() => setViewMode('relative')} 
-          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-200 ${viewMode === 'relative' ? 'bg-blue-500/20 text-white border border-blue-500/30' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
-        >
+        </ToggleButton>
+        <ToggleButton isActive={viewMode === 'relative'} onClick={() => setViewMode('relative')}>
           vs. Market
-        </button>
+        </ToggleButton>
       </div>
-      <div className="flex items-center space-x-1 p-1 rounded-xl bg-black/15 backdrop-blur-sm border border-white/8">
-        <button 
-          onClick={() => setTimeframe('1D')} 
-          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-200 ${timeframe === '1D' ? 'bg-purple-500/20 text-white border border-purple-500/30' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
-        >
+      <div style={{ width: '1px', height: '20px', background: 'rgba(255,255,255,0.10)' }} />
+      <div className="flex items-center gap-1.5">
+        <ToggleButton isActive={timeframe === '1D'} onClick={() => setTimeframe('1D')}>
           Today
-        </button>
-        <button 
-          onClick={() => setTimeframe('1W')} 
-          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-200 ${timeframe === '1W' ? 'bg-purple-500/20 text-white border border-purple-500/30' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
-        >
+        </ToggleButton>
+        <ToggleButton isActive={timeframe === '1W'} onClick={() => setTimeframe('1W')}>
           vs. Week
-        </button>
-        <button 
-          onClick={() => setTimeframe('1Y')} 
-          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-200 ${timeframe === '1Y' ? 'bg-purple-500/20 text-white border border-purple-500/30' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
-        >
-          vs. Year Avg
-        </button>
+        </ToggleButton>
+        <ToggleButton isActive={timeframe === '1Y'} onClick={() => setTimeframe('1Y')}>
+          vs. Year
+        </ToggleButton>
       </div>
     </div>
   );
@@ -208,28 +236,50 @@ function SectorHeatmap({ setSelectedSector }) {
   };
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1A1D29]/90 to-[#12141C]/90 backdrop-blur-2xl shadow-2xl p-8">
-      <div className="flex items-center justify-between mb-2">
-        <h2 className="text-2xl font-bold tracking-[-0.01em] text-white">Sector Heatmap</h2>
+    <div className="relative overflow-hidden rounded-[28px]" style={{
+      background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.028) 100%)',
+      backdropFilter: 'blur(32px) saturate(165%)',
+      WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+      border: '1px solid rgba(255,255,255,0.08)',
+      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 32px rgba(0,0,0,0.12)',
+      padding: '28px'
+    }}>
+      {/* Top specular highlight */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '15%',
+        right: '15%',
+        height: '1.5px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
+        pointerEvents: 'none'
+      }} />
+
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 className="text-2xl font-bold tracking-[-0.02em] mb-1" style={{ color: 'rgba(255,255,255,0.95)' }}>
+            Sector Heatmap
+          </h2>
+          <div className="h-5 flex items-center">
+            <AnimatePresence mode="wait">
+              <motion.p 
+                key={`${viewMode}-${timeframe}`} 
+                className="text-[13px] font-medium" 
+                style={{ color: 'rgba(255,255,255,0.58)' }}
+                initial={{ opacity: 0, y: -3 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                exit={{ opacity: 0, y: 3 }} 
+                transition={{ duration: 0.18, ease: [0.26, 0.11, 0.26, 1.0] }}
+              >
+                {viewDescriptions[viewMode][timeframe]}
+              </motion.p>
+            </AnimatePresence>
+          </div>
+        </div>
         <ViewModeToggle viewMode={viewMode} setViewMode={setViewMode} timeframe={timeframe} setTimeframe={setTimeframe} />
       </div>
-
-      <div className="h-8 flex items-center mb-6">
-        <AnimatePresence mode="wait">
-          <motion.p 
-            key={`${viewMode}-${timeframe}`} 
-            className="text-sm text-gray-400" 
-            initial={{ opacity: 0, y: -5 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            exit={{ opacity: 0, y: 5 }} 
-            transition={{ duration: 0.2 }}
-          >
-            {viewDescriptions[viewMode][timeframe]}
-          </motion.p>
-        </AnimatePresence>
-      </div>
       
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
         {processedData.map((sector, index) => {
           const isLeader = sector.name === topGainer.name;
           const isLaggard = sector.name === topLoser.name;
@@ -239,70 +289,99 @@ function SectorHeatmap({ setSelectedSector }) {
           return (
             <motion.div
               key={sector.name}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
+              transition={{ 
+                delay: index * 0.05, 
+                duration: 0.5, 
+                ease: [0.22, 0.61, 0.36, 1] 
+              }}
               onClick={() => setSelectedSector(sector)}
               onHoverStart={() => setHoveredSector(sector.name)}
               onHoverEnd={() => setHoveredSector(null)}
               whileHover={{ 
-                y: -4, 
-                scale: 1.02,
-                boxShadow: `0 12px 40px rgba(0, 0, 0, 0.3), ${style.glow}`,
-                transition: { duration: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }
+                y: -3, 
+                scale: 1.015,
+                transition: { duration: 0.18, ease: [0.26, 0.11, 0.26, 1.0] }
               }}
-              className="group relative p-6 rounded-2xl cursor-pointer border overflow-hidden"
+              whileTap={{ scale: 0.985, transition: { duration: 0.10 } }}
+              className="group relative rounded-[22px] cursor-pointer overflow-hidden"
               style={{ 
+                padding: '24px',
                 background: style.background, 
-                borderColor: style.border, 
-                boxShadow: `inset 0 1px 1px rgba(255, 255, 255, 0.08), ${style.glow}`,
-                transition: 'all 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                backdropFilter: 'blur(28px) saturate(160%)',
+                WebkitBackdropFilter: 'blur(28px) saturate(160%)',
+                border: `1px solid ${style.border}`, 
+                boxShadow: `inset 0 1px 0 rgba(255, 255, 255, 0.08), ${style.glow}`,
+                transition: 'all 0.18s cubic-bezier(0.26, 0.11, 0.26, 1.0)'
               }}
             >
               {(isLeader || isLaggard) && (
                 <motion.div 
-                  className="absolute top-3 right-3"
+                  className="absolute top-4 right-4"
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.3 }}
+                  transition={{ delay: 0.3, duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
                 >
-                  <span 
-                    className={`text-xs font-bold px-2 py-1 rounded-full ${isLeader ? 'text-green-300 bg-green-500/10' : 'text-red-300 bg-red-500/10'}`} 
-                    style={{ 
-                      textShadow: isLeader ? '0 0 8px rgba(52, 211, 153, 0.5)' : '0 0 8px rgba(248, 113, 113, 0.5)',
-                      backdropFilter: 'blur(4px)'
+                  <div 
+                    className="text-[11px] font-bold px-3 py-1.5 rounded-full"
+                    style={{
+                      background: isLeader 
+                        ? 'linear-gradient(180deg, rgba(88, 227, 164, 0.16) 0%, rgba(88, 227, 164, 0.10) 100%)'
+                        : 'linear-gradient(180deg, rgba(255, 106, 122, 0.16) 0%, rgba(255, 106, 122, 0.10) 100%)',
+                      border: isLeader ? '1px solid rgba(88, 227, 164, 0.24)' : '1px solid rgba(255, 106, 122, 0.24)',
+                      color: isLeader ? '#58E3A4' : '#FF6A7A',
+                      textShadow: isLeader ? '0 0 8px rgba(88, 227, 164, 0.4)' : '0 0 8px rgba(255, 106, 122, 0.4)',
+                      backdropFilter: 'blur(12px)',
+                      letterSpacing: '0.02em'
                     }}
                   >
                     {isLeader ? 'Leader' : 'Laggard'}
-                  </span>
+                  </div>
                 </motion.div>
               )}
               
               <AnimatePresence>
                 {hoveredSector === sector.name && (
                   <motion.div 
-                    className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 z-30 w-max" 
-                    initial={{ opacity: 0, y: 10, scale: 0.9 }} 
+                    className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 z-30 w-max pointer-events-none" 
+                    initial={{ opacity: 0, y: 8, scale: 0.94 }} 
                     animate={{ opacity: 1, y: 0, scale: 1 }} 
-                    exit={{ opacity: 0, y: 10, scale: 0.9 }} 
-                    transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+                    exit={{ opacity: 0, y: 8, scale: 0.94 }} 
+                    transition={{ duration: 0.16, ease: [0.22, 0.61, 0.36, 1] }}
                   >
                     <div 
-                      className="px-3 py-2 text-xs font-semibold text-white rounded-lg border border-white/15 shadow-2xl max-w-xs text-center" 
+                      className="px-4 py-2.5 text-[13px] font-medium max-w-xs text-center rounded-[14px]" 
                       style={{ 
-                        background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.90))', 
-                        backdropFilter: 'blur(20px)' 
+                        background: 'linear-gradient(135deg, rgba(12, 16, 22, 0.94), rgba(18, 22, 30, 0.92))',
+                        backdropFilter: 'blur(24px) saturate(165%)',
+                        WebkitBackdropFilter: 'blur(24px) saturate(165%)',
+                        border: '1px solid rgba(255, 255, 255, 0.12)',
+                        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10), 0 8px 24px rgba(0,0,0,0.25)',
+                        color: 'rgba(255,255,255,0.88)'
                       }}
                     >
                       {sector.context}
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 rotate-45 bg-slate-700 border-b border-r border-white/15"></div>
+                      <div 
+                        className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 rotate-45"
+                        style={{
+                          background: 'linear-gradient(135deg, rgba(12, 16, 22, 0.94), rgba(18, 22, 30, 0.92))',
+                          borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
+                          borderRight: '1px solid rgba(255, 255, 255, 0.12)'
+                        }}
+                      />
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              <div className="relative z-10 flex flex-col justify-between h-full min-h-[170px]">
-                <h3 className="text-base font-bold text-white/90 leading-tight mb-4">{sector.name}</h3>
+              <div className="relative z-10 flex flex-col justify-between h-full min-h-[180px]">
+                <h3 className="text-[15px] font-bold leading-tight mb-3" style={{ 
+                  color: 'rgba(255,255,255,0.92)',
+                  letterSpacing: '-0.01em'
+                }}>
+                  {sector.name}
+                </h3>
                 
                 <div className="my-6 flex-1 flex items-center">
                   <AnimatePresence mode="wait">
@@ -310,8 +389,8 @@ function SectorHeatmap({ setSelectedSector }) {
                       key={`${viewMode}-${timeframe}-${sector.name}`}
                       initial={{ 
                         opacity: 0, 
-                        y: sector.displayChange >= 0 ? -10 : 10,
-                        scale: 0.9
+                        y: sector.displayChange >= 0 ? -8 : 8,
+                        scale: 0.92
                       }} 
                       animate={{ 
                         opacity: 1, 
@@ -320,18 +399,21 @@ function SectorHeatmap({ setSelectedSector }) {
                       }} 
                       exit={{ 
                         opacity: 0, 
-                        y: sector.displayChange >= 0 ? 10 : -10,
-                        scale: 0.9
+                        y: sector.displayChange >= 0 ? 8 : -8,
+                        scale: 0.92
                       }} 
                       transition={{ 
-                        duration: 0.25, 
-                        ease: [0.25, 0.46, 0.45, 0.94] 
+                        duration: 0.20, 
+                        ease: [0.26, 0.11, 0.26, 1.0] 
                       }} 
-                      className={`text-white ${magnitudeStyle.fontWeight}`}
+                      className={`${magnitudeStyle.fontWeight}`}
                       style={{ 
                         fontSize: magnitudeStyle.fontSize, 
                         lineHeight: 1,
-                        textShadow: magnitudeStyle.textShadow
+                        color: 'rgba(255,255,255,0.98)',
+                        fontVariantNumeric: 'tabular-nums',
+                        textShadow: magnitudeStyle.textShadow,
+                        letterSpacing: '-0.02em'
                       }}
                     >
                       {sector.displayChange >= 0 ? '+' : ''}{sector.displayChange.toFixed(2)}%
@@ -339,23 +421,32 @@ function SectorHeatmap({ setSelectedSector }) {
                   </AnimatePresence>
                 </div>
 
-                <div className="space-y-1 opacity-80 group-hover:opacity-100 transition-opacity duration-200">
+                <div className="space-y-1.5" style={{ 
+                  opacity: 0.78,
+                  transition: 'opacity 0.18s ease'
+                }}>
                   {sector.movers.slice(0, 2).map((mover, i) => {
                     const isMoverPositive = mover.c.startsWith('+');
                     return (
                       <motion.div 
                         key={i} 
-                        className="flex items-center space-x-1.5 text-xs text-white/70 font-semibold"
-                        initial={{ opacity: 0, x: -10 }}
+                        className="flex items-center gap-2 text-xs font-semibold"
+                        style={{ color: 'rgba(255,255,255,0.72)' }}
+                        initial={{ opacity: 0, x: -8 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 + i * 0.05 }}
+                        transition={{ delay: 0.1 + i * 0.05, duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
                       >
                         {isMoverPositive ? 
-                          <TrendingUp className="w-3.5 h-3.5 text-green-400" strokeWidth={2.5}/> : 
-                          <TrendingDown className="w-3.5 h-3.5 text-red-400" strokeWidth={2.5}/>
+                          <TrendingUp className="w-3.5 h-3.5" style={{ color: '#58E3A4' }} strokeWidth={2.2}/> : 
+                          <TrendingDown className="w-3.5 h-3.5" style={{ color: '#FF6A7A' }} strokeWidth={2.2}/>
                         }
-                        <span className="font-medium">{mover.s}</span>
-                        <span className={isMoverPositive ? 'text-green-400' : 'text-red-400'}>{mover.c}</span>
+                        <span style={{ color: 'rgba(255,255,255,0.80)' }}>{mover.s}</span>
+                        <span style={{ 
+                          color: isMoverPositive ? '#58E3A4' : '#FF6A7A',
+                          fontVariantNumeric: 'tabular-nums'
+                        }}>
+                          {mover.c}
+                        </span>
                       </motion.div>
                     );
                   })}
