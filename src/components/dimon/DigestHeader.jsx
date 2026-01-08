@@ -633,7 +633,7 @@ export default function DigestHeader({
         aria-hidden="true"
       />
 
-      <div className="relative container mx-auto px-6 lg:px-10 pt-8 pb-5" style={{ zIndex: 10 }}>
+      <div className="relative container mx-auto px-6 lg:px-10 pt-6 pb-4" style={{ zIndex: 10 }}>
 
         <div className="flex flex-col lg:flex-row items-start justify-between gap-6">
 
@@ -814,7 +814,7 @@ export default function DigestHeader({
 
             {/* Halo Spectrum Arc with Macro Insight Capsule */}
             <motion.div
-              className="relative pt-4 pb-3 w-full"
+              className="relative pt-2 pb-2 w-full"
               style={{ transform: 'translateY(0px)' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
@@ -824,7 +824,7 @@ export default function DigestHeader({
                 className="text-sm font-semibold tracking-wide block"
                 style={{
                   color: 'rgba(255,255,255,0.63)',
-                  marginBottom: '28px'
+                  marginBottom: '20px'
                 }}
               >
                 How markets are feeling today, based on {stats.sources} sources
@@ -1182,7 +1182,7 @@ export default function DigestHeader({
                     fontWeight: 500,
                     letterSpacing: '0.04em',
                     textTransform: 'uppercase',
-                    marginTop: '24px',
+                    marginTop: '18px',
                     transition: 'color 160ms ease'
                   }}>
                     <span>Risk-On</span>
@@ -1193,7 +1193,7 @@ export default function DigestHeader({
                   {/* Current Macro Posture Label */}
                   <motion.div
                     className="text-center"
-                    style={{ marginTop: '12px' }}
+                    style={{ marginTop: '10px' }}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: isLoaded ? 1 : 0 }}
                     transition={{ duration: 0.28, delay: 1.2 }}
@@ -1240,7 +1240,7 @@ export default function DigestHeader({
                 fontWeight: 550,
                 letterSpacing: '-0.01em',
                 maxWidth: '700px',
-                marginTop: '16px'
+                marginTop: '12px'
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
