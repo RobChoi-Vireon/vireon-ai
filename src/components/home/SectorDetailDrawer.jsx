@@ -1391,16 +1391,18 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
                     <div className="space-y-12">
                       {/* Secular Growth Drivers */}
                       <motion.div
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, ease: "easeOut" }}
+                        transition={{ duration: 0.4, ease: 'easeOut' }}
                       >
                         <div className="mb-6">
-                          <h3 className="text-2xl font-bold text-white/95 flex items-center mb-2">
-                            <Zap className="w-6 h-6 mr-3 text-emerald-400" strokeWidth={2} />
-                            Secular Growth Drivers
+                          <h3 className="text-xl font-bold flex items-center mb-2" style={{ color: 'rgba(255,255,255,0.92)' }}>
+                            <Zap className="w-5 h-5 mr-3" style={{ color: 'rgba(100, 130, 115, 0.88)' }} strokeWidth={2.0} />
+                            Growth Drivers
                           </h3>
-                          <p className="text-sm text-gray-400 leading-relaxed max-w-2xl">Structural tailwinds propelling sector strength.</p>
+                          <p className="text-[13px] font-medium leading-relaxed max-w-2xl" style={{ color: 'rgba(255,255,255,0.58)' }}>
+                            Structural tailwinds propelling sector strength.
+                          </p>
                         </div>
 
                         {/* Desktop/Tablet: Single Row Grid */}
@@ -1499,11 +1501,13 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
                         transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
                       >
                         <div className="mb-6">
-                          <h3 className="text-2xl font-bold text-white/95 flex items-center mb-2">
-                            <AlertTriangle className="w-6 h-6 mr-3 text-red-400" strokeWidth={2} />
-                            Macro & Regulatory Risks
+                          <h3 className="text-xl font-bold flex items-center mb-2" style={{ color: 'rgba(255,255,255,0.92)' }}>
+                            <AlertTriangle className="w-5 h-5 mr-3" style={{ color: 'rgba(135, 95, 90, 0.88)' }} strokeWidth={2.0} />
+                            Risk Factors
                           </h3>
-                          <p className="text-sm text-gray-400 leading-relaxed max-w-2xl">External headwinds with potential to constrain growth.</p>
+                          <p className="text-[13px] font-medium leading-relaxed max-w-2xl" style={{ color: 'rgba(255,255,255,0.58)' }}>
+                            External headwinds with potential to constrain growth.
+                          </p>
                         </div>
 
                         {/* Desktop/Tablet: Single Row Grid */}
@@ -1599,9 +1603,9 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
 
                   {activeTab === 'events' && (
                     <div className="space-y-4">
-                      <h3 className="text-2xl font-bold text-white/95 mb-6 flex items-center">
-                        <Calendar className="w-6 h-6 mr-3 text-blue-400" />
-                        High-Impact Catalysts
+                      <h3 className="text-xl font-bold mb-6 flex items-center" style={{ color: 'rgba(255,255,255,0.92)' }}>
+                        <Calendar className="w-5 h-5 mr-3" style={{ color: 'rgba(110, 150, 200, 0.88)' }} strokeWidth={2.0} />
+                        Upcoming Catalysts
                       </h3>
                       <div className="space-y-3">
                         {(sectorData.forwardCatalysts || [])
