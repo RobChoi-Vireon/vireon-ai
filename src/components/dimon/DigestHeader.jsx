@@ -834,7 +834,7 @@ export default function DigestHeader({
               <div className="relative flex items-start gap-0">
                 {/* Arc Visualization */}
                 <div
-                  className="flex-1 max-w-2xl relative"
+                  className="flex-1 max-w-xl relative"
                   ref={arcRef}
                   onPointerMove={handlePointerMove}
                   style={{
