@@ -776,6 +776,12 @@ function LayoutContent({ children, currentPageName }) {
         .tap-highlight-transparent {
           -webkit-tap-highlight-color: transparent;
         }
+
+        /* Drawer-aware menu bar blur */
+        body[data-drawer-open="true"] .hzn-menu-bar {
+          filter: blur(26px) saturate(1.3) brightness(1.15) !important;
+          transition: filter 280ms cubic-bezier(0.19, 1, 0.22, 1) !important;
+        }
         
         body {
           font-size: 15px;
@@ -1032,7 +1038,7 @@ function LayoutContent({ children, currentPageName }) {
           <div className="flex-1 flex flex-col overflow-hidden">
             {/* OS Horizon V2 Top-Right HUD — Luminous Glass with Cursor-Aware Drift */}
             <motion.div 
-              className="fixed z-[250] flex items-center"
+              className="fixed z-[250] flex items-center hzn-menu-bar"
               animate={{
                 background: isScrolling 
                   ? 'linear-gradient(180deg, rgba(35, 40, 48, 0.66) 0%, rgba(28, 33, 40, 0.63) 100%)'
