@@ -418,7 +418,7 @@ const MetricSatellite = ({
         className="relative rounded-2xl overflow-hidden cursor-pointer"
         style={{
           padding: '20px 24px',
-          minWidth: '200px',
+          width: '320px',
           background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.04) 100%)',
           backdropFilter: 'blur(28px) saturate(160%)',
           WebkitBackdropFilter: 'blur(28px) saturate(160%)',
