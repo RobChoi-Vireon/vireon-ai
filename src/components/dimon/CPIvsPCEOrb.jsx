@@ -41,7 +41,7 @@ const EducationPopover = ({ isVisible, onClose }) => {
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          className="education-popover fixed z-[250]"
+          className="education-popover absolute z-50"
           style={{
             top: '50%',
             left: '50%',
@@ -667,7 +667,7 @@ export default function CPIvsPCEOrb({ data }) {
         {/* Dim Overlay when popover is open */}
         {isDimmed && (
           <motion.div
-            className="fixed inset-0 z-[240] bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 z-40 bg-black/50 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
