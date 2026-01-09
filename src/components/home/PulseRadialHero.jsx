@@ -12,12 +12,7 @@ const getScoreColor = (score) => {
 const TrajectorySparkline = ({ data, color }) => {
   const [pathD, setPathD] = useState('');
   const [endPoint, setEndPoint] = useState({ x: 0, y: 0 });
-  const prevPathRef = useRef('');
-
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const smoothX = useSpring(x, { stiffness: 180, damping: 25, mass: 0.8 });
-  const smoothY = useSpring(y, { stiffness: 180, damping: 25, mass: 0.8 });
+  const prevDataRef = useRef([]);
 
   useEffect(() => {
     const width = 240;
@@ -40,13 +35,10 @@ const TrajectorySparkline = ({ data, color }) => {
 
     const lastPoint = points[points.length - 1];
 
-    if (prevPathRef.current !== newPathD) {
-      setPathD(newPathD);
-      x.set(lastPoint.x);
-      y.set(lastPoint.y);
-      prevPathRef.current = newPathD;
-    }
-  }, [data, x, y]);
+    setPathD(newPathD);
+    setEndPoint(lastPoint);
+    prevDataRef.current = data;
+  }, [data]);
 
   return (
     <svg width="240" height="60" className="overflow-visible">
@@ -60,9 +52,8 @@ const TrajectorySparkline = ({ data, color }) => {
       <motion.path
         d={`${pathD} L 240 60 L 0 60 Z`}
         fill="url(#trajectoryFill)"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, ease: [0.26, 0.11, 0.26, 1.0] }}
+        animate={{ d: `${pathD} L 240 60 L 0 60 Z` }}
+        transition={{ duration: 0.8, ease: [0.26, 0.11, 0.26, 1.0] }}
       />
 
       <motion.path
@@ -73,22 +64,20 @@ const TrajectorySparkline = ({ data, color }) => {
         strokeLinecap="round"
         strokeLinejoin="round"
         opacity="0.85"
-        initial={{ pathLength: 0 }}
-        animate={{ pathLength: 1 }}
-        transition={{ duration: 1.2, ease: [0.26, 0.11, 0.26, 1.0] }}
+        animate={{ d: pathD }}
+        transition={{ duration: 0.8, ease: [0.26, 0.11, 0.26, 1.0] }}
       />
 
       <motion.circle
-        cx={smoothX}
-        cy={smoothY}
+        cx={endPoint.x}
+        cy={endPoint.y}
         r="4"
         fill={color}
         style={{
           filter: `drop-shadow(0 0 6px ${color}88)`
         }}
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ type: "spring", stiffness: 200, damping: 20, mass: 0.8 }}
+        animate={{ cx: endPoint.x, cy: endPoint.y }}
+        transition={{ duration: 0.8, ease: [0.26, 0.11, 0.26, 1.0] }}
       />
     </svg>
   );
