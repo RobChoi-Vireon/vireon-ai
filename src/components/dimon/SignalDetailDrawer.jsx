@@ -697,13 +697,18 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             .hzn-frosted-backdrop {
               position: fixed;
               inset: 0;
-              z-index: 200;
-              background: rgba(0, 0, 0, 0.60);
-              backdrop-filter: blur(12px);
-              -webkit-backdrop-filter: blur(12px);
+              z-index: 80;
+              background: rgba(24, 26, 29, 0.55);
+              backdrop-filter: blur(26px) saturate(1.3) brightness(1.15);
+              -webkit-backdrop-filter: blur(26px) saturate(1.3) brightness(1.15);
               opacity: 0;
-              transition: opacity var(--hzn-dur-open) var(--hzn-ease-silk);
-              will-change: opacity;
+              transition: opacity var(--hzn-dur-open) var(--hzn-ease-silk),
+                          filter var(--li-duration) var(--li-ease),
+                          backdrop-filter var(--li-duration) var(--li-ease);
+              will-change: opacity, filter, backdrop-filter;
+              contain: paint;
+              mask-image: linear-gradient(to bottom, transparent 0, black calc(72px + 8px));
+              -webkit-mask-image: linear-gradient(to bottom, transparent 0, black calc(72px + 8px));
             }
             
             .hzn-frosted-backdrop--open {
@@ -721,23 +726,42 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               -webkit-mask-image: radial-gradient(circle at 50% 45%, rgba(0,0,0,0) 42%, black 100%);
             }
             
-
+            /* Header Scrim */
+            .hzn-header-scrim {
+              position: fixed;
+              inset-inline: 0;
+              top: 0;
+              height: 72px;
+              z-index: 95;
+              pointer-events: none;
+              background: linear-gradient(to bottom, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.22) 35%, rgba(0, 0, 0, 0.00) 100%);
+              box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+              mix-blend-mode: normal;
+              opacity: 0;
+              transition: opacity var(--hzn-dur-open) var(--hzn-ease-silk);
+              will-change: opacity;
+            }
+            
+            .hzn-header-scrim--open {
+              opacity: 1;
+            }
             
             /* Priority Drawer */
             .hzn-drawer {
               position: fixed;
-              z-index: 201;
-              left: 50%;
-              top: 50%;
-              transform: translate(-50%, -50%) translateY(var(--hzn-open-translate)) scale(var(--hzn-open-scale));
+              z-index: 90;
+              left: 0;
+              right: 0;
+              margin-inline: auto;
+              top: calc(72px + 14px);
               max-width: min(820px, 90vw);
-              max-height: 90vh;
-              border: 1px solid rgba(255, 255, 255, 0.10);
-              background: linear-gradient(135deg, rgba(15, 15, 25, 0.95) 0%, rgba(10, 10, 15, 0.98) 100%);
-              box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+              border: 1px solid rgba(255, 255, 255, 0.06);
+              background: linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(0,0,0,0.12));
+              box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
               border-radius: 24px;
               overflow: hidden;
               
+              transform: translateY(var(--hzn-open-translate)) scale(var(--hzn-open-scale));
               opacity: 0;
               will-change: transform, opacity;
               transition: 
@@ -746,7 +770,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             }
             
             .hzn-drawer--open {
-              transform: translate(-50%, -50%) translateY(0) scale(1);
+              transform: translateY(0) scale(1);
               opacity: 1;
             }
             
@@ -1129,6 +1153,12 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               }
             }
           `}</style>
+
+          {/* Header Scrim */}
+          <div
+            className={`hzn-header-scrim ${isAnimatingIn ? 'hzn-header-scrim--open' : ''}`}
+            aria-hidden="true"
+          />
 
           {/* Frosted Backdrop */}
           <div
