@@ -30,6 +30,7 @@ import DivergenceDrawer from '@/components/dimon/DivergenceDrawer';
 import SignalDetailDrawer from '@/components/dimon/SignalDetailDrawer';
 import SegmentDetailDrawer from '@/components/dimon/SegmentDetailDrawer';
 import GlobalSignalLattice from '@/components/dimon/GlobalHolographicMap';
+import ImplicationDrawer from '@/components/dimon/ImplicationDrawer';
 
 
 const deepSanitize = (obj) => {
@@ -412,6 +413,7 @@ export default function MacroSignalsPage() {
   const [selectedDivergence, setSelectedDivergence] = useState(null);
   const [isConsensusDrawerOpen, setIsConsensusDrawerOpen] = useState(false);
   const [selectedSegment, setSelectedSegment] = useState(null);
+  const [selectedImplication, setSelectedImplication] = useState(null);
 
   // Memoize sanitized data to prevent re-computation on re-renders
   const sanitizedDigest = useMemo(() => {
@@ -498,6 +500,7 @@ export default function MacroSignalsPage() {
   const closeDivergenceDrawer = useCallback(() => setSelectedDivergence(null), []);
   const closeSignalDrawer = useCallback(() => setSelectedSignal(null), []);
   const closeSegmentDrawer = useCallback(() => setSelectedSegment(null), []);
+  const closeImplicationDrawer = useCallback(() => setSelectedImplication(null), []);
   
   // Keyboard navigation
   useEffect(() => {
@@ -715,7 +718,7 @@ export default function MacroSignalsPage() {
                     data-section-order="2.5"
                     className="col-span-12"
                   >
-                    <InflationSection data={digest.inflation} />
+                    <InflationSection data={digest.inflation} onOpenImplicationDrawer={setSelectedImplication} />
                   </motion.div>
                 )}
 
@@ -862,6 +865,11 @@ export default function MacroSignalsPage() {
         onClose={closeSegmentDrawer}
         segment={selectedSegment}
         onNavigate={handleNavigateSegment}
+      />
+      <ImplicationDrawer
+        isOpen={!!selectedImplication}
+        onClose={closeImplicationDrawer}
+        implication={selectedImplication}
       />
       
       <footer className="relative z-10 text-center py-8 border-t border-white/10">

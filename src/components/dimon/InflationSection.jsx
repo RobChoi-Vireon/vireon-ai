@@ -56,14 +56,16 @@ const KPIChip = ({ label, value, isCore = false }) => (
   </motion.div>
 );
 
-const ImplicationPill = ({ label, direction, note }) => {
+const ImplicationPill = ({ label, direction, note, onClick }) => {
   const Icon = direction === 'up' ? TrendingUp : direction === 'down' ? TrendingDown : Minus;
   const color = direction === 'up' ? '#58E3A4' : direction === 'down' ? '#FF6A7A' : '#A8B3C7';
   
   return (
     <motion.div
       whileHover={{ scale: 1.02, y: -1 }}
-      className="relative flex items-center gap-2 rounded-xl overflow-hidden"
+      whileTap={{ scale: 0.98 }}
+      onClick={onClick}
+      className="relative flex items-center gap-2 rounded-xl overflow-hidden cursor-pointer"
       style={{
         padding: '10px 16px',
         background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
@@ -82,7 +84,7 @@ const ImplicationPill = ({ label, direction, note }) => {
   );
 };
 
-export default function InflationSection({ data }) {
+export default function InflationSection({ data, onOpenImplicationDrawer }) {
   if (!data) return null;
 
   const stateColors = StatePillColors[data.state_tag] || StatePillColors.Mixed;
@@ -279,6 +281,7 @@ export default function InflationSection({ data }) {
               label={implication.label}
               direction={implication.direction}
               note={implication.note}
+              onClick={() => onOpenImplicationDrawer?.(implication)}
             />
           ))}
         </div>
