@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
-import { MoreHorizontal } from 'lucide-react';
+import { LayoutGrid } from 'lucide-react';
 
 // ============================================================================
 // OS HORIZON SCROLL CHOREOGRAPHY — Apple-Grade Dynamics
@@ -302,7 +302,7 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
                 whileTap={{ scale: 0.96 }}
                 aria-label="Open control center"
               >
-                <MoreHorizontal className="w-5 h-5" style={{ color: '#D7E8FF' }} strokeWidth={2} />
+                <LayoutGrid className="w-5 h-5" style={{ color: '#D7E8FF' }} strokeWidth={2} />
               </motion.button>
             )}
 
