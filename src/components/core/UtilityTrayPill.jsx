@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
+import { MoreHorizontal } from 'lucide-react';
 
 // ============================================================================
 // OS HORIZON SCROLL CHOREOGRAPHY — Apple-Grade Dynamics
@@ -54,6 +55,7 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
   const [isHovering, setIsHovering] = useState(false);
   const [isRevealZoneActive, setIsRevealZoneActive] = useState(false);
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const scrollStopTimer = useRef(null);
   const rafId = useRef(null);
@@ -179,16 +181,25 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
         aria-hidden="true"
       />
 
-      {/* Utility Tray Pill */}
+      {/* Utility Tray Pill - Control Center Style */}
       <motion.div
         ref={trayRef}
         className="fixed z-[250] flex items-center"
         onMouseEnter={() => setIsHovering(true)}
-        onMouseLeave={() => setIsHovering(false)}
+        onMouseLeave={() => {
+          setIsHovering(false);
+          if (isExpanded) {
+            setTimeout(() => setIsExpanded(false), 200);
+          }
+        }}
+        animate={{
+          width: isExpanded ? 'auto' : '60px',
+          padding: isExpanded ? '16px 20px' : '8px'
+        }}
+        transition={{ duration: 0.32, ease: [0.26, 0.11, 0.26, 1.0] }}
         style={{
           top: '18px',
           right: '20px',
-          padding: '16px 20px',
           borderRadius: '44px',
           border: '1px solid rgba(255,255,255,0.12)',
           willChange: 'transform, opacity, backdrop-filter',
@@ -259,7 +270,42 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
             y: smoothTranslateY
           }}
         >
-          {children}
+          {/* Toggle Button */}
+          <AnimatePresence mode="wait">
+            {!isExpanded && (
+              <motion.button
+                key="toggle-button"
+                onClick={() => setIsExpanded(true)}
+                className="relative rounded-[24px] flex items-center justify-center group"
+                style={{
+                  width: '44px',
+                  height: '44px',
+                  padding: '12px'
+                }}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.2, ease: [0.26, 0.11, 0.26, 1.0] }}
+                whileHover={{ scale: 1.06 }}
+                whileTap={{ scale: 0.96 }}
+                aria-label="Open control center"
+              >
+                <MoreHorizontal className="w-5 h-5" style={{ color: '#D7E8FF' }} strokeWidth={2} />
+              </motion.button>
+            )}
+
+            {isExpanded && (
+              <motion.div
+                key="expanded-content"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.24, ease: [0.26, 0.11, 0.26, 1.0] }}
+              >
+                {children}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       </motion.div>
     </>
