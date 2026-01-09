@@ -26,17 +26,17 @@ const defaultModuleOrder = [
   'foryou'
 ];
 
-// Mini Sparkline Component
+// OS Horizon V4 Mini Sparkline — Refined Precision
 const MiniSparkline = ({ data, currentValue }) => {
   if (!data || data.length < 2) return null;
 
-  const width = 120;
-  const height = 60;
-  const padding = 10;
+  const width = 140;
+  const height = 72;
+  const padding = 12;
 
   const minValue = Math.min(...data);
   const maxValue = Math.max(...data);
-  const range = maxValue - minValue || 1; // Avoid division by zero
+  const range = maxValue - minValue || 1;
 
   const points = data.map((value, index) => {
     const x = padding + (index / (data.length - 1)) * (width - padding * 2);
@@ -45,82 +45,89 @@ const MiniSparkline = ({ data, currentValue }) => {
   }).join(' ');
 
   const pathD = `M${points.split(' ').map(point => point).join(' L')}`;
+  const areaD = `${pathD} L${width - padding},${height - padding} L${padding},${height - padding} Z`;
 
   return (
     <motion.div
       className="relative"
-      initial={{ opacity: 0, scale: 0.9 }}
+      initial={{ opacity: 0, scale: 0.92 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.8, delay: 0.4 }}
+      transition={{ duration: 0.6, delay: 0.4, ease: [0.22, 0.61, 0.36, 1] }}
     >
       <svg width={width} height={height} className="overflow-visible">
         <defs>
-          <linearGradient id="sparklineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style={{ stopColor: '#4ADE80', stopOpacity: 0.8 }} />
-            <stop offset="50%" style={{ stopColor: '#22C55E', stopOpacity: 0.9 }} />
-            <stop offset="100%" style={{ stopColor: '#16A34A', stopOpacity: 1 }} />
+          <linearGradient id="pulseSparkGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#58E3A4" stopOpacity="0.88" />
+            <stop offset="100%" stopColor="#73E6D2" stopOpacity="0.92" />
           </linearGradient>
-          <filter id="sparklineGlow">
-            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
+          <linearGradient id="pulseAreaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#58E3A4" stopOpacity="0.14" />
+            <stop offset="100%" stopColor="#58E3A4" stopOpacity="0.02" />
+          </linearGradient>
         </defs>
 
-        {/* Glow effect */}
+        {/* Area fill */}
         <motion.path
-          d={pathD}
-          fill="none"
-          stroke="url(#sparklineGradient)"
-          strokeWidth="3"
-          filter="url(#sparklineGlow)"
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={{ pathLength: 1, opacity: 0.6 }}
-          transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
+          d={areaD}
+          fill="url(#pulseAreaGradient)"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.6, ease: [0.22, 0.61, 0.36, 1] }}
         />
 
         {/* Main line */}
         <motion.path
           d={pathD}
           fill="none"
-          stroke="url(#sparklineGradient)"
+          stroke="url(#pulseSparkGradient)"
           strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 1.2, ease: "easeOut", delay: 0.3 }}
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: 1 }}
+          transition={{ duration: 1.2, ease: [0.22, 0.61, 0.36, 1], delay: 0.5 }}
         />
 
-        {/* End point indicator */}
+        {/* End point nucleus */}
         <motion.circle
           cx={padding + ((data.length - 1) / (data.length - 1)) * (width - padding * 2)}
           cy={height - padding - ((currentValue - minValue) / range) * (height - padding * 2)}
-          r="3"
-          fill="#22C55E"
-          stroke="#4ADE80"
-          strokeWidth="1"
+          r="4"
+          fill="#58E3A4"
+          stroke="rgba(255,255,255,0.28)"
+          strokeWidth="1.5"
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.4, delay: 1.5 }}
-        >
-          <animate
-            attributeName="r"
-            values="3;4;3"
-            dur="2s"
-            repeatCount="indefinite"
-          />
-        </motion.circle>
+          transition={{ duration: 0.4, delay: 1.4, ease: [0.22, 0.61, 0.36, 1] }}
+          style={{
+            filter: 'drop-shadow(0 0 8px rgba(88, 227, 164, 0.55))'
+          }}
+        />
+
+        {/* Pulsing halo */}
+        <motion.circle
+          cx={padding + ((data.length - 1) / (data.length - 1)) * (width - padding * 2)}
+          cy={height - padding - ((currentValue - minValue) / range) * (height - padding * 2)}
+          r="4"
+          fill="none"
+          stroke="#58E3A4"
+          strokeWidth="1"
+          initial={{ scale: 1, opacity: 0.7 }}
+          animate={{ 
+            scale: [1, 1.8, 1],
+            opacity: [0.7, 0, 0.7]
+          }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+        />
       </svg>
 
-      {/* Subtle label */}
+      {/* Refined label */}
       <motion.div
-        className="absolute -bottom-6 right-0 text-xs font-medium text-green-300/60"
+        className="absolute -bottom-6 right-0 text-[11px] font-semibold tracking-wide uppercase"
+        style={{ color: 'rgba(88, 227, 164, 0.52)', letterSpacing: '0.04em' }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.8 }}
+        transition={{ delay: 1.6, duration: 0.4 }}
       >
         7-Day Trend
       </motion.div>
@@ -129,7 +136,116 @@ const MiniSparkline = ({ data, currentValue }) => {
 };
 
 
-// Enhanced Luxury Market Metrics with Real-time Animations
+// OS Horizon V4 Mini Sparkline — Refined Precision
+const MiniSparkline = ({ data, currentValue }) => {
+  if (!data || data.length < 2) return null;
+
+  const width = 140;
+  const height = 72;
+  const padding = 12;
+
+  const minValue = Math.min(...data);
+  const maxValue = Math.max(...data);
+  const range = maxValue - minValue || 1;
+
+  const points = data.map((value, index) => {
+    const x = padding + (index / (data.length - 1)) * (width - padding * 2);
+    const y = height - padding - ((value - minValue) / range) * (height - padding * 2);
+    return `${x},${y}`;
+  }).join(' ');
+
+  const pathD = `M${points.split(' ').map(point => point).join(' L')}`;
+  const areaD = `${pathD} L${width - padding},${height - padding} L${padding},${height - padding} Z`;
+
+  return (
+    <motion.div
+      className="relative"
+      initial={{ opacity: 0, scale: 0.92 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.6, delay: 0.4, ease: [0.22, 0.61, 0.36, 1] }}
+    >
+      <svg width={width} height={height} className="overflow-visible">
+        <defs>
+          <linearGradient id="pulseSparkGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#58E3A4" stopOpacity="0.88" />
+            <stop offset="100%" stopColor="#73E6D2" stopOpacity="0.92" />
+          </linearGradient>
+          <linearGradient id="pulseAreaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#58E3A4" stopOpacity="0.14" />
+            <stop offset="100%" stopColor="#58E3A4" stopOpacity="0.02" />
+          </linearGradient>
+        </defs>
+
+        {/* Area fill */}
+        <motion.path
+          d={areaD}
+          fill="url(#pulseAreaGradient)"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.6, ease: [0.22, 0.61, 0.36, 1] }}
+        />
+
+        {/* Main line */}
+        <motion.path
+          d={pathD}
+          fill="none"
+          stroke="url(#pulseSparkGradient)"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: 1 }}
+          transition={{ duration: 1.2, ease: [0.22, 0.61, 0.36, 1], delay: 0.5 }}
+        />
+
+        {/* End point nucleus */}
+        <motion.circle
+          cx={padding + ((data.length - 1) / (data.length - 1)) * (width - padding * 2)}
+          cy={height - padding - ((currentValue - minValue) / range) * (height - padding * 2)}
+          r="4"
+          fill="#58E3A4"
+          stroke="rgba(255,255,255,0.28)"
+          strokeWidth="1.5"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.4, delay: 1.4, ease: [0.22, 0.61, 0.36, 1] }}
+          style={{
+            filter: 'drop-shadow(0 0 8px rgba(88, 227, 164, 0.55))'
+          }}
+        />
+
+        {/* Pulsing halo */}
+        <motion.circle
+          cx={padding + ((data.length - 1) / (data.length - 1)) * (width - padding * 2)}
+          cy={height - padding - ((currentValue - minValue) / range) * (height - padding * 2)}
+          r="4"
+          fill="none"
+          stroke="#58E3A4"
+          strokeWidth="1"
+          initial={{ scale: 1, opacity: 0.7 }}
+          animate={{ 
+            scale: [1, 1.8, 1],
+            opacity: [0.7, 0, 0.7]
+          }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </svg>
+
+      {/* Refined label */}
+      <motion.div
+        className="absolute -bottom-6 right-0 text-[11px] font-semibold tracking-wide uppercase"
+        style={{ color: 'rgba(88, 227, 164, 0.52)', letterSpacing: '0.04em' }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.6, duration: 0.4 }}
+      >
+        7-Day Trend
+      </motion.div>
+    </motion.div>
+  );
+};
+
+// OS Horizon V4 Luxury Metric Card — Liquid Glass Refinement
 const LuxuryMetricCard = ({ item, index, isEnabled, openMiniSheet }) => {
   const [priceKey, setPriceKey] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
@@ -140,18 +256,19 @@ const LuxuryMetricCard = ({ item, index, isEnabled, openMiniSheet }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40, scale: 0.9 }}
+      initial={{ opacity: 0, y: 28, scale: 0.94 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{
-        duration: 0.6,
-        delay: 0.1 + index * 0.08,
-        ease: [0.23, 1, 0.32, 1]
+        duration: 0.5,
+        delay: 0.1 + index * 0.06,
+        ease: [0.22, 0.61, 0.36, 1]
       }}
       whileHover={{
-        scale: 1.05,
-        y: -8,
-        transition: { duration: 0.2, ease: "easeOut" }
+        scale: 1.02,
+        y: -4,
+        transition: { type: "spring", stiffness: 300, damping: 28 }
       }}
+      whileTap={{ scale: 0.98, transition: { duration: 0.10 } }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       onClick={(e) => {
@@ -160,140 +277,164 @@ const LuxuryMetricCard = ({ item, index, isEnabled, openMiniSheet }) => {
           openMiniSheet({ symbol: item.symbol }, { top: e.clientY, left: e.clientX });
         }
       }}
-      className="group relative overflow-hidden rounded-3xl cursor-pointer"
+      className="group relative overflow-hidden rounded-[24px] cursor-pointer"
+      style={{
+        padding: '24px',
+        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
+        backdropFilter: 'blur(32px) saturate(165%)',
+        WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.08)'
+      }}
     >
-      {/* Premium Background with Multiple Gradients */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#1A1D29]/95 via-[#12141C]/90 to-[#0A0B0F]/95 backdrop-blur-2xl" />
+      {/* Top specular */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '16%',
+        right: '16%',
+        height: '1.5px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
+        pointerEvents: 'none'
+      }} />
 
-      {/* Luxury Border Effect */}
-      <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-20 group-hover:opacity-40 transition-opacity duration-500" />
-      <div className="absolute inset-[1px] rounded-3xl bg-gradient-to-br from-[#1A1D29] to-[#12141C]" />
-
-      {/* Dynamic Glow Effect */}
+      {/* Ambient bloom */}
       <motion.div
-        className="absolute inset-0 rounded-3xl"
-        animate={{
-          boxShadow: isHovered
-            ? `0 0 60px ${item.positive ? 'rgba(88, 227, 164, 0.4)' : 'rgba(255, 106, 122, 0.4)'}`
-            : '0 0 20px rgba(0, 0, 0, 0.3)'
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: item.positive 
+            ? 'radial-gradient(ellipse at 50% 30%, rgba(88, 227, 164, 0.05) 0%, transparent 70%)'
+            : 'radial-gradient(ellipse at 50% 30%, rgba(255, 106, 122, 0.05) 0%, transparent 70%)',
+          borderRadius: '24px',
+          pointerEvents: 'none',
+          opacity: isHovered ? 1 : 0.6
         }}
         transition={{ duration: 0.3 }}
       />
 
-      {/* Ambient Light Animation */}
-      <motion.div
-        className="absolute inset-0 rounded-3xl bg-gradient-to-r from-transparent via-white/5 to-transparent"
-        animate={{
-          x: isHovered ? ['-100%', '100%'] : '-100%',
-          opacity: isHovered ? [0, 0.6, 0] : 0
-        }}
-        transition={{
-          duration: isHovered ? 1.5 : 0,
-          ease: "easeInOut",
-          repeat: isHovered ? Infinity : 0,
-          repeatDelay: 2
-        }}
-      />
-
-      <div className="relative z-10 p-6 lg:p-8">
-        <div className="flex items-center justify-between mb-4">
-          {/* Symbol with Luxury Typography */}
+      <div className="relative z-10 flex flex-col h-full">
+        <div className="flex items-center justify-between mb-5">
           <motion.div
-            className="text-xs font-black tracking-[0.2em] uppercase text-gray-400 group-hover:text-white transition-colors duration-300"
-            animate={{ letterSpacing: isHovered ? '0.3em' : '0.2em' }}
-            transition={{ duration: 0.3 }}
+            className="text-[11px] font-bold tracking-[0.08em] uppercase"
+            style={{ 
+              color: 'rgba(255,255,255,0.58)',
+              letterSpacing: '0.06em'
+            }}
+            animate={{ letterSpacing: isHovered ? '0.10em' : '0.08em' }}
+            transition={{ duration: 0.18 }}
           >
             {item.symbol}
           </motion.div>
 
-          {/* Sophisticated Status Indicator */}
+          {/* Status pip */}
           <div className="relative">
             <motion.div
-              className={`w-3 h-3 rounded-full ${item.positive ? 'bg-green-400' : 'bg-red-400'}`}
+              className="w-2.5 h-2.5 rounded-full"
+              style={{
+                background: item.positive ? '#58E3A4' : '#FF6A7A',
+                boxShadow: item.positive 
+                  ? '0 0 8px rgba(88, 227, 164, 0.55)' 
+                  : '0 0 8px rgba(255, 106, 122, 0.55)'
+              }}
               animate={{
-                scale: [1, 1.3, 1],
-                opacity: [1, 0.7, 1]
+                scale: [1, 1.2, 1],
+                opacity: [1, 0.75, 1]
               }}
               transition={{
-                duration: 2,
+                duration: 2.2,
                 repeat: Infinity,
                 ease: "easeInOut"
               }}
             />
-            <div className={`absolute inset-0 w-3 h-3 rounded-full ${item.positive ? 'bg-green-400' : 'bg-red-400'} opacity-30 animate-ping`} />
+            <motion.div
+              className="absolute inset-0 w-2.5 h-2.5 rounded-full"
+              style={{ background: item.positive ? '#58E3A4' : '#FF6A7A' }}
+              animate={{ 
+                scale: [1, 1.8, 1],
+                opacity: [0.6, 0, 0.6]
+              }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+            />
           </div>
         </div>
 
-        {/* Price with Stunning Animation */}
+        {/* Price */}
         <motion.div
           key={priceKey}
-          initial={{ opacity: 0, scale: 0.8, y: 10 }}
+          initial={{ opacity: 0, scale: 0.92, y: 6 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-          className="text-3xl lg:text-4xl font-black tracking-[-0.03em] text-white mb-3 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 transition-all duration-300"
+          transition={{ duration: 0.4, ease: [0.22, 0.61, 0.36, 1] }}
+          className="text-3xl font-bold tracking-[-0.02em] mb-4"
+          style={{
+            color: 'rgba(255,255,255,0.96)',
+            fontVariantNumeric: 'tabular-nums'
+          }}
         >
           {item.price}
         </motion.div>
 
-        {/* Change Indicator with Premium Styling */}
+        {/* Change pill */}
         <motion.div
-          className={`
-            inline-flex items-center space-x-2 px-4 py-2 rounded-2xl font-bold text-sm
-            ${item.positive
-              ? 'bg-gradient-to-r from-green-500/30 to-emerald-500/30 border border-green-500/40 text-green-300'
-              : 'bg-gradient-to-r from-red-500/30 to-pink-500/30 border border-red-500/40 text-red-300'
-            }
-            shadow-2xl backdrop-blur-sm
-          `}
-          whileHover={{ scale: 1.05 }}
+          className="inline-flex items-center gap-2 rounded-[16px]"
+          style={{
+            padding: '8px 14px',
+            background: item.positive 
+              ? 'linear-gradient(180deg, rgba(88, 227, 164, 0.12) 0%, rgba(88, 227, 164, 0.08) 100%)'
+              : 'linear-gradient(180deg, rgba(255, 106, 122, 0.12) 0%, rgba(255, 106, 122, 0.08) 100%)',
+            border: item.positive ? '1px solid rgba(88, 227, 164, 0.20)' : '1px solid rgba(255, 106, 122, 0.20)',
+            backdropFilter: 'blur(12px)',
+            boxShadow: item.positive 
+              ? 'inset 0 0.5px 0 rgba(88, 227, 164, 0.12)'
+              : 'inset 0 0.5px 0 rgba(255, 106, 122, 0.12)'
+          }}
+          whileHover={{ scale: 1.04, transition: { duration: 0.16 } }}
           animate={{
             boxShadow: item.positive
-              ? ['0 0 20px rgba(88, 227, 164, 0.3)', '0 0 30px rgba(88, 227, 164, 0.5)', '0 0 20px rgba(88, 227, 164, 0.3)']
-              : ['0 0 20px rgba(255, 106, 122, 0.3)', '0 0 30px rgba(255, 106, 122, 0.5)', '0 0 20px rgba(255, 106, 122, 0.3)']
+              ? [
+                  'inset 0 0.5px 0 rgba(88, 227, 164, 0.12), 0 0 14px rgba(88, 227, 164, 0.22)',
+                  'inset 0 0.5px 0 rgba(88, 227, 164, 0.12), 0 0 20px rgba(88, 227, 164, 0.30)',
+                  'inset 0 0.5px 0 rgba(88, 227, 164, 0.12), 0 0 14px rgba(88, 227, 164, 0.22)'
+                ]
+              : [
+                  'inset 0 0.5px 0 rgba(255, 106, 122, 0.12), 0 0 14px rgba(255, 106, 122, 0.22)',
+                  'inset 0 0.5px 0 rgba(255, 106, 122, 0.12), 0 0 20px rgba(255, 106, 122, 0.30)',
+                  'inset 0 0.5px 0 rgba(255, 106, 122, 0.12), 0 0 14px rgba(255, 106, 122, 0.22)'
+                ]
           }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
         >
           {item.positive ? (
-            <TrendingUp className="w-4 h-4" strokeWidth={2.5} />
+            <TrendingUp className="w-3.5 h-3.5" style={{ color: '#58E3A4' }} strokeWidth={2.2} />
           ) : (
-            <TrendingDown className="w-4 h-4" strokeWidth={2.5} />
+            <TrendingDown className="w-3.5 h-3.5" style={{ color: '#FF6A7A' }} strokeWidth={2.2} />
           )}
-          <span>{item.change}</span>
+          <span className="text-[13px] font-bold" style={{ 
+            color: item.positive ? '#58E3A4' : '#FF6A7A',
+            fontVariantNumeric: 'tabular-nums'
+          }}>
+            {item.change}
+          </span>
         </motion.div>
       </div>
     </motion.div>
   );
 };
 
-// Next-Gen Watchlist Card
+// OS Horizon V4 Watchlist Card — Precision Capsule Design
 const NextGenWatchlistCard = ({ item, onClick, isHighMove }) => {
   const [isHovered, setIsHovered] = useState(false);
   const isPositive = parseFloat(item.changePercent) >= 0;
   const isFlat = Math.abs(parseFloat(item.changePercent)) < 0.05;
 
-  const getPipColor = () => {
-    if (isFlat) return 'bg-slate-500';
-    return isPositive ? 'bg-green-500' : 'bg-red-500';
-  };
-
-  const getPipGlow = () => {
-    if (isFlat) return 'shadow-[0_0_12px_2px] shadow-slate-500/30';
-    return isPositive ? 'shadow-[0_0_12px_2px] shadow-green-500/30' : 'shadow-[0_0_12px_2px] shadow-red-500/30';
-  };
-
-  const getInnerGlow = () => {
-    if (isFlat) return 'shadow-[inset_0_0_8px_2px] shadow-slate-500/10';
-    return isPositive ? 'shadow-[inset_0_0_8px_2px] shadow-green-500/10' : 'shadow-[inset_0_0_8px_2px] shadow-red-500/10';
-  }
-
   const WatchlistSparkline = ({ data, positive, flat }) => {
-    const color = flat ? '#64748b' : (positive ? '#22c55e' : '#ef4444');
-    const gradientId = `sparkline-gradient-${item.symbol}`;
+    const color = flat ? '#A8B3C7' : (positive ? '#58E3A4' : '#FF6A7A');
+    const gradientId = `wl-spark-${item.symbol}`;
 
     if (!data || data.length < 2) return <div className="w-16 h-8" />;
 
-    const width = 64;
-    const height = 32;
+    const width = 68;
+    const height = 34;
     const padding = 2;
 
     const minValue = Math.min(...data);
@@ -306,32 +447,35 @@ const NextGenWatchlistCard = ({ item, onClick, isHighMove }) => {
       return `${x.toFixed(2)},${y.toFixed(2)}`;
     }).join(' ');
 
+    const pathD = `M ${points}`;
+    const areaD = `${pathD} L ${width},${height} L 0,${height} Z`;
+
     return (
-      <svg width={width} height={height} className="overflow-visible opacity-50 group-hover:opacity-70 transition-opacity">
+      <svg width={width} height={height} className="overflow-visible">
         <defs>
           <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={color} stopOpacity={0.12} />
-            <stop offset="100%" stopColor={color} stopOpacity={0} />
+            <stop offset="0%" stopColor={color} stopOpacity={0.16} />
+            <stop offset="100%" stopColor={color} stopOpacity={0.02} />
           </linearGradient>
         </defs>
         <motion.path
-          d={`M ${points}`}
+          d={areaD}
+          fill={`url(#${gradientId})`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isHovered ? 0.9 : 0.6 }}
+          transition={{ duration: 0.3 }}
+        />
+        <motion.path
+          d={pathD}
           fill="none"
           stroke={color}
-          strokeWidth="2.5"
+          strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
-          transition={{ duration: 1.2, ease: "circOut" }}
-        />
-        <motion.path
-          d={`M ${points} L ${width},${height} L 0,${height} Z`}
-          fill={`url(#${gradientId})`}
-          stroke="none"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+          transition={{ duration: 1.0, ease: [0.22, 0.61, 0.36, 1] }}
+          style={{ opacity: isHovered ? 0.95 : 0.75 }}
         />
       </svg>
     );
@@ -339,44 +483,109 @@ const NextGenWatchlistCard = ({ item, onClick, isHighMove }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={{ opacity: 0, scale: 0.94 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5, delay: 0.1 * item.index, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -3, transition: { type: 'spring', stiffness: 300, damping: 15 } }}
+      transition={{ duration: 0.5, delay: 0.08 * item.index, ease: [0.22, 0.61, 0.36, 1] }}
+      whileHover={{ 
+        y: -3, 
+        scale: 1.012,
+        transition: { type: 'spring', stiffness: 300, damping: 28 }
+      }}
+      whileTap={{ scale: 0.988, transition: { duration: 0.10 } }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       onClick={() => onClick(item)}
-      className="group relative flex-shrink-0 w-64 h-40 rounded-3xl cursor-pointer overflow-hidden p-6"
+      className="group relative flex-shrink-0 w-64 rounded-[22px] cursor-pointer overflow-hidden"
       style={{
-        background: 'linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8))',
-        backdropFilter: 'blur(24px)',
-        WebkitBackdropFilter: 'blur(24px)',
-        border: '1px solid rgba(255, 255, 255, 0.08)'
+        padding: '22px',
+        minHeight: '156px',
+        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.028) 100%)',
+        backdropFilter: 'blur(32px) saturate(165%)',
+        WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.08)'
       }}
       aria-label={`${item.symbol}, price ${item.price}, change ${item.changePercent}% today.`}
     >
-      {/* Glow Pip */}
-      <div className={`absolute top-4 right-4 w-2 h-2 rounded-full ${getPipColor()} ${getPipGlow()} transition-all duration-300`} />
+      {/* Top specular */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '16%',
+        right: '16%',
+        height: '1.5px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
+        pointerEvents: 'none'
+      }} />
 
-      {/* Inner Glow on Hover */}
+      {/* Status pip */}
+      <div className="absolute top-5 right-5">
+        <motion.div
+          className="w-2 h-2 rounded-full"
+          style={{
+            background: isFlat ? '#A8B3C7' : (isPositive ? '#58E3A4' : '#FF6A7A'),
+            boxShadow: isFlat 
+              ? '0 0 7px rgba(168, 179, 199, 0.50)'
+              : (isPositive ? '0 0 7px rgba(88, 227, 164, 0.55)' : '0 0 7px rgba(255, 106, 122, 0.55)')
+          }}
+          animate={{
+            scale: [1, 1.18, 1],
+            opacity: [1, 0.78, 1]
+          }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute inset-0 w-2 h-2 rounded-full"
+          style={{ background: isFlat ? '#A8B3C7' : (isPositive ? '#58E3A4' : '#FF6A7A') }}
+          animate={{ 
+            scale: [1, 1.7, 1],
+            opacity: [0.55, 0, 0.55]
+          }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </div>
+
+      {/* Ambient bloom */}
       <motion.div
-        className={`absolute inset-0 rounded-3xl transition-shadow duration-300 ${isHovered ? getInnerGlow() : ''}`}
         style={{
-          boxShadow: isHovered ? `0 8px 32px rgba(0,0,0,0.2), ${getInnerGlow().replace('shadow-[inset_0_0_8px_2px]', 'inset 0 0 12px 3px')}` : '0 4px 16px rgba(0,0,0,0.2)'
+          position: 'absolute',
+          inset: 0,
+          background: isFlat 
+            ? 'radial-gradient(ellipse at 50% 30%, rgba(168, 179, 199, 0.04) 0%, transparent 70%)'
+            : (isPositive 
+              ? 'radial-gradient(ellipse at 50% 30%, rgba(88, 227, 164, 0.06) 0%, transparent 70%)'
+              : 'radial-gradient(ellipse at 50% 30%, rgba(255, 106, 122, 0.06) 0%, transparent 70%)'),
+          borderRadius: '22px',
+          pointerEvents: 'none',
+          opacity: isHovered ? 1 : 0.5
         }}
+        transition={{ duration: 0.3 }}
       />
 
       <div className="relative z-10 flex flex-col justify-between h-full">
         <div>
-          <div className="text-2xl font-bold text-white tracking-tight">{item.symbol}</div>
-          <div className="text-xl font-bold text-white mt-1">${parseFloat(item.price.replace('$', '')).toFixed(2)}</div>
+          <div className="text-2xl font-bold tracking-tight mb-1.5" style={{ 
+            color: 'rgba(255,255,255,0.96)',
+            letterSpacing: '-0.02em'
+          }}>
+            {item.symbol}
+          </div>
+          <div className="text-xl font-bold" style={{ 
+            color: 'rgba(255,255,255,0.90)',
+            fontVariantNumeric: 'tabular-nums'
+          }}>
+            ${parseFloat(item.price.replace('$', '')).toFixed(2)}
+          </div>
         </div>
 
         <div className="flex items-end justify-between">
-          <div className={`flex items-center text-base ${isFlat ? 'text-slate-400' : isPositive ? 'text-green-400' : 'text-red-400'} ${isHighMove ? 'font-bold' : 'font-medium'}`}>
-            {isPositive && !isFlat && <TrendingUp className="w-4 h-4 mr-1.5" strokeWidth={isHighMove ? 3 : 2.5} />}
-            {!isPositive && !isFlat && <TrendingDown className="w-4 h-4 mr-1.5" strokeWidth={isHighMove ? 3 : 2.5} />}
-            {isFlat && <span className="w-4 h-4 mr-1.5 font-bold">~</span>}
+          <div className={`flex items-center text-base ${isHighMove ? 'font-bold' : 'font-semibold'}`} style={{
+            color: isFlat ? '#A8B3C7' : (isPositive ? '#58E3A4' : '#FF6A7A'),
+            fontVariantNumeric: 'tabular-nums'
+          }}>
+            {isPositive && !isFlat && <TrendingUp className="w-4 h-4 mr-1.5" strokeWidth={2.2} />}
+            {!isPositive && !isFlat && <TrendingDown className="w-4 h-4 mr-1.5" strokeWidth={2.2} />}
+            {isFlat && <Activity className="w-4 h-4 mr-1.5" strokeWidth={2.2} />}
             {isPositive ? '+' : ''}{item.changePercent}%
           </div>
           <WatchlistSparkline data={item.sparkline} positive={isPositive} flat={isFlat} />
