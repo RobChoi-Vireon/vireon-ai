@@ -199,10 +199,11 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
           borderRadius: isExpanded ? '30px' : '50%'
         }}
         transition={{ 
-          duration: 0.42, 
-          ease: [0.22, 0.61, 0.36, 1],
-          height: { duration: 0.48, ease: [0.22, 0.61, 0.36, 1] },
-          borderRadius: { duration: 0.38, ease: [0.26, 0.11, 0.26, 1.0] }
+          duration: 0.65, 
+          ease: [0.16, 1, 0.3, 1],
+          height: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
+          borderRadius: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+          padding: { duration: 0.65, ease: [0.16, 1, 0.3, 1] }
         }}
         style={{
           top: '18px',
@@ -218,7 +219,7 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
           animate={{
             borderRadius: isExpanded ? '30px' : '50%'
           }}
-          transition={{ duration: 0.38, ease: [0.26, 0.11, 0.26, 1.0] }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           style={{
             background: 'linear-gradient(180deg, rgba(35, 40, 48, 0.78) 0%, rgba(28, 33, 40, 0.74) 100%)',
             opacity: smoothOpacity,
@@ -245,7 +246,7 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
           animate={{
             borderRadius: isExpanded ? '30px' : '50%'
           }}
-          transition={{ duration: 0.38, ease: [0.26, 0.11, 0.26, 1.0] }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
             opacity: 0.024,
@@ -259,7 +260,7 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
           animate={{
             borderRadius: isExpanded ? '30px' : '50%'
           }}
-          transition={{ duration: 0.38, ease: [0.26, 0.11, 0.26, 1.0] }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           style={{
             background: 'linear-gradient(180deg, rgba(0,0,0,0.05) 0%, transparent 35%, rgba(255,255,255,0.04) 100%)'
           }}
@@ -302,13 +303,12 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
                   height: '44px',
                   borderRadius: '50%'
                 }}
-                initial={{ opacity: 0, scale: 0.85, y: -4 }}
+                initial={{ opacity: 0, scale: 0.92, y: 0 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.85, y: -4 }}
+                exit={{ opacity: 0, scale: 0.92, y: 0 }}
                 transition={{ 
-                  duration: 0.32, 
-                  ease: [0.22, 0.61, 0.36, 1],
-                  opacity: { duration: 0.24 }
+                  duration: 0.5, 
+                  ease: [0.16, 1, 0.3, 1]
                 }}
                 whileHover={{ scale: 1.06 }}
                 whileTap={{ scale: 0.96 }}
@@ -322,13 +322,14 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
               <motion.div
                 key="expanded-content"
                 className="flex flex-col items-center gap-2 w-full"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 8 }}
+                initial={{ opacity: 0, y: 12, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 8, scale: 0.96 }}
                 transition={{ 
-                  duration: 0.38, 
-                  ease: [0.22, 0.61, 0.36, 1],
-                  opacity: { duration: 0.28, delay: 0.1 }
+                  duration: 0.6, 
+                  ease: [0.16, 1, 0.3, 1],
+                  opacity: { duration: 0.45, delay: 0.15 },
+                  scale: { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
                 }}
               >
                 {children}
