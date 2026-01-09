@@ -284,11 +284,11 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
               <motion.button
                 key="toggle-button"
                 onClick={() => setIsExpanded(true)}
-                className="relative rounded-[24px] flex items-center justify-center group"
+                className="relative flex items-center justify-center group"
                 style={{
                   width: '44px',
                   height: '44px',
-                  padding: '12px'
+                  borderRadius: '50%'
                 }}
                 initial={{ opacity: 0, scale: 0.85, y: -4 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
