@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, AlertCircle, Eye, GitMerge, Target, BrainCircuit, Users, CheckCircle, XCircle, ChevronLeft, ChevronRight, Sparkles, TrendingUp, Newspaper, Zap } from 'lucide-react';
@@ -241,11 +240,9 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
           initial="hidden"
           animate="visible"
           exit="hidden"
-          style={{ paddingTop: '80px' }} // Add top padding to avoid header
         >
           <motion.div
-            className="absolute left-0 right-0 bottom-0 bg-black/60"
-            style={{ top: '80px' }} // Start below header
+            className="absolute inset-0 bg-black/60"
             onClick={onClose}
           />
           
