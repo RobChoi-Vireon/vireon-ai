@@ -228,19 +228,38 @@ const enhancedSectorData = {
 
 const DriverCard = ({ driver, theme, index, isHighlighted }) => {
   const [showTooltip, setShowTooltip] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+  
+  const getImpactColor = (impact) => {
+    switch (impact) {
+      case 'Positive': return 'from-emerald-500/20 to-green-500/20 border-emerald-500/30 text-emerald-300';
+      case 'Negative': return 'from-red-500/20 to-rose-500/20 border-red-500/30 text-red-300';
+      default: return 'from-amber-500/20 to-yellow-500/20 border-amber-500/30 text-amber-300';
+    }
+  };
 
   const getImpactIcon = (impact) => {
-    const iconProps = { 
-      className: "w-4.5 h-4.5",
-      strokeWidth: 2.2,
-      style: { 
-        color: impact === 'Positive' ? '#58E3A4' : impact === 'Negative' ? '#FF6A7A' : '#FFB464',
-        filter: isHovered ? `drop-shadow(0 0 6px ${impact === 'Positive' ? 'rgba(88, 227, 164, 0.4)' : impact === 'Negative' ? 'rgba(255, 106, 122, 0.4)' : 'rgba(255, 180, 100, 0.4)'})` : 'none',
-        transition: 'filter 0.18s ease'
-      }
-    };
-    return impact === 'Positive' ? <TrendingUp {...iconProps} /> : impact === 'Negative' ? <TrendingDown {...iconProps} /> : <AlertTriangle {...iconProps} />;
+    const iconProps = { className: "w-5 h-5 mr-2" };
+    if (impact === 'Positive') {
+      return (
+        <motion.div
+          animate={{ rotate: [0, 5, 0], scale: [1, 1.05, 1] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <TrendingUp {...iconProps} />
+        </motion.div>
+      );
+    }
+    if (impact === 'Negative') {
+      return (
+        <motion.div
+          animate={{ rotate: [0, -5, 0], scale: [1, 1.05, 1] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <TrendingDown {...iconProps} />
+        </motion.div>
+      );
+    }
+    return <AlertTriangle {...iconProps} />;
   };
 
   return (
@@ -252,64 +271,52 @@ const DriverCard = ({ driver, theme, index, isHighlighted }) => {
         scale: 1
       }}
       transition={{ 
-        delay: index * 0.06, 
+        delay: index * 0.08, 
         duration: 0.4, 
         ease: [0.22, 0.61, 0.36, 1] 
       }}
       whileHover={{ 
         y: -3, 
-        scale: 1.015,
-        transition: { type: "spring", stiffness: 300, damping: 28 }
+        scale: 1.012,
+        transition: { duration: 0.18, ease: [0.26, 0.11, 0.26, 1.0] }
       }}
       whileTap={{ scale: 0.985, transition: { duration: 0.10 } }}
-      onHoverStart={() => { setShowTooltip(true); setIsHovered(true); }}
-      onHoverEnd={() => { setShowTooltip(false); setIsHovered(false); }}
-      className="group relative overflow-visible rounded-[22px] cursor-pointer"
+      className="group relative overflow-visible rounded-[20px] cursor-pointer"
       style={{
-        padding: '26px',
+        padding: '24px',
         background: isHighlighted
-          ? 'linear-gradient(180deg, rgba(110, 180, 255, 0.075) 0%, rgba(255, 255, 255, 0.035) 100%)'
-          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.032) 100%)',
-        backdropFilter: 'blur(36px) saturate(168%)',
-        WebkitBackdropFilter: 'blur(36px) saturate(168%)',
+          ? 'linear-gradient(180deg, rgba(110, 180, 255, 0.08) 0%, rgba(18, 22, 30, 0.92) 100%)'
+          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.028) 100%)',
+        backdropFilter: 'blur(32px) saturate(165%)',
+        WebkitBackdropFilter: 'blur(32px) saturate(165%)',
         border: isHighlighted 
-          ? '1px solid rgba(110, 180, 255, 0.16)' 
-          : '1px solid rgba(255,255,255,0.09)',
+          ? '1px solid rgba(110, 180, 255, 0.14)' 
+          : '1px solid rgba(255,255,255,0.08)',
         boxShadow: isHighlighted
-          ? 'inset 0 1.5px 0 rgba(255,255,255,0.12), inset 0 0 28px rgba(110, 180, 255, 0.05), 0 5px 18px rgba(0,0,0,0.12), 0 0 28px rgba(110, 180, 255, 0.06)'
-          : 'inset 0 1px 0 rgba(255,255,255,0.09), 0 4px 16px rgba(0,0,0,0.08)',
+          ? 'inset 0 1px 0 rgba(255,255,255,0.10), 0 4px 16px rgba(0,0,0,0.10), 0 0 24px rgba(110, 180, 255, 0.08)'
+          : 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.08)',
         transition: 'all 0.18s cubic-bezier(0.26, 0.11, 0.26, 1.0)'
       }}
+      onMouseEnter={() => setShowTooltip(true)}
+      onMouseLeave={() => setShowTooltip(false)}
     >
-      {/* Top specular — enhanced */}
+      {/* Top specular */}
       <div style={{
         position: 'absolute',
         top: 0,
-        left: '15%',
-        right: '15%',
-        height: '1.5px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-        filter: 'blur(0.5px)',
+        left: '16%',
+        right: '16%',
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
         pointerEvents: 'none'
       }} />
 
-      {/* Subtle halo on highlight */}
-      {isHighlighted && (
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'radial-gradient(ellipse at 50% 30%, rgba(110, 180, 255, 0.06) 0%, transparent 75%)',
-          borderRadius: '22px',
-          pointerEvents: 'none'
-        }} />
-      )}
-
       <div className="relative z-10">
-        <div className="flex items-start justify-between mb-6">
-          <div className="flex items-center gap-3">
+        <div className="flex items-start justify-between mb-5">
+          <div className="flex items-center gap-2.5">
             {getImpactIcon(driver.impact)}
-            <h4 className="font-bold text-[17px] leading-tight" style={{ 
-              color: 'rgba(255,255,255,0.96)',
+            <h4 className="font-bold text-[16px] leading-tight" style={{ 
+              color: 'rgba(255,255,255,0.94)',
               letterSpacing: '-0.01em'
             }}>
               {driver.driver}
@@ -317,82 +324,59 @@ const DriverCard = ({ driver, theme, index, isHighlighted }) => {
           </div>
 
           <motion.div
-            className="inline-flex items-center rounded-[15px] overflow-hidden"
+            className="inline-flex items-center rounded-[14px]"
             style={{
-              padding: '9px 16px',
+              padding: '8px 14px',
               fontSize: '12px',
               fontWeight: 700,
               background: driver.impact === 'Positive' 
-                ? 'linear-gradient(180deg, rgba(88, 227, 164, 0.14) 0%, rgba(88, 227, 164, 0.10) 100%)'
+                ? 'linear-gradient(180deg, rgba(88, 227, 164, 0.12) 0%, rgba(88, 227, 164, 0.08) 100%)'
                 : driver.impact === 'Negative'
-                ? 'linear-gradient(180deg, rgba(255, 106, 122, 0.14) 0%, rgba(255, 106, 122, 0.10) 100%)'
-                : 'linear-gradient(180deg, rgba(255, 180, 100, 0.14) 0%, rgba(255, 180, 100, 0.10) 100%)',
+                ? 'linear-gradient(180deg, rgba(255, 106, 122, 0.12) 0%, rgba(255, 106, 122, 0.08) 100%)'
+                : 'linear-gradient(180deg, rgba(255, 180, 100, 0.12) 0%, rgba(255, 180, 100, 0.08) 100%)',
               border: driver.impact === 'Positive'
-                ? '1px solid rgba(88, 227, 164, 0.24)'
+                ? '1px solid rgba(88, 227, 164, 0.20)'
                 : driver.impact === 'Negative'
-                ? '1px solid rgba(255, 106, 122, 0.24)'
-                : '1px solid rgba(255, 180, 100, 0.24)',
+                ? '1px solid rgba(255, 106, 122, 0.20)'
+                : '1px solid rgba(255, 180, 100, 0.20)',
               color: driver.impact === 'Positive' ? '#58E3A4' : driver.impact === 'Negative' ? '#FF6A7A' : '#FFB464',
-              letterSpacing: '0.02em',
-              boxShadow: driver.impact === 'Positive'
-                ? 'inset 0 0.5px 0 rgba(88, 227, 164, 0.12)'
-                : driver.impact === 'Negative'
-                ? 'inset 0 0.5px 0 rgba(255, 106, 122, 0.12)'
-                : 'inset 0 0.5px 0 rgba(255, 180, 100, 0.12)'
+              letterSpacing: '0.01em'
             }}
-            whileHover={{ scale: 1.05, transition: { duration: 0.16 } }}
-            whileTap={{ scale: 0.95, transition: { duration: 0.10 } }}
+            whileHover={{ scale: 1.04, transition: { duration: 0.16 } }}
+            whileTap={{ scale: 0.96, transition: { duration: 0.10 } }}
           >
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: '18%',
-              right: '18%',
-              height: '1px',
-              background: driver.impact === 'Positive'
-                ? 'linear-gradient(90deg, transparent, rgba(88, 227, 164, 0.20), transparent)'
-                : driver.impact === 'Negative'
-                ? 'linear-gradient(90deg, transparent, rgba(255, 106, 122, 0.20), transparent)'
-                : 'linear-gradient(90deg, transparent, rgba(255, 180, 100, 0.20), transparent)',
-              pointerEvents: 'none'
-            }} />
             {driver.impact}
           </motion.div>
         </div>
 
-        {/* Confidence Bar — refined */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-3" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.58)' }}>
-            <span className="font-semibold tracking-wide uppercase" style={{ letterSpacing: '0.04em' }}>Confidence</span>
+        {/* Confidence Bar */}
+        <div className="mb-5">
+          <div className="flex items-center justify-between mb-2.5" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.56)' }}>
+            <span className="font-medium">Confidence</span>
             <span className="font-bold" style={{ 
-              color: 'rgba(255,255,255,0.90)',
-              fontVariantNumeric: 'tabular-nums',
-              fontSize: '13px'
+              color: 'rgba(255,255,255,0.88)',
+              fontVariantNumeric: 'tabular-nums'
             }}>
               {driver.confidence}%
             </span>
           </div>
-          <div className="h-2.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+          <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
             <motion.div
-              className="h-full rounded-full relative overflow-hidden"
+              className="h-full rounded-full"
               style={{ 
                 background: 'linear-gradient(90deg, #4DA3FF 0%, #58E3A4 100%)',
-                boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.20)'
+                boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.18)'
               }}
               initial={{ width: 0 }}
               animate={{ width: `${driver.confidence}%` }}
-              transition={{ duration: 0.8, delay: index * 0.12, ease: [0.22, 0.61, 0.36, 1] }}
-            >
-              <div className="absolute inset-0" style={{
-                background: 'linear-gradient(90deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.18) 100%)'
-              }} />
-            </motion.div>
+              transition={{ duration: 0.8, delay: index * 0.15, ease: [0.22, 0.61, 0.36, 1] }}
+            />
           </div>
         </div>
 
         <p className="text-[14px] leading-relaxed" style={{ 
-          color: 'rgba(255,255,255,0.74)',
-          lineHeight: 1.6
+          color: 'rgba(255,255,255,0.72)',
+          transition: 'color 0.18s ease'
         }}>
           {driver.detail}
         </p>
@@ -437,7 +421,6 @@ const DriverCard = ({ driver, theme, index, isHighlighted }) => {
 
 const StatCard = ({ icon: Icon, label, value, sublabel, data = {}, isEmphasized = false }) => {
   const [animated, setAnimated] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setAnimated(true), 100);
@@ -451,21 +434,12 @@ const StatCard = ({ icon: Icon, label, value, sublabel, data = {}, isEmphasized 
         <div className="mt-4">
           <div className="h-3 bg-white/10 rounded-full overflow-hidden">
             <motion.div
-              className={`h-full rounded-full relative overflow-hidden`}
-              style={{ 
-                background: isInflow 
-                  ? 'linear-gradient(to right, #58E3A4, #73E6D2)' 
-                  : 'linear-gradient(to right, #FF6A7A, #F87171)',
-                boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.20)'
-              }}
+              className={`h-full rounded-full`}
+              style={{ background: isInflow ? 'linear-gradient(to right, #10B981, #34D399)' : 'linear-gradient(to right, #EF4444, #F87171)'}}
               initial={{ width: 0 }}
               animate={{ width: animated ? `${data.percentage}%` : 0 }}
-              transition={{ duration: 1, delay: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
-            >
-              <div className="absolute inset-0" style={{
-                background: 'linear-gradient(90deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.18) 100%)'
-              }} />
-            </motion.div>
+              transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
+            />
           </div>
         </div>
       );
@@ -638,75 +612,57 @@ const StatCard = ({ icon: Icon, label, value, sublabel, data = {}, isEmphasized 
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={{ opacity: 0, scale: 0.94 }}
       animate={{ opacity: 1, scale: 1 }}
       whileHover={{ 
         scale: 1.018, 
         y: -3,
-        transition: { type: "spring", stiffness: 300, damping: 28 }
+        transition: { duration: 0.18, ease: [0.26, 0.11, 0.26, 1.0] }
       }}
       whileTap={{ scale: 0.985, transition: { duration: 0.10 } }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
       transition={{ duration: 0.4, ease: [0.22, 0.61, 0.36, 1] }}
       className="relative overflow-hidden rounded-[22px]"
       style={{ 
-        padding: '26px',
+        padding: '24px',
         background: isEmphasized 
-          ? 'linear-gradient(180deg, rgba(110, 180, 255, 0.072) 0%, rgba(255, 255, 255, 0.038) 100%)'
-          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.032) 100%)',
-        backdropFilter: 'blur(36px) saturate(168%)',
-        WebkitBackdropFilter: 'blur(36px) saturate(168%)',
+          ? 'linear-gradient(180deg, rgba(110, 180, 255, 0.068) 0%, rgba(18, 22, 30, 0.92) 100%)'
+          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.028) 100%)',
+        backdropFilter: 'blur(32px) saturate(165%)',
+        WebkitBackdropFilter: 'blur(32px) saturate(165%)',
         border: isEmphasized 
-          ? '1px solid rgba(110, 180, 255, 0.14)' 
-          : '1px solid rgba(255,255,255,0.09)',
+          ? '1px solid rgba(110, 180, 255, 0.12)' 
+          : '1px solid rgba(255,255,255,0.08)',
         boxShadow: isEmphasized
-          ? 'inset 0 1.5px 0 rgba(255,255,255,0.12), inset 0 0 28px rgba(110, 180, 255, 0.04), 0 5px 18px rgba(0,0,0,0.12)'
-          : 'inset 0 1px 0 rgba(255,255,255,0.09), 0 4px 16px rgba(0,0,0,0.08)',
+          ? 'inset 0 1px 0 rgba(255,255,255,0.10), 0 4px 16px rgba(0,0,0,0.10)'
+          : 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.08)',
         transition: 'all 0.18s cubic-bezier(0.26, 0.11, 0.26, 1.0)'
       }}
     >
-      {/* Top specular — enhanced */}
+      {/* Top specular */}
       <div style={{
         position: 'absolute',
         top: 0,
-        left: '15%',
-        right: '15%',
-        height: '1.5px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-        filter: 'blur(0.5px)',
+        left: '16%',
+        right: '16%',
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
         pointerEvents: 'none'
       }} />
 
-      {/* Subtle halo on emphasis */}
-      {isEmphasized && (
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'radial-gradient(ellipse at 50% 30%, rgba(110, 180, 255, 0.05) 0%, transparent 75%)',
-          borderRadius: '22px',
-          pointerEvents: 'none'
-        }} />
-      )}
-
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex-grow">
-          <div className="flex items-center justify-between mb-6">
-            <h5 className="font-bold text-[13px] uppercase tracking-wider" style={{ 
-              color: 'rgba(255,255,255,0.65)',
-              letterSpacing: '0.06em'
+          <div className="flex items-center justify-between mb-5">
+            <h5 className="font-semibold text-[13px] uppercase tracking-wide" style={{ 
+              color: 'rgba(255,255,255,0.62)',
+              letterSpacing: '0.04em'
             }}>
               {label}
             </h5>
-            <Icon className="w-5 h-5" style={{ 
-              color: isHovered ? 'rgba(180, 190, 205, 1)' : 'rgba(155, 163, 176, 1)', 
-              strokeWidth: 2.0,
-              transition: 'color 0.18s ease'
-            }} />
+            <Icon className="w-5 h-5" style={{ color: 'rgba(155, 163, 176, 1)', strokeWidth: 2.0 }} />
           </div>
 
           <motion.div
-            className="mb-4"
+            className="mb-3"
             initial={{ opacity: 0 }}
             animate={{ opacity: animated ? 1 : 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
@@ -719,9 +675,9 @@ const StatCard = ({ icon: Icon, label, value, sublabel, data = {}, isEmphasized 
           {renderDataVisualization()}
 
           {sublabel && (
-            <p className="text-[13px] font-medium mt-5 leading-relaxed" style={{ 
-              color: 'rgba(255,255,255,0.62)',
-              lineHeight: 1.6
+            <p className="text-[13px] font-medium mt-4 text-center" style={{ 
+              color: 'rgba(255,255,255,0.58)',
+              lineHeight: 1.5
             }}>
               {sublabel}
             </p>
@@ -861,41 +817,23 @@ const EventCard = ({ event, index }) => {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center rounded-[15px] overflow-hidden" style={{
-              padding: '9px 16px',
+            <div className="flex items-center rounded-[14px]" style={{
+              padding: '8px 14px',
               fontSize: '12px',
               fontWeight: 700,
               background: event.impact === 'High' 
-                ? 'linear-gradient(180deg, rgba(255, 106, 122, 0.14) 0%, rgba(255, 106, 122, 0.10) 100%)'
+                ? 'linear-gradient(180deg, rgba(255, 106, 122, 0.12) 0%, rgba(255, 106, 122, 0.08) 100%)'
                 : event.impact === 'Medium'
-                ? 'linear-gradient(180deg, rgba(255, 180, 100, 0.14) 0%, rgba(255, 180, 100, 0.10) 100%)'
-                : 'linear-gradient(180deg, rgba(88, 227, 164, 0.14) 0%, rgba(88, 227, 164, 0.10) 100%)',
+                ? 'linear-gradient(180deg, rgba(255, 180, 100, 0.12) 0%, rgba(255, 180, 100, 0.08) 100%)'
+                : 'linear-gradient(180deg, rgba(88, 227, 164, 0.12) 0%, rgba(88, 227, 164, 0.08) 100%)',
               border: event.impact === 'High'
-                ? '1px solid rgba(255, 106, 122, 0.24)'
+                ? '1px solid rgba(255, 106, 122, 0.20)'
                 : event.impact === 'Medium'
-                ? '1px solid rgba(255, 180, 100, 0.24)'
-                : '1px solid rgba(88, 227, 164, 0.24)',
+                ? '1px solid rgba(255, 180, 100, 0.20)'
+                : '1px solid rgba(88, 227, 164, 0.20)',
               color: event.impact === 'High' ? '#FF6A7A' : event.impact === 'Medium' ? '#FFB464' : '#58E3A4',
-              letterSpacing: '0.02em',
-              boxShadow: event.impact === 'High'
-                ? 'inset 0 0.5px 0 rgba(255, 106, 122, 0.12)'
-                : event.impact === 'Medium'
-                ? 'inset 0 0.5px 0 rgba(255, 180, 100, 0.12)'
-                : 'inset 0 0.5px 0 rgba(88, 227, 164, 0.12)'
+              letterSpacing: '0.01em'
             }}>
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: '18%',
-                right: '18%',
-                height: '1px',
-                background: event.impact === 'High'
-                  ? 'linear-gradient(90deg, transparent, rgba(255, 106, 122, 0.20), transparent)'
-                  : event.impact === 'Medium'
-                  ? 'linear-gradient(90deg, transparent, rgba(255, 180, 100, 0.20), transparent)'
-                  : 'linear-gradient(90deg, transparent, rgba(88, 227, 164, 0.20), transparent)',
-                pointerEvents: 'none'
-              }} />
               {getImpactIcon(event.impact)}
               {event.impact}
             </div>
@@ -1156,34 +1094,34 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
     hidden: { opacity: 0, backdropFilter: 'blur(0px)' },
     visible: { 
       opacity: 1, 
-      backdropFilter: 'blur(24px)',
-      transition: { duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }
+      backdropFilter: 'blur(20px)',
+      transition: { duration: 0.28, ease: [0.22, 0.61, 0.36, 1] }
     },
     exit: { 
       opacity: 0, 
       backdropFilter: 'blur(0px)',
-      transition: { duration: 0.18, ease: [0.32, 0.08, 0.24, 1] }
+      transition: { duration: 0.24, ease: [0.32, 0.08, 0.24, 1] }
     }
   };
 
   const drawerVariants = {
-    hidden: { opacity: 0, scale: 0.96, y: 24 },
+    hidden: { opacity: 0, scale: 0.94, y: 30 },
     visible: { 
       opacity: 1, 
       scale: 1, 
       y: 0, 
       transition: { 
         type: "spring", 
-        stiffness: 340, 
-        damping: 32, 
-        mass: 0.85
+        stiffness: 320, 
+        damping: 35, 
+        mass: 0.9 
       } 
     },
     exit: { 
       opacity: 0, 
-      scale: 0.97, 
-      y: 16, 
-      transition: { duration: 0.20, ease: [0.32, 0.08, 0.24, 1] } 
+      scale: 0.96, 
+      y: 20, 
+      transition: { duration: 0.24, ease: [0.32, 0.08, 0.24, 1] } 
     }
   };
 
@@ -1214,47 +1152,44 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
             onClick={e => e.stopPropagation()}
             className="relative w-full max-w-7xl max-h-[92vh] flex flex-col overflow-hidden"
             style={{ 
-              background: 'linear-gradient(180deg, rgba(18, 22, 30, 0.92) 0%, rgba(12, 16, 22, 0.95) 100%)', 
-              backdropFilter: 'blur(52px) saturate(170%)', 
-              WebkitBackdropFilter: 'blur(52px) saturate(170%)', 
-              border: '1px solid rgba(255, 255, 255, 0.11)',
+              background: 'linear-gradient(180deg, rgba(18, 22, 30, 0.88) 0%, rgba(12, 16, 22, 0.92) 100%)', 
+              backdropFilter: 'blur(48px) saturate(175%)', 
+              WebkitBackdropFilter: 'blur(48px) saturate(175%)', 
+              border: '1px solid rgba(255, 255, 255, 0.10)',
               borderRadius: '32px',
               boxShadow: `
-                inset 0 2px 0 rgba(255,255,255,0.12),
-                inset 0 0 48px rgba(110, 180, 255, 0.03),
-                0 28px 72px rgba(0,0,0,0.50),
-                0 12px 32px rgba(0,0,0,0.30)
+                inset 0 1.5px 0 rgba(255,255,255,0.10),
+                0 24px 64px rgba(0,0,0,0.45)
               `
             }}
           >
-            {/* OS Horizon V4 Drawer Header — Enhanced Depth */}
+            {/* OS Horizon Header */}
             <div className="relative flex-shrink-0" 
                  style={{ 
-                   background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.025) 100%)',
-                   backdropFilter: 'blur(32px) saturate(168%)',
-                   WebkitBackdropFilter: 'blur(32px) saturate(168%)',
-                   borderBottom: '1px solid rgba(255,255,255,0.09)',
+                   background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.038) 0%, rgba(255, 255, 255, 0.022) 100%)',
+                   backdropFilter: 'blur(28px) saturate(165%)',
+                   WebkitBackdropFilter: 'blur(28px) saturate(165%)',
+                   borderBottom: '1px solid rgba(255,255,255,0.08)',
                    padding: '32px'
                  }}>
               
-              {/* Top specular — enhanced */}
+              {/* Top specular */}
               <div style={{
                 position: 'absolute',
                 top: 0,
-                left: '14%',
-                right: '14%',
-                height: '2px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
-                filter: 'blur(0.5px)',
+                left: '16%',
+                right: '16%',
+                height: '1.5px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
                 pointerEvents: 'none'
               }} />
 
-              {/* Enhanced ambient bloom */}
+              {/* Soft ambient bloom */}
               <div 
                 style={{
                   position: 'absolute',
                   inset: 0,
-                  background: 'radial-gradient(ellipse 70% 40% at 50% 0%, rgba(110, 180, 255, 0.06), transparent 75%)',
+                  background: 'radial-gradient(ellipse 65% 35% at 50% 0%, rgba(110, 180, 255, 0.05), transparent 70%)',
                   pointerEvents: 'none'
                 }}
               />
@@ -1313,47 +1248,35 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
                   onClick={handleClose}
                   whileHover={{ 
                     scale: 1.04,
-                    background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.088) 0%, rgba(255, 255, 255, 0.068) 100%)',
-                    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), 0 4px 14px rgba(0,0,0,0.10)',
+                    background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.078) 0%, rgba(255, 255, 255, 0.058) 100%)',
                     transition: { duration: 0.16 }
                   }}
                   whileTap={{ scale: 0.96, transition: { duration: 0.10 } }}
-                  className="rounded-[20px] overflow-hidden"
+                  className="rounded-[20px]"
                   style={{ 
                     padding: '12px',
                     width: '44px',
                     height: '44px',
-                    background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.068) 0%, rgba(255, 255, 255, 0.048) 100%)',
-                    backdropFilter: 'blur(16px) saturate(165%)',
-                    WebkitBackdropFilter: 'blur(16px) saturate(165%)',
-                    border: '1px solid rgba(255, 255, 255, 0.10)',
-                    boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.10), 0 2px 8px rgba(0,0,0,0.08)'
+                    background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.038) 100%)',
+                    backdropFilter: 'blur(12px)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)'
                   }}
                   aria-label="Close drawer"
                 >
-                  <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: '20%',
-                    right: '20%',
-                    height: '1px',
-                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-                    pointerEvents: 'none'
-                  }} />
-                  <X className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.82)' }} strokeWidth={2} />
+                  <X className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.72)' }} />
                 </motion.button>
               </div>
             </div>
             
-            {/* OS Horizon V4 Tabs — Enhanced Materials */}
-            <div className="px-8 pt-4 pb-5 flex-shrink-0"
+            {/* OS Horizon Tabs */}
+            <div className="px-8 pt-3 pb-5 flex-shrink-0"
                  style={{ 
-                   background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.032) 0%, rgba(255, 255, 255, 0.020) 100%)',
-                   backdropFilter: 'blur(28px) saturate(168%)',
-                   WebkitBackdropFilter: 'blur(28px) saturate(168%)',
-                   borderBottom: '1px solid rgba(255,255,255,0.07)'
+                   background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.028) 0%, rgba(255, 255, 255, 0.018) 100%)',
+                   backdropFilter: 'blur(24px) saturate(165%)',
+                   WebkitBackdropFilter: 'blur(24px) saturate(165%)',
+                   borderBottom: '1px solid rgba(255,255,255,0.06)'
                  }}>
-              <div className="flex gap-2.5">
+              <div className="flex gap-2">
                 {tabs.map((tab) => {
                   const Icon = tab.icon;
                   const isActive = activeTab === tab.id;
@@ -1363,49 +1286,38 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
                       onClick={() => setActiveTab(tab.id)}
                       className="relative flex items-center gap-2.5 rounded-[18px] overflow-hidden"
                       style={{
-                        padding: '12px 20px',
+                        padding: '11px 18px',
                         background: isActive 
-                          ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.092) 0%, rgba(255, 255, 255, 0.072) 100%)'
+                          ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.082) 0%, rgba(255, 255, 255, 0.062) 100%)'
                           : 'transparent',
-                        border: isActive ? '1px solid rgba(255,255,255,0.12)' : '1px solid transparent',
+                        border: isActive ? '1px solid rgba(255,255,255,0.10)' : '1px solid transparent',
                         boxShadow: isActive 
-                          ? 'inset 0 1.5px 0 rgba(255,255,255,0.10), inset 0 0 22px rgba(110, 180, 255, 0.04), 0 3px 10px rgba(0,0,0,0.08)'
+                          ? 'inset 0 1px 0 rgba(255,255,255,0.08), 0 2px 8px rgba(0,0,0,0.06)'
                           : 'none'
                       }}
                       whileHover={!isActive ? {
-                        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.038) 100%)',
+                        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.032) 100%)',
                         transition: { duration: 0.16 }
                       } : {}}
                       whileTap={{ scale: 0.97, transition: { duration: 0.10 } }}
                     >
                       {isActive && (
-                        <>
-                          <div style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: '15%',
-                            right: '15%',
-                            height: '1.5px',
-                            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
-                            filter: 'blur(0.5px)',
-                            pointerEvents: 'none'
-                          }} />
-                          <div style={{
-                            position: 'absolute',
-                            inset: 0,
-                            background: 'radial-gradient(ellipse at 50% 30%, rgba(110, 180, 255, 0.05) 0%, transparent 70%)',
-                            borderRadius: '18px',
-                            pointerEvents: 'none'
-                          }} />
-                        </>
+                        <div style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: '16%',
+                          right: '16%',
+                          height: '1px',
+                          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
+                          pointerEvents: 'none'
+                        }} />
                       )}
                       <Icon className="w-4 h-4" style={{ 
-                        color: isActive ? 'rgba(215, 235, 255, 1)' : 'rgba(155, 163, 176, 1)',
-                        strokeWidth: 2.0,
-                        filter: isActive ? 'drop-shadow(0 0 6px rgba(110, 180, 255, 0.30))' : 'none'
+                        color: isActive ? 'rgba(215, 227, 255, 1)' : 'rgba(155, 163, 176, 1)',
+                        strokeWidth: 2.0
                       }} />
                       <span className="text-[14px] font-semibold" style={{ 
-                        color: isActive ? 'rgba(255,255,255,0.97)' : 'rgba(255,255,255,0.62)',
+                        color: isActive ? 'rgba(255,255,255,0.96)' : 'rgba(255,255,255,0.62)',
                         letterSpacing: '-0.005em'
                       }}>
                         {tab.label}
