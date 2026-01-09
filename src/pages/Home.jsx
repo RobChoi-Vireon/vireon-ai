@@ -618,13 +618,13 @@ export default function Home() {
           <ModuleWrapper key={moduleId} title="Tracked Assets" {...moduleProps}>
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center space-x-3">
-                <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                <div className="w-2 h-2 rounded-full bg-blue-400" style={{ opacity: 0.9 }} />
                 <span className="text-sm font-medium text-gray-400">{watchlistData.length} assets tracked</span>
               </div>
               <motion.button
                 className="flex items-center space-x-2 px-6 py-3 rounded-2xl text-sm font-semibold text-blue-400 border border-blue-500/20 hover:bg-blue-500/10 backdrop-blur-sm transition-all duration-300"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.018, transition: { duration: 0.18, ease: [0.26, 0.11, 0.26, 1.0] } }}
+                whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
               >
                 <span>View All</span>
                 <ArrowUpRight className="w-4 h-4" strokeWidth={2} />
@@ -781,7 +781,7 @@ export default function Home() {
                               }
                             }
                           }}
-                          whileHover={!isReorderMode ? { y: -2 } : {}}
+                          whileHover={!isReorderMode ? { y: -2, transition: { duration: 0.18, ease: [0.26, 0.11, 0.26, 1.0] } } : {}}
                         >
                           {moduleComponent}
                         </motion.div>
