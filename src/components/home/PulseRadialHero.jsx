@@ -9,6 +9,91 @@ const getScoreColor = (score) => {
   return { primary: '#FF6A7A', secondary: '#FF8A97', glow: 'rgba(255, 106, 122, 0.25)' };
 };
 
+const TrajectorySparkline = ({ data, color }) => {
+  const [pathD, setPathD] = useState('');
+  const [endPoint, setEndPoint] = useState({ x: 0, y: 0 });
+  const prevPathRef = useRef('');
+
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const smoothX = useSpring(x, { stiffness: 180, damping: 25, mass: 0.8 });
+  const smoothY = useSpring(y, { stiffness: 180, damping: 25, mass: 0.8 });
+
+  useEffect(() => {
+    const width = 240;
+    const height = 60;
+    const padding = 4;
+    
+    const min = Math.min(...data);
+    const max = Math.max(...data);
+    const range = max - min || 1;
+
+    const points = data.map((value, i) => {
+      const xPos = (i / (data.length - 1)) * width;
+      const yPos = (height - padding) - ((value - min) / range) * (height - padding * 2);
+      return { x: xPos, y: yPos };
+    });
+
+    const newPathD = points.map((point, i) => 
+      `${i === 0 ? 'M' : 'L'} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`
+    ).join(' ');
+
+    const lastPoint = points[points.length - 1];
+
+    if (prevPathRef.current !== newPathD) {
+      setPathD(newPathD);
+      x.set(lastPoint.x);
+      y.set(lastPoint.y);
+      prevPathRef.current = newPathD;
+    }
+  }, [data, x, y]);
+
+  return (
+    <svg width="240" height="60" className="overflow-visible">
+      <defs>
+        <linearGradient id="trajectoryFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.12" />
+          <stop offset="100%" stopColor={color} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+
+      <motion.path
+        d={`${pathD} L 240 60 L 0 60 Z`}
+        fill="url(#trajectoryFill)"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, ease: [0.26, 0.11, 0.26, 1.0] }}
+      />
+
+      <motion.path
+        d={pathD}
+        fill="none"
+        stroke={color}
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        opacity="0.85"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 1.2, ease: [0.26, 0.11, 0.26, 1.0] }}
+      />
+
+      <motion.circle
+        cx={smoothX}
+        cy={smoothY}
+        r="4"
+        fill={color}
+        style={{
+          filter: `drop-shadow(0 0 6px ${color}88)`
+        }}
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: "spring", stiffness: 200, damping: 20, mass: 0.8 }}
+      />
+    </svg>
+  );
+};
+
 export default function PulseRadialHero({ score, trend, insight, sectorBreakdown, trendIndicator, sparklineData }) {
   const [animatedScore, setAnimatedScore] = useState(0);
   const colors = getScoreColor(score);
@@ -207,30 +292,7 @@ export default function PulseRadialHero({ score, trend, insight, sectorBreakdown
           {/* Mini trend graph */}
           {sparklineData && sparklineData.length > 1 && (
             <div className="pt-4">
-              <svg width="240" height="60" className="overflow-visible">
-                <path
-                  d={sparklineData.map((value, i) => {
-                    const x = (i / (sparklineData.length - 1)) * 240;
-                    const min = Math.min(...sparklineData);
-                    const max = Math.max(...sparklineData);
-                    const range = max - min || 1;
-                    const y = 50 - ((value - min) / range) * 40;
-                    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
-                  }).join(' ')}
-                  fill="none"
-                  stroke={colors.primary}
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  opacity="0.7"
-                />
-                <circle
-                  cx={240}
-                  cy={50 - ((sparklineData[sparklineData.length - 1] - Math.min(...sparklineData)) / (Math.max(...sparklineData) - Math.min(...sparklineData) || 1)) * 40}
-                  r="3.5"
-                  fill={colors.primary}
-                  opacity="0.9"
-                />
-              </svg>
+              <TrajectorySparkline data={sparklineData} color={colors.primary} />
               <div className="text-[11px] font-semibold uppercase tracking-wider mt-2" style={{ color: `${colors.primary}99` }}>
                 7-Day Trajectory
               </div>
