@@ -36,7 +36,7 @@ const MiniSparkline = ({ data, currentValue }) => {
 
   const minValue = Math.min(...data);
   const maxValue = Math.max(...data);
-  const range = maxValue - minValue || 1; // Avoid division by zero
+  const range = maxValue - minValue || 1;
 
   const points = data.map((value, index) => {
     const x = padding + (index / (data.length - 1)) * (width - padding * 2);
@@ -47,92 +47,36 @@ const MiniSparkline = ({ data, currentValue }) => {
   const pathD = `M${points.split(' ').map(point => point).join(' L')}`;
 
   return (
-    <motion.div
-      className="relative"
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.8, delay: 0.4 }}
-    >
+    <div className="relative">
       <svg width={width} height={height} className="overflow-visible">
-        <defs>
-          <linearGradient id="sparklineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style={{ stopColor: '#4ADE80', stopOpacity: 0.8 }} />
-            <stop offset="50%" style={{ stopColor: '#22C55E', stopOpacity: 0.9 }} />
-            <stop offset="100%" style={{ stopColor: '#16A34A', stopOpacity: 1 }} />
-          </linearGradient>
-          <filter id="sparklineGlow">
-            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-        </defs>
-
-        {/* Glow effect */}
-        <motion.path
+        <path
           d={pathD}
           fill="none"
-          stroke="url(#sparklineGradient)"
-          strokeWidth="3"
-          filter="url(#sparklineGlow)"
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={{ pathLength: 1, opacity: 0.6 }}
-          transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
-        />
-
-        {/* Main line */}
-        <motion.path
-          d={pathD}
-          fill="none"
-          stroke="url(#sparklineGradient)"
+          stroke="#58E3A4"
           strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 1.2, ease: "easeOut", delay: 0.3 }}
+          opacity="0.9"
         />
-
-        {/* End point indicator */}
-        <motion.circle
+        <circle
           cx={padding + ((data.length - 1) / (data.length - 1)) * (width - padding * 2)}
           cy={height - padding - ((currentValue - minValue) / range) * (height - padding * 2)}
           r="3"
-          fill="#22C55E"
-          stroke="#4ADE80"
-          strokeWidth="1"
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.4, delay: 1.5 }}
-        >
-          <animate
-            attributeName="r"
-            values="3;4;3"
-            dur="2s"
-            repeatCount="indefinite"
-          />
-        </motion.circle>
+          fill="#58E3A4"
+          opacity="0.9"
+        />
       </svg>
-
-      {/* Subtle label */}
-      <motion.div
-        className="absolute -bottom-6 right-0 text-xs font-medium text-green-300/60"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.8 }}
-      >
+      <div className="absolute -bottom-6 right-0 text-xs font-medium" style={{ color: 'rgba(88, 227, 164, 0.6)' }}>
         7-Day Trend
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 };
 
 
-// Enhanced Luxury Market Metrics with Real-time Animations
+// Clean Market Metrics — OS Horizon
 const LuxuryMetricCard = ({ item, index, isEnabled, openMiniSheet }) => {
   const [priceKey, setPriceKey] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     setPriceKey(prev => prev + 1);
@@ -140,20 +84,18 @@ const LuxuryMetricCard = ({ item, index, isEnabled, openMiniSheet }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40, scale: 0.9 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{
-        duration: 0.6,
-        delay: 0.1 + index * 0.08,
-        ease: [0.23, 1, 0.32, 1]
+        duration: 0.4,
+        delay: index * 0.05,
+        ease: [0.26, 0.11, 0.26, 1.0]
       }}
       whileHover={{
-        scale: 1.05,
-        y: -8,
-        transition: { duration: 0.2, ease: "easeOut" }
+        scale: 1.018,
+        y: -2,
+        transition: { duration: 0.18, ease: [0.26, 0.11, 0.26, 1.0] }
       }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
       onClick={(e) => {
         if (isEnabled('labs_modules')) {
           e.stopPropagation();
@@ -161,105 +103,50 @@ const LuxuryMetricCard = ({ item, index, isEnabled, openMiniSheet }) => {
         }
       }}
       className="group relative overflow-hidden rounded-3xl cursor-pointer"
+      style={{
+        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.038) 0%, rgba(255, 255, 255, 0.022) 100%)',
+        backdropFilter: 'blur(28px) saturate(165%)',
+        WebkitBackdropFilter: 'blur(28px) saturate(165%)',
+        border: '1px solid rgba(255,255,255,0.06)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 16px rgba(0,0,0,0.08)'
+      }}
     >
-      {/* Premium Background with Multiple Gradients */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#1A1D29]/95 via-[#12141C]/90 to-[#0A0B0F]/95 backdrop-blur-2xl" />
-
-      {/* Luxury Border Effect */}
-      <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-20 group-hover:opacity-40 transition-opacity duration-500" />
-      <div className="absolute inset-[1px] rounded-3xl bg-gradient-to-br from-[#1A1D29] to-[#12141C]" />
-
-      {/* Dynamic Glow Effect */}
-      <motion.div
-        className="absolute inset-0 rounded-3xl"
-        animate={{
-          boxShadow: isHovered
-            ? `0 0 60px ${item.positive ? 'rgba(88, 227, 164, 0.4)' : 'rgba(255, 106, 122, 0.4)'}`
-            : '0 0 20px rgba(0, 0, 0, 0.3)'
-        }}
-        transition={{ duration: 0.3 }}
-      />
-
-      {/* Ambient Light Animation */}
-      <motion.div
-        className="absolute inset-0 rounded-3xl bg-gradient-to-r from-transparent via-white/5 to-transparent"
-        animate={{
-          x: isHovered ? ['-100%', '100%'] : '-100%',
-          opacity: isHovered ? [0, 0.6, 0] : 0
-        }}
-        transition={{
-          duration: isHovered ? 1.5 : 0,
-          ease: "easeInOut",
-          repeat: isHovered ? Infinity : 0,
-          repeatDelay: 2
-        }}
-      />
-
       <div className="relative z-10 p-6 lg:p-8">
-        <div className="flex items-center justify-between mb-4">
-          {/* Symbol with Luxury Typography */}
-          <motion.div
-            className="text-xs font-black tracking-[0.2em] uppercase text-gray-400 group-hover:text-white transition-colors duration-300"
-            animate={{ letterSpacing: isHovered ? '0.3em' : '0.2em' }}
-            transition={{ duration: 0.3 }}
-          >
+        <div className="flex items-center justify-between mb-3">
+          <div className="text-xs font-bold tracking-[0.15em] uppercase" style={{ color: 'rgba(255,255,255,0.48)' }}>
             {item.symbol}
-          </motion.div>
-
-          {/* Sophisticated Status Indicator */}
-          <div className="relative">
-            <motion.div
-              className={`w-3 h-3 rounded-full ${item.positive ? 'bg-green-400' : 'bg-red-400'}`}
-              animate={{
-                scale: [1, 1.3, 1],
-                opacity: [1, 0.7, 1]
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-            <div className={`absolute inset-0 w-3 h-3 rounded-full ${item.positive ? 'bg-green-400' : 'bg-red-400'} opacity-30 animate-ping`} />
           </div>
+          <div className={`w-2 h-2 rounded-full ${item.positive ? 'bg-green-400' : 'bg-red-400'}`} style={{ opacity: 0.9 }} />
         </div>
 
-        {/* Price with Stunning Animation */}
         <motion.div
           key={priceKey}
-          initial={{ opacity: 0, scale: 0.8, y: 10 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-          className="text-3xl lg:text-4xl font-black tracking-[-0.03em] text-white mb-3 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 transition-all duration-300"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, ease: [0.26, 0.11, 0.26, 1.0] }}
+          className="text-3xl lg:text-4xl font-bold tracking-[-0.02em] mb-3"
+          style={{ color: 'rgba(255,255,255,0.96)' }}
         >
           {item.price}
         </motion.div>
 
-        {/* Change Indicator with Premium Styling */}
-        <motion.div
-          className={`
-            inline-flex items-center space-x-2 px-4 py-2 rounded-2xl font-bold text-sm
-            ${item.positive
-              ? 'bg-gradient-to-r from-green-500/30 to-emerald-500/30 border border-green-500/40 text-green-300'
-              : 'bg-gradient-to-r from-red-500/30 to-pink-500/30 border border-red-500/40 text-red-300'
-            }
-            shadow-2xl backdrop-blur-sm
-          `}
-          whileHover={{ scale: 1.05 }}
-          animate={{
-            boxShadow: item.positive
-              ? ['0 0 20px rgba(88, 227, 164, 0.3)', '0 0 30px rgba(88, 227, 164, 0.5)', '0 0 20px rgba(88, 227, 164, 0.3)']
-              : ['0 0 20px rgba(255, 106, 122, 0.3)', '0 0 30px rgba(255, 106, 122, 0.5)', '0 0 20px rgba(255, 106, 122, 0.3)']
+        <div
+          className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl text-sm font-semibold"
+          style={{
+            background: item.positive
+              ? 'linear-gradient(180deg, rgba(88, 227, 164, 0.12) 0%, rgba(88, 227, 164, 0.08) 100%)'
+              : 'linear-gradient(180deg, rgba(255, 106, 122, 0.12) 0%, rgba(255, 106, 122, 0.08) 100%)',
+            border: item.positive ? '1px solid rgba(88, 227, 164, 0.18)' : '1px solid rgba(255, 106, 122, 0.18)',
+            color: item.positive ? '#58E3A4' : '#FF6A7A'
           }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
         >
           {item.positive ? (
-            <TrendingUp className="w-4 h-4" strokeWidth={2.5} />
+            <TrendingUp className="w-3.5 h-3.5" strokeWidth={2.5} />
           ) : (
-            <TrendingDown className="w-4 h-4" strokeWidth={2.5} />
+            <TrendingDown className="w-3.5 h-3.5" strokeWidth={2.5} />
           )}
           <span>{item.change}</span>
-        </motion.div>
+        </div>
       </div>
     </motion.div>
   );
@@ -307,31 +194,15 @@ const NextGenWatchlistCard = ({ item, onClick, isHighMove }) => {
     }).join(' ');
 
     return (
-      <svg width={width} height={height} className="overflow-visible opacity-50 group-hover:opacity-70 transition-opacity">
-        <defs>
-          <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={color} stopOpacity={0.12} />
-            <stop offset="100%" stopColor={color} stopOpacity={0} />
-          </linearGradient>
-        </defs>
-        <motion.path
+      <svg width={width} height={height} className="overflow-visible" style={{ opacity: 0.6 }}>
+        <path
           d={`M ${points}`}
           fill="none"
           stroke={color}
-          strokeWidth="2.5"
+          strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 1.2, ease: "circOut" }}
-        />
-        <motion.path
-          d={`M ${points} L ${width},${height} L 0,${height} Z`}
-          fill={`url(#${gradientId})`}
-          stroke="none"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+          opacity="0.9"
         />
       </svg>
     );
@@ -339,32 +210,25 @@ const NextGenWatchlistCard = ({ item, onClick, isHighMove }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5, delay: 0.1 * item.index, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -3, transition: { type: 'spring', stiffness: 300, damping: 15 } }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3, delay: 0.05 * item.index, ease: [0.26, 0.11, 0.26, 1.0] }}
+      whileHover={{ y: -2, transition: { duration: 0.18, ease: [0.26, 0.11, 0.26, 1.0] } }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       onClick={() => onClick(item)}
-      className="group relative flex-shrink-0 w-64 h-40 rounded-3xl cursor-pointer overflow-hidden p-6"
+      className="group relative flex-shrink-0 w-64 h-40 rounded-3xl cursor-pointer overflow-hidden"
       style={{
-        background: 'linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8))',
-        backdropFilter: 'blur(24px)',
-        WebkitBackdropFilter: 'blur(24px)',
-        border: '1px solid rgba(255, 255, 255, 0.08)'
+        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.038) 0%, rgba(255, 255, 255, 0.022) 100%)',
+        backdropFilter: 'blur(28px) saturate(165%)',
+        WebkitBackdropFilter: 'blur(28px) saturate(165%)',
+        border: '1px solid rgba(255, 255, 255, 0.06)',
+        padding: '32px',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 16px rgba(0,0,0,0.08)'
       }}
       aria-label={`${item.symbol}, price ${item.price}, change ${item.changePercent}% today.`}
     >
-      {/* Glow Pip */}
-      <div className={`absolute top-4 right-4 w-2 h-2 rounded-full ${getPipColor()} ${getPipGlow()} transition-all duration-300`} />
-
-      {/* Inner Glow on Hover */}
-      <motion.div
-        className={`absolute inset-0 rounded-3xl transition-shadow duration-300 ${isHovered ? getInnerGlow() : ''}`}
-        style={{
-          boxShadow: isHovered ? `0 8px 32px rgba(0,0,0,0.2), ${getInnerGlow().replace('shadow-[inset_0_0_8px_2px]', 'inset 0 0 12px 3px')}` : '0 4px 16px rgba(0,0,0,0.2)'
-        }}
-      />
+      <div className={`absolute top-4 right-4 w-2 h-2 rounded-full ${getPipColor()}`} style={{ opacity: 0.9 }} />
 
       <div className="relative z-10 flex flex-col justify-between h-full">
         <div>
@@ -588,175 +452,109 @@ export default function Home() {
             <motion.div
               className="relative overflow-hidden rounded-[28px]"
               style={{
-                padding: '36px 40px',
-                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.028) 100%)',
-                backdropFilter: 'blur(32px) saturate(165%)',
-                WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-                border: '1px solid rgba(255,255,255,0.08)',
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 32px rgba(0,0,0,0.12)'
+                padding: '48px 56px',
+                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.038) 0%, rgba(255, 255, 255, 0.022) 100%)',
+                backdropFilter: 'blur(28px) saturate(165%)',
+                WebkitBackdropFilter: 'blur(28px) saturate(165%)',
+                border: '1px solid rgba(255,255,255,0.06)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 32px rgba(0,0,0,0.08)'
               }}
-              initial={{ opacity: 0, scale: 0.97 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, ease: [0.22, 0.61, 0.36, 1] }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, ease: [0.26, 0.11, 0.26, 1.0] }}
             >
-              {/* Top specular highlight */}
               <div style={{
                 position: 'absolute',
                 top: 0,
                 left: '15%',
                 right: '15%',
-                height: '1.5px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
+                height: '1px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)',
                 pointerEvents: 'none'
               }} />
 
-              {/* Subtle ambient bloom */}
-              <motion.div
+              <div
                 style={{
                   position: 'absolute',
-                  top: '10%',
-                  right: '8%',
-                  width: '280px',
-                  height: '280px',
+                  top: '12%',
+                  right: '10%',
+                  width: '300px',
+                  height: '300px',
                   borderRadius: '50%',
-                  background: 'radial-gradient(circle, rgba(88, 227, 164, 0.08) 0%, transparent 70%)',
-                  filter: 'blur(48px)',
-                  pointerEvents: 'none'
+                  background: 'radial-gradient(circle, rgba(88, 227, 164, 0.03) 0%, transparent 70%)',
+                  filter: 'blur(60px)',
+                  pointerEvents: 'none',
+                  opacity: 0.5
                 }}
-                animate={{
-                  scale: [1, 1.15, 1],
-                  opacity: [0.4, 0.6, 0.4]
-                }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
               />
 
-              <motion.div
+              <div
                 style={{
                   position: 'absolute',
                   bottom: '15%',
-                  left: '5%',
-                  width: '240px',
-                  height: '240px',
+                  left: '8%',
+                  width: '260px',
+                  height: '260px',
                   borderRadius: '50%',
-                  background: 'radial-gradient(circle, rgba(77, 143, 251, 0.06) 0%, transparent 70%)',
-                  filter: 'blur(52px)',
-                  pointerEvents: 'none'
+                  background: 'radial-gradient(circle, rgba(77, 143, 251, 0.025) 0%, transparent 70%)',
+                  filter: 'blur(64px)',
+                  pointerEvents: 'none',
+                  opacity: 0.5
                 }}
-                animate={{
-                  scale: [1.1, 1, 1.1],
-                  opacity: [0.3, 0.5, 0.3]
-                }}
-                transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
               />
 
               <div className="relative z-10">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10">
-                  <div className="flex-1 space-y-7">
-                    {/* OS Horizon Score Display */}
-                    <div className="flex flex-col sm:flex-row sm:items-baseline gap-6">
-                      <div className="relative flex items-baseline">
-                        <motion.div
-                          key={Math.round(animatedScore)}
-                          initial={{ opacity: 0, scale: 0.88 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ duration: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
-                          className="relative flex items-baseline"
-                        >
-                          <div className="text-7xl sm:text-8xl lg:text-9xl font-bold tracking-[-0.04em]" style={{
+                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-14">
+                  <div className="flex-1 space-y-8">
+                    <div className="space-y-6">
+                      <div className="flex flex-col sm:flex-row sm:items-baseline gap-5">
+                        <div className="flex items-baseline gap-3">
+                          <div className="text-7xl lg:text-8xl font-bold tracking-[-0.03em]" style={{
                             color: 'rgba(255,255,255,0.98)',
-                            fontVariantNumeric: 'tabular-nums',
-                            textShadow: '0 2px 12px rgba(0,0,0,0.15)'
+                            fontVariantNumeric: 'tabular-nums'
                           }}>
                             {Math.round(animatedScore)}
                           </div>
-
-                          <motion.div
-                            className="flex items-center ml-3 -mt-6"
-                            initial={{ opacity: 0, scale: 0.85 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.3, delay: 0.4, ease: [0.22, 0.61, 0.36, 1] }}
-                          >
-                            <span className="text-xl font-bold" style={{ 
-                              color: trendIndicator.color.includes('green') ? '#58E3A4' : trendIndicator.color.includes('red') ? '#FF6A7A' : 'rgba(168, 179, 199, 1)',
-                              fontVariantNumeric: 'tabular-nums'
-                            }}>
-                              ({trendIndicator.label} {trendIndicator.symbol})
-                            </span>
-                          </motion.div>
-                        </motion.div>
+                          <div className="text-2xl font-semibold -mb-2" style={{ 
+                            color: trendIndicator.color.includes('green') ? '#58E3A4' : trendIndicator.color.includes('red') ? '#FF6A7A' : 'rgba(168, 179, 199, 1)',
+                            fontVariantNumeric: 'tabular-nums'
+                          }}>
+                            {trendIndicator.label} {trendIndicator.symbol}
+                          </div>
+                        </div>
                       </div>
 
-                      {/* OS Horizon Sentiment Pill */}
-                      <motion.div
-                        key={pulseData.trend}
-                        initial={{ opacity: 0, scale: 0.92 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.4, delay: 0.2, ease: [0.22, 0.61, 0.36, 1] }}
-                        className="relative group"
-                        onMouseEnter={() => setShowTooltip(true)}
-                        onMouseLeave={() => setShowTooltip(false)}
-                      >
-                        <div className="flex items-center gap-2.5 rounded-[18px]" style={{
-                          padding: '10px 18px',
-                          background: 'linear-gradient(180deg, rgba(88, 227, 164, 0.14) 0%, rgba(88, 227, 164, 0.10) 100%)',
-                          backdropFilter: 'blur(12px)',
-                          border: '1px solid rgba(88, 227, 164, 0.24)',
-                          boxShadow: 'inset 0 0.5px 0 rgba(88, 227, 164, 0.12)'
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-3 rounded-[18px]" style={{
+                          padding: '14px 24px',
+                          background: 'linear-gradient(180deg, rgba(88, 227, 164, 0.12) 0%, rgba(88, 227, 164, 0.08) 100%)',
+                          border: '1px solid rgba(88, 227, 164, 0.18)',
+                          width: 'fit-content'
                         }}>
-                          <TrendingUp className="w-4 h-4" style={{ color: '#58E3A4' }} strokeWidth={2.2} />
-                          <span className="text-[14px] font-bold tracking-tight" style={{ 
-                            color: '#58E3A4',
-                            letterSpacing: '0.01em'
-                          }}>
+                          <TrendingUp className="w-5 h-5" style={{ color: '#58E3A4' }} strokeWidth={2.2} />
+                          <span className="text-[16px] font-bold" style={{ color: '#58E3A4' }}>
                             {pulseData.trend}
                           </span>
                         </div>
-
-                        <AnimatePresence>
-                          {showTooltip && (
-                            <motion.div
-                              initial={{ opacity: 0, y: 6, scale: 0.94 }}
-                              animate={{ opacity: 1, y: 0, scale: 1 }}
-                              exit={{ opacity: 0, y: 6, scale: 0.94 }}
-                              className="absolute top-full mt-3 left-1/2 -translate-x-1/2 z-50 rounded-[14px] pointer-events-none"
-                              style={{
-                                padding: '12px 14px',
-                                background: 'linear-gradient(135deg, rgba(12, 16, 22, 0.94), rgba(18, 22, 30, 0.92))',
-                                backdropFilter: 'blur(24px) saturate(165%)',
-                                WebkitBackdropFilter: 'blur(24px) saturate(165%)',
-                                border: '1px solid rgba(255, 255, 255, 0.12)',
-                                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10), 0 8px 24px rgba(0,0,0,0.25)',
-                                maxWidth: '320px'
-                              }}
-                              transition={{ duration: 0.16, ease: [0.22, 0.61, 0.36, 1] }}
-                            >
-                              <div className="text-[12px] font-medium text-center leading-relaxed" style={{ color: 'rgba(255,255,255,0.88)' }}>
-                                {pulseData.sectorBreakdown}
-                              </div>
-                              <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 rotate-45" style={{
-                                background: 'linear-gradient(135deg, rgba(12, 16, 22, 0.94), rgba(18, 22, 30, 0.92))',
-                                borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
-                                borderRight: '1px solid rgba(255, 255, 255, 0.12)'
-                              }} />
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </motion.div>
+                        <div className="text-[13px] leading-relaxed" style={{ 
+                          color: 'rgba(255,255,255,0.62)',
+                          fontWeight: 500
+                        }}>
+                          {pulseData.sectorBreakdown}
+                        </div>
+                      </div>
                     </div>
 
-                    <motion.p
-                      className="text-base leading-relaxed max-w-2xl"
+                    <p
+                      className="text-lg leading-loose max-w-3xl"
                       style={{ 
-                        color: 'rgba(255,255,255,0.78)',
+                        color: 'rgba(255,255,255,0.82)',
                         fontWeight: 500,
-                        letterSpacing: '-0.005em'
+                        letterSpacing: '-0.01em'
                       }}
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
                     >
                       {pulseData.insight}
-                    </motion.p>
+                    </p>
                   </div>
 
                   {/* Mini Sparkline */}
@@ -765,72 +563,22 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* OS Horizon Progress Bar */}
-                <div className="relative" style={{ marginTop: '36px' }}>
-                  <div className="h-3 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                <div className="relative" style={{ marginTop: '48px' }}>
+                  <div className="h-4 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
                     <motion.div
-                      className="h-full rounded-full relative overflow-hidden"
+                      className="h-full rounded-full"
                       style={{
                         background: 'linear-gradient(90deg, #58E3A4 0%, #73E6D2 100%)',
-                        boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.20)'
+                        boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.16)'
                       }}
                       initial={{ width: 0 }}
                       animate={{ width: `${animatedScore}%` }}
                       transition={{
-                        duration: 1.0,
-                        ease: [0.22, 0.61, 0.36, 1],
-                        delay: 0.4
+                        duration: 0.7,
+                        ease: [0.26, 0.11, 0.26, 1.0]
                       }}
-                    >
-                      <div className="absolute inset-0 rounded-full" style={{
-                        background: 'linear-gradient(90deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.28) 100%)'
-                      }} />
-
-                      <motion.div
-                        className="absolute top-0 right-0 w-16 h-full rounded-full"
-                        style={{
-                          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent)'
-                        }}
-                        animate={{
-                          x: ['-120%', '220%'],
-                        }}
-                        transition={{
-                          duration: 3,
-                          ease: "easeInOut",
-                          repeat: Infinity,
-                          repeatDelay: 6,
-                        }}
-                      />
-                    </motion.div>
+                    />
                   </div>
-
-                  <motion.div
-                    className="absolute -top-9 left-0 rounded-[12px]"
-                    style={{
-                      padding: '6px 10px',
-                      background: 'linear-gradient(180deg, rgba(88, 227, 164, 0.12) 0%, rgba(88, 227, 164, 0.08) 100%)',
-                      border: '1px solid rgba(88, 227, 164, 0.18)',
-                      backdropFilter: 'blur(12px)'
-                    }}
-                    initial={{ opacity: 0, x: 0 }}
-                    animate={{
-                      opacity: 1,
-                      x: `${(animatedScore / 100) * 100}%`
-                    }}
-                    transition={{
-                      duration: 1.0,
-                      ease: [0.22, 0.61, 0.36, 1],
-                      delay: 0.6
-                    }}
-                  >
-                    <span className="text-[11px] font-bold" style={{ 
-                      color: '#58E3A4',
-                      fontVariantNumeric: 'tabular-nums',
-                      letterSpacing: '0.01em'
-                    }}>
-                      Confidence: {Math.round(animatedScore)}%
-                    </span>
-                  </motion.div>
                 </div>
               </div>
             </motion.div>
@@ -949,44 +697,23 @@ export default function Home() {
           transition={{ duration: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
         >
           <div className="space-y-2.5">
-            <motion.h1
+            <h1
               className="text-3xl md:text-5xl font-bold tracking-[-0.03em]"
               style={{ 
                 color: 'rgba(255,255,255,0.98)',
                 letterSpacing: '-0.02em'
               }}
-              initial={{ opacity: 0, x: -24 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.08, ease: [0.22, 0.61, 0.36, 1] }}
             >
               Market Pulse
-            </motion.h1>
-            <motion.div
-              className="flex items-center gap-3"
-              initial={{ opacity: 0, x: -16 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.18, ease: [0.22, 0.61, 0.36, 1] }}
-            >
+            </h1>
+            <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
                 <div className="relative">
                   <motion.div
                     className="w-2 h-2 rounded-full"
                     style={{ background: '#58E3A4' }}
                     animate={{
-                      boxShadow: [
-                        '0 0 6px rgba(88, 227, 164, 0.5)',
-                        '0 0 14px rgba(88, 227, 164, 0.8)',
-                        '0 0 6px rgba(88, 227, 164, 0.5)'
-                      ]
-                    }}
-                    transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                  />
-                  <motion.div
-                    className="absolute inset-0 w-2 h-2 rounded-full"
-                    style={{ background: '#58E3A4' }}
-                    animate={{
-                      scale: [1, 2, 1],
-                      opacity: [0.7, 0, 0.7]
+                      opacity: [0.9, 1, 0.9]
                     }}
                     transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
                   />
@@ -995,22 +722,16 @@ export default function Home() {
               </div>
               <div style={{ width: '1px', height: '14px', background: 'rgba(255,255,255,0.16)' }} />
               <span className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.56)' }}>Updated now</span>
-            </motion.div>
+            </div>
           </div>
 
           {isEnabled('labs_modules') && (
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <ReorderControls
-                isReorderMode={isReorderMode}
-                onToggleReorderMode={toggleReorderMode}
-                onResetToDefault={handleResetToDefault}
-                theme={theme}
-              />
-            </motion.div>
+            <ReorderControls
+              isReorderMode={isReorderMode}
+              onToggleReorderMode={toggleReorderMode}
+              onResetToDefault={handleResetToDefault}
+              theme={theme}
+            />
           )}
         </motion.div>
 
