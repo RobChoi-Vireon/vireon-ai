@@ -184,7 +184,7 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
       {/* Utility Tray Pill - Control Center Style */}
       <motion.div
         ref={trayRef}
-        className="fixed z-[250] flex items-center"
+        className="fixed z-[250]"
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => {
           setIsHovering(false);
@@ -193,14 +193,20 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
           }
         }}
         animate={{
-          width: isExpanded ? 'auto' : '60px',
-          padding: isExpanded ? '16px 20px' : '8px'
+          width: '60px',
+          height: isExpanded ? 'auto' : '60px',
+          padding: isExpanded ? '12px' : '8px',
+          borderRadius: isExpanded ? '30px' : '44px'
         }}
-        transition={{ duration: 0.32, ease: [0.26, 0.11, 0.26, 1.0] }}
+        transition={{ 
+          duration: 0.42, 
+          ease: [0.22, 0.61, 0.36, 1],
+          height: { duration: 0.48, ease: [0.22, 0.61, 0.36, 1] },
+          borderRadius: { duration: 0.38, ease: [0.26, 0.11, 0.26, 1.0] }
+        }}
         style={{
           top: '18px',
           right: '20px',
-          borderRadius: '44px',
           border: '1px solid rgba(255,255,255,0.12)',
           willChange: 'transform, opacity, backdrop-filter',
           pointerEvents: 'auto'
@@ -263,11 +269,13 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
 
         {/* Content with scroll-reactive transform */}
         <motion.div
-          className="flex items-center relative z-[260]"
+          className={`${isExpanded ? 'flex-col' : 'flex'} items-center justify-center relative z-[260]`}
           style={{
             opacity: smoothOpacity,
             scale: smoothScale,
-            y: smoothTranslateY
+            y: smoothTranslateY,
+            width: '100%',
+            gap: isExpanded ? '8px' : '0'
           }}
         >
           {/* Toggle Button */}
@@ -282,10 +290,14 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
                   height: '44px',
                   padding: '12px'
                 }}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.2, ease: [0.26, 0.11, 0.26, 1.0] }}
+                initial={{ opacity: 0, scale: 0.85, y: -4 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.85, y: -4 }}
+                transition={{ 
+                  duration: 0.32, 
+                  ease: [0.22, 0.61, 0.36, 1],
+                  opacity: { duration: 0.24 }
+                }}
                 whileHover={{ scale: 1.06 }}
                 whileTap={{ scale: 0.96 }}
                 aria-label="Open control center"
@@ -297,10 +309,15 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
             {isExpanded && (
               <motion.div
                 key="expanded-content"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.24, ease: [0.26, 0.11, 0.26, 1.0] }}
+                className="flex flex-col items-center gap-2 w-full"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 8 }}
+                transition={{ 
+                  duration: 0.38, 
+                  ease: [0.22, 0.61, 0.36, 1],
+                  opacity: { duration: 0.28, delay: 0.1 }
+                }}
               >
                 {children}
               </motion.div>

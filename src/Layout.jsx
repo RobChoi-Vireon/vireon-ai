@@ -1018,7 +1018,7 @@ function LayoutContent({ children, currentPageName }) {
             <UtilityTrayPill isOverlayOpen={isAlertsOpen || isSearchOpen || isCommentaryOpen}>
               {/* OS Horizon V2 Semantic Grouping: Cluster A (Search + Commentary) */}
               {isEnabled('labs_modules') && (
-                <div className="flex items-center" style={{ gap: '12px', marginRight: '32px' }}>
+                <>
                   <GlassIconButton
                     onClick={() => setIsSearchOpen(true)}
                     icon={Search}
@@ -1031,22 +1031,20 @@ function LayoutContent({ children, currentPageName }) {
                     label={`${isCommentaryOpen ? 'Close' : 'Open'} live commentary`}
                     isActive={isCommentaryOpen}
                   />
-                </div>
+                </>
               )}
 
               {/* OS Horizon V2 Semantic Grouping: Cluster B (Labs + Notifications) */}
-              <div className="flex items-center" style={{ gap: '12px', marginRight: '32px' }}>
-                <div className="relative z-[260] group">
-                  <LabsToggle />
-                </div>
-
-                <GlassIconButton
-                  onClick={() => setIsAlertsOpen(true)}
-                  icon={Bell}
-                  label="View alerts"
-                  hasNotification={true}
-                />
+              <div className="relative z-[260] group">
+                <LabsToggle />
               </div>
+
+              <GlassIconButton
+                onClick={() => setIsAlertsOpen(true)}
+                icon={Bell}
+                label="View alerts"
+                hasNotification={true}
+              />
 
               {/* OS Horizon V2 Semantic Grouping: Cluster C (Profile Capsule) */}
               <div className="relative z-[260] group">
