@@ -12,6 +12,7 @@ import ReorderControls from '../components/home/ReorderControls';
 import MarketMovers from '../components/home/MarketMovers';
 import GlobalMarketSnapshot from '../components/home/GlobalMarketSnapshot';
 import KeyBenchmarks from '../components/home/KeyBenchmarks';
+import PulseRadialHero from '../components/home/PulseRadialHero';
 import { motion, AnimatePresence } from 'framer-motion';
 import SectorDetailDrawer from '../components/home/SectorDetailDrawer';
 import AssetDetailDrawer from '../components/home/AssetDetailDrawer';
@@ -448,140 +449,14 @@ export default function Home() {
         const trendIndicator = getTrendIndicator();
         return (
           <ModuleWrapper key={moduleId} title="Market Pulse" {...moduleProps}>
-            {/* OS Horizon V4 Pulse Hero */}
-            <motion.div
-              className="relative overflow-hidden rounded-[28px]"
-              style={{
-                padding: '48px 56px',
-                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.038) 0%, rgba(255, 255, 255, 0.022) 100%)',
-                backdropFilter: 'blur(28px) saturate(165%)',
-                WebkitBackdropFilter: 'blur(28px) saturate(165%)',
-                border: '1px solid rgba(255,255,255,0.06)',
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 32px rgba(0,0,0,0.08)'
-              }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.4, ease: [0.26, 0.11, 0.26, 1.0] }}
-            >
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: '15%',
-                right: '15%',
-                height: '1px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)',
-                pointerEvents: 'none'
-              }} />
-
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '12%',
-                  right: '10%',
-                  width: '300px',
-                  height: '300px',
-                  borderRadius: '50%',
-                  background: 'radial-gradient(circle, rgba(88, 227, 164, 0.03) 0%, transparent 70%)',
-                  filter: 'blur(60px)',
-                  pointerEvents: 'none',
-                  opacity: 0.5
-                }}
-              />
-
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: '15%',
-                  left: '8%',
-                  width: '260px',
-                  height: '260px',
-                  borderRadius: '50%',
-                  background: 'radial-gradient(circle, rgba(77, 143, 251, 0.025) 0%, transparent 70%)',
-                  filter: 'blur(64px)',
-                  pointerEvents: 'none',
-                  opacity: 0.5
-                }}
-              />
-
-              <div className="relative z-10">
-                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-14">
-                  <div className="flex-1 space-y-8">
-                    <div className="space-y-6">
-                      <div className="flex flex-col sm:flex-row sm:items-baseline gap-5">
-                        <div className="flex items-baseline gap-3">
-                          <div className="text-7xl lg:text-8xl font-bold tracking-[-0.03em]" style={{
-                            color: 'rgba(255,255,255,0.98)',
-                            fontVariantNumeric: 'tabular-nums'
-                          }}>
-                            {Math.round(animatedScore)}
-                          </div>
-                          <div className="text-2xl font-semibold -mb-2" style={{ 
-                            color: trendIndicator.color.includes('green') ? '#58E3A4' : trendIndicator.color.includes('red') ? '#FF6A7A' : 'rgba(168, 179, 199, 1)',
-                            fontVariantNumeric: 'tabular-nums'
-                          }}>
-                            {trendIndicator.label} {trendIndicator.symbol}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-3 rounded-[18px]" style={{
-                          padding: '14px 24px',
-                          background: 'linear-gradient(180deg, rgba(88, 227, 164, 0.12) 0%, rgba(88, 227, 164, 0.08) 100%)',
-                          border: '1px solid rgba(88, 227, 164, 0.18)',
-                          width: 'fit-content'
-                        }}>
-                          <TrendingUp className="w-5 h-5" style={{ color: '#58E3A4' }} strokeWidth={2.2} />
-                          <span className="text-[16px] font-bold" style={{ color: '#58E3A4' }}>
-                            {pulseData.trend}
-                          </span>
-                        </div>
-                        <div className="text-[13px] leading-relaxed" style={{ 
-                          color: 'rgba(255,255,255,0.62)',
-                          fontWeight: 500
-                        }}>
-                          {pulseData.sectorBreakdown}
-                        </div>
-                      </div>
-                    </div>
-
-                    <p
-                      className="text-lg leading-loose max-w-3xl"
-                      style={{ 
-                        color: 'rgba(255,255,255,0.82)',
-                        fontWeight: 500,
-                        letterSpacing: '-0.01em'
-                      }}
-                    >
-                      {pulseData.insight}
-                    </p>
-                  </div>
-
-                  {/* Mini Sparkline */}
-                  <div className="relative mx-auto lg:mx-0 flex items-center justify-center">
-                    <MiniSparkline data={pulseData.sparklineData} currentValue={pulseData.score} />
-                  </div>
-                </div>
-
-                <div className="relative" style={{ marginTop: '48px' }}>
-                  <div className="h-4 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
-                    <motion.div
-                      className="h-full rounded-full"
-                      style={{
-                        background: 'linear-gradient(90deg, #58E3A4 0%, #73E6D2 100%)',
-                        boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.16)'
-                      }}
-                      initial={{ width: 0 }}
-                      animate={{ width: `${animatedScore}%` }}
-                      transition={{
-                        duration: 0.7,
-                        ease: [0.26, 0.11, 0.26, 1.0]
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+            <PulseRadialHero
+              score={pulseData.score}
+              trend={pulseData.trend}
+              insight={pulseData.insight}
+              sectorBreakdown={pulseData.sectorBreakdown}
+              trendIndicator={trendIndicator}
+              sparklineData={pulseData.sparklineData}
+            />
           </ModuleWrapper>
         );
 
