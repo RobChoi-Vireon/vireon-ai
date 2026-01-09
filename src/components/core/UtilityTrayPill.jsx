@@ -196,7 +196,7 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
           width: '60px',
           height: isExpanded ? 'auto' : '60px',
           padding: isExpanded ? '12px' : '8px',
-          borderRadius: isExpanded ? '30px' : '44px'
+          borderRadius: isExpanded ? '30px' : '50%'
         }}
         transition={{ 
           duration: 0.42, 
