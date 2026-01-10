@@ -7,82 +7,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, Activity } from 'lucide-react';
 
-// Apple-Grade Yin-Yang Equilibrium Icon
-const YinYangIcon = ({ className = "w-4 h-4", style = {} }) => (
-  <svg 
-    viewBox="0 0 100 100" 
-    fill="none" 
-    className={className}
-    style={style}
-  >
-    <defs>
-      <linearGradient id="yin-yang-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="rgba(255, 255, 255, 0.45)" />
-        <stop offset="50%" stopColor="rgba(255, 255, 255, 0.38)" />
-        <stop offset="100%" stopColor="rgba(255, 255, 255, 0.32)" />
-      </linearGradient>
-      <filter id="yin-yang-glow">
-        <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
-        <feMerge>
-          <feMergeNode in="coloredBlur"/>
-          <feMergeNode in="SourceGraphic"/>
-        </feMerge>
-      </filter>
-    </defs>
-    
-    {/* Outer circle */}
-    <circle 
-      cx="50" 
-      cy="50" 
-      r="46" 
-      stroke="url(#yin-yang-gradient)" 
-      strokeWidth="2.5" 
-      fill="none"
-      filter="url(#yin-yang-glow)"
-    />
-    
-    {/* S-curve divider */}
-    <path 
-      d="M 50 4 A 23 23 0 0 1 50 50 A 23 23 0 0 0 50 96" 
-      stroke="url(#yin-yang-gradient)" 
-      strokeWidth="2.5" 
-      fill="none"
-      filter="url(#yin-yang-glow)"
-    />
-    
-    {/* Upper dot (dark in light) */}
-    <circle 
-      cx="50" 
-      cy="27" 
-      r="5.5" 
-      fill="rgba(255, 255, 255, 0.15)"
-      stroke="url(#yin-yang-gradient)"
-      strokeWidth="1.5"
-    />
-    
-    {/* Lower dot (light in dark) */}
-    <circle 
-      cx="50" 
-      cy="73" 
-      r="5.5" 
-      fill="url(#yin-yang-gradient)"
-      stroke="rgba(255, 255, 255, 0.08)"
-      strokeWidth="0.5"
-    />
-    
-    {/* Subtle inner glow for depth */}
-    <circle 
-      cx="50" 
-      cy="50" 
-      r="46" 
-      fill="none"
-      stroke="rgba(255, 255, 255, 0.08)"
-      strokeWidth="0.5"
-      opacity="0.3"
-    />
-  </svg>
-);
-
 // OS Horizon Motion Curves (Cinematic Motion DNA)
 const MOTION = {
   CURVES: {
@@ -956,29 +880,18 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
       )}
 
       <div className="flex items-center justify-between mb-5" style={{ position: 'relative', zIndex: 10 }}>
-        <motion.div
-          className="flex items-center gap-2.5"
+        <motion.h2 
+          className="text-[16px] font-semibold"
+          style={{ 
+            color: 'rgba(255,255,255,0.96)',
+            letterSpacing: '-0.01em'
+          }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.08, ease: MOTION.CURVES.tertiary }}
         >
-          <YinYangIcon 
-            className="w-[18px] h-[18px]" 
-            style={{ 
-              filter: 'drop-shadow(0 0 6px rgba(142, 187, 255, 0.25))',
-              opacity: 0.85
-            }} 
-          />
-          <h2 
-            className="text-[16px] font-semibold"
-            style={{ 
-              color: 'rgba(255,255,255,0.96)',
-              letterSpacing: '-0.01em'
-            }}
-          >
-            Equilibrium
-          </h2>
-        </motion.div>
+          Consensus
+        </motion.h2>
         <motion.div
           className="px-3 py-1.5 rounded-full text-xs font-semibold"
           style={{
