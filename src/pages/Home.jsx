@@ -2,13 +2,9 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useFeatureFlags } from '../components/core/FeatureFlags';
 import { useMiniSheet } from '../components/core/MiniSheetProvider';
 import { TrendingUp, TrendingDown, Activity, Zap, ArrowUpRight, Sparkles, Globe, BarChart3 } from 'lucide-react';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { User } from '@/entities/User';
-
 import SectorHeatmap from '../components/home/SectorHeatmap';
 import ForYouCarousel from '../components/foryou/ForYouCarousel';
 import ModuleWrapper from '../components/home/ModuleWrapper';
-import ReorderControls from '../components/home/ReorderControls';
 import MarketMovers from '../components/home/MarketMovers';
 import GlobalMarketSnapshot from '../components/home/GlobalMarketSnapshot';
 import KeyBenchmarks from '../components/home/KeyBenchmarks';
@@ -17,15 +13,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import SectorDetailDrawer from '../components/home/SectorDetailDrawer';
 import AssetDetailDrawer from '../components/home/AssetDetailDrawer';
 
-const defaultModuleOrder = [
-  'pulse',
-  'heatmap',
-  'metrics',
-  'global',
-  'movers',
-  'watchlist',
-  'foryou'
-];
+
 
 // Mini Sparkline Component
 const MiniSparkline = ({ data, currentValue }) => {
@@ -255,9 +243,6 @@ export default function Home() {
   const theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
   const { isEnabled } = useFeatureFlags();
   const { openMiniSheet } = useMiniSheet();
-  const [isReorderMode, setIsReorderMode] = useState(false);
-  const [moduleOrder, setModuleOrder] = useState(defaultModuleOrder);
-  const [isLoading, setIsLoading] = useState(true);
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [isAssetDrawerOpen, setIsAssetDrawerOpen] = useState(false);
   const [pulseData, setPulseData] = useState({
@@ -300,9 +285,6 @@ export default function Home() {
   }, [pulseData.score, pulseData.previousScore]);
 
   useEffect(() => {
-    // Load user's saved module order
-    loadUserModuleOrder();
-
     // Load 'For You' visibility state
     const forYouPref = localStorage.getItem('vireon-foryou-visible');
     setIsForYouVisible(forYouPref ? JSON.parse(forYouPref) : true);
@@ -369,56 +351,6 @@ export default function Home() {
 
   }, [pulseData.score]); // Re-run whenever actual pulseData.score changes
 
-  const loadUserModuleOrder = async () => {
-    try {
-      const user = await User.me();
-      if (user.dashboard_module_order && Array.isArray(user.dashboard_module_order) && user.dashboard_module_order.length > 0) {
-        const newOrder = defaultModuleOrder.filter(id => user.dashboard_module_order.includes(id));
-        defaultModuleOrder.forEach(id => {
-          if (!newOrder.includes(id)) {
-            newOrder.push(id);
-          }
-        });
-        setModuleOrder(newOrder);
-      } else {
-        setModuleOrder(defaultModuleOrder);
-      }
-    } catch (error) {
-      console.error('Error loading module order:', error);
-      setModuleOrder(defaultModuleOrder);
-    } finally {
-        setIsLoading(false);
-    }
-  };
-
-  const saveModuleOrder = async (newOrder) => {
-    try {
-      await User.updateMyUserData({ dashboard_module_order: newOrder });
-    } catch (error) {
-      console.error('Error saving module order:', error);
-    }
-  };
-
-  const handleDragEnd = (result) => {
-    if (!result.destination) return;
-
-    const newOrder = Array.from(moduleOrder);
-    const [reorderedItem] = newOrder.splice(result.source.index, 1);
-    newOrder.splice(result.destination.index, 0, reorderedItem);
-
-    setModuleOrder(newOrder);
-    saveModuleOrder(newOrder);
-  };
-
-  const handleResetToDefault = () => {
-    setModuleOrder(defaultModuleOrder);
-    saveModuleOrder(defaultModuleOrder);
-  };
-
-  const toggleReorderMode = () => {
-    setIsReorderMode(!isReorderMode);
-  };
-
   const handleToggleForYou = useCallback(() => {
     setIsForYouVisible(prev => {
       const newState = !prev;
@@ -439,7 +371,6 @@ export default function Home() {
   const renderModule = useMemo(() => (moduleId, index) => {
     const moduleProps = {
       moduleId,
-      isReorderMode,
       theme,
       index
     };
@@ -541,25 +472,7 @@ export default function Home() {
       default:
         return null;
     }
-  }, [isReorderMode, theme, isEnabled, pulseData, animatedScore, showTooltip, getTrendIndicator, watchlistData, handleAssetClick, isForYouVisible, handleToggleForYou]);
-
-  if (isLoading) {
-    return (
-      <div className="space-y-4 md:space-y-6 animate-pulse">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="space-y-2">
-            <div className="h-7 sm:h-8 w-32 md:w-48 rounded-lg" style={{ backgroundColor: 'var(--border)' }}></div>
-            <div className="h-4 sm:h-4 w-24 md:w-32 rounded-md" style={{ backgroundColor: 'var(--border)' }}></div>
-          </div>
-          <div className="h-9 sm:h-10 w-full sm:w-32 md:w-40 rounded-lg" style={{ backgroundColor: 'var(--border)' }}></div>
-        </div>
-        <div className="h-36 sm:h-40 w-full rounded-xl md:rounded-2xl p-4 sm:p-6" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }}></div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 md:gap-3">
-          {Array(6).fill(0).map((_, i) => ( <div key={i} className="h-24 sm:h-28 rounded-lg md:rounded-xl" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }}></div> ))}
-        </div>
-      </div>
-    );
-  }
+  }, [theme, isEnabled, pulseData, animatedScore, showTooltip, getTrendIndicator, watchlistData, handleAssetClick, isForYouVisible, handleToggleForYou]);
 
   return (
     <>
@@ -599,76 +512,43 @@ export default function Home() {
               <span className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.56)' }}>Updated now</span>
             </div>
           </div>
-
-          {isEnabled('labs_modules') && (
-            <ReorderControls
-              isReorderMode={isReorderMode}
-              onToggleReorderMode={toggleReorderMode}
-              onResetToDefault={handleResetToDefault}
-              theme={theme}
-            />
-          )}
         </motion.div>
 
-        {/* Draggable Modules with Enhanced Animations */}
-        <DragDropContext onDragEnd={handleDragEnd}>
-          <Droppable droppableId="home-modules" isDropDisabled={!isReorderMode}>
-            {(provided) => (
-              <motion.div
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-                className="space-y-8 lg:space-y-10"
-                variants={{
-                  visible: { transition: { staggerChildren: 0.15 } }
-                }}
-                initial="hidden"
-                animate="visible"
-              >
-                {moduleOrder.map((moduleId, index) => {
-                  const moduleComponent = renderModule(moduleId, index);
-                  if (!moduleComponent) return null;
+        {/* Static Modules */}
+        <motion.div
+          className="space-y-8 lg:space-y-10"
+          variants={{
+            visible: { transition: { staggerChildren: 0.15 } }
+          }}
+          initial="hidden"
+          animate="visible"
+        >
+          {['pulse', 'heatmap', 'metrics', 'global', 'movers', 'watchlist', 'foryou'].map((moduleId, index) => {
+            const moduleComponent = renderModule(moduleId, index);
+            if (!moduleComponent) return null;
 
-                  return (
-                    <Draggable
-                      key={moduleId}
-                      draggableId={moduleId}
-                      index={index}
-                      isDragDisabled={!isReorderMode}
-                    >
-                      {(provided, snapshot) => (
-                        <motion.div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className={`
-                          ${snapshot.isDragging ? 'rotate-3 scale-105 shadow-2xl' : ''}
-                          transition-all duration-300 ease-out
-                          `}
-                          variants={{
-                            hidden: { opacity: 0, y: 50, scale: 0.95 },
-                            visible: {
-                              opacity: 1,
-                              y: 0,
-                              scale: 1,
-                              transition: {
-                                duration: 0.6,
-                                ease: [0.23, 1, 0.32, 1]
-                              }
-                            }
-                          }}
-                          whileHover={!isReorderMode ? { y: -2, transition: { duration: 0.18, ease: [0.26, 0.11, 0.26, 1.0] } } : {}}
-                        >
-                          {moduleComponent}
-                        </motion.div>
-                      )}
-                    </Draggable>
-                  );
-                })}
-                {provided.placeholder}
+            return (
+              <motion.div
+                key={moduleId}
+                variants={{
+                  hidden: { opacity: 0, y: 50, scale: 0.95 },
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    transition: {
+                      duration: 0.6,
+                      ease: [0.23, 1, 0.32, 1]
+                    }
+                  }
+                }}
+                whileHover={{ y: -2, transition: { duration: 0.18, ease: [0.26, 0.11, 0.26, 1.0] } }}
+              >
+                {moduleComponent}
               </motion.div>
-            )}
-          </Droppable>
-        </DragDropContext>
+            );
+          })}
+        </motion.div>
       </div>
 
       {/* Render Drawer at the page level for full overlay */}
