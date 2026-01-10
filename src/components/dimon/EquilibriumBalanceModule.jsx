@@ -582,7 +582,7 @@ export default function EquilibriumBalanceModule({
               >
                 <div className="flex items-start gap-2.5">
                   <Sparkles className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: 'rgba(106, 199, 247, 0.8)' }} />
-                  <div>
+                  <div className="flex-1">
                     <p style={{
                       fontSize: '11px',
                       fontWeight: 600,
@@ -602,6 +602,23 @@ export default function EquilibriumBalanceModule({
                       {actionableInsight}
                     </p>
                   </div>
+                  <motion.button
+                    onClick={() => setIsExpandedOpen(true)}
+                    className="ml-3 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap flex-shrink-0 mt-0.5"
+                    style={{
+                      background: 'rgba(94, 167, 255, 0.15)',
+                      border: '1px solid rgba(94, 167, 255, 0.25)',
+                      color: 'rgba(184, 231, 255, 0.95)',
+                      cursor: 'pointer'
+                    }}
+                    whileHover={{
+                      background: 'rgba(94, 167, 255, 0.25)',
+                      transition: { duration: 0.12 }
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Expand
+                  </motion.button>
                 </div>
               </div>
 
