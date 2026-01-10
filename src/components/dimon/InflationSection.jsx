@@ -1,7 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, Minus, ChevronRight } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, ChevronRight, Globe } from 'lucide-react';
 import CPIvsPCEOrb from './CPIvsPCEOrb';
+import EquilibriumPulse from './EquilibriumPulse';
+import YinYangIcon from './YinYangIcon';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
 
