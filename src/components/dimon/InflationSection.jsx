@@ -1,9 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, Minus, ChevronRight, Globe } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, ChevronRight } from 'lucide-react';
 import CPIvsPCEOrb from './CPIvsPCEOrb';
-import EquilibriumPulse from './EquilibriumPulse';
-import YinYangIcon from './YinYangIcon';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
 
@@ -91,8 +89,8 @@ export default function InflationSection({ data }) {
   const policyColors = PolicyBiasColors[data.policy_bias] || PolicyBiasColors.Neutral;
 
   return (
-    <div className="space-y-8">
-      {/* Inflation Header */}
+    <div className="space-y-6">
+      {/* Header */}
       <div className="pl-2 mb-3">
         <h2 className="text-2xl font-bold mb-1" style={{ color: 'rgba(255,255,255,0.95)' }}>
           Inflation
@@ -285,23 +283,6 @@ export default function InflationSection({ data }) {
           ))}
         </div>
       </motion.div>
-
-      {/* Equilibrium Section */}
-      <div className="space-y-4">
-        <div className="pl-2 mb-3">
-          <div className="flex items-center gap-2.5 mb-1">
-            <YinYangIcon className="w-[18px] h-[18px]" color="rgba(155, 163, 176, 1)" />
-            <h2 className="text-2xl font-bold" style={{ color: 'rgba(255,255,255,0.95)' }}>
-              Equilibrium
-            </h2>
-          </div>
-          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.60)' }}>
-            Real-time balance of global macro forces.
-          </p>
-        </div>
-
-        <EquilibriumPulse />
-      </div>
     </div>
   );
 }
