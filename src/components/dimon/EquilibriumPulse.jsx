@@ -181,7 +181,6 @@ export default function EquilibriumPulse({
   const handleToggleDrawer = () => {
     setShowRipple(true);
     setTimeout(() => setShowRipple(false), 400);
-    setDrawerOpen(!drawerOpen);
     if (onOpenDrawer) onOpenDrawer();
   };
 
