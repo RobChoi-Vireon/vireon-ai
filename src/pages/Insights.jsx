@@ -159,12 +159,7 @@ export default function InsightsPage() {
   return (
     <>
       {/* Main Content Container */}
-      <div 
-        className="relative min-h-screen"
-        style={{
-          background: '#0B0E13'
-        }}
-      >
+      <div className="relative min-h-screen">
         {/* Inner Content with Superior Spacing */}
         <div className="relative z-20 px-6 md:px-12 py-8 md:py-12 space-y-16">
           
