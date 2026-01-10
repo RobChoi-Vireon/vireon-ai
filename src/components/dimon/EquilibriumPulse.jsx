@@ -64,7 +64,6 @@ export default function EquilibriumPulse({
   const [isMorePressed, setIsMorePressed] = useState(false);
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
   const [pulseTime, setPulseTime] = useState(0);
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const [showRipple, setShowRipple] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [prevEquilibriumScore, setPrevEquilibriumScore] = useState(equilibriumScore);
