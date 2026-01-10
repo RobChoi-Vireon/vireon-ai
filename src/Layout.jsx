@@ -792,14 +792,7 @@ function LayoutContent({ children, currentPageName }) {
         <div className="flex h-screen transition-all duration-500 ease-out elevation-0">
 
           {/* Desktop Sidebar */}
-          <aside className="hidden md:flex flex-col w-[280px] p-8 relative">
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'transparent',
-              pointerEvents: 'none'
-            }} />
-
+          <aside className="hidden md:flex flex-col w-[280px] p-8 relative" style={{ background: '#0B0E13' }}>
             <div style={{
               position: 'absolute',
               top: 0,
@@ -817,16 +810,6 @@ function LayoutContent({ children, currentPageName }) {
               right: 0,
               height: '40%',
               background: 'linear-gradient(0deg, rgba(90, 115, 145, 0.012) 0%, transparent 100%)',
-              pointerEvents: 'none'
-            }} />
-
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              width: '80%',
-              height: '100%',
-              background: 'linear-gradient(90deg, transparent 0%, rgba(11, 14, 19, 0.08) 100%)',
               pointerEvents: 'none'
             }} />
 
