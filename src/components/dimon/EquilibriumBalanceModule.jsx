@@ -141,7 +141,9 @@ export default function EquilibriumBalanceModule({
         border: '1px solid rgba(255,255,255,0.08)',
         boxShadow: 'inset 0 2px 12px rgba(0, 0, 0, 0.45), 0 8px 32px rgba(0, 0, 0, 0.25)',
         cursor: 'pointer',
-        willChange: 'filter, transform'
+        willChange: 'filter, transform',
+        position: 'relative',
+        isolation: 'isolate'
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
