@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Globe, Clock, Activity, ArrowUpRight, BarChart3, Landmark, Sunrise, Bitcoin, AreaChart, Droplets, ChevronDown, ChevronUp, Zap, AlertTriangle, DollarSign } from 'lucide-react';
@@ -520,10 +519,19 @@ const GlobalMarketSnapshot = () => {
 
   return (
     <div className="space-y-6">
-      <div className="sticky top-0 z-20 bg-black/50 backdrop-blur-md -mx-8 px-8 pt-6 pb-4">
+      <div className="sticky top-0 z-20 -mx-8 px-8 pt-6 pb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <motion.div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center border border-blue-500/30 backdrop-blur-sm" whileHover={{ scale: 1.05, rotate: 5 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+            <motion.div 
+              className="w-12 h-12 rounded-2xl flex items-center justify-center border backdrop-blur-sm" 
+              style={{
+                background: 'linear-gradient(180deg, rgba(77, 143, 251, 0.14) 0%, rgba(77, 143, 251, 0.10) 100%)',
+                border: '1px solid rgba(77, 143, 251, 0.24)',
+                boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.10), 0 2px 8px rgba(0,0,0,0.08)'
+              }}
+              whileHover={{ scale: 1.05, rotate: 5 }} 
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            >
               <Globe className="w-6 h-6 text-blue-400" strokeWidth={2} />
             </motion.div>
             <div>
@@ -531,7 +539,29 @@ const GlobalMarketSnapshot = () => {
               <p className="text-sm text-gray-400 flex items-center space-x-2"><Clock className="w-4 h-4" /><span>24/7 worldwide coverage</span></p>
             </div>
           </div>
-          <motion.button onClick={() => setIsAutoRefresh(!isAutoRefresh)} className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 ${isAutoRefresh ? 'bg-green-500/20 border border-green-500/30 text-green-400 shadow-lg shadow-green-500/20' : 'bg-gray-500/20 border border-gray-500/30 text-gray-400'} hover:scale-105`} whileHover={{ scale: 1.05 }} animate={{ boxShadow: isAutoRefresh ? ['0 0 0 rgba(34, 197, 94, 0)', '0 0 20px rgba(34, 197, 94, 0.4)', '0 0 0 rgba(34, 197, 94, 0)'] : '0 0 0 rgba(34, 197, 94, 0)' }} transition={{ duration: 2, repeat: Infinity }}>
+          <motion.button 
+            onClick={() => setIsAutoRefresh(!isAutoRefresh)} 
+            className="flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 border backdrop-blur-sm"
+            style={{
+              background: isAutoRefresh 
+                ? 'linear-gradient(180deg, rgba(88, 227, 164, 0.12) 0%, rgba(88, 227, 164, 0.08) 100%)'
+                : 'linear-gradient(180deg, rgba(155, 163, 176, 0.12) 0%, rgba(155, 163, 176, 0.08) 100%)',
+              borderColor: isAutoRefresh ? 'rgba(88, 227, 164, 0.24)' : 'rgba(155, 163, 176, 0.20)',
+              color: isAutoRefresh ? '#58E3A4' : '#9BA3B0',
+              boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 2px 8px rgba(0,0,0,0.06)'
+            }}
+            whileHover={{ scale: 1.05 }} 
+            animate={{ 
+              boxShadow: isAutoRefresh 
+                ? [
+                    'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 2px 8px rgba(0,0,0,0.06), 0 0 0 rgba(88, 227, 164, 0)',
+                    'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 2px 8px rgba(0,0,0,0.06), 0 0 16px rgba(88, 227, 164, 0.3)',
+                    'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 2px 8px rgba(0,0,0,0.06), 0 0 0 rgba(88, 227, 164, 0)'
+                  ]
+                : 'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 2px 8px rgba(0,0,0,0.06)'
+            }} 
+            transition={{ duration: 2, repeat: Infinity }}
+          >
             <div className={`w-2 h-2 rounded-full ${isAutoRefresh ? 'bg-green-400 animate-pulse' : 'bg-gray-400'}`} />
             <span>{isAutoRefresh ? 'LIVE' : 'PAUSED'}</span>
           </motion.button>
@@ -541,7 +571,12 @@ const GlobalMarketSnapshot = () => {
           ref={tabListRef}
           role="tablist"
           onKeyDown={handleTabKeyDown}
-          className="mt-6 flex flex-wrap gap-2 p-2 rounded-2xl bg-black/20 backdrop-blur-sm border border-white/10"
+          className="mt-6 flex flex-wrap gap-2 p-2 rounded-2xl backdrop-blur-sm border"
+          style={{
+            background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.028) 0%, rgba(255, 255, 255, 0.018) 100%)',
+            borderColor: 'rgba(255,255,255,0.08)',
+            boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.06), 0 2px 8px rgba(0,0,0,0.06)'
+          }}
         >
           {regions.map(region => (
             <RegionButton
