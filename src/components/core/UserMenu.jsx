@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
@@ -80,14 +79,69 @@ export default function UserMenu() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <button className="relative w-9 h-9 rounded-full bg-slate-700 hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-[#171A21] transition-all duration-200">
-                    <Avatar className="w-9 h-9">
+                <motion.button 
+                    className="relative rounded-full focus:outline-none transition-all duration-200"
+                    style={{
+                        width: '44px',
+                        height: '44px',
+                        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.078) 0%, rgba(255, 255, 255, 0.058) 100%)',
+                        backdropFilter: 'blur(48px) saturate(175%)',
+                        WebkitBackdropFilter: 'blur(48px) saturate(175%)',
+                        border: '1px solid rgba(255,255,255,0.10)',
+                        boxShadow: `
+                            0 3px 16px rgba(0,0,0,0.04),
+                            inset 0 1px 0 rgba(255,255,255,0.08)
+                        `
+                    }}
+                    whileHover={{
+                        scale: 1.04,
+                        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.088) 0%, rgba(255, 255, 255, 0.068) 100%)',
+                        boxShadow: `
+                            0 5px 20px rgba(0,0,0,0.06),
+                            inset 0 1.5px 0 rgba(255,255,255,0.11)
+                        `,
+                        transition: { type: "spring", stiffness: 300, damping: 30 }
+                    }}
+                    whileTap={{ 
+                        scale: 0.96,
+                        transition: { type: "spring", stiffness: 320, damping: 26 }
+                    }}
+                >
+                    {/* Specular Highlight */}
+                    <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: '14%',
+                        right: '14%',
+                        height: '1.5px',
+                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+                        pointerEvents: 'none',
+                        filter: 'blur(0.5px)',
+                        borderRadius: '50%'
+                    }} />
+
+                    {/* Internal Haze */}
+                    <div style={{
+                        position: 'absolute',
+                        inset: 0,
+                        background: 'radial-gradient(ellipse at 50% 30%, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.03) 50%, transparent 75%)',
+                        borderRadius: '50%',
+                        pointerEvents: 'none'
+                    }} />
+
+                    <Avatar className="w-full h-full">
                         <AvatarImage src={user.avatar_url} alt={user.full_name} />
-                        <AvatarFallback className="bg-slate-700 text-white font-semibold">
+                        <AvatarFallback 
+                            className="text-white font-semibold"
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(77, 143, 251, 0.35) 0%, rgba(110, 180, 255, 0.25) 100%)',
+                                backdropFilter: 'blur(12px)'
+                            }}
+                        >
                             {getInitials(user.full_name)}
                         </AvatarFallback>
                     </Avatar>
-                </button>
+                </motion.button>
             </DropdownMenuTrigger>
             <DropdownMenuContent 
                 className="w-64 mr-4 mt-2 p-0 bg-[#1A1D22]/80 backdrop-blur-2xl border border-white/10 text-white shadow-2xl rounded-2xl origin-top-right"
