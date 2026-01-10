@@ -976,7 +976,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
             ease: 'easeOut'
           }}
         >
-          <Activity className="w-3 h-3 mr-1.5" />
+          <YinYangIcon className="w-3 h-3 mr-1.5" strokeWidth={2.0} />
         </motion.div>
         <motion.span
           animate={{
