@@ -476,7 +476,7 @@ export default function EquilibriumPulse({
           />
 
           {/* Traveling Shimmer */}
-          {!shouldReduceMotion && !drawerOpen && (
+          {!shouldReduceMotion && !isEquilibriumActive && (
             <motion.div
               className="absolute inset-0"
               style={{
