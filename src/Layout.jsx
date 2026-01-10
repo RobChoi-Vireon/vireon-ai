@@ -796,19 +796,7 @@ function LayoutContent({ children, currentPageName }) {
             <div style={{
               position: 'absolute',
               inset: 0,
-              background: `
-                linear-gradient(180deg, 
-                  rgba(19, 21, 26, 0.90) 0%, 
-                  rgba(15, 17, 21, 0.94) 50%,
-                  rgba(11, 13, 17, 0.96) 100%)
-              `,
-              backdropFilter: 'blur(32px) saturate(165%)',
-              WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-              borderRight: '1px solid rgba(255,255,255,0.05)',
-              boxShadow: `
-                inset 0 0 1px rgba(255,255,255,0.04),
-                2px 0 50px rgba(0,0,0,0.22)
-              `,
+              background: 'transparent',
               pointerEvents: 'none'
             }} />
 
