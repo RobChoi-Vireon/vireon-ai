@@ -956,18 +956,29 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
       )}
 
       <div className="flex items-center justify-between mb-5" style={{ position: 'relative', zIndex: 10 }}>
-        <motion.h2 
-          className="text-[16px] font-semibold"
-          style={{ 
-            color: 'rgba(255,255,255,0.96)',
-            letterSpacing: '-0.01em'
-          }}
+        <motion.div
+          className="flex items-center gap-2.5"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.08, ease: MOTION.CURVES.tertiary }}
         >
-          Consensus
-        </motion.h2>
+          <YinYangIcon 
+            className="w-[18px] h-[18px]" 
+            style={{ 
+              filter: 'drop-shadow(0 0 6px rgba(142, 187, 255, 0.25))',
+              opacity: 0.85
+            }} 
+          />
+          <h2 
+            className="text-[16px] font-semibold"
+            style={{ 
+              color: 'rgba(255,255,255,0.96)',
+              letterSpacing: '-0.01em'
+            }}
+          >
+            Equilibrium
+          </h2>
+        </motion.div>
         <motion.div
           className="px-3 py-1.5 rounded-full text-xs font-semibold"
           style={{
