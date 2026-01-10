@@ -661,6 +661,198 @@ export default function EquilibriumBalanceModule({
         Updated {new Date(lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
       </motion.div>
 
+      {/* Expanded Panel — Anchored Inside Container */}
+      <AnimatePresence>
+        {isExpandedOpen && (
+          <motion.div
+            ref={expandedPanelRef}
+            className="absolute top-0 right-0 w-96 rounded-2xl p-6 z-30"
+            style={{
+              background: 'rgba(12, 15, 20, 0.95)',
+              backdropFilter: 'blur(32px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(32px) saturate(180%)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              boxShadow: '0 16px 48px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08)',
+              maxHeight: '70vh',
+              overflowY: 'auto'
+            }}
+            initial={{ opacity: 0, scale: 0.94, x: 20, y: -20 }}
+            animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
+            exit={{ opacity: 0, scale: 0.92, x: 20, y: -10 }}
+            transition={{ duration: 0.22, ease: MOTION_TOKENS.CURVES.horizonIn }}
+          >
+            {/* Top highlight */}
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: '20px',
+              right: '20px',
+              height: '1px',
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+              borderRadius: '999px'
+            }} />
+
+            <div className="flex items-center justify-between mb-6">
+              <h3 style={{
+                fontSize: '15px',
+                fontWeight: 600,
+                color: 'rgba(255,255,255,0.95)',
+                letterSpacing: '-0.01em'
+              }}>
+                Force Breakdown
+              </h3>
+              <motion.button
+                onClick={() => setIsExpandedOpen(false)}
+                className="w-7 h-7 flex items-center justify-center rounded-lg"
+                style={{
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  color: 'rgba(255,255,255,0.6)'
+                }}
+                whileHover={{
+                  background: 'rgba(255,255,255,0.10)',
+                  transition: { duration: 0.12 }
+                }}
+              >
+                ✕
+              </motion.button>
+            </div>
+
+            {/* Detailed Force Grid */}
+            <div className="space-y-3 mb-6">
+              {sortedForces.map((force, i) => (
+                <motion.div
+                  key={force.name}
+                  className="p-4 rounded-xl border"
+                  style={{
+                    background: 'rgba(255,255,255,0.05)',
+                    borderColor: `${force.color}33`
+                  }}
+                  initial={{ opacity: 0, x: -12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.08, duration: 0.18 }}
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2.5">
+                      <div style={{
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '999px',
+                        background: force.color,
+                        boxShadow: `0 0 12px ${force.glow}`
+                      }} />
+                      <span style={{
+                        fontSize: '13px',
+                        fontWeight: 600,
+                        color: 'rgba(255,255,255,0.85)',
+                        textTransform: 'capitalize'
+                      }}>
+                        {force.name}
+                      </span>
+                    </div>
+                    <span style={{
+                      fontSize: '15px',
+                      fontWeight: 700,
+                      color: force.value > 0 ? '#58E3A4' : force.value < 0 ? '#FF9B7A' : 'rgba(255,255,255,0.6)',
+                      fontVariantNumeric: 'tabular-nums'
+                    }}>
+                      {force.value > 0 ? '+' : ''}{(force.value * 100).toFixed(0)}%
+                    </span>
+                  </div>
+                  <div className="h-1.5 rounded-full overflow-hidden" style={{
+                    background: 'rgba(255,255,255,0.08)'
+                  }}>
+                    <motion.div
+                      className="h-full rounded-full"
+                      style={{
+                        background: force.color,
+                        boxShadow: `inset 0 0.5px 0 rgba(255,255,255,0.2), 0 0 8px ${force.glow}`
+                      }}
+                      initial={{ width: 0 }}
+                      animate={{ width: `${Math.abs(force.value * 100)}%` }}
+                      transition={{ delay: i * 0.08 + 0.1, duration: 0.4, ease: [0.22, 0.61, 0.36, 1] }}
+                    />
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            <div style={{
+              height: '1px',
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
+              margin: '20px 0'
+            }} />
+
+            {/* Stability Details */}
+            <div className="p-4 rounded-xl border mb-6" style={{
+              background: 'rgba(94, 167, 255, 0.08)',
+              borderColor: 'rgba(94, 167, 255, 0.18)'
+            }}>
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <div style={{
+                    fontSize: '11px',
+                    fontWeight: 600,
+                    color: 'rgba(255,255,255,0.6)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em',
+                    marginBottom: '4px'
+                  }}>
+                    Stability Index
+                  </div>
+                  <div style={{
+                    fontSize: '22px',
+                    fontWeight: 700,
+                    color: 'rgba(184, 231, 255, 0.95)',
+                    fontVariantNumeric: 'tabular-nums'
+                  }}>
+                    {stabilityIndex}
+                  </div>
+                </div>
+                <div style={{
+                  fontSize: '12px',
+                  color: 'rgba(255,255,255,0.7)',
+                  fontWeight: 500,
+                  textAlign: 'right'
+                }}>
+                  {stabilityIndex >= 70 ? 'Very Stable' : stabilityIndex >= 50 ? 'Somewhat Stable' : 'Higher Risk'}
+                </div>
+              </div>
+              <div className="h-2 rounded-full overflow-hidden" style={{
+                background: 'rgba(255,255,255,0.08)'
+              }}>
+                <motion.div
+                  className="h-full rounded-full"
+                  style={{
+                    background: 'linear-gradient(to right, #5EA7FF, #73C9FF)',
+                    boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.2)'
+                  }}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${stabilityIndex}%` }}
+                  transition={{ duration: 0.5, delay: 0.15, ease: [0.22, 0.61, 0.36, 1] }}
+                />
+              </div>
+            </div>
+
+            {/* Summary Note */}
+            <div style={{
+              padding: '14px 16px',
+              borderRadius: '12px',
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.06)'
+            }}>
+              <p style={{
+                fontSize: '12px',
+                lineHeight: '1.6',
+                color: 'rgba(255,255,255,0.75)'
+              }}>
+                {summary}
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <style jsx>{`
         .horizon-orb {
           will-change: transform, box-shadow;
