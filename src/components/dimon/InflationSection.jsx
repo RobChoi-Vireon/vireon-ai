@@ -285,6 +285,23 @@ export default function InflationSection({ data }) {
           ))}
         </div>
       </motion.div>
+
+      {/* Equilibrium Section */}
+      <div className="space-y-4">
+        <div className="pl-2 mb-3">
+          <div className="flex items-center gap-2.5 mb-1">
+            <YinYangIcon className="w-[18px] h-[18px]" color="rgba(155, 163, 176, 1)" />
+            <h2 className="text-2xl font-bold" style={{ color: 'rgba(255,255,255,0.95)' }}>
+              Equilibrium
+            </h2>
+          </div>
+          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.60)' }}>
+            Real-time balance of global macro forces.
+          </p>
+        </div>
+
+        <EquilibriumPulse />
+      </div>
     </div>
   );
 }
