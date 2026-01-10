@@ -672,7 +672,7 @@ export default function EquilibriumPulse({
 
       {/* Hover Drawer Bubble */}
       <AnimatePresence>
-        {drawerOpen && (
+        {isEquilibriumActive && (
           <motion.div
             className="absolute left-1/2 -translate-x-1/2"
             style={{
