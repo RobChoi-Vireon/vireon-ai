@@ -573,11 +573,11 @@ export default function EquilibriumPulse({
             zIndex: 5,
             pointerEvents: 'none',
             willChange: 'transform, box-shadow, background-color',
-            filter: drawerOpen ? 'brightness(1.18)' : 'brightness(1)'
+            filter: isEquilibriumActive ? 'brightness(1.18)' : 'brightness(1)'
           }}
           animate={{
             scale: getKnobScale(),
-            boxShadow: drawerOpen 
+            boxShadow: isEquilibriumActive 
               ? `0 0 36px ${getPulseGlow()}, 0 0 14px rgba(255,255,255,0.85), inset 0 0 0 2px rgba(255,255,255,0.65)`
               : `0 0 ${22 * getKnobGlow()}px ${isSliderHovered || isSliderFocused ? 'rgba(142, 187, 255, 0.50)' : getPulseGlow()}, 0 0 8px rgba(255,255,255,0.55), inset 0 0 0 2px rgba(255,255,255,0.45)`,
             ...(isValueChanging && !shouldReduceMotion ? {
