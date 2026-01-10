@@ -18,7 +18,6 @@ import DigestSkeleton from '@/components/dimon/DigestSkeleton';
 import DegradedBanner from '@/components/dimon/DegradedBanner';
 import RetryWrapper from '@/components/core/RetryWrapper';
 import InflationSection from '@/components/dimon/InflationSection';
-import EquilibriumPulse from '@/components/dimon/EquilibriumPulse';
 
 // NOTE: Lazy loading components is a key performance optimization.
 // In a real build setup, these would be loaded asynchronously.
@@ -30,7 +29,6 @@ import SentimentDrawer from '@/components/dimon/SentimentDrawer';
 import DivergenceDrawer from '@/components/dimon/DivergenceDrawer';
 import SignalDetailDrawer from '@/components/dimon/SignalDetailDrawer';
 import SegmentDetailDrawer from '@/components/dimon/SegmentDetailDrawer';
-import EquilibriumDrawer from '@/components/dimon/EquilibriumDrawer';
 import GlobalSignalLattice from '@/components/dimon/GlobalHolographicMap';
 
 
@@ -414,7 +412,6 @@ export default function MacroSignalsPage() {
   const [selectedDivergence, setSelectedDivergence] = useState(null);
   const [isConsensusDrawerOpen, setIsConsensusDrawerOpen] = useState(false);
   const [selectedSegment, setSelectedSegment] = useState(null);
-  const [isEquilibriumDrawerOpen, setIsEquilibriumDrawerOpen] = useState(false);
 
   // Memoize sanitized data to prevent re-computation on re-renders
   const sanitizedDigest = useMemo(() => {
@@ -588,7 +585,7 @@ export default function MacroSignalsPage() {
     },
   };
   
-  const isAnyDrawerOpen = selectedSignal || selectedTakeaway || selectedDivergence || isConsensusDrawerOpen || selectedSegment || isEquilibriumDrawerOpen;
+  const isAnyDrawerOpen = selectedSignal || selectedTakeaway || selectedDivergence || isConsensusDrawerOpen || selectedSegment;
 
   return (
     <div className="min-h-screen font-sans overflow-x-hidden" style={{ 
@@ -733,42 +730,32 @@ export default function MacroSignalsPage() {
                 </motion.div>
                 
                 {/* 4) Global Signals — OS HORIZON REFINED LAYOUT */}
-                <motion.div 
-                className="col-span-12 relative" 
-                variants={sectionVariants} 
-                id="section-global-signals" 
-                data-section-order="4"
-                style={{ position: 'relative', zIndex: 10 }}
-                >
-                <div className="mb-4 pl-2">
-                  <h2 className="text-xl font-bold mb-1" style={{ color: 'rgba(255,255,255,0.95)' }}>
-                    Global Signals
-                  </h2>
-                  <p className="text-xs" style={{ color: 'rgba(255,255,255,0.70)' }}>
-                    Consensus and divergence across key sources.
-                  </p>
-                </div>
-
-                {/* Enhanced Grid with Breathing Room */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch relative">
-                  <div className="lg:col-span-5 min-h-[480px] flex flex-col gap-4">
-                      <ConsensusMeter 
-                          score={digest.consensus_score} 
-                          breakdown={digest.consensus_breakdown} 
-                          onOpenDrawer={openConsensusDrawer}
-                      />
-                      <EquilibriumPulse 
-                          isEquilibriumActive={isEquilibriumDrawerOpen}
-                          onOpenDrawer={() => setIsEquilibriumDrawerOpen(!isEquilibriumDrawerOpen)}
-                      />
-                  </div>
-                  <div className="lg:col-span-7 relative">
-                      <DivergenceReport 
-                          divergences={digest.synthesis?.divergences || []} 
-                          onOpenDrawer={setSelectedDivergence} 
-                      />
-                  </div>
-                </div>
+                <motion.div className="col-span-12" variants={sectionVariants} id="section-global-signals" data-section-order="4">
+                    <div className="mb-4 pl-2">
+                        <h2 className="text-xl font-bold mb-1" style={{ color: 'rgba(255,255,255,0.95)' }}>
+                          Global Signals
+                        </h2>
+                        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.70)' }}>
+                          Consensus and divergence across key sources.
+                        </p>
+                    </div>
+                    
+                    {/* Enhanced Grid with Breathing Room */}
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+                        <div className="lg:col-span-5 min-h-[480px]">
+                            <ConsensusMeter 
+                                score={digest.consensus_score} 
+                                breakdown={digest.consensus_breakdown} 
+                                onOpenDrawer={openConsensusDrawer}
+                            />
+                        </div>
+                        <div className="lg:col-span-7">
+                            <DivergenceReport 
+                                divergences={digest.synthesis?.divergences || []} 
+                                onOpenDrawer={setSelectedDivergence} 
+                            />
+                        </div>
+                    </div>
                 </motion.div>
 
                 {/* 5) Narrative Map */}
@@ -876,20 +863,7 @@ export default function MacroSignalsPage() {
         segment={selectedSegment}
         onNavigate={handleNavigateSegment}
       />
-
-      <EquilibriumDrawer
-        isOpen={isEquilibriumDrawerOpen}
-        stabilityIndex={digest?.consensus_breakdown?.stabilityIndex || 72}
-        forces={digest?.forces || {
-          growth: 0.42,
-          rates: -0.38,
-          fx: 0.15,
-          geopolitics: -0.28
-        }}
-        equilibriumScore={digest?.consensus_score || 0.52}
-        dominantForce="balanced"
-      />
-
+      
       <footer className="relative z-10 text-center py-8 border-t border-white/10">
         <p className="text-xs opacity-50">
           This is a demonstration of Vireon's macro-synthesis engine. Not financial advice.

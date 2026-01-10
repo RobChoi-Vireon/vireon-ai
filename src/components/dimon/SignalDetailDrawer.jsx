@@ -695,7 +695,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             
             /* Frosted Backdrop */
             .hzn-frosted-backdrop {
-              position: absolute;
+              position: fixed;
               inset: 0;
               z-index: 80;
               background: rgba(24, 26, 29, 0.55);
@@ -707,7 +707,8 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                           backdrop-filter var(--li-duration) var(--li-ease);
               will-change: opacity, filter, backdrop-filter;
               contain: paint;
-              pointer-events: none;
+              mask-image: linear-gradient(to bottom, transparent 0, black calc(72px + 8px));
+              -webkit-mask-image: linear-gradient(to bottom, transparent 0, black calc(72px + 8px));
             }
             
             .hzn-frosted-backdrop--open {
@@ -725,9 +726,20 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               -webkit-mask-image: radial-gradient(circle at 50% 45%, rgba(0,0,0,0) 42%, black 100%);
             }
             
-            /* Header Scrim - removed, not needed */
+            /* Header Scrim */
             .hzn-header-scrim {
-              display: none;
+              position: fixed;
+              inset-inline: 0;
+              top: 0;
+              height: 72px;
+              z-index: 95;
+              pointer-events: none;
+              background: linear-gradient(to bottom, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.22) 35%, rgba(0, 0, 0, 0.00) 100%);
+              box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+              mix-blend-mode: normal;
+              opacity: 0;
+              transition: opacity var(--hzn-dur-open) var(--hzn-ease-silk);
+              will-change: opacity;
             }
             
             .hzn-header-scrim--open {
@@ -736,19 +748,20 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             
             /* Priority Drawer */
             .hzn-drawer {
-              position: absolute;
+              position: fixed;
               z-index: 90;
-              left: 50%;
-              transform: translateX(-50%) translateY(var(--hzn-open-translate)) scale(var(--hzn-open-scale));
-              top: 14px;
+              left: 0;
+              right: 0;
+              margin-inline: auto;
+              top: calc(72px + 14px);
               max-width: min(820px, 90vw);
-              width: 100%;
               border: 1px solid rgba(255, 255, 255, 0.06);
               background: linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(0,0,0,0.12));
               box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
               border-radius: 24px;
               overflow: hidden;
               
+              transform: translateY(var(--hzn-open-translate)) scale(var(--hzn-open-scale));
               opacity: 0;
               will-change: transform, opacity;
               transition: 
@@ -757,7 +770,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             }
             
             .hzn-drawer--open {
-              transform: translateX(-50%) translateY(0) scale(1);
+              transform: translateY(0) scale(1);
               opacity: 1;
             }
             
@@ -1141,7 +1154,11 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             }
           `}</style>
 
-
+          {/* Header Scrim */}
+          <div
+            className={`hzn-header-scrim ${isAnimatingIn ? 'hzn-header-scrim--open' : ''}`}
+            aria-hidden="true"
+          />
 
           {/* Frosted Backdrop */}
           <div
