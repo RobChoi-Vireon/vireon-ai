@@ -769,7 +769,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             }
             
             .hzn-drawer--open {
-              transform: translateY(0) scale(1);
+              transform: translateX(-50%) translateY(0) scale(1);
               opacity: 1;
             }
             
