@@ -748,20 +748,19 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             
             /* Priority Drawer */
             .hzn-drawer {
-              position: fixed;
+              position: absolute;
               z-index: 90;
-              left: 0;
-              right: 0;
-              margin-inline: auto;
-              top: calc(72px + 14px);
+              left: 50%;
+              transform: translateX(-50%) translateY(var(--hzn-open-translate)) scale(var(--hzn-open-scale));
+              top: 14px;
               max-width: min(820px, 90vw);
+              width: 100%;
               border: 1px solid rgba(255, 255, 255, 0.06);
               background: linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(0,0,0,0.12));
               box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
               border-radius: 24px;
               overflow: hidden;
               
-              transform: translateY(var(--hzn-open-translate)) scale(var(--hzn-open-scale));
               opacity: 0;
               will-change: transform, opacity;
               transition: 
