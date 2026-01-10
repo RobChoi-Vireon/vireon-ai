@@ -288,6 +288,14 @@ export default function EquilibriumPulse({
       {/* Header Row */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2.5">
+          <YinYangIcon 
+            className="w-5 h-5" 
+            strokeWidth={1.8}
+            style={{ 
+              color: '#8EBBFF',
+              filter: 'drop-shadow(0 0 8px rgba(142, 187, 255, 0.35))'
+            }} 
+          />
           <h4 
             style={{
               fontSize: '18px',
