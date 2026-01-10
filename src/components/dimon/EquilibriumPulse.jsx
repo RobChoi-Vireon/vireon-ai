@@ -122,23 +122,23 @@ export default function EquilibriumPulse({
   }, [shouldReduceMotion, isEquilibriumActive]);
 
   const pulseDrift = useMemo(() => {
-    if (shouldReduceMotion || drawerOpen) return 0;
+    if (shouldReduceMotion || isEquilibriumActive) return 0;
     const speed = 0.3 + (volatility * 0.7);
     const direction = (equilibriumScore - 0.5) * 2;
     return Math.sin(pulseTime * speed) * 2 * (1 + Math.abs(direction) * 0.5);
-  }, [pulseTime, volatility, equilibriumScore, shouldReduceMotion, drawerOpen]);
+  }, [pulseTime, volatility, equilibriumScore, shouldReduceMotion, isEquilibriumActive]);
 
   const pulseScale = useMemo(() => {
-    if (shouldReduceMotion || drawerOpen || !isMounted) return 1;
+    if (shouldReduceMotion || isEquilibriumActive || !isMounted) return 1;
     const breathe = Math.sin(pulseTime * (2 * Math.PI / MOTION_TOKENS.DURATIONS.breathe)) * 0.03;
     return 1 + breathe;
-  }, [pulseTime, shouldReduceMotion, drawerOpen, isMounted]);
+  }, [pulseTime, shouldReduceMotion, isEquilibriumActive, isMounted]);
 
   const pulseGlowIntensity = useMemo(() => {
-    if (shouldReduceMotion || drawerOpen || !isMounted) return 0.4;
+    if (shouldReduceMotion || isEquilibriumActive || !isMounted) return 0.4;
     const pulse = Math.sin(pulseTime * (2 * Math.PI / MOTION_TOKENS.DURATIONS.breathe)) * 0.12;
     return 0.4 + pulse;
-  }, [pulseTime, shouldReduceMotion, drawerOpen, isMounted]);
+  }, [pulseTime, shouldReduceMotion, isEquilibriumActive, isMounted]);
 
   const getStateLabel = () => {
     if (dominantForce === 'balanced') return 'Balanced';
