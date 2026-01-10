@@ -30,6 +30,7 @@ import SentimentDrawer from '@/components/dimon/SentimentDrawer';
 import DivergenceDrawer from '@/components/dimon/DivergenceDrawer';
 import SignalDetailDrawer from '@/components/dimon/SignalDetailDrawer';
 import SegmentDetailDrawer from '@/components/dimon/SegmentDetailDrawer';
+import EquilibriumDrawer from '@/components/dimon/EquilibriumDrawer';
 import GlobalSignalLattice from '@/components/dimon/GlobalHolographicMap';
 
 
