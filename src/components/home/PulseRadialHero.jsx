@@ -85,7 +85,7 @@ const TrajectorySparkline = ({ data, color }) => {
 
 export default function PulseRadialHero({ score, trend, insight, sectorBreakdown, trendIndicator, sparklineData }) {
   const [animatedScore, setAnimatedScore] = useState(0);
-  const colors = getScoreColor(score);
+  const colors = { primary: '#FFB464', secondary: '#FFC989', glow: 'rgba(255, 180, 100, 0.25)' };
   
   useEffect(() => {
     const start = animatedScore;
