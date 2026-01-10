@@ -994,7 +994,7 @@ function LayoutContent({ children, currentPageName }) {
             </div>
           </aside>
 
-          <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex-1 flex flex-col overflow-hidden" style={{ background: '#0B0E13' }}>
             {/* OS Horizon V2 Utility Tray — Dynamic Scroll-Reactive HUD */}
             <UtilityTrayPill isOverlayOpen={isAlertsOpen || isSearchOpen || isCommentaryOpen}>
               {/* OS Horizon V2 Semantic Grouping: Cluster A (Search + Commentary) */}
