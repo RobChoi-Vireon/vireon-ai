@@ -805,8 +805,8 @@ function LayoutContent({ children, currentPageName }) {
               top: 0,
               left: 0,
               right: 0,
-              height: '35%',
-              background: 'linear-gradient(180deg, rgba(155, 140, 200, 0.020) 0%, transparent 100%)',
+              height: '40%',
+              background: 'linear-gradient(180deg, rgba(155, 140, 200, 0.012) 0%, transparent 100%)',
               pointerEvents: 'none'
             }} />
 
@@ -815,8 +815,18 @@ function LayoutContent({ children, currentPageName }) {
               bottom: 0,
               left: 0,
               right: 0,
-              height: '35%',
-              background: 'linear-gradient(0deg, rgba(90, 115, 145, 0.020) 0%, transparent 100%)',
+              height: '40%',
+              background: 'linear-gradient(0deg, rgba(90, 115, 145, 0.012) 0%, transparent 100%)',
+              pointerEvents: 'none'
+            }} />
+
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              width: '80%',
+              height: '100%',
+              background: 'linear-gradient(90deg, transparent 0%, rgba(11, 14, 19, 0.08) 100%)',
               pointerEvents: 'none'
             }} />
 
@@ -826,7 +836,7 @@ function LayoutContent({ children, currentPageName }) {
               left: '20px',
               width: '140px',
               height: '80px',
-              background: 'radial-gradient(ellipse at 50% 50%, rgba(130, 150, 255, 0.035) 0%, transparent 70%)',
+              background: 'radial-gradient(ellipse at 50% 50%, rgba(130, 150, 255, 0.020) 0%, transparent 70%)',
               filter: 'blur(35px)',
               pointerEvents: 'none',
               mixBlendMode: 'soft-light',
