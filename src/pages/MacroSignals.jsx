@@ -732,36 +732,42 @@ export default function MacroSignalsPage() {
                 </motion.div>
                 
                 {/* 4) Global Signals — OS HORIZON REFINED LAYOUT */}
-                <motion.div className="col-span-12" variants={sectionVariants} id="section-global-signals" data-section-order="4">
-                    <div className="mb-4 pl-2">
-                        <h2 className="text-xl font-bold mb-1" style={{ color: 'rgba(255,255,255,0.95)' }}>
-                          Global Signals
-                        </h2>
-                        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.70)' }}>
-                          Consensus and divergence across key sources.
-                        </p>
-                    </div>
+                <motion.div 
+                className="col-span-12 relative" 
+                variants={sectionVariants} 
+                id="section-global-signals" 
+                data-section-order="4"
+                style={{ position: 'relative', zIndex: 10 }}
+                >
+                <div className="mb-4 pl-2">
+                  <h2 className="text-xl font-bold mb-1" style={{ color: 'rgba(255,255,255,0.95)' }}>
+                    Global Signals
+                  </h2>
+                  <p className="text-xs" style={{ color: 'rgba(255,255,255,0.70)' }}>
+                    Consensus and divergence across key sources.
+                  </p>
+                </div>
 
-                    {/* Enhanced Grid with Breathing Room */}
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-                        <div className="lg:col-span-5 min-h-[480px] flex flex-col gap-4">
-                            <ConsensusMeter 
-                                score={digest.consensus_score} 
-                                breakdown={digest.consensus_breakdown} 
-                                onOpenDrawer={openConsensusDrawer}
-                            />
-                            <EquilibriumPulse 
-                                isEquilibriumActive={isEquilibriumDrawerOpen}
-                                onOpenDrawer={() => setIsEquilibriumDrawerOpen(!isEquilibriumDrawerOpen)}
-                            />
-                        </div>
-                        <div className="lg:col-span-7">
-                            <DivergenceReport 
-                                divergences={digest.synthesis?.divergences || []} 
-                                onOpenDrawer={setSelectedDivergence} 
-                            />
-                        </div>
-                    </div>
+                {/* Enhanced Grid with Breathing Room */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch relative">
+                  <div className="lg:col-span-5 min-h-[480px] flex flex-col gap-4">
+                      <ConsensusMeter 
+                          score={digest.consensus_score} 
+                          breakdown={digest.consensus_breakdown} 
+                          onOpenDrawer={openConsensusDrawer}
+                      />
+                      <EquilibriumPulse 
+                          isEquilibriumActive={isEquilibriumDrawerOpen}
+                          onOpenDrawer={() => setIsEquilibriumDrawerOpen(!isEquilibriumDrawerOpen)}
+                      />
+                  </div>
+                  <div className="lg:col-span-7 relative">
+                      <DivergenceReport 
+                          divergences={digest.synthesis?.divergences || []} 
+                          onOpenDrawer={setSelectedDivergence} 
+                      />
+                  </div>
+                </div>
                 </motion.div>
 
                 {/* 5) Narrative Map */}
