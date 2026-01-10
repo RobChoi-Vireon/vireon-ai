@@ -105,15 +105,13 @@ const GlobalMarketCard = ({ instrument, index, region }) => {
     >
       <motion.div
         whileHover={{ y: -4, scale: 1.03, transition: { duration: 0.2 } }}
-        className={`
-          relative overflow-hidden rounded-2xl p-6 cursor-pointer transition-all duration-300
-          bg-gradient-to-br ${regionThemes[region] || 'from-gray-500/10 to-gray-600/10 border-gray-500/20'}
-          backdrop-blur-xl border shadow-lg hover:shadow-2xl
-        `}
+        className="relative overflow-hidden rounded-2xl p-6 cursor-pointer transition-all duration-300 backdrop-blur-xl border"
         style={{
+          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.038) 0%, rgba(255, 255, 255, 0.022) 100%)',
+          borderColor: 'rgba(255,255,255,0.08)',
           boxShadow: isOutsizedMove
-            ? `0 4px 30px ${isPositive ? 'rgba(88, 227, 164, 0.2)' : 'rgba(255, 106, 122, 0.2)'}`
-            : '0 4px 20px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1)'
+            ? `inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 16px rgba(0,0,0,0.08), 0 0 24px ${isPositive ? 'rgba(88, 227, 164, 0.2)' : 'rgba(255, 106, 122, 0.2)'}`
+            : 'inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 16px rgba(0,0,0,0.08)'
         }}
       >
         <div className="relative z-10 flex flex-col h-full">
