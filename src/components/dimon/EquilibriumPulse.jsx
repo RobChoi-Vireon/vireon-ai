@@ -193,7 +193,7 @@ export default function EquilibriumPulse({
   const getKnobScale = () => {
     let baseScale = pulseScale;
     
-    if (drawerOpen) return 1.3;
+    if (isEquilibriumActive) return 1.3;
     if (isSliderHovered || isSliderFocused) return baseScale * 1.05;
     
     return baseScale;
