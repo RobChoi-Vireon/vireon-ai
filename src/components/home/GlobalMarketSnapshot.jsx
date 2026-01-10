@@ -400,9 +400,11 @@ const HighlightsDrawer = ({ isOpen, onToggle }) => {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="mt-4 overflow-hidden rounded-2xl border border-white/10 backdrop-blur-2xl"
+            className="mt-4 overflow-hidden rounded-2xl border backdrop-blur-2xl"
             style={{
-              background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.8))'
+              background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.038) 0%, rgba(255, 255, 255, 0.022) 100%)',
+              borderColor: 'rgba(255,255,255,0.08)',
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 16px rgba(0,0,0,0.08)'
             }}
           >
             <div className="p-6 space-y-4">
