@@ -24,7 +24,7 @@ const enhancedSectorData = {
         strength: 'High',
         confidence: 95,
         detail: 'Companies are spending big on AI infrastructure. Cloud providers need 40% more capacity to handle the demand.',
-        supportingData: '+40% YoY cloud capacity growth, $180B AI infrastructure spending'
+        supportingData: 'Cloud capacity up 40% this year, $180B spent on AI infrastructure'
       },
       {
         driver: 'Interest Rate Sensitivity',
@@ -32,7 +32,7 @@ const enhancedSectorData = {
         strength: 'Medium',
         confidence: 75,
         detail: 'Higher interest rates are making expensive tech stocks less attractive. Tech stock valuations have dropped 15% since rates went up.',
-        supportingData: 'Tech P/E fell 15% from peak, discount rates up 200bps'
+        supportingData: 'Tech valuations fell 15% from peak, interest rates up 2%'
       },
       {
         driver: 'Earnings Revision Momentum',
@@ -40,7 +40,7 @@ const enhancedSectorData = {
         strength: 'High',
         confidence: 88,
         detail: '78% of analysts raising their profit forecasts, especially for cloud and AI chip companies. Expectations are 3.2% higher on average.',
-        supportingData: '78% of analysts raising estimates, +3.2% avg revision'
+        supportingData: '78% of analysts raising forecasts, +3.2% average increase'
       }
     ],
     institutionalFlow: { 
