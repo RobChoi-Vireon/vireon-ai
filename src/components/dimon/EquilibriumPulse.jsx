@@ -679,11 +679,13 @@ export default function EquilibriumPulse({
           <motion.div
             className="absolute left-1/2 -translate-x-1/2"
             style={{
-              bottom: 'calc(100% + 12px)',
+              bottom: '100%',
+              marginBottom: '12px',
               width: '420px',
               maxWidth: '90vw',
-              zIndex: 30,
-              pointerEvents: 'auto'
+              zIndex: 100,
+              pointerEvents: 'auto',
+              position: 'absolute'
             }}
             initial={{ opacity: 0, y: 8, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
