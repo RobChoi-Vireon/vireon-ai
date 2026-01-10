@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, Info, Sparkles } from 'lucide-react';
+import YinYangIcon from './YinYangIcon';
 
 // ============================================================================
 // EQUILIBRIUM BALANCE MODULE — OS HORIZON V3.2
