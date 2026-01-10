@@ -248,7 +248,10 @@ const RegionButton = ({ region, isActive, onClick }) => {
   return (
     <motion.button
       onClick={onClick}
-      className={`relative group px-4 py-2.5 text-sm font-semibold tracking-wide rounded-xl transition-all duration-300 ease-out min-h-[44px] backdrop-blur-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black ${isActive ? 'text-white shadow-lg' : 'text-gray-400 hover:text-white hover:bg-white/[0.08]'}`}
+      className="relative group px-4 py-2.5 text-sm font-semibold tracking-wide rounded-xl transition-all duration-300 ease-out min-h-[44px] backdrop-blur-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+      style={{
+        color: isActive ? 'rgba(255,255,255,0.96)' : 'rgba(155,163,176,1)'
+      }}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.98 }}
       tabIndex={0}
