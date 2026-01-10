@@ -126,7 +126,7 @@ export default function LiveFeed() {
 
   return (
     <div className="min-h-screen font-sans overflow-x-hidden" style={{ 
-      background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(77, 143, 251, 0.12), transparent), linear-gradient(180deg, #0B0D10 0%, #0A0C0F 50%, #080A0D 100%)',
+      background: '#0B0E13',
       color: '#F8FAFC'
     }}>
       {/* Ambient background layers for depth */}
