@@ -740,14 +740,18 @@ export default function MacroSignalsPage() {
                           Consensus and divergence across key sources.
                         </p>
                     </div>
-                    
+
                     {/* Enhanced Grid with Breathing Room */}
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-                        <div className="lg:col-span-5 min-h-[480px]">
+                        <div className="lg:col-span-5 min-h-[480px] flex flex-col gap-4">
                             <ConsensusMeter 
                                 score={digest.consensus_score} 
                                 breakdown={digest.consensus_breakdown} 
                                 onOpenDrawer={openConsensusDrawer}
+                            />
+                            <EquilibriumPulse 
+                                isEquilibriumActive={isEquilibriumDrawerOpen}
+                                onOpenDrawer={() => setIsEquilibriumDrawerOpen(!isEquilibriumDrawerOpen)}
                             />
                         </div>
                         <div className="lg:col-span-7">
