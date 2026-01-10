@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence, useSpring } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, ArrowRight, Sparkles } from 'lucide-react';
+import YinYangIcon from './YinYangIcon';
 
 // ============================================================================
 // EQUILIBRIUM PULSE — OS HORIZON V3.2 (APPLE-GRADE MICRO-INTERACTIONS)
