@@ -106,7 +106,7 @@ export default function EquilibriumPulse({
   }, [equilibriumScore, prevEquilibriumScore, pulseX]);
 
   useEffect(() => {
-    if (shouldReduceMotion || drawerOpen) return;
+    if (shouldReduceMotion || isEquilibriumActive) return;
 
     let startTime = Date.now();
     const animate = () => {
@@ -119,7 +119,7 @@ export default function EquilibriumPulse({
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [shouldReduceMotion, drawerOpen]);
+  }, [shouldReduceMotion, isEquilibriumActive]);
 
   const pulseDrift = useMemo(() => {
     if (shouldReduceMotion || drawerOpen) return 0;
