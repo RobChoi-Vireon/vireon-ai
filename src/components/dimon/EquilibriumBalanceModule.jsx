@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, Info, Sparkles } from 'lucide-react';
-import YinYangIcon from './YinYangIcon';
 
 // ============================================================================
 // EQUILIBRIUM BALANCE MODULE — OS HORIZON V3.2
@@ -171,14 +170,6 @@ export default function EquilibriumBalanceModule({
       {/* Header Row */}
       <div className="flex items-center justify-between mb-5">
         <motion.div className="flex items-center gap-3">
-          <YinYangIcon 
-            className="w-4 h-4" 
-            strokeWidth={1.6}
-            style={{ 
-              color: '#8EBBFF',
-              filter: 'drop-shadow(0 0 6px rgba(142, 187, 255, 0.30))'
-            }} 
-          />
           <h4 
             style={{
               fontSize: '14px',

@@ -6,7 +6,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, Activity } from 'lucide-react';
-import YinYangIcon from './YinYangIcon';
 
 // OS Horizon Motion Curves (Cinematic Motion DNA)
 const MOTION = {
@@ -976,7 +975,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
             ease: 'easeOut'
           }}
         >
-          <YinYangIcon className="w-3 h-3 mr-1.5" strokeWidth={2.0} />
+          <Activity className="w-3 h-3 mr-1.5" />
         </motion.div>
         <motion.span
           animate={{

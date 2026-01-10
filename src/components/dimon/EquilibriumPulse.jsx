@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence, useSpring } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, ArrowRight, Sparkles } from 'lucide-react';
-import YinYangIcon from './YinYangIcon';
 
 // ============================================================================
 // EQUILIBRIUM PULSE — OS HORIZON V3.2 (APPLE-GRADE MICRO-INTERACTIONS)
@@ -288,14 +287,6 @@ export default function EquilibriumPulse({
       {/* Header Row */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2.5">
-          <YinYangIcon 
-            className="w-5 h-5" 
-            strokeWidth={1.8}
-            style={{ 
-              color: '#8EBBFF',
-              filter: 'drop-shadow(0 0 8px rgba(142, 187, 255, 0.35))'
-            }} 
-          />
           <h4 
             style={{
               fontSize: '18px',
