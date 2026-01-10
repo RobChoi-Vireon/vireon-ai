@@ -881,17 +881,6 @@ function LayoutContent({ children, currentPageName }) {
                 Market Status
               </div>
 
-              <div style={{
-                position: 'absolute',
-                top: '-16px',
-                left: '10%',
-                right: '10%',
-                height: '12px',
-                background: 'linear-gradient(to bottom, rgba(50, 194, 136, 0.04) 0%, transparent 100%)',
-                filter: 'blur(8px)',
-                pointerEvents: 'none'
-              }} />
-
               <motion.div 
                 className="relative rounded-[20px] overflow-hidden"
                 style={{
