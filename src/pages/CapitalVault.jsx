@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useFeatureFlags } from '../components/core/FeatureFlags';
 import { useMiniSheet } from '../components/core/MiniSheetProvider';
@@ -406,7 +405,7 @@ export default function CapitalVault() {
   }, [handleSearch]);
 
   return (
-    <div className="relative h-screen overflow-hidden" style={{ background: 'linear-gradient(135deg, #0B0D13 0%, #0A0C0F 50%, #080A0D 100%)' }}>
+    <div className="relative h-screen overflow-hidden" style={{ background: '#0B0E13' }}>
       <StarfieldBackground />
       
       <div className="relative z-10 h-full flex flex-col">
