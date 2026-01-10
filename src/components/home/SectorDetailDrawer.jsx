@@ -91,9 +91,9 @@ const enhancedSectorData = {
   },
   'Healthcare': {
     mainDrivers: [
-      { driver: 'Defensive Rotation', impact: 'Positive', strength: 'Medium', confidence: 80, detail: 'Flight to quality amid market uncertainty driving healthcare allocation. Pension funds increasing healthcare weighting by 2.3% this quarter.', supportingData: 'Pension fund reallocation: +2.3% to Healthcare' },
-      { driver: 'Drug Pricing Pressure', impact: 'Negative', strength: 'Medium', confidence: 70, detail: 'Medicare negotiations and biosimilar competition weighing on margins. Average price reduction of 12% on negotiated drugs.', supportingData: 'Avg. 12% price reduction on negotiated drugs' },
-      { driver: 'Biotech M&A Activity', impact: 'Positive', strength: 'High', confidence: 90, detail: 'Large pharma seeking growth through acquisitions, 23% premium average. $180B in announced deals YTD, 40% above historical average.', supportingData: '$180B M&A YTD, +40% vs. historical' }
+      { driver: 'Defensive Rotation', impact: 'Positive', strength: 'Medium', confidence: 80, detail: 'Investors are moving money into safer healthcare stocks during uncertain times. Big pension funds are increasing healthcare holdings by 2.3%.', supportingData: 'Pension funds moved 2.3% more money into healthcare' },
+      { driver: 'Drug Pricing Pressure', impact: 'Negative', strength: 'Medium', confidence: 70, detail: 'Government is negotiating lower drug prices. Plus, cheaper generic versions are competing. Drug prices are down 12% on average.', supportingData: 'Average 12% price drop on negotiated drugs' },
+      { driver: 'Biotech M&A Activity', impact: 'Positive', strength: 'High', confidence: 90, detail: 'Big pharma companies are buying smaller ones to grow. They\'re paying 23% above market price. $180B in deals so far - 40% more than usual.', supportingData: '$180B in deals this year, 40% more than normal' }
     ],
     institutionalFlow: { direction: 'Inflow', amount: '$1.1B', timeframe: '5 days', percentage: 60, vsPrior: '+20%', note: 'Pension fund rebalancing and defensive positioning.' },
     earningsRevisions: { direction: 'Mixed', upgrades: 18, downgrades: 27, avgChange: '+0.8%', note: 'Biotech upgrades offset by pharma downgrades.' },
@@ -118,9 +118,9 @@ const enhancedSectorData = {
   },
   'Financials': {
     mainDrivers: [
-      { driver: 'Yield Curve Steepening', impact: 'Positive', strength: 'High', confidence: 85, detail: 'Net interest margin expansion expectations as long rates rise faster than short rates. 2Y-10Y spread widening supports lending profitability.', supportingData: '2Y-10Y spread widening to +50bps' },
-      { driver: 'Credit Quality Concerns', impact: 'Negative', strength: 'Medium', confidence: 65, detail: 'Commercial real estate exposure and rising charge-offs in consumer lending. Office real estate losses averaging 8.5% of loan books.', supportingData: 'CRE losses: avg. 8.5% of loan books' },
-      { driver: 'Capital Return Acceleration', impact: 'Positive', strength: 'Medium', confidence: 75, detail: 'Banks increasing buybacks and dividends after stress test results. Average payout ratio increased to 65% from 52% last year.', supportingData: 'Avg payout ratio: 65% (up from 52%)' }
+      { driver: 'Yield Curve Steepening', impact: 'Positive', strength: 'High', confidence: 85, detail: 'Banks make more money when long-term rates rise faster than short-term rates. The gap is widening, which boosts bank profits.', supportingData: 'Gap between 2-year and 10-year rates widening to 0.5%' },
+      { driver: 'Credit Quality Concerns', impact: 'Negative', strength: 'Medium', confidence: 65, detail: 'Banks have risky office building loans and more people defaulting on credit cards. Office loan losses average 8.5% of total loans.', supportingData: 'Office building loan losses: average 8.5% of total loans' },
+      { driver: 'Capital Return Acceleration', impact: 'Positive', strength: 'Medium', confidence: 75, detail: 'Banks passed stress tests and are returning more cash to shareholders through buybacks and dividends. Payouts increased from 52% to 65%.', supportingData: 'Average shareholder payout: 65% (up from 52%)' }
     ],
     institutionalFlow: { direction: 'Inflow', amount: '$1.9B', timeframe: '5 days', percentage: 68, vsPrior: '+45%', note: 'Value rotation momentum and yield curve positioning.' },
     earningsRevisions: { direction: 'Up', upgrades: 28, downgrades: 14, avgChange: '+2.1%', note: 'Upgrades focused on large-cap banks.' },
@@ -145,9 +145,9 @@ const enhancedSectorData = {
   },
   'Consumer Disc.': {
     mainDrivers: [
-      { driver: 'Bifurcated Consumer Spending', impact: 'Mixed', strength: 'High', confidence: 80, detail: 'High-income consumers resilient while lower-income showing stress. Luxury goods up 8% Y/Y, mass market down 3%.', supportingData: 'Luxury sales up 8%, mass market down 3%' },
-      { driver: 'Inventory Normalization', impact: 'Negative', strength: 'Medium', confidence: 70, detail: 'Retailers working through excess inventory, pressuring margins. Average inventory levels 15% above historical norms.', supportingData: 'Inventory levels +15% vs. historical' },
-      { driver: 'China Reopening Impact', impact: 'Positive', strength: 'Medium', confidence: 60, detail: 'Luxury goods and travel benefiting from normalized Chinese consumer activity. Chinese luxury spending up 25% Q/Q.', supportingData: 'Chinese luxury spending +25% Q/Q' }
+      { driver: 'Bifurcated Consumer Spending', impact: 'Mixed', strength: 'High', confidence: 80, detail: 'Rich people are still spending, but average people are cutting back. Luxury sales up 8%, regular stores down 3%.', supportingData: 'Luxury sales up 8% this year, regular stores down 3%' },
+      { driver: 'Inventory Normalization', impact: 'Negative', strength: 'Medium', confidence: 70, detail: 'Retailers have too much stuff in warehouses. They\'ll need to discount to sell it. Inventory is 15% higher than normal.', supportingData: 'Inventory 15% higher than normal levels' },
+      { driver: 'China Reopening Impact', impact: 'Positive', strength: 'Medium', confidence: 60, detail: 'China reopened and Chinese consumers are spending again. Luxury purchases in China jumped 25% this quarter.', supportingData: 'Chinese luxury spending up 25% this quarter' }
     ],
     institutionalFlow: { direction: 'Outflow', amount: '-$0.8B', timeframe: '5 days', percentage: 30, vsPrior: '-15%', note: 'Rotation to defensive sectors amid consumer uncertainty.' },
     earningsRevisions: { direction: 'Down', upgrades: 15, downgrades: 23, avgChange: '-1.4%', note: 'Downgrades concentrated in mass-market retail.' },
@@ -172,9 +172,9 @@ const enhancedSectorData = {
   },
   'Energy': {
     mainDrivers: [
-      { driver: 'Oil Inventory Build', impact: 'Negative', strength: 'High', confidence: 80, detail: 'Strategic reserves releases and increased shale production outpacing demand growth. US crude inventories up 8.2M barrels vs -2.1M expected.', supportingData: 'US crude inventories: +8.2M barrels (vs. -2.1M expected)' },
-      { driver: 'Geopolitical Risk Premium', impact: 'Positive', strength: 'Medium', confidence: 70, detail: 'Middle East tensions supporting risk premium despite inventory concerns. Risk premium estimated at $8-12/barrel.', supportingData: 'Risk premium: $8-12/barrel due to geopolitics' },
-      { driver: 'Capital Discipline Focus', impact: 'Positive', strength: 'Medium', confidence: 75, detail: 'Energy companies maintaining shareholder returns over growth capex. Free cash flow yields averaging 12% across sector.', supportingData: 'FCF yields: avg. 12% across sector' }
+      { driver: 'Oil Inventory Build', impact: 'Negative', strength: 'High', confidence: 80, detail: 'More oil is being produced than used. US oil stockpiles grew by 8.2M barrels when they were expected to drop.', supportingData: 'US oil stockpiles: +8.2M barrels (expected -2.1M)' },
+      { driver: 'Geopolitical Risk Premium', impact: 'Positive', strength: 'Medium', confidence: 70, detail: 'Middle East conflicts are keeping oil prices elevated despite high supply. War risk adds $8-12 per barrel.', supportingData: 'War risk adds $8-12 per barrel to oil prices' },
+      { driver: 'Capital Discipline Focus', impact: 'Positive', strength: 'Medium', confidence: 75, detail: 'Energy companies are paying dividends instead of drilling more. They\'re generating 12% cash returns on average.', supportingData: 'Average cash returns: 12% across energy sector' }
     ],
     institutionalFlow: { direction: 'Outflow', amount: '-$1.2B', timeframe: '5 days', percentage: 25, vsPrior: '-25%', note: 'ESG mandates driving divestiture and transition concerns.' },
     earningsRevisions: { direction: 'Down', upgrades: 6, downgrades: 22, avgChange: '-2.8%', note: 'Revisions tied to lower oil price forecasts.' },
@@ -199,9 +199,9 @@ const enhancedSectorData = {
   },
   'Industrials': {
     mainDrivers: [
-      { driver: 'Infrastructure Spending', impact: 'Positive', strength: 'High', confidence: 90, detail: 'Government infrastructure bills creating multi-year tailwind. $1.2T Infrastructure Act driving 5-7 year demand cycle.', supportingData: '$1.2T Infrastructure Act driving demand' },
-      { driver: 'Supply Chain Reshoring', impact: 'Positive', strength: 'Medium', confidence: 80, detail: 'Nearshoring trends benefiting North American industrial capacity. Manufacturing construction spending up 67% Y/Y.', supportingData: 'Manufacturing construction +67% Y/Y' },
-      { driver: 'Labor Cost Inflation', impact: 'Negative', strength: 'Medium', confidence: 60, detail: 'Skilled labor shortages driving wage inflation, pressuring margins. Industrial wage inflation at 6.2% Y/Y vs 3.8% historical average.', supportingData: 'Industrial wage inflation: 6.2% Y/Y' }
+      { driver: 'Infrastructure Spending', impact: 'Positive', strength: 'High', confidence: 90, detail: 'Government is spending $1.2 trillion on infrastructure. This will drive demand for construction and equipment for 5-7 years.', supportingData: '$1.2 trillion Infrastructure Act creating 5-7 years of demand' },
+      { driver: 'Supply Chain Reshoring', impact: 'Positive', strength: 'Medium', confidence: 80, detail: 'Companies are moving factories back to North America. Manufacturing construction spending is up 67% year-over-year.', supportingData: 'Manufacturing construction up 67% this year' },
+      { driver: 'Labor Cost Inflation', impact: 'Negative', strength: 'Medium', confidence: 60, detail: 'Companies can\'t find enough skilled workers. Wages are rising 6.2% per year vs 3.8% normally, squeezing profits.', supportingData: 'Industrial wages up 6.2% this year (normal is 3.8%)' }
     ],
     institutionalFlow: { direction: 'Inflow', amount: '$0.9B', timeframe: '5 days', percentage: 55, vsPrior: '+30%', note: 'Infrastructure theme momentum and reshoring plays.' },
     earningsRevisions: { direction: 'Up', upgrades: 31, downgrades: 9, avgChange: '+1.9%', note: 'Strong revisions in machinery and construction.' },
