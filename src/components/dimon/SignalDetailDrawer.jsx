@@ -725,20 +725,9 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               -webkit-mask-image: radial-gradient(circle at 50% 45%, rgba(0,0,0,0) 42%, black 100%);
             }
             
-            /* Header Scrim */
+            /* Header Scrim - removed, not needed */
             .hzn-header-scrim {
-              position: fixed;
-              inset-inline: 0;
-              top: 0;
-              height: 72px;
-              z-index: 95;
-              pointer-events: none;
-              background: linear-gradient(to bottom, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.22) 35%, rgba(0, 0, 0, 0.00) 100%);
-              box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.05);
-              mix-blend-mode: normal;
-              opacity: 0;
-              transition: opacity var(--hzn-dur-open) var(--hzn-ease-silk);
-              will-change: opacity;
+              display: none;
             }
             
             .hzn-header-scrim--open {
