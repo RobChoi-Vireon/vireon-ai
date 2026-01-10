@@ -876,7 +876,20 @@ export default function MacroSignalsPage() {
         segment={selectedSegment}
         onNavigate={handleNavigateSegment}
       />
-      
+
+      <EquilibriumDrawer
+        isOpen={isEquilibriumDrawerOpen}
+        stabilityIndex={digest?.consensus_breakdown?.stabilityIndex || 72}
+        forces={digest?.forces || {
+          growth: 0.42,
+          rates: -0.38,
+          fx: 0.15,
+          geopolitics: -0.28
+        }}
+        equilibriumScore={digest?.consensus_score || 0.52}
+        dominantForce="balanced"
+      />
+
       <footer className="relative z-10 text-center py-8 border-t border-white/10">
         <p className="text-xs opacity-50">
           This is a demonstration of Vireon's macro-synthesis engine. Not financial advice.
