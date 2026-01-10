@@ -586,7 +586,7 @@ export default function MacroSignalsPage() {
     },
   };
   
-  const isAnyDrawerOpen = selectedSignal || selectedTakeaway || selectedDivergence || isConsensusDrawerOpen || selectedSegment;
+  const isAnyDrawerOpen = selectedSignal || selectedTakeaway || selectedDivergence || isConsensusDrawerOpen || selectedSegment || isEquilibriumDrawerOpen;
 
   return (
     <div className="min-h-screen font-sans overflow-x-hidden" style={{ 
