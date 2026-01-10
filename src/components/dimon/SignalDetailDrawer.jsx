@@ -695,7 +695,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             
             /* Frosted Backdrop */
             .hzn-frosted-backdrop {
-              position: fixed;
+              position: absolute;
               inset: 0;
               z-index: 80;
               background: rgba(24, 26, 29, 0.55);
@@ -707,8 +707,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                           backdrop-filter var(--li-duration) var(--li-ease);
               will-change: opacity, filter, backdrop-filter;
               contain: paint;
-              mask-image: linear-gradient(to bottom, transparent 0, black calc(72px + 8px));
-              -webkit-mask-image: linear-gradient(to bottom, transparent 0, black calc(72px + 8px));
+              pointer-events: none;
             }
             
             .hzn-frosted-backdrop--open {
