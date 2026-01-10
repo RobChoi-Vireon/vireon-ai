@@ -6,6 +6,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, Activity } from 'lucide-react';
+import YinYangIcon from './YinYangIcon';
 
 // OS Horizon Motion Curves (Cinematic Motion DNA)
 const MOTION = {
