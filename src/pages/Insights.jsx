@@ -158,27 +158,11 @@ export default function InsightsPage() {
 
   return (
     <>
-      {/* Refined Gradient Bridge */}
-      <div className="fixed top-0 left-0 md:left-[280px] w-8 md:w-12 h-full pointer-events-none z-10">
-        <div 
-          className="w-full h-full opacity-40"
-          style={{
-            background: 'linear-gradient(90deg, rgba(0, 0, 0, 0.9) 0%, rgba(26, 26, 46, 0.4) 40%, rgba(15, 23, 42, 0.15) 70%, transparent 100%)'
-          }}
-        />
-      </div>
-
-      {/* Main Content Container with Elevated Design */}
+      {/* Main Content Container */}
       <div 
-        className="relative min-h-screen ml-4 md:ml-8 mr-4 md:mr-6 mt-4 md:mt-6 mb-4 md:mb-6 rounded-2xl md:rounded-3xl overflow-hidden"
+        className="relative min-h-screen"
         style={{
-          background: 'linear-gradient(135deg, #0a0a12 0%, #12141f 50%, #0f1419 100%)',
-          boxShadow: `
-            0 0 0 1px rgba(79, 70, 229, 0.08),
-            0 8px 32px rgba(0, 0, 0, 0.5),
-            0 16px 64px rgba(26, 26, 46, 0.3),
-            inset 0 1px 0 rgba(255, 255, 255, 0.06)
-          `
+          background: '#0B0E13'
         }}
       >
         {/* Inner Content with Superior Spacing */}
