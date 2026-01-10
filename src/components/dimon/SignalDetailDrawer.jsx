@@ -1141,11 +1141,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             }
           `}</style>
 
-          {/* Header Scrim */}
-          <div
-            className={`hzn-header-scrim ${isAnimatingIn ? 'hzn-header-scrim--open' : ''}`}
-            aria-hidden="true"
-          />
+
 
           {/* Frosted Backdrop */}
           <div
