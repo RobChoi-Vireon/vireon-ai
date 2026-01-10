@@ -412,6 +412,7 @@ export default function MacroSignalsPage() {
   const [selectedDivergence, setSelectedDivergence] = useState(null);
   const [isConsensusDrawerOpen, setIsConsensusDrawerOpen] = useState(false);
   const [selectedSegment, setSelectedSegment] = useState(null);
+  const [isEquilibriumDrawerOpen, setIsEquilibriumDrawerOpen] = useState(false);
 
   // Memoize sanitized data to prevent re-computation on re-renders
   const sanitizedDigest = useMemo(() => {
