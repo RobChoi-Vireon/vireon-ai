@@ -18,6 +18,7 @@ import DigestSkeleton from '@/components/dimon/DigestSkeleton';
 import DegradedBanner from '@/components/dimon/DegradedBanner';
 import RetryWrapper from '@/components/core/RetryWrapper';
 import InflationSection from '@/components/dimon/InflationSection';
+import EquilibriumPulse from '@/components/dimon/EquilibriumPulse';
 
 // NOTE: Lazy loading components is a key performance optimization.
 // In a real build setup, these would be loaded asynchronously.
