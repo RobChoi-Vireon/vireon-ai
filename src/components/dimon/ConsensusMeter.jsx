@@ -6,7 +6,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, Activity } from 'lucide-react';
-import YinYangIcon from './YinYangIcon';
 
 // OS Horizon Motion Curves (Cinematic Motion DNA)
 const MOTION = {
@@ -881,28 +880,18 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
       )}
 
       <div className="flex items-center justify-between mb-5" style={{ position: 'relative', zIndex: 10 }}>
-        <motion.div 
-          className="flex items-center gap-3"
+        <motion.h2 
+          className="text-[16px] font-semibold"
+          style={{ 
+            color: 'rgba(255,255,255,0.96)',
+            letterSpacing: '-0.01em'
+          }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.08, ease: MOTION.CURVES.tertiary }}
         >
-          <YinYangIcon 
-            className="w-5 h-5" 
-            style={{
-              filter: 'drop-shadow(0 0 8px rgba(142, 187, 255, 0.25))'
-            }}
-          />
-          <h2 
-            className="text-[16px] font-semibold"
-            style={{ 
-              color: 'rgba(255,255,255,0.96)',
-              letterSpacing: '-0.01em'
-            }}
-          >
-            Equilibrium
-          </h2>
-        </motion.div>
+          Consensus
+        </motion.h2>
         <motion.div
           className="px-3 py-1.5 rounded-full text-xs font-semibold"
           style={{
