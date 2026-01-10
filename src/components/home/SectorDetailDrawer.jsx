@@ -23,7 +23,7 @@ const enhancedSectorData = {
         impact: 'Positive',
         strength: 'High',
         confidence: 95,
-        detail: 'Enterprise AI adoption accelerating, driving cloud and semiconductor demand. Major cloud providers expanding capacity by 40% Y/Y to meet AI workload requirements.',
+        detail: 'Companies are spending big on AI infrastructure. Cloud providers need 40% more capacity to handle the demand.',
         supportingData: '+40% YoY cloud capacity growth, $180B AI infrastructure spending'
       },
       {
@@ -31,7 +31,7 @@ const enhancedSectorData = {
         impact: 'Negative',
         strength: 'Medium',
         confidence: 75,
-        detail: 'Higher rates pressure high-multiple growth stocks and reduce NPV of future cash flows. Tech P/E compression of 15% since rate hikes began.',
+        detail: 'Higher interest rates are making expensive tech stocks less attractive. Tech stock valuations have dropped 15% since rates went up.',
         supportingData: 'Tech P/E fell 15% from peak, discount rates up 200bps'
       },
       {
@@ -39,7 +39,7 @@ const enhancedSectorData = {
         impact: 'Positive',
         strength: 'High',
         confidence: 88,
-        detail: '78% of analysts raising Q4 estimates, particularly in cloud and AI hardware. Average revision +3.2% above consensus with semis leading at +5.8%.',
+        detail: '78% of analysts raising their profit forecasts, especially for cloud and AI chip companies. Expectations are 3.2% higher on average.',
         supportingData: '78% of analysts raising estimates, +3.2% avg revision'
       }
     ],
@@ -59,21 +59,21 @@ const enhancedSectorData = {
       note: 'Majority upgrades signal improving fundamentals.'
     },
     keyThemes: [
-      { name: 'Generative AI Monetization', icon: Bot, severity: 'high', interpretation: 'Projected TAM growth of +20% YoY fuels revenue upside.', context: 'AI-driven software and services are expected to be the primary growth vector.' },
-      { name: 'Cloud Infrastructure Scaling', icon: Server, severity: 'high', interpretation: 'Major providers expanding capacity by 40% to meet AI demand.', context: 'Capital expenditures from AWS, Azure, and GCP are key indicators.' },
-      { name: 'Semiconductor Cycle Recovery', icon: Cpu, severity: 'medium', interpretation: 'Inventory normalization expected by H2 2024, improving margins.', context: 'Watch for memory and logic chip pricing trends.' },
+      { name: 'AI Becoming Profitable', icon: Bot, severity: 'high', interpretation: 'AI tools are starting to make real money. Market expected to grow 20% this year.', context: 'Companies are finding ways to charge for AI features and services.' },
+      { name: 'Cloud Build-Out', icon: Server, severity: 'high', interpretation: 'Big cloud companies are expanding by 40% to handle AI workloads.', context: 'Watch how much Amazon, Microsoft, and Google are spending on data centers.' },
+      { name: 'Chip Supply Fixing', icon: Cpu, severity: 'medium', interpretation: 'The chip shortage is ending. By mid-2024, supply will be healthy and profits should improve.', context: 'Watch memory and processor chip prices - they show supply health.' },
       { name: 'Edge Computing Expansion', icon: Globe, severity: 'medium', interpretation: '5G rollout and IoT adoption are unlocking new use cases.', context: 'Growth is tied to industrial automation and smart device proliferation.' }
     ],
     riskFactors: [
-      { name: 'Regulatory Scrutiny', icon: Gavel, severity: 'high', interpretation: 'Antitrust lawsuits in US/EU pose headline and financial risk.', context: 'Focus on potential impacts to app stores, advertising, and M&A activity.' },
-      { name: 'China Export Controls', icon: Globe, severity: 'high', interpretation: 'Geopolitical tensions impacting $15B+ in semiconductor trade.', context: 'Restrictions on advanced AI chips are a primary concern for hardware leaders.' },
-      { name: 'Valuation Compression', icon: Decline, severity: 'medium', interpretation: 'Higher interest rates continue to pressure high-multiple stocks.', context: 'Tech P/E multiples fell -15% from their 2022 peak.' },
+      { name: 'Government Lawsuits', icon: Gavel, severity: 'high', interpretation: 'Big tech companies are being sued for monopoly behavior. This could force business changes and hurt profits.', context: 'Watch cases involving app stores, advertising, and company acquisitions.' },
+      { name: 'China Trade Ban', icon: Globe, severity: 'high', interpretation: 'The US banned selling advanced AI chips to China. This cuts off $15B+ in sales.', context: 'Chip makers are losing access to one of their biggest markets.' },
+      { name: 'Stock Prices Under Pressure', icon: Decline, severity: 'medium', interpretation: 'Higher interest rates are making tech stocks look expensive. Prices have fallen 15% from peak.', context: 'Investors are demanding lower prices to justify the risk.' },
       { name: 'AI Bubble Concerns', icon: AlertTriangle, severity: 'low', interpretation: 'Retail sentiment showing signs of froth, potential for volatility.', context: 'Metrics show a divergence between institutional and retail positioning.' }
     ],
     forwardCatalysts: [
-      { date: '2024-01-28', day: '28', event: 'Meta Earnings & AI Capex Guidance', impact: 'High', context: 'Meta expected to announce AI infrastructure capex surge, potentially $30B+ annually', daysUntil: calculateDaysUntil('2024-01-28') },
+      { date: '2024-01-28', day: '28', event: 'Meta Earnings & AI Spending Plan', impact: 'High', context: 'Meta is expected to announce massive AI spending - possibly $30B+ per year. This signals their AI commitment and will boost suppliers.', daysUntil: calculateDaysUntil('2024-01-28') },
       { date: '2024-02-01', day: '01', event: 'AI Chip Supply Chain Data', impact: 'Medium', context: 'TSMC and Samsung capacity utilization rates for advanced AI chips', daysUntil: calculateDaysUntil('2024-02-01') },
-      { date: '2024-02-05', day: '05', event: 'Cloud Infrastructure Spending Report', impact: 'High', context: 'Q4 hyperscaler capex data from AWS, Azure, Google Cloud expected strong', daysUntil: calculateDaysUntil('2024-02-05') }
+      { date: '2024-02-05', day: '05', event: 'Cloud Spending Report', impact: 'High', context: 'Q4 data showing how much Amazon, Microsoft, and Google spent on cloud infrastructure. Expected to be strong.', daysUntil: calculateDaysUntil('2024-02-05') }
     ],
     technicalLevels: { 
       trend: 'Bullish', 
