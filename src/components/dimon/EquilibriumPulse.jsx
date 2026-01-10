@@ -236,7 +236,10 @@ export default function EquilibriumPulse({
         border: '1px solid rgba(255,255,255,0.10)',
         boxShadow: 'inset 0 2px 16px rgba(0, 0, 0, 0.36), 0 24px 48px rgba(0, 0, 0, 0.36)',
         cursor: 'pointer',
-        willChange: 'filter, transform'
+        willChange: 'filter, transform',
+        position: 'relative',
+        overflow: 'visible',
+        zIndex: 20
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
