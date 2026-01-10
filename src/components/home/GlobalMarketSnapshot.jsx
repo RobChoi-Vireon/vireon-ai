@@ -264,7 +264,19 @@ const RegionButton = ({ region, isActive, onClick }) => {
         <span>{region}</span>
         <SentimentBadge sentiment={sentiment.sentiment} tooltipText={sentiment.tooltipText} />
       </div>
-      {isActive && <motion.div layoutId="activeRegionTab" className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30" style={{ zIndex: -1 }} transition={{ type: "spring", bounce: 0.2, duration: 0.6 }} />}
+      {isActive && (
+        <motion.div 
+          layoutId="activeRegionTab" 
+          className="absolute inset-0 rounded-xl" 
+          style={{ 
+            zIndex: -1,
+            background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.068) 0%, rgba(255, 255, 255, 0.048) 100%)',
+            border: '1px solid rgba(255,255,255,0.10)',
+            boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 2px 8px rgba(0,0,0,0.06)'
+          }} 
+          transition={{ type: "spring", bounce: 0.2, duration: 0.6 }} 
+        />
+      )}
     </motion.button>
   );
 };
