@@ -47,9 +47,11 @@ export default function EquilibriumBalanceModule({
   lastUpdated = new Date()
 }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isExpandedOpen, setIsExpandedOpen] = useState(false);
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
   const [orbBreathPhase, setOrbBreathPhase] = useState(0);
   const containerRef = useRef(null);
+  const expandedPanelRef = useRef(null);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
