@@ -750,9 +750,10 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             .hzn-drawer {
               position: fixed;
               z-index: 90;
-              left: 50%;
-              top: 50%;
-              transform: translate(-50%, -50%) translateY(var(--hzn-open-translate)) scale(var(--hzn-open-scale));
+              left: 0;
+              right: 0;
+              margin-inline: auto;
+              top: calc(72px + 14px);
               max-width: min(820px, 90vw);
               border: 1px solid rgba(255, 255, 255, 0.06);
               background: linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(0,0,0,0.12));
@@ -760,6 +761,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               border-radius: 24px;
               overflow: hidden;
               
+              transform: translateY(var(--hzn-open-translate)) scale(var(--hzn-open-scale));
               opacity: 0;
               will-change: transform, opacity;
               transition: 
@@ -768,7 +770,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             }
             
             .hzn-drawer--open {
-              transform: translate(-50%, -50%) translateY(0) scale(1);
+              transform: translateY(0) scale(1);
               opacity: 1;
             }
             
