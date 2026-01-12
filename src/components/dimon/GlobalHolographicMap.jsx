@@ -2554,7 +2554,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 <span style={{ opacity: 0.55, letterSpacing: '0.05em' }}>
                   1–4 · ← → · ESC
                 </span>
-              </div>
+                </div>
+              </motion.div>
             </motion.div>
           </>
         )}
