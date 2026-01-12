@@ -1383,7 +1383,16 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
 
   return (
-    <motion.section variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} aria-label="Equilibrium" style={{ maxWidth: '84vw', margin: '0 auto' }}>
+    <motion.section 
+      variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} 
+      aria-label="Equilibrium" 
+      style={{ 
+        maxWidth: '84vw', 
+        margin: '0 auto',
+        position: 'relative',
+        isolation: 'isolate'
+      }}
+    >
       <div className="flex items-center justify-between mb-6 pl-2">
         <div className="flex items-center space-x-3">
           <Globe className="w-6 h-6" style={{ color: '#6AC7F7' }} />
@@ -1919,94 +1928,74 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         <p style={{ fontSize: '9px', fontWeight: 400, color: TOKENS.colors.textTertiary, opacity: 0.55, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Data via Lyra models</p>
       </div>
 
-      {/* DRAWER OVERLAY */}
+      {/* EXPANSION DRAWER — ANCHORED INSIDE EQUILIBRIUM */}
       <AnimatePresence>
-        {selectedDomain && (
-          <motion.div
-            className="fixed inset-0 z-40 drawer-overlay"
-            style={{
-              background: 'rgba(6,8,13,0.25)',
-              backdropFilter: 'blur(0px) brightness(1)',
-              WebkitBackdropFilter: 'blur(0px) brightness(1)',
-              pointerEvents: 'none'
-            }}
-            initial={{
-              opacity: 0,
-              backdropFilter: 'blur(0px) brightness(1)',
-              WebkitBackdropFilter: 'blur(0px) brightness(1)'
-            }}
-            animate={{
-              opacity: 1,
-              backdropFilter: 'blur(12px) brightness(0.97)',
-              WebkitBackdropFilter: 'blur(12px) brightness(0.97)',
-              transition: {
-                opacity: { duration: 0.1, ease: 'easeOut' },
-                backdropFilter: { duration: 0.5, ease: MOTION_TOKENS.CURVES.horizonIn },
-                WebkitBackdropFilter: { duration: 0.5, ease: MOTION_TOKENS.CURVES.horizonIn }
-              }
-            }}
-            exit={{
-              opacity: 0,
-              backdropFilter: 'blur(0px) brightness(1)',
-              WebkitBackdropFilter: 'blur(0px) brightness(1)',
-              transition: {
-                opacity: { duration: 0.25, ease: 'easeInOut' },
-                backdropFilter: { duration: 0.15, delay: 0.25, ease: 'easeOut' },
-                WebkitBackdropFilter: { duration: 0.15, delay: 0.25, ease: 'easeOut' }
-              }
-            }}
-            onClick={handleCloseDrawer}
-          />
-        )}
-      </AnimatePresence>
+        {selectedDomain && !isSwitchingNode && (
+          <>
+            {/* Local Overlay within Section */}
+            <motion.div
+              className="absolute inset-0 z-40"
+              style={{
+                background: 'rgba(6,8,13,0.65)',
+                backdropFilter: 'blur(8px) brightness(0.92)',
+                WebkitBackdropFilter: 'blur(8px) brightness(0.92)',
+                pointerEvents: 'auto',
+                borderRadius: '24px'
+              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={handleCloseDrawer}
+            />
 
-      {/* EXPANSION DRAWER — OS HORIZON V3.2 */}
-      <AnimatePresence>
-        {selectedDomain && !isSwitchingNode && drawerOrigin && (
-          <motion.div
-            ref={drawerRef}
-            className="fixed z-50 flex flex-col drawer-with-header-safe"
-            role="dialog"
-            aria-modal="true"
-            aria-label={`${selectedDomain.title} detailed analysis`}
-            style={{
-              left: drawerCenterPosition.left,
-              top: drawerCenterPosition.top,
-              width: drawerCenterPosition.width,
-              height: drawerCenterPosition.height,
-              backdropFilter: TOKENS.HORIZON.drawerBlur,
-              WebkitBackdropFilter: TOKENS.HORIZON.drawerBlur,
-              background: TOKENS.HORIZON.drawerGlass,
-              border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
-              boxShadow: `0 0 60px rgba(0, 0, 0, 0.15), ${TOKENS.HORIZON.panelShadow}, 0 0 12px ${TOKENS.HORIZON.drawerEdgeBloom}, inset 0 0 0 1px rgba(255,255,255,0.10)`,
-              borderRadius: '24px',
-              overflow: 'hidden',
-              filter: `brightness(${drawerLuminance})`
-            }}
-            initial={{
-              scale: 0.985,
-              opacity: 0,
-              y: 4
-            }}
-            animate={{
-              scale: 1,
-              opacity: 1,
-              y: 0,
-              transition: {
-                duration: MOTION_TOKENS.DURATIONS.drawerInhale,
-                ease: MOTION_TOKENS.CURVES.drawerInhale
-              }
-            }}
-            exit={{
-              scale: 0.99,
-              opacity: 0,
-              transition: {
-                duration: MOTION_TOKENS.DURATIONS.base,
-                ease: MOTION_TOKENS.CURVES.horizonOut
-              }
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
+            {/* Anchored Expansion Panel */}
+            <motion.div
+              ref={drawerRef}
+              className="absolute z-50 flex flex-col drawer-with-header-safe"
+              role="dialog"
+              aria-modal="true"
+              aria-label={`${selectedDomain.title} detailed analysis`}
+              style={{
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 'min(520px, 90%)',
+                maxHeight: '85%',
+                backdropFilter: TOKENS.HORIZON.drawerBlur,
+                WebkitBackdropFilter: TOKENS.HORIZON.drawerBlur,
+                background: TOKENS.HORIZON.drawerGlass,
+                border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
+                boxShadow: `0 0 60px rgba(0, 0, 0, 0.15), ${TOKENS.HORIZON.panelShadow}, 0 0 12px ${TOKENS.HORIZON.drawerEdgeBloom}, inset 0 0 0 1px rgba(255,255,255,0.10)`,
+                borderRadius: '24px',
+                overflow: 'hidden',
+                filter: `brightness(${drawerLuminance})`
+              }}
+              initial={{
+                scale: 0.92,
+                opacity: 0,
+                y: 20
+              }}
+              animate={{
+                scale: 1,
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: MOTION_TOKENS.DURATIONS.drawerInhale,
+                  ease: MOTION_TOKENS.CURVES.drawerInhale
+                }
+              }}
+              exit={{
+                scale: 0.94,
+                opacity: 0,
+                y: 10,
+                transition: {
+                  duration: MOTION_TOKENS.DURATIONS.base,
+                  ease: MOTION_TOKENS.CURVES.horizonOut
+                }
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
             {/* Background layers */}
             <div
               className="drawer-header-blur-extension"
