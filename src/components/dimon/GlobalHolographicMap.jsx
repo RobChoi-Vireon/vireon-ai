@@ -2076,7 +2076,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
             {/* HEADER */}
             <motion.div
-              className="flex-shrink-0 p-6 border-b"
+              className="flex-shrink-0 p-4 border-b"
               style={{
                 background: TOKENS.HORIZON.drawerTint,
                 borderColor: TOKENS.HORIZON.drawerDivider,
@@ -2100,10 +2100,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 transition: { duration: MOTION_TOKENS.DURATIONS.fast }
               }}
             >
-              <div className="flex items-start justify-between mb-5">
+              <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-4">
                   <motion.div
-                    className="w-12 h-12 rounded-full flex items-center justify-center"
+                    className="w-10 h-10 rounded-full flex items-center justify-center"
                     style={{
                       background: `${getDomainColor(selectedDomain.id)}12`,
                       border: `1px solid ${getDomainColor(selectedDomain.id)}25`,
@@ -2124,12 +2124,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   <div>
                     <h3 style={{
                       color: TOKENS.colors.textPrimary,
-                      fontSize: '19px',
+                      fontSize: '17px',
                       fontWeight: 600,
-                      lineHeight: '1.25',
+                      lineHeight: '1.2',
                       fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
                       letterSpacing: '-0.01em',
-                      marginBottom: '6px'
+                      marginBottom: '4px'
                     }}>
                       {selectedDomain.title}
                     </h3>
@@ -2149,21 +2149,21 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               </div>
 
               <div className="flex items-center gap-4">
-                <div className="relative w-10 h-10">
-                  <svg className="transform -rotate-90" width="40" height="40">
-                    <circle cx="20" cy="20" r="17" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="3" />
+                <div className="relative w-9 h-9">
+                  <svg className="transform -rotate-90" width="36" height="36">
+                    <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2.5" />
                     <motion.circle
-                      cx="20" cy="20" r="17" fill="none"
+                      cx="18" cy="18" r="15" fill="none"
                       stroke={getDomainColor(selectedDomain.id)}
-                      strokeWidth="3" strokeLinecap="round"
-                      strokeDasharray="107"
-                      initial={{ strokeDashoffset: 107, opacity: 0.9 }}
-                      animate={{ strokeDashoffset: 107 - (107 * selectedDomain.confidence_pct / 100), opacity: 0.98 }}
+                      strokeWidth="2.5" strokeLinecap="round"
+                      strokeDasharray="94"
+                      initial={{ strokeDashoffset: 94, opacity: 0.9 }}
+                      animate={{ strokeDashoffset: 94 - (94 * selectedDomain.confidence_pct / 100), opacity: 0.98 }}
                       transition={{ duration: 0.6, delay: 0.2, ease: MOTION_TOKENS.CURVES.horizonIn }}
                       style={{ filter: `drop-shadow(0 0 6px ${getDomainBloom(selectedDomain.id)})` }}
                     />
                   </svg>
-                  <div className="absolute inset-0 flex items-center justify-center font-bold" style={{ color: TOKENS.colors.textPrimary, fontSize: '13px' }}>
+                  <div className="absolute inset-0 flex items-center justify-center font-bold" style={{ color: TOKENS.colors.textPrimary, fontSize: '11px' }}>
                     {selectedDomain.confidence_pct}
                     {selectedDomain.confidenceDelta !== undefined && (
                       <span className={`absolute -right-2 -top-1 text-[9px] ${selectedDomain.confidenceDelta > 0 ? 'text-green-400' : 'text-red-400'}`}>
@@ -2198,8 +2198,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
             {/* SCROLLABLE BODY — OS HORIZON V3.2 HIERARCHY */}
             <motion.div
-              className="flex-1 overflow-y-auto px-6 pb-24"
-              style={{ position: 'relative', zIndex: 2, paddingTop: '28px' }}
+              className="flex-1 overflow-y-auto px-5 pb-5"
+              style={{ position: 'relative', zIndex: 2, paddingTop: '16px' }}
               initial={{ opacity: 0 }}
               animate={{
                 opacity: 1,
@@ -2222,14 +2222,14 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   delay: shouldReduceMotion ? 0 : 0.09,
                   duration: MOTION_TOKENS.DURATIONS.fast
                 }}
-                style={{ marginBottom: '24px' }}
+                style={{ marginBottom: '16px' }}
               >
                 <h4 style={{
                   color: 'rgba(255,255,255,0.68)',
-                  fontSize: '12px',
+                  fontSize: '11px',
                   fontWeight: 600,
-                  marginBottom: '12px',
-                  lineHeight: '1.4',
+                  marginBottom: '8px',
+                  lineHeight: '1.3',
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase'
                 }}>
@@ -2237,8 +2237,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 </h4>
                 <p style={{
                   color: TOKENS.colors.textBody,
-                  fontSize: '14px',
-                  lineHeight: '1.6',
+                  fontSize: '13px',
+                  lineHeight: '1.5',
                   fontWeight: 400
                 }}>
                   {selectedDomain.summary}
@@ -2246,10 +2246,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 {selectedDomain.addendum && (
                   <p style={{
                     color: TOKENS.colors.textSecondary,
-                    fontSize: '13px',
-                    marginTop: '10px',
+                    fontSize: '12px',
+                    marginTop: '8px',
                     opacity: 0.85,
-                    lineHeight: '1.55',
+                    lineHeight: '1.45',
                     fontWeight: 400
                   }}>
                     {selectedDomain.addendum}
@@ -2265,20 +2265,20 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   delay: shouldReduceMotion ? 0 : 0.12,
                   duration: MOTION_TOKENS.DURATIONS.fast
                 }}
-                style={{ marginBottom: '32px' }}
+                style={{ marginBottom: '16px' }}
               >
                 <h4 style={{
                   color: 'rgba(255,255,255,0.68)',
-                  fontSize: '12px',
+                  fontSize: '11px',
                   fontWeight: 600,
-                  marginBottom: '12px',
-                  lineHeight: '1.4',
+                  marginBottom: '8px',
+                  lineHeight: '1.3',
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase'
                 }}>
                   Downstream Effects
                 </h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   {selectedDomain.downstream_effects.map((effect, i) => (
                     <motion.div
                       key={i}
@@ -2299,12 +2299,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       } : {}}
                       style={{
                         background: 'rgba(255,255,255,0.03)',
-                        borderRadius: '12px',
-                        padding: '10px 12px',
+                        borderRadius: '10px',
+                        padding: '8px 10px',
                         display: 'flex',
                         alignItems: 'flex-start',
                         justifyContent: 'space-between',
-                        gap: '10px',
+                        gap: '8px',
                         position: 'relative',
                         cursor: effect.link ? 'pointer' : 'default',
                         transition: `transform 0.14s ${MOTION_TOKENS.CURVES.horizonIn.map(n => n).join(',')}, filter 0.14s ease`
@@ -2314,15 +2314,15 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       <div className="flex-1 min-w-0">
                         <p style={{
                           color: TOKENS.colors.textBody,
-                          fontSize: '13.5px',
-                          lineHeight: '1.42',
+                          fontSize: '12.5px',
+                          lineHeight: '1.35',
                           fontWeight: 500,
-                          marginBottom: '6px'
+                          marginBottom: '4px'
                         }}>
                           {effect.title}
                         </p>
                         <div style={{
-                          fontSize: '11px',
+                          fontSize: '10px',
                           color: TOKENS.colors.textMuted,
                           fontWeight: 400,
                           letterSpacing: '0.02em'
@@ -2358,11 +2358,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   delay: shouldReduceMotion ? 0 : 0.18,
                   duration: MOTION_TOKENS.DURATIONS.fast
                 }}
-                className="p-5 rounded-2xl relative overflow-hidden"
+                className="p-4 rounded-2xl relative overflow-hidden"
                 style={{
                   background: 'rgba(255,255,255,0.03)',
                   border: '1px solid rgba(255,255,255,0.06)',
-                  borderRadius: '14px',
+                  borderRadius: '12px',
                   boxShadow: `inset 0 0 20px ${getDomainGlow(selectedDomain.id)}`
                 }}
                 whileHover={shouldReduceMotion ? {} : {
@@ -2390,12 +2390,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   />
                 )}
 
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-3">
                   <p className="text-xs font-semibold" style={{
                     color: 'rgba(255,255,255,0.68)',
                     letterSpacing: '0.12em',
-                    fontSize: '11px',
-                    lineHeight: '1.4',
+                    fontSize: '10px',
+                    lineHeight: '1.3',
                     fontWeight: 600,
                     textTransform: 'uppercase'
                   }}>
@@ -2427,11 +2427,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {selectedDomain.actionable.directives.map((directive, i) => (
                     <motion.div
                       key={i}
-                      className="flex items-start gap-3"
+                      className="flex items-start gap-2.5"
                       initial={{ opacity: 0, x: -3 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{
@@ -2444,14 +2444,14 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         height: '4px',
                         borderRadius: '999px',
                         background: getDomainColor(selectedDomain.id),
-                        marginTop: '7px',
+                        marginTop: '5px',
                         flexShrink: 0,
                         boxShadow: `0 0 6px ${getDomainBloom(selectedDomain.id)}`
                       }} />
                       <p style={{
                         color: 'rgba(215, 225, 235, 0.94)',
-                        fontSize: '13.5px',
-                        lineHeight: '1.55',
+                        fontSize: '12.5px',
+                        lineHeight: '1.45',
                         fontWeight: 400,
                         flex: 1
                       }}>
@@ -2465,7 +2465,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
             {/* STICKY FOOTER */}
             <motion.div
-              className="flex-shrink-0 border-t p-5"
+              className="flex-shrink-0 border-t p-4"
               style={{
                 position: 'sticky',
                 bottom: 0,
@@ -2490,16 +2490,16 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 transition: { duration: MOTION_TOKENS.DURATIONS.fast }
               }}
             >
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center gap-2.5 mb-3">
                 <motion.button
                   className="flex-1 flex items-center justify-center gap-2 rounded-xl font-medium"
                   style={{
                     background: 'rgba(90,160,255,0.12)',
                     color: '#5A9EFF',
                     border: '1px solid rgba(90,160,255,0.25)',
-                    fontSize: '13.5px',
-                    paddingTop: '11px',
-                    paddingBottom: '11px',
+                    fontSize: '13px',
+                    paddingTop: '9px',
+                    paddingBottom: '9px',
                     fontWeight: 600,
                     letterSpacing: '0.01em'
                   }}
@@ -2526,12 +2526,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 </motion.button>
 
                 <motion.button
-                  className="px-4 py-3 rounded-xl text-sm font-medium"
+                  className="px-3.5 py-2.5 rounded-xl text-sm font-medium"
                   style={{
                     background: 'rgba(255, 255, 255, 0.05)',
                     color: TOKENS.colors.textSecondary,
                     border: '1px solid rgba(255, 255, 255, 0.08)',
-                    fontSize: '12.5px',
+                    fontSize: '12px',
                     fontWeight: 500
                   }}
                   whileHover={shouldReduceMotion ? {} : {
