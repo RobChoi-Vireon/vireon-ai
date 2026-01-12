@@ -719,10 +719,10 @@ export default function MacroSignalsPage() {
                   </motion.div>
                 )}
 
-                {/* 3) Global Holographic Map */}
+                {/* 3) Global Equilibrium Parallax */}
                 <motion.div 
                   variants={sectionVariants}
-                  id="section-global-holographic-map" 
+                  id="section-global-equilibrium-parallax" 
                   data-section-order="3"
                   className="col-span-12"
                 >
