@@ -2559,8 +2559,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
-  </div>
+      </div>
 
       <style jsx>{`
         @keyframes ripple {
