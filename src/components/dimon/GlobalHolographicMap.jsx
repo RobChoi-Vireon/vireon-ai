@@ -1526,7 +1526,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           border: '1px solid rgba(160,191,255,0.08)',
           borderRadius: '24px',
           position: 'relative',
-          overflow: 'hidden',
+          overflow: 'visible',
           pointerEvents: 'none' // Allow click-through to children by default
         }}
       >
@@ -1934,8 +1934,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           <>
             {/* Local Overlay within Section */}
             <motion.div
-              className="absolute inset-0 z-40"
+              className="absolute z-40"
               style={{
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
                 background: 'rgba(6,8,13,0.65)',
                 backdropFilter: 'blur(8px) brightness(0.92)',
                 WebkitBackdropFilter: 'blur(8px) brightness(0.92)',
@@ -1957,11 +1961,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               aria-modal="true"
               aria-label={`${selectedDomain.title} detailed analysis`}
               style={{
-                top: '50%',
+                top: '24px',
                 left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: 'min(520px, 90%)',
-                maxHeight: '85%',
+                transform: 'translateX(-50%)',
+                width: 'min(520px, calc(100% - 48px))',
+                maxHeight: 'calc(100% - 48px)',
                 overflowY: 'auto',
                 backdropFilter: TOKENS.HORIZON.drawerBlur,
                 WebkitBackdropFilter: TOKENS.HORIZON.drawerBlur,
@@ -1969,7 +1973,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
                 boxShadow: `0 0 60px rgba(0, 0, 0, 0.15), ${TOKENS.HORIZON.panelShadow}, 0 0 12px ${TOKENS.HORIZON.drawerEdgeBloom}, inset 0 0 0 1px rgba(255,255,255,0.10)`,
                 borderRadius: '24px',
-                filter: `brightness(${drawerLuminance})`
+                filter: `brightness(${drawerLuminance})`,
+                pointerEvents: 'auto'
               }}
               initial={{
                 scale: 0.92,
