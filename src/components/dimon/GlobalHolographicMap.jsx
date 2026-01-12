@@ -1963,14 +1963,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               aria-label={`${selectedDomain.title} detailed analysis`}
               style={{
                 top: '24px',
-                left: '24px',
                 right: '24px',
-                bottom: '24px',
-                width: 'auto',
-                maxWidth: '520px',
-                margin: '0 auto',
-                maxHeight: 'none',
-                height: 'auto',
+                width: '520px',
+                maxWidth: 'calc(100% - 48px)',
+                maxHeight: 'calc(100% - 48px)',
                 overflowY: 'auto',
                 backdropFilter: TOKENS.HORIZON.drawerBlur,
                 WebkitBackdropFilter: TOKENS.HORIZON.drawerBlur,
