@@ -1517,9 +1517,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: 'clamp(48px, 8vw, 96px)', // Increased minimum gap from 32px to 48px
+          gap: 'clamp(48px, 8vw, 96px)',
           width: '100%',
           height: 'auto',
+          minHeight: '600px',
           paddingTop: '48px',
           paddingBottom: '48px',
           background: `linear-gradient(184deg, ${TOKENS.HORIZON.bgBase} 0%, ${TOKENS.HORIZON.bgEnd} 100%)`,
@@ -1527,7 +1528,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
           borderRadius: '24px',
           position: 'relative',
           overflow: 'visible',
-          pointerEvents: 'none' // Allow click-through to children by default
+          pointerEvents: 'none'
         }}
       >
         {/* ORB CLUSTER VISUAL (FIXED HEIGHT + BOTTOM BOUNDARY) */}
@@ -1962,10 +1963,14 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               aria-label={`${selectedDomain.title} detailed analysis`}
               style={{
                 top: '24px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                width: 'min(520px, calc(100% - 48px))',
-                maxHeight: 'calc(100% - 48px)',
+                left: '24px',
+                right: '24px',
+                bottom: '24px',
+                width: 'auto',
+                maxWidth: '520px',
+                margin: '0 auto',
+                maxHeight: 'none',
+                height: 'auto',
                 overflowY: 'auto',
                 backdropFilter: TOKENS.HORIZON.drawerBlur,
                 WebkitBackdropFilter: TOKENS.HORIZON.drawerBlur,
