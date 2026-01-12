@@ -1962,13 +1962,13 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 transform: 'translate(-50%, -50%)',
                 width: 'min(520px, 90%)',
                 maxHeight: '85%',
+                overflowY: 'auto',
                 backdropFilter: TOKENS.HORIZON.drawerBlur,
                 WebkitBackdropFilter: TOKENS.HORIZON.drawerBlur,
                 background: TOKENS.HORIZON.drawerGlass,
                 border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
                 boxShadow: `0 0 60px rgba(0, 0, 0, 0.15), ${TOKENS.HORIZON.panelShadow}, 0 0 12px ${TOKENS.HORIZON.drawerEdgeBloom}, inset 0 0 0 1px rgba(255,255,255,0.10)`,
                 borderRadius: '24px',
-                overflow: 'hidden',
                 filter: `brightness(${drawerLuminance})`
               }}
               initial={{
