@@ -1510,43 +1510,53 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         </motion.div>
       </div>
 
-      {/* OS HORIZON V4.0 — EQUILIBRIUM STACK CONTAINER (AUTO-LAYOUT) */}
+      {/* OS HORIZON V4.0 — EQUILIBRIUM WRAP (OVERFLOW VISIBLE FOR DRAWER) */}
       <div
-        className="equilibrium-stack-container"
+        className="equilibrium-wrap"
         style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 'clamp(48px, 8vw, 96px)', // Increased minimum gap from 32px to 48px
-          width: '100%',
-          height: 'auto',
-          paddingTop: '48px',
-          paddingBottom: '48px',
-          background: `linear-gradient(184deg, ${TOKENS.HORIZON.bgBase} 0%, ${TOKENS.HORIZON.bgEnd} 100%)`,
-          border: '1px solid rgba(160,191,255,0.08)',
-          borderRadius: '24px',
           position: 'relative',
+          width: '100%',
           overflow: 'visible',
-          pointerEvents: 'none' // Allow click-through to children by default
+          isolation: 'isolate'
         }}
       >
-        {/* ORB CLUSTER VISUAL (FIXED HEIGHT + BOTTOM BOUNDARY) */}
+        {/* VISUAL CLIP LAYER — Handles parallax/orbs/blur with overflow hidden */}
         <div
-          ref={containerRef}
-          className={`orb-cluster-visual ${isEquilibriumActive ? 'hero-orbs-muted' : ''}`}
-          data-dominant={dominantDriver}
+          className="equilibrium-visual-clip"
           style={{
-            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 'clamp(48px, 8vw, 96px)',
             width: '100%',
-            height: '500px', // Fixed height for the visual area
-            maxHeight: '500px',
-            overflow: 'hidden', // CRITICAL: Prevents orbs/glow from bleeding into equilibrium area
-            pointerEvents: isEquilibriumActive ? 'none' : 'auto', // DISABLE all hero interactions when equilibrium is active
-            opacity: isEquilibriumActive ? 0.6 : 1, // Visual de-emphasis when equilibrium is active
-            filter: isEquilibriumActive ? 'brightness(0.7) saturate(0.8)' : 'brightness(1) saturate(1)',
-            transition: 'opacity 0.2s ease-out, filter 0.2s ease-out'
+            height: 'auto',
+            paddingTop: '48px',
+            paddingBottom: '48px',
+            background: `linear-gradient(184deg, ${TOKENS.HORIZON.bgBase} 0%, ${TOKENS.HORIZON.bgEnd} 100%)`,
+            border: '1px solid rgba(160,191,255,0.08)',
+            borderRadius: '24px',
+            position: 'relative',
+            overflow: 'hidden',
+            pointerEvents: 'none'
           }}
         >
+          {/* ORB CLUSTER VISUAL (FIXED HEIGHT + BOTTOM BOUNDARY) */}
+          <div
+            ref={containerRef}
+            className={`orb-cluster-visual ${isEquilibriumActive ? 'hero-orbs-muted' : ''}`}
+            data-dominant={dominantDriver}
+            style={{
+              position: 'relative',
+              width: '100%',
+              height: '500px',
+              maxHeight: '500px',
+              overflow: 'hidden',
+              pointerEvents: isEquilibriumActive ? 'none' : 'auto',
+              opacity: isEquilibriumActive ? 0.6 : 1,
+              filter: isEquilibriumActive ? 'brightness(0.7) saturate(0.8)' : 'brightness(1) saturate(1)',
+              transition: 'opacity 0.2s ease-out, filter 0.2s ease-out'
+            }}
+          >
           {/* UNIFIED SMOOTH BACKGROUND — Single seamless gradient */}
           <div
             className="equilibrium-unified-background"
@@ -1924,9 +1934,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         </div>
       </div>
 
-      <div className="flex justify-center" style={{ marginTop: '10px' }}>
-        <p style={{ fontSize: '9px', fontWeight: 400, color: TOKENS.colors.textTertiary, opacity: 0.55, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Data via Lyra models</p>
-      </div>
+        <div className="flex justify-center" style={{ marginTop: '10px' }}>
+          <p style={{ fontSize: '9px', fontWeight: 400, color: TOKENS.colors.textTertiary, opacity: 0.55, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Data via Lyra models</p>
+        </div>
 
       {/* EXPANSION DRAWER — ANCHORED INSIDE EQUILIBRIUM */}
       <AnimatePresence>
@@ -1964,7 +1974,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 top: '24px',
                 left: '50%',
                 transform: 'translateX(-50%)',
-                width: 'min(520px, calc(100% - 48px))',
+                width: 'min(480px, calc(100% - 48px))',
                 maxHeight: 'calc(100% - 48px)',
                 overflowY: 'auto',
                 backdropFilter: TOKENS.HORIZON.drawerBlur,
@@ -2327,12 +2337,22 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                           fontWeight: 400,
                           letterSpacing: '0.02em'
                         }}>
-                          {effect.tags.map((tag, idx) => (
-                            <React.Fragment key={idx}>
-                              {idx > 0 && <span style={{ opacity: 0.7, margin: '0 4px' }}>·</span>}
-                              <span style={{ textTransform: 'lowercase' }}>{tag.toLowerCase()}</span>
-                            </React.Fragment>
-                          ))}
+                          {effect.tags.map((tag, idx) => {
+                            // Simplify jargon tags
+                            const readableTag = tag
+                              .replace(/HY/g, 'High-Yield Bonds')
+                              .replace(/IG/g, 'Investment Grade')
+                              .replace(/EM debt/g, 'Emerging Markets')
+                              .replace(/FX funding/g, 'Currency')
+                              .replace(/Large-cap growth/g, 'Large Tech');
+                            
+                            return (
+                              <React.Fragment key={idx}>
+                                {idx > 0 && <span style={{ opacity: 0.7, margin: '0 4px' }}>·</span>}
+                                <span style={{ textTransform: 'lowercase' }}>{readableTag.toLowerCase()}</span>
+                              </React.Fragment>
+                            );
+                          })}
                         </div>
                       </div>
                       {effect.link && (
@@ -2562,11 +2582,13 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   1–4 · ← → · ESC
                 </span>
               </div>
-            </motion.div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+                </motion.div>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
 
       <style jsx>{`
         @keyframes ripple {
