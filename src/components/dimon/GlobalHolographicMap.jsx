@@ -1934,12 +1934,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         </div>
       </div>
 
-      {/* Anchored Expansion Panel */}
-      <AnimatePresence>
-        {selectedDomain && (
-          <motion.div
-            ref={drawerRef}
-            className="absolute z-50 flex flex-col drawer-with-header-safe"
+
+
+            {/* Anchored Expansion Panel */}
+            <motion.div
+              ref={drawerRef}
+              className="absolute z-50 flex flex-col drawer-with-header-safe"
               role="dialog"
               aria-modal="true"
               aria-label={`${selectedDomain.title} detailed analysis`}
@@ -2556,9 +2556,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 </span>
               </div>
             </motion.div>
-          </motion.div>
+          </>
         )}
       </AnimatePresence>
+        </div>
       </div>
 
       <style jsx>{`
