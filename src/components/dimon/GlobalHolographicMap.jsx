@@ -2560,7 +2560,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         </>
       )}
     </AnimatePresence>
-      </div>
+        </div>
       </div>
 
       <style jsx>{`
