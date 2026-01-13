@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UserCheck, TrendingUp, TrendingDown, Activity, Eye, BarChart3 } from 'lucide-react';
+import { UserCheck, TrendingUp, TrendingDown, Activity, Eye, BarChart3, ArrowRight } from 'lucide-react';
 
 const EnhancedSparkline = ({ data, ticker }) => {
   const width = 120;
@@ -96,17 +96,17 @@ const MetricTooltip = ({ ticker, impliedVol, sentimentScore, revisionTrend, isVi
         >
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-xs text-gray-400">Implied Vol</span>
+              <span className="text-xs text-gray-400">Expected Swings</span>
               <span className="text-sm font-bold text-white">{impliedVol}%</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-xs text-gray-400">Sentiment</span>
+              <span className="text-xs text-gray-400">Market Mood</span>
               <span className={`text-sm font-bold ${sentimentScore > 60 ? 'text-green-400' : sentimentScore < 40 ? 'text-red-400' : 'text-yellow-400'}`}>
                 {sentimentScore}/100
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-xs text-gray-400">Revisions</span>
+              <span className="text-xs text-gray-400">Analyst Trend</span>
               <span className={`text-sm font-bold ${
                 revisionTrend === 'positive' ? 'text-green-400' : 
                 revisionTrend === 'negative' ? 'text-red-400' : 'text-gray-400'
@@ -257,10 +257,11 @@ const PersonalizedCard = ({ ticker, logoUrl, insight, exposure, exposureChange, 
                 className="px-3 py-1.5 text-xs font-semibold bg-gradient-to-r from-indigo-500/20 to-violet-500/20 text-indigo-300 rounded-lg border border-indigo-500/30 hover:border-indigo-500/50 transition-all duration-200"
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
+                aria-label={`Go to ${name} for ${ticker}`}
               >
                 <span className="flex items-center space-x-1">
                   <span>Go to {name}</span>
-                  <Activity className="w-3 h-3" />
+                  <ArrowRight className="w-3 h-3" />
                 </span>
               </motion.button>
             ))}

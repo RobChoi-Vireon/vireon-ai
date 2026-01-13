@@ -36,18 +36,33 @@ const SignalTooltip = ({ signal, isVisible, position }) => (
 );
 
 // Right-Side Drawer for Connected Signals
-const SignalDrawer = ({ isOpen, onClose, signal }) => (
-  <AnimatePresence>
-    {isOpen && (
-      <>
-        {/* Overlay */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
-          onClick={onClose}
-        />
+const SignalDrawer = ({ isOpen, onClose, signal }) => {
+  // Keyboard navigation
+  React.useEffect(() => {
+    if (!isOpen) return;
+    
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Overlay */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+            onClick={onClose}
+          />
         
         {/* Drawer */}
         <motion.div
@@ -56,6 +71,9 @@ const SignalDrawer = ({ isOpen, onClose, signal }) => (
           exit={{ x: '100%' }}
           transition={{ type: "spring", damping: 30, stiffness: 300 }}
           className="fixed top-0 right-0 h-full w-full max-w-md z-50"
+          role="dialog"
+          aria-label="Signal details"
+          aria-modal="true"
           style={{
             background: 'linear-gradient(145deg, rgba(15, 15, 30, 0.95), rgba(25, 25, 45, 0.9))',
             backdropFilter: 'blur(20px)',
@@ -76,10 +94,10 @@ const SignalDrawer = ({ isOpen, onClose, signal }) => (
             </div>
             
             {/* Content */}
-            <div className="flex-1 space-y-6">
+            <div className="flex-1 space-y-6" role="region" aria-label={`${signal} live data`}>
               <div className="p-4 rounded-xl bg-gradient-to-br from-violet-500/10 to-indigo-500/10 border border-violet-500/20">
                 <h4 className="text-sm font-bold text-violet-300 mb-2">Live Analysis</h4>
-                <p className="text-sm text-gray-300">
+                <p className="text-sm text-gray-200">
                   Real-time market data and AI-powered insights for {signal}. 
                   This would contain detailed charts, metrics, and analysis.
                 </p>
@@ -99,7 +117,8 @@ const SignalDrawer = ({ isOpen, onClose, signal }) => (
       </>
     )}
   </AnimatePresence>
-);
+  );
+};
 
 const PlaybookCard = ({ item, index, compactView }) => {
   const [isExpanded, setIsExpanded] = useState(false);
