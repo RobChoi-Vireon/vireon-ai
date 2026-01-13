@@ -1977,12 +1977,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 aria-modal="true"
                 aria-label={`${selectedDomain.title} detailed analysis`}
                 style={{
-                  top: '50%',
-                  left: '50%',
+                  top: `${containerCenterY}px`,
+                  left: `${containerCenterX}px`,
                   transform: 'translate(-50%, -50%)',
                   width: '520px',
                   maxWidth: 'calc(100% - 48px)',
-                  maxHeight: '540px',
+                  maxHeight: '500px',
                   overflow: 'hidden',
                   backdropFilter: TOKENS.HORIZON.drawerBlur,
                   WebkitBackdropFilter: TOKENS.HORIZON.drawerBlur,
@@ -2090,15 +2090,14 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
             {/* HEADER */}
             <motion.div
-              className="flex-shrink-0 border-b"
+              className="flex-shrink-0 p-3 border-b"
               style={{
                 background: TOKENS.HORIZON.drawerTint,
                 borderColor: TOKENS.HORIZON.drawerDivider,
                 backdropFilter: getBlur('chip'),
                 position: 'relative',
                 zIndex: 10,
-                overflow: 'visible',
-                padding: '20px 24px 16px 24px'
+                overflow: 'visible'
               }}
               initial={{ opacity: 0, y: -4 }}
               animate={{
@@ -2218,10 +2217,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               style={{ 
                 position: 'relative', 
                 zIndex: 2, 
-                paddingLeft: '24px', 
-                paddingRight: '24px', 
-                paddingTop: '20px', 
-                paddingBottom: '20px', 
+                paddingLeft: '16px', 
+                paddingRight: '16px', 
+                paddingTop: '12px', 
+                paddingBottom: '12px', 
                 overflowX: 'hidden'
               }}
               initial={{ opacity: 0 }}
@@ -2246,13 +2245,13 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   delay: shouldReduceMotion ? 0 : 0.09,
                   duration: MOTION_TOKENS.DURATIONS.fast
                 }}
-                style={{ marginBottom: '20px' }}
+                style={{ marginBottom: '12px' }}
               >
                 <h4 style={{
                   color: 'rgba(255,255,255,0.68)',
                   fontSize: '11px',
                   fontWeight: 600,
-                  marginBottom: '10px',
+                  marginBottom: '6px',
                   lineHeight: '1.3',
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase'
@@ -2262,7 +2261,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 <p style={{
                   color: TOKENS.colors.textBody,
                   fontSize: '13px',
-                  lineHeight: '1.6',
+                  lineHeight: '1.5',
                   fontWeight: 400,
                   wordWrap: 'break-word',
                   overflowWrap: 'break-word'
@@ -2273,9 +2272,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   <p style={{
                     color: TOKENS.colors.textSecondary,
                     fontSize: '12px',
-                    marginTop: '12px',
+                    marginTop: '8px',
                     opacity: 0.85,
-                    lineHeight: '1.55',
+                    lineHeight: '1.45',
                     fontWeight: 400
                   }}>
                     {selectedDomain.addendum}
@@ -2291,20 +2290,20 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   delay: shouldReduceMotion ? 0 : 0.12,
                   duration: MOTION_TOKENS.DURATIONS.fast
                 }}
-                style={{ marginBottom: '20px' }}
+                style={{ marginBottom: '12px' }}
               >
                 <h4 style={{
                   color: 'rgba(255,255,255,0.68)',
                   fontSize: '11px',
                   fontWeight: 600,
-                  marginBottom: '12px',
+                  marginBottom: '6px',
                   lineHeight: '1.3',
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase'
                 }}>
                   What Happens Next
                 </h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {selectedDomain.downstream_effects.map((effect, i) => (
                     <motion.div
                       key={i}
@@ -2326,7 +2325,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       style={{
                         background: 'rgba(255,255,255,0.03)',
                         borderRadius: '10px',
-                        padding: '10px 12px',
+                        padding: '6px 8px',
                         display: 'flex',
                         alignItems: 'flex-start',
                         justifyContent: 'space-between',
@@ -2341,9 +2340,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         <p style={{
                           color: TOKENS.colors.textBody,
                           fontSize: '12.5px',
-                          lineHeight: '1.5',
+                          lineHeight: '1.35',
                           fontWeight: 500,
-                          marginBottom: '6px'
+                          marginBottom: '4px'
                         }}>
                           {effect.title}
                         </p>
@@ -2384,14 +2383,13 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   delay: shouldReduceMotion ? 0 : 0.18,
                   duration: MOTION_TOKENS.DURATIONS.fast
                 }}
-                className="rounded-2xl relative overflow-hidden"
+                className="p-3 rounded-2xl relative overflow-hidden"
                 style={{
                   background: 'rgba(255,255,255,0.03)',
                   border: '1px solid rgba(255,255,255,0.06)',
                   borderRadius: '12px',
                   boxShadow: `inset 0 0 20px ${getDomainGlow(selectedDomain.id)}`,
-                  marginBottom: '0px',
-                  padding: '16px'
+                  marginBottom: '12px'
                 }}
                 whileHover={shouldReduceMotion ? {} : {
                   filter: 'brightness(1.03)',
@@ -2418,7 +2416,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   />
                 )}
 
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center justify-between mb-2">
                   <p className="text-xs font-semibold" style={{
                     color: 'rgba(255,255,255,0.68)',
                     letterSpacing: '0.12em',
@@ -2455,11 +2453,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {selectedDomain.actionable.directives.map((directive, i) => (
                     <motion.div
                       key={i}
-                      className="flex items-start gap-3"
+                      className="flex items-start gap-2.5"
                       initial={{ opacity: 0, x: -3 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{
@@ -2472,14 +2470,14 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         height: '4px',
                         borderRadius: '999px',
                         background: getDomainColor(selectedDomain.id),
-                        marginTop: '6px',
+                        marginTop: '5px',
                         flexShrink: 0,
                         boxShadow: `0 0 6px ${getDomainBloom(selectedDomain.id)}`
                       }} />
                       <p style={{
-                        color: 'rgba(220, 230, 240, 0.96)',
+                        color: 'rgba(215, 225, 235, 0.94)',
                         fontSize: '12.5px',
-                        lineHeight: '1.6',
+                        lineHeight: '1.45',
                         fontWeight: 400,
                         flex: 1,
                         wordWrap: 'break-word',
@@ -2501,10 +2499,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 borderColor: TOKENS.HORIZON.drawerDivider,
                 backdropFilter: getBlur('panel'),
                 zIndex: 10,
-                paddingLeft: '24px',
-                paddingRight: '24px',
-                paddingTop: '16px',
-                paddingBottom: '16px',
+                paddingLeft: '12px',
+                paddingRight: '12px',
+                paddingTop: '10px',
+                paddingBottom: '10px',
                 overflow: 'visible'
               }}
               initial={{ opacity: 0, y: 10 }}
@@ -2523,7 +2521,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 transition: { duration: MOTION_TOKENS.DURATIONS.fast }
               }}
             >
-              <div className="flex items-center gap-2.5 mb-3">
+              <div className="flex items-center gap-2.5 mb-1.5">
                 <motion.button
                   className="flex-1 flex items-center justify-center gap-2 rounded-xl font-medium"
                   style={{
