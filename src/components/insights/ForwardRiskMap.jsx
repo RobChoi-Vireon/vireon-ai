@@ -265,8 +265,8 @@ const ForwardRiskMap = ({ data, selectedTimeHorizon, onTimeHorizonChange }) => {
             <BarChart3 className="w-7 h-7 text-purple-300" strokeWidth={2.5} />
           </div>
           <div className="text-left">
-            <h2 className="text-4xl font-black text-white tracking-[-0.02em]">Forward Risk & Opportunity Map</h2>
-            <p className="text-lg text-gray-300 mt-1">Timeline-based probability assessment with impact weighting</p>
+            <h2 className="text-4xl font-black text-white tracking-[-0.02em]">What Could Go Right or Wrong</h2>
+            <p className="text-lg text-gray-200 mt-1">Biggest risks and opportunities across three time windows</p>
           </div>
         </motion.div>
       </div>
@@ -407,9 +407,14 @@ const ForwardRiskMap = ({ data, selectedTimeHorizon, onTimeHorizonChange }) => {
                   <p className="text-sm text-gray-400">Impact: {Math.round(selectedArc.item.intensity * 100)}%</p>
                 </div>
               </div>
-              <p className="text-gray-200 leading-relaxed mb-6">
+              <p className="text-gray-200 leading-relaxed mb-4">
                 {selectedArc.item.text}
               </p>
+              <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 mb-6">
+                <p className="text-sm text-blue-200 font-medium">
+                  <span className="font-bold">What this means:</span> Monitor this closely—it could significantly impact your portfolio in this timeframe.
+                </p>
+              </div>
               <button
                 onClick={() => setSelectedArc(null)}
                 className="w-full px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all duration-200"

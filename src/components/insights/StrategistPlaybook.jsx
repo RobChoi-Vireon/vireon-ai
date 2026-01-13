@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { Shield, Calendar, Compass, ArrowRight, ExternalLink, ChevronDown, Eye, BarChart3, Activity, Zap, X, TrendingUp } from 'lucide-react';
@@ -70,6 +69,7 @@ const SignalDrawer = ({ isOpen, onClose, signal }) => (
               <button
                 onClick={onClose}
                 className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+                aria-label="Close signal details"
               >
                 <X className="w-5 h-5 text-gray-400" />
               </button>
@@ -339,6 +339,8 @@ const PlaybookCard = ({ item, index, compactView }) => {
               {/* Primary Content - Crystal Clear Body Text */}
               <motion.p 
                 className={`leading-relaxed text-gray-200 font-medium ${compactView ? 'text-sm line-clamp-3' : 'text-sm md:text-base'}`}
+                role="article"
+                aria-label={`${item.title} recommendation`}
                 style={{ 
                   lineHeight: 1.7,
                   textShadow: '0 1px 2px rgba(0,0,0,0.2)', // Subtle text enhancement
@@ -359,9 +361,11 @@ const PlaybookCard = ({ item, index, compactView }) => {
                     className="flex items-center justify-between w-full mb-4 group/expand"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
+                    aria-expanded={isExpanded}
+                    aria-label={`${isExpanded ? 'Collapse' : 'Expand'} reasoning details`}
                   >
                     <h4 className="text-base md:text-lg font-bold tracking-wide text-violet-300">
-                      Strategic Reasoning
+                      Why This Matters Now
                     </h4>
                     <motion.div
                       animate={{ rotate: isExpanded ? 180 : 0 }}
@@ -428,6 +432,7 @@ const PlaybookCard = ({ item, index, compactView }) => {
                         onMouseEnter={(e) => handleSignalHover(signal, e)}
                         onMouseLeave={() => setHoveredSignal(null)}
                         onClick={() => setSelectedSignal(signal)}
+                        aria-label={`View live data for ${signal}`}
                       >
                         {/* Gradient Ripple Sweep */}
                         <motion.div
@@ -498,8 +503,8 @@ const StrategistPlaybook = ({ data }) => {
             <h2 className="text-3xl md:text-4xl font-black tracking-[-0.02em] mb-1 text-white">
               Strategist's Playbook
             </h2>
-            <p className="text-base md:text-lg text-gray-300">
-              AI-powered tactical guidance for current market conditions
+            <p className="text-base md:text-lg text-gray-200">
+              What AI recommends you do right now
             </p>
           </div>
         </div>

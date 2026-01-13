@@ -184,7 +184,18 @@ const PersonalizedCard = ({ ticker, logoUrl, insight, exposure, exposureChange, 
               className="relative"
               whileHover={{ scale: 1.1, rotate: 5 }}
             >
-              <img src={logoUrl} alt={`${ticker} logo`} className="w-10 h-10 rounded-full bg-white/10 p-2" />
+              <img 
+                src={logoUrl} 
+                alt={`${ticker} logo`} 
+                className="w-10 h-10 rounded-full bg-white/10 p-2"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'flex';
+                }}
+              />
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500/30 to-indigo-500/30 flex items-center justify-center text-white font-bold text-sm hidden">
+                {ticker.charAt(0)}
+              </div>
               {isElevated && (
                 <motion.div 
                   className="absolute -inset-1 rounded-full bg-gradient-to-r from-violet-500/50 to-purple-500/50"
@@ -218,8 +229,9 @@ const PersonalizedCard = ({ ticker, logoUrl, insight, exposure, exposureChange, 
               whileHover={{ scale: 1.05 }}
               onHoverStart={() => setShowTooltip(true)}
               onHoverEnd={() => setShowTooltip(false)}
+              aria-label={`${exposure} risk level - hover for details`}
             >
-              {exposure} Exposure
+              {exposure} Risk
             </motion.span>
             <MetricTooltip 
               ticker={ticker}
@@ -232,7 +244,7 @@ const PersonalizedCard = ({ ticker, logoUrl, insight, exposure, exposureChange, 
         </div>
 
         {/* Insight Text */}
-        <p className="text-base text-gray-300 leading-relaxed mb-6 min-h-[3rem]">
+        <p className="text-base text-gray-200 leading-relaxed mb-6 min-h-[3rem]">
           {insight}
         </p>
 
@@ -265,6 +277,35 @@ const PersonalizedCard = ({ ticker, logoUrl, insight, exposure, exposureChange, 
 };
 
 const PersonalizedLens = ({ data }) => {
+  if (!data || data.length === 0) {
+    return (
+      <motion.section
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.3 }}
+        className="space-y-8"
+      >
+        {/* Section Header */}
+        <div className="flex items-center space-x-4">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-500/20 to-blue-500/20 flex items-center justify-center border border-green-500/30">
+            <UserCheck className="w-6 h-6 text-green-400" strokeWidth={2} />
+          </div>
+          <div>
+            <h2 className="text-3xl font-black text-white tracking-[-0.02em]">Personal Impact Lens</h2>
+            <p className="text-gray-200">How today's market news affects your stocks</p>
+          </div>
+        </div>
+
+        {/* Empty State */}
+        <div className="p-12 rounded-3xl border border-white/10 text-center" style={{ background: 'rgba(255, 255, 255, 0.02)' }}>
+          <Eye className="w-16 h-16 text-gray-500 mx-auto mb-4" />
+          <h3 className="text-xl font-bold text-white mb-2">No Holdings Tracked</h3>
+          <p className="text-gray-300">Add stocks to your watchlist to see personalized insights here</p>
+        </div>
+      </motion.section>
+    );
+  }
+
   return (
     <motion.section
       initial={{ opacity: 0, y: 30 }}
@@ -279,7 +320,7 @@ const PersonalizedLens = ({ data }) => {
         </div>
         <div>
           <h2 className="text-3xl font-black text-white tracking-[-0.02em]">Personal Impact Lens</h2>
-          <p className="text-gray-400">Insights tailored to your watchlist and risk exposure</p>
+          <p className="text-gray-200">How today's market news affects your stocks</p>
         </div>
       </div>
 

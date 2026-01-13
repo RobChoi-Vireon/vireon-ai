@@ -212,10 +212,10 @@ export default function InsightsPage() {
                 </motion.div>
                 <div className="flex-1">
                   <h1 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-[-0.04em] text-white">
-                    AI Strategist
+                    Market Intelligence
                   </h1>
-                  <p className="text-sm md:text-base lg:text-lg text-gray-400 mt-2 mb-3 md:mb-4">
-                    Reading the signals, predicting what might happen, personalized for you
+                  <p className="text-sm md:text-base lg:text-lg text-gray-200 mt-2 mb-3 md:mb-4">
+                    AI shows you what's moving markets, what might happen next, and how it affects your investments
                   </p>
                   
                   {/* Refined "Powered by Lyra" Badge */}
@@ -293,7 +293,7 @@ export default function InsightsPage() {
                 }}
               >
                 <Download className="w-4 md:w-5 h-4 md:h-5" />
-                <span className="text-sm md:text-base">Export Analysis</span>
+                <span className="text-sm md:text-base">Download Report (PDF)</span>
               </motion.button>
             </div>
           </motion.div>

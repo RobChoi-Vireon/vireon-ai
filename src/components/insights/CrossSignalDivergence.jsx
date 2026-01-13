@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GitCompare, ArrowRight, Zap, BarChart, Banknote, Globe, Activity } from 'lucide-react';
@@ -76,7 +75,7 @@ const DivergenceCard = ({ title, description, whyItMatters, sources, sourceModul
         </div>
 
         {/* Description */}
-        <p className="text-sm text-gray-300 leading-relaxed mb-4 line-clamp-3">
+        <p className="text-sm text-gray-200 leading-relaxed mb-4 line-clamp-3">
           {description}
         </p>
 
@@ -94,7 +93,7 @@ const DivergenceCard = ({ title, description, whyItMatters, sources, sourceModul
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <span className="text-xs text-gray-500 uppercase tracking-wide font-semibold">
-              {assetClass} Anomaly
+              {assetClass} Warning
             </span>
             {intensity && (
               <span className={`text-xs px-2 py-1 rounded-full font-bold ${
@@ -175,8 +174,8 @@ const CrossSignalDivergence = ({ data }) => {
             <GitCompare className="w-6 h-6 text-orange-400" strokeWidth={2} />
           </div>
           <div>
-            <h2 className="text-3xl font-black text-white tracking-[-0.02em]">Signal Anomalies</h2>
-            <p className="text-gray-400">Cross-module divergences and contradictions</p>
+            <h2 className="text-3xl font-black text-white tracking-[-0.02em]">Market Conflicts</h2>
+            <p className="text-gray-200">When different parts of the market tell opposite stories—big moves often follow</p>
           </div>
         </div>
 

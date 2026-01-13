@@ -510,11 +510,11 @@ const ScenarioCard = ({ type, probability, trending, drivers, confidence, histor
   const [isHovered, setIsHovered] = useState(false);
   
   const styles = {
-    Bull: { icon: TrendingUp, color: 'emerald', bgGradient: 'from-emerald-500/15 to-transparent' },
-    Base: { icon: Anchor, color: 'blue', bgGradient: 'from-blue-500/15 to-transparent' },
-    Bear: { icon: TrendingDown, color: 'red', bgGradient: 'from-red-500/15 to-transparent' },
+    Bull: { icon: TrendingUp, color: 'emerald', bgGradient: 'from-emerald-500/15 to-transparent', label: 'Best Case' },
+    Base: { icon: Anchor, color: 'blue', bgGradient: 'from-blue-500/15 to-transparent', label: 'Most Likely' },
+    Bear: { icon: TrendingDown, color: 'red', bgGradient: 'from-red-500/15 to-transparent', label: 'Worst Case' },
   };
-  const { icon: Icon, color, bgGradient } = styles[type];
+  const { icon: Icon, color, bgGradient, label } = styles[type];
 
   const confidenceStyles = {
     High: "text-emerald-400 bg-emerald-500/15 border-emerald-500/25",
@@ -568,7 +568,7 @@ const ScenarioCard = ({ type, probability, trending, drivers, confidence, histor
           <div className="flex items-center space-x-3">
             <Icon className={`w-6 h-6 text-${color}-400`} strokeWidth={2.5} />
             <div className="flex items-center space-x-2">
-              <h4 className={`text-xl font-black text-${color}-400`}>{type} Case</h4>
+              <h4 className={`text-xl font-black text-${color}-400`}>{label}</h4>
               <motion.div
                 className="flex items-center justify-center w-5 h-5 rounded-full border backdrop-blur-sm"
                 style={{
@@ -613,7 +613,7 @@ const ScenarioCard = ({ type, probability, trending, drivers, confidence, histor
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             <span className={`px-3 py-1.5 text-xs font-bold rounded-full border ${confidenceStyles[confidence]}`}>
-              Confidence: {confidence}
+              Signal Strength: {confidence}
             </span>
           </div>
         </div>
@@ -623,7 +623,7 @@ const ScenarioCard = ({ type, probability, trending, drivers, confidence, histor
           {drivers.map((driver, i) => (
             <motion.li 
               key={i} 
-              className="flex items-start space-x-3 text-sm text-gray-300 leading-relaxed"
+              className="flex items-start space-x-3 text-sm text-gray-200 leading-relaxed"
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.8 + i * 0.1 }}
@@ -635,8 +635,8 @@ const ScenarioCard = ({ type, probability, trending, drivers, confidence, histor
         </ul>
 
         {/* Historical Context */}
-        <motion.p 
-          className="text-xs text-gray-500 italic leading-relaxed p-3 rounded-xl border"
+        <motion.div 
+          className="text-xs leading-relaxed p-3 rounded-xl border"
           style={{
             background: 'rgba(255, 255, 255, 0.02)',
             borderColor: 'rgba(255, 255, 255, 0.05)'
@@ -645,8 +645,9 @@ const ScenarioCard = ({ type, probability, trending, drivers, confidence, histor
           animate={{ opacity: 1 }}
           transition={{ delay: 1 + index * 0.2 }}
         >
-          {historicalContext}
-        </motion.p>
+          <p className="text-gray-400 font-semibold mb-1">Why this matters:</p>
+          <p className="text-gray-300 italic">{historicalContext}</p>
+        </motion.div>
       </div>
     </motion.div>
   );
@@ -670,8 +671,8 @@ const AIOutlook = ({ data }) => {
           <TrendingUp className="w-6 h-6 text-blue-400" strokeWidth={2} />
         </div>
         <div>
-          <h2 className="text-3xl font-black text-white tracking-[-0.02em]">Market Scenarios</h2>
-          <p className="text-gray-400">Probability-weighted outlook with confidence intervals</p>
+          <h2 className="text-3xl font-black text-white tracking-[-0.02em]">What Could Happen Next</h2>
+          <p className="text-gray-200">Three possible paths for markets, ranked by how likely they are</p>
         </div>
       </div>
 
