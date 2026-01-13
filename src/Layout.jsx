@@ -13,6 +13,7 @@ import LyraChatbot from "./components/core/LyraChatbot";
 import UserMenu from "./components/core/UserMenu";
 import OnboardingModal from "./components/core/OnboardingModal";
 import UtilityTrayPill from "./components/core/UtilityTrayPill";
+import HorizonWelcomeOverlay from "./components/core/HorizonWelcomeOverlay";
 import { motion, AnimatePresence } from 'framer-motion';
 import NetworkErrorBoundary from "./components/core/NetworkErrorBoundary";
 import { base44 } from "@/api/base44Client";
@@ -432,6 +433,7 @@ function LayoutContent({ children, currentPageName }) {
   
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isCheckingOnboarding, setIsCheckingOnboarding] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
     if (location.pathname === '/') {
@@ -460,6 +462,36 @@ function LayoutContent({ children, currentPageName }) {
     };
     checkOnboarding();
   }, []);
+
+  // Check if we should show welcome overlay (once per session or once per day)
+  useEffect(() => {
+    const checkWelcome = () => {
+      const hasShown = localStorage.getItem('vireon_welcome_shown');
+      const lastShown = localStorage.getItem('vireon_welcome_last_shown');
+      
+      if (!hasShown) {
+        // Never shown before
+        setShowWelcome(true);
+        return;
+      }
+      
+      // Check if it's been more than 24 hours
+      if (lastShown) {
+        const lastShownDate = new Date(lastShown);
+        const now = new Date();
+        const hoursSinceLastShown = (now - lastShownDate) / (1000 * 60 * 60);
+        
+        if (hoursSinceLastShown > 24) {
+          setShowWelcome(true);
+        }
+      }
+    };
+    
+    // Only check after onboarding is complete
+    if (!isCheckingOnboarding && !showOnboarding) {
+      checkWelcome();
+    }
+  }, [isCheckingOnboarding, showOnboarding]);
 
   const handleOnboardingAccept = async () => {
     try {
@@ -1148,6 +1180,8 @@ function LayoutContent({ children, currentPageName }) {
         <LyraChatbot />
 
         <OnboardingModal isOpen={showOnboarding && !isCheckingOnboarding} onAccept={handleOnboardingAccept} />
+
+        {showWelcome && <HorizonWelcomeOverlay onDismiss={() => setShowWelcome(false)} />}
         </NetworkErrorBoundary>
         </>
         );
