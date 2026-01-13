@@ -268,7 +268,9 @@ const usePortalRoot = () => {
 // SMART PLACEMENT CALCULATOR (COLLISION-AWARE)
 // ============================================================================
 const calculateSmartPlacement = (nodeRect, cardWidth = 320, cardHeight = 420) => {
-  const SAFE_MARGIN = 32;
+  const HEADER_HEIGHT = 72;
+  const SAFE_MARGIN = 16;
+  const SAFE_TOP = HEADER_HEIGHT + SAFE_MARGIN; // 88px from top
   const GAP_FROM_NODE = 14;
 
   const viewport = {
@@ -288,9 +290,9 @@ const calculateSmartPlacement = (nodeRect, cardWidth = 320, cardHeight = 420) =>
     placement = 'top';
     y = nodeRect.top - GAP_FROM_NODE - cardHeight;
 
-    if (y < SAFE_MARGIN) {
-      y = SAFE_MARGIN;
-      maxHeight = nodeRect.top - GAP_FROM_NODE - SAFE_MARGIN;
+    if (y < SAFE_TOP) {
+      y = SAFE_TOP;
+      maxHeight = nodeRect.top - GAP_FROM_NODE - SAFE_TOP;
       placement = 'top-capped';
     }
   }
@@ -301,6 +303,14 @@ const calculateSmartPlacement = (nodeRect, cardWidth = 320, cardHeight = 420) =>
 
   if (x < SAFE_MARGIN) {
     x = SAFE_MARGIN;
+  }
+
+  // Final safety check to ensure card never goes above header
+  if (y < SAFE_TOP) {
+    y = SAFE_TOP;
+    if (maxHeight === null) {
+      maxHeight = Math.max(200, nodeRect.top - GAP_FROM_NODE - SAFE_TOP);
+    }
   }
 
   const arrowX = nodeRect.left + (nodeRect.width / 2) - x;
