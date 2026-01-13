@@ -1968,6 +1968,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 maxWidth: 'calc(100% - 48px)',
                 maxHeight: 'calc(100% - 48px)',
                 overflowY: 'auto',
+                overflowX: 'hidden',
                 backdropFilter: TOKENS.HORIZON.drawerBlur,
                 WebkitBackdropFilter: TOKENS.HORIZON.drawerBlur,
                 background: TOKENS.HORIZON.drawerGlass,
@@ -2200,7 +2201,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             {/* SCROLLABLE BODY — OS HORIZON V3.2 HIERARCHY */}
             <motion.div
               className="flex-1 overflow-y-auto px-4"
-              style={{ position: 'relative', zIndex: 2, paddingTop: '12px', paddingBottom: '12px' }}
+              style={{ position: 'relative', zIndex: 2, paddingTop: '12px', paddingBottom: '12px', overflowX: 'hidden' }}
               initial={{ opacity: 0 }}
               animate={{
                 opacity: 1,
@@ -2240,7 +2241,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   color: TOKENS.colors.textBody,
                   fontSize: '13px',
                   lineHeight: '1.5',
-                  fontWeight: 400
+                  fontWeight: 400,
+                  wordWrap: 'break-word',
+                  overflowWrap: 'break-word'
                 }}>
                   {selectedDomain.summary}
                 </p>
@@ -2454,7 +2457,9 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                         fontSize: '12.5px',
                         lineHeight: '1.45',
                         fontWeight: 400,
-                        flex: 1
+                        flex: 1,
+                        wordWrap: 'break-word',
+                        overflowWrap: 'break-word'
                       }}>
                         {directive}
                       </p>
