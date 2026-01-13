@@ -272,7 +272,7 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
       localStorage.setItem('vireon_welcome_shown', 'true');
       localStorage.setItem('vireon_welcome_last_shown', new Date().toISOString());
     }
-    setTimeout(() => onDismiss(), 620);
+    setTimeout(() => onDismiss(), 720);
   };
 
   const handleEnterPress = () => {
@@ -288,13 +288,13 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
         style={{
           background: '#0B0E13'
         }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0, backdropFilter: 'blur(4px)' }}
+        initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+        animate={{ opacity: 1, backdropFilter: 'blur(28px) brightness(0.55) saturate(1.1)' }}
+        exit={{ opacity: 0, backdropFilter: 'blur(0px) brightness(1) saturate(1)', scale: 1.02 }}
         transition={{ 
-          duration: 0.32, 
-          ease: [0.23, 1, 0.32, 1],
-          exit: { duration: 0.65, ease: "easeOut" }
+          opacity: { duration: 0.32, ease: [0.23, 1, 0.32, 1] },
+          backdropFilter: { duration: 0.48, ease: "easeOut" },
+          exit: { duration: 0.72, ease: [0.4, 0, 0.2, 1] }
         }}
         onClick={isDismissing ? undefined : handleDismiss}
       >
