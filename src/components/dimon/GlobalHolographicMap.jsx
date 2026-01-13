@@ -1046,7 +1046,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     const vx = orbX - cx;
     const vy = orbY - cy;
     const norm = Math.hypot(vx, vy) || 1;
-    const offset = orbRadius + (32 * TOKENS.HORIZON.labelDistanceScale);
+    const offset = orbRadius + (16 * TOKENS.HORIZON.labelDistanceScale);
     return { x: orbX + (vx / norm) * offset, y: orbY + (vy / norm) * offset };
   }, [cx, cy]);
 
