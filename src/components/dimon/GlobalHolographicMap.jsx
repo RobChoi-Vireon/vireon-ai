@@ -1951,10 +1951,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       {/* EXPANSION DRAWER — ANCHORED INSIDE ORB CLUSTER */}
       <AnimatePresence>
         {selectedDomain && !isSwitchingNode && containerRef.current && (() => {
-          const containerRect = containerRef.current.getBoundingClientRect();
-          const containerCenterX = containerRect.width / 2;
-          const containerCenterY = 250; // Center of 500px tall orb cluster
-          
           return (
             <>
               {/* Local Overlay within Section */}
@@ -1986,8 +1982,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 aria-modal="true"
                 aria-label={`${selectedDomain.title} detailed analysis`}
                 style={{
-                  top: `${containerCenterY}px`,
-                  left: `${containerCenterX}px`,
+                  top: `${cy}px`,
+                  left: `${cx}px`,
                   transform: 'translate(-50%, -50%)',
                   width: '520px',
                   maxWidth: 'calc(100% - 48px)',
