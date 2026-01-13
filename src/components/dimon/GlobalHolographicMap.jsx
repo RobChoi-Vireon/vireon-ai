@@ -448,9 +448,9 @@ const HoverCardPortal = ({
         left: `${position.x}px`,
         top: `${position.y}px`,
         width: '270px',
-        maxHeight: position.maxHeight ? `${position.maxHeight}px` : 'none',
-        overflowY: position.maxHeight ? 'auto' : 'visible',
-        padding: '18px 20px',
+        maxHeight: '260px',
+        overflow: 'hidden',
+        padding: '16px 18px',
         borderRadius: '18px',
         backdropFilter: 'blur(22px) saturate(165%) brightness(1.05)',
         WebkitBackdropFilter: 'blur(22px) saturate(165%) brightness(1.05)',
@@ -480,13 +480,7 @@ const HoverCardPortal = ({
         }
       }}
     >
-      {position.maxHeight && (
-        <div style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0, height: '32px',
-          background: 'linear-gradient(to top, rgba(24, 28, 33, 0.95), transparent)',
-          pointerEvents: 'none', zIndex: 10
-        }} />
-      )}
+
 
       {!shouldReduceMotion && (
         <motion.div
@@ -510,9 +504,9 @@ const HoverCardPortal = ({
 
       <div style={{ position: 'relative', zIndex: 1 }}>
         {/* HEADER */}
-        <div className="flex items-center gap-3 mb-2">
+        <div className="flex items-center gap-2.5 mb-3">
           <div
-            className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
+            className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
             style={{
               background: `${getDomainColor(domain.id)}15`,
               border: `1px solid ${getDomainColor(domain.id)}30`,
@@ -520,252 +514,119 @@ const HoverCardPortal = ({
               color: getDomainColor(domain.id)
             }}
           >
-            {React.cloneElement(getDomainIcon(domain.id), { className: "w-4 h-4", strokeWidth: 2.5 })}
+            {React.cloneElement(getDomainIcon(domain.id), { className: "w-3.5 h-3.5", strokeWidth: 2.5 })}
           </div>
-          <motion.h4
-            initial={{ opacity: 0, y: -2 }}
-            animate={{ opacity: 0.95, y: 0 }}
-            transition={{
-              delay: shouldReduceMotion ? 0 : 0.05,
-              duration: adjustedDurations.fast
-            }}
-            style={{
-              color: TOKENS.colors.textPrimary,
-              fontSize: '18px',
-              fontWeight: 600,
-              letterSpacing: '-0.02em',
-              textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)',
-              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
-            }}
-          >
-            {domain.title}
-          </motion.h4>
+          <div className="flex-1">
+            <motion.h4
+              initial={{ opacity: 0, y: -2 }}
+              animate={{ opacity: 0.95, y: 0 }}
+              transition={{
+                delay: shouldReduceMotion ? 0 : 0.05,
+                duration: adjustedDurations.fast
+              }}
+              style={{
+                color: TOKENS.colors.textPrimary,
+                fontSize: '16px',
+                fontWeight: 600,
+                letterSpacing: '-0.01em',
+                textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)',
+                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                marginBottom: '2px'
+              }}
+            >
+              {domain.title}
+            </motion.h4>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.82 }}
+              transition={{
+                delay: shouldReduceMotion ? 0 : 0.08,
+                duration: adjustedDurations.fast
+              }}
+              className="flex items-center gap-1.5"
+            >
+              {React.cloneElement(getPostureIcon(domain.posture), { className: "w-3 h-3" })}
+              <span style={{
+                color: getDomainText(domain.id),
+                fontSize: '12px',
+                letterSpacing: '0.2px',
+                textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
+                fontWeight: 500,
+                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+              }}>
+                {domain.trend}
+              </span>
+            </motion.div>
+          </div>
         </div>
 
-        {/* SUBHEADER */}
+        {/* CONFIDENCE */}
         <motion.div
-          initial={{ opacity: 0, y: -2 }}
-          animate={{ opacity: 0.82, y: 0 }}
-          transition={{
-            delay: shouldReduceMotion ? 0 : 0.08,
-            duration: adjustedDurations.fast
-          }}
-          className="flex items-center gap-1.5 mb-4"
-        >
-          {React.cloneElement(getPostureIcon(domain.posture), { className: "w-3.5 h-3.5" })}
-          <span style={{
-            color: getDomainText(domain.id),
-            fontSize: '13px',
-            letterSpacing: '0.2px',
-            textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
-            fontWeight: 500,
-            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
-          }}>
-            {domain.trend}
-          </span>
-        </motion.div>
-
-        <div style={{
-          height: '1px',
-          background: `linear-gradient(90deg, transparent, ${TOKENS.HORIZON.drawerDivider}, transparent)`,
-          margin: '0 0 14px 0',
-          opacity: 0.5
-        }} />
-
-        {/* CONFIDENCE BLOCK */}
-        <motion.div
-          initial={{ opacity: 0, y: 3 }}
+          initial={{ opacity: 0, y: 2 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{
             delay: shouldReduceMotion ? 0 : 0.12,
             duration: adjustedDurations.fast
           }}
-          className="flex items-center gap-3 mb-4"
+          className="flex items-center gap-2 mb-3"
+          style={{
+            padding: '6px 10px',
+            borderRadius: '10px',
+            background: 'rgba(255, 255, 255, 0.04)',
+            border: '1px solid rgba(255, 255, 255, 0.08)'
+          }}
         >
-          <motion.div
-            className="relative w-8 h-8 flex-shrink-0 eq-confidence-ring"
-            whileHover={shouldReduceMotion ? {} : {
-              scale: 1.04,
-              transition: {
-                duration: adjustedDurations.fast,
-                ease: MOTION_TOKENS.CURVES.horizonSpring
-              }
-            }}
-          >
-            <svg className="transform -rotate-90" width="32" height="32" style={{ overflow: 'visible' }}>
-              <circle cx="16" cy="16" r={ringRadius} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2.5" />
-              <motion.circle
-                cx="16" cy="16" r={ringRadius} fill="none"
-                stroke={getDomainColor(domain.id)}
-                strokeWidth="2.5" strokeLinecap="round"
-                strokeDasharray={ringCircumference}
-                style={{ transformOrigin: 'center', willChange: 'stroke-dashoffset, filter' }}
-                initial={{ strokeDashoffset: ringCircumference, opacity: 0.85 }}
-                animate={shouldReduceMotion ? {
-                  strokeDashoffset: targetOffset, opacity: 1.0
-                } : {
-                  strokeDashoffset: targetOffset,
-                  opacity: 1.0,
-                  filter: ringAnimationComplete
-                    ? [
-                        `drop-shadow(0 0 5px ${getDomainBloom(domain.id)})`,
-                        `drop-shadow(0 0 8px ${getDomainBloom(domain.id)})`,
-                        `drop-shadow(0 0 5px ${getDomainBloom(domain.id)})`
-                      ]
-                    : `drop-shadow(0 0 5px ${getDomainBloom(domain.id)})`
-                }}
-                transition={shouldReduceMotion ? {
-                  strokeDashoffset: { duration: 0 }, opacity: { duration: 0 }
-                } : {
-                  strokeDashoffset: { duration: 0.6, delay: 0.3, ease: MOTION_TOKENS.CURVES.horizonIn },
-                  opacity: { duration: 0.6, delay: 0.3, ease: MOTION_TOKENS.CURVES.horizonOpacity },
-                  filter: ringAnimationComplete ? {
-                    duration: TOKENS.HORIZON.t_pulse,
-                    repeat: Infinity,
-                    ease: 'easeInOut'
-                  } : {
-                    duration: adjustedDurations.base,
-                    ease: 'easeOut'
-                  }
-                }}
-                onAnimationComplete={() => {
-                  if (!ringAnimationComplete) setRingAnimationComplete(true);
-                }}
-              />
-              {!shouldReduceMotion && (
-                <motion.circle
-                  cx="16" cy="16" r={ringRadius} fill="none"
-                  stroke={getDomainColor(domain.id)}
-                  strokeWidth="2.5" strokeLinecap="round"
-                  strokeDasharray={ringCircumference}
-                  strokeDashoffset={targetOffset}
-                  style={{ transformOrigin: 'center', pointerEvents: 'none' }}
-                  initial={{ opacity: 0, filter: `blur(6px) drop-shadow(0 0 6px ${getDomainBloom(domain.id)})` }}
-                  animate={{
-                    opacity: ringAnimationComplete ? [0, 0.25, 0] : 0,
-                    filter: `blur(6px) drop-shadow(0 0 6px ${getDomainBloom(domain.id)})`
-                  }}
-                  transition={{ opacity: { duration: TOKENS.HORIZON.t_pulse, repeat: Infinity, ease: 'easeInOut' } }}
-                />
-              )}
-            </svg>
-
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center font-bold"
-              style={{
-                color: TOKENS.colors.textPrimary,
-                fontSize: '10px',
-                textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)'
-              }}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{
-                delay: shouldReduceMotion ? 0 : 0.4,
-                duration: adjustedDurations.slow,
-                ease: MOTION_TOKENS.CURVES.horizonIn
-              }}
-            >
-              {domain.confidence_pct}
-            </motion.div>
-          </motion.div>
-
-          <div className="flex-1">
-            <div style={{
-              fontSize: '11px',
-              color: 'rgba(255, 255, 255, 0.75)',
-              letterSpacing: '0.15em',
-              fontWeight: 600,
-              textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
-              marginBottom: '3px'
-            }}>
-              CONFIDENCE
-            </div>
-            <div style={{
-              fontSize: '14.5px',
-              color: TOKENS.colors.textPrimary,
-              textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
-              fontWeight: 600,
-              letterSpacing: '-0.01em'
-            }}>
-              {domain.confidence_pct}% • {getConfidenceStrength(domain.confidence_pct)}
-            </div>
-          </div>
+          <div style={{
+            width: '4px',
+            height: '4px',
+            borderRadius: '999px',
+            background: getDomainColor(domain.id),
+            boxShadow: `0 0 6px ${getDomainBloom(domain.id)}`
+          }} />
+          <span style={{
+            fontSize: '11px',
+            color: 'rgba(255, 255, 255, 0.70)',
+            letterSpacing: '0.12em',
+            fontWeight: 600,
+            textTransform: 'uppercase'
+          }}>
+            Confidence
+          </span>
+          <span style={{
+            fontSize: '13px',
+            color: TOKENS.colors.textPrimary,
+            fontWeight: 600,
+            marginLeft: 'auto'
+          }}>
+            {domain.confidence_pct}%
+          </span>
         </motion.div>
 
-        {/* BODY DESCRIPTION */}
+        {/* ONE SHORT SENTENCE */}
         <motion.p
-          initial={{ opacity: 0, y: 3 }}
-          animate={{ opacity: 0.90, y: 0 }}
+          initial={{ opacity: 0, y: 2 }}
+          animate={{ opacity: 0.88, y: 0 }}
           transition={{
             delay: shouldReduceMotion ? 0 : 0.16,
             duration: adjustedDurations.fast
           }}
           style={{
-            color: 'rgba(255, 255, 255, 0.88)',
-            fontSize: '15px',
-            lineHeight: '1.55',
-            marginBottom: '12px',
+            color: 'rgba(255, 255, 255, 0.85)',
+            fontSize: '13px',
+            lineHeight: '1.5',
+            marginBottom: '14px',
             textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
             fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
             fontWeight: 400
           }}
         >
-          {domain.summary}
+          {domain.insight}
         </motion.p>
-
-        {/* INSIGHT BOX — Lyra-branded with hover pulse */}
-        <motion.div
-          className="eq-insight-chip"
-          initial={{ opacity: 0, y: 2 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            delay: shouldReduceMotion ? 0 : 0.20,
-            duration: adjustedDurations.fast,
-            ease: MOTION_TOKENS.CURVES.horizonIn
-          }}
-          onHoverStart={() => setIsInsightHovered(true)}
-          onHoverEnd={() => setIsInsightHovered(false)}
-          style={{
-            position: 'relative',
-            width: '100%',
-            padding: '9px 13px',
-            borderRadius: '12px',
-            marginTop: '10px',
-            marginBottom: '14px',
-            background: 'rgba(255, 255, 255, 0.10)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
-            border: '1px solid rgba(255, 255, 255, 0.20)',
-            boxShadow: isInsightHovered
-              ? `inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 0 ${MOTION_TOKENS.ELEVATION.chip.blur}px rgba(0, 0, 0, ${MOTION_TOKENS.ELEVATION.chip.opacity})`
-              : 'inset 0 0 0 1px rgba(255, 255, 255, 0.08)',
-            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-            fontSize: '14px',
-            lineHeight: '1.5',
-            color: 'rgba(255, 255, 255, 0.92)',
-            pointerEvents: 'none',
-            filter: isInsightHovered ? 'brightness(1.03)' : 'brightness(1)',
-            transition: `filter ${adjustedDurations.fast}s ${MOTION_TOKENS.CURVES.horizonOpacity.map(n => n).join(',')}, box-shadow ${adjustedDurations.fast}s ${MOTION_TOKENS.CURVES.horizonIn.map(n => n).join(',')}`
-          }}
-        >
-          <span style={{
-            fontWeight: 600,
-            opacity: 0.85,
-            marginRight: '5px',
-            letterSpacing: '0.3px',
-            color: 'rgba(106, 199, 247, 0.9)'
-          }}>
-            Lyra Insight →
-          </span>
-          <span style={{ fontWeight: 400, opacity: 0.92 }}>
-            {domain.insight}
-          </span>
-        </motion.div>
 
         <div style={{
           height: '1px',
           background: `linear-gradient(90deg, transparent, ${TOKENS.HORIZON.drawerDivider}, transparent)`,
-          margin: '14px 0 12px 0',
+          margin: '0 0 10px 0',
           opacity: 0.5
         }} />
 
@@ -775,23 +636,24 @@ const HoverCardPortal = ({
             e.stopPropagation();
             onClose();
           }}
-          className="cta-expand-signal group"
+          className="cta-expand-signal group w-full"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{
-            delay: shouldReduceMotion ? 0 : 0.24,
+            delay: shouldReduceMotion ? 0 : 0.20,
             duration: adjustedDurations.fast
           }}
           whileHover={shouldReduceMotion ? {} : {
-            backgroundColor: 'rgba(255, 255, 255, 0.06)',
+            backgroundColor: 'rgba(90, 160, 255, 0.12)',
             y: -1,
             transition: {
-              duration: MOTION_TOKENS.DURATIONS.microPulse,
+              duration: MOTION_TOKENS.DURATIONS.fast,
               ease: MOTION_TOKENS.CURVES.horizonIn
             }
           }}
           whileTap={shouldReduceMotion ? {} : {
-            y: 1,
+            y: 0,
+            scale: 0.98,
             transition: {
               duration: MOTION_TOKENS.DURATIONS.microPulse,
               ease: MOTION_TOKENS.CURVES.horizonOut
@@ -799,19 +661,20 @@ const HoverCardPortal = ({
           }}
           style={{
             position: 'relative',
-            display: 'inline-flex',
+            display: 'flex',
             alignItems: 'center',
-            gap: '5px',
-            minHeight: '36px',
-            padding: '8px 12px',
+            justifyContent: 'center',
+            gap: '6px',
+            minHeight: '38px',
+            padding: '10px 14px',
             borderRadius: '12px',
-            border: 'none',
-            background: 'transparent',
+            border: '1px solid rgba(90, 160, 255, 0.25)',
+            background: 'rgba(90, 160, 255, 0.08)',
             cursor: 'pointer',
             fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-            fontSize: '14px',
-            fontWeight: 500,
-            letterSpacing: '0.25px',
+            fontSize: '13px',
+            fontWeight: 600,
+            letterSpacing: '0.01em',
             color: 'rgba(90, 160, 255, 0.95)',
             WebkitTapHighlightColor: 'transparent',
             outline: 'none',
@@ -820,78 +683,44 @@ const HoverCardPortal = ({
           }}
           aria-label="Expand signal for detailed analysis"
         >
-          {!shouldReduceMotion && (
-            <motion.div
-              className="absolute left-3 right-3 bottom-2 h-[1px]"
-              style={{
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.67), transparent)',
-                transformOrigin: '50% 50%',
-                scaleX: 0
-              }}
-              initial={{ scaleX: 0 }}
-              whileHover={{
-                scaleX: 1,
-                transition: {
-                  duration: adjustedDurations.base,
-                  ease: MOTION_TOKENS.CURVES.horizonIn
-                }
-              }}
-            />
-          )}
-
-          <span style={{ position: 'relative', zIndex: 1 }}>Expand signal</span>
-
+          <span style={{ position: 'relative', zIndex: 1 }}>Expand Signal</span>
           <motion.div
             style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center' }}
-            initial={{ x: 0, opacity: 0.85 }}
-            animate={{ x: 0, opacity: 0.85 }}
             whileHover={shouldReduceMotion ? {} : {
               x: 2,
-              opacity: 1,
               transition: {
-                duration: MOTION_TOKENS.DURATIONS.microPulse,
+                duration: MOTION_TOKENS.DURATIONS.fast,
                 ease: MOTION_TOKENS.CURVES.horizonIn
               }
             }}
-            whileTap={shouldReduceMotion ? {} : {
-              x: 3,
-              transition: {
-                duration: MOTION_TOKENS.DURATIONS.microPulse,
-                ease: MOTION_TOKENS.CURVES.horizonOut
-              }
-            }}
           >
-            <ArrowRight className="w-3.5 h-3.5" />
+            <ArrowRight className="w-4 h-4" />
           </motion.div>
         </motion.button>
       </div>
 
-      {!position.maxHeight && (
-        <>
-          <div style={{
-            position: 'absolute',
-            left: `${position.arrow.x}px`,
-            [position.arrow.direction === 'down' ? 'bottom' : 'top']: '-6px',
-            transform: 'translateX(-50%)',
-            width: 0, height: 0,
-            borderLeft: '8px solid transparent',
-            borderRight: '8px solid transparent',
-            [position.arrow.direction === 'down' ? 'borderTop' : 'borderBottom']: `8px solid ${TOKENS.HORIZON.glassBorder}`,
-            pointerEvents: 'none'
-          }} />
-          <div style={{
-            position: 'absolute',
-            left: `${position.arrow.x}px`,
-            [position.arrow.direction === 'down' ? 'bottom' : 'top']: '-5px',
-            transform: 'translateX(-50%)',
-            width: 0, height: 0,
-            borderLeft: '7px solid transparent',
-            borderRight: '7px solid transparent',
-            [position.arrow.direction === 'down' ? 'borderTop' : 'borderBottom']: '7px solid rgba(24, 28, 33, 0.45)',
-            pointerEvents: 'none'
-          }} />
-        </>
-      )}
+      <div style={{
+        position: 'absolute',
+        left: `${position.arrow.x}px`,
+        [position.arrow.direction === 'down' ? 'bottom' : 'top']: '-6px',
+        transform: 'translateX(-50%)',
+        width: 0, height: 0,
+        borderLeft: '8px solid transparent',
+        borderRight: '8px solid transparent',
+        [position.arrow.direction === 'down' ? 'borderTop' : 'borderBottom']: `8px solid ${TOKENS.HORIZON.glassBorder}`,
+        pointerEvents: 'none'
+      }} />
+      <div style={{
+        position: 'absolute',
+        left: `${position.arrow.x}px`,
+        [position.arrow.direction === 'down' ? 'bottom' : 'top']: '-5px',
+        transform: 'translateX(-50%)',
+        width: 0, height: 0,
+        borderLeft: '7px solid transparent',
+        borderRight: '7px solid transparent',
+        [position.arrow.direction === 'down' ? 'borderTop' : 'borderBottom']: '7px solid rgba(24, 28, 33, 0.45)',
+        pointerEvents: 'none'
+      }} />
     </motion.div>
   );
 
