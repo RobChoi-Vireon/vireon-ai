@@ -1852,7 +1852,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             {/* LABELS */}
             {domains.map((domain) => {
               const orbPos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
-              const labelPos = getLabelPosition(orbPos.x, orbPos.y, orbPos.radius);
+              const labelPos = getLabelPosition(orbPos.x, orbPos.y, orbPos.radius, domain.id);
               const isHovered = hoveredDomain === domain.id;
               const isSelected = selectedDomain?.id === domain.id;
               
