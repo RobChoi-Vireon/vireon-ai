@@ -1968,8 +1968,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 width: '520px',
                 maxWidth: 'calc(100% - 48px)',
                 maxHeight: 'calc(100% - 96px)',
-                overflowY: 'auto',
-                overflowX: 'hidden',
+                overflow: 'hidden',
                 backdropFilter: TOKENS.HORIZON.drawerBlur,
                 WebkitBackdropFilter: TOKENS.HORIZON.drawerBlur,
                 background: TOKENS.HORIZON.drawerGlass,
@@ -2198,8 +2197,17 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
             {/* SCROLLABLE BODY — OS HORIZON V3.2 HIERARCHY */}
             <motion.div
-              className="flex-1 overflow-y-auto"
-              style={{ position: 'relative', zIndex: 2, paddingLeft: '16px', paddingRight: '16px', paddingTop: '12px', paddingBottom: '0px', overflowX: 'hidden' }}
+              className="overflow-y-auto"
+              style={{ 
+                position: 'relative', 
+                zIndex: 2, 
+                paddingLeft: '16px', 
+                paddingRight: '16px', 
+                paddingTop: '12px', 
+                paddingBottom: '12px', 
+                overflowX: 'hidden',
+                maxHeight: 'calc(100% - 160px)'
+              }}
               initial={{ opacity: 0 }}
               animate={{
                 opacity: 1,
@@ -2468,12 +2476,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               </motion.div>
             </motion.div>
 
-            {/* STICKY FOOTER */}
+            {/* FIXED FOOTER */}
             <motion.div
               className="flex-shrink-0 border-t"
               style={{
-                position: 'sticky',
-                bottom: 0,
                 background: TOKENS.HORIZON.drawerTint,
                 borderColor: TOKENS.HORIZON.drawerDivider,
                 backdropFilter: getBlur('panel'),
