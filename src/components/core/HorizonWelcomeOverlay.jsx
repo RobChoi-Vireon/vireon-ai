@@ -18,37 +18,36 @@ const HorizonCore = ({ parallaxX, parallaxY }) => {
         y: parallaxY
       }}
     >
-      {/* Outer glow rings */}
+      {/* 5) Outer Diffusion — barely visible halo */}
       <motion.div
         className="absolute inset-0"
         style={{
-          width: '420px',
-          height: '420px',
+          width: '380px',
+          height: '380px',
           left: '50%',
           top: '50%',
-          marginLeft: '-210px',
-          marginTop: '-210px'
+          marginLeft: '-190px',
+          marginTop: '-190px'
         }}
         animate={{
-          scale: [1, 1.08, 1],
-          opacity: [0.15, 0.25, 0.15]
+          opacity: [0.08, 0.12, 0.08]
         }}
         transition={{
-          duration: 7.2,
+          duration: 6.8,
           repeat: Infinity,
-          ease: [0.45, 0.05, 0.55, 0.95]
+          ease: "easeInOut"
         }}
       >
         <div
           className="absolute inset-0 rounded-full"
           style={{
-            background: 'radial-gradient(circle at center, rgba(107, 115, 255, 0.25) 0%, transparent 70%)',
-            filter: 'blur(40px)'
+            background: 'radial-gradient(circle at center, rgba(107, 115, 255, 0.15) 0%, transparent 65%)',
+            filter: 'blur(50px)'
           }}
         />
       </motion.div>
 
-      {/* Core orb */}
+      {/* 1) Core Body — soft ellipse, low saturation */}
       <motion.div
         className="relative"
         style={{
@@ -56,67 +55,70 @@ const HorizonCore = ({ parallaxX, parallaxY }) => {
           height: '280px'
         }}
         animate={{
-          scale: [1, 1.03, 1]
+          scale: [1, 1.03, 1],
+          opacity: [0.95, 1, 0.95]
         }}
         transition={{
-          duration: 6.5,
+          duration: 6.8,
           repeat: Infinity,
-          ease: [0.45, 0.05, 0.55, 0.95]
+          ease: "easeInOut"
         }}
       >
-        {/* Main orb surface */}
+        {/* Core surface with subsurface feel */}
         <div
           className="absolute inset-0 rounded-full"
           style={{
-            background: 'radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.18), rgba(107, 115, 255, 0.12) 40%, rgba(255, 110, 199, 0.08) 70%, transparent)',
-            backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
+            background: 'radial-gradient(circle at 38% 32%, rgba(255, 255, 255, 0.08), rgba(107, 115, 255, 0.06) 45%, rgba(79, 70, 229, 0.04) 75%, transparent)',
+            backdropFilter: 'blur(24px)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
             boxShadow: `
-              0 0 80px rgba(107, 115, 255, 0.3),
-              inset 0 0 60px rgba(255, 255, 255, 0.08),
-              0 20px 60px rgba(0, 0, 0, 0.15)
+              0 0 60px rgba(107, 115, 255, 0.15),
+              inset 0 0 40px rgba(255, 255, 255, 0.04),
+              0 16px 48px rgba(0, 0, 0, 0.12)
             `
           }}
         />
 
-        {/* Subsurface highlight */}
+        {/* 2) Inner Bloom — subsurface glow (very subtle) */}
         <motion.div
-          className="absolute rounded-full"
+          className="absolute rounded-full pointer-events-none"
           style={{
-            width: '140px',
-            height: '140px',
-            top: '30px',
-            left: '50px',
-            background: 'radial-gradient(circle at center, rgba(255, 255, 255, 0.25), transparent 60%)',
-            filter: 'blur(25px)'
+            width: '130px',
+            height: '130px',
+            top: '40px',
+            left: '60px',
+            background: 'radial-gradient(circle at center, rgba(255, 255, 255, 0.12), transparent 55%)',
+            filter: 'blur(30px)',
+            opacity: 0.35
           }}
           animate={{
-            opacity: [0.4, 0.65, 0.4],
-            x: [-5, 5, -5],
-            y: [-3, 3, -3]
+            opacity: [0.25, 0.45, 0.25],
+            x: [-3, 3, -3],
+            y: [-2, 2, -2]
           }}
           transition={{
-            duration: 9.5,
+            duration: 8.5,
             repeat: Infinity,
             ease: "easeInOut"
           }}
         />
 
-        {/* Spectral light sweep */}
-        <motion.div
+        {/* 3) Glass Sheen — diagonal light sweep */}
+        <div
           className="absolute inset-0 rounded-full overflow-hidden"
           style={{
-            mixBlendMode: 'screen'
+            mixBlendMode: 'overlay',
+            opacity: 0.6
           }}
         >
           <motion.div
             className="absolute"
             style={{
-              width: '200%',
-              height: '200%',
-              left: '-50%',
-              top: '-50%',
-              background: 'linear-gradient(135deg, transparent 40%, rgba(255, 255, 255, 0.12) 50%, transparent 60%)'
+              width: '180%',
+              height: '180%',
+              left: '-40%',
+              top: '-40%',
+              background: 'linear-gradient(135deg, transparent 42%, rgba(255, 255, 255, 0.08) 50%, transparent 58%)'
             }}
             animate={{
               rotate: [0, 360]
@@ -127,52 +129,32 @@ const HorizonCore = ({ parallaxX, parallaxY }) => {
               ease: "linear"
             }}
           />
-        </motion.div>
+        </div>
 
-        {/* Contour rings */}
-        {[0.7, 0.85].map((scale, i) => (
+        {/* 4) Ring Detail — ONLY 2 contour rings */}
+        {[0.72, 0.88].map((scale, i) => (
           <motion.div
             key={i}
-            className="absolute inset-0 rounded-full"
+            className="absolute rounded-full pointer-events-none"
             style={{
-              border: '1px solid rgba(255, 255, 255, 0.06)',
-              transform: `scale(${scale})`,
+              border: '0.5px solid rgba(255, 255, 255, 0.04)',
               left: `${(1 - scale) * 50}%`,
               top: `${(1 - scale) * 50}%`,
               width: `${scale * 100}%`,
               height: `${scale * 100}%`
             }}
             animate={{
-              opacity: [0.3, 0.5, 0.3]
+              opacity: [0.2, 0.35, 0.2]
             }}
             transition={{
-              duration: 5.5 + i * 1.5,
+              duration: 5.2 + i * 1.8,
               repeat: Infinity,
               ease: "easeInOut",
-              delay: i * 0.8
+              delay: i * 0.9
             }}
           />
         ))}
       </motion.div>
-
-      {/* Breathing waves */}
-      <motion.div
-        className="absolute inset-0 rounded-full"
-        style={{
-          width: '280px',
-          height: '280px',
-          border: '1px solid rgba(255, 255, 255, 0.15)'
-        }}
-        animate={{
-          scale: [1, 1.25, 1],
-          opacity: [0.5, 0, 0.5]
-        }}
-        transition={{
-          duration: 4.5,
-          repeat: Infinity,
-          ease: "easeOut"
-        }}
-      />
     </motion.div>
   );
 };
@@ -234,7 +216,7 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0, scale: 0.985 }}
-        transition={{ duration: 0.28, ease: [0.23, 1, 0.32, 1] }}
+        transition={{ duration: 0.26, ease: [0.23, 1, 0.32, 1] }}
         onClick={handleDismiss}
       >
         {/* Blurred background layer */}
@@ -260,9 +242,9 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
         {/* Content container */}
         <motion.div
           className="relative flex flex-col items-center pointer-events-none"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.15, ease: [0.23, 1, 0.32, 1] }}
+          initial={{ opacity: 0, y: 20, scale: 0.985 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.26, ease: [0.23, 1, 0.32, 1] }}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Hero Core */}
@@ -364,32 +346,32 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
           >
             Enter Vireon
           </motion.button>
-
-          {/* Skip button (subtle) */}
-          <motion.button
-            className="mt-6 text-sm font-medium pointer-events-auto transition-colors duration-200"
-            style={{
-              color: 'rgba(255, 255, 255, 0.35)',
-              letterSpacing: '0.03em'
-            }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 1.2 }}
-            whileHover={{ color: 'rgba(255, 255, 255, 0.6)' }}
-            onClick={handleDismiss}
-          >
-            Skip
-          </motion.button>
         </motion.div>
+
+        {/* Skip button (subtle, top-right) */}
+        <motion.button
+          className="absolute top-8 right-8 text-sm font-medium pointer-events-auto transition-colors duration-200"
+          style={{
+            color: 'rgba(255, 255, 255, 0.30)',
+            letterSpacing: '0.03em'
+          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 1.2 }}
+          whileHover={{ color: 'rgba(255, 255, 255, 0.55)' }}
+          onClick={handleDismiss}
+        >
+          Skip
+        </motion.button>
 
         {/* Test mode indicator */}
         {isTestMode && (
           <motion.div
-            className="absolute top-6 left-6 px-3 py-1.5 rounded-full text-xs font-semibold"
+            className="absolute top-8 left-8 px-3 py-1.5 rounded-full text-xs font-semibold"
             style={{
-              background: 'rgba(255, 255, 255, 0.08)',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
-              color: 'rgba(255, 255, 255, 0.6)',
+              background: 'rgba(255, 255, 255, 0.06)',
+              border: '1px solid rgba(255, 255, 255, 0.10)',
+              color: 'rgba(255, 255, 255, 0.50)',
               backdropFilter: 'blur(12px)'
             }}
             initial={{ opacity: 0, x: -10 }}
