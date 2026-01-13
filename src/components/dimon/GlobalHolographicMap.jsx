@@ -103,13 +103,13 @@ const MOCK_DOMAINS = [
     trend: "Rising pressure",
     confidence_pct: 78,
     strength: 0.82,
-    confidence_label: "High confidence",
+    confidence_label: "Strong signal",
     summary: "The Federal Reserve is staying tough on inflation because prices keep rising. This means borrowing costs will stay high or go higher.",
     insight: "Interest rates holding steady while banks and companies adjust to the new normal.",
     downstream_effects: [
-      { title: "Borrowing costs rising for companies", tags: ["Credit", "HY", "IG"], link: "/credit" },
-      { title: "Tech stock valuations under pressure", tags: ["Tech", "Large-cap growth"], link: "/equities/tech" },
-      { title: "Emerging markets paying more to borrow", tags: ["EM debt", "FX funding"], link: "/em" }
+      { title: "Borrowing costs rising for companies", tags: ["Credit", "High Yield", "Investment Grade"], link: "/credit" },
+      { title: "Tech stock valuations under pressure", tags: ["Tech", "Large-Cap Growth"], link: "/equities/tech" },
+      { title: "Emerging markets paying more to borrow", tags: ["Emerging Markets", "Currency Funding"], link: "/em" }
     ],
     actionable: {
       horizon: "1–3 months",
@@ -120,7 +120,7 @@ const MOCK_DOMAINS = [
       ]
     },
     footer: {
-      primary_cta: { label: "See what this means", route: "/implications/rates" },
+      primary_cta: { label: "View detailed analysis", route: "/implications/rates" },
       secondary_link: { label: "View timeline", route: "/timeline/rates" },
       timestamp: new Date().toISOString()
     },
@@ -135,24 +135,24 @@ const MOCK_DOMAINS = [
     trend: "Steady trend",
     confidence_pct: 65,
     strength: 0.58,
-    confidence_label: "Moderate confidence",
+    confidence_label: "Moderate signal",
     summary: "Currency markets are settling down as interest rates around the world become more similar. Money is moving less between countries as investors become more cautious.",
     insight: "Money flows between countries are stabilizing. Investors are becoming less aggressive.",
     downstream_effects: [
-      { title: "Emerging market currencies steadying", tags: ["FX", "EM", "Volatility"], link: "/fx/em" },
+      { title: "Emerging market currencies steadying", tags: ["Currencies", "Emerging Markets", "Volatility"], link: "/fx/em" },
       { title: "Energy import costs staying flat", tags: ["Commodities", "Trade"], link: "/commodities" },
       { title: "Bond interest rates tightening together", tags: ["Fixed Income", "Rates"], link: "/bonds" }
     ],
     actionable: {
       horizon: "2–4 weeks",
-      conviction: "Medium",
+      conviction: "Moderate",
       directives: [
         "Watch for interest rate differences between countries—they could shift currency bets.",
         "Stick with US investments until market swings pick up again."
       ]
     },
     footer: {
-      primary_cta: { label: "See currency details", route: "/fx/dashboard" },
+      primary_cta: { label: "View detailed analysis", route: "/fx/dashboard" },
       secondary_link: { label: "Track currencies", route: "/fx/tracker" },
       timestamp: new Date().toISOString()
     },
@@ -168,7 +168,7 @@ const MOCK_DOMAINS = [
     trend: "Mild slowdown",
     confidence_pct: 71,
     strength: 0.68,
-    confidence_label: "Moderate confidence",
+    confidence_label: "Moderate signal",
     summary: "China's economy is slowing, which is reducing demand worldwide. The US economy is still holding up but showing signs of cooling across different industries.",
     insight: "Investors are shifting toward safer, more defensive investments as growth slows.",
     downstream_effects: [
@@ -178,14 +178,14 @@ const MOCK_DOMAINS = [
     ],
     actionable: {
       horizon: "1–2 weeks",
-      conviction: "High",
+      conviction: "Strong",
       directives: [
         "Shift toward defensive stocks and companies that can raise prices easily.",
         "Watch commodity prices for more signs of weakening demand."
       ]
     },
     footer: {
-      primary_cta: { label: "See growth outlook", route: "/growth/outlook" },
+      primary_cta: { label: "View detailed analysis", route: "/growth/outlook" },
       secondary_link: { label: "View sectors", route: "/sectors" },
       timestamp: new Date().toISOString()
     },
@@ -200,7 +200,7 @@ const MOCK_DOMAINS = [
     trend: "Rising tension",
     confidence_pct: 58,
     strength: 0.72,
-    confidence_label: "Moderate confidence",
+    confidence_label: "Moderate signal",
     summary: "Countries are trading less with each other, forcing companies to rebuild supply chains. Concerns about energy security are increasing tensions in key regions.",
     insight: "Political tensions are building, creating more uncertainty in specific parts of the world.",
     downstream_effects: [
@@ -210,14 +210,14 @@ const MOCK_DOMAINS = [
     ],
     actionable: {
       horizon: "3–6 months",
-      conviction: "Medium",
+      conviction: "Moderate",
       directives: [
         "Focus on US companies and energy investments that can handle disruptions.",
         "Spread your investments across multiple countries to reduce risk."
       ]
     },
     footer: {
-      primary_cta: { label: "See risk analysis", route: "/geopolitics/risk" },
+      primary_cta: { label: "View detailed analysis", route: "/geopolitics/risk" },
       secondary_link: { label: "Track supply chains", route: "/supply-chain" },
       timestamp: new Date().toISOString()
     },
@@ -1069,10 +1069,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
   const getBlur = useCallback((type) => isLowPower ? (type === 'panel' ? 'blur(16px)' : 'blur(12px)') : (type === 'panel' ? 'blur(20px)' : 'blur(16px)'), [isLowPower]);
 
   const getConfidenceStrength = useCallback((confidence_pct) => {
-    if (confidence_pct >= 75) return "High confidence";
-    if (confidence_pct >= 65) return "Moderate confidence";
-    if (confidence_pct >= 55) return "Low confidence";
-    return "Very low confidence";
+    if (confidence_pct >= 75) return "Strong signal";
+    if (confidence_pct >= 65) return "Moderate signal";
+    if (confidence_pct >= 55) return "Weak signal";
+    return "Very weak signal";
   }, []);
 
   const handleDomainHoverEnter = useCallback((domain, event) => {
@@ -2301,7 +2301,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase'
                 }}>
-                  Downstream Effects
+                  What Happens Next
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {selectedDomain.downstream_effects.map((effect, i) => (
@@ -2425,7 +2425,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     fontWeight: 600,
                     textTransform: 'uppercase'
                   }}>
-                    Actionable Signal
+                    What You Should Do
                   </p>
                   <div className="flex items-center gap-3 text-xs">
                     <span style={{ color: 'rgba(255, 255, 255, 0.58)', fontSize: '12px' }}>
@@ -2434,21 +2434,21 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                     <span
                       className="px-2.5 py-1 rounded-full text-[10px] font-semibold"
                       style={{
-                        background: selectedDomain.actionable.conviction === 'High'
+                        background: selectedDomain.actionable.conviction === 'Strong'
                           ? 'rgba(88, 227, 164, 0.15)'
-                          : selectedDomain.actionable.conviction === 'Medium'
+                          : selectedDomain.actionable.conviction === 'Moderate'
                             ? 'rgba(90, 160, 255, 0.15)'
                             : 'rgba(255, 255, 255, 0.10)',
-                        color: selectedDomain.actionable.conviction === 'High'
+                        color: selectedDomain.actionable.conviction === 'Strong'
                           ? 'rgba(88, 227, 164, 0.95)'
-                          : selectedDomain.actionable.conviction === 'Medium'
+                          : selectedDomain.actionable.conviction === 'Moderate'
                             ? 'rgba(90, 160, 255, 0.95)'
                             : 'rgba(255, 255, 255, 0.75)',
                         border: '1px solid rgba(255, 255, 255, 0.08)',
                         letterSpacing: '0.03em'
                       }}
                     >
-                      {selectedDomain.actionable.conviction} Conviction
+                      {selectedDomain.actionable.conviction}
                     </span>
                   </div>
                 </div>
