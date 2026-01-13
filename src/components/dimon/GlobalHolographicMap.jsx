@@ -1042,11 +1042,13 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     };
   }, [cx, cy, orbitBaseRadius, getGlobalScale]);
 
-  const getLabelPosition = useCallback((orbX, orbY, orbRadius) => {
+  const getLabelPosition = useCallback((orbX, orbY, orbRadius, domainId) => {
     const vx = orbX - cx;
     const vy = orbY - cy;
     const norm = Math.hypot(vx, vy) || 1;
-    const offset = orbRadius + (16 * TOKENS.HORIZON.labelDistanceScale);
+    // Increase offset for fx and rates to prevent label overlap on orbs
+    const baseOffset = (domainId === 'fx' || domainId === 'rates') ? 32 : 16;
+    const offset = orbRadius + (baseOffset * TOKENS.HORIZON.labelDistanceScale);
     return { x: orbX + (vx / norm) * offset, y: orbY + (vy / norm) * offset };
   }, [cx, cy]);
 
