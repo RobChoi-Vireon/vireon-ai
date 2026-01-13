@@ -1,122 +1,116 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { motion, AnimatePresence, useSpring, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useSpring, useMotionValue, useTransform } from 'framer-motion';
 
-// Apple-grade easing curves
-const APPLE_EASING = {
-  entrance: [0.16, 1, 0.3, 1],        // Smooth ease-out
-  reveal: [0.22, 0.61, 0.36, 1],      // Gentle reveal
-  settle: [0.32, 0.72, 0, 1],         // Precise settle
-  breathe: [0.4, 0, 0.2, 1],          // Subtle animation
+// Apple-grade motion DNA
+const APPLE = {
+  spring: { type: 'spring', stiffness: 90, damping: 18, mass: 0.8 },
+  gentle: [0.16, 1, 0.3, 1],
+  precise: [0.32, 0.72, 0, 1],
+  entrance: [0.25, 0.46, 0.45, 0.94],
+  reveal: [0.22, 0.61, 0.36, 1],
 };
 
-const TIMINGS = {
-  logoScale: 0.8,
-  logoReveal: 1.2,
-  textFade: 0.6,
-  particleSpread: 2.0,
-  holdPeak: 0.4,
-  fadeOut: 0.6,
-  total: 5000, // Total animation duration in ms
-};
-
-export default function CinematicWelcome({ onComplete, userEmail = '' }) {
-  const [phase, setPhase] = useState('init'); // init → reveal → peak → settle → exit
+export default function CinematicWelcome({ onComplete }) {
+  const [phase, setPhase] = useState('void'); // void → breathe → reveal → illuminate → brand → settle → exit
   const canvasRef = useRef(null);
   const rafRef = useRef(null);
-  const startTimeRef = useRef(null);
+  const timeRef = useRef(0);
 
+  // Emotional arc timing - slower, more deliberate
   useEffect(() => {
-    const timeout1 = setTimeout(() => setPhase('reveal'), 100);
-    const timeout2 = setTimeout(() => setPhase('peak'), 1400);
-    const timeout3 = setTimeout(() => setPhase('settle'), 2200);
-    const timeout4 = setTimeout(() => setPhase('exit'), 4200);
-    const timeout5 = setTimeout(() => onComplete?.(), TIMINGS.total);
+    const timeline = [
+      { delay: 100, phase: 'breathe' },      // Darkness breathes
+      { delay: 1000, phase: 'reveal' },      // Light emerges
+      { delay: 1900, phase: 'illuminate' },  // Logo appears
+      { delay: 2700, phase: 'brand' },       // Name reveals
+      { delay: 3500, phase: 'settle' },      // Everything settles
+      { delay: 4500, phase: 'exit' },        // Graceful exit
+      { delay: 5200, phase: 'complete' },    // Done
+    ];
+
+    const timers = timeline.map(({ delay, phase }) =>
+      setTimeout(() => setPhase(phase), delay)
+    );
+
+    const completeTimer = setTimeout(() => onComplete?.(), 5400);
 
     return () => {
-      clearTimeout(timeout1);
-      clearTimeout(timeout2);
-      clearTimeout(timeout3);
-      clearTimeout(timeout4);
-      clearTimeout(timeout5);
+      timers.forEach(clearTimeout);
+      clearTimeout(completeTimer);
     };
   }, [onComplete]);
 
-  // Particle field animation
+  // Sophisticated particle field
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
     const dpr = window.devicePixelRatio || 1;
-    
+
     const resize = () => {
-      canvas.width = canvas.offsetWidth * dpr;
-      canvas.height = canvas.offsetHeight * dpr;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
       ctx.scale(dpr, dpr);
     };
     resize();
     window.addEventListener('resize', resize);
 
-    // Generate particles
-    const particles = Array.from({ length: 80 }, () => ({
+    // Elegant particle system - fewer, more refined
+    const particles = Array.from({ length: 50 }, () => ({
       x: Math.random(),
       y: Math.random(),
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
-      size: Math.random() * 2 + 0.5,
-      alpha: Math.random() * 0.6 + 0.2,
+      vx: (Math.random() - 0.5) * 0.15,
+      vy: (Math.random() - 0.5) * 0.15,
+      size: Math.random() * 1.5 + 0.3,
+      alpha: Math.random() * 0.4 + 0.3,
       phase: Math.random() * Math.PI * 2,
+      speed: Math.random() * 0.5 + 0.5,
     }));
 
-    const animate = (timestamp) => {
-      if (!startTimeRef.current) startTimeRef.current = timestamp;
-      const elapsed = timestamp - startTimeRef.current;
-      const t = Math.min(elapsed / TIMINGS.total, 1);
-
+    const draw = () => {
       const w = canvas.offsetWidth;
       const h = canvas.offsetHeight;
+      timeRef.current += 0.016;
 
-      // Clear
       ctx.clearRect(0, 0, w, h);
 
-      // Particle opacity based on phase
+      // Particle behavior based on phase
       let globalAlpha = 0;
-      if (elapsed < 800) {
-        globalAlpha = elapsed / 800;
-      } else if (elapsed < 3500) {
-        globalAlpha = 1;
-      } else {
-        globalAlpha = Math.max(0, 1 - (elapsed - 3500) / 1500);
-      }
+      if (phase === 'breathe') globalAlpha = Math.min(1, timeRef.current / 1.5);
+      else if (phase === 'reveal' || phase === 'illuminate') globalAlpha = 1;
+      else if (phase === 'brand' || phase === 'settle') globalAlpha = 0.6;
+      else if (phase === 'exit') globalAlpha = Math.max(0, 1 - timeRef.current * 0.5);
 
       particles.forEach((p) => {
-        // Subtle drift
-        p.x += p.vx * 0.0005;
-        p.y += p.vy * 0.0005;
+        // Organic drift
+        p.x += p.vx * 0.0003 * p.speed;
+        p.y += p.vy * 0.0003 * p.speed;
 
-        // Wrap around
+        // Soft boundaries
         if (p.x < 0) p.x = 1;
         if (p.x > 1) p.x = 0;
         if (p.y < 0) p.y = 1;
         if (p.y > 1) p.y = 0;
 
-        // Draw particle with glow
         const px = p.x * w;
         const py = p.y * h;
-        const twinkle = (Math.sin(p.phase + elapsed * 0.002) + 1) / 2;
         
-        ctx.globalAlpha = p.alpha * twinkle * globalAlpha;
-        
-        // Outer glow
-        const gradient = ctx.createRadialGradient(px, py, 0, px, py, p.size * 4);
-        gradient.addColorStop(0, 'rgba(160, 191, 255, 0.6)');
-        gradient.addColorStop(0.5, 'rgba(160, 191, 255, 0.2)');
-        gradient.addColorStop(1, 'rgba(160, 191, 255, 0)');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(px - p.size * 4, py - p.size * 4, p.size * 8, p.size * 8);
+        // Gentle twinkle
+        const twinkle = (Math.sin(p.phase + timeRef.current * p.speed) + 1) / 2;
+        const brightness = 0.5 + twinkle * 0.5;
 
-        // Core
-        ctx.globalAlpha = p.alpha * globalAlpha;
+        // Soft glow halo
+        const glowRadius = p.size * 6;
+        const glow = ctx.createRadialGradient(px, py, 0, px, py, glowRadius);
+        glow.addColorStop(0, `rgba(160, 191, 255, ${0.3 * brightness * globalAlpha})`);
+        glow.addColorStop(0.4, `rgba(160, 191, 255, ${0.1 * brightness * globalAlpha})`);
+        glow.addColorStop(1, 'rgba(160, 191, 255, 0)');
+        ctx.fillStyle = glow;
+        ctx.fillRect(px - glowRadius, py - glowRadius, glowRadius * 2, glowRadius * 2);
+
+        // Crisp core
+        ctx.globalAlpha = brightness * globalAlpha * p.alpha;
         ctx.fillStyle = '#FFFFFF';
         ctx.beginPath();
         ctx.arc(px, py, p.size, 0, Math.PI * 2);
@@ -124,213 +118,331 @@ export default function CinematicWelcome({ onComplete, userEmail = '' }) {
       });
 
       ctx.globalAlpha = 1;
-      rafRef.current = requestAnimationFrame(animate);
+      rafRef.current = requestAnimationFrame(draw);
     };
 
-    rafRef.current = requestAnimationFrame(animate);
+    rafRef.current = requestAnimationFrame(draw);
 
     return () => {
       window.removeEventListener('resize', resize);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, []);
+  }, [phase]);
 
   return (
     <motion.div
-      className="fixed inset-0 z-[9999] flex items-center justify-center"
+      className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden"
       initial={{ opacity: 1 }}
       animate={{ opacity: phase === 'exit' ? 0 : 1 }}
-      transition={{ duration: TIMINGS.fadeOut, ease: APPLE_EASING.breathe }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.8, ease: APPLE.gentle }}
       style={{
-        background: 'linear-gradient(135deg, #0B0E13 0%, #151922 100%)',
+        background: 'linear-gradient(180deg, #0A0D12 0%, #0F1218 50%, #0A0D12 100%)',
       }}
     >
-      {/* Particle canvas */}
+      {/* Particle field canvas */}
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full"
-        style={{ opacity: 0.4 }}
+        style={{ opacity: 0.5 }}
       />
 
-      {/* Ambient gradient orbs */}
-      <motion.div
-        className="absolute inset-0 overflow-hidden"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: phase === 'reveal' || phase === 'peak' ? 0.3 : 0 }}
-        transition={{ duration: 1.5, ease: APPLE_EASING.breathe }}
-      >
-        <motion.div
-          className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(124, 58, 237, 0.4) 0%, transparent 70%)',
-            filter: 'blur(80px)',
-          }}
-          animate={{
-            scale: [1, 1.2, 1],
-            x: [0, 30, 0],
-            y: [0, -20, 0],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(59, 130, 246, 0.35) 0%, transparent 70%)',
-            filter: 'blur(80px)',
-          }}
-          animate={{
-            scale: [1, 1.15, 1],
-            x: [0, -30, 0],
-            y: [0, 20, 0],
-          }}
-          transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-        />
-      </motion.div>
-
-      {/* Main content */}
-      <div className="relative z-10 flex flex-col items-center">
-        {/* Logo reveal */}
-        <AnimatePresence mode="wait">
-          {(phase === 'reveal' || phase === 'peak' || phase === 'settle') && (
+      {/* Ambient atmospheric orbs - slow, organic movement */}
+      <AnimatePresence>
+        {(phase === 'breathe' || phase === 'reveal' || phase === 'illuminate' || phase === 'brand') && (
+          <>
             <motion.div
-              initial={{ scale: 0.85, opacity: 0 }}
-              animate={{ 
-                scale: phase === 'peak' ? 1.05 : 1,
-                opacity: 1,
+              className="absolute"
+              style={{
+                top: '20%',
+                left: '25%',
+                width: '500px',
+                height: '500px',
+                background: 'radial-gradient(circle, rgba(124, 58, 237, 0.25) 0%, transparent 70%)',
+                filter: 'blur(120px)',
+                borderRadius: '50%',
               }}
-              exit={{ scale: 0.95, opacity: 0 }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{
+                opacity: [0, 0.4, 0.3],
+                scale: [0.8, 1.1, 1],
+                x: [0, 40, 0],
+                y: [0, -30, 0],
+              }}
+              exit={{ opacity: 0, scale: 0.9 }}
               transition={{
-                scale: { 
-                  duration: phase === 'peak' ? 0.8 : 1.2, 
-                  ease: phase === 'peak' ? APPLE_EASING.reveal : APPLE_EASING.settle,
-                  type: 'spring',
-                  stiffness: 100,
-                  damping: 20
-                },
-                opacity: { duration: 0.6, ease: APPLE_EASING.entrance }
+                opacity: { duration: 2.5, times: [0, 0.4, 1], ease: APPLE.gentle },
+                scale: { duration: 8, repeat: Infinity, ease: 'easeInOut' },
+                x: { duration: 10, repeat: Infinity, ease: 'easeInOut' },
+                y: { duration: 12, repeat: Infinity, ease: 'easeInOut' },
               }}
-              className="mb-8"
+            />
+            <motion.div
+              className="absolute"
+              style={{
+                bottom: '15%',
+                right: '20%',
+                width: '600px',
+                height: '600px',
+                background: 'radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%)',
+                filter: 'blur(140px)',
+                borderRadius: '50%',
+              }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{
+                opacity: [0, 0.35, 0.25],
+                scale: [0.8, 1.15, 1.05],
+                x: [0, -50, 0],
+                y: [0, 20, 0],
+              }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{
+                opacity: { duration: 2.8, times: [0, 0.5, 1], ease: APPLE.gentle },
+                scale: { duration: 11, repeat: Infinity, ease: 'easeInOut', delay: 1 },
+                x: { duration: 13, repeat: Infinity, ease: 'easeInOut', delay: 0.5 },
+                y: { duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 0.8 },
+              }}
+            />
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Main content choreography */}
+      <div className="relative z-10 flex flex-col items-center">
+        
+        {/* Logo emergence - the hero moment */}
+        <AnimatePresence>
+          {(phase === 'illuminate' || phase === 'brand' || phase === 'settle') && (
+            <motion.div
+              className="mb-12"
+              initial={{ scale: 0.5, opacity: 0, filter: 'blur(20px)' }}
+              animate={{ 
+                scale: phase === 'brand' ? [1, 1.02, 1] : 1,
+                opacity: 1,
+                filter: 'blur(0px)',
+              }}
+              exit={{ scale: 0.95, opacity: 0, filter: 'blur(10px)' }}
+              transition={{
+                scale: { duration: 0.6, times: [0, 0.6, 1], ease: APPLE.reveal },
+                opacity: { duration: 1.2, ease: APPLE.gentle },
+                filter: { duration: 1.2, ease: APPLE.gentle },
+              }}
             >
-              {/* Glass container for logo */}
+              {/* Premium glass frame */}
               <motion.div
-                className="relative rounded-[32px] p-8 backdrop-blur-2xl"
+                className="relative rounded-[40px] backdrop-blur-3xl overflow-hidden"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%)',
-                  border: '1px solid rgba(255, 255, 255, 0.12)',
-                  boxShadow: '0 20px 80px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                  padding: '48px',
+                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 100%)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  boxShadow: `
+                    0 30px 90px rgba(0, 0, 0, 0.5),
+                    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+                    0 1px 0 rgba(255, 255, 255, 0.15) inset
+                  `,
                 }}
-                animate={phase === 'peak' ? {
+                animate={phase === 'brand' ? {
                   boxShadow: [
-                    '0 20px 80px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-                    '0 25px 100px rgba(110, 150, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15)',
-                    '0 20px 80px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                    `0 30px 90px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08) inset, 0 1px 0 rgba(255, 255, 255, 0.15) inset`,
+                    `0 35px 110px rgba(110, 150, 255, 0.35), 0 0 0 1px rgba(160, 191, 255, 0.18) inset, 0 1px 0 rgba(255, 255, 255, 0.2) inset`,
+                    `0 30px 90px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08) inset, 0 1px 0 rgba(255, 255, 255, 0.15) inset`,
                   ]
                 } : {}}
-                transition={{ duration: 2, ease: 'easeInOut' }}
+                transition={{ duration: 3, ease: 'easeInOut' }}
               >
-                {/* Ambient glow behind logo */}
-                <motion.div
-                  className="absolute inset-0 rounded-[32px]"
+                {/* Specular highlight */}
+                <div
+                  className="absolute top-0 left-[15%] right-[15%] h-[2px]"
                   style={{
-                    background: 'radial-gradient(circle at 50% 50%, rgba(110, 150, 255, 0.15) 0%, transparent 70%)',
+                    background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent)',
+                    filter: 'blur(1px)',
                   }}
-                  animate={{
-                    opacity: [0.3, 0.6, 0.3],
-                    scale: [1, 1.05, 1],
-                  }}
-                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                 />
 
-                {/* Logo */}
-                <motion.img
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68943f7eb0fb9393bf9a8069/ea91941d0_Asset61xtransparent.png"
-                  alt="Vireon"
-                  className="w-20 h-20 relative z-10"
+                {/* Ambient inner glow */}
+                <motion.div
+                  className="absolute inset-0 rounded-[40px]"
                   style={{
-                    filter: 'drop-shadow(0 0 24px rgba(110, 150, 255, 0.6))',
+                    background: 'radial-gradient(ellipse at 50% 40%, rgba(110, 150, 255, 0.12) 0%, transparent 65%)',
                   }}
-                  animate={phase === 'peak' ? {
-                    filter: [
-                      'drop-shadow(0 0 24px rgba(110, 150, 255, 0.6))',
-                      'drop-shadow(0 0 32px rgba(110, 150, 255, 0.8))',
-                      'drop-shadow(0 0 24px rgba(110, 150, 255, 0.6))',
-                    ]
-                  } : {}}
-                  transition={{ duration: 2, ease: 'easeInOut' }}
+                  animate={{
+                    opacity: [0.4, 0.7, 0.4],
+                  }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                 />
+
+                {/* Logo with perfect lighting */}
+                <motion.div className="relative">
+                  <motion.img
+                    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68943f7eb0fb9393bf9a8069/ea91941d0_Asset61xtransparent.png"
+                    alt="Vireon"
+                    className="w-24 h-24 relative z-10"
+                    initial={{ scale: 0.7, opacity: 0, rotateY: -15 }}
+                    animate={{ 
+                      scale: 1,
+                      opacity: 1,
+                      rotateY: 0,
+                      filter: [
+                        'drop-shadow(0 0 30px rgba(110, 150, 255, 0.7))',
+                        'drop-shadow(0 0 40px rgba(110, 150, 255, 0.9))',
+                        'drop-shadow(0 0 30px rgba(110, 150, 255, 0.7))',
+                      ]
+                    }}
+                    transition={{
+                      scale: { ...APPLE.spring, duration: 1.4 },
+                      opacity: { duration: 1.0, ease: APPLE.gentle },
+                      rotateY: { duration: 1.2, ease: APPLE.precise },
+                      filter: { duration: 3, repeat: Infinity, ease: 'easeInOut' }
+                    }}
+                    style={{
+                      transformStyle: 'preserve-3d',
+                      perspective: '1000px',
+                    }}
+                  />
+                  
+                  {/* Logo halo - pulsing luminance */}
+                  <motion.div
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      background: 'radial-gradient(circle, rgba(160, 191, 255, 0.4) 0%, transparent 70%)',
+                      filter: 'blur(50px)',
+                    }}
+                    animate={{
+                      scale: [1, 1.3, 1],
+                      opacity: [0.5, 0.8, 0.5],
+                    }}
+                    transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+                  />
+                </motion.div>
               </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Brand name reveal */}
-        <AnimatePresence mode="wait">
-          {(phase === 'peak' || phase === 'settle') && (
-            <motion.h1
-              initial={{ opacity: 0, y: 20, filter: 'blur(8px)' }}
+        {/* Brand name - precision typography */}
+        <AnimatePresence>
+          {(phase === 'brand' || phase === 'settle') && (
+            <motion.div
+              className="flex flex-col items-center"
+              initial={{ opacity: 0, y: 30, filter: 'blur(10px)' }}
               animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, y: -10 }}
+              exit={{ opacity: 0, y: -20, filter: 'blur(8px)' }}
               transition={{
-                duration: 1.0,
-                ease: APPLE_EASING.reveal,
-              }}
-              className="text-6xl font-bold mb-4"
-              style={{
-                background: 'linear-gradient(135deg, #FFFFFF 0%, #A0BFFF 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                letterSpacing: '-0.03em',
-                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                duration: 1.3,
+                ease: APPLE.reveal,
               }}
             >
-              Vireon
-            </motion.h1>
+              <h1
+                className="text-7xl font-bold mb-3"
+                style={{
+                  background: 'linear-gradient(135deg, #FFFFFF 0%, #C8D9FF 50%, #FFFFFF 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  letterSpacing: '-0.04em',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                  fontWeight: 700,
+                  textShadow: '0 2px 40px rgba(160, 191, 255, 0.3)',
+                }}
+              >
+                Vireon
+              </h1>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 1.0,
+                  delay: 0.3,
+                  ease: APPLE.entrance,
+                }}
+                className="text-lg tracking-wide"
+                style={{
+                  color: 'rgba(255, 255, 255, 0.6)',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
+                  fontWeight: 400,
+                  letterSpacing: '0.02em',
+                }}
+              >
+                Intelligence you can trust
+              </motion.div>
+            </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Tagline */}
-        <AnimatePresence mode="wait">
-          {(phase === 'settle') && (
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
+        {/* Radial flash at peak moment */}
+        <AnimatePresence>
+          {phase === 'illuminate' && (
+            <motion.div
+              className="absolute inset-0 pointer-events-none flex items-center justify-center"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 0.6, scale: 2 }}
+              exit={{ opacity: 0, scale: 2.5 }}
+              transition={{ 
+                opacity: { duration: 0.8, ease: 'easeOut' },
+                scale: { duration: 1.2, ease: APPLE.gentle }
+              }}
+            >
+              <div
+                className="w-96 h-96 rounded-full"
+                style={{
+                  background: 'radial-gradient(circle, rgba(160, 191, 255, 0.5) 0%, transparent 60%)',
+                  filter: 'blur(100px)',
+                }}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Light sweep - the signature moment */}
+        <AnimatePresence>
+          {phase === 'illuminate' && (
+            <motion.div
+              className="absolute inset-0 pointer-events-none"
+              initial={{ x: '-150%', opacity: 0 }}
+              animate={{ x: '150%', opacity: [0, 0.6, 0] }}
               exit={{ opacity: 0 }}
               transition={{
-                duration: 0.8,
-                delay: 0.2,
-                ease: APPLE_EASING.entrance,
+                x: { duration: 1.8, ease: APPLE.precise },
+                opacity: { duration: 1.8, times: [0, 0.3, 1], ease: 'easeInOut' }
               }}
-              className="text-lg"
               style={{
-                color: 'rgba(255, 255, 255, 0.65)',
-                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
-                letterSpacing: '0.01em',
-                fontWeight: 400,
+                background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.12) 30%, rgba(255, 255, 255, 0.18) 50%, rgba(255, 255, 255, 0.12) 70%, transparent 100%)',
+                width: '300%',
+                transform: 'skewX(-15deg)',
               }}
-            >
-              Your market intelligence platform
-            </motion.p>
+            />
           )}
         </AnimatePresence>
 
-        {/* Subtle progress indicator */}
+        {/* Subtle progress indicator - refined aesthetic */}
         <motion.div
-          className="absolute bottom-12 left-1/2 -translate-x-1/2"
-          initial={{ opacity: 0, width: 0 }}
+          className="absolute bottom-16 left-1/2"
+          initial={{ opacity: 0, width: 0, x: '-50%' }}
           animate={{ 
-            opacity: phase === 'exit' ? 0 : 0.3,
-            width: phase === 'exit' ? 0 : '120px',
+            opacity: phase === 'exit' ? 0 : phase === 'void' ? 0 : 0.25,
+            width: phase === 'exit' ? 0 : '140px',
           }}
-          transition={{ duration: 0.6, ease: APPLE_EASING.entrance }}
+          transition={{ 
+            opacity: { duration: 0.8, ease: APPLE.gentle },
+            width: { duration: 0.6, ease: APPLE.entrance }
+          }}
         >
-          <div className="h-1 rounded-full bg-white/10 overflow-hidden">
+          <div 
+            className="h-[2px] rounded-full overflow-hidden"
+            style={{
+              background: 'rgba(255, 255, 255, 0.08)',
+            }}
+          >
             <motion.div
-              className="h-full bg-gradient-to-r from-blue-400/60 to-purple-400/60 rounded-full"
+              className="h-full rounded-full"
+              style={{
+                background: 'linear-gradient(90deg, rgba(124, 58, 237, 0.7) 0%, rgba(110, 150, 255, 0.7) 100%)',
+              }}
               initial={{ width: '0%' }}
               animate={{ width: '100%' }}
               transition={{
-                duration: TIMINGS.total / 1000,
+                duration: 5.2,
                 ease: 'linear',
               }}
             />
@@ -338,46 +450,13 @@ export default function CinematicWelcome({ onComplete, userEmail = '' }) {
         </motion.div>
       </div>
 
-      {/* Light sweep effect */}
-      <AnimatePresence>
-        {phase === 'peak' && (
-          <motion.div
-            className="absolute inset-0 pointer-events-none"
-            initial={{ x: '-100%' }}
-            animate={{ x: '100%' }}
-            exit={{ opacity: 0 }}
-            transition={{
-              x: { duration: 1.2, ease: APPLE_EASING.entrance },
-              opacity: { duration: 0.3 }
-            }}
-            style={{
-              background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.08) 50%, transparent 100%)',
-              width: '200%',
-            }}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Radial flash at peak */}
-      <AnimatePresence>
-        {phase === 'peak' && (
-          <motion.div
-            className="absolute inset-0 pointer-events-none flex items-center justify-center"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 0.4, scale: 1.5 }}
-            exit={{ opacity: 0, scale: 2 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-          >
-            <div
-              className="w-64 h-64 rounded-full"
-              style={{
-                background: 'radial-gradient(circle, rgba(160, 191, 255, 0.4) 0%, transparent 70%)',
-                filter: 'blur(60px)',
-              }}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Vignette frame */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.6) 100%)',
+        }}
+      />
     </motion.div>
   );
 }
