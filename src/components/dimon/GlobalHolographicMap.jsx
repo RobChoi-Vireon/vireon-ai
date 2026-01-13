@@ -2201,7 +2201,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             {/* SCROLLABLE BODY — OS HORIZON V3.2 HIERARCHY */}
             <motion.div
               className="flex-1 overflow-y-auto px-4"
-              style={{ position: 'relative', zIndex: 2, paddingTop: '12px', paddingBottom: '12px', overflowX: 'hidden' }}
+              style={{ position: 'relative', zIndex: 2, paddingTop: '12px', paddingBottom: '8px', overflowX: 'hidden' }}
               initial={{ opacity: 0 }}
               animate={{
                 opacity: 1,
@@ -2367,7 +2367,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   background: 'rgba(255,255,255,0.03)',
                   border: '1px solid rgba(255,255,255,0.06)',
                   borderRadius: '12px',
-                  boxShadow: `inset 0 0 20px ${getDomainGlow(selectedDomain.id)}`
+                  boxShadow: `inset 0 0 20px ${getDomainGlow(selectedDomain.id)}`,
+                  marginBottom: 0
                 }}
                 whileHover={shouldReduceMotion ? {} : {
                   filter: 'brightness(1.03)',
