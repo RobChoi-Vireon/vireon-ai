@@ -1962,11 +1962,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               aria-modal="true"
               aria-label={`${selectedDomain.title} detailed analysis`}
               style={{
-                top: '24px',
-                right: '24px',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
                 width: '520px',
                 maxWidth: 'calc(100% - 48px)',
-                maxHeight: 'calc(100% - 48px)',
+                maxHeight: 'calc(100% - 96px)',
                 overflowY: 'auto',
                 overflowX: 'hidden',
                 backdropFilter: TOKENS.HORIZON.drawerBlur,
@@ -1980,13 +1981,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               }}
               initial={{
                 scale: 0.92,
-                opacity: 0,
-                y: 20
+                opacity: 0
               }}
               animate={{
                 scale: 1,
                 opacity: 1,
-                y: 0,
                 transition: {
                   duration: MOTION_TOKENS.DURATIONS.drawerInhale,
                   ease: MOTION_TOKENS.CURVES.drawerInhale
@@ -1995,7 +1994,6 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               exit={{
                 scale: 0.94,
                 opacity: 0,
-                y: 10,
                 transition: {
                   duration: MOTION_TOKENS.DURATIONS.base,
                   ease: MOTION_TOKENS.CURVES.horizonOut
@@ -2200,8 +2198,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
             {/* SCROLLABLE BODY — OS HORIZON V3.2 HIERARCHY */}
             <motion.div
-              className="flex-1 overflow-y-auto px-4"
-              style={{ position: 'relative', zIndex: 2, paddingTop: '12px', paddingBottom: '8px', overflowX: 'hidden' }}
+              className="flex-1 overflow-y-auto"
+              style={{ position: 'relative', zIndex: 2, paddingLeft: '16px', paddingRight: '16px', paddingTop: '12px', paddingBottom: '0px', overflowX: 'hidden' }}
               initial={{ opacity: 0 }}
               animate={{
                 opacity: 1,
@@ -2368,7 +2366,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   border: '1px solid rgba(255,255,255,0.06)',
                   borderRadius: '12px',
                   boxShadow: `inset 0 0 20px ${getDomainGlow(selectedDomain.id)}`,
-                  marginBottom: 0
+                  marginBottom: '12px'
                 }}
                 whileHover={shouldReduceMotion ? {} : {
                   filter: 'brightness(1.03)',
