@@ -2,8 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DimonDigestRun } from '@/entities/DimonDigestRun';
 import { generateDimonDigest } from '@/functions/generateDimonDigest';
-import { ChevronLeft, ChevronRight, Play } from 'lucide-react';
-import CinematicWelcome from '@/components/core/CinematicWelcome';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import DigestHeader from '@/components/dimon/DigestHeader';
 import PrioritySignalStrip from '@/components/dimon/PrioritySignalStrip';
@@ -407,7 +406,6 @@ export default function MacroSignalsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [targetDate, setTargetDate] = useState(new Date().toISOString().split('T')[0]);
-  const [showWelcome, setShowWelcome] = useState(false);
 
   const [selectedSignal, setSelectedSignal] = useState(null);
   const [selectedTakeaway, setSelectedTakeaway] = useState(null);
@@ -647,36 +645,6 @@ export default function MacroSignalsPage() {
           willChange: 'filter'
         }}
       >
-        {/* Test Welcome Animation Button */}
-        <div className="flex justify-end mb-4">
-          <button
-            onClick={() => setShowWelcome(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-200"
-            style={{
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(255, 255, 255, 0.10)',
-              color: 'rgba(255, 255, 255, 0.7)',
-              fontSize: '13px',
-              fontWeight: 500,
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.20)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.10)';
-            }}
-          >
-            <Play className="w-4 h-4" />
-            Test Welcome Animation
-          </button>
-        </div>
-
-        {showWelcome && (
-          <CinematicWelcome onComplete={() => setShowWelcome(false)} />
-        )}
-
         <DigestHeader 
           targetDate={targetDate}
           setTargetDate={setTargetDate}
