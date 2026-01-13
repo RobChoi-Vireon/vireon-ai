@@ -1962,9 +1962,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               aria-modal="true"
               aria-label={`${selectedDomain.title} detailed analysis`}
               style={{
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
+                top: '24px',
+                right: '24px',
                 width: '520px',
                 maxWidth: 'calc(100% - 48px)',
                 maxHeight: 'calc(100% - 48px)',
@@ -1981,11 +1980,13 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               }}
               initial={{
                 scale: 0.92,
-                opacity: 0
+                opacity: 0,
+                y: 20
               }}
               animate={{
                 scale: 1,
                 opacity: 1,
+                y: 0,
                 transition: {
                   duration: MOTION_TOKENS.DURATIONS.drawerInhale,
                   ease: MOTION_TOKENS.CURVES.drawerInhale
@@ -1994,6 +1995,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               exit={{
                 scale: 0.94,
                 opacity: 0,
+                y: 10,
                 transition: {
                   duration: MOTION_TOKENS.DURATIONS.base,
                   ease: MOTION_TOKENS.CURVES.horizonOut
