@@ -2472,14 +2472,18 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
             {/* STICKY FOOTER */}
             <motion.div
-              className="flex-shrink-0 border-t p-3"
+              className="flex-shrink-0 border-t"
               style={{
                 position: 'sticky',
                 bottom: 0,
                 background: TOKENS.HORIZON.drawerTint,
                 borderColor: TOKENS.HORIZON.drawerDivider,
                 backdropFilter: getBlur('panel'),
-                zIndex: 10
+                zIndex: 10,
+                paddingLeft: '12px',
+                paddingRight: '12px',
+                paddingTop: '10px',
+                paddingBottom: '10px'
               }}
               initial={{ opacity: 0, y: 10 }}
               animate={{
@@ -2497,7 +2501,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 transition: { duration: MOTION_TOKENS.DURATIONS.fast }
               }}
             >
-              <div className="flex items-center gap-2.5 mb-2">
+              <div className="flex items-center gap-2.5 mb-1.5">
                 <motion.button
                   className="flex-1 flex items-center justify-center gap-2 rounded-xl font-medium"
                   style={{
