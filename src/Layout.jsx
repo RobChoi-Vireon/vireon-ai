@@ -1077,15 +1077,20 @@ function LayoutContent({ children, currentPageName }) {
               </Link>
             </div>
 
-            <main className={`
-              flex-1 overflow-y-auto px-4 sm:px-6 md:px-8 py-6 md:py-8 pb-24 md:pb-8 
-              relative
-              ${isCommentaryOpen && isEnabled('labs_modules') ? 'md:pr-[340px]' : ''}
-            `}>
+            <motion.main 
+              className={`
+                flex-1 overflow-y-auto px-4 sm:px-6 md:px-8 py-6 md:py-8 pb-24 md:pb-8 
+                relative
+                ${isCommentaryOpen && isEnabled('labs_modules') ? 'md:pr-[340px]' : ''}
+              `}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
+            >
               <div className="max-w-[1400px] mx-auto">
                 {children}
               </div>
-            </main>
+            </motion.main>
           </div>
 
           <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 px-2 py-2 border-t border-white/[0.08] elevation-1">
