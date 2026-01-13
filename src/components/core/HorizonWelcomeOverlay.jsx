@@ -11,7 +11,7 @@ import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-mo
  * No logos, no product names, minimal text (Apple-style).
  */
 
-const PowerCore = ({ parallaxX, parallaxY }) => {
+const PowerCore = ({ parallaxX, parallaxY, cursorInfluence = { x: 0, y: 0 } }) => {
   return (
     <motion.div
       className="relative"
@@ -20,6 +20,15 @@ const PowerCore = ({ parallaxX, parallaxY }) => {
         y: parallaxY,
         width: '360px',
         height: '360px'
+      }}
+      animate={{
+        z: [0, 15, 8, 0]
+      }}
+      transition={{
+        duration: 21.5,
+        repeat: Infinity,
+        ease: "easeInOut",
+        times: [0, 0.3, 0.7, 1]
       }}
     >
       <svg
@@ -107,7 +116,7 @@ const PowerCore = ({ parallaxX, parallaxY }) => {
           }}
         />
 
-        {/* Inner light source: internal drift (asymmetric) */}
+        {/* Inner light source: intentional drift with pauses */}
         <motion.ellipse
           cx="180"
           cy="175"
@@ -116,18 +125,19 @@ const PowerCore = ({ parallaxX, parallaxY }) => {
           fill="url(#innerLight)"
           filter="url(#softEdge)"
           animate={{
-            cx: [180, 182, 178, 181, 177, 180],
-            cy: [175, 173, 177, 171, 179, 175],
-            opacity: [0.48, 0.68, 0.52, 0.64, 0.45, 0.48]
+            cx: [180, 180, 182, 182, 180, 178, 178, 180, 181, 181, 180],
+            cy: [175, 175, 173, 173, 175, 177, 177, 175, 171, 171, 175],
+            opacity: [0.48, 0.48, 0.68, 0.65, 0.52, 0.58, 0.55, 0.45, 0.62, 0.6, 0.48]
           }}
           transition={{
-            duration: 17.5,
+            duration: 21.8,
             repeat: Infinity,
-            ease: "easeInOut"
+            ease: "easeInOut",
+            times: [0, 0.08, 0.22, 0.28, 0.35, 0.48, 0.54, 0.62, 0.75, 0.81, 1]
           }}
         />
 
-        {/* Subsurface highlight: slow, unpredictable drift */}
+        {/* Subsurface highlight: intentional drift with settling */}
         <motion.ellipse
           cx="150"
           cy="120"
@@ -136,14 +146,15 @@ const PowerCore = ({ parallaxX, parallaxY }) => {
           fill="rgba(255, 255, 255, 0.15)"
           filter="url(#softEdge)"
           animate={{
-            cx: [150, 158, 142, 155, 145, 150],
-            cy: [120, 118, 122, 116, 124, 120],
-            opacity: [0.25, 0.48, 0.22, 0.42, 0.18, 0.25]
+            cx: [150, 150, 158, 158, 150, 142, 142, 150, 155, 155, 150],
+            cy: [120, 120, 118, 118, 120, 122, 122, 120, 116, 116, 120],
+            opacity: [0.25, 0.25, 0.48, 0.45, 0.32, 0.22, 0.2, 0.28, 0.42, 0.4, 0.25]
           }}
           transition={{
-            duration: 19.2,
+            duration: 23.6,
             repeat: Infinity,
-            ease: "easeInOut"
+            ease: "easeInOut",
+            times: [0, 0.06, 0.18, 0.24, 0.33, 0.45, 0.51, 0.6, 0.72, 0.78, 1]
           }}
         />
 
@@ -192,6 +203,9 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
   const containerRef = useRef(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
+  const [cursorInfluence, setCursorInfluence] = useState({ x: 0, y: 0 });
+  const [isIdle, setIsIdle] = useState(false);
+  const idleTimeoutRef = useRef(null);
 
   // Very subtle parallax (2–3px max)
   const coreX = useTransform(mouseX, [-1, 1], [-3, 3]);
@@ -211,10 +225,35 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
 
       mouseX.set(x * 0.2); // Heavily damped
       mouseY.set(y * 0.2);
+
+      // Internal light responds to cursor with subtle 2-3px shift
+      setCursorInfluence({
+        x: x * 2.5,
+        y: y * 2.5
+      });
+
+      setIsIdle(false);
+
+      // Reset idle timer
+      clearTimeout(idleTimeoutRef.current);
+      idleTimeoutRef.current = setTimeout(() => {
+        setIsIdle(true);
+      }, 3000);
+    };
+
+    // Return to neutral when idle
+    const handleMouseLeave = () => {
+      setCursorInfluence({ x: 0, y: 0 });
+      setIsIdle(true);
     };
 
     container.addEventListener('mousemove', handleMouseMove);
-    return () => container.removeEventListener('mousemove', handleMouseMove);
+    container.addEventListener('mouseleave', handleMouseLeave);
+    return () => {
+      container.removeEventListener('mousemove', handleMouseMove);
+      container.removeEventListener('mouseleave', handleMouseLeave);
+      clearTimeout(idleTimeoutRef.current);
+    };
   }, [mouseX, mouseY]);
 
   const handleDismiss = () => {
@@ -276,8 +315,16 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
               scale: 1.1
             }}
             transition={{ duration: 0.6, ease: "easeOut" }}
+            animate={{
+              x: isIdle ? 0 : cursorInfluence.x,
+              y: isIdle ? 0 : cursorInfluence.y
+            }}
+            transition={{
+              x: { type: "tween", duration: 0.6, ease: "easeOut" },
+              y: { type: "tween", duration: 0.6, ease: "easeOut" }
+            }}
           >
-            <PowerCore parallaxX={coreX} parallaxY={coreY} />
+            <PowerCore parallaxX={coreX} parallaxY={coreY} cursorInfluence={cursorInfluence} />
           </motion.div>
 
           {/* Minimal Text Stack */}
@@ -314,7 +361,7 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
             </p>
           </motion.div>
 
-          {/* CTA Button */}
+          {/* CTA Button: motion settles on appearance */}
           <motion.button
             className="mt-16 px-12 py-3.5 rounded-full font-medium text-base pointer-events-auto"
             style={{
@@ -331,7 +378,7 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
             }}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 1.2 }}
+            transition={{ duration: 0.5, delay: 1.3 }}
             whileHover={{
               scale: 1.05,
               boxShadow: `
