@@ -267,7 +267,7 @@ const usePortalRoot = () => {
 // ============================================================================
 // SMART PLACEMENT CALCULATOR (COLLISION-AWARE)
 // ============================================================================
-const calculateSmartPlacement = (nodeRect, cardWidth = 320, cardHeight = 420) => {
+const calculateSmartPlacement = (nodeRect, cardWidth = 320, cardHeight = 360) => {
   const HEADER_HEIGHT = 72;
   const SAFE_MARGIN = 16;
   const SAFE_TOP = HEADER_HEIGHT + SAFE_MARGIN; // 88px from top
