@@ -2077,7 +2077,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
             {/* HEADER */}
             <motion.div
-              className="flex-shrink-0 p-4 border-b"
+              className="flex-shrink-0 p-3 border-b"
               style={{
                 background: TOKENS.HORIZON.drawerTint,
                 borderColor: TOKENS.HORIZON.drawerDivider,
@@ -2101,7 +2101,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 transition: { duration: MOTION_TOKENS.DURATIONS.fast }
               }}
             >
-              <div className="flex items-start justify-between mb-3">
+              <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-4">
                   <motion.div
                     className="w-10 h-10 rounded-full flex items-center justify-center"
@@ -2199,8 +2199,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
             {/* SCROLLABLE BODY — OS HORIZON V3.2 HIERARCHY */}
             <motion.div
-              className="flex-1 overflow-y-auto px-5"
-              style={{ position: 'relative', zIndex: 2, paddingTop: '16px', paddingBottom: '16px' }}
+              className="flex-1 overflow-y-auto px-4"
+              style={{ position: 'relative', zIndex: 2, paddingTop: '12px', paddingBottom: '12px' }}
               initial={{ opacity: 0 }}
               animate={{
                 opacity: 1,
@@ -2223,13 +2223,13 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   delay: shouldReduceMotion ? 0 : 0.09,
                   duration: MOTION_TOKENS.DURATIONS.fast
                 }}
-                style={{ marginBottom: '16px' }}
+                style={{ marginBottom: '12px' }}
               >
                 <h4 style={{
                   color: 'rgba(255,255,255,0.68)',
                   fontSize: '11px',
                   fontWeight: 600,
-                  marginBottom: '8px',
+                  marginBottom: '6px',
                   lineHeight: '1.3',
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase'
@@ -2266,20 +2266,20 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   delay: shouldReduceMotion ? 0 : 0.12,
                   duration: MOTION_TOKENS.DURATIONS.fast
                 }}
-                style={{ marginBottom: '16px' }}
+                style={{ marginBottom: '12px' }}
               >
                 <h4 style={{
                   color: 'rgba(255,255,255,0.68)',
                   fontSize: '11px',
                   fontWeight: 600,
-                  marginBottom: '8px',
+                  marginBottom: '6px',
                   lineHeight: '1.3',
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase'
                 }}>
                   Downstream Effects
                 </h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {selectedDomain.downstream_effects.map((effect, i) => (
                     <motion.div
                       key={i}
@@ -2301,7 +2301,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                       style={{
                         background: 'rgba(255,255,255,0.03)',
                         borderRadius: '10px',
-                        padding: '8px 10px',
+                        padding: '6px 8px',
                         display: 'flex',
                         alignItems: 'flex-start',
                         justifyContent: 'space-between',
@@ -2359,7 +2359,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   delay: shouldReduceMotion ? 0 : 0.18,
                   duration: MOTION_TOKENS.DURATIONS.fast
                 }}
-                className="p-4 rounded-2xl relative overflow-hidden"
+                className="p-3 rounded-2xl relative overflow-hidden"
                 style={{
                   background: 'rgba(255,255,255,0.03)',
                   border: '1px solid rgba(255,255,255,0.06)',
@@ -2391,7 +2391,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   />
                 )}
 
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center justify-between mb-2">
                   <p className="text-xs font-semibold" style={{
                     color: 'rgba(255,255,255,0.68)',
                     letterSpacing: '0.12em',
@@ -2466,7 +2466,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
 
             {/* STICKY FOOTER */}
             <motion.div
-              className="flex-shrink-0 border-t p-4"
+              className="flex-shrink-0 border-t p-3"
               style={{
                 position: 'sticky',
                 bottom: 0,
@@ -2491,7 +2491,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 transition: { duration: MOTION_TOKENS.DURATIONS.fast }
               }}
             >
-              <div className="flex items-center gap-2.5 mb-3">
+              <div className="flex items-center gap-2.5 mb-2">
                 <motion.button
                   className="flex-1 flex items-center justify-center gap-2 rounded-xl font-medium"
                   style={{
