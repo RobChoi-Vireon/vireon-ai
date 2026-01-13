@@ -1962,12 +1962,12 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               aria-modal="true"
               aria-label={`${selectedDomain.title} detailed analysis`}
               style={{
-                top: '50%',
+                top: '250px',
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
                 width: '520px',
                 maxWidth: 'calc(100% - 48px)',
-                maxHeight: 'calc(100% - 96px)',
+                maxHeight: '500px',
                 overflow: 'hidden',
                 backdropFilter: TOKENS.HORIZON.drawerBlur,
                 WebkitBackdropFilter: TOKENS.HORIZON.drawerBlur,
@@ -2081,7 +2081,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 borderColor: TOKENS.HORIZON.drawerDivider,
                 backdropFilter: getBlur('chip'),
                 position: 'relative',
-                zIndex: 10
+                zIndex: 10,
+                overflow: 'visible'
               }}
               initial={{ opacity: 0, y: -4 }}
               animate={{
@@ -2205,8 +2206,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 paddingRight: '16px', 
                 paddingTop: '12px', 
                 paddingBottom: '12px', 
-                overflowX: 'hidden',
-                maxHeight: 'calc(100% - 160px)'
+                overflowX: 'hidden'
               }}
               initial={{ opacity: 0 }}
               animate={{
@@ -2487,7 +2487,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 paddingLeft: '12px',
                 paddingRight: '12px',
                 paddingTop: '10px',
-                paddingBottom: '10px'
+                paddingBottom: '10px',
+                overflow: 'visible'
               }}
               initial={{ opacity: 0, y: 10 }}
               animate={{
