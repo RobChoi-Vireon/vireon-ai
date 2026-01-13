@@ -70,7 +70,7 @@ const PowerCore = ({ parallaxX, parallaxY }) => {
           </filter>
         </defs>
 
-        {/* Outer field / aura layer */}
+        {/* Outer field / aura layer: subtle asymmetric drift */}
         <motion.circle
           cx="180"
           cy="180"
@@ -80,16 +80,16 @@ const PowerCore = ({ parallaxX, parallaxY }) => {
           strokeWidth="0.5"
           filter="url(#coreGlow)"
           animate={{
-            opacity: [0.3, 0.6, 0.3]
+            opacity: [0.25, 0.45, 0.28, 0.35, 0.2, 0.4, 0.25]
           }}
           transition={{
-            duration: 11,
+            duration: 16.8,
             repeat: Infinity,
             ease: "easeInOut"
           }}
         />
 
-        {/* Main core body: organic ellipse with soft gradient */}
+        {/* Main core body: organic ellipse with asymmetric drift */}
         <motion.ellipse
           cx="180"
           cy="180"
@@ -97,17 +97,17 @@ const PowerCore = ({ parallaxX, parallaxY }) => {
           ry="145"
           fill="url(#coreGradient)"
           animate={{
-            rx: [140, 138, 142, 140],
-            ry: [145, 148, 143, 145]
+            rx: [140, 139, 141, 138, 142, 140],
+            ry: [145, 146, 144, 147, 143, 145]
           }}
           transition={{
-            duration: 8.5,
+            duration: 14.3,
             repeat: Infinity,
             ease: [0.43, 0.13, 0.23, 0.96]
           }}
         />
 
-        {/* Inner light source: breathing luminosity */}
+        {/* Inner light source: internal drift (asymmetric) */}
         <motion.ellipse
           cx="180"
           cy="175"
@@ -116,18 +116,18 @@ const PowerCore = ({ parallaxX, parallaxY }) => {
           fill="url(#innerLight)"
           filter="url(#softEdge)"
           animate={{
-            cx: [180, 183, 177, 180],
-            cy: [175, 172, 178, 175],
-            opacity: [0.5, 0.75, 0.45, 0.5]
+            cx: [180, 182, 178, 181, 177, 180],
+            cy: [175, 173, 177, 171, 179, 175],
+            opacity: [0.48, 0.68, 0.52, 0.64, 0.45, 0.48]
           }}
           transition={{
-            duration: 9.2,
+            duration: 17.5,
             repeat: Infinity,
-            ease: [0.43, 0.13, 0.23, 0.96]
+            ease: "easeInOut"
           }}
         />
 
-        {/* Subsurface highlight: organic, drifting */}
+        {/* Subsurface highlight: slow, unpredictable drift */}
         <motion.ellipse
           cx="150"
           cy="120"
@@ -136,18 +136,18 @@ const PowerCore = ({ parallaxX, parallaxY }) => {
           fill="rgba(255, 255, 255, 0.15)"
           filter="url(#softEdge)"
           animate={{
-            cx: [150, 160, 140, 150],
-            cy: [120, 115, 125, 120],
-            opacity: [0.3, 0.5, 0.2, 0.3]
+            cx: [150, 158, 142, 155, 145, 150],
+            cy: [120, 118, 122, 116, 124, 120],
+            opacity: [0.25, 0.48, 0.22, 0.42, 0.18, 0.25]
           }}
           transition={{
-            duration: 12.5,
+            duration: 19.2,
             repeat: Infinity,
             ease: "easeInOut"
           }}
         />
 
-        {/* Breathing outer contour (very subtle) */}
+        {/* Outer contour: alive but not breathing */}
         <motion.ellipse
           cx="180"
           cy="180"
@@ -157,16 +157,16 @@ const PowerCore = ({ parallaxX, parallaxY }) => {
           stroke="rgba(255, 255, 255, 0.08)"
           strokeWidth="1"
           animate={{
-            strokeOpacity: [0.08, 0.12, 0.06, 0.08]
+            strokeOpacity: [0.06, 0.11, 0.07, 0.09, 0.05, 0.08, 0.06]
           }}
           transition={{
-            duration: 7.5,
+            duration: 15.7,
             repeat: Infinity,
             ease: "easeInOut"
           }}
         />
 
-        {/* Far subtle secondary glow ring */}
+        {/* Far subtle secondary glow: very slow fade */}
         <motion.circle
           cx="180"
           cy="180"
@@ -175,13 +175,12 @@ const PowerCore = ({ parallaxX, parallaxY }) => {
           stroke="rgba(107, 115, 255, 0.05)"
           strokeWidth="0.5"
           animate={{
-            opacity: [0.1, 0.25, 0.1]
+            opacity: [0.08, 0.2, 0.12, 0.08]
           }}
           transition={{
-            duration: 13.5,
+            duration: 18.5,
             repeat: Infinity,
-            ease: "easeInOut",
-            delay: 2
+            ease: "easeInOut"
           }}
         />
       </svg>
@@ -236,7 +235,7 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
         }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        exit={{ opacity: 0, scale: 0.985 }}
+        exit={{ opacity: 0 }}
         transition={{ duration: 0.32, ease: [0.23, 1, 0.32, 1] }}
         onClick={handleDismiss}
       >
@@ -264,13 +263,22 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
           className="relative flex flex-col items-center pointer-events-none"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Power Core */}
-          <div className="mb-16 md:mb-20">
+          {/* Power Core: subtle offset + fade on exit */}
+          <motion.div 
+            className="mb-16 md:mb-20"
+            exit={{ 
+              opacity: 0,
+              filter: 'blur(8px) brightness(1.8)',
+              scale: 1.1
+            }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
             <PowerCore parallaxX={coreX} parallaxY={coreY} />
-          </div>
+          </motion.div>
 
           {/* Minimal Text Stack */}
           <motion.div
@@ -281,24 +289,25 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
           >
             {/* Greeting */}
             <h1
-              className="text-6xl md:text-7xl font-light tracking-tight"
+              className="text-6xl md:text-7xl"
               style={{
-                color: 'rgba(255, 255, 255, 0.95)',
-                letterSpacing: '-0.02em',
-                fontWeight: 300
+                color: 'rgba(255, 255, 255, 0.92)',
+                letterSpacing: '0.015em',
+                fontWeight: 200,
+                fontVariationSettings: '"wght" 200'
               }}
             >
               Welcome
             </h1>
 
-            {/* Subline */}
+            {/* Subline: secondary, refined */}
             <p
-              className="text-lg md:text-xl font-light"
+              className="text-lg md:text-xl"
               style={{
-                color: 'rgba(255, 255, 255, 0.65)',
-                letterSpacing: '0.03em',
+                color: 'rgba(255, 255, 255, 0.48)',
+                letterSpacing: '0.045em',
                 fontWeight: 300,
-                marginTop: '16px'
+                marginTop: '20px'
               }}
             >
               Designed for intuition.
@@ -309,29 +318,35 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
           <motion.button
             className="mt-16 px-12 py-3.5 rounded-full font-medium text-base pointer-events-auto"
             style={{
-              background: 'rgba(107, 115, 255, 0.15)',
+              background: 'rgba(107, 115, 255, 0.12)',
               backdropFilter: 'blur(20px)',
               WebkitBackdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
               color: '#ffffff',
               boxShadow: `
-                0 0 40px rgba(107, 115, 255, 0.25),
-                inset 0 1px 0 rgba(255, 255, 255, 0.12)
+                0 0 40px rgba(107, 115, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1)
               `,
-              letterSpacing: '0.03em'
+              letterSpacing: '0.04em'
             }}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 1.0 }}
+            transition={{ duration: 0.5, delay: 1.2 }}
             whileHover={{
-              scale: 1.06,
+              scale: 1.05,
               boxShadow: `
-                0 0 50px rgba(107, 115, 255, 0.35),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15)
+                0 0 50px rgba(107, 115, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.12)
               `,
-              transition: { duration: 0.2 }
+              transition: { duration: 0.3 }
             }}
-            whileTap={{ scale: 0.96 }}
+            whileTap={{ 
+              scale: 0.95,
+              boxShadow: `
+                0 0 60px rgba(107, 115, 255, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15)
+              `
+            }}
             onClick={handleDismiss}
           >
             Enter
