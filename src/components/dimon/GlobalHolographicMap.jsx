@@ -2196,9 +2196,8 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               </div>
             </motion.div>
 
-            {/* SCROLLABLE BODY — OS HORIZON V3.2 HIERARCHY */}
+            {/* BODY — OS HORIZON V3.2 HIERARCHY */}
             <motion.div
-              className="overflow-y-auto"
               style={{ 
                 position: 'relative', 
                 zIndex: 2, 
@@ -2206,7 +2205,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 paddingRight: '16px', 
                 paddingTop: '12px', 
                 paddingBottom: '12px', 
-                overflowX: 'hidden'
+                overflow: 'visible'
               }}
               initial={{ opacity: 0 }}
               animate={{
