@@ -1962,7 +1962,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               aria-modal="true"
               aria-label={`${selectedDomain.title} detailed analysis`}
               style={{
-                top: '50%',
+                top: 'calc(48px + 250px)',
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
                 width: '520px',
