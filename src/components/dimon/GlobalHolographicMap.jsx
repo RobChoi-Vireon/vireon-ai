@@ -1929,55 +1929,60 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
         <p style={{ fontSize: '9px', fontWeight: 400, color: TOKENS.colors.textTertiary, opacity: 0.55, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Data via Lyra models</p>
       </div>
 
-      {/* EXPANSION DRAWER — ANCHORED INSIDE EQUILIBRIUM */}
+      {/* EXPANSION DRAWER — ANCHORED INSIDE ORB CLUSTER */}
       <AnimatePresence>
-        {selectedDomain && !isSwitchingNode && (
-          <>
-            {/* Local Overlay within Section */}
-            <motion.div
-              className="absolute z-40"
-              style={{
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: 'rgba(6,8,13,0.65)',
-                backdropFilter: 'blur(8px) brightness(0.92)',
-                WebkitBackdropFilter: 'blur(8px) brightness(0.92)',
-                pointerEvents: 'auto',
-                borderRadius: '24px'
-              }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              onClick={handleCloseDrawer}
-            />
+        {selectedDomain && !isSwitchingNode && containerRef.current && (() => {
+          const containerRect = containerRef.current.getBoundingClientRect();
+          const containerCenterX = containerRect.width / 2;
+          const containerCenterY = 250; // Center of 500px tall orb cluster
+          
+          return (
+            <>
+              {/* Local Overlay within Section */}
+              <motion.div
+                className="absolute z-40"
+                style={{
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: 'rgba(6,8,13,0.65)',
+                  backdropFilter: 'blur(8px) brightness(0.92)',
+                  WebkitBackdropFilter: 'blur(8px) brightness(0.92)',
+                  pointerEvents: 'auto',
+                  borderRadius: '24px'
+                }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={handleCloseDrawer}
+              />
 
-            {/* Anchored Expansion Panel */}
-            <motion.div
-              ref={drawerRef}
-              className="absolute z-50 flex flex-col drawer-with-header-safe"
-              role="dialog"
-              aria-modal="true"
-              aria-label={`${selectedDomain.title} detailed analysis`}
-              style={{
-                top: '298px',
-                left: '50%',
-                transform: 'translateX(-50%) translateY(-50%)',
-                width: '520px',
-                maxWidth: 'calc(100% - 48px)',
-                maxHeight: '500px',
-                overflow: 'hidden',
-                backdropFilter: TOKENS.HORIZON.drawerBlur,
-                WebkitBackdropFilter: TOKENS.HORIZON.drawerBlur,
-                background: TOKENS.HORIZON.drawerGlass,
-                border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
-                boxShadow: `0 0 60px rgba(0, 0, 0, 0.15), ${TOKENS.HORIZON.panelShadow}, 0 0 12px ${TOKENS.HORIZON.drawerEdgeBloom}, inset 0 0 0 1px rgba(255,255,255,0.10)`,
-                borderRadius: '24px',
-                filter: `brightness(${drawerLuminance})`,
-                pointerEvents: 'auto'
-              }}
+              {/* Anchored Expansion Panel */}
+              <motion.div
+                ref={drawerRef}
+                className="absolute z-50 flex flex-col drawer-with-header-safe"
+                role="dialog"
+                aria-modal="true"
+                aria-label={`${selectedDomain.title} detailed analysis`}
+                style={{
+                  top: `${containerCenterY}px`,
+                  left: `${containerCenterX}px`,
+                  transform: 'translate(-50%, -50%)',
+                  width: '520px',
+                  maxWidth: 'calc(100% - 48px)',
+                  maxHeight: '500px',
+                  overflow: 'hidden',
+                  backdropFilter: TOKENS.HORIZON.drawerBlur,
+                  WebkitBackdropFilter: TOKENS.HORIZON.drawerBlur,
+                  background: TOKENS.HORIZON.drawerGlass,
+                  border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
+                  boxShadow: `0 0 60px rgba(0, 0, 0, 0.15), ${TOKENS.HORIZON.panelShadow}, 0 0 12px ${TOKENS.HORIZON.drawerEdgeBloom}, inset 0 0 0 1px rgba(255,255,255,0.10)`,
+                  borderRadius: '24px',
+                  filter: `brightness(${drawerLuminance})`,
+                  pointerEvents: 'auto'
+                }}
               initial={{
                 scale: 0.92,
                 opacity: 0
@@ -2578,10 +2583,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   1–4 · ← → · ESC
                 </span>
               </div>
-            </motion.div>
-            </motion.div>
-          </>
-        )}
+              </motion.div>
+              </motion.div>
+            </>
+          );
+        })()}
       </AnimatePresence>
 
       <style jsx>{`
