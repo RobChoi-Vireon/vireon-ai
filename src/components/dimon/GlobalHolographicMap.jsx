@@ -267,7 +267,7 @@ const usePortalRoot = () => {
 // ============================================================================
 // SMART PLACEMENT CALCULATOR (COLLISION-AWARE)
 // ============================================================================
-const calculateSmartPlacement = (nodeRect, cardWidth = 270, cardHeight = 340) => {
+const calculateSmartPlacement = (nodeRect, cardWidth = 320, cardHeight = 420) => {
   const SAFE_MARGIN = 32;
   const GAP_FROM_NODE = 14;
 
@@ -447,11 +447,11 @@ const HoverCardPortal = ({
         position: 'absolute',
         left: `${position.x}px`,
         top: `${position.y}px`,
-        width: '270px',
+        width: '320px',
         maxHeight: position.maxHeight ? `${position.maxHeight}px` : 'none',
         overflowY: position.maxHeight ? 'auto' : 'visible',
-        padding: '18px 20px',
-        borderRadius: '18px',
+        padding: '20px 22px',
+        borderRadius: '20px',
         backdropFilter: 'blur(22px) saturate(165%) brightness(1.05)',
         WebkitBackdropFilter: 'blur(22px) saturate(165%) brightness(1.05)',
         background: 'rgba(24, 28, 33, 0.45)',
