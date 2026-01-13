@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DimonDigestRun } from '@/entities/DimonDigestRun';
 import { generateDimonDigest } from '@/functions/generateDimonDigest';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
+import HorizonWelcomeOverlay from '@/components/core/HorizonWelcomeOverlay';
 
 import DigestHeader from '@/components/dimon/DigestHeader';
 import PrioritySignalStrip from '@/components/dimon/PrioritySignalStrip';
@@ -412,6 +413,7 @@ export default function MacroSignalsPage() {
   const [selectedDivergence, setSelectedDivergence] = useState(null);
   const [isConsensusDrawerOpen, setIsConsensusDrawerOpen] = useState(false);
   const [selectedSegment, setSelectedSegment] = useState(null);
+  const [showTestWelcome, setShowTestWelcome] = useState(false);
 
   // Memoize sanitized data to prevent re-computation on re-renders
   const sanitizedDigest = useMemo(() => {
@@ -645,13 +647,41 @@ export default function MacroSignalsPage() {
           willChange: 'filter'
         }}
       >
-        <DigestHeader 
-          targetDate={targetDate}
-          setTargetDate={setTargetDate}
-          isLoading={isLoading}
-          sentimentFlow={digest?.sentiment_flow}
-          insightLine={digest?.insight_line}
-        />
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex-1">
+            <DigestHeader 
+              targetDate={targetDate}
+              setTargetDate={setTargetDate}
+              isLoading={isLoading}
+              sentimentFlow={digest?.sentiment_flow}
+              insightLine={digest?.insight_line}
+            />
+          </div>
+          
+          {/* Test Welcome Button */}
+          <motion.button
+            onClick={() => setShowTestWelcome(true)}
+            className="flex items-center gap-2 px-4 py-2 rounded-full font-medium text-sm transition-all duration-200"
+            style={{
+              background: 'rgba(107, 115, 255, 0.08)',
+              border: '1px solid rgba(107, 115, 255, 0.15)',
+              color: 'rgba(255, 255, 255, 0.75)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)'
+            }}
+            whileHover={{
+              scale: 1.03,
+              backgroundColor: 'rgba(107, 115, 255, 0.12)',
+              borderColor: 'rgba(107, 115, 255, 0.25)',
+              color: 'rgba(255, 255, 255, 0.9)',
+              transition: { duration: 0.2 }
+            }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <Sparkles className="w-4 h-4" />
+            <span>Test Welcome</span>
+          </motion.button>
+        </div>
         <RetryWrapper 
           error={error} 
           isLoading={isLoading} 
@@ -869,6 +899,14 @@ export default function MacroSignalsPage() {
           This is a demonstration of Vireon's macro-synthesis engine. Not financial advice.
         </p>
       </footer>
+
+      {/* Test Welcome Overlay */}
+      {showTestWelcome && (
+        <HorizonWelcomeOverlay 
+          onDismiss={() => setShowTestWelcome(false)} 
+          isTestMode={true}
+        />
+      )}
     </div>
   );
 }
