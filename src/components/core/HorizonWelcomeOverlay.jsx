@@ -11,7 +11,7 @@ import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-mo
  * No logos, no product names, minimal text (Apple-style).
  */
 
-const PowerCore = ({ parallaxX, parallaxY, cursorInfluence = { x: 0, y: 0 } }) => {
+const PowerCore = ({ parallaxX, parallaxY, cursorInfluence = { x: 0, y: 0 }, brightnessPulse = false }) => {
   return (
     <motion.div
       className="relative"
@@ -22,13 +22,13 @@ const PowerCore = ({ parallaxX, parallaxY, cursorInfluence = { x: 0, y: 0 } }) =
         height: '360px'
       }}
       animate={{
-        z: [0, 15, 8, 0]
+        z: [0, 12, 6, 0]
       }}
       transition={{
-        duration: 21.5,
+        duration: 22.3,
         repeat: Infinity,
         ease: "easeInOut",
-        times: [0, 0.3, 0.7, 1]
+        times: [0, 0.28, 0.65, 1]
       }}
     >
       <svg
@@ -42,18 +42,18 @@ const PowerCore = ({ parallaxX, parallaxY, cursorInfluence = { x: 0, y: 0 } }) =
       >
         <defs>
           {/* Soft radial gradient for the core body */}
-          <radialGradient id="coreGradient" cx="45%" cy="40%" r="65%">
-            <stop offset="0%" stopColor="rgba(255, 255, 255, 0.22)" />
-            <stop offset="25%" stopColor="rgba(200, 210, 255, 0.15)" />
-            <stop offset="50%" stopColor="rgba(107, 115, 255, 0.12)" />
-            <stop offset="75%" stopColor="rgba(100, 110, 200, 0.08)" />
-            <stop offset="100%" stopColor="rgba(80, 90, 180, 0.03)" />
+          <radialGradient id="coreGradient" cx="42%" cy="38%" r="68%">
+            <stop offset="0%" stopColor="rgba(255, 255, 255, 0.18)" />
+            <stop offset="28%" stopColor="rgba(200, 210, 255, 0.12)" />
+            <stop offset="55%" stopColor="rgba(107, 115, 255, 0.09)" />
+            <stop offset="78%" stopColor="rgba(100, 110, 200, 0.05)" />
+            <stop offset="100%" stopColor="rgba(80, 90, 180, 0.01)" />
           </radialGradient>
 
-          {/* Inner luminous light source */}
-          <radialGradient id="innerLight" cx="48%" cy="35%" r="40%">
-            <stop offset="0%" stopColor="rgba(220, 230, 255, 0.35)" />
-            <stop offset="40%" stopColor="rgba(150, 170, 255, 0.15)" />
+          {/* Inner luminous light source: asymmetric, responds to cursor */}
+          <radialGradient id="innerLight" cx="46%" cy="33%" r="42%">
+            <stop offset="0%" stopColor="rgba(220, 230, 255, 0.32)" />
+            <stop offset="38%" stopColor="rgba(150, 170, 255, 0.12)" />
             <stop offset="100%" stopColor="rgba(100, 120, 200, 0)" />
           </radialGradient>
 
@@ -116,7 +116,7 @@ const PowerCore = ({ parallaxX, parallaxY, cursorInfluence = { x: 0, y: 0 } }) =
           }}
         />
 
-        {/* Inner light source: intentional drift with pauses */}
+        {/* Inner light source: responds to cursor, internal drift with moments of stillness */}
         <motion.ellipse
           cx="180"
           cy="175"
@@ -125,15 +125,17 @@ const PowerCore = ({ parallaxX, parallaxY, cursorInfluence = { x: 0, y: 0 } }) =
           fill="url(#innerLight)"
           filter="url(#softEdge)"
           animate={{
-            cx: [180, 180, 182, 182, 180, 178, 178, 180, 181, 181, 180],
-            cy: [175, 175, 173, 173, 175, 177, 177, 175, 171, 171, 175],
-            opacity: [0.48, 0.48, 0.68, 0.65, 0.52, 0.58, 0.55, 0.45, 0.62, 0.6, 0.48]
+            cx: [180, 180, 183, 183, 180, 177, 177, 180, 181, 181, 180],
+            cy: [175, 175, 172, 172, 175, 178, 178, 175, 170, 170, 175],
+            opacity: brightnessPulse 
+              ? [0.48, 0.48, 0.68, 0.75, 0.72, 0.65, 0.58, 0.55, 0.45, 0.62, 0.48]
+              : [0.48, 0.48, 0.68, 0.65, 0.52, 0.58, 0.55, 0.45, 0.62, 0.6, 0.48]
           }}
           transition={{
-            duration: 21.8,
-            repeat: Infinity,
+            duration: brightnessPulse ? 2.2 : 21.8,
+            repeat: brightnessPulse ? 0 : Infinity,
             ease: "easeInOut",
-            times: [0, 0.08, 0.22, 0.28, 0.35, 0.48, 0.54, 0.62, 0.75, 0.81, 1]
+            times: [0, 0.09, 0.24, 0.3, 0.36, 0.5, 0.56, 0.63, 0.76, 0.82, 1]
           }}
         />
 
@@ -205,7 +207,10 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
   const mouseY = useMotionValue(0);
   const [cursorInfluence, setCursorInfluence] = useState({ x: 0, y: 0 });
   const [isIdle, setIsIdle] = useState(false);
+  const [brightnessPulse, setBrightnessPulse] = useState(false);
+  const [isDismissing, setIsDismissing] = useState(false);
   const idleTimeoutRef = useRef(null);
+  const cursorDelayRef = useRef(null);
 
   // Very subtle parallax (2–3px max)
   const coreX = useTransform(mouseX, [-1, 1], [-3, 3]);
@@ -226,11 +231,14 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
       mouseX.set(x * 0.2); // Heavily damped
       mouseY.set(y * 0.2);
 
-      // Internal light responds to cursor with subtle 2-3px shift
-      setCursorInfluence({
-        x: x * 2.5,
-        y: y * 2.5
-      });
+      // Internal light responds to cursor with ~120ms delay, max 2-3px
+      clearTimeout(cursorDelayRef.current);
+      cursorDelayRef.current = setTimeout(() => {
+        setCursorInfluence({
+          x: x * 2.2,
+          y: y * 2.2
+        });
+      }, 120);
 
       setIsIdle(false);
 
@@ -238,7 +246,8 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
       clearTimeout(idleTimeoutRef.current);
       idleTimeoutRef.current = setTimeout(() => {
         setIsIdle(true);
-      }, 3000);
+        setCursorInfluence({ x: 0, y: 0 });
+      }, 4500);
     };
 
     // Return to neutral when idle
@@ -253,15 +262,22 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
       container.removeEventListener('mousemove', handleMouseMove);
       container.removeEventListener('mouseleave', handleMouseLeave);
       clearTimeout(idleTimeoutRef.current);
+      clearTimeout(cursorDelayRef.current);
     };
   }, [mouseX, mouseY]);
 
   const handleDismiss = () => {
+    setIsDismissing(true);
     if (!isTestMode) {
       localStorage.setItem('vireon_welcome_shown', 'true');
       localStorage.setItem('vireon_welcome_last_shown', new Date().toISOString());
     }
-    onDismiss();
+    setTimeout(() => onDismiss(), 620);
+  };
+
+  const handleEnterPress = () => {
+    setBrightnessPulse(true);
+    setTimeout(() => handleDismiss(), 300);
   };
 
   return (
@@ -274,9 +290,13 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
         }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.32, ease: [0.23, 1, 0.32, 1] }}
-        onClick={handleDismiss}
+        exit={{ opacity: 0, backdropFilter: 'blur(4px)' }}
+        transition={{ 
+          duration: 0.32, 
+          ease: [0.23, 1, 0.32, 1],
+          exit: { duration: 0.65, ease: "easeOut" }
+        }}
+        onClick={isDismissing ? undefined : handleDismiss}
       >
         {/* Subtle depth blur and brightness shift on background */}
         <motion.div
@@ -306,25 +326,25 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
           transition={{ duration: 0.8, delay: 0.2 }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Power Core: subtle offset + fade on exit */}
+          {/* Power Core: subtle offset + diffusive exit */}
           <motion.div 
             className="mb-16 md:mb-20"
             exit={{ 
               opacity: 0,
-              filter: 'blur(8px) brightness(1.8)',
-              scale: 1.1
+              filter: 'blur(12px) brightness(1.6)',
+              scale: 1.08
             }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            transition={{ duration: 0.65, ease: "easeOut" }}
             animate={{
               x: isIdle ? 0 : cursorInfluence.x,
               y: isIdle ? 0 : cursorInfluence.y
             }}
             transition={{
-              x: { type: "tween", duration: 0.6, ease: "easeOut" },
-              y: { type: "tween", duration: 0.6, ease: "easeOut" }
+              x: { type: "tween", duration: 0.7, ease: "easeOut" },
+              y: { type: "tween", duration: 0.7, ease: "easeOut" }
             }}
           >
-            <PowerCore parallaxX={coreX} parallaxY={coreY} cursorInfluence={cursorInfluence} />
+            <PowerCore parallaxX={coreX} parallaxY={coreY} cursorInfluence={cursorInfluence} brightnessPulse={brightnessPulse} />
           </motion.div>
 
           {/* Minimal Text Stack */}
@@ -334,34 +354,36 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
           >
-            {/* Greeting */}
+            {/* Greeting: lighter weight, elevated, generous spacing */}
             <h1
               className="text-6xl md:text-7xl"
               style={{
-                color: 'rgba(255, 255, 255, 0.92)',
-                letterSpacing: '0.015em',
-                fontWeight: 200,
-                fontVariationSettings: '"wght" 200'
+                color: 'rgba(255, 255, 255, 0.91)',
+                letterSpacing: '0.035em',
+                fontWeight: 100,
+                marginBottom: '0px',
+                transform: 'translateY(-4px)'
               }}
             >
               Welcome
             </h1>
 
-            {/* Subline: secondary, refined */}
+            {/* Subline: secondary, quiet, refined */}
             <p
               className="text-lg md:text-xl"
               style={{
-                color: 'rgba(255, 255, 255, 0.48)',
-                letterSpacing: '0.045em',
+                color: 'rgba(255, 255, 255, 0.42)',
+                letterSpacing: '0.055em',
+                lineHeight: '1.8',
                 fontWeight: 300,
-                marginTop: '20px'
+                marginTop: '22px'
               }}
             >
               Designed for intuition.
             </p>
           </motion.div>
 
-          {/* CTA Button: motion settles on appearance */}
+          {/* CTA Button: luminosity-only interaction, core responds on press */}
           <motion.button
             className="mt-16 px-12 py-3.5 rounded-full font-medium text-base pointer-events-auto"
             style={{
@@ -378,23 +400,24 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
             }}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 1.3 }}
+            transition={{ duration: 0.5, delay: 1.4 }}
             whileHover={{
-              scale: 1.05,
+              backgroundColor: 'rgba(107, 115, 255, 0.18)',
+              borderColor: 'rgba(255, 255, 255, 0.15)',
               boxShadow: `
-                0 0 50px rgba(107, 115, 255, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.12)
+                0 0 45px rgba(107, 115, 255, 0.28),
+                inset 0 1px 0 rgba(255, 255, 255, 0.14)
               `,
-              transition: { duration: 0.3 }
+              transition: { duration: 0.4 }
             }}
             whileTap={{ 
-              scale: 0.95,
+              scale: 0.98,
               boxShadow: `
-                0 0 60px rgba(107, 115, 255, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15)
+                0 0 40px rgba(107, 115, 255, 0.22),
+                inset 0 1px 0 rgba(255, 255, 255, 0.12)
               `
             }}
-            onClick={handleDismiss}
+            onClick={handleEnterPress}
           >
             Enter
           </motion.button>
