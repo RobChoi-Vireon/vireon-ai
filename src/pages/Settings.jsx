@@ -63,8 +63,8 @@ export default function Settings() {
     { path: createPageUrl('Settings', { tab: 'notifications' }), icon: Bell, label: 'Notifications' },
   ];
 
-  // Parse tab from URL
-  const urlParams = new URLSearchParams(window.location.search);
+  // Parse tab from URL - use location.search for reactivity
+  const urlParams = new URLSearchParams(location.search);
   const currentTab = urlParams.get('tab') || 'account';
 
   const renderContent = () => {
