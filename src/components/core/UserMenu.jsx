@@ -172,7 +172,7 @@ export default function UserMenu() {
                             </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                             <Link to="#" className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-gray-300 hover:!text-white hover:!bg-white/[0.07] focus-visible:outline-none focus-visible:!bg-white/[0.07] focus-visible:!text-white transition-colors cursor-pointer">
+                             <Link to={createPageUrl('Settings', { tab: 'account' })} className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-gray-300 hover:!text-white hover:!bg-white/[0.07] focus-visible:outline-none focus-visible:!bg-white/[0.07] focus-visible:!text-white transition-colors cursor-pointer">
                                 <Settings className="w-4 h-4" />
                                 <span>Settings</span>
                             </Link>
