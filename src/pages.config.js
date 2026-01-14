@@ -16,6 +16,10 @@ import SentimentHeatmap from './pages/SentimentHeatmap';
 import SmartTracker from './pages/SmartTracker';
 import Watchlist from './pages/Watchlist';
 import SettingsBilling from './pages/SettingsBilling';
+import Settings from './pages/Settings';
+import SettingsAccount from './pages/SettingsAccount';
+import SettingsSecurity from './pages/SettingsSecurity';
+import SettingsNotifications from './pages/SettingsNotifications';
 import __Layout from './Layout.jsx';
 
 
@@ -38,6 +42,10 @@ export const PAGES = {
     "SmartTracker": SmartTracker,
     "Watchlist": Watchlist,
     "SettingsBilling": SettingsBilling,
+    "Settings": Settings,
+    "SettingsAccount": SettingsAccount,
+    "SettingsSecurity": SettingsSecurity,
+    "SettingsNotifications": SettingsNotifications,
 }
 
 export const pagesConfig = {
