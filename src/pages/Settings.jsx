@@ -8,8 +8,8 @@ import SettingsAccount from './SettingsAccount';
 import SettingsSecurity from './SettingsSecurity';
 import SettingsNotifications from './SettingsNotifications';
 
-const SubNavLink = ({ href, icon: Icon, label, isActive }) => (
-  <Link to={href} className="block">
+const SubNavLink = ({ tab, icon: Icon, label, isActive, onClick }) => (
+  <button onClick={onClick} className="block w-full">
     <motion.div
       className="relative flex items-center gap-3 px-4 py-3 rounded-2xl transition-colors"
       style={{
@@ -49,23 +49,30 @@ const SubNavLink = ({ href, icon: Icon, label, isActive }) => (
         {label}
       </span>
     </motion.div>
-  </Link>
+  </button>
 );
 
 export default function Settings() {
   const location = useLocation();
-  const currentPath = location.pathname;
+  const [currentTab, setCurrentTab] = React.useState('account');
+
+  React.useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const tab = urlParams.get('tab') || 'account';
+    setCurrentTab(tab);
+  }, [location.search]);
 
   const navItems = [
-    { path: createPageUrl('Settings', { tab: 'account' }), icon: User, label: 'Account' },
-    { path: createPageUrl('Settings', { tab: 'billing' }), icon: CreditCard, label: 'Billing' },
-    { path: createPageUrl('Settings', { tab: 'security' }), icon: Shield, label: 'Security' },
-    { path: createPageUrl('Settings', { tab: 'notifications' }), icon: Bell, label: 'Notifications' },
+    { tab: 'account', icon: User, label: 'Account' },
+    { tab: 'billing', icon: CreditCard, label: 'Billing' },
+    { tab: 'security', icon: Shield, label: 'Security' },
+    { tab: 'notifications', icon: Bell, label: 'Notifications' },
   ];
 
-  // Parse tab from URL - use location.search for reactivity
-  const urlParams = new URLSearchParams(location.search);
-  const currentTab = urlParams.get('tab') || 'account';
+  const handleTabChange = (tab) => {
+    setCurrentTab(tab);
+    window.history.pushState({}, '', `${createPageUrl('Settings')}?tab=${tab}`);
+  };
 
   const renderContent = () => {
     switch (currentTab) {
@@ -107,11 +114,12 @@ export default function Settings() {
               <nav className="space-y-1">
                 {navItems.map((item) => (
                   <SubNavLink
-                    key={item.path}
-                    href={item.path}
+                    key={item.tab}
+                    tab={item.tab}
                     icon={item.icon}
                     label={item.label}
-                    isActive={currentPath.includes(item.label.toLowerCase()) || (item.label.toLowerCase() === currentTab)}
+                    isActive={item.tab === currentTab}
+                    onClick={() => handleTabChange(item.tab)}
                   />
                 ))}
               </nav>
