@@ -116,6 +116,7 @@ const CancelPlanModal = ({ isOpen, onClose, onConfirm }) => (
 );
 
 export default function SettingsBilling() {
+  console.log('SettingsBilling rendered');
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [planStatus, setPlanStatus] = useState('Active'); // Active, Trialing, Past Due, Canceled, No Subscription
 
