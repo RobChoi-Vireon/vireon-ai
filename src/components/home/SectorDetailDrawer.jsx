@@ -1565,21 +1565,23 @@ useEffect(() => {
                 {CONSENSUS_SUMMARY[sector.name] && (
                   <motion.div
                     ref={insightRef}
+                    layout
                     initial={{ opacity: 0, scale: 0.92, x: 12 }}
                     animate={{ 
                       opacity: 1, 
                       scale: 1,
-                      x: 0
+                      x: 0,
+                      width: insightExpanded ? '420px' : '72px',
+                      height: insightExpanded ? 'auto' : '44px'
                     }}
                     transition={{ 
-                      type: "spring", 
-                      stiffness: 280, 
-                      damping: 32,
-                      mass: 0.9,
+                      layout: { type: "spring", stiffness: 260, damping: 32, mass: 1.1 },
+                      width: { type: "spring", stiffness: 260, damping: 32, mass: 1.1 },
+                      height: { type: "spring", stiffness: 260, damping: 32, mass: 1.1 },
                       opacity: { duration: 0.4, ease: [0.22, 0.61, 0.36, 1] }
                     }}
                     onClick={() => setInsightExpanded(!insightExpanded)}
-                    className="hidden lg:flex items-center cursor-pointer rounded-[18px] overflow-visible flex-shrink-0 relative"
+                    className="hidden lg:flex items-center cursor-pointer rounded-[18px] overflow-hidden flex-shrink-0 relative"
                     style={{
                       padding: insightExpanded ? '14px 18px' : '10px 16px',
                       background: insightExpanded
@@ -1591,8 +1593,8 @@ useEffect(() => {
                       boxShadow: insightExpanded
                         ? 'inset 0 0.5px 0 rgba(255,255,255,0.06), 0 4px 14px rgba(0,0,0,0.07)'
                         : 'inset 0 0.5px 0 rgba(110, 180, 255, 0.08), 0 2px 8px rgba(0,0,0,0.04), 0 0 16px rgba(110, 180, 255, 0.12)',
-                      width: insightExpanded ? '420px' : '72px',
-                      maxWidth: '420px'
+                      maxWidth: '420px',
+                      minHeight: '44px'
                     }}
                     whileHover={!insightExpanded ? {
                       background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.030) 100%)',
@@ -1606,63 +1608,73 @@ useEffect(() => {
                     }}
                   >
                     {/* Ambient Glow Ring - Attention Grabber */}
-                    {!insightExpanded && (
-                      <motion.div
-                        className="absolute inset-0 rounded-[18px]"
-                        style={{
-                          background: 'radial-gradient(ellipse at 50% 50%, rgba(110, 180, 255, 0.10) 0%, transparent 70%)',
-                          filter: 'blur(8px)',
-                          pointerEvents: 'none'
-                        }}
-                        animate={{
-                          opacity: [0.6, 0.85, 0.6],
-                          scale: [1, 1.08, 1]
-                        }}
-                        transition={{
-                          duration: 2.8,
-                          repeat: Infinity,
-                          ease: [0.45, 0.05, 0.55, 0.95]
-                        }}
-                      />
-                    )}
+                    <AnimatePresence>
+                      {!insightExpanded && (
+                        <motion.div
+                          className="absolute inset-0 rounded-[18px]"
+                          style={{
+                            background: 'radial-gradient(ellipse at 50% 50%, rgba(110, 180, 255, 0.10) 0%, transparent 70%)',
+                            filter: 'blur(8px)',
+                            pointerEvents: 'none'
+                          }}
+                          initial={{ opacity: 0 }}
+                          animate={{
+                            opacity: [0.6, 0.85, 0.6],
+                            scale: [1, 1.08, 1]
+                          }}
+                          exit={{ 
+                            opacity: 0,
+                            transition: { duration: 0.32, ease: [0.22, 0.61, 0.36, 1] }
+                          }}
+                          transition={{
+                            opacity: { duration: 2.8, repeat: Infinity, ease: [0.45, 0.05, 0.55, 0.95] },
+                            scale: { duration: 2.8, repeat: Infinity, ease: [0.45, 0.05, 0.55, 0.95] }
+                          }}
+                        />
+                      )}
+                    </AnimatePresence>
 
                     {/* Inner Specular Highlight */}
-                    <div style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: '16%',
-                      right: '16%',
-                      height: '1px',
-                      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
-                      pointerEvents: 'none'
-                    }} />
+                    <motion.div 
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: '16%',
+                        right: '16%',
+                        height: '1px',
+                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+                        pointerEvents: 'none'
+                      }}
+                      animate={{
+                        opacity: insightExpanded ? 0.6 : 1
+                      }}
+                      transition={{ duration: 0.4, ease: [0.22, 0.61, 0.36, 1] }}
+                    />
 
                     <motion.div
-                      className="relative z-10 w-full"
-                      animate={{
-                        width: insightExpanded ? '100%' : 'auto'
-                      }}
+                      className="relative z-10 w-full min-h-[24px] flex items-center"
+                      layout
                       transition={{ 
-                        type: "spring", 
-                        stiffness: 260, 
-                        damping: 30,
-                        mass: 1.0
+                        layout: { type: "spring", stiffness: 260, damping: 32, mass: 1.0 }
                       }}
                     >
-                      <AnimatePresence mode="wait">
+                      <AnimatePresence mode="wait" initial={false}>
                         {!insightExpanded ? (
                           <motion.span
                             key="tldr"
-                            initial={{ opacity: 0, scale: 0.88 }}
-                            animate={{ opacity: 1, scale: 1 }}
+                            layout
+                            initial={{ opacity: 0, scale: 0.88, filter: 'blur(4px)' }}
+                            animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
                             exit={{ 
                               opacity: 0, 
                               scale: 0.88,
-                              filter: 'blur(3px)'
+                              filter: 'blur(4px)',
+                              transition: { duration: 0.24, ease: [0.26, 0.11, 0.26, 1.0] }
                             }}
                             transition={{ 
-                              duration: 0.28, 
-                              ease: [0.26, 0.11, 0.26, 1.0] 
+                              duration: 0.32,
+                              delay: 0.08,
+                              ease: [0.22, 0.61, 0.36, 1]
                             }}
                             className="text-[11px] font-semibold whitespace-nowrap block"
                             style={{ 
@@ -1676,28 +1688,38 @@ useEffect(() => {
                         ) : (
                           <motion.div
                             key="insight"
-                            initial={{ opacity: 0, filter: 'blur(6px)', scale: 0.96 }}
+                            layout
+                            initial={{ opacity: 0, filter: 'blur(6px)', scale: 0.95 }}
                             animate={{ opacity: 1, filter: 'blur(0px)', scale: 1 }}
                             exit={{ 
                               opacity: 0, 
                               filter: 'blur(6px)',
-                              scale: 0.96
+                              scale: 0.95,
+                              transition: { duration: 0.24, ease: [0.26, 0.11, 0.26, 1.0] }
                             }}
                             transition={{ 
-                              opacity: { duration: 0.42, delay: 0.18, ease: [0.22, 0.61, 0.36, 1] },
-                              filter: { duration: 0.48, delay: 0.18, ease: [0.22, 0.61, 0.36, 1] },
-                              scale: { type: "spring", stiffness: 260, damping: 28, mass: 0.9 }
+                              opacity: { duration: 0.42, delay: 0.16, ease: [0.22, 0.61, 0.36, 1] },
+                              filter: { duration: 0.48, delay: 0.16, ease: [0.22, 0.61, 0.36, 1] },
+                              scale: { type: "spring", stiffness: 240, damping: 30, mass: 1.0 },
+                              layout: { type: "spring", stiffness: 260, damping: 32, mass: 1.0 }
                             }}
                             className="space-y-1.5 w-full"
                           >
                             <motion.p
-                              initial={{ opacity: 0, y: -4, filter: 'blur(2px)' }}
+                              layout
+                              initial={{ opacity: 0, y: -3, filter: 'blur(3px)' }}
                               animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                              exit={{ opacity: 0, y: -2, filter: 'blur(2px)' }}
+                              exit={{ 
+                                opacity: 0, 
+                                y: -2, 
+                                filter: 'blur(3px)',
+                                transition: { duration: 0.20, ease: [0.26, 0.11, 0.26, 1.0] }
+                              }}
                               transition={{ 
-                                delay: 0.24,
-                                duration: 0.38, 
-                                ease: [0.22, 0.61, 0.36, 1] 
+                                opacity: { delay: 0.22, duration: 0.38, ease: [0.22, 0.61, 0.36, 1] },
+                                y: { delay: 0.22, duration: 0.38, ease: [0.22, 0.61, 0.36, 1] },
+                                filter: { delay: 0.22, duration: 0.38, ease: [0.22, 0.61, 0.36, 1] },
+                                layout: { type: "spring", stiffness: 260, damping: 32 }
                               }}
                               className="text-[11px] font-medium" 
                               style={{ 
@@ -1709,13 +1731,20 @@ useEffect(() => {
                               {CONSENSUS_SUMMARY[sector.name].outcome}
                             </motion.p>
                             <motion.p
-                              initial={{ opacity: 0, y: -4, filter: 'blur(2px)' }}
+                              layout
+                              initial={{ opacity: 0, y: -3, filter: 'blur(3px)' }}
                               animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                              exit={{ opacity: 0, y: -2, filter: 'blur(2px)' }}
+                              exit={{ 
+                                opacity: 0, 
+                                y: -2, 
+                                filter: 'blur(3px)',
+                                transition: { duration: 0.20, ease: [0.26, 0.11, 0.26, 1.0] }
+                              }}
                               transition={{ 
-                                delay: 0.32,
-                                duration: 0.38, 
-                                ease: [0.22, 0.61, 0.36, 1] 
+                                opacity: { delay: 0.30, duration: 0.38, ease: [0.22, 0.61, 0.36, 1] },
+                                y: { delay: 0.30, duration: 0.38, ease: [0.22, 0.61, 0.36, 1] },
+                                filter: { delay: 0.30, duration: 0.38, ease: [0.22, 0.61, 0.36, 1] },
+                                layout: { type: "spring", stiffness: 260, damping: 32 }
                               }}
                               className="text-[11px] font-medium" 
                               style={{ 
