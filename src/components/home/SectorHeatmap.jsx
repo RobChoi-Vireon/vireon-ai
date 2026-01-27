@@ -273,7 +273,7 @@ function SectorHeatmap({ setSelectedSector }) {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
         <div>
           <h2 className="text-2xl font-bold tracking-[-0.02em] mb-1" style={{ color: 'rgba(255,255,255,0.95)' }}>
-            Sector Heatmap
+            Equity Sector Heatmap
           </h2>
         </div>
         <ViewModeToggle viewMode={viewMode} setViewMode={setViewMode} timeframe={timeframe} setTimeframe={setTimeframe} />
