@@ -30,19 +30,52 @@ const SECTOR_BENCHMARKS = {
   'Real Estate': 'XLRE'
 };
 
-// Primary Contributors (mock data)
-const PRIMARY_CONTRIBUTORS = {
-  'Technology': "Today's move was driven primarily by NVIDIA and Apple, two of the largest constituents of the Technology Select Sector SPDR ETF.",
-  'Energy': "The decline was led by ExxonMobil and Chevron, which account for the majority of the Energy Select Sector SPDR ETF's weight.",
-  'Financials': "JPMorgan Chase and Bank of America led the advance, representing the largest positions in the Financial Select Sector SPDR ETF.",
-  'Healthcare': "UnitedHealth Group and Eli Lilly contributed most to today's performance within the Health Care Select Sector SPDR ETF.",
-  'Industrials': "Caterpillar and General Electric drove the sector's strength, both major holdings in the Industrial Select Sector SPDR ETF.",
-  'Consumer Discretionary': "Tesla and Amazon dominated today's move, holding significant weight in the Consumer Discretionary Select Sector SPDR ETF.",
-  'Consumer Staples': "Procter & Gamble and Coca-Cola were the primary movers within the Consumer Staples Select Sector SPDR ETF.",
-  'Communication Services': "Meta Platforms and Alphabet accounted for the bulk of today's performance in the Communication Services Select Sector SPDR ETF.",
-  'Materials': "Linde and Freeport-McMoRan led the sector lower, both core holdings in the Materials Select Sector SPDR ETF.",
-  'Real Estate': "Prologis and American Tower were the main contributors to today's movement within the Real Estate Select Sector SPDR ETF.",
-  'Utilities': "NextEra Energy and Duke Energy drove the sector's modest gain, leading positions in the Utilities Select Sector SPDR ETF."
+// Consensus Summary (two-line format: outcome + cause)
+const CONSENSUS_SUMMARY = {
+  'Technology': {
+    outcome: 'Technology extended gains as megacaps outperformed.',
+    cause: 'NVIDIA earnings momentum and Apple stabilization drove the move.'
+  },
+  'Energy': {
+    outcome: 'Energy fell as crude inventories surprised higher.',
+    cause: 'ExxonMobil and Chevron led the decline on oversupply concerns.'
+  },
+  'Financials': {
+    outcome: 'Financials rallied on yield curve steepening tailwinds.',
+    cause: 'JPMorgan and Bank of America advanced on margin expansion.'
+  },
+  'Healthcare': {
+    outcome: 'Healthcare held steady amid defensive rotation flows.',
+    cause: 'UnitedHealth and Eli Lilly provided support on GLP-1 strength.'
+  },
+  'Industrials': {
+    outcome: 'Industrials advanced on infrastructure spending momentum.',
+    cause: 'Caterpillar and General Electric gained on construction demand.'
+  },
+  'Consumer Discretionary': {
+    outcome: 'Consumer discretionary weakened on spending concerns.',
+    cause: 'Tesla delivery worries and Amazon caution pressured the sector.'
+  },
+  'Consumer Staples': {
+    outcome: 'Consumer staples firmed on defensive positioning demand.',
+    cause: 'Procter & Gamble and Coca-Cola benefited from quality rotation.'
+  },
+  'Communication Services': {
+    outcome: 'Communication services rose on digital advertising recovery.',
+    cause: 'Meta and Alphabet led as ad spending improved sequentially.'
+  },
+  'Materials': {
+    outcome: 'Materials declined on China demand slowdown signals.',
+    cause: 'Linde and Freeport-McMoRan fell on commodity price weakness.'
+  },
+  'Real Estate': {
+    outcome: 'Real estate pressured by persistent rate headwinds.',
+    cause: 'Prologis and American Tower declined on valuation concerns.'
+  },
+  'Utilities': {
+    outcome: 'Utilities edged higher on safe haven flows.',
+    cause: 'NextEra and Duke Energy gained on defensive bid.'
+  }
 };
 
 const enhancedSectorData = {
