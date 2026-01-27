@@ -30,6 +30,21 @@ const SECTOR_BENCHMARKS = {
   'Real Estate': 'XLRE'
 };
 
+// Primary Contributors (mock data)
+const PRIMARY_CONTRIBUTORS = {
+  'Technology': "Today's move was driven primarily by NVIDIA and Apple, two of the largest constituents of the Technology Select Sector SPDR ETF.",
+  'Energy': "The decline was led by ExxonMobil and Chevron, which account for the majority of the Energy Select Sector SPDR ETF's weight.",
+  'Financials': "JPMorgan Chase and Bank of America led the advance, representing the largest positions in the Financial Select Sector SPDR ETF.",
+  'Healthcare': "UnitedHealth Group and Eli Lilly contributed most to today's performance within the Health Care Select Sector SPDR ETF.",
+  'Industrials': "Caterpillar and General Electric drove the sector's strength, both major holdings in the Industrial Select Sector SPDR ETF.",
+  'Consumer Discretionary': "Tesla and Amazon dominated today's move, holding significant weight in the Consumer Discretionary Select Sector SPDR ETF.",
+  'Consumer Staples': "Procter & Gamble and Coca-Cola were the primary movers within the Consumer Staples Select Sector SPDR ETF.",
+  'Communication Services': "Meta Platforms and Alphabet accounted for the bulk of today's performance in the Communication Services Select Sector SPDR ETF.",
+  'Materials': "Linde and Freeport-McMoRan led the sector lower, both core holdings in the Materials Select Sector SPDR ETF.",
+  'Real Estate': "Prologis and American Tower were the main contributors to today's movement within the Real Estate Select Sector SPDR ETF.",
+  'Utilities': "NextEra Energy and Duke Energy drove the sector's modest gain, leading positions in the Utilities Select Sector SPDR ETF."
+};
+
 const enhancedSectorData = {
   'Technology': {
     mainDrivers: [
@@ -1435,6 +1450,32 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
                   <X className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.72)' }} />
                 </motion.button>
               </div>
+
+              {/* Primary Contributors Section */}
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.25, duration: 0.35, ease: [0.22, 0.61, 0.36, 1] }}
+                className="px-8 pt-6 pb-5"
+                style={{
+                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.018) 0%, rgba(255, 255, 255, 0.012) 100%)',
+                  borderBottom: '1px solid rgba(255,255,255,0.05)'
+                }}
+              >
+                <h4 className="text-[11px] font-bold uppercase tracking-wider mb-2.5" style={{ 
+                  color: 'rgba(255,255,255,0.52)',
+                  letterSpacing: '0.05em'
+                }}>
+                  Primary Contributors
+                </h4>
+                <p className="text-[14px] font-medium leading-relaxed max-w-3xl" style={{ 
+                  color: 'rgba(255,255,255,0.68)',
+                  letterSpacing: '0.002em',
+                  lineHeight: 1.6
+                }}>
+                  {PRIMARY_CONTRIBUTORS[sector.name] || 'Contribution data unavailable for this sector.'}
+                </p>
+              </motion.div>
             </div>
             
             {/* OS Horizon Tabs */}
