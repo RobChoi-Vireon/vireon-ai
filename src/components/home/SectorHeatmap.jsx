@@ -1,8 +1,17 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, TrendingDown } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+
+const mockSectorData = [
+  { name: 'Technology', change: '+1.85%', sparkline: [10, 20, 15, 30, 25, 45, 50], movers: [{ s: 'NVDA', c: '+4.2%' }, { s: 'AAPL', c: '+3.1%' }], context: 'AI infrastructure flows driving $2.8B rotation.', weekAgo: '+0.9%', yearAvg: '+12.4%' },
+  { name: 'Healthcare', change: '+0.72%', sparkline: [30, 32, 35, 33, 38, 40, 42], movers: [{ s: 'LLY', c: '+2.8%' }, { s: 'UNH', c: '+1.2%' }], context: 'Defensive rotation amid market uncertainty.', weekAgo: '-0.3%', yearAvg: '+8.2%' },
+  { name: 'Financials', change: '+1.15%', sparkline: [20, 22, 28, 25, 30, 35, 38], movers: [{ s: 'JPM', c: '+1.8%' }, { s: 'BAC', c: '+1.1%' }], context: 'Yield curve steepening supports lending margins.', weekAgo: '+2.1%', yearAvg: '+15.8%' },
+  { name: 'Consumer Disc.', change: '-0.45%', sparkline: [60, 55, 58, 50, 52, 48, 45], movers: [{ s: 'TSLA', c: '-2.5%' }, { s: 'AMZN', c: '+1.3%' }], context: 'Consumer spending concerns weigh on discretionary.', weekAgo: '-1.2%', yearAvg: '+3.1%' },
+  { name: 'Energy', change: '-2.20%', sparkline: [80, 75, 70, 65, 60, 58, 55], movers: [{ s: 'XOM', c: '-1.5%' }, { s: 'CVX', c: '-1.1%' }], context: 'Crude sell-off and inventory build pressuring sector.', weekAgo: '-0.8%', yearAvg: '+22.7%' },
+  { name: 'Industrials', change: '+0.90%', sparkline: [40, 42, 41, 45, 48, 47, 50], movers: [{ s: 'CAT', c: '+1.9%' }, { s: 'GE', c: '+1.3%' }], context: 'Infrastructure spending momentum continues.', weekAgo: '+1.5%', yearAvg: '+11.3%' },
+];
+
+const SP500_CHANGE = 1.10;
 
 const RefinedSparkline = ({ data, positive, isHovered }) => {
   const width = 120;
@@ -144,16 +153,10 @@ const ViewModeToggle = ({ viewMode, setViewMode, timeframe, setTimeframe }) => {
   );
 };
 
-function SectorHeatmap({ setSelectedSector, onSectorClick }) {
+function SectorHeatmap({ setSelectedSector }) {
   const [viewMode, setViewMode] = useState('absolute');
   const [timeframe, setTimeframe] = useState('1D');
   const [hoveredSector, setHoveredSector] = useState(null);
-
-  const { data: sectorData = [], isLoading } = useQuery({
-    queryKey: ['sector-performance'],
-    queryFn: () => base44.entities.SectorPerformance.list('-sector_key'),
-    initialData: [],
-  });
 
   const viewDescriptions = {
     absolute: { 
@@ -169,32 +172,15 @@ function SectorHeatmap({ setSelectedSector, onSectorClick }) {
   };
   
   const processedData = useMemo(() => {
-    return sectorData.map(sector => {
-      let displayChange;
-      if (viewMode === 'absolute') {
-        if (timeframe === '1D') displayChange = sector.change_pct_today || 0;
-        else if (timeframe === '1W') displayChange = sector.change_pct_week || 0;
-        else displayChange = sector.change_pct_year || 0;
-      } else {
-        if (timeframe === '1D') displayChange = sector.change_vs_market_today || 0;
-        else if (timeframe === '1W') displayChange = sector.change_vs_market_week || 0;
-        else displayChange = sector.change_vs_market_year || 0;
-      }
-      
-      const movers = [
-        { s: sector.leader_ticker_1, c: `${sector.leader_ticker_1_pct >= 0 ? '+' : ''}${sector.leader_ticker_1_pct?.toFixed(2)}%` },
-        { s: sector.leader_ticker_2, c: `${sector.leader_ticker_2_pct >= 0 ? '+' : ''}${sector.leader_ticker_2_pct?.toFixed(2)}%` }
-      ].filter(m => m.s);
-
-      return { 
-        ...sector, 
-        name: sector.sector_name,
-        displayChange,
-        movers,
-        sparkline: sector.sparkline_points || [10, 15, 20, 18, 25, 30, 35]
-      };
+    return mockSectorData.map(sector => {
+      const absoluteChange = parseFloat(sector.change);
+      let displayChange = absoluteChange;
+      if (viewMode === 'relative') displayChange = absoluteChange - SP500_CHANGE;
+      if (timeframe === '1W') displayChange = absoluteChange - parseFloat(sector.weekAgo);
+      if (timeframe === '1Y') displayChange = absoluteChange - parseFloat(sector.yearAvg);
+      return { ...sector, displayChange };
     });
-  }, [sectorData, viewMode, timeframe]);
+  }, [viewMode, timeframe]);
 
   const { topGainer, topLoser, maxAbsChange } = useMemo(() => {
     const sorted = [...processedData].sort((a, b) => b.displayChange - a.displayChange);
@@ -293,12 +279,7 @@ function SectorHeatmap({ setSelectedSector, onSectorClick }) {
         <ViewModeToggle viewMode={viewMode} setViewMode={setViewMode} timeframe={timeframe} setTimeframe={setTimeframe} />
       </div>
       
-      {isLoading ? (
-        <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white/30"></div>
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
         {processedData.map((sector, index) => {
           const isLeader = sector.name === topGainer.name;
           const isLaggard = sector.name === topLoser.name;
@@ -315,7 +296,7 @@ function SectorHeatmap({ setSelectedSector, onSectorClick }) {
                 duration: 0.5, 
                 ease: [0.22, 0.61, 0.36, 1] 
               }}
-              onClick={() => onSectorClick?.(sector, viewMode, timeframe)}
+              onClick={() => setSelectedSector(sector)}
               onHoverStart={() => setHoveredSector(sector.name)}
               onHoverEnd={() => setHoveredSector(null)}
               whileHover={{ 
@@ -481,7 +462,6 @@ function SectorHeatmap({ setSelectedSector, onSectorClick }) {
           );
         })}
       </div>
-      )}
     </div>
   );
 }
