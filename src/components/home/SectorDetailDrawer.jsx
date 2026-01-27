@@ -1229,7 +1229,9 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
   const [activeTab, setActiveTab] = useState('drivers');
   const [expandedSections, setExpandedSections] = useState({ themes: false, risks: false });
   const [showBenchmarkTooltip, setShowBenchmarkTooltip] = useState(false);
+  const [insightExpanded, setInsightExpanded] = useState(false);
   const drawerRef = useRef(null);
+  const insightRef = useRef(null);
 
   // sector.name might be undefined initially if the prop is not immediately available.
   // Add a defensive check here to prevent errors.
@@ -1240,10 +1242,16 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
     onClose();
   }, [onClose]);
 
-  useEffect(() => {
+useEffect(() => {
     if (!sector) return;
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') handleClose();
+      if (e.key === 'Escape') {
+        if (insightExpanded) {
+          setInsightExpanded(false);
+        } else {
+          handleClose();
+        }
+      }
       if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
         e.preventDefault();
         const tabOrder = ['drivers', 'flows', 'themes', 'events'];
@@ -1263,15 +1271,22 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
         if (e.deltaY < -20) handleClose();
       }
     };
+    const handleClickOutside = (e) => {
+      if (insightRef.current && !insightRef.current.contains(e.target)) {
+        setInsightExpanded(false);
+      }
+    };
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('wheel', handleWheel, { passive: false });
+    document.addEventListener('mousedown', handleClickOutside);
     document.body.style.overflow = 'hidden';
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('wheel', handleWheel);
+      document.removeEventListener('mousedown', handleClickOutside);
       document.body.style.overflow = 'unset';
     };
-  }, [sector, handleClose, activeTab]);
+  }, [sector, handleClose, activeTab, insightExpanded]);
 
   const toggleSectionExpansion = (section) => {
     setExpandedSections(prev => ({
@@ -1393,7 +1408,7 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
                 }}
               />
               
-              <div className="relative z-10 flex items-start justify-between gap-6">
+              <div className="relative z-10 flex items-start justify-between gap-4">
                 <div className="flex-shrink-0">
                   <motion.h3
                     initial={{ opacity: 0, x: -16 }}
@@ -1462,38 +1477,77 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
                   </motion.div>
                 </div>
 
-                {/* Insight Pill - Right-Aligned */}
+                {/* TL;DR Insight Pill - Progressive Disclosure */}
                 {CONSENSUS_SUMMARY[sector.name] && (
                   <motion.div
+                    ref={insightRef}
                     initial={{ opacity: 0, scale: 0.92, x: 12 }}
-                    animate={{ opacity: 1, scale: 1, x: 0 }}
-                    transition={{ delay: 0.3, duration: 0.4, ease: [0.22, 0.61, 0.36, 1] }}
-                    className="hidden lg:block flex-1 max-w-md rounded-[20px] overflow-hidden self-start"
-                    style={{
-                      padding: '16px 20px',
-                      background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.032) 0%, rgba(255, 255, 255, 0.020) 100%)',
-                      backdropFilter: 'blur(28px) saturate(165%)',
-                      WebkitBackdropFilter: 'blur(28px) saturate(165%)',
-                      border: '1px solid rgba(255,255,255,0.06)',
-                      boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.05), 0 2px 8px rgba(0,0,0,0.04)'
+                    animate={{ 
+                      opacity: 1, 
+                      scale: 1, 
+                      x: 0,
+                      width: insightExpanded ? 'auto' : '72px'
                     }}
+                    transition={{ duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
+                    onClick={() => setInsightExpanded(!insightExpanded)}
+                    className="hidden lg:flex items-center justify-center cursor-pointer rounded-[18px] overflow-hidden self-start flex-shrink-0"
+                    style={{
+                      padding: insightExpanded ? '14px 18px' : '10px 16px',
+                      background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.028) 0%, rgba(255, 255, 255, 0.018) 100%)',
+                      backdropFilter: 'blur(32px) saturate(165%)',
+                      WebkitBackdropFilter: 'blur(32px) saturate(165%)',
+                      border: '1px solid rgba(255,255,255,0.05)',
+                      boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.04), 0 2px 6px rgba(0,0,0,0.03)',
+                      maxWidth: insightExpanded ? '420px' : '72px',
+                      transition: 'all 0.3s cubic-bezier(0.22, 0.61, 0.36, 1)'
+                    }}
+                    whileHover={!insightExpanded ? {
+                      background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.028) 100%)',
+                      transition: { duration: 0.16 }
+                    } : {}}
                   >
-                    <div className="space-y-1">
-                      <p className="text-[11px] font-medium" style={{ 
-                        color: 'rgba(255,255,255,0.68)',
-                        letterSpacing: '0.003em',
-                        lineHeight: 1.5
-                      }}>
-                        {CONSENSUS_SUMMARY[sector.name].outcome}
-                      </p>
-                      <p className="text-[11px] font-medium" style={{ 
-                        color: 'rgba(255,255,255,0.68)',
-                        letterSpacing: '0.003em',
-                        lineHeight: 1.5
-                      }}>
-                        {CONSENSUS_SUMMARY[sector.name].cause}
-                      </p>
-                    </div>
+                    <AnimatePresence mode="wait">
+                      {!insightExpanded ? (
+                        <motion.span
+                          key="tldr"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.15 }}
+                          className="text-[11px] font-semibold whitespace-nowrap"
+                          style={{ 
+                            color: 'rgba(255,255,255,0.52)',
+                            letterSpacing: '0.03em'
+                          }}
+                        >
+                          TL;DR
+                        </motion.span>
+                      ) : (
+                        <motion.div
+                          key="insight"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.2, delay: 0.1 }}
+                          className="space-y-1"
+                        >
+                          <p className="text-[11px] font-medium" style={{ 
+                            color: 'rgba(255,255,255,0.70)',
+                            letterSpacing: '0.002em',
+                            lineHeight: 1.5
+                          }}>
+                            {CONSENSUS_SUMMARY[sector.name].outcome}
+                          </p>
+                          <p className="text-[11px] font-medium" style={{ 
+                            color: 'rgba(255,255,255,0.70)',
+                            letterSpacing: '0.002em',
+                            lineHeight: 1.5
+                          }}>
+                            {CONSENSUS_SUMMARY[sector.name].cause}
+                          </p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </motion.div>
                 )}
 
