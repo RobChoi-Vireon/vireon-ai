@@ -1393,8 +1393,8 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
                 }}
               />
               
-              <div className="relative z-10 flex items-start justify-between">
-                <div>
+              <div className="relative z-10 flex items-start justify-between gap-6">
+                <div className="flex-shrink-0">
                   <motion.h3
                     initial={{ opacity: 0, x: -16 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -1443,14 +1443,14 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
                     </span>
                   </div>
                   
-                  {/* Full Benchmark Name - Educational Layer (Always Visible) */}
+                  {/* Full Benchmark Name - Educational Layer */}
                   <motion.div
                     initial={{ opacity: 0, y: 4 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2, duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
                     className="mt-3"
                   >
-                    <p className="text-[12px] font-medium mb-1.5" style={{ 
+                    <p className="text-[12px] font-medium" style={{ 
                       color: 'rgba(255,255,255,0.42)',
                       letterSpacing: '0.005em',
                       lineHeight: 1.4
@@ -1459,28 +1459,44 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
                         `State Street ${sector.name} Select Sector SPDR ETF (${SECTOR_BENCHMARKS[sector.name]})` : 
                         'N/A'}
                     </p>
-
-                    {/* Consensus Summary - Two Lines (Outcome + Cause) */}
-                    {CONSENSUS_SUMMARY[sector.name] && (
-                      <div className="mt-2 space-y-0.5">
-                        <p className="text-[12px] font-medium" style={{ 
-                          color: 'rgba(255,255,255,0.68)',
-                          letterSpacing: '0.002em',
-                          lineHeight: 1.5
-                        }}>
-                          {CONSENSUS_SUMMARY[sector.name].outcome}
-                        </p>
-                        <p className="text-[12px] font-medium" style={{ 
-                          color: 'rgba(255,255,255,0.68)',
-                          letterSpacing: '0.002em',
-                          lineHeight: 1.5
-                        }}>
-                          {CONSENSUS_SUMMARY[sector.name].cause}
-                        </p>
-                      </div>
-                    )}
                   </motion.div>
                 </div>
+
+                {/* Insight Pill - Right-Aligned */}
+                {CONSENSUS_SUMMARY[sector.name] && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.92, x: 12 }}
+                    animate={{ opacity: 1, scale: 1, x: 0 }}
+                    transition={{ delay: 0.3, duration: 0.4, ease: [0.22, 0.61, 0.36, 1] }}
+                    className="hidden lg:block flex-1 max-w-md rounded-[20px] overflow-hidden self-start"
+                    style={{
+                      padding: '16px 20px',
+                      background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.032) 0%, rgba(255, 255, 255, 0.020) 100%)',
+                      backdropFilter: 'blur(28px) saturate(165%)',
+                      WebkitBackdropFilter: 'blur(28px) saturate(165%)',
+                      border: '1px solid rgba(255,255,255,0.06)',
+                      boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.05), 0 2px 8px rgba(0,0,0,0.04)'
+                    }}
+                  >
+                    <div className="space-y-1">
+                      <p className="text-[11px] font-medium" style={{ 
+                        color: 'rgba(255,255,255,0.68)',
+                        letterSpacing: '0.003em',
+                        lineHeight: 1.5
+                      }}>
+                        {CONSENSUS_SUMMARY[sector.name].outcome}
+                      </p>
+                      <p className="text-[11px] font-medium" style={{ 
+                        color: 'rgba(255,255,255,0.68)',
+                        letterSpacing: '0.003em',
+                        lineHeight: 1.5
+                      }}>
+                        {CONSENSUS_SUMMARY[sector.name].cause}
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
+
                 <motion.button
                   onClick={handleClose}
                   whileHover={{ 
@@ -1489,7 +1505,7 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
                     transition: { duration: 0.16 }
                   }}
                   whileTap={{ scale: 0.96, transition: { duration: 0.10 } }}
-                  className="rounded-[20px]"
+                  className="rounded-[20px] flex-shrink-0"
                   style={{ 
                     padding: '12px',
                     width: '44px',
