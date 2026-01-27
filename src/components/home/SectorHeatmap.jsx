@@ -162,6 +162,7 @@ function SectorHeatmap({ setSelectedSector }) {
   const [viewMode, setViewMode] = useState('absolute');
   const [timeframe, setTimeframe] = useState('1D');
   const [hoveredSector, setHoveredSector] = useState(null);
+  const [showAllSectors, setShowAllSectors] = useState(false);
 
   const viewDescriptions = {
     absolute: { 
@@ -175,6 +176,14 @@ function SectorHeatmap({ setSelectedSector }) {
       '1Y': 'Sectors relative to S&P 500 (vs. 1-year average).' 
     }
   };
+
+  // Focus Tier - 4 key sectors with role labels
+  const focusTier = [
+    { ...mockSectorData[0], role: 'Leader', whyMatters: 'Driven by AI earnings upgrades' }, // Technology
+    { ...mockSectorData[4], role: 'Laggard', whyMatters: 'Pressured by crude weakness' }, // Energy
+    { ...mockSectorData[5], role: 'Momentum', whyMatters: 'Rates tailwind for banks' }, // Financials
+    { ...mockSectorData[3], role: 'Defensive', whyMatters: 'Defensive bid on staples' } // Consumer Staples
+  ];
   
   const processedData = useMemo(() => {
     return mockSectorData.map(sector => {
@@ -260,36 +269,47 @@ function SectorHeatmap({ setSelectedSector }) {
         pointerEvents: 'none'
       }} />
 
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+      {/* Header + Controls */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
         <div>
           <h2 className="text-2xl font-bold tracking-[-0.02em] mb-1" style={{ color: 'rgba(255,255,255,0.95)' }}>
             Sector Heatmap
           </h2>
-          <div className="h-5 flex items-center">
-            <AnimatePresence mode="wait">
-              <motion.p 
-                key={`${viewMode}-${timeframe}`} 
-                className="text-[13px] font-medium" 
-                style={{ color: 'rgba(255,255,255,0.58)' }}
-                initial={{ opacity: 0, y: -3 }} 
-                animate={{ opacity: 1, y: 0 }} 
-                exit={{ opacity: 0, y: 3 }} 
-                transition={{ duration: 0.18, ease: [0.26, 0.11, 0.26, 1.0] }}
-              >
-                {viewDescriptions[viewMode][timeframe]}
-              </motion.p>
-            </AnimatePresence>
-          </div>
         </div>
         <ViewModeToggle viewMode={viewMode} setViewMode={setViewMode} timeframe={timeframe} setTimeframe={setTimeframe} />
       </div>
-      
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
-        {processedData.map((sector, index) => {
-          const isLeader = sector.name === topGainer.name;
-          const isLaggard = sector.name === topLoser.name;
-          const style = getTileStyle(sector.displayChange, maxAbsChange);
-          const magnitudeStyle = getMagnitudeStyling(sector.displayChange);
+
+      {/* Market Narrative Bar */}
+      <motion.div
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.22, 0.61, 0.36, 1] }}
+        className="mb-6 rounded-[18px] overflow-hidden"
+        style={{
+          padding: '14px 20px',
+          background: 'linear-gradient(180deg, rgba(110, 180, 255, 0.06) 0%, rgba(110, 180, 255, 0.04) 100%)',
+          backdropFilter: 'blur(24px) saturate(165%)',
+          WebkitBackdropFilter: 'blur(24px) saturate(165%)',
+          border: '1px solid rgba(110, 180, 255, 0.12)',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 0 20px rgba(110, 180, 255, 0.06)'
+        }}
+      >
+        <p className="text-[14px] font-medium text-center" style={{ 
+          color: 'rgba(255,255,255,0.88)',
+          letterSpacing: '0.005em',
+          lineHeight: 1.5
+        }}>
+          Risk-on led by Technology + Financials; Energy + Materials lagging.
+        </p>
+      </motion.div>
+
+      {/* Focus Tier - 4 Large Tiles */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+        {focusTier.map((sector, index) => {
+          const processedSector = processedData.find(s => s.name === sector.name);
+          if (!processedSector) return null;
+          
+          const style = getTileStyle(processedSector.displayChange, maxAbsChange);
 
           return (
             <motion.div
@@ -297,175 +317,250 @@ function SectorHeatmap({ setSelectedSector }) {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ 
-                delay: index * 0.05, 
+                delay: index * 0.06, 
                 duration: 0.5, 
                 ease: [0.22, 0.61, 0.36, 1] 
               }}
-              onClick={() => setSelectedSector(sector)}
+              onClick={() => setSelectedSector(processedSector)}
               onHoverStart={() => setHoveredSector(sector.name)}
               onHoverEnd={() => setHoveredSector(null)}
               whileHover={{ 
-                y: -3, 
-                scale: 1.015,
+                y: -4, 
+                scale: 1.012,
                 transition: { duration: 0.18, ease: [0.26, 0.11, 0.26, 1.0] }
               }}
               whileTap={{ scale: 0.985, transition: { duration: 0.10 } }}
-              className="group relative rounded-[22px] cursor-pointer overflow-hidden"
+              className="group relative rounded-[24px] cursor-pointer overflow-hidden"
               style={{ 
-                padding: '24px',
+                padding: '32px',
                 background: style.background, 
                 backdropFilter: 'blur(28px) saturate(160%)',
                 WebkitBackdropFilter: 'blur(28px) saturate(160%)',
                 border: `1px solid ${style.border}`, 
                 boxShadow: `inset 0 1px 0 rgba(255, 255, 255, 0.08), ${style.glow}`,
-                transition: 'all 0.18s cubic-bezier(0.26, 0.11, 0.26, 1.0)'
+                transition: 'all 0.18s cubic-bezier(0.26, 0.11, 0.26, 1.0)',
+                minHeight: '200px'
               }}
             >
-              {(isLeader || isLaggard) && (
-                <motion.div 
-                  className="absolute top-4 right-4"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.3, duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
+              {/* Role Badge */}
+              <motion.div 
+                className="absolute top-5 right-5"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3, duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
+              >
+                <div 
+                  className="text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider"
+                  style={{
+                    background: sector.role === 'Leader' || sector.role === 'Momentum'
+                      ? 'linear-gradient(180deg, rgba(88, 227, 164, 0.14) 0%, rgba(88, 227, 164, 0.09) 100%)'
+                      : sector.role === 'Laggard'
+                      ? 'linear-gradient(180deg, rgba(255, 106, 122, 0.14) 0%, rgba(255, 106, 122, 0.09) 100%)'
+                      : 'linear-gradient(180deg, rgba(147, 197, 253, 0.14) 0%, rgba(147, 197, 253, 0.09) 100%)',
+                    border: sector.role === 'Leader' || sector.role === 'Momentum'
+                      ? '1px solid rgba(88, 227, 164, 0.22)'
+                      : sector.role === 'Laggard'
+                      ? '1px solid rgba(255, 106, 122, 0.22)'
+                      : '1px solid rgba(147, 197, 253, 0.22)',
+                    color: sector.role === 'Leader' || sector.role === 'Momentum'
+                      ? '#58E3A4'
+                      : sector.role === 'Laggard'
+                      ? '#FF6A7A'
+                      : '#93C5FD',
+                    textShadow: sector.role === 'Leader' || sector.role === 'Momentum'
+                      ? '0 0 6px rgba(88, 227, 164, 0.3)'
+                      : sector.role === 'Laggard'
+                      ? '0 0 6px rgba(255, 106, 122, 0.3)'
+                      : '0 0 6px rgba(147, 197, 253, 0.3)',
+                    backdropFilter: 'blur(12px)',
+                    letterSpacing: '0.04em'
+                  }}
                 >
-                  <div 
-                    className="text-[11px] font-bold px-3 py-1.5 rounded-full"
-                    style={{
-                      background: isLeader 
-                        ? 'linear-gradient(180deg, rgba(88, 227, 164, 0.16) 0%, rgba(88, 227, 164, 0.10) 100%)'
-                        : 'linear-gradient(180deg, rgba(255, 106, 122, 0.16) 0%, rgba(255, 106, 122, 0.10) 100%)',
-                      border: isLeader ? '1px solid rgba(88, 227, 164, 0.24)' : '1px solid rgba(255, 106, 122, 0.24)',
-                      color: isLeader ? '#58E3A4' : '#FF6A7A',
-                      textShadow: isLeader ? '0 0 8px rgba(88, 227, 164, 0.4)' : '0 0 8px rgba(255, 106, 122, 0.4)',
-                      backdropFilter: 'blur(12px)',
-                      letterSpacing: '0.02em'
-                    }}
-                  >
-                    {isLeader ? 'Leader' : 'Laggard'}
-                  </div>
-                </motion.div>
-              )}
-              
-              <AnimatePresence>
-                {hoveredSector === sector.name && (
-                  <motion.div 
-                    className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 z-30 w-max pointer-events-none" 
-                    initial={{ opacity: 0, y: 8, scale: 0.94 }} 
-                    animate={{ opacity: 1, y: 0, scale: 1 }} 
-                    exit={{ opacity: 0, y: 8, scale: 0.94 }} 
-                    transition={{ duration: 0.16, ease: [0.22, 0.61, 0.36, 1] }}
-                  >
-                    <div 
-                      className="px-4 py-2.5 text-[13px] font-medium max-w-xs text-center rounded-[14px]" 
-                      style={{ 
-                        background: 'linear-gradient(135deg, rgba(12, 16, 22, 0.94), rgba(18, 22, 30, 0.92))',
-                        backdropFilter: 'blur(24px) saturate(165%)',
-                        WebkitBackdropFilter: 'blur(24px) saturate(165%)',
-                        border: '1px solid rgba(255, 255, 255, 0.12)',
-                        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10), 0 8px 24px rgba(0,0,0,0.25)',
-                        color: 'rgba(255,255,255,0.88)'
-                      }}
-                    >
-                      {sector.context}
-                      <div 
-                        className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 rotate-45"
-                        style={{
-                          background: 'linear-gradient(135deg, rgba(12, 16, 22, 0.94), rgba(18, 22, 30, 0.92))',
-                          borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
-                          borderRight: '1px solid rgba(255, 255, 255, 0.12)'
-                        }}
-                      />
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                  {sector.role}
+                </div>
+              </motion.div>
 
-              <div className="relative z-10 flex flex-col justify-between h-full min-h-[180px]">
-                <h3 className="text-[15px] font-bold leading-tight mb-3" style={{ 
-                  color: 'rgba(255,255,255,0.92)',
-                  letterSpacing: '-0.01em'
+              <div className="relative z-10 flex flex-col justify-between h-full">
+                {/* Sector Name - smaller, quieter */}
+                <h3 className="text-[14px] font-semibold leading-tight mb-2" style={{ 
+                  color: 'rgba(255,255,255,0.68)',
+                  letterSpacing: '0.01em'
                 }}>
                   {sector.name}
                 </h3>
                 
-                <div className="my-6 flex-1 flex items-center">
+                {/* Large % Number */}
+                <div className="my-4 flex-1 flex items-center">
                   <AnimatePresence mode="wait">
                     <motion.div 
                       key={`${viewMode}-${timeframe}-${sector.name}`}
-                      initial={{ 
-                        opacity: 0, 
-                        y: sector.displayChange >= 0 ? -8 : 8,
-                        scale: 0.92
-                      }} 
-                      animate={{ 
-                        opacity: 1, 
-                        y: 0,
-                        scale: 1
-                      }} 
-                      exit={{ 
-                        opacity: 0, 
-                        y: sector.displayChange >= 0 ? 8 : -8,
-                        scale: 0.92
-                      }} 
-                      transition={{ 
-                        duration: 0.20, 
-                        ease: [0.26, 0.11, 0.26, 1.0] 
-                      }} 
-                      className={`${magnitudeStyle.fontWeight}`}
+                      initial={{ opacity: 0, scale: 0.92 }} 
+                      animate={{ opacity: 1, scale: 1 }} 
+                      exit={{ opacity: 0, scale: 0.92 }} 
+                      transition={{ duration: 0.20, ease: [0.26, 0.11, 0.26, 1.0] }} 
+                      className="text-5xl font-extrabold"
                       style={{ 
-                        fontSize: magnitudeStyle.fontSize, 
                         lineHeight: 1,
-                        color: 'rgba(255,255,255,0.98)',
+                        color: 'rgba(255,255,255,0.96)',
                         fontVariantNumeric: 'tabular-nums',
-                        textShadow: magnitudeStyle.textShadow,
-                        letterSpacing: '-0.02em'
+                        textShadow: processedSector.displayChange > 0 
+                          ? '0 0 16px rgba(34, 197, 94, 0.32)' 
+                          : '0 0 16px rgba(239, 68, 68, 0.32)',
+                        letterSpacing: '-0.03em'
                       }}
                     >
-                      {sector.displayChange >= 0 ? '+' : ''}{sector.displayChange.toFixed(2)}%
+                      {processedSector.displayChange >= 0 ? '+' : ''}{processedSector.displayChange.toFixed(2)}%
                     </motion.div>
                   </AnimatePresence>
                 </div>
 
-                <div className="space-y-1.5" style={{ 
-                  opacity: 0.78,
-                  transition: 'opacity 0.18s ease'
+                {/* Why it matters - single line, plain English */}
+                <p className="text-[13px] font-medium leading-relaxed" style={{ 
+                  color: 'rgba(255,255,255,0.58)',
+                  letterSpacing: '0.005em'
                 }}>
-                  {sector.movers.slice(0, 2).map((mover, i) => {
-                    const isMoverPositive = mover.c.startsWith('+');
-                    return (
-                      <motion.div 
-                        key={i} 
-                        className="flex items-center gap-2 text-xs font-semibold"
-                        style={{ color: 'rgba(255,255,255,0.72)' }}
-                        initial={{ opacity: 0, x: -8 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 + i * 0.05, duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
-                      >
-                        {isMoverPositive ? 
-                          <TrendingUp className="w-3.5 h-3.5" style={{ color: '#58E3A4' }} strokeWidth={2.2}/> : 
-                          <TrendingDown className="w-3.5 h-3.5" style={{ color: '#FF6A7A' }} strokeWidth={2.2}/>
-                        }
-                        <span style={{ color: 'rgba(255,255,255,0.80)' }}>{mover.s}</span>
-                        <span style={{ 
-                          color: isMoverPositive ? '#58E3A4' : '#FF6A7A',
-                          fontVariantNumeric: 'tabular-nums'
-                        }}>
-                          {mover.c}
-                        </span>
-                      </motion.div>
-                    );
-                  })}
-                </div>
+                  {sector.whyMatters}
+                </p>
               </div>
-              
-              <RefinedSparkline 
-                data={sector.sparkline} 
-                positive={sector.displayChange >= 0} 
-                isHovered={hoveredSector === sector.name} 
-              />
+
+              {/* Subtle sparkline */}
+              <div className="absolute bottom-6 right-6 opacity-40 group-hover:opacity-70 transition-opacity duration-300">
+                <RefinedSparkline 
+                  data={sector.sparkline} 
+                  positive={processedSector.displayChange >= 0} 
+                  isHovered={false}
+                />
+              </div>
             </motion.div>
           );
         })}
+      </div>
+
+      {/* All Sectors - Collapsed/Expandable */}
+      <div>
+        <motion.button
+          onClick={() => setShowAllSectors(!showAllSectors)}
+          className="w-full rounded-[18px] mb-4"
+          style={{
+            padding: '14px 20px',
+            background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.032) 100%)',
+            backdropFilter: 'blur(24px) saturate(165%)',
+            WebkitBackdropFilter: 'blur(24px) saturate(165%)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 2px 8px rgba(0,0,0,0.06)'
+          }}
+          whileHover={{
+            background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.068) 0%, rgba(255, 255, 255, 0.048) 100%)',
+            transition: { duration: 0.16 }
+          }}
+          whileTap={{ scale: 0.98, transition: { duration: 0.10 } }}
+        >
+          <div className="flex items-center justify-center gap-2">
+            <span className="text-[14px] font-semibold" style={{ 
+              color: 'rgba(255,255,255,0.82)',
+              letterSpacing: '0.005em'
+            }}>
+              {showAllSectors ? 'Hide all sectors' : 'Show all sectors'}
+            </span>
+            <motion.div
+              animate={{ rotate: showAllSectors ? 180 : 0 }}
+              transition={{ duration: 0.20, ease: [0.26, 0.11, 0.26, 1.0] }}
+            >
+              <TrendingDown className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.62)' }} />
+            </motion.div>
+          </div>
+        </motion.button>
+
+        {/* Expanded All Sectors Grid */}
+        <AnimatePresence>
+          {showAllSectors && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.28, ease: [0.26, 0.11, 0.26, 1.0] }}
+              className="overflow-hidden"
+            >
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 pt-2">
+                {processedData.map((sector, index) => {
+                  const style = getTileStyle(sector.displayChange, maxAbsChange);
+                  
+                  return (
+                    <motion.div
+                      key={sector.name}
+                      initial={{ opacity: 0, scale: 0.94 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ 
+                        delay: index * 0.04, 
+                        duration: 0.3, 
+                        ease: [0.22, 0.61, 0.36, 1] 
+                      }}
+                      onClick={() => setSelectedSector(sector)}
+                      whileHover={{ 
+                        y: -2, 
+                        scale: 1.02,
+                        transition: { duration: 0.16, ease: [0.26, 0.11, 0.26, 1.0] }
+                      }}
+                      whileTap={{ scale: 0.98, transition: { duration: 0.10 } }}
+                      className="group relative rounded-[18px] cursor-pointer overflow-hidden"
+                      style={{ 
+                        padding: '18px',
+                        background: `linear-gradient(145deg, ${
+                          sector.displayChange > 0 
+                            ? 'rgba(16, 185, 129, 0.08), rgba(16, 185, 129, 0.04)' 
+                            : 'rgba(239, 68, 68, 0.08), rgba(239, 68, 68, 0.04)'
+                        })`,
+                        backdropFilter: 'blur(24px) saturate(160%)',
+                        WebkitBackdropFilter: 'blur(24px) saturate(160%)',
+                        border: `1px solid ${
+                          sector.displayChange > 0 
+                            ? 'rgba(16, 185, 129, 0.16)' 
+                            : 'rgba(239, 68, 68, 0.16)'
+                        }`, 
+                        boxShadow: `inset 0 0.5px 0 rgba(255, 255, 255, 0.06), 0 0 12px ${
+                          sector.displayChange > 0 
+                            ? 'rgba(16, 185, 129, 0.08)' 
+                            : 'rgba(239, 68, 68, 0.08)'
+                        }`,
+                        transition: 'all 0.16s cubic-bezier(0.26, 0.11, 0.26, 1.0)'
+                      }}
+                    >
+                      <div className="relative z-10">
+                        {/* Sector Name */}
+                        <h3 className="text-[13px] font-semibold leading-tight mb-3" style={{ 
+                          color: 'rgba(255,255,255,0.78)',
+                          letterSpacing: '0.005em'
+                        }}>
+                          {sector.name}
+                        </h3>
+                        
+                        {/* % Change */}
+                        <AnimatePresence mode="wait">
+                          <motion.div 
+                            key={`${viewMode}-${timeframe}-${sector.name}`}
+                            initial={{ opacity: 0, scale: 0.90 }} 
+                            animate={{ opacity: 1, scale: 1 }} 
+                            exit={{ opacity: 0, scale: 0.90 }} 
+                            transition={{ duration: 0.18, ease: [0.26, 0.11, 0.26, 1.0] }} 
+                            className="text-2xl font-bold"
+                            style={{ 
+                              lineHeight: 1,
+                              color: 'rgba(255,255,255,0.96)',
+                              fontVariantNumeric: 'tabular-nums',
+                              letterSpacing: '-0.02em'
+                            }}
+                          >
+                            {sector.displayChange >= 0 ? '+' : ''}{sector.displayChange.toFixed(2)}%
+                          </motion.div>
+                        </AnimatePresence>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
