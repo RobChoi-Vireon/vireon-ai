@@ -15,6 +15,21 @@ const calculateDaysUntil = (eventDate) => {
   return Math.max(0, diffDays); // Ensure it's not negative
 };
 
+// Sector → Benchmark ETF Mapping (static)
+const SECTOR_BENCHMARKS = {
+  'Technology': 'XLK',
+  'Energy': 'XLE',
+  'Financials': 'XLF',
+  'Healthcare': 'XLV',
+  'Industrials': 'XLI',
+  'Consumer Discretionary': 'XLY',
+  'Consumer Staples': 'XLP',
+  'Communication Services': 'XLC',
+  'Materials': 'XLB',
+  'Utilities': 'XLU',
+  'Real Estate': 'XLRE'
+};
+
 const enhancedSectorData = {
   'Technology': {
     mainDrivers: [
@@ -1165,6 +1180,7 @@ const InsightCard = ({ item, type, index }) => {
 export default function SectorDetailDrawer({ sector, onClose, theme }) {
   const [activeTab, setActiveTab] = useState('drivers');
   const [expandedSections, setExpandedSections] = useState({ themes: false, risks: false });
+  const [showBenchmarkTooltip, setShowBenchmarkTooltip] = useState(false);
   const drawerRef = useRef(null);
 
   // sector.name might be undefined initially if the prop is not immediately available.
@@ -1377,6 +1393,50 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
                     <span className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.58)' }}>
                       Today
                     </span>
+                    <span className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.32)' }}>
+                      ·
+                    </span>
+                    <div 
+                      className="relative"
+                      onMouseEnter={() => setShowBenchmarkTooltip(true)}
+                      onMouseLeave={() => setShowBenchmarkTooltip(false)}
+                    >
+                      <span className="text-[13px] font-medium cursor-help" style={{ color: 'rgba(255,255,255,0.48)' }}>
+                        Benchmark: {SECTOR_BENCHMARKS[sector.name] || 'N/A'}
+                      </span>
+                      
+                      {/* Benchmark Tooltip */}
+                      <AnimatePresence>
+                        {showBenchmarkTooltip && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 4, scale: 0.94 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 4, scale: 0.94 }}
+                            transition={{ duration: 0.14, ease: [0.22, 0.61, 0.36, 1] }}
+                            className="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-max max-w-[280px] z-50 rounded-[12px] pointer-events-none"
+                            style={{ 
+                              padding: '10px 12px',
+                              background: 'linear-gradient(135deg, rgba(12, 16, 22, 0.96), rgba(18, 22, 30, 0.94))',
+                              backdropFilter: 'blur(20px) saturate(165%)',
+                              WebkitBackdropFilter: 'blur(20px) saturate(165%)',
+                              border: '1px solid rgba(255, 255, 255, 0.10)',
+                              boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 6px 20px rgba(0,0,0,0.30)'
+                            }}
+                          >
+                            <div className="text-[11px] font-medium text-center leading-relaxed" style={{ color: 'rgba(255,255,255,0.72)' }}>
+                              Sector performance reflects the {sector.name} Select Sector SPDR ETF.
+                            </div>
+                            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45" 
+                                 style={{ 
+                                   background: 'linear-gradient(135deg, rgba(12, 16, 22, 0.96), rgba(18, 22, 30, 0.94))',
+                                   borderTop: '1px solid rgba(255, 255, 255, 0.10)',
+                                   borderLeft: '1px solid rgba(255, 255, 255, 0.10)'
+                                 }}
+                            />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   </div>
                 </div>
                 <motion.button
