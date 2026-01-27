@@ -2,6 +2,29 @@ import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
+// Sector → Full Benchmark ETF Name Mapping
+const SECTOR_BENCHMARK_FULL_NAMES = {
+  'Technology': 'State Street Technology Select Sector SPDR ETF (XLK)',
+  'Energy': 'State Street Energy Select Sector SPDR ETF (XLE)',
+  'Consumer Discretionary': 'State Street Consumer Discretionary Select Sector SPDR ETF (XLY)',
+  'Consumer Staples': 'State Street Consumer Staples Select Sector SPDR ETF (XLP)',
+  'Communication Services': 'State Street Communication Services Select Sector SPDR ETF (XLC)',
+  'Industrials': 'State Street Industrial Select Sector SPDR ETF (XLI)',
+  'Financials': 'State Street Financial Select Sector SPDR ETF (XLF)',
+  'Utilities': 'State Street Utilities Select Sector SPDR ETF (XLU)',
+  'Materials': 'State Street Materials Select Sector SPDR ETF (XLB)',
+  'Real Estate': 'State Street Real Estate Select Sector SPDR ETF (XLRE)',
+  'Healthcare': 'State Street Health Care Select Sector SPDR ETF (XLV)'
+};
+
+// Extract ticker from full name (e.g., "XLK" from "...ETF (XLK)")
+const getBenchmarkTicker = (sectorName) => {
+  const fullName = SECTOR_BENCHMARK_FULL_NAMES[sectorName];
+  if (!fullName) return 'N/A';
+  const match = fullName.match(/\(([A-Z]+)\)$/);
+  return match ? match[1] : 'N/A';
+};
+
 const mockSectorData = [
   { name: 'Technology', change: '+1.85%', sparkline: [10, 20, 15, 30, 25, 45, 50], movers: [{ s: 'NVDA', c: '+4.2%' }, { s: 'AAPL', c: '+3.1%' }], context: 'AI infrastructure flows driving $2.8B rotation.', weekAgo: '+0.9%', yearAvg: '+12.4%' },
   { name: 'Communication Services', change: '+0.55%', sparkline: [35, 38, 36, 40, 39, 42, 44], movers: [{ s: 'META', c: '+2.1%' }, { s: 'GOOGL', c: '+1.8%' }], context: 'Advertising recovery boosting digital platforms.', weekAgo: '+0.2%', yearAvg: '+9.7%' },
@@ -163,6 +186,7 @@ function SectorHeatmap({ setSelectedSector }) {
   const [timeframe, setTimeframe] = useState('1D');
   const [hoveredSector, setHoveredSector] = useState(null);
   const [showAllSectors, setShowAllSectors] = useState(false);
+  const [benchmarkTooltip, setBenchmarkTooltip] = useState(null);
 
   const viewDescriptions = {
     absolute: { 
@@ -415,13 +439,69 @@ function SectorHeatmap({ setSelectedSector }) {
                 </div>
 
                 {/* Why it matters - single line, plain English */}
-                <p className="text-[13px] font-medium leading-relaxed" style={{ 
+                <p className="text-[13px] font-medium leading-relaxed mb-3" style={{ 
                   color: 'rgba(255,255,255,0.58)',
                   letterSpacing: '0.005em'
                 }}>
                   {sector.whyMatters}
                 </p>
-              </div>
+
+                {/* Benchmark Chip */}
+                <div 
+                  className="relative inline-block"
+                  onMouseEnter={() => setBenchmarkTooltip(sector.name)}
+                  onMouseLeave={() => setBenchmarkTooltip(null)}
+                >
+                  <div 
+                    className="inline-flex items-center rounded-[10px] cursor-help"
+                    style={{
+                      padding: '6px 10px',
+                      background: 'rgba(255, 255, 255, 0.032)',
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
+                      backdropFilter: 'blur(8px)'
+                    }}
+                  >
+                    <span className="text-[11px] font-semibold" style={{ 
+                      color: 'rgba(255,255,255,0.48)',
+                      letterSpacing: '0.015em'
+                    }}>
+                      Benchmark: {getBenchmarkTicker(sector.name)}
+                    </span>
+                  </div>
+
+                  {/* Benchmark Tooltip */}
+                  <AnimatePresence>
+                    {benchmarkTooltip === sector.name && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 4, scale: 0.94 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 4, scale: 0.94 }}
+                        transition={{ duration: 0.14, ease: [0.22, 0.61, 0.36, 1] }}
+                        className="absolute bottom-full mb-2 left-0 w-max max-w-[280px] z-50 rounded-[12px] pointer-events-none"
+                        style={{ 
+                          padding: '10px 12px',
+                          background: 'linear-gradient(135deg, rgba(12, 16, 22, 0.96), rgba(18, 22, 30, 0.94))',
+                          backdropFilter: 'blur(20px) saturate(165%)',
+                          WebkitBackdropFilter: 'blur(20px) saturate(165%)',
+                          border: '1px solid rgba(255, 255, 255, 0.10)',
+                          boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 6px 20px rgba(0,0,0,0.30)'
+                        }}
+                      >
+                        <div className="text-[11px] font-medium leading-relaxed" style={{ color: 'rgba(255,255,255,0.72)' }}>
+                          {SECTOR_BENCHMARK_FULL_NAMES[sector.name]}
+                        </div>
+                        <div className="absolute top-full left-6 w-2 h-2 rotate-45" 
+                             style={{ 
+                               background: 'linear-gradient(135deg, rgba(12, 16, 22, 0.96), rgba(18, 22, 30, 0.94))',
+                               borderBottom: '1px solid rgba(255, 255, 255, 0.10)',
+                               borderRight: '1px solid rgba(255, 255, 255, 0.10)'
+                             }}
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+                </div>
 
               {/* Subtle sparkline */}
               <div className="absolute bottom-6 right-6 opacity-40 group-hover:opacity-70 transition-opacity duration-300">
@@ -533,7 +613,7 @@ function SectorHeatmap({ setSelectedSector }) {
                         }}>
                           {sector.name}
                         </h3>
-                        
+
                         {/* % Change */}
                         <AnimatePresence mode="wait">
                           <motion.div 
@@ -542,7 +622,7 @@ function SectorHeatmap({ setSelectedSector }) {
                             animate={{ opacity: 1, scale: 1 }} 
                             exit={{ opacity: 0, scale: 0.90 }} 
                             transition={{ duration: 0.18, ease: [0.26, 0.11, 0.26, 1.0] }} 
-                            className="text-2xl font-bold"
+                            className="text-2xl font-bold mb-2"
                             style={{ 
                               lineHeight: 1,
                               color: 'rgba(255,255,255,0.96)',
@@ -553,6 +633,62 @@ function SectorHeatmap({ setSelectedSector }) {
                             {sector.displayChange >= 0 ? '+' : ''}{sector.displayChange.toFixed(2)}%
                           </motion.div>
                         </AnimatePresence>
+
+                        {/* Benchmark Chip - Compact Tiles */}
+                        <div 
+                          className="relative inline-block"
+                          onMouseEnter={() => setBenchmarkTooltip(sector.name)}
+                          onMouseLeave={() => setBenchmarkTooltip(null)}
+                        >
+                          <div 
+                            className="inline-flex items-center rounded-[8px] cursor-help"
+                            style={{
+                              padding: '4px 8px',
+                              background: 'rgba(255, 255, 255, 0.028)',
+                              border: '1px solid rgba(255, 255, 255, 0.06)',
+                              backdropFilter: 'blur(6px)'
+                            }}
+                          >
+                            <span className="text-[10px] font-semibold" style={{ 
+                              color: 'rgba(255,255,255,0.42)',
+                              letterSpacing: '0.015em'
+                            }}>
+                              {getBenchmarkTicker(sector.name)}
+                            </span>
+                          </div>
+
+                          {/* Benchmark Tooltip */}
+                          <AnimatePresence>
+                            {benchmarkTooltip === sector.name && (
+                              <motion.div
+                                initial={{ opacity: 0, y: 4, scale: 0.94 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 4, scale: 0.94 }}
+                                transition={{ duration: 0.14, ease: [0.22, 0.61, 0.36, 1] }}
+                                className="absolute bottom-full mb-2 left-0 w-max max-w-[280px] z-50 rounded-[12px] pointer-events-none"
+                                style={{ 
+                                  padding: '10px 12px',
+                                  background: 'linear-gradient(135deg, rgba(12, 16, 22, 0.96), rgba(18, 22, 30, 0.94))',
+                                  backdropFilter: 'blur(20px) saturate(165%)',
+                                  WebkitBackdropFilter: 'blur(20px) saturate(165%)',
+                                  border: '1px solid rgba(255, 255, 255, 0.10)',
+                                  boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 6px 20px rgba(0,0,0,0.30)'
+                                }}
+                              >
+                                <div className="text-[11px] font-medium leading-relaxed" style={{ color: 'rgba(255,255,255,0.72)' }}>
+                                  {SECTOR_BENCHMARK_FULL_NAMES[sector.name]}
+                                </div>
+                                <div className="absolute top-full left-6 w-2 h-2 rotate-45" 
+                                     style={{ 
+                                       background: 'linear-gradient(135deg, rgba(12, 16, 22, 0.96), rgba(18, 22, 30, 0.94))',
+                                       borderBottom: '1px solid rgba(255, 255, 255, 0.10)',
+                                       borderRight: '1px solid rgba(255, 255, 255, 0.10)'
+                                     }}
+                                />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
                       </div>
                     </motion.div>
                   );
