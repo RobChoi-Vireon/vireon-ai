@@ -1477,7 +1477,91 @@ useEffect(() => {
                   </motion.div>
                 </div>
 
-                {/* TL;DR Insight Pill - Progressive Disclosure */}
+                <motion.button
+                  onClick={handleClose}
+                  whileHover={{ 
+                    scale: 1.04,
+                    background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.078) 0%, rgba(255, 255, 255, 0.058) 100%)',
+                    transition: { duration: 0.16 }
+                  }}
+                  whileTap={{ scale: 0.96, transition: { duration: 0.10 } }}
+                  className="rounded-[20px] flex-shrink-0"
+                  style={{ 
+                    padding: '12px',
+                    width: '44px',
+                    height: '44px',
+                    background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.038) 100%)',
+                    backdropFilter: 'blur(12px)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)'
+                  }}
+                  aria-label="Close drawer"
+                >
+                  <X className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.72)' }} />
+                </motion.button>
+              </div>
+            </div>
+            
+            {/* OS Horizon Tabs */}
+            <div className="px-8 pt-3 pb-5 flex-shrink-0"
+                 style={{ 
+                   background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.028) 0%, rgba(255, 255, 255, 0.018) 100%)',
+                   backdropFilter: 'blur(24px) saturate(165%)',
+                   WebkitBackdropFilter: 'blur(24px) saturate(165%)',
+                   borderBottom: '1px solid rgba(255,255,255,0.06)'
+                 }}>
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex gap-2">
+                  {tabs.map((tab) => {
+                    const Icon = tab.icon;
+                    const isActive = activeTab === tab.id;
+                    return (
+                      <motion.button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className="relative flex items-center gap-2.5 rounded-[18px] overflow-hidden"
+                        style={{
+                          padding: '11px 18px',
+                          background: isActive 
+                            ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.082) 0%, rgba(255, 255, 255, 0.062) 100%)'
+                            : 'transparent',
+                          border: isActive ? '1px solid rgba(255,255,255,0.10)' : '1px solid transparent',
+                          boxShadow: isActive 
+                            ? 'inset 0 1px 0 rgba(255,255,255,0.08), 0 2px 8px rgba(0,0,0,0.06)'
+                            : 'none'
+                        }}
+                        whileHover={!isActive ? {
+                          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.032) 100%)',
+                          transition: { duration: 0.16 }
+                        } : {}}
+                        whileTap={{ scale: 0.97, transition: { duration: 0.10 } }}
+                      >
+                        {isActive && (
+                          <div style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: '16%',
+                            right: '16%',
+                            height: '1px',
+                            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
+                            pointerEvents: 'none'
+                          }} />
+                        )}
+                        <Icon className="w-4 h-4" style={{ 
+                          color: isActive ? 'rgba(215, 227, 255, 1)' : 'rgba(155, 163, 176, 1)',
+                          strokeWidth: 2.0
+                        }} />
+                        <span className="text-[14px] font-semibold" style={{ 
+                          color: isActive ? 'rgba(255,255,255,0.96)' : 'rgba(255,255,255,0.62)',
+                          letterSpacing: '-0.005em'
+                        }}>
+                          {tab.label}
+                        </span>
+                      </motion.button>
+                    );
+                  })}
+                </div>
+
+                {/* TL;DR Insight Pill - Integrated with Tabs */}
                 {CONSENSUS_SUMMARY[sector.name] && (
                   <motion.div
                     ref={insightRef}
@@ -1495,7 +1579,7 @@ useEffect(() => {
                       opacity: { duration: 0.4, ease: [0.22, 0.61, 0.36, 1] }
                     }}
                     onClick={() => setInsightExpanded(!insightExpanded)}
-                    className="hidden lg:flex items-center cursor-pointer rounded-[18px] overflow-visible self-start flex-shrink-0"
+                    className="hidden lg:flex items-center cursor-pointer rounded-[18px] overflow-visible flex-shrink-0"
                     style={{
                       padding: insightExpanded ? '14px 18px' : '10px 16px',
                       background: insightExpanded
@@ -1588,88 +1672,6 @@ useEffect(() => {
                     </AnimatePresence>
                   </motion.div>
                 )}
-
-                <motion.button
-                  onClick={handleClose}
-                  whileHover={{ 
-                    scale: 1.04,
-                    background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.078) 0%, rgba(255, 255, 255, 0.058) 100%)',
-                    transition: { duration: 0.16 }
-                  }}
-                  whileTap={{ scale: 0.96, transition: { duration: 0.10 } }}
-                  className="rounded-[20px] flex-shrink-0"
-                  style={{ 
-                    padding: '12px',
-                    width: '44px',
-                    height: '44px',
-                    background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.038) 100%)',
-                    backdropFilter: 'blur(12px)',
-                    border: '1px solid rgba(255, 255, 255, 0.08)'
-                  }}
-                  aria-label="Close drawer"
-                >
-                  <X className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.72)' }} />
-                </motion.button>
-              </div>
-            </div>
-            
-            {/* OS Horizon Tabs */}
-            <div className="px-8 pt-3 pb-5 flex-shrink-0"
-                 style={{ 
-                   background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.028) 0%, rgba(255, 255, 255, 0.018) 100%)',
-                   backdropFilter: 'blur(24px) saturate(165%)',
-                   WebkitBackdropFilter: 'blur(24px) saturate(165%)',
-                   borderBottom: '1px solid rgba(255,255,255,0.06)'
-                 }}>
-              <div className="flex gap-2">
-                {tabs.map((tab) => {
-                  const Icon = tab.icon;
-                  const isActive = activeTab === tab.id;
-                  return (
-                    <motion.button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className="relative flex items-center gap-2.5 rounded-[18px] overflow-hidden"
-                      style={{
-                        padding: '11px 18px',
-                        background: isActive 
-                          ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.082) 0%, rgba(255, 255, 255, 0.062) 100%)'
-                          : 'transparent',
-                        border: isActive ? '1px solid rgba(255,255,255,0.10)' : '1px solid transparent',
-                        boxShadow: isActive 
-                          ? 'inset 0 1px 0 rgba(255,255,255,0.08), 0 2px 8px rgba(0,0,0,0.06)'
-                          : 'none'
-                      }}
-                      whileHover={!isActive ? {
-                        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.032) 100%)',
-                        transition: { duration: 0.16 }
-                      } : {}}
-                      whileTap={{ scale: 0.97, transition: { duration: 0.10 } }}
-                    >
-                      {isActive && (
-                        <div style={{
-                          position: 'absolute',
-                          top: 0,
-                          left: '16%',
-                          right: '16%',
-                          height: '1px',
-                          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-                          pointerEvents: 'none'
-                        }} />
-                      )}
-                      <Icon className="w-4 h-4" style={{ 
-                        color: isActive ? 'rgba(215, 227, 255, 1)' : 'rgba(155, 163, 176, 1)',
-                        strokeWidth: 2.0
-                      }} />
-                      <span className="text-[14px] font-semibold" style={{ 
-                        color: isActive ? 'rgba(255,255,255,0.96)' : 'rgba(255,255,255,0.62)',
-                        letterSpacing: '-0.005em'
-                      }}>
-                        {tab.label}
-                      </span>
-                    </motion.button>
-                  );
-                })}
               </div>
             </div>
             
