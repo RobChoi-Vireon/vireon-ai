@@ -1484,36 +1484,51 @@ useEffect(() => {
                     initial={{ opacity: 0, scale: 0.92, x: 12 }}
                     animate={{ 
                       opacity: 1, 
-                      scale: 1, 
-                      x: 0,
-                      width: insightExpanded ? 'auto' : '72px'
+                      scale: insightExpanded ? 1.01 : 1,
+                      x: 0
                     }}
-                    transition={{ duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
+                    transition={{ 
+                      type: "spring", 
+                      stiffness: 280, 
+                      damping: 32,
+                      mass: 0.9,
+                      opacity: { duration: 0.4, ease: [0.22, 0.61, 0.36, 1] }
+                    }}
                     onClick={() => setInsightExpanded(!insightExpanded)}
-                    className="hidden lg:flex items-center justify-center cursor-pointer rounded-[18px] overflow-hidden self-start flex-shrink-0"
+                    className="hidden lg:flex items-center cursor-pointer rounded-[18px] overflow-visible self-start flex-shrink-0"
                     style={{
                       padding: insightExpanded ? '14px 18px' : '10px 16px',
-                      background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.028) 0%, rgba(255, 255, 255, 0.018) 100%)',
-                      backdropFilter: 'blur(32px) saturate(165%)',
-                      WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-                      border: '1px solid rgba(255,255,255,0.05)',
-                      boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.04), 0 2px 6px rgba(0,0,0,0.03)',
-                      maxWidth: insightExpanded ? '420px' : '72px',
-                      transition: 'all 0.3s cubic-bezier(0.22, 0.61, 0.36, 1)'
+                      background: insightExpanded
+                        ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.038) 0%, rgba(255, 255, 255, 0.024) 100%)'
+                        : 'linear-gradient(180deg, rgba(255, 255, 255, 0.028) 0%, rgba(255, 255, 255, 0.018) 100%)',
+                      backdropFilter: insightExpanded ? 'blur(36px) saturate(168%)' : 'blur(32px) saturate(165%)',
+                      WebkitBackdropFilter: insightExpanded ? 'blur(36px) saturate(168%)' : 'blur(32px) saturate(165%)',
+                      border: insightExpanded ? '1px solid rgba(255,255,255,0.07)' : '1px solid rgba(255,255,255,0.05)',
+                      boxShadow: insightExpanded
+                        ? 'inset 0 0.5px 0 rgba(255,255,255,0.06), 0 4px 12px rgba(0,0,0,0.06)'
+                        : 'inset 0 0.5px 0 rgba(255,255,255,0.04), 0 2px 6px rgba(0,0,0,0.03)',
+                      width: insightExpanded ? '420px' : '72px',
+                      maxWidth: '420px',
+                      transition: 'all 0.48s cubic-bezier(0.26, 0.11, 0.26, 1.0)'
                     }}
                     whileHover={!insightExpanded ? {
                       background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.028) 100%)',
-                      transition: { duration: 0.16 }
+                      scale: 1.02,
+                      transition: { duration: 0.2, ease: [0.26, 0.11, 0.26, 1.0] }
                     } : {}}
+                    whileTap={{ 
+                      scale: 0.98,
+                      transition: { duration: 0.12, ease: [0.26, 0.11, 0.26, 1.0] }
+                    }}
                   >
                     <AnimatePresence mode="wait">
                       {!insightExpanded ? (
                         <motion.span
                           key="tldr"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 0.15 }}
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.9 }}
+                          transition={{ duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }}
                           className="text-[11px] font-semibold whitespace-nowrap"
                           style={{ 
                             color: 'rgba(255,255,255,0.52)',
@@ -1525,26 +1540,49 @@ useEffect(() => {
                       ) : (
                         <motion.div
                           key="insight"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 0.2, delay: 0.1 }}
-                          className="space-y-1"
+                          initial={{ opacity: 0, filter: 'blur(4px)' }}
+                          animate={{ opacity: 1, filter: 'blur(0px)' }}
+                          exit={{ opacity: 0, filter: 'blur(4px)' }}
+                          transition={{ 
+                            opacity: { duration: 0.32, delay: 0.14, ease: [0.22, 0.61, 0.36, 1] },
+                            filter: { duration: 0.38, delay: 0.14, ease: [0.22, 0.61, 0.36, 1] }
+                          }}
+                          className="space-y-1.5 w-full"
                         >
-                          <p className="text-[11px] font-medium" style={{ 
-                            color: 'rgba(255,255,255,0.70)',
-                            letterSpacing: '0.002em',
-                            lineHeight: 1.5
-                          }}>
+                          <motion.p
+                            initial={{ opacity: 0, y: -3 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ 
+                              delay: 0.20,
+                              duration: 0.32, 
+                              ease: [0.22, 0.61, 0.36, 1] 
+                            }}
+                            className="text-[11px] font-medium" 
+                            style={{ 
+                              color: 'rgba(255,255,255,0.72)',
+                              letterSpacing: '0.002em',
+                              lineHeight: 1.5
+                            }}
+                          >
                             {CONSENSUS_SUMMARY[sector.name].outcome}
-                          </p>
-                          <p className="text-[11px] font-medium" style={{ 
-                            color: 'rgba(255,255,255,0.70)',
-                            letterSpacing: '0.002em',
-                            lineHeight: 1.5
-                          }}>
+                          </motion.p>
+                          <motion.p
+                            initial={{ opacity: 0, y: -3 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ 
+                              delay: 0.26,
+                              duration: 0.32, 
+                              ease: [0.22, 0.61, 0.36, 1] 
+                            }}
+                            className="text-[11px] font-medium" 
+                            style={{ 
+                              color: 'rgba(255,255,255,0.72)',
+                              letterSpacing: '0.002em',
+                              lineHeight: 1.5
+                            }}
+                          >
                             {CONSENSUS_SUMMARY[sector.name].cause}
-                          </p>
+                          </motion.p>
                         </motion.div>
                       )}
                     </AnimatePresence>
