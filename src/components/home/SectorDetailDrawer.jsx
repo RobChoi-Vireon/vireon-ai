@@ -1568,7 +1568,7 @@ useEffect(() => {
                     initial={{ opacity: 0, scale: 0.92, x: 12 }}
                     animate={{ 
                       opacity: 1, 
-                      scale: insightExpanded ? 1.01 : 1,
+                      scale: 1,
                       x: 0
                     }}
                     transition={{ 
@@ -1579,97 +1579,157 @@ useEffect(() => {
                       opacity: { duration: 0.4, ease: [0.22, 0.61, 0.36, 1] }
                     }}
                     onClick={() => setInsightExpanded(!insightExpanded)}
-                    className="hidden lg:flex items-center cursor-pointer rounded-[18px] overflow-visible flex-shrink-0"
+                    className="hidden lg:flex items-center cursor-pointer rounded-[18px] overflow-visible flex-shrink-0 relative"
                     style={{
                       padding: insightExpanded ? '14px 18px' : '10px 16px',
                       background: insightExpanded
-                        ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.038) 0%, rgba(255, 255, 255, 0.024) 100%)'
-                        : 'linear-gradient(180deg, rgba(255, 255, 255, 0.028) 0%, rgba(255, 255, 255, 0.018) 100%)',
+                        ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.028) 100%)'
+                        : 'linear-gradient(180deg, rgba(255, 255, 255, 0.032) 0%, rgba(255, 255, 255, 0.020) 100%)',
                       backdropFilter: insightExpanded ? 'blur(36px) saturate(168%)' : 'blur(32px) saturate(165%)',
                       WebkitBackdropFilter: insightExpanded ? 'blur(36px) saturate(168%)' : 'blur(32px) saturate(165%)',
-                      border: insightExpanded ? '1px solid rgba(255,255,255,0.07)' : '1px solid rgba(255,255,255,0.05)',
+                      border: insightExpanded ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(110, 180, 255, 0.14)',
                       boxShadow: insightExpanded
-                        ? 'inset 0 0.5px 0 rgba(255,255,255,0.06), 0 4px 12px rgba(0,0,0,0.06)'
-                        : 'inset 0 0.5px 0 rgba(255,255,255,0.04), 0 2px 6px rgba(0,0,0,0.03)',
+                        ? 'inset 0 0.5px 0 rgba(255,255,255,0.06), 0 4px 14px rgba(0,0,0,0.07)'
+                        : 'inset 0 0.5px 0 rgba(110, 180, 255, 0.08), 0 2px 8px rgba(0,0,0,0.04), 0 0 16px rgba(110, 180, 255, 0.12)',
                       width: insightExpanded ? '420px' : '72px',
-                      maxWidth: '420px',
-                      transition: 'all 0.48s cubic-bezier(0.26, 0.11, 0.26, 1.0)'
+                      maxWidth: '420px'
                     }}
                     whileHover={!insightExpanded ? {
-                      background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.042) 0%, rgba(255, 255, 255, 0.028) 100%)',
-                      scale: 1.02,
-                      transition: { duration: 0.2, ease: [0.26, 0.11, 0.26, 1.0] }
+                      background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.030) 100%)',
+                      scale: 1.03,
+                      boxShadow: 'inset 0 0.5px 0 rgba(110, 180, 255, 0.10), 0 3px 10px rgba(0,0,0,0.05), 0 0 20px rgba(110, 180, 255, 0.18)',
+                      transition: { type: "spring", stiffness: 320, damping: 28, mass: 0.8 }
                     } : {}}
                     whileTap={{ 
-                      scale: 0.98,
-                      transition: { duration: 0.12, ease: [0.26, 0.11, 0.26, 1.0] }
+                      scale: 0.97,
+                      transition: { type: "spring", stiffness: 380, damping: 26, mass: 0.7 }
                     }}
                   >
-                    <AnimatePresence mode="wait">
-                      {!insightExpanded ? (
-                        <motion.span
-                          key="tldr"
-                          initial={{ opacity: 0, scale: 0.9 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.9 }}
-                          transition={{ duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }}
-                          className="text-[11px] font-semibold whitespace-nowrap"
-                          style={{ 
-                            color: 'rgba(255,255,255,0.52)',
-                            letterSpacing: '0.03em'
-                          }}
-                        >
-                          TL;DR
-                        </motion.span>
-                      ) : (
-                        <motion.div
-                          key="insight"
-                          initial={{ opacity: 0, filter: 'blur(4px)' }}
-                          animate={{ opacity: 1, filter: 'blur(0px)' }}
-                          exit={{ opacity: 0, filter: 'blur(4px)' }}
-                          transition={{ 
-                            opacity: { duration: 0.32, delay: 0.14, ease: [0.22, 0.61, 0.36, 1] },
-                            filter: { duration: 0.38, delay: 0.14, ease: [0.22, 0.61, 0.36, 1] }
-                          }}
-                          className="space-y-1.5 w-full"
-                        >
-                          <motion.p
-                            initial={{ opacity: 0, y: -3 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ 
-                              delay: 0.20,
-                              duration: 0.32, 
-                              ease: [0.22, 0.61, 0.36, 1] 
+                    {/* Ambient Glow Ring - Attention Grabber */}
+                    {!insightExpanded && (
+                      <motion.div
+                        className="absolute inset-0 rounded-[18px]"
+                        style={{
+                          background: 'radial-gradient(ellipse at 50% 50%, rgba(110, 180, 255, 0.10) 0%, transparent 70%)',
+                          filter: 'blur(8px)',
+                          pointerEvents: 'none'
+                        }}
+                        animate={{
+                          opacity: [0.6, 0.85, 0.6],
+                          scale: [1, 1.08, 1]
+                        }}
+                        transition={{
+                          duration: 2.8,
+                          repeat: Infinity,
+                          ease: [0.45, 0.05, 0.55, 0.95]
+                        }}
+                      />
+                    )}
+
+                    {/* Inner Specular Highlight */}
+                    <div style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: '16%',
+                      right: '16%',
+                      height: '1px',
+                      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+                      pointerEvents: 'none'
+                    }} />
+
+                    <motion.div
+                      className="relative z-10 w-full"
+                      animate={{
+                        width: insightExpanded ? '100%' : 'auto'
+                      }}
+                      transition={{ 
+                        type: "spring", 
+                        stiffness: 260, 
+                        damping: 30,
+                        mass: 1.0
+                      }}
+                    >
+                      <AnimatePresence mode="wait">
+                        {!insightExpanded ? (
+                          <motion.span
+                            key="tldr"
+                            initial={{ opacity: 0, scale: 0.88 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ 
+                              opacity: 0, 
+                              scale: 0.88,
+                              filter: 'blur(3px)'
                             }}
-                            className="text-[11px] font-medium" 
+                            transition={{ 
+                              duration: 0.28, 
+                              ease: [0.26, 0.11, 0.26, 1.0] 
+                            }}
+                            className="text-[11px] font-semibold whitespace-nowrap block"
                             style={{ 
-                              color: 'rgba(255,255,255,0.72)',
-                              letterSpacing: '0.002em',
-                              lineHeight: 1.5
+                              color: 'rgba(215, 235, 255, 0.76)',
+                              letterSpacing: '0.03em',
+                              textShadow: '0 0 8px rgba(110, 180, 255, 0.22)'
                             }}
                           >
-                            {CONSENSUS_SUMMARY[sector.name].outcome}
-                          </motion.p>
-                          <motion.p
-                            initial={{ opacity: 0, y: -3 }}
-                            animate={{ opacity: 1, y: 0 }}
+                            TL;DR
+                          </motion.span>
+                        ) : (
+                          <motion.div
+                            key="insight"
+                            initial={{ opacity: 0, filter: 'blur(6px)', scale: 0.96 }}
+                            animate={{ opacity: 1, filter: 'blur(0px)', scale: 1 }}
+                            exit={{ 
+                              opacity: 0, 
+                              filter: 'blur(6px)',
+                              scale: 0.96
+                            }}
                             transition={{ 
-                              delay: 0.26,
-                              duration: 0.32, 
-                              ease: [0.22, 0.61, 0.36, 1] 
+                              opacity: { duration: 0.42, delay: 0.18, ease: [0.22, 0.61, 0.36, 1] },
+                              filter: { duration: 0.48, delay: 0.18, ease: [0.22, 0.61, 0.36, 1] },
+                              scale: { type: "spring", stiffness: 260, damping: 28, mass: 0.9 }
                             }}
-                            className="text-[11px] font-medium" 
-                            style={{ 
-                              color: 'rgba(255,255,255,0.72)',
-                              letterSpacing: '0.002em',
-                              lineHeight: 1.5
-                            }}
+                            className="space-y-1.5 w-full"
                           >
-                            {CONSENSUS_SUMMARY[sector.name].cause}
-                          </motion.p>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                            <motion.p
+                              initial={{ opacity: 0, y: -4, filter: 'blur(2px)' }}
+                              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                              exit={{ opacity: 0, y: -2, filter: 'blur(2px)' }}
+                              transition={{ 
+                                delay: 0.24,
+                                duration: 0.38, 
+                                ease: [0.22, 0.61, 0.36, 1] 
+                              }}
+                              className="text-[11px] font-medium" 
+                              style={{ 
+                                color: 'rgba(255,255,255,0.72)',
+                                letterSpacing: '0.002em',
+                                lineHeight: 1.5
+                              }}
+                            >
+                              {CONSENSUS_SUMMARY[sector.name].outcome}
+                            </motion.p>
+                            <motion.p
+                              initial={{ opacity: 0, y: -4, filter: 'blur(2px)' }}
+                              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                              exit={{ opacity: 0, y: -2, filter: 'blur(2px)' }}
+                              transition={{ 
+                                delay: 0.32,
+                                duration: 0.38, 
+                                ease: [0.22, 0.61, 0.36, 1] 
+                              }}
+                              className="text-[11px] font-medium" 
+                              style={{ 
+                                color: 'rgba(255,255,255,0.72)',
+                                letterSpacing: '0.002em',
+                                lineHeight: 1.5
+                              }}
+                            >
+                              {CONSENSUS_SUMMARY[sector.name].cause}
+                            </motion.p>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
                   </motion.div>
                 )}
               </div>
