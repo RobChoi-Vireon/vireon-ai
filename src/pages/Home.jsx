@@ -3,6 +3,7 @@ import { useFeatureFlags } from '../components/core/FeatureFlags';
 import { useMiniSheet } from '../components/core/MiniSheetProvider';
 import { TrendingUp, TrendingDown, Activity, Zap, ArrowUpRight, Sparkles, Globe, BarChart3 } from 'lucide-react';
 import SectorHeatmap from '../components/home/SectorHeatmap';
+import FixedIncomePulse from '../components/home/FixedIncomePulse';
 import ForYouCarousel from '../components/foryou/ForYouCarousel';
 import ModuleWrapper from '../components/home/ModuleWrapper';
 import MarketMovers from '../components/home/MarketMovers';
@@ -398,6 +399,13 @@ export default function Home() {
           </ModuleWrapper>
         ) : null;
 
+      case 'fixedincome':
+        return isEnabled('labs_modules') ? (
+          <ModuleWrapper key={moduleId} title="Fixed Income Pulse" {...moduleProps}>
+            <FixedIncomePulse />
+          </ModuleWrapper>
+        ) : null;
+
       case 'metrics':
         return (
           <ModuleWrapper key={moduleId} title="Key Benchmarks" {...moduleProps}>
@@ -523,7 +531,7 @@ export default function Home() {
           initial="hidden"
           animate="visible"
         >
-          {['pulse', 'heatmap', 'metrics', 'global', 'movers', 'watchlist', 'foryou'].map((moduleId, index) => {
+          {['pulse', 'heatmap', 'fixedincome', 'metrics', 'global', 'movers', 'watchlist', 'foryou'].map((moduleId, index) => {
             const moduleComponent = renderModule(moduleId, index);
             if (!moduleComponent) return null;
 

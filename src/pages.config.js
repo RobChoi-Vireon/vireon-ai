@@ -13,13 +13,13 @@ import MacroSignals from './pages/MacroSignals';
 import Me from './pages/Me';
 import Reports from './pages/Reports';
 import SentimentHeatmap from './pages/SentimentHeatmap';
-import SmartTracker from './pages/SmartTracker';
-import Watchlist from './pages/Watchlist';
-import SettingsBilling from './pages/SettingsBilling';
 import Settings from './pages/Settings';
 import SettingsAccount from './pages/SettingsAccount';
-import SettingsSecurity from './pages/SettingsSecurity';
+import SettingsBilling from './pages/SettingsBilling';
 import SettingsNotifications from './pages/SettingsNotifications';
+import SettingsSecurity from './pages/SettingsSecurity';
+import SmartTracker from './pages/SmartTracker';
+import Watchlist from './pages/Watchlist';
 import __Layout from './Layout.jsx';
 
 
@@ -39,13 +39,13 @@ export const PAGES = {
     "Me": Me,
     "Reports": Reports,
     "SentimentHeatmap": SentimentHeatmap,
-    "SmartTracker": SmartTracker,
-    "Watchlist": Watchlist,
-    "SettingsBilling": SettingsBilling,
     "Settings": Settings,
     "SettingsAccount": SettingsAccount,
-    "SettingsSecurity": SettingsSecurity,
+    "SettingsBilling": SettingsBilling,
     "SettingsNotifications": SettingsNotifications,
+    "SettingsSecurity": SettingsSecurity,
+    "SmartTracker": SmartTracker,
+    "Watchlist": Watchlist,
 }
 
 export const pagesConfig = {
