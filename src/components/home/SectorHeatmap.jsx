@@ -4,11 +4,16 @@ import { TrendingUp, TrendingDown } from 'lucide-react';
 
 const mockSectorData = [
   { name: 'Technology', change: '+1.85%', sparkline: [10, 20, 15, 30, 25, 45, 50], movers: [{ s: 'NVDA', c: '+4.2%' }, { s: 'AAPL', c: '+3.1%' }], context: 'AI infrastructure flows driving $2.8B rotation.', weekAgo: '+0.9%', yearAvg: '+12.4%' },
-  { name: 'Healthcare', change: '+0.72%', sparkline: [30, 32, 35, 33, 38, 40, 42], movers: [{ s: 'LLY', c: '+2.8%' }, { s: 'UNH', c: '+1.2%' }], context: 'Defensive rotation amid market uncertainty.', weekAgo: '-0.3%', yearAvg: '+8.2%' },
-  { name: 'Financials', change: '+1.15%', sparkline: [20, 22, 28, 25, 30, 35, 38], movers: [{ s: 'JPM', c: '+1.8%' }, { s: 'BAC', c: '+1.1%' }], context: 'Yield curve steepening supports lending margins.', weekAgo: '+2.1%', yearAvg: '+15.8%' },
-  { name: 'Consumer Disc.', change: '-0.45%', sparkline: [60, 55, 58, 50, 52, 48, 45], movers: [{ s: 'TSLA', c: '-2.5%' }, { s: 'AMZN', c: '+1.3%' }], context: 'Consumer spending concerns weigh on discretionary.', weekAgo: '-1.2%', yearAvg: '+3.1%' },
+  { name: 'Communication Services', change: '+0.55%', sparkline: [35, 38, 36, 40, 39, 42, 44], movers: [{ s: 'META', c: '+2.1%' }, { s: 'GOOGL', c: '+1.8%' }], context: 'Advertising recovery boosting digital platforms.', weekAgo: '+0.2%', yearAvg: '+9.7%' },
+  { name: 'Consumer Discretionary', change: '-0.45%', sparkline: [60, 55, 58, 50, 52, 48, 45], movers: [{ s: 'TSLA', c: '-2.5%' }, { s: 'AMZN', c: '+1.3%' }], context: 'Consumer spending concerns weigh on discretionary.', weekAgo: '-1.2%', yearAvg: '+3.1%' },
+  { name: 'Consumer Staples', change: '+0.28%', sparkline: [50, 51, 50, 52, 51, 53, 52], movers: [{ s: 'PG', c: '+0.9%' }, { s: 'KO', c: '+0.7%' }], context: 'Defensive positioning driving staples demand.', weekAgo: '+0.1%', yearAvg: '+4.5%' },
   { name: 'Energy', change: '-2.20%', sparkline: [80, 75, 70, 65, 60, 58, 55], movers: [{ s: 'XOM', c: '-1.5%' }, { s: 'CVX', c: '-1.1%' }], context: 'Crude sell-off and inventory build pressuring sector.', weekAgo: '-0.8%', yearAvg: '+22.7%' },
+  { name: 'Financials', change: '+1.15%', sparkline: [20, 22, 28, 25, 30, 35, 38], movers: [{ s: 'JPM', c: '+1.8%' }, { s: 'BAC', c: '+1.1%' }], context: 'Yield curve steepening supports lending margins.', weekAgo: '+2.1%', yearAvg: '+15.8%' },
+  { name: 'Healthcare', change: '+0.72%', sparkline: [30, 32, 35, 33, 38, 40, 42], movers: [{ s: 'LLY', c: '+2.8%' }, { s: 'UNH', c: '+1.2%' }], context: 'Defensive rotation amid market uncertainty.', weekAgo: '-0.3%', yearAvg: '+8.2%' },
   { name: 'Industrials', change: '+0.90%', sparkline: [40, 42, 41, 45, 48, 47, 50], movers: [{ s: 'CAT', c: '+1.9%' }, { s: 'GE', c: '+1.3%' }], context: 'Infrastructure spending momentum continues.', weekAgo: '+1.5%', yearAvg: '+11.3%' },
+  { name: 'Materials', change: '-1.05%', sparkline: [55, 52, 50, 48, 47, 45, 43], movers: [{ s: 'LIN', c: '-0.8%' }, { s: 'FCX', c: '-2.1%' }], context: 'China demand slowdown weighing on commodities.', weekAgo: '-0.6%', yearAvg: '+5.8%' },
+  { name: 'Real Estate', change: '-0.85%', sparkline: [45, 44, 42, 41, 40, 39, 38], movers: [{ s: 'PLD', c: '-1.2%' }, { s: 'AMT', c: '-0.6%' }], context: 'Higher rates continuing to pressure valuations.', weekAgo: '-1.8%', yearAvg: '-2.3%' },
+  { name: 'Utilities', change: '+0.15%', sparkline: [48, 48, 49, 49, 50, 50, 51], movers: [{ s: 'NEE', c: '+0.5%' }, { s: 'DUK', c: '+0.3%' }], context: 'Flight to safety supporting utility stocks.', weekAgo: '+0.4%', yearAvg: '+6.1%' },
 ];
 
 const SP500_CHANGE = 1.10;
