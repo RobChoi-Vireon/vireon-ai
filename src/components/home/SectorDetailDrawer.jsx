@@ -143,7 +143,7 @@ const enhancedSectorData = {
     technicalLevels: { trend: 'Bullish', confidence: 75, timeframe: 'Daily', support: '615', resistance: '645', note: 'Breaking out from multi-month resistance.' },
     sentiment: { retailScore: 70, institutionalScore: 80, note: 'Broadly bullish sentiment across both cohorts.' }
   },
-  'Consumer Disc.': {
+  'Consumer Discretionary': {
     mainDrivers: [
       { driver: 'Bifurcated Consumer Spending', impact: 'Mixed', strength: 'High', confidence: 80, detail: 'Rich people are still spending, but average people are cutting back. Luxury sales up 8%, regular stores down 3%.', supportingData: 'Luxury sales up 8% this year, regular stores down 3%' },
       { driver: 'Inventory Normalization', impact: 'Negative', strength: 'Medium', confidence: 70, detail: 'Retailers have too much stuff in warehouses. They\'ll need to discount to sell it. Inventory is 15% higher than normal.', supportingData: 'Inventory 15% higher than normal levels' },
