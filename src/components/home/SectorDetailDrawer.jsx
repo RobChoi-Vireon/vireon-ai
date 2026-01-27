@@ -223,6 +223,141 @@ const enhancedSectorData = {
     ],
     technicalLevels: { trend: 'Bullish', confidence: 65, timeframe: 'Daily', support: '890', resistance: '925', note: 'Holding strong above previous breakout level.' },
     sentiment: { retailScore: 65, institutionalScore: 75, note: 'Sentiment supported by government spending tailwinds.' }
+  },
+  'Communication Services': {
+    mainDrivers: [
+      { driver: 'Digital Ad Recovery', impact: 'Positive', strength: 'High', confidence: 85, detail: 'Digital advertising spending is rebounding after a soft 2023. Meta and Google seeing 12% growth in ad revenue.', supportingData: 'Digital ad revenue up 12% year-over-year' },
+      { driver: 'Content Streaming Competition', impact: 'Negative', strength: 'Medium', confidence: 70, detail: 'Streaming wars are intensifying. Companies spending heavily on content while subscriber growth slows to 3%.', supportingData: 'Subscriber growth slowing to 3%, content costs up 18%' },
+      { driver: 'AI Integration Opportunity', impact: 'Positive', strength: 'Medium', confidence: 75, detail: 'AI tools improving ad targeting and content recommendations, driving 8% higher engagement rates.', supportingData: 'AI-driven engagement up 8%, conversion rates improving' }
+    ],
+    institutionalFlow: { direction: 'Inflow', amount: '$0.6B', timeframe: '5 days', percentage: 50, vsPrior: '+12%', note: 'Ad recovery theme gaining traction.' },
+    earningsRevisions: { direction: 'Up', upgrades: 22, downgrades: 11, avgChange: '+1.5%', note: 'Upgrades concentrated in digital advertising.' },
+    keyThemes: [
+      { name: 'AI-Powered Advertising', icon: Bot, severity: 'high', interpretation: 'Machine learning improving ad targeting and ROI for advertisers.', context: 'Drives higher pricing power for platforms.' },
+      { name: 'Content Investment Cycle', icon: FileText, severity: 'high', interpretation: 'Major studios investing heavily in exclusive content to retain subscribers.', context: 'Watch subscriber churn rates closely.' },
+      { name: '5G Monetization', icon: Zap, severity: 'medium', interpretation: 'Telecom carriers exploring new revenue streams from 5G services.', context: 'Enterprise and IoT applications are key.' },
+      { name: 'Social Commerce Growth', icon: ShoppingBag, severity: 'medium', interpretation: 'Social platforms integrating e-commerce features for direct sales.', context: 'Competing with traditional e-commerce channels.' }
+    ],
+    riskFactors: [
+      { name: 'Regulatory Scrutiny', icon: Gavel, severity: 'high', interpretation: 'Antitrust investigations and content moderation regulations increasing.', context: 'Could impact business models and profitability.' },
+      { name: 'Ad Budget Cuts', icon: Scissors, severity: 'medium', interpretation: 'Economic uncertainty causing advertisers to reduce spending.', context: 'Cyclical risk tied to corporate profits.' },
+      { name: 'Subscriber Saturation', icon: Users, severity: 'medium', interpretation: 'Streaming services facing slower growth in mature markets.', context: 'International expansion becoming critical.' },
+      { name: 'Cord-Cutting Acceleration', icon: Decline, severity: 'low', interpretation: 'Traditional cable and satellite losing subscribers to streaming.', context: 'Long-term structural shift underway.' }
+    ],
+    forwardCatalysts: [
+      { date: '2024-01-31', day: '31', event: 'Meta Q4 & Ad Revenue Outlook', impact: 'High', context: 'Meta earnings with focus on digital advertising recovery and AI monetization.', daysUntil: calculateDaysUntil('2024-01-31') },
+      { date: '2024-02-06', day: '06', event: 'Disney Streaming Profitability', impact: 'High', context: 'Disney+ subscriber count and path to streaming profitability.', daysUntil: calculateDaysUntil('2024-02-06') }
+    ],
+    technicalLevels: { trend: 'Bullish', confidence: 62, timeframe: 'Daily', support: '285', resistance: '305', note: 'Testing key resistance after recent rally.' },
+    sentiment: { retailScore: 58, institutionalScore: 65, note: 'Improving sentiment on ad recovery thesis.' }
+  },
+  'Consumer Staples': {
+    mainDrivers: [
+      { driver: 'Defensive Positioning', impact: 'Positive', strength: 'Medium', confidence: 78, detail: 'Investors are moving into safe consumer staple stocks during market uncertainty. Valuations are 8% above historical average.', supportingData: 'Valuations 8% above 10-year average' },
+      { driver: 'Input Cost Deflation', impact: 'Positive', strength: 'High', confidence: 82, detail: 'Raw material costs are falling. Packaging, grains, and energy down 12% from peak, improving profit margins.', supportingData: 'Input costs down 12% from peak levels' },
+      { driver: 'Private Label Competition', impact: 'Negative', strength: 'Medium', confidence: 68, detail: 'Retailers pushing cheaper store-brand products. Name brands losing 3.5% market share as consumers trade down.', supportingData: 'Branded products losing 3.5% market share to private label' }
+    ],
+    institutionalFlow: { direction: 'Inflow', amount: '$0.5B', timeframe: '5 days', percentage: 52, vsPrior: '+8%', note: 'Defensive rotation supporting inflows.' },
+    earningsRevisions: { direction: 'Mixed', upgrades: 16, downgrades: 14, avgChange: '+0.4%', note: 'Mixed revisions reflecting margin improvement vs volume concerns.' },
+    keyThemes: [
+      { name: 'Margin Expansion', icon: TrendingUp, severity: 'high', interpretation: 'Lower input costs driving operating margin improvements.', context: 'Focus on companies with pricing power.' },
+      { name: 'Premiumization Trend', icon: TrendingUp, severity: 'medium', interpretation: 'Affluent consumers trading up to premium brands despite inflation.', context: 'Bifurcated consumer driving mixed results.' },
+      { name: 'E-commerce Penetration', icon: ShoppingBag, severity: 'medium', interpretation: 'Online grocery and staples sales continuing to gain share.', context: 'Supply chain and last-mile delivery investments key.' },
+      { name: 'Health & Wellness Focus', icon: Sun, severity: 'medium', interpretation: 'Consumer preference shifting toward organic and functional foods.', context: 'Benefits brands with health-focused positioning.' }
+    ],
+    riskFactors: [
+      { name: 'Volume Pressure', icon: Decline, severity: 'high', interpretation: 'Consumers buying less as they trade down to cheaper options.', context: 'Lower-income households reducing discretionary staples.' },
+      { name: 'Retailer Consolidation', icon: Building2, severity: 'medium', interpretation: 'Large retailers gaining negotiating power, pressuring brand margins.', context: 'Walmart and Amazon driving hard bargains.' },
+      { name: 'Currency Headwinds', icon: Globe, severity: 'medium', interpretation: 'Strong dollar hurting international sales and profitability.', context: 'Many staples companies have 40%+ international exposure.' },
+      { name: 'Valuation Risk', icon: AlertTriangle, severity: 'low', interpretation: 'Trading at premium multiples, vulnerable to rotation.', context: 'Monitor relative valuation vs historical norms.' }
+    ],
+    forwardCatalysts: [
+      { date: '2024-01-30', day: '30', event: 'Procter & Gamble Earnings', impact: 'High', context: 'P&G quarterly results and commentary on pricing power and volume trends.', daysUntil: calculateDaysUntil('2024-01-30') },
+      { date: '2024-02-08', day: '08', event: 'Consumer Confidence Index', impact: 'Medium', context: 'Monthly consumer confidence data impacts staples demand outlook.', daysUntil: calculateDaysUntil('2024-02-08') }
+    ],
+    technicalLevels: { trend: 'Neutral', confidence: 48, timeframe: 'Daily', support: '720', resistance: '745', note: 'Range-bound near all-time highs.' },
+    sentiment: { retailScore: 55, institutionalScore: 62, note: 'Moderate bullish sentiment on defensive qualities.' }
+  },
+  'Materials': {
+    mainDrivers: [
+      { driver: 'China Demand Slowdown', impact: 'Negative', strength: 'High', confidence: 82, detail: 'China using less steel, copper, and other materials as construction slows. Commodity prices down 8-15% from peak.', supportingData: 'Commodity prices down 8-15% on China slowdown' },
+      { driver: 'US Manufacturing Reshoring', impact: 'Positive', strength: 'Medium', confidence: 72, detail: 'Factories returning to North America need more materials. Domestic demand for steel and chemicals up 5.5%.', supportingData: 'US industrial materials demand up 5.5%' },
+      { driver: 'Energy Cost Relief', impact: 'Positive', strength: 'Medium', confidence: 70, detail: 'Natural gas and electricity costs falling 18% from peak, reducing production costs for chemical and metal companies.', supportingData: 'Energy input costs down 18% from peak' }
+    ],
+    institutionalFlow: { direction: 'Outflow', amount: '-$0.6B', timeframe: '5 days', percentage: 35, vsPrior: '-18%', note: 'China concerns driving defensive rotation.' },
+    earningsRevisions: { direction: 'Down', upgrades: 8, downgrades: 19, avgChange: '-1.8%', note: 'Downgrades reflecting weaker commodity pricing.' },
+    keyThemes: [
+      { name: 'Green Transition Materials', icon: Recycle, severity: 'high', interpretation: 'Strong demand for lithium, cobalt, and rare earths for batteries and EVs.', context: 'Multi-year structural tailwind from electrification.' },
+      { name: 'Reshoring Industrial Base', icon: Factory, severity: 'high', interpretation: 'US manufacturing expansion driving domestic materials demand.', context: 'Benefits steel, chemicals, and construction materials.' },
+      { name: 'Commodity Price Volatility', icon: TrendingDown, severity: 'medium', interpretation: 'Commodity prices remain volatile amid shifting global demand patterns.', context: 'Watch China PMI and US housing starts closely.' },
+      { name: 'Packaging Innovation', icon: Recycle, severity: 'medium', interpretation: 'Sustainable packaging regulations driving demand for recycled materials.', context: 'Benefits companies with recycling capabilities.' }
+    ],
+    riskFactors: [
+      { name: 'China Property Crisis', icon: Building2, severity: 'high', interpretation: 'China real estate slowdown reducing steel and cement demand significantly.', context: 'China accounts for 50%+ of global steel consumption.' },
+      { name: 'Energy Price Volatility', icon: Zap, severity: 'high', interpretation: 'Energy-intensive producers vulnerable to oil and gas price swings.', context: 'Affects chemicals, steel, and aluminum producers.' },
+      { name: 'Overcapacity Risk', icon: Factory, severity: 'medium', interpretation: 'Global production capacity exceeds demand in several commodities.', context: 'Pricing power remains limited.' },
+      { name: 'Environmental Regulations', icon: Globe, severity: 'medium', interpretation: 'Tighter emissions standards increasing compliance costs.', context: 'Particularly relevant in Europe and California.' }
+    ],
+    forwardCatalysts: [
+      { date: '2024-01-29', day: '29', event: 'China PMI Release', impact: 'High', context: 'China manufacturing PMI data, key leading indicator for materials demand.', daysUntil: calculateDaysUntil('2024-01-29') },
+      { date: '2024-02-03', day: '03', event: 'LIN Earnings & Outlook', impact: 'Medium', context: 'Linde industrial gases earnings and global manufacturing commentary.', daysUntil: calculateDaysUntil('2024-02-03') }
+    ],
+    technicalLevels: { trend: 'Bearish', confidence: 40, timeframe: 'Daily', support: '530', resistance: '560', note: 'Breaking below 50-day moving average.' },
+    sentiment: { retailScore: 35, institutionalScore: 42, note: 'Bearish sentiment on China exposure and commodity weakness.' }
+  },
+  'Real Estate': {
+    mainDrivers: [
+      { driver: 'Higher Rates Pressure', impact: 'Negative', strength: 'High', confidence: 88, detail: 'Interest rates at 5%+ are making REITs less attractive vs bonds. REIT valuations down 18% from peak.', supportingData: 'REIT valuations down 18% since rate hikes began' },
+      { driver: 'Office Space Headwinds', impact: 'Negative', strength: 'High', confidence: 80, detail: 'Remote work is permanent. Office buildings are 30% empty in major cities, hurting property values.', supportingData: 'Office vacancy rates averaging 30% in major metros' },
+      { driver: 'Industrial/Logistics Strength', impact: 'Positive', strength: 'Medium', confidence: 75, detail: 'E-commerce needs more warehouses. Industrial REIT rents up 7.2% as vacancy stays under 4%.', supportingData: 'Industrial REIT rents up 7.2%, vacancy under 4%' }
+    ],
+    institutionalFlow: { direction: 'Outflow', amount: '-$0.4B', timeframe: '5 days', percentage: 32, vsPrior: '-22%', note: 'Rate sensitivity driving continued outflows.' },
+    earningsRevisions: { direction: 'Down', upgrades: 9, downgrades: 18, avgChange: '-1.2%', note: 'Office REIT downgrades outweighing industrial strength.' },
+    keyThemes: [
+      { name: 'Industrial/Logistics Boom', icon: Truck, severity: 'high', interpretation: 'E-commerce growth driving warehouse and distribution center demand.', context: 'Supply remains tight in key markets.' },
+      { name: 'Office Transformation', icon: Building2, severity: 'high', interpretation: 'Hybrid work models reshaping office space requirements.', context: 'Flight to quality favoring newer, amenity-rich buildings.' },
+      { name: 'Multifamily Resilience', icon: Building2, severity: 'medium', interpretation: 'Apartment demand holding up despite housing affordability concerns.', context: 'High home prices keeping renters in place.' },
+      { name: 'Data Center Demand', icon: Server, severity: 'medium', interpretation: 'AI and cloud growth driving specialized data center REIT performance.', context: 'Power and cooling requirements create barriers to entry.' }
+    ],
+    riskFactors: [
+      { name: 'Rate Duration Risk', icon: TrendingDown, severity: 'high', interpretation: 'REITs sensitive to interest rate changes due to high leverage.', context: 'Fed policy path is the dominant variable.' },
+      { name: 'Office Obsolescence', icon: Building2, severity: 'high', interpretation: 'Structural decline in office demand from remote work permanence.', context: 'Class B and C office buildings face highest risk.' },
+      { name: 'Refinancing Wall', icon: Cash, severity: 'medium', interpretation: 'Many REITs face debt maturities in 2024-2025 at higher rates.', context: 'Could force asset sales or dilutive equity raises.' },
+      { name: 'Recession Exposure', icon: Decline, severity: 'medium', interpretation: 'Economic downturn would hurt occupancy and rent growth.', context: 'Particularly relevant for retail and hospitality REITs.' }
+    ],
+    forwardCatalysts: [
+      { date: '2024-01-28', day: '28', event: 'Prologis Industrial Outlook', impact: 'High', context: 'Leading industrial REIT earnings and commentary on warehouse demand trends.', daysUntil: calculateDaysUntil('2024-01-28') },
+      { date: '2024-02-01', day: '01', event: 'Fed Interest Rate Decision', impact: 'High', context: 'Federal Reserve rate decision directly impacts REIT valuations and financing costs.', daysUntil: calculateDaysUntil('2024-02-01') }
+    ],
+    technicalLevels: { trend: 'Bearish', confidence: 35, timeframe: 'Daily', support: '380', resistance: '405', note: 'Downtrend intact, testing multi-year support.' },
+    sentiment: { retailScore: 28, institutionalScore: 38, note: 'Broadly bearish on rate and office exposure.' }
+  },
+  'Utilities': {
+    mainDrivers: [
+      { driver: 'Safe Haven Demand', impact: 'Positive', strength: 'Medium', confidence: 75, detail: 'Investors seeking stability moving into utility stocks. Dividend yields averaging 3.8% attracting income investors.', supportingData: 'Average utility dividend yield: 3.8%' },
+      { driver: 'Rate Sensitivity', impact: 'Negative', strength: 'Medium', confidence: 70, detail: 'Higher interest rates make utility dividends less attractive vs bonds. 10-year Treasury at 4.2% competing with utility yields.', supportingData: '10-year Treasury at 4.2% vs utility yields ~3.8%' },
+      { driver: 'Clean Energy Transition', impact: 'Positive', strength: 'High', confidence: 85, detail: 'Utilities investing $95B annually in renewable energy infrastructure. Wind and solar capacity growing 22% per year.', supportingData: '$95B annual renewable investment, capacity up 22%' }
+    ],
+    institutionalFlow: { direction: 'Inflow', amount: '$0.3B', timeframe: '5 days', percentage: 48, vsPrior: '+5%', note: 'Modest defensive flows amid market volatility.' },
+    earningsRevisions: { direction: 'Up', upgrades: 14, downgrades: 8, avgChange: '+0.6%', note: 'Upgrades from regulated rate increases.' },
+    keyThemes: [
+      { name: 'Grid Modernization', icon: Zap, severity: 'high', interpretation: 'Utilities investing heavily in grid upgrades to support electrification and renewables.', context: 'Creates a multi-decade capital deployment opportunity.' },
+      { name: 'Renewable Buildout', icon: Sun, severity: 'high', interpretation: 'Wind and solar capacity additions accelerating to meet clean energy mandates.', context: 'Rate base growth supports earnings visibility.' },
+      { name: 'Regulated Rate Increases', icon: TrendingUp, severity: 'medium', interpretation: 'State regulators approving higher rates to fund infrastructure investments.', context: 'Provides stable earnings growth of 5-6% annually.' },
+      { name: 'EV Charging Infrastructure', icon: Zap, severity: 'medium', interpretation: 'Utilities building out EV charging networks as new revenue source.', context: 'Long-term opportunity tied to EV adoption rates.' }
+    ],
+    riskFactors: [
+      { name: 'Interest Rate Sensitivity', icon: TrendingDown, severity: 'high', interpretation: 'Utility stocks typically decline when bond yields rise.', context: 'Fed policy path is the key driver.' },
+      { name: 'Regulatory Lag Risk', icon: Gavel, severity: 'medium', interpretation: 'Utilities may not recover full costs if regulators deny rate requests.', context: 'Political and consumer affordability concerns.' },
+      { name: 'Weather Volatility', icon: Cloud, severity: 'medium', interpretation: 'Extreme weather events increasing operational costs and damage.', context: 'Climate change driving higher insurance and repair costs.' },
+      { name: 'Technology Disruption', icon: Bot, severity: 'low', interpretation: 'Distributed solar and battery storage reducing grid dependence.', context: 'Long-term structural risk to centralized utilities.' }
+    ],
+    forwardCatalysts: [
+      { date: '2024-01-27', day: '27', event: 'NextEra Renewable Outlook', impact: 'Medium', context: 'Leading renewable utility provides guidance on clean energy investments.', daysUntil: calculateDaysUntil('2024-01-27') },
+      { date: '2024-02-10', day: '10', event: 'Federal Energy Policy Update', impact: 'Medium', context: 'DOE announcement on grid modernization funding and clean energy incentives.', daysUntil: calculateDaysUntil('2024-02-10') }
+    ],
+    technicalLevels: { trend: 'Neutral', confidence: 50, timeframe: 'Daily', support: '305', resistance: '320', note: 'Trading in narrow range, awaiting catalyst.' },
+    sentiment: { retailScore: 52, institutionalScore: 58, note: 'Neutral sentiment, valued for stability over growth.' }
   }
 };
 
