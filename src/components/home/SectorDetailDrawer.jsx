@@ -1497,24 +1497,7 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
               </div>
             </div>
             
-            <div className="p-8 pt-7 flex-1 overflow-y-auto min-h-0 relative">
-              {/* Material Unification Layer — Technology Analysis ONLY */}
-              {sector.name === 'Technology' && (
-                <motion.div
-                  className="absolute inset-0 rounded-[24px] pointer-events-none"
-                  style={{
-                    background: 'rgba(18, 22, 30, 0.35)',
-                    backdropFilter: 'blur(18px) saturate(140%)',
-                    WebkitBackdropFilter: 'blur(18px) saturate(140%)',
-                    maskImage: 'radial-gradient(ellipse at center, black 60%, transparent 100%)',
-                    WebkitMaskImage: 'radial-gradient(ellipse at center, black 60%, transparent 100%)'
-                  }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
-                />
-              )}
-
+            <div className="p-8 pt-7 flex-1 overflow-y-auto min-h-0">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeTab}
@@ -1522,7 +1505,6 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.20, ease: [0.26, 0.11, 0.26, 1.0] }}
-                  className="relative z-10"
                 >
                   {activeTab === 'drivers' && (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-16">
