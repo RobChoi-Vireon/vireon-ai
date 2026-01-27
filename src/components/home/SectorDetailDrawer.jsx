@@ -1450,7 +1450,7 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
                     transition={{ delay: 0.2, duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
                     className="mt-3"
                   >
-                    <p className="text-[12px] font-medium" style={{ 
+                    <p className="text-[12px] font-medium mb-1.5" style={{ 
                       color: 'rgba(255,255,255,0.42)',
                       letterSpacing: '0.005em',
                       lineHeight: 1.4
@@ -1459,6 +1459,26 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
                         `State Street ${sector.name} Select Sector SPDR ETF (${SECTOR_BENCHMARKS[sector.name]})` : 
                         'N/A'}
                     </p>
+
+                    {/* Consensus Summary - Two Lines (Outcome + Cause) */}
+                    {CONSENSUS_SUMMARY[sector.name] && (
+                      <div className="mt-2 space-y-0.5">
+                        <p className="text-[12px] font-medium" style={{ 
+                          color: 'rgba(255,255,255,0.68)',
+                          letterSpacing: '0.002em',
+                          lineHeight: 1.5
+                        }}>
+                          {CONSENSUS_SUMMARY[sector.name].outcome}
+                        </p>
+                        <p className="text-[12px] font-medium" style={{ 
+                          color: 'rgba(255,255,255,0.68)',
+                          letterSpacing: '0.002em',
+                          lineHeight: 1.5
+                        }}>
+                          {CONSENSUS_SUMMARY[sector.name].cause}
+                        </p>
+                      </div>
+                    )}
                   </motion.div>
                 </div>
                 <motion.button
@@ -1483,32 +1503,6 @@ export default function SectorDetailDrawer({ sector, onClose, theme }) {
                   <X className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.72)' }} />
                 </motion.button>
               </div>
-
-              {/* Primary Contributors Section */}
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25, duration: 0.35, ease: [0.22, 0.61, 0.36, 1] }}
-                className="px-8 pt-6 pb-5"
-                style={{
-                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.018) 0%, rgba(255, 255, 255, 0.012) 100%)',
-                  borderBottom: '1px solid rgba(255,255,255,0.05)'
-                }}
-              >
-                <h4 className="text-[11px] font-bold uppercase tracking-wider mb-2.5" style={{ 
-                  color: 'rgba(255,255,255,0.52)',
-                  letterSpacing: '0.05em'
-                }}>
-                  Primary Contributors
-                </h4>
-                <p className="text-[14px] font-medium leading-relaxed max-w-3xl" style={{ 
-                  color: 'rgba(255,255,255,0.68)',
-                  letterSpacing: '0.002em',
-                  lineHeight: 1.6
-                }}>
-                  {PRIMARY_CONTRIBUTORS[sector.name] || 'Contribution data unavailable for this sector.'}
-                </p>
-              </motion.div>
             </div>
             
             {/* OS Horizon Tabs */}
