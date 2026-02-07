@@ -11,7 +11,7 @@ const mockFixedIncomeData = [
   { name: 'High Grade', change: '+0.22%', whyMatters: 'Flight to quality continues' }
 ];
 
-export default function FixedIncomePulse() {
+export default function FixedIncomePulse({ setSelectedInstrument }) {
   const [showAllInstruments, setShowAllInstruments] = useState(false);
 
   const focusTier = mockFixedIncomeData.slice(0, 4);
@@ -115,6 +115,7 @@ export default function FixedIncomePulse() {
                 duration: 0.5, 
                 ease: [0.22, 0.61, 0.36, 1] 
               }}
+              onClick={() => setSelectedInstrument && setSelectedInstrument(instrument)}
               whileHover={{ 
                 y: -3, 
                 scale: 1.006,
@@ -248,6 +249,7 @@ export default function FixedIncomePulse() {
                         duration: 0.3, 
                         ease: [0.22, 0.61, 0.36, 1] 
                       }}
+                      onClick={() => setSelectedInstrument && setSelectedInstrument(instrument)}
                       whileHover={{ 
                         y: -2, 
                         scale: 1.012,

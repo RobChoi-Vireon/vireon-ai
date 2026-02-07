@@ -13,6 +13,7 @@ import PulseRadialHero from '../components/home/PulseRadialHero';
 import { motion, AnimatePresence } from 'framer-motion';
 import SectorDetailDrawer from '../components/home/SectorDetailDrawer';
 import AssetDetailDrawer from '../components/home/AssetDetailDrawer';
+import FixedIncomeDetailDrawer from '../components/home/FixedIncomeDetailDrawer';
 
 
 
@@ -246,6 +247,7 @@ export default function Home() {
   const { openMiniSheet } = useMiniSheet();
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [isAssetDrawerOpen, setIsAssetDrawerOpen] = useState(false);
+  const [selectedInstrument, setSelectedInstrument] = useState(null);
   const [pulseData, setPulseData] = useState({
     score: 72,
     trend: 'Somewhat Optimistic',
@@ -402,7 +404,7 @@ export default function Home() {
       case 'fixedincome':
         return isEnabled('labs_modules') ? (
           <ModuleWrapper key={moduleId} title="Fixed Income Pulse" {...moduleProps}>
-            <FixedIncomePulse />
+            <FixedIncomePulse setSelectedInstrument={setSelectedInstrument} />
           </ModuleWrapper>
         ) : null;
 
@@ -559,10 +561,15 @@ export default function Home() {
         </motion.div>
       </div>
 
-      {/* Render Drawer at the page level for full overlay */}
+      {/* Render Drawers at the page level for full overlay */}
       <SectorDetailDrawer
         sector={selectedSector}
         onClose={() => setSelectedSector(null)}
+        theme={theme}
+      />
+      <FixedIncomeDetailDrawer
+        instrument={selectedInstrument}
+        onClose={() => setSelectedInstrument(null)}
         theme={theme}
       />
       <AssetDetailDrawer
