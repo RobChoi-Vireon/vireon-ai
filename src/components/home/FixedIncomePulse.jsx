@@ -317,6 +317,13 @@ export default function FixedIncomePulse() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Detail Drawer */}
+      <FixedIncomeDetailDrawer
+        isOpen={!!selectedInstrument}
+        onClose={() => setSelectedInstrument(null)}
+        instrument={selectedInstrument}
+      />
     </div>
   );
 }
