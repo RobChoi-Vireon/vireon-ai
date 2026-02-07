@@ -3,7 +3,6 @@ import { motion, useMotionValue, useTransform, AnimatePresence, useSpring } from
 import { Calendar, Share, Info, Clock, Database, Zap, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import MacroInsightCapsule from './MacroInsightCapsule';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
 
@@ -812,7 +811,7 @@ export default function DigestHeader({
               </motion.div>
             </motion.div>
 
-            {/* Halo Spectrum Arc with Macro Insight Capsule */}
+            {/* Halo Spectrum Arc */}
             <motion.div
               className="relative pt-2 pb-2 w-full"
               style={{ transform: 'translateY(0px)' }}
@@ -830,11 +829,10 @@ export default function DigestHeader({
                 How markets are feeling today, based on {stats.sources} sources
               </label>
 
-              {/* Arc + Capsule Container with Responsive Positioning */}
-              <div className="relative flex items-start gap-0">
-                {/* Arc Visualization */}
+              {/* Arc Visualization */}
+              <div className="relative w-full">
                 <div
-                  className="flex-1 max-w-xl relative"
+                  className="max-w-xl relative"
                   ref={arcRef}
                   onPointerMove={handlePointerMove}
                   style={{
@@ -1226,24 +1224,6 @@ export default function DigestHeader({
                     </span>
                   </motion.div>
                 </div>
-
-                {/* Macro Insight Capsule - OS Horizon V2 Positioning */}
-                {!isLoading && !error && sentimentFlow && (
-                  <div
-                    className="hidden lg:block absolute"
-                    style={{
-                      top: '-8px',
-                      right: '0px',
-                      zIndex: 20
-                    }}
-                  >
-                    <MacroInsightCapsule
-                      insight={insightLine}
-                      expandedInsight="Credit spreads widening across HY and EM. Fed policy expectations shifting hawkish. Monitor refinancing risks in industrial sector."
-                      isLoading={isLoading}
-                    />
-                  </div>
-                )}
               </div>
             </motion.div>
 
