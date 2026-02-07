@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, TrendingDown } from 'lucide-react';
-import FixedIncomeDetailDrawer from './FixedIncomeDetailDrawer';
 
 const mockFixedIncomeData = [
   { name: 'T.I.P.S.', change: '+0.35%', whyMatters: 'Inflation expectations firming' },
@@ -14,7 +13,6 @@ const mockFixedIncomeData = [
 
 export default function FixedIncomePulse() {
   const [showAllInstruments, setShowAllInstruments] = useState(false);
-  const [selectedInstrument, setSelectedInstrument] = useState(null);
 
   const focusTier = mockFixedIncomeData.slice(0, 4);
   const allInstruments = mockFixedIncomeData;
@@ -117,7 +115,6 @@ export default function FixedIncomePulse() {
                 duration: 0.5, 
                 ease: [0.22, 0.61, 0.36, 1] 
               }}
-              onClick={() => setSelectedInstrument(instrument)}
               whileHover={{ 
                 y: -3, 
                 scale: 1.006,
@@ -251,7 +248,6 @@ export default function FixedIncomePulse() {
                         duration: 0.3, 
                         ease: [0.22, 0.61, 0.36, 1] 
                       }}
-                      onClick={() => setSelectedInstrument(instrument)}
                       whileHover={{ 
                         y: -2, 
                         scale: 1.012,
@@ -317,13 +313,6 @@ export default function FixedIncomePulse() {
           )}
         </AnimatePresence>
       </div>
-
-      {/* Detail Drawer */}
-      <FixedIncomeDetailDrawer
-        isOpen={!!selectedInstrument}
-        onClose={() => setSelectedInstrument(null)}
-        instrument={selectedInstrument}
-      />
     </div>
   );
 }
