@@ -62,8 +62,11 @@ const MOCK_DATA = {
       tag: "Policy Shock",
       text: "New U.S. AI rules will raise costs for companies using AI tools.",
       urgency: "critical",
-      source: "WASHPOST",
-      cross_referenced_sources: ["Washington Post", "New York Times", "Wall Street Journal", "Bloomberg"],
+      source: "washpost",
+      quick_glance_tags: [
+        { label: "Fed Risk", icon: "ShieldAlert", color: "text-amber-300" },
+        { label: "Equities (-)", icon: "TrendingDown", color: "text-red-300" }
+      ],
       associated_country_codes: ["US", "EU"],
       coordinates: [38.9072, -77.0369] // Washington D.C.
     },
@@ -71,8 +74,11 @@ const MOCK_DATA = {
       tag: "Credit Stress", 
       text: "Borrowing costs for emerging-market companies are rising, and fewer new bonds are being issued.",
       urgency: "high",
-      source: "FT",
-      cross_referenced_sources: ["Financial Times", "Wall Street Journal", "Bloomberg"],
+      source: "ft",
+      quick_glance_tags: [
+        { label: "Liquidity", icon: "Waves", color: "text-blue-300" },
+        { label: "Global (-)", icon: "Globe", color: "text-red-300" }
+      ],
       associated_country_codes: ["AR", "TR", "ZA"],
       coordinates: [-34.6037, -58.3816] // Buenos Aires, Argentina
     },
@@ -80,8 +86,11 @@ const MOCK_DATA = {
       tag: "Tech Disruption",
       text: "New quantum computer breakthrough could make current digital security systems vulnerable.",
       urgency: "medium",
-      source: "NYT",
-      cross_referenced_sources: ["New York Times", "Financial Times"],
+      source: "nyt",
+       quick_glance_tags: [
+        { label: "Cyber Risk", icon: "Lock", color: "text-purple-300" },
+        { label: "Long-Term", icon: "CalendarClock", color: "text-gray-300" }
+      ],
       associated_country_codes: ["US", "CN", "GB"],
       coordinates: [34.0522, -118.2437] // Los Angeles, USA
     },
@@ -89,8 +98,11 @@ const MOCK_DATA = {
       tag: "Geopolitical Risk",
       text: "Trade tensions between major economies are disrupting global supply chains.",
       urgency: "high",
-      source: "WSJ",
-      cross_referenced_sources: ["Wall Street Journal", "Financial Times", "Reuters", "Bloomberg", "Washington Post"],
+      source: "wsj",
+       quick_glance_tags: [
+        { label: "Supply Chain", icon: "Link", color: "text-orange-300" },
+        { label: "Industrials (-)", icon: "Factory", color: "text-red-300" }
+      ],
       associated_country_codes: ["US", "CN", "DE", "JP"],
       coordinates: [39.9042, 116.4074] // Beijing, China
     },
@@ -98,8 +110,11 @@ const MOCK_DATA = {
       tag: "Energy Transition",
       text: "New clean energy technology could significantly lower renewable energy costs.",
       urgency: "medium",
-      source: "BLOOMBERG",
-      cross_referenced_sources: ["Bloomberg", "Financial Times", "Reuters"],
+      source: "bloomberg",
+      quick_glance_tags: [
+        { label: "Climate", icon: "CloudSun", color: "text-green-300" },
+        { label: "Opportunity", icon: "TrendingUp", color: "text-emerald-300" }
+      ],
       associated_country_codes: ["DE", "FR", "US"],
       coordinates: [52.5200, 13.4050] // Berlin, Germany
     },
@@ -107,8 +122,11 @@ const MOCK_DATA = {
       tag: "Social Unrest",
       text: "Protests over rising living costs are spreading across major European cities.",
       urgency: "high",
-      source: "REUTERS",
-      cross_referenced_sources: ["Reuters", "Financial Times", "BBC", "Guardian"],
+      source: "reuters",
+      quick_glance_tags: [
+        { label: "Social Risk", icon: "Users", color: "text-rose-300" },
+        { label: "Europe (-)", icon: "Euro", color: "text-red-300" }
+      ],
       associated_country_codes: ["FR", "GB", "ES"],
       coordinates: [48.8566, 2.3522] // Paris, France
     }
