@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { TrendingUp, TrendingDown, Minus, ChevronRight, ChevronDown, Info } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, ChevronDown, Info } from 'lucide-react';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
+const SPRING = { type: "spring", stiffness: 280, damping: 28, mass: 0.8 };
 
 // Arrow icon selector
 const getArrowIcon = (direction) => {
@@ -19,67 +20,22 @@ const StateStatusRow = ({ arrow, label, status, sparkline }) => {
   const color = arrow === 'up' ? 'rgba(255, 106, 122, 0.90)' : arrow === 'down' ? 'rgba(88, 227, 164, 0.90)' : 'rgba(168, 179, 199, 0.90)';
   
   return (
-    <div className="flex items-center justify-between py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-      <div className="flex items-center gap-3">
-        <Icon className="w-4 h-4 flex-shrink-0" style={{ color }} strokeWidth={2.5} />
-        <span className="text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>{label}</span>
+    <div className="flex items-center justify-between py-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.10)' }}>
+      <div className="flex items-center gap-2.5">
+        <Icon className="w-3.5 h-3.5 flex-shrink-0" style={{ color }} strokeWidth={2.5} />
+        <span className="text-xs font-medium" style={{ color: 'rgba(18, 22, 26, 0.60)' }}>{label}</span>
       </div>
-      <div className="flex items-center gap-3">
-        {sparkline && (
-          <div className="w-16 h-6 opacity-30">
-            {/* Subtle sparkline placeholder */}
-            <svg viewBox="0 0 64 24" className="w-full h-full">
-              <polyline
-                points="0,20 16,12 32,16 48,8 64,14"
-                fill="none"
-                stroke="rgba(255,255,255,0.4)"
-                strokeWidth="1.5"
-              />
-            </svg>
-          </div>
-        )}
-        <span className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.90)' }}>{status}</span>
-      </div>
+      <span className="text-xs font-semibold" style={{ color: 'rgba(18, 22, 26, 0.90)' }}>{status}</span>
     </div>
   );
 };
 
-// Primary Driver Row Component
-const DriverRow = ({ rank, name, weight, reason }) => {
-  return (
-    <div className="py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <div 
-              className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-              style={{
-                background: 'rgba(255, 255, 255, 0.08)',
-                color: 'rgba(255,255,255,0.70)'
-              }}
-            >
-              {rank}
-            </div>
-            <span className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.90)' }}>{name}</span>
-          </div>
-          <p className="text-xs pl-7" style={{ color: 'rgba(255,255,255,0.65)' }}>{reason}</p>
-        </div>
-        <span 
-          className="text-xs font-semibold px-2 py-1 rounded-full flex-shrink-0"
-          style={{ 
-            background: 'rgba(94, 167, 255, 0.12)',
-            color: 'rgba(255,255,255,0.75)'
-          }}
-        >
-          {weight}%
-        </span>
-      </div>
-    </div>
-  );
-};
+
 
 export default function InflationSection({ data }) {
-  const [showTrustDrawer, setShowTrustDrawer] = useState(false);
+  const [drawer1Open, setDrawer1Open] = useState(false);
+  const [drawer2Open, setDrawer2Open] = useState(false);
+  const [drawer3Open, setDrawer3Open] = useState(false);
   const [showCPIPCE, setShowCPIPCE] = useState(false);
   
   if (!data) return null;
@@ -143,254 +99,343 @@ export default function InflationSection({ data }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: HORIZON_EASE }}
-      className="relative rounded-3xl overflow-hidden"
-      style={{
-        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
-        backdropFilter: 'blur(40px) saturate(165%)',
-        WebkitBackdropFilter: 'blur(40px) saturate(165%)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.08)'
-      }}
+      className="space-y-3"
     >
-      {/* Top specular highlight */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: '15%',
-        right: '15%',
-        height: '1.5px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
-        pointerEvents: 'none'
-      }} />
-
-      {/* HEADER */}
-      <div className="flex items-start justify-between p-6 pb-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <div className="flex-1">
-          <h3 className="text-2xl font-bold mb-1" style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.02em' }}>
-            Inflation
-          </h3>
-          <p className="text-xs" style={{ color: 'rgba(255,255,255,0.50)' }}>
-            Last updated {inflationData.timestamp_et} ET
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowTrustDrawer(!showTrustDrawer)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors"
-            style={{
-              background: 'rgba(94, 167, 255, 0.12)',
-              border: '1px solid rgba(94, 167, 255, 0.20)',
-              color: 'rgba(94, 167, 255, 0.95)'
-            }}
-          >
-            <Info className="w-3 h-3" />
-            <span>Confidence {inflationData.confidence_score}/100</span>
-          </button>
-        </div>
-      </div>
-
-      {/* SECTION 0: DELTA ANCHOR */}
-      <div 
-        className="px-6 py-3"
+      {/* PRIMARY STATUS CARD */}
+      <div
+        className="relative rounded-[28px] overflow-hidden"
         style={{
-          background: 'linear-gradient(90deg, rgba(94, 167, 255, 0.08) 0%, rgba(94, 167, 255, 0.04) 100%)',
-          borderBottom: '1px solid rgba(255,255,255,0.06)'
+          background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.50) 100%)',
+          backdropFilter: 'blur(32px) saturate(140%)',
+          WebkitBackdropFilter: 'blur(32px) saturate(140%)',
+          border: '1px solid rgba(255,255,255,0.40)',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.60), 0 2px 12px rgba(0,0,0,0.04)'
         }}
       >
-        <div className="text-xs font-medium mb-1" style={{ color: 'rgba(255,255,255,0.50)', letterSpacing: '0.02em' }}>
-          Δ Since last update
-        </div>
-        <p className="text-sm font-semibold truncate" style={{ color: 'rgba(255,255,255,0.90)' }}>
-          {inflationData.delta_summary}
-        </p>
-      </div>
+        {/* Top specular highlight */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '15%',
+          right: '15%',
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.80), transparent)',
+          pointerEvents: 'none'
+        }} />
 
-      <div className="p-6 space-y-6">
-        {/* SECTION 1: CURRENT STATE */}
-        <div>
-          <div className="text-xs font-medium mb-3" style={{ color: 'rgba(255,255,255,0.45)' }}>
-            Current state
-          </div>
-          <div className="space-y-1">
-            <StateStatusRow {...inflationData.headline_state} />
-            <StateStatusRow {...inflationData.core_state} />
-            <StateStatusRow {...inflationData.services_state} />
+        {/* HEADER */}
+        <div className="flex items-start justify-between px-6 pt-5 pb-3">
+          <div className="flex-1">
+            <h3 className="text-2xl font-bold mb-1" style={{ color: 'rgba(18, 22, 26, 0.96)', letterSpacing: '-0.02em' }}>
+              Inflation
+            </h3>
+            <p className="text-xs" style={{ color: 'rgba(18, 22, 26, 0.45)' }}>
+              Last updated {inflationData.timestamp_et} ET
+            </p>
           </div>
         </div>
 
-        {/* SECTION 2: WHY THIS MATTERS */}
-        <div>
-          <div className="text-xs font-medium mb-3" style={{ color: 'rgba(255,255,255,0.45)' }}>
-            Why it matters
+        {/* DELTA ANCHOR */}
+        <div 
+          className="px-6 py-3 mb-3"
+          style={{
+            background: 'linear-gradient(90deg, rgba(94, 167, 255, 0.14) 0%, rgba(94, 167, 255, 0.08) 100%)',
+            borderBottom: '1px solid rgba(255,255,255,0.25)'
+          }}
+        >
+          <div className="text-xs font-bold uppercase mb-1" style={{ color: 'rgba(18, 22, 26, 0.50)', letterSpacing: '0.04em' }}>
+            Δ Since last update
           </div>
-          <div className="space-y-2">
-            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.80)' }}>
+          <p className="text-sm font-semibold" style={{ color: 'rgba(18, 22, 26, 0.92)' }}>
+            {inflationData.delta_summary}
+          </p>
+        </div>
+
+        <div className="px-6 pb-5 space-y-4">
+          {/* CURRENT STATE */}
+          <div>
+            <div className="text-xs font-bold uppercase mb-2.5" style={{ color: 'rgba(18, 22, 26, 0.40)', letterSpacing: '0.03em' }}>
+              Current state
+            </div>
+            <div className="space-y-1">
+              <StateStatusRow {...inflationData.headline_state} />
+              <StateStatusRow {...inflationData.core_state} />
+              <StateStatusRow {...inflationData.services_state} />
+            </div>
+          </div>
+
+          {/* WHY IT MATTERS - ONE LINE ONLY */}
+          <div>
+            <div className="text-xs font-bold uppercase mb-2" style={{ color: 'rgba(18, 22, 26, 0.40)', letterSpacing: '0.03em' }}>
+              Why it matters
+            </div>
+            <p className="text-sm font-medium" style={{ color: 'rgba(18, 22, 26, 0.80)' }}>
               {inflationData.fed_implication}
             </p>
-            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.80)' }}>
-              {inflationData.market_implication}
-            </p>
-          </div>
-        </div>
-
-        {/* SECTION 3: PRIMARY DRIVERS */}
-        <div>
-          <div className="text-xs font-medium mb-3" style={{ color: 'rgba(255,255,255,0.45)' }}>
-            What's driving it
-          </div>
-          <div className="space-y-1">
-            {inflationData.drivers.map((driver, idx) => (
-              <DriverRow key={idx} {...driver} />
-            ))}
-          </div>
-        </div>
-
-        {/* SECTION 4A: WHO FEELS IT */}
-        <div>
-          <div className="text-xs font-medium mb-3" style={{ color: 'rgba(255,255,255,0.45)' }}>
-            Who feels it
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <div className="text-xs font-medium mb-2" style={{ color: 'rgba(88, 227, 164, 0.80)' }}>Winners</div>
-              <ul className="space-y-1.5">
-                {inflationData.winners.map((item, idx) => (
-                  <li key={idx} className="text-sm" style={{ color: 'rgba(255,255,255,0.70)' }}>• {item}</li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <div className="text-xs font-medium mb-2" style={{ color: 'rgba(255, 106, 122, 0.80)' }}>Losers</div>
-              <ul className="space-y-1.5">
-                {inflationData.losers.map((item, idx) => (
-                  <li key={idx} className="text-sm" style={{ color: 'rgba(255,255,255,0.70)' }}>• {item}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* SECTION 4B: CPI VS PCE EXPLAINER */}
-        <div>
-          <button
-            onClick={() => setShowCPIPCE(!showCPIPCE)}
-            className="w-full flex items-center justify-between py-3 px-4 rounded-xl transition-colors"
-            style={{
-              background: 'rgba(255, 255, 255, 0.03)',
-              border: '1px solid rgba(255,255,255,0.06)'
-            }}
-          >
-            <div className="text-left">
-              <div className="text-sm font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.90)' }}>CPI vs PCE</div>
-              <div className="text-xs" style={{ color: 'rgba(255,255,255,0.60)' }}>{inflationData.cpi_pce_collapsed}</div>
-            </div>
-            <ChevronDown 
-              className="w-4 h-4 transition-transform" 
-              style={{ 
-                color: 'rgba(255,255,255,0.40)',
-                transform: showCPIPCE ? 'rotate(180deg)' : 'rotate(0deg)'
-              }} 
-            />
-          </button>
-          
-          <AnimatePresence>
-            {showCPIPCE && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.3, ease: HORIZON_EASE }}
-                className="overflow-hidden"
-              >
-                <div className="pt-3 space-y-2">
-                  <p className="text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>• {inflationData.cpi_plain}</p>
-                  <p className="text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>• {inflationData.pce_plain}</p>
-                  <p className="text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>• {inflationData.why_fed_prefers}</p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* SECTION 5: WHAT TO WATCH */}
-        <div>
-          <div className="text-xs font-medium mb-3" style={{ color: 'rgba(255,255,255,0.45)' }}>
-            What to watch
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <div className="text-xs font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.70)' }}>Next 30–60 days</div>
-              <ul className="space-y-1.5">
-                {inflationData.watch_short.map((item, idx) => (
-                  <li key={idx} className="text-sm" style={{ color: 'rgba(255,255,255,0.65)' }}>• {item}</li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <div className="text-xs font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.70)' }}>Next 6–12 months</div>
-              <ul className="space-y-1.5">
-                {inflationData.watch_long.map((item, idx) => (
-                  <li key={idx} className="text-sm" style={{ color: 'rgba(255,255,255,0.65)' }}>• {item}</li>
-                ))}
-              </ul>
-            </div>
           </div>
         </div>
       </div>
 
-      {/* SECTION 6: TRUST DRAWER */}
-      <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-        {!showTrustDrawer ? (
-          <button
-            onClick={() => setShowTrustDrawer(true)}
-            className="w-full px-6 py-3 text-left text-sm transition-colors hover:bg-white/5 flex items-center justify-between"
-            style={{ color: 'rgba(255,255,255,0.50)' }}
+      {/* DRAWER 1 - WHY INFLATION LOOKS THIS WAY */}
+      <motion.div
+        className="relative rounded-[24px] overflow-hidden"
+        style={{
+          background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.60) 0%, rgba(255, 255, 255, 0.48) 100%)',
+          backdropFilter: 'blur(28px) saturate(135%)',
+          WebkitBackdropFilter: 'blur(28px) saturate(135%)',
+          border: '1px solid rgba(255,255,255,0.35)',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.55), 0 2px 10px rgba(0,0,0,0.03)'
+        }}
+      >
+        <button
+          onClick={() => setDrawer1Open(!drawer1Open)}
+          className="w-full px-5 py-3.5 text-left flex items-center justify-between transition-colors hover:bg-white/20"
+        >
+          <span className="text-sm font-semibold" style={{ color: 'rgba(18, 22, 26, 0.88)' }}>
+            Why inflation looks this way
+          </span>
+          <motion.div
+            animate={{ rotate: drawer1Open ? 180 : 0 }}
+            transition={SPRING}
           >
-            <span>Evidence · Confidence {inflationData.confidence_score}/100</span>
-            <ChevronDown className="w-4 h-4" />
-          </button>
-        ) : (
-          <div>
-            <button
-              onClick={() => setShowTrustDrawer(false)}
-              className="w-full px-6 py-3 text-left text-sm transition-colors hover:bg-white/5 flex items-center justify-between"
-              style={{ color: 'rgba(255,255,255,0.70)' }}
-            >
-              <span>Evidence · Confidence {inflationData.confidence_score}/100</span>
-              <ChevronDown className="w-4 h-4 transition-transform" style={{ transform: 'rotate(180deg)' }} />
-            </button>
+            <ChevronDown className="w-4 h-4" style={{ color: 'rgba(18, 22, 26, 0.50)' }} />
+          </motion.div>
+        </button>
+        
+        <AnimatePresence>
+          {drawer1Open && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="px-6 pb-4 space-y-3"
+              transition={SPRING}
+              className="overflow-hidden"
             >
-            <div>
-              <div className="text-sm font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.90)' }}>
-                Confidence {inflationData.confidence_score}/100
-              </div>
-              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.65)' }}>
-                {inflationData.confidence_reason}
-              </p>
-            </div>
-            
-            <div>
-              <div className="text-xs font-medium mb-2" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                Sources
-              </div>
-              <div className="space-y-1.5">
-                {inflationData.sources.map((source, idx) => (
-                  <div key={idx} className="flex items-center justify-between text-sm">
-                    <span style={{ color: 'rgba(255,255,255,0.70)' }}>{source.name}</span>
-                    <span style={{ color: 'rgba(255,255,255,0.50)' }}>{source.weight}%</span>
+              <div className="px-5 pb-4 pt-1 space-y-2.5">
+                {inflationData.drivers.slice(0, 3).map((driver, idx) => (
+                  <div key={idx} className="py-2" style={{ borderBottom: idx < 2 ? '1px solid rgba(255,255,255,0.15)' : 'none' }}>
+                    <div className="flex items-center justify-between gap-3 mb-1">
+                      <span className="text-sm font-semibold" style={{ color: 'rgba(18, 22, 26, 0.90)' }}>{driver.name}</span>
+                      <span 
+                        className="text-xs font-bold px-2 py-0.5 rounded-full"
+                        style={{ 
+                          background: 'rgba(94, 167, 255, 0.18)',
+                          color: 'rgba(18, 22, 26, 0.75)'
+                        }}
+                      >
+                        {driver.weight}%
+                      </span>
+                    </div>
+                    <p className="text-xs" style={{ color: 'rgba(18, 22, 26, 0.65)' }}>{driver.reason}</p>
                   </div>
                 ))}
               </div>
-            </div>
             </motion.div>
-          </div>
-        )}
-      </div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+
+      {/* DRAWER 2 - WHO FEELS THIS MOST */}
+      <motion.div
+        className="relative rounded-[24px] overflow-hidden"
+        style={{
+          background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.60) 0%, rgba(255, 255, 255, 0.48) 100%)',
+          backdropFilter: 'blur(28px) saturate(135%)',
+          WebkitBackdropFilter: 'blur(28px) saturate(135%)',
+          border: '1px solid rgba(255,255,255,0.35)',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.55), 0 2px 10px rgba(0,0,0,0.03)'
+        }}
+      >
+        <button
+          onClick={() => setDrawer2Open(!drawer2Open)}
+          className="w-full px-5 py-3.5 text-left flex items-center justify-between transition-colors hover:bg-white/20"
+        >
+          <span className="text-sm font-semibold" style={{ color: 'rgba(18, 22, 26, 0.88)' }}>
+            Who feels this most
+          </span>
+          <motion.div
+            animate={{ rotate: drawer2Open ? 180 : 0 }}
+            transition={SPRING}
+          >
+            <ChevronDown className="w-4 h-4" style={{ color: 'rgba(18, 22, 26, 0.50)' }} />
+          </motion.div>
+        </button>
+        
+        <AnimatePresence>
+          {drawer2Open && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={SPRING}
+              className="overflow-hidden"
+            >
+              <div className="px-5 pb-4 pt-1">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <div className="text-xs font-bold mb-2" style={{ color: 'rgba(88, 227, 164, 0.90)' }}>Winners</div>
+                    <ul className="space-y-1">
+                      {inflationData.winners.slice(0, 4).map((item, idx) => (
+                        <li key={idx} className="text-xs" style={{ color: 'rgba(18, 22, 26, 0.75)' }}>• {item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold mb-2" style={{ color: 'rgba(255, 106, 122, 0.90)' }}>Losers</div>
+                    <ul className="space-y-1">
+                      {inflationData.losers.slice(0, 4).map((item, idx) => (
+                        <li key={idx} className="text-xs" style={{ color: 'rgba(18, 22, 26, 0.75)' }}>• {item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+
+      {/* DRAWER 3 - HOW TO READ THE DATA */}
+      <motion.div
+        className="relative rounded-[24px] overflow-hidden"
+        style={{
+          background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.60) 0%, rgba(255, 255, 255, 0.48) 100%)',
+          backdropFilter: 'blur(28px) saturate(135%)',
+          WebkitBackdropFilter: 'blur(28px) saturate(135%)',
+          border: '1px solid rgba(255,255,255,0.35)',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.55), 0 2px 10px rgba(0,0,0,0.03)'
+        }}
+      >
+        <button
+          onClick={() => setDrawer3Open(!drawer3Open)}
+          className="w-full px-5 py-3.5 text-left flex items-center justify-between transition-colors hover:bg-white/20"
+        >
+          <span className="text-sm font-semibold" style={{ color: 'rgba(18, 22, 26, 0.88)' }}>
+            How to read the data
+          </span>
+          <motion.div
+            animate={{ rotate: drawer3Open ? 180 : 0 }}
+            transition={SPRING}
+          >
+            <ChevronDown className="w-4 h-4" style={{ color: 'rgba(18, 22, 26, 0.50)' }} />
+          </motion.div>
+        </button>
+        
+        <AnimatePresence>
+          {drawer3Open && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={SPRING}
+              className="overflow-hidden"
+            >
+              <div className="px-5 pb-4 pt-1 space-y-3">
+                {/* CPI vs PCE - Nested */}
+                <div>
+                  <button
+                    onClick={() => setShowCPIPCE(!showCPIPCE)}
+                    className="w-full flex items-center justify-between py-2 px-3 rounded-lg transition-colors"
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.30)',
+                      border: '1px solid rgba(255,255,255,0.25)'
+                    }}
+                  >
+                    <div className="text-left">
+                      <div className="text-xs font-semibold mb-0.5" style={{ color: 'rgba(18, 22, 26, 0.90)' }}>CPI vs PCE</div>
+                      <div className="text-[10px]" style={{ color: 'rgba(18, 22, 26, 0.55)' }}>{inflationData.cpi_pce_collapsed}</div>
+                    </div>
+                    <ChevronDown 
+                      className="w-3.5 h-3.5 transition-transform" 
+                      style={{ 
+                        color: 'rgba(18, 22, 26, 0.40)',
+                        transform: showCPIPCE ? 'rotate(180deg)' : 'rotate(0deg)'
+                      }} 
+                    />
+                  </button>
+                  
+                  <AnimatePresence>
+                    {showCPIPCE && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={SPRING}
+                        className="overflow-hidden"
+                      >
+                        <div className="pt-2 space-y-1 pl-3">
+                          <p className="text-xs" style={{ color: 'rgba(18, 22, 26, 0.70)' }}>• {inflationData.cpi_plain}</p>
+                          <p className="text-xs" style={{ color: 'rgba(18, 22, 26, 0.70)' }}>• {inflationData.pce_plain}</p>
+                          <p className="text-xs" style={{ color: 'rgba(18, 22, 26, 0.70)' }}>• {inflationData.why_fed_prefers}</p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* What to Watch */}
+                <div className="pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.20)' }}>
+                  <div className="text-xs font-bold uppercase mb-2" style={{ color: 'rgba(18, 22, 26, 0.45)', letterSpacing: '0.03em' }}>
+                    What to watch
+                  </div>
+                  <div className="space-y-2.5">
+                    <div>
+                      <div className="text-xs font-semibold mb-1" style={{ color: 'rgba(18, 22, 26, 0.75)' }}>Next 30–60 days</div>
+                      <ul className="space-y-0.5">
+                        {inflationData.watch_short.slice(0, 3).map((item, idx) => (
+                          <li key={idx} className="text-xs" style={{ color: 'rgba(18, 22, 26, 0.65)' }}>• {item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <div className="text-xs font-semibold mb-1" style={{ color: 'rgba(18, 22, 26, 0.75)' }}>Next 6–12 months</div>
+                      <ul className="space-y-0.5">
+                        {inflationData.watch_long.slice(0, 3).map((item, idx) => (
+                          <li key={idx} className="text-xs" style={{ color: 'rgba(18, 22, 26, 0.65)' }}>• {item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Evidence & Confidence */}
+                <div className="pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.20)' }}>
+                  <div className="text-xs font-bold uppercase mb-2" style={{ color: 'rgba(18, 22, 26, 0.45)', letterSpacing: '0.03em' }}>
+                    Evidence & Confidence
+                  </div>
+                  <div className="space-y-2">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <Info className="w-3 h-3" style={{ color: 'rgba(94, 167, 255, 0.90)' }} />
+                        <span className="text-xs font-semibold" style={{ color: 'rgba(18, 22, 26, 0.90)' }}>
+                          Confidence {inflationData.confidence_score}/100
+                        </span>
+                      </div>
+                      <p className="text-xs" style={{ color: 'rgba(18, 22, 26, 0.65)' }}>
+                        {inflationData.confidence_reason}
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <div className="text-xs font-semibold mb-1.5" style={{ color: 'rgba(18, 22, 26, 0.70)' }}>Sources</div>
+                      <div className="space-y-1">
+                        {inflationData.sources.map((source, idx) => (
+                          <div key={idx} className="flex items-center justify-between text-xs">
+                            <span style={{ color: 'rgba(18, 22, 26, 0.70)' }}>{source.name}</span>
+                            <span style={{ color: 'rgba(18, 22, 26, 0.50)' }}>{source.weight}%</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+
+
     </motion.div>
   );
 }
