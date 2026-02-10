@@ -504,6 +504,78 @@ export default function InflationSection({ data }) {
           )}
         </AnimatePresence>
       </div>
+
+      {/* TOP WEIGHTED SOURCES */}
+      <div
+        className="relative rounded-2xl"
+        style={{
+          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
+          backdropFilter: 'blur(40px) saturate(165%)',
+          WebkitBackdropFilter: 'blur(40px) saturate(165%)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.08)',
+          overflow: 'hidden',
+          transform: 'translateZ(0)',
+          backfaceVisibility: 'hidden',
+          WebkitFontSmoothing: 'antialiased',
+          padding: '16px 20px'
+        }}
+      >
+        <div className="flex items-center gap-3 overflow-x-auto pb-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <span className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.90)' }}>
+              Top Weighted Sources
+            </span>
+            <div
+              className="rounded-full px-2 py-1 text-xs font-semibold flex-shrink-0"
+              style={{
+                background: 'rgba(94, 167, 255, 0.12)',
+                color: 'rgba(94, 167, 255, 0.90)',
+                border: '1px solid rgba(94, 167, 255, 0.20)'
+              }}
+            >
+              {inflationData.sources.length}
+            </div>
+          </div>
+          
+          <div className="flex gap-2">
+            {inflationData.sources.slice(0, 4).map((source, idx) => (
+              <div
+                key={idx}
+                className="px-3 py-2 rounded-full font-medium text-sm whitespace-nowrap flex-shrink-0"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: '1px solid rgba(255, 255, 255, 0.12)',
+                  color: 'rgba(255, 255, 255, 0.80)',
+                  backdropFilter: 'blur(12px)'
+                }}
+              >
+                {source.name}
+              </div>
+            ))}
+          </div>
+
+          <button
+            className="p-2 rounded-full flex-shrink-0 ml-2"
+            style={{
+              background: 'rgba(255, 255, 255, 0.06)',
+              border: '1px solid rgba(255, 255, 255, 0.10)',
+              color: 'rgba(255, 255, 255, 0.50)',
+              transition: 'all 0.2s ease-out'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
+              e.currentTarget.style.color = 'rgba(255, 255, 255, 0.70)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+              e.currentTarget.style.color = 'rgba(255, 255, 255, 0.50)';
+            }}
+          >
+            <ChevronDown className="w-4 h-4" style={{ transform: 'rotate(-90deg)' }} />
+          </button>
+        </div>
+      </div>
     </motion.div>
   );
 }
