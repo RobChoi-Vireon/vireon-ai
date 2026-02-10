@@ -647,7 +647,6 @@ export default function MacroSignalsPage() {
           willChange: 'filter'
         }}
       >
-        {/* ========== BLOCK 1: MACRO SIGNALS HEADER ========== */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex-1">
             <DigestHeader 
