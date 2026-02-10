@@ -1594,13 +1594,31 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                       </p>
                     </div>
 
-                    {/* 13. RELATED SIGNALS (Detailed only) */}
+                    {/* 13. TOP SOURCES (Detailed only) */}
                     <section className="ri-section">
                       <div className="ri-next">
-                        <strong style={{ fontSize: 14, color: 'rgba(255, 255, 255, 0.88)' }}>
-                          Related Signals
-                        </strong>
-                        <div className="ri-carousel">
+                        <div className="flex items-center gap-2">
+                          <strong style={{ fontSize: 14, color: 'rgba(255, 255, 255, 0.88)' }}>
+                            Top Sources
+                          </strong>
+                          <div
+                            className="flex items-center justify-center rounded-full"
+                            style={{
+                              padding: '4px 10px',
+                              background: 'rgba(94, 167, 255, 0.12)',
+                              border: '1px solid rgba(94, 167, 255, 0.24)',
+                              fontSize: 11,
+                              fontWeight: 700,
+                              color: '#5EA7FF',
+                              letterSpacing: '0.01em'
+                            }}
+                          >
+                            {analysis.correlated.length}
+                          </div>
+                        </div>
+                        <div className="ri-carousel" ref={(el) => {
+                          if (el) el.scrollCarouselRef = el;
+                        }}>
                           {analysis.correlated.map((s) => (
                             <CorrelatedChip 
                               key={s.id} 
@@ -1609,7 +1627,32 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                             />
                           ))}
                         </div>
-                        <ArrowRight className="w-4 h-4" style={{ color: 'rgba(255, 255, 255, 0.6)', flexShrink: 0 }} />
+                        <button
+                          onClick={(e) => {
+                            const carousel = e.currentTarget.previousElementSibling;
+                            if (carousel) {
+                              carousel.scrollBy({ left: 200, behavior: 'smooth' });
+                            }
+                          }}
+                          className="flex-shrink-0 transition-all duration-180"
+                          style={{
+                            background: 'rgba(255, 255, 255, 0.06)',
+                            border: '1px solid rgba(255, 255, 255, 0.08)',
+                            padding: '8px',
+                            borderRadius: '10px',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
+                            e.currentTarget.style.transform = 'scale(1.05) translateX(2px)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                            e.currentTarget.style.transform = 'scale(1) translateX(0)';
+                          }}
+                          aria-label="Scroll to see more sources"
+                        >
+                          <ArrowRight className="w-4 h-4" style={{ color: 'rgba(255, 255, 255, 0.6)' }} />
+                        </button>
                       </div>
                     </section>
                   </div>
