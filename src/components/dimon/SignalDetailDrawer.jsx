@@ -1382,6 +1382,9 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                         Confidence
                       </span>
                       <ConfidenceRing value={confOverall} color={HORIZON.color.neutral} size={42} sentiment={sentiment} />
+                      <span className="text-xs font-medium" style={{ color: 'rgba(255, 255, 255, 0.58)', marginLeft: '12px' }}>
+                        Backed by <span style={{ fontWeight: 700, color: 'rgba(255, 255, 255, 0.75)' }}>{analysis.correlated.length}</span> verified sources.
+                      </span>
                     </div>
                   </section>
 
