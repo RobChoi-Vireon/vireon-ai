@@ -609,6 +609,26 @@ export default function MacroSignalsPage() {
       }
     },
   };
+
+  const scrollSectionVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 60,
+      filter: 'blur(10px)'
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      filter: 'blur(0px)',
+      transition: {
+        duration: 1.0,
+        ease: [0.16, 1, 0.3, 1],
+        type: "spring",
+        stiffness: 70,
+        damping: 22
+      }
+    },
+  };
   
   const isAnyDrawerOpen = selectedSignal || selectedTakeaway || selectedDivergence || isConsensusDrawerOpen || selectedSegment;
 
@@ -752,67 +772,93 @@ export default function MacroSignalsPage() {
             ) : digest && (
               <motion.div 
                 key="content" 
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
+                initial={{ opacity: isTransitioning ? 0 : 1 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4, delay: isTransitioning ? 0.8 : 0 }}
                 exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.3 } }}
                 className="grid grid-cols-12 gap-4 md:gap-5"
                 id="dimon-digest-container"
               >
                 {isDegraded && (
-                  <motion.div variants={sectionVariants} className="col-span-12">
-                    <DegradedBanner missingSources={digest.missing_sources || []} />
-                  </motion.div>
-                )}
+                   <motion.div 
+                     variants={scrollSectionVariants}
+                     initial="hidden"
+                     whileInView="visible"
+                     viewport={{ once: true, margin: "0px 0px -100px 0px" }}
+                     className="col-span-12"
+                   >
+                     <DegradedBanner missingSources={digest.missing_sources || []} />
+                   </motion.div>
+                 )}
                 
                 {/* 1) U.S. Front Page Signals */}
                 {digest.priority_signals && digest.priority_signals.length > 0 && (
-                  <motion.div 
-                    variants={sectionVariants}
-                    id="section-priority-signals" 
-                    data-section-order="1"
-                    className="col-span-12"
-                  >
-                    <PrioritySignalStrip signals={digest.priority_signals} onOpenDrawer={setSelectedSignal} />
-                  </motion.div>
-                )}
+                   <motion.div 
+                     variants={scrollSectionVariants}
+                     initial="hidden"
+                     whileInView="visible"
+                     viewport={{ once: true, margin: "0px 0px -100px 0px" }}
+                     id="section-priority-signals" 
+                     data-section-order="1"
+                     className="col-span-12"
+                   >
+                     <PrioritySignalStrip signals={digest.priority_signals} onOpenDrawer={setSelectedSignal} />
+                   </motion.div>
+                 )}
 
                 {/* 2) U.S. Business & Markets */}
                 {digest.executive_takeaway && digest.executive_takeaway.length > 0 && (
-                  <motion.div 
-                    variants={sectionVariants}
-                    id="section-executive-takeaway" 
-                    data-section-order="2"
-                    className="col-span-12"
-                  >
-                    <ExecutiveTakeaway digest={digest} onOpenMemo={setSelectedTakeaway} />
-                  </motion.div>
-                )}
+                   <motion.div 
+                     variants={scrollSectionVariants}
+                     initial="hidden"
+                     whileInView="visible"
+                     viewport={{ once: true, margin: "0px 0px -100px 0px" }}
+                     id="section-executive-takeaway" 
+                     data-section-order="2"
+                     className="col-span-12"
+                   >
+                     <ExecutiveTakeaway digest={digest} onOpenMemo={setSelectedTakeaway} />
+                   </motion.div>
+                 )}
 
                 {/* 2.5) Inflation Section */}
                 {digest.inflation && (
-                  <motion.div 
-                    variants={sectionVariants}
-                    id="section-inflation" 
-                    data-section-order="2.5"
-                    className="col-span-12 mt-8"
-                  >
-                    <InflationSection data={digest.inflation} />
-                  </motion.div>
-                )}
+                   <motion.div 
+                     variants={scrollSectionVariants}
+                     initial="hidden"
+                     whileInView="visible"
+                     viewport={{ once: true, margin: "0px 0px -100px 0px" }}
+                     id="section-inflation" 
+                     data-section-order="2.5"
+                     className="col-span-12 mt-8"
+                   >
+                     <InflationSection data={digest.inflation} />
+                   </motion.div>
+                 )}
 
                 {/* 3) Global Equilibrium Parallax */}
                 <motion.div 
-                  variants={sectionVariants}
-                  id="section-global-equilibrium-parallax" 
-                  data-section-order="3"
-                  className="col-span-12"
-                >
-                  <GlobalSignalLattice onOpenSignalDrawer={setSelectedSignal} />
-                </motion.div>
+                   variants={scrollSectionVariants}
+                   initial="hidden"
+                   whileInView="visible"
+                   viewport={{ once: true, margin: "0px 0px -100px 0px" }}
+                   id="section-global-equilibrium-parallax" 
+                   data-section-order="3"
+                   className="col-span-12"
+                 >
+                   <GlobalSignalLattice onOpenSignalDrawer={setSelectedSignal} />
+                 </motion.div>
                 
                 {/* 4) Global Signals — OS HORIZON REFINED LAYOUT */}
-                <motion.div className="col-span-12" variants={sectionVariants} id="section-global-signals" data-section-order="4">
+                <motion.div 
+                  className="col-span-12" 
+                  variants={scrollSectionVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "0px 0px -100px 0px" }}
+                  id="section-global-signals" 
+                  data-section-order="4"
+                >
                     <div className="mb-4 pl-2">
                         <h2 className="text-xl font-bold mb-1" style={{ color: 'rgba(255,255,255,0.95)' }}>
                           Global Signals
@@ -843,65 +889,80 @@ export default function MacroSignalsPage() {
                 {/* 5) Narrative Map */}
                 {/* NOTE: NarrativeMap would be a great candidate for React.lazy() to code-split it */}
                 {digest.synthesis && (
-                  <motion.div 
-                    variants={sectionVariants}
-                    id="section-narrative-map" 
-                    data-section-order="5"
-                    className="col-span-12 relative z-10"
-                  >
-                    <NarrativeMap synthesis={digest.synthesis} density="compact" />
-                  </motion.div>
-                )}
+                   <motion.div 
+                     variants={scrollSectionVariants}
+                     initial="hidden"
+                     whileInView="visible"
+                     viewport={{ once: true, margin: "0px 0px -100px 0px" }}
+                     id="section-narrative-map" 
+                     data-section-order="5"
+                     className="col-span-12 relative z-10"
+                   >
+                     <NarrativeMap synthesis={digest.synthesis} density="compact" />
+                   </motion.div>
+                 )}
                 
                 {/* 6) Trusted Source Weighting */}
                 {digest.sources && digest.sources.length > 0 && (
-                   <motion.div 
-                    variants={sectionVariants}
-                    id="section-source-weighting" 
-                    data-section-order="6"
-                    className="col-span-12"
-                  >
-                    <SourceGrid sources={digest.sources} density="compact" />
-                  </motion.div>
-                )}
+                    <motion.div 
+                     variants={scrollSectionVariants}
+                     initial="hidden"
+                     whileInView="visible"
+                     viewport={{ once: true, margin: "0px 0px -100px 0px" }}
+                     id="section-source-weighting" 
+                     data-section-order="6"
+                     className="col-span-12"
+                   >
+                     <SourceGrid sources={digest.sources} density="compact" />
+                   </motion.div>
+                 )}
 
                 {/* 7) Strategic Implications & Trajectory */}
-                 <div className="col-span-12 grid grid-cols-1 gap-6 md:gap-8">
-                    {digest.strategic_implications && digest.strategic_implications.length > 0 && (
-                      <motion.div 
-                        variants={sectionVariants}
-                        id="section-strategic-implications" 
-                        data-section-order="7"
-                      >
-                        <ImplicationsPanel implications={digest.strategic_implications} />
-                      </motion.div>
-                    )}
-                    {digest.trajectory && digest.trajectory.length > 0 && (
-                      <motion.div 
-                        variants={sectionVariants}
-                        id="section-strategic-trajectory" 
-                        data-section-order="7"
-                      >
-                        <StrategicTrajectory trajectory={digest.trajectory} density="compact" />
-                      </motion.div>
-                    )}
-                 </div>
+                  <div className="col-span-12 grid grid-cols-1 gap-6 md:gap-8">
+                     {digest.strategic_implications && digest.strategic_implications.length > 0 && (
+                       <motion.div 
+                         variants={scrollSectionVariants}
+                         initial="hidden"
+                         whileInView="visible"
+                         viewport={{ once: true, margin: "0px 0px -100px 0px" }}
+                         id="section-strategic-implications" 
+                         data-section-order="7"
+                       >
+                         <ImplicationsPanel implications={digest.strategic_implications} />
+                       </motion.div>
+                     )}
+                     {digest.trajectory && digest.trajectory.length > 0 && (
+                       <motion.div 
+                         variants={scrollSectionVariants}
+                         initial="hidden"
+                         whileInView="visible"
+                         viewport={{ once: true, margin: "0px 0px -100px 0px" }}
+                         id="section-strategic-trajectory" 
+                         data-section-order="7"
+                       >
+                         <StrategicTrajectory trajectory={digest.trajectory} density="compact" />
+                       </motion.div>
+                     )}
+                  </div>
 
                 {/* 8) Counterpoints & Blindspots */}
                 {((digest.counterpoints && digest.counterpoints.length > 0) || (digest.blindspots && digest.blindspots.length > 0)) && (
-                  <motion.div 
-                    variants={sectionVariants}
-                    id="section-counterpoints" 
-                    data-section-order="8"
-                    className="col-span-12"
-                  >
-                    <CounterpointsPanel 
-                      counterpoints={digest.counterpoints || []} 
-                      blindspots={digest.blindspots || []}
-                      density="compact"
-                    />
-                  </motion.div>
-                )}
+                   <motion.div 
+                     variants={scrollSectionVariants}
+                     initial="hidden"
+                     whileInView="visible"
+                     viewport={{ once: true, margin: "0px 0px -100px 0px" }}
+                     id="section-counterpoints" 
+                     data-section-order="8"
+                     className="col-span-12"
+                   >
+                     <CounterpointsPanel 
+                       counterpoints={digest.counterpoints || []} 
+                       blindspots={digest.blindspots || []}
+                       density="compact"
+                     />
+                   </motion.div>
+                 )}
               </motion.div>
             )}
           </AnimatePresence>
