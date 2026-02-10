@@ -414,6 +414,7 @@ export default function MacroSignalsPage() {
   const [isConsensusDrawerOpen, setIsConsensusDrawerOpen] = useState(false);
   const [selectedSegment, setSelectedSegment] = useState(null);
   const [showTestWelcome, setShowTestWelcome] = useState(false);
+  const [welcomeDismissed, setWelcomeDismissed] = useState(false);
 
   // Memoize sanitized data to prevent re-computation on re-renders
   const sanitizedDigest = useMemo(() => {
@@ -562,7 +563,7 @@ export default function MacroSignalsPage() {
       opacity: 1,
       transition: {
         staggerChildren: 0.08,
-        delayChildren: 0.2,
+        delayChildren: welcomeDismissed ? 0.5 : 0.2,
       },
     },
   };
@@ -903,7 +904,10 @@ export default function MacroSignalsPage() {
       {/* Test Welcome Overlay */}
       {showTestWelcome && (
         <HorizonWelcomeOverlay 
-          onDismiss={() => setShowTestWelcome(false)} 
+          onDismiss={() => {
+            setWelcomeDismissed(true);
+            setShowTestWelcome(false);
+          }}
           isTestMode={true}
         />
       )}
