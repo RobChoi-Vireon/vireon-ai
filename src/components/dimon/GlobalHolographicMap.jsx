@@ -1046,8 +1046,13 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     const vx = orbX - cx;
     const vy = orbY - cy;
     const norm = Math.hypot(vx, vy) || 1;
-    // Increase offset for fx and rates to prevent label overlap on orbs
-    const baseOffset = (domainId === 'fx' || domainId === 'rates') ? 32 : 16;
+    // Offset distances for each domain to prevent label overlap
+    const baseOffset = {
+      'fx': 48,
+      'rates': 48,
+      'growth': 52,
+      'geopolitics': 48
+    }[domainId] || 40;
     const offset = orbRadius + (baseOffset * TOKENS.HORIZON.labelDistanceScale);
     return { x: orbX + (vx / norm) * offset, y: orbY + (vy / norm) * offset };
   }, [cx, cy]);
