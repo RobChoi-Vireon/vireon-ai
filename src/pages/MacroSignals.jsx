@@ -562,8 +562,8 @@ export default function MacroSignalsPage() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.08,
-        delayChildren: isTransitioning ? 1.0 : 0.2,
+        staggerChildren: 0.12,
+        delayChildren: isTransitioning ? 0.72 : 0.2,
       },
     },
   };
@@ -571,19 +571,21 @@ export default function MacroSignalsPage() {
   const sectionVariants = {
     hidden: { 
       opacity: 0, 
-      y: 30,
-      scale: 0.98
+      y: 40,
+      scale: 0.95,
+      filter: 'blur(8px)'
     },
     visible: { 
       opacity: 1, 
       y: 0,
       scale: 1,
+      filter: 'blur(0px)',
       transition: {
-        duration: 0.7,
-        ease: [0.22, 1, 0.36, 1],
+        duration: 0.9,
+        ease: [0.16, 1, 0.3, 1],
         type: "spring",
-        stiffness: 100,
-        damping: 15
+        stiffness: 80,
+        damping: 20
       }
     },
   };
