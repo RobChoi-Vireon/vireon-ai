@@ -743,7 +743,7 @@ export default function MacroSignalsPage() {
                     variants={sectionVariants}
                     id="section-inflation" 
                     data-section-order="2.5"
-                    className="col-span-12"
+                    className="col-span-12 mt-8"
                   >
                     <InflationSection data={digest.inflation} />
                   </motion.div>
