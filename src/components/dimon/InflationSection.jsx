@@ -110,13 +110,13 @@ export default function InflationSection({ data }) {
     >
       {/* PRIMARY STATUS CARD */}
       <div
-        className="relative rounded-3xl"
+        className="relative rounded-[28px]"
         style={{
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
+          background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.095) 0%, rgba(255, 255, 255, 0.075) 100%)',
           backdropFilter: 'blur(40px) saturate(165%)',
           WebkitBackdropFilter: 'blur(40px) saturate(165%)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.08)',
+          border: '1px solid rgba(255,255,255,0.11)',
+          boxShadow: '0 24px 52px -8px rgba(0, 0, 0, 0.32), inset 0 1.5px 0 rgba(255,255,255,0.08)',
           overflow: 'hidden',
           willChange: 'transform'
         }}
@@ -187,13 +187,13 @@ export default function InflationSection({ data }) {
 
       {/* DRAWER 1 - WHY INFLATION LOOKS THIS WAY */}
       <div
-        className="relative rounded-2xl"
+        className="relative rounded-[24px]"
         style={{
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
+          background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.085) 0%, rgba(255, 255, 255, 0.065) 100%)',
           backdropFilter: 'blur(40px) saturate(165%)',
           WebkitBackdropFilter: 'blur(40px) saturate(165%)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.08)',
+          border: '1px solid rgba(255,255,255,0.10)',
+          boxShadow: '0 20px 44px -8px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255,255,255,0.07)',
           overflow: 'hidden',
           transform: 'translateZ(0)',
           backfaceVisibility: 'hidden',
@@ -270,13 +270,13 @@ export default function InflationSection({ data }) {
 
       {/* DRAWER 2 - WHO FEELS THIS MOST */}
       <div
-        className="relative rounded-2xl"
+        className="relative rounded-[24px]"
         style={{
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
+          background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.085) 0%, rgba(255, 255, 255, 0.065) 100%)',
           backdropFilter: 'blur(40px) saturate(165%)',
           WebkitBackdropFilter: 'blur(40px) saturate(165%)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.08)',
+          border: '1px solid rgba(255,255,255,0.10)',
+          boxShadow: '0 20px 44px -8px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255,255,255,0.07)',
           overflow: 'hidden',
           transform: 'translateZ(0)',
           backfaceVisibility: 'hidden',
@@ -354,13 +354,13 @@ export default function InflationSection({ data }) {
 
       {/* DRAWER 3 - HOW TO READ THE DATA */}
       <div
-        className="relative rounded-2xl"
+        className="relative rounded-[24px]"
         style={{
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
+          background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.085) 0%, rgba(255, 255, 255, 0.065) 100%)',
           backdropFilter: 'blur(40px) saturate(165%)',
           WebkitBackdropFilter: 'blur(40px) saturate(165%)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.08)',
+          border: '1px solid rgba(255,255,255,0.10)',
+          boxShadow: '0 20px 44px -8px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255,255,255,0.07)',
           overflow: 'hidden',
           transform: 'translateZ(0)',
           backfaceVisibility: 'hidden',
