@@ -540,18 +540,30 @@ export default function InflationSection({ data }) {
           
           <div className="flex gap-2">
             {inflationData.sources.slice(0, 4).map((source, idx) => (
-              <div
+              <button
                 key={idx}
-                className="px-3 py-2 rounded-full font-medium text-sm whitespace-nowrap flex-shrink-0"
+                onClick={() => console.log(`Navigate to source: ${source.name}`)}
+                className="px-3 py-2 rounded-full font-medium text-sm whitespace-nowrap flex-shrink-0 transition-all"
                 style={{
                   background: 'rgba(255, 255, 255, 0.08)',
                   border: '1px solid rgba(255, 255, 255, 0.12)',
                   color: 'rgba(255, 255, 255, 0.80)',
-                  backdropFilter: 'blur(12px)'
+                  backdropFilter: 'blur(12px)',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.14)';
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.20)';
+                  e.currentTarget.style.color = 'rgba(255, 255, 255, 0.95)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.12)';
+                  e.currentTarget.style.color = 'rgba(255, 255, 255, 0.80)';
                 }}
               >
                 {source.name}
-              </div>
+              </button>
             ))}
           </div>
 
