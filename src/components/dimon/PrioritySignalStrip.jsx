@@ -458,33 +458,33 @@ export default function PrioritySignalStrip({ signals = [], onOpenDrawer }) {
       </div>
       
       <div 
-        className="overflow-x-auto pb-2"
+        className="flex gap-6 overflow-x-auto pb-2"
         style={{
           scrollbarWidth: 'thin',
           scrollbarColor: 'rgba(255, 255, 255, 0.18) rgba(255, 255, 255, 0.04)',
         }}
       >
         <style>{`
-          .overflow-x-auto::-webkit-scrollbar {
+          .flex.overflow-x-auto::-webkit-scrollbar {
             height: 6px;
           }
-          .overflow-x-auto::-webkit-scrollbar-track {
+          .flex.overflow-x-auto::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.04);
             border-radius: 6px;
           }
-          .overflow-x-auto::-webkit-scrollbar-thumb {
+          .flex.overflow-x-auto::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.18);
             border-radius: 6px;
           }
-          .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+          .flex.overflow-x-auto::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.25);
           }
         `}</style>
-        <div className="grid gap-6 md:grid-cols-2" style={{ width: 'max-content' }}>
-          {signals.slice(0, 4).map((signal, index) => (
-            <PrioritySignal key={index} signal={signal} index={index} onClick={onOpenDrawer} />
-          ))}
-        </div>
+        {signals.slice(0, 4).map((signal, index) => (
+          <div key={index} className="flex-shrink-0" style={{ width: 'calc(50% - 12px)', minWidth: '420px' }}>
+            <PrioritySignal signal={signal} index={index} onClick={onOpenDrawer} />
+          </div>
+        ))}
       </div>
     </motion.section>
   );
