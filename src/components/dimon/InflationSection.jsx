@@ -65,9 +65,9 @@ export default function InflationSection({ data }) {
     
     // Primary drivers
     drivers: [
-      { rank: 1, name: 'Shelter & housing', weight: 45, reason: 'Rent inflation takes 12–18 months to show up in official data' },
+      { rank: 1, name: 'Shelter & housing', weight: 45, reason: 'Rent shows up slowly in official data' },
       { rank: 2, name: 'Services (not housing)', weight: 35, reason: 'Wages still rising in leisure, healthcare' },
-      { rank: 3, name: 'Goods deflation', weight: 20, reason: 'Supply chains normalized, demand softer' }
+      { rank: 3, name: 'Goods deflation', weight: 20, reason: 'Supply chains normalized' }
     ],
     
     // Winners/Losers
@@ -498,36 +498,7 @@ export default function InflationSection({ data }) {
                   </div>
                 </div>
 
-                {/* Evidence & Confidence */}
-                <div className="pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                  <div className="text-xs font-medium mb-3" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                    Evidence & Confidence
-                  </div>
-                  <div className="space-y-3">
-                    <div>
-                      <div className="text-sm font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.90)' }}>
-                        Confidence {inflationData.confidence_score}/100
-                      </div>
-                      <p className="text-xs" style={{ color: 'rgba(255,255,255,0.65)' }}>
-                        {inflationData.confidence_reason}
-                      </p>
-                    </div>
-                    
-                    <div>
-                      <div className="text-xs font-medium mb-2" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                        Sources
-                      </div>
-                      <div className="space-y-1.5">
-                        {inflationData.sources.map((source, idx) => (
-                          <div key={idx} className="flex items-center justify-between text-sm">
-                            <span style={{ color: 'rgba(255,255,255,0.70)' }}>{source.name}</span>
-                            <span style={{ color: 'rgba(255,255,255,0.50)' }}>{source.weight}%</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+
               </motion.div>
             </motion.div>
           )}
