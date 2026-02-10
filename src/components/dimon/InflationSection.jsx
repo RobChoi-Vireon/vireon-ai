@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, Minus, ChevronRight } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, ChevronRight, Home, Users, ShoppingBag, ArrowRight, Circle } from 'lucide-react';
 import CPIvsPCEOrb from './CPIvsPCEOrb';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
@@ -138,14 +138,15 @@ export default function InflationSection({ data }) {
           
           <div className="flex items-center justify-center gap-2 mb-4">
             <div 
-              className="text-sm font-bold px-4 py-2 rounded-full"
+              className="text-sm font-bold px-4 py-2 rounded-full flex items-center gap-2"
               style={{
                 background: stateColors.bg,
                 border: `1px solid ${stateColors.border}`,
                 color: stateColors.text
               }}
             >
-              🟣 {data.state_tag || 'Sticky'} (Not Breaking Down Yet)
+              <Circle className="w-3 h-3 fill-current" />
+              <span>{data.state_tag || 'Sticky'} (Not Breaking Down Yet)</span>
             </div>
           </div>
 
@@ -186,21 +187,21 @@ export default function InflationSection({ data }) {
 
         <div className="space-y-3">
           <div className="flex items-start gap-3">
-            <span className="text-lg" style={{ lineHeight: '1.6' }}>🏠</span>
+            <Home className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: 'rgba(255,255,255,0.70)' }} />
             <div>
               <div className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.90)' }}>Housing & Shelter</div>
               <div className="text-xs" style={{ color: 'rgba(255,255,255,0.60)' }}>Lagged CPI strength</div>
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <span className="text-lg" style={{ lineHeight: '1.6' }}>👷</span>
+            <Users className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: 'rgba(255,255,255,0.70)' }} />
             <div>
               <div className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.90)' }}>Services & Wages</div>
               <div className="text-xs" style={{ color: 'rgba(255,255,255,0.60)' }}>Persistent cost pressure</div>
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <span className="text-lg" style={{ lineHeight: '1.6' }}>🛒</span>
+            <ShoppingBag className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: 'rgba(255,255,255,0.70)' }} />
             <div>
               <div className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.90)' }}>Goods</div>
               <div className="text-xs" style={{ color: 'rgba(255,255,255,0.60)' }}>No longer inflationary</div>
@@ -248,7 +249,7 @@ export default function InflationSection({ data }) {
         </div>
 
         <div className="flex items-start gap-2 px-4 py-3 rounded-xl" style={{ background: 'rgba(94, 167, 255, 0.12)', border: '1px solid rgba(94, 167, 255, 0.20)' }}>
-          <span className="text-base">👉</span>
+          <ArrowRight className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: 'rgba(94, 167, 255, 0.90)' }} />
           <p className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.95)' }}>
             The Fed anchors policy decisions on Core PCE, not CPI headlines.
           </p>
@@ -307,14 +308,15 @@ export default function InflationSection({ data }) {
             Market Bias
           </h3>
           <div 
-            className="text-xs font-bold px-3 py-1.5 rounded-full"
+            className="text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-2"
             style={{
               background: policyColors.bg,
               border: `1px solid ${policyColors.border}`,
               color: policyColors.text
             }}
           >
-            🔴 Policy Bias: {data.policy_bias || 'Hawkish Hold'}
+            <Circle className="w-2.5 h-2.5 fill-current" />
+            <span>Policy Bias: {data.policy_bias || 'Hawkish Hold'}</span>
           </div>
         </div>
 
