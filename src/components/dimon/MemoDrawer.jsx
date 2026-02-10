@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, DollarSign, Scale, Globe, Info, Target, BookOpen, Activity, GitBranch, Lightbulb, Sparkles, ChevronLeft, ChevronRight, TrendingDown, TrendingUp, Building, AlertTriangle, ShieldCheck, Minus, Plus, Landmark, Package, Home, Construction, Banknote, Clock } from 'lucide-react';
+import { X, DollarSign, Scale, Globe, Info, Target, BookOpen, Activity, GitBranch, Lightbulb, Sparkles, ChevronLeft, ChevronRight, TrendingDown, TrendingUp, Building, AlertTriangle, ShieldCheck, Minus, Plus, Landmark, Package, Home, Construction, Banknote, Clock, ArrowRight } from 'lucide-react';
 import SignalEquilibriumBar from './SignalEquilibriumBar';
 
 // ============================================================================
@@ -1271,6 +1271,50 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
               opacity: 0.6;
               filter: drop-shadow(0 0 ${HORIZON.mission.signalGlowStrength * 100}px rgba(255,255,255,0.08));
             }
+            
+            /* Top Weighted Sources Styles */
+            .ri-next {
+              display: flex;
+              align-items: center;
+              gap: var(--mp-gap);
+              padding: 14px 16px;
+              border-radius: 14px;
+              border: 1px solid rgba(255, 255, 255, 0.08);
+              background: rgba(255, 255, 255, 0.04);
+              transition: transform var(--ri-dur-fast) var(--ri-ease-io), filter var(--ri-dur-fast) var(--ri-ease-io);
+            }
+            
+            .ri-carousel {
+              display: flex;
+              gap: var(--mp-gap);
+              overflow-x: auto;
+              scrollbar-width: none;
+              flex: 1;
+              padding-right: 6px;
+            }
+            
+            .ri-carousel::-webkit-scrollbar {
+              display: none;
+            }
+            
+            .ri-chip {
+              padding: 6px 10px;
+              border-radius: 999px;
+              background: rgba(255, 255, 255, 0.06);
+              white-space: nowrap;
+              font-size: 13px;
+              font-weight: 500;
+              color: rgba(255, 255, 255, 0.85);
+              border: 1px solid rgba(255, 255, 255, 0.08);
+              cursor: pointer;
+              transition: background var(--ri-dur-fast) var(--ri-ease-io), 
+                          transform var(--ri-dur-fast) var(--ri-ease-io);
+            }
+            
+            .ri-chip:hover {
+              background: rgba(255, 255, 255, 0.10);
+              transform: translateY(-1px);
+            }
           `}</style>
 
           {/* Header Scrim */}
@@ -1876,6 +1920,92 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
                         }
                       </motion.p>
                     </motion.div>
+
+                    {/* TOP WEIGHTED SOURCES */}
+                    <section className="ri-section">
+                      <div className="ri-next">
+                        <div className="flex items-center gap-2">
+                          <strong style={{ fontSize: 14, color: 'rgba(255, 255, 255, 0.88)' }}>
+                            Top Weighted Sources
+                          </strong>
+                          <div
+                            className="flex items-center justify-center rounded-full"
+                            style={{
+                              padding: '4px 10px',
+                              background: 'rgba(94, 167, 255, 0.12)',
+                              border: '1px solid rgba(94, 167, 255, 0.24)',
+                              fontSize: 11,
+                              fontWeight: 700,
+                              color: '#5EA7FF',
+                              letterSpacing: '0.01em'
+                            }}
+                          >
+                            4
+                          </div>
+                        </div>
+                        <div className="ri-carousel" style={{ flex: 1, display: 'flex', gap: '12px', overflowX: 'auto', scrollbarWidth: 'none', paddingRight: '6px' }}>
+                          <style>{`
+                            .ri-carousel::-webkit-scrollbar {
+                              display: none;
+                            }
+                          `}</style>
+                          {['Bloomberg', 'Wall Street Journal', 'Financial Times', 'Reuters'].map((source, i) => (
+                            <div 
+                              key={i}
+                              className="ri-chip"
+                              style={{
+                                padding: '6px 10px',
+                                borderRadius: '999px',
+                                background: 'rgba(255, 255, 255, 0.06)',
+                                whiteSpace: 'nowrap',
+                                fontSize: 13,
+                                fontWeight: 500,
+                                color: 'rgba(255, 255, 255, 0.85)',
+                                border: '1px solid rgba(255, 255, 255, 0.08)',
+                                cursor: 'pointer',
+                                transition: 'background 180ms cubic-bezier(0.4, 0, 0.2, 1), transform 180ms cubic-bezier(0.4, 0, 0.2, 1)'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
+                                e.currentTarget.style.transform = 'translateY(-1px)';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                                e.currentTarget.style.transform = 'translateY(0)';
+                              }}
+                            >
+                              {source}
+                            </div>
+                          ))}
+                        </div>
+                        <button
+                          onClick={(e) => {
+                            const carousel = e.currentTarget.previousElementSibling;
+                            if (carousel) {
+                              carousel.scrollBy({ left: 200, behavior: 'smooth' });
+                            }
+                          }}
+                          className="flex-shrink-0 transition-all duration-180"
+                          style={{
+                            background: 'rgba(255, 255, 255, 0.06)',
+                            border: '1px solid rgba(255, 255, 255, 0.08)',
+                            padding: '8px',
+                            borderRadius: '10px',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
+                            e.currentTarget.style.transform = 'scale(1.05) translateX(2px)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                            e.currentTarget.style.transform = 'scale(1) translateX(0)';
+                          }}
+                          aria-label="Scroll to see more sources"
+                        >
+                          <ChevronRight className="w-4 h-4" style={{ color: 'rgba(255, 255, 255, 0.6)' }} />
+                        </button>
+                      </div>
+                    </section>
                   </div>
                 </div>
               </div>
