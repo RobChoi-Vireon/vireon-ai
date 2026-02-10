@@ -39,16 +39,39 @@ export default function InflationSection({ data }) {
   const policyColors = PolicyBiasColors[data.policy_bias] || PolicyBiasColors.Neutral;
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="pl-2 mb-6">
-        <h2 className="text-2xl font-bold mb-2" style={{ color: 'rgba(255,255,255,0.95)' }}>
-          Inflation — Sticky Beneath the Surface
+    <div className="space-y-12">
+      {/* SECTION 1: Hero Insight */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: HORIZON_EASE }}
+        className="text-center max-w-2xl mx-auto space-y-6"
+      >
+        <h2 className="text-4xl md:text-5xl font-light leading-tight tracking-tight" style={{ color: 'rgba(255,255,255,0.96)' }}>
+          Inflation isn't falling anymore. It's getting stuck.
         </h2>
-        <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.70)' }}>
-          Headline inflation is easing, but core pressures remain elevated due to housing and services.
+        
+        <p className="text-lg font-normal leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)' }}>
+          Prices for goods have cooled. Housing and services haven't.
         </p>
-      </div>
+
+        <div className="flex items-center justify-center gap-3 pt-2">
+          <div 
+            className="text-xs font-semibold px-4 py-2 rounded-full"
+            style={{
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              color: 'rgba(255,255,255,0.70)'
+            }}
+          >
+            Sticky • Above Target
+          </div>
+        </div>
+
+        <p className="text-sm pt-1" style={{ color: 'rgba(255,255,255,0.40)' }}>
+          Progress has slowed.
+        </p>
+      </motion.div>
 
       {/* SECTION 2: Evidence Cluster */}
       <motion.div
