@@ -1,294 +1,392 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { TrendingUp, TrendingDown, Minus, ChevronRight, Home, Users, ShoppingBag, ArrowRight, Circle, ArrowUpRight, ArrowDownRight } from 'lucide-react';
-import CPIvsPCEOrb from './CPIvsPCEOrb';
+import { TrendingUp, TrendingDown, Minus, ChevronRight, ChevronDown, Info } from 'lucide-react';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
 
-const StatePillColors = {
-  "Cooling": { bg: "rgba(88, 227, 164, 0.12)", border: "rgba(88, 227, 164, 0.24)", text: "#58E3A4" },
-  "Sticky": { bg: "rgba(255, 180, 100, 0.12)", border: "rgba(255, 180, 100, 0.24)", text: "#FFB464" },
-  "Re-accelerating": { bg: "rgba(255, 106, 122, 0.12)", border: "rgba(255, 106, 122, 0.24)", text: "#FF6A7A" },
-  "Mixed": { bg: "rgba(168, 179, 199, 0.12)", border: "rgba(168, 179, 199, 0.24)", text: "#A8B3C7" }
+// Arrow icon selector
+const getArrowIcon = (direction) => {
+  switch(direction) {
+    case 'up': return TrendingUp;
+    case 'down': return TrendingDown;
+    default: return Minus;
+  }
 };
 
-const PolicyBiasColors = {
-  "Dovish": { bg: "rgba(88, 227, 164, 0.12)", border: "rgba(88, 227, 164, 0.24)", text: "#58E3A4" },
-  "Neutral": { bg: "rgba(168, 179, 199, 0.12)", border: "rgba(168, 179, 199, 0.24)", text: "#A8B3C7" },
-  "Hawkish": { bg: "rgba(255, 106, 122, 0.12)", border: "rgba(255, 106, 122, 0.24)", text: "#FF6A7A" }
-};
-
-const KPIChip = ({ label, value, isCore = false }) => (
-  <motion.div
-    whileHover={{ scale: 1.02, y: -1 }}
-    className="relative flex flex-col items-center justify-center rounded-2xl overflow-hidden"
-    style={{
-      padding: '20px 24px',
-      background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
-      backdropFilter: 'blur(32px) saturate(165%)',
-      WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-      border: '1px solid rgba(255,255,255,0.08)',
-      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.08)',
-      minWidth: '140px'
-    }}
-  >
-    <div style={{
-      position: 'absolute',
-      top: 0,
-      left: '15%',
-      right: '15%',
-      height: '1px',
-      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
-      pointerEvents: 'none'
-    }} />
-    
-    <div className="text-xs font-medium mb-1" style={{ color: 'rgba(255,255,255,0.60)', letterSpacing: '0.02em' }}>
-      {label}
-    </div>
-    <div className="text-2xl font-bold tracking-tight" style={{ color: 'rgba(255,255,255,0.95)' }}>
-      {value ?? '—'}
-    </div>
-    {isCore && (
-      <div className="text-[10px] font-medium mt-0.5" style={{ color: 'rgba(255,255,255,0.40)' }}>
-        CORE
-      </div>
-    )}
-  </motion.div>
-);
-
-const DriverChip = ({ icon: Icon, label, detail }) => {
-  const [isHovered, setIsHovered] = useState(false);
+// State Status Row Component
+const StateStatusRow = ({ arrow, label, status, sparkline }) => {
+  const Icon = getArrowIcon(arrow);
+  const color = arrow === 'up' ? 'rgba(255, 106, 122, 0.90)' : arrow === 'down' ? 'rgba(88, 227, 164, 0.90)' : 'rgba(168, 179, 199, 0.90)';
   
   return (
-    <motion.div
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      className="relative inline-flex items-center gap-2 px-3 py-2 rounded-full cursor-help"
-      style={{
-        background: 'rgba(255, 255, 255, 0.04)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)'
-      }}
-      whileHover={{ scale: 1.02 }}
-    >
-      <Icon className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.60)' }} strokeWidth={2} />
-      <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.85)' }}>{label}</span>
-      
-      <AnimatePresence>
-        {isHovered && (
-          <motion.div
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 5 }}
-            transition={{ duration: 0.15 }}
-            className="absolute top-full left-0 mt-2 px-3 py-2 rounded-lg whitespace-nowrap z-50"
-            style={{
-              background: 'rgba(18, 20, 28, 0.95)',
-              border: '1px solid rgba(255,255,255,0.12)',
-              backdropFilter: 'blur(24px)',
-              WebkitBackdropFilter: 'blur(24px)',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.4)'
-            }}
-          >
-            <div className="text-xs" style={{ color: 'rgba(255,255,255,0.75)' }}>{detail}</div>
-          </motion.div>
+    <div className="flex items-center justify-between py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+      <div className="flex items-center gap-3">
+        <Icon className="w-4 h-4 flex-shrink-0" style={{ color }} strokeWidth={2.5} />
+        <span className="text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>{label}</span>
+      </div>
+      <div className="flex items-center gap-3">
+        {sparkline && (
+          <div className="w-16 h-6 opacity-30">
+            {/* Subtle sparkline placeholder */}
+            <svg viewBox="0 0 64 24" className="w-full h-full">
+              <polyline
+                points="0,20 16,12 32,16 48,8 64,14"
+                fill="none"
+                stroke="rgba(255,255,255,0.4)"
+                strokeWidth="1.5"
+              />
+            </svg>
+          </div>
         )}
-      </AnimatePresence>
-    </motion.div>
+        <span className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.90)' }}>{status}</span>
+      </div>
+    </div>
   );
 };
 
-const BiasIndicator = ({ label, direction, description }) => {
-  const Icon = direction === 'up' ? ArrowUpRight : direction === 'down' ? ArrowDownRight : Minus;
-  const color = direction === 'up' ? 'rgba(255, 106, 122, 0.90)' : direction === 'down' ? 'rgba(88, 227, 164, 0.90)' : 'rgba(168, 179, 199, 0.90)';
-  
+// Primary Driver Row Component
+const DriverRow = ({ rank, name, weight, reason }) => {
   return (
-    <div className="flex items-center gap-3">
-      <Icon className="w-4 h-4 flex-shrink-0" style={{ color }} strokeWidth={2.5} />
-      <div className="flex-1">
-        <div className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.90)' }}>{label}</div>
-        <div className="text-xs" style={{ color: 'rgba(255,255,255,0.55)' }}>{description}</div>
+    <div className="space-y-2 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div 
+            className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
+            style={{
+              background: 'rgba(255, 255, 255, 0.08)',
+              color: 'rgba(255,255,255,0.70)'
+            }}
+          >
+            {rank}
+          </div>
+          <span className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.90)' }}>{name}</span>
+        </div>
+        <span className="text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>{weight}%</span>
       </div>
+      <div className="flex items-center gap-2 pl-9">
+        <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255, 255, 255, 0.06)' }}>
+          <div 
+            className="h-full rounded-full"
+            style={{ 
+              width: `${weight}%`,
+              background: 'linear-gradient(90deg, rgba(94, 167, 255, 0.40) 0%, rgba(94, 167, 255, 0.20) 100%)'
+            }}
+          />
+        </div>
+      </div>
+      <p className="text-xs pl-9" style={{ color: 'rgba(255,255,255,0.65)' }}>{reason}</p>
     </div>
   );
 };
 
 export default function InflationSection({ data }) {
-  const [showSources, setShowSources] = useState(false);
+  const [showTrustDrawer, setShowTrustDrawer] = useState(false);
+  const [showCPIPCE, setShowCPIPCE] = useState(false);
   
   if (!data) return null;
 
-  const stateColors = StatePillColors[data.state_tag] || StatePillColors.Mixed;
+  // Mock data structure - replace with actual data binding
+  const inflationData = {
+    timestamp_et: data.timestamp_et || new Date().toLocaleString('en-US', { timeZone: 'America/New_York', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+    delta_summary: data.delta_summary || "Core inflation ticked down 0.1pp while services remain elevated; no major surprises",
+    confidence_score: data.confidence_score || 82,
+    confidence_reason: data.confidence_reason || "High-quality data from BLS, Fed, and market surveys",
+    
+    // State rows
+    headline_state: { arrow: 'down', label: 'Headline inflation', status: 'Cooling slowly' },
+    core_state: { arrow: 'flat', label: 'Core inflation', status: 'Sticky' },
+    services_state: { arrow: 'up', label: 'Services inflation', status: 'Elevated' },
+    
+    // Why it matters
+    fed_implication: "Fed likely holds rates near current levels through Q2 given persistent services pressure",
+    market_implication: "Rate-sensitive sectors (REITs, utilities) remain under pressure until clear disinflation",
+    
+    // Primary drivers
+    drivers: [
+      { rank: 1, name: 'Shelter & housing', weight: 45, reason: 'Rent inflation lags real-time data by 12–18 months' },
+      { rank: 2, name: 'Services ex-shelter', weight: 35, reason: 'Wage growth still elevated in leisure, healthcare' },
+      { rank: 3, name: 'Goods deflation', weight: 20, reason: 'Supply chain normalization, softer demand' }
+    ],
+    
+    // Winners/Losers
+    winners: ['Lenders', 'Cash holders', 'Short-duration bonds', 'Pricing power firms'],
+    losers: ['Renters', 'Fixed-income retirees', 'Long-duration growth stocks', 'Variable-rate borrowers'],
+    
+    // CPI vs PCE
+    cpi_pce_collapsed: "CPI (Consumer Price Index) runs ~0.5pp hotter than PCE (Personal Consumption Expenditures)",
+    cpi_plain: "CPI measures what households pay — includes rent, gas, food",
+    pce_plain: "PCE tracks what people actually spend — adjusts for substitution (buy chicken when beef is expensive)",
+    why_fed_prefers: "Fed prefers PCE because it better reflects real consumption behavior and adjusts faster",
+    cpi_gt_pce_reason: "CPI's shelter component uses lagged rent surveys; PCE uses real-time owner-equivalent data",
+    
+    // Watch items
+    watch_short: [
+      "Services CPI — still elevated above pre-pandemic",
+      "Average hourly earnings — wage growth driving services",
+      "Supercore PCE — Fed's real-time policy gauge"
+    ],
+    watch_long: [
+      "Shelter CPI rollover — expected late 2026",
+      "Labor market cooling — would ease wage pressure",
+      "Fed dot plot shifts — signal policy pivot"
+    ],
+    
+    // Sources
+    sources: [
+      { name: 'BLS CPI', weight: 35 },
+      { name: 'BEA PCE', weight: 30 },
+      { name: 'Federal Reserve / FOMC', weight: 25 },
+      { name: 'Surveys / Nowcasts', weight: 10 }
+    ]
+  };
 
   return (
-    <div className="space-y-8">
-      {/* Hero State — Single Dominant Moment */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: HORIZON_EASE }}
-        className="pl-2"
-      >
-        <h2 className="text-3xl font-bold mb-3" style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.02em' }}>
-          Inflation: Still Sticky
-        </h2>
-        <p className="text-base mb-4" style={{ color: 'rgba(255,255,255,0.60)' }}>
-          Services and housing continue to limit progress.
-        </p>
-        <div 
-          className="inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full"
-          style={{
-            background: stateColors.bg,
-            border: `1px solid ${stateColors.border}`,
-            color: stateColors.text
-          }}
-        >
-          <Circle className="w-2.5 h-2.5 fill-current" />
-          <span>Above Target</span>
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: HORIZON_EASE }}
+      className="relative rounded-3xl overflow-hidden"
+      style={{
+        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
+        backdropFilter: 'blur(40px) saturate(165%)',
+        WebkitBackdropFilter: 'blur(40px) saturate(165%)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.08)'
+      }}
+    >
+      {/* Top specular highlight */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: '15%',
+        right: '15%',
+        height: '1.5px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+        pointerEvents: 'none'
+      }} />
+
+      {/* HEADER */}
+      <div className="flex items-start justify-between p-6 pb-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="flex-1">
+          <h3 className="text-2xl font-bold mb-1" style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.02em' }}>
+            Inflation
+          </h3>
+          <p className="text-xs" style={{ color: 'rgba(255,255,255,0.50)' }}>
+            Last updated {inflationData.timestamp_et} ET
+          </p>
         </div>
-      </motion.div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowTrustDrawer(!showTrustDrawer)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors"
+            style={{
+              background: 'rgba(94, 167, 255, 0.12)',
+              border: '1px solid rgba(94, 167, 255, 0.20)',
+              color: 'rgba(94, 167, 255, 0.95)'
+            }}
+          >
+            <Info className="w-3 h-3" />
+            <span>Confidence {inflationData.confidence_score}/100</span>
+          </button>
+        </div>
+      </div>
 
-      {/* Inline Driver Chips — Progressive Disclosure */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: HORIZON_EASE, delay: 0.1 }}
-        className="flex flex-wrap gap-2 px-2"
-      >
-        <DriverChip icon={Home} label="Housing" detail="Lagged shelter inflation" />
-        <DriverChip icon={Users} label="Services" detail="Wage-driven pressure" />
-        <DriverChip icon={ShoppingBag} label="Goods" detail="No longer inflationary" />
-      </motion.div>
-
-      {/* CPI vs PCE — Single Insight Moment */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: HORIZON_EASE, delay: 0.15 }}
-        className="relative rounded-2xl overflow-hidden"
+      {/* SECTION 0: DELTA ANCHOR */}
+      <div 
+        className="px-6 py-3"
         style={{
-          padding: '28px 32px',
-          background: 'linear-gradient(135deg, rgba(94, 167, 255, 0.06) 0%, rgba(94, 167, 255, 0.02) 100%)',
-          backdropFilter: 'blur(40px) saturate(160%)',
-          WebkitBackdropFilter: 'blur(40px) saturate(160%)',
-          border: '1px solid rgba(94, 167, 255, 0.14)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 20px rgba(0,0,0,0.08)'
+          background: 'linear-gradient(90deg, rgba(94, 167, 255, 0.08) 0%, rgba(94, 167, 255, 0.04) 100%)',
+          borderBottom: '1px solid rgba(255,255,255,0.06)'
         }}
       >
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: '12%',
-          right: '12%',
-          height: '1.5px',
-          background: 'linear-gradient(90deg, transparent, rgba(94, 167, 255, 0.24), transparent)',
-          pointerEvents: 'none'
-        }} />
-
-        <h3 className="text-lg font-bold mb-3" style={{ color: 'rgba(255,255,255,0.96)' }}>
-          CPI overstates inflation pressure
-        </h3>
-
-        <p className="text-sm leading-relaxed mb-4" style={{ color: 'rgba(255,255,255,0.75)' }}>
-          Shelter costs keep CPI elevated, while Core PCE — the Fed's anchor — reflects softer services inflation.
-        </p>
-
-        <div className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: 'rgba(94, 167, 255, 0.12)', border: '1px solid rgba(94, 167, 255, 0.20)', color: 'rgba(94, 167, 255, 0.95)' }}>
-          Policy anchor: Core PCE
+        <div className="text-xs font-medium mb-1" style={{ color: 'rgba(255,255,255,0.50)', letterSpacing: '0.02em' }}>
+          Δ Since last update
         </div>
-      </motion.div>
+        <p className="text-sm font-semibold truncate" style={{ color: 'rgba(255,255,255,0.90)' }}>
+          {inflationData.delta_summary}
+        </p>
+      </div>
 
-      {/* Market Impact — Directional Bias */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: HORIZON_EASE, delay: 0.2 }}
-        className="space-y-3 px-2"
-      >
-        <BiasIndicator label="Rates" direction="up" description="Restrictive for longer" />
-        <BiasIndicator label="Equities" direction="neutral" description="Data sensitive" />
-        <BiasIndicator label="USD" direction="up" description="Rate support" />
-        <BiasIndicator label="Borrower flexibility" direction="down" description="Higher financing pressure" />
-      </motion.div>
-
-      {/* Metrics Grid — Demoted Evidence */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4, delay: 0.25 }}
-        className="grid grid-cols-2 lg:grid-cols-4 gap-3"
-      >
-        <KPIChip label="CPI" value={data.cpi_headline_yoy ? `${data.cpi_headline_yoy}%` : null} />
-        <KPIChip label="Core CPI" value={data.cpi_core_yoy ? `${data.cpi_core_yoy}%` : null} isCore />
-        <KPIChip label="PCE" value={data.pce_headline_yoy ? `${data.pce_headline_yoy}%` : null} />
-        <KPIChip label="Core PCE" value={data.pce_core_yoy ? `${data.pce_core_yoy}%` : null} isCore />
-      </motion.div>
-
-      {/* What to Watch — Temporal Flow */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: HORIZON_EASE, delay: 0.3 }}
-        className="relative px-2 py-6"
-        style={{
-          borderTop: '1px solid rgba(255,255,255,0.06)'
-        }}
-      >
-        <div className="flex items-start gap-8">
-          <div className="flex-1">
-            <div className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em' }}>
-              Near-term
-            </div>
-            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>
-              Services inflation · wage growth
-            </p>
+      <div className="p-6 space-y-6">
+        {/* SECTION 1: CURRENT STATE */}
+        <div>
+          <div className="text-xs font-medium uppercase tracking-wider mb-3" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em' }}>
+            Current state
           </div>
-          <div className="flex-1">
-            <div className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em' }}>
-              Longer-term
-            </div>
-            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>
-              Shelter CPI rollover · labor cooling
+          <div className="space-y-1">
+            <StateStatusRow {...inflationData.headline_state} />
+            <StateStatusRow {...inflationData.core_state} />
+            <StateStatusRow {...inflationData.services_state} />
+          </div>
+        </div>
+
+        {/* SECTION 2: WHY THIS MATTERS */}
+        <div>
+          <div className="text-xs font-medium uppercase tracking-wider mb-3" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em' }}>
+            Why it matters
+          </div>
+          <div className="space-y-2">
+            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.80)' }}>
+              {inflationData.fed_implication}
+            </p>
+            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.80)' }}>
+              {inflationData.market_implication}
             </p>
           </div>
         </div>
-      </motion.div>
 
-      {/* Ambient Confidence — Hover-Revealed Trust */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4, delay: 0.35 }}
-        onMouseEnter={() => setShowSources(true)}
-        onMouseLeave={() => setShowSources(false)}
-        className="relative px-4 py-3 rounded-xl cursor-help transition-all duration-300"
-        style={{ 
-          background: 'rgba(255, 255, 255, 0.02)', 
-          border: '1px solid rgba(255,255,255,0.05)'
-        }}
-      >
-        <div className="flex items-center justify-between">
-          <div className="text-sm" style={{ color: 'rgba(255,255,255,0.65)' }}>
-            Confidence: <span className="font-semibold" style={{ color: 'rgba(255,255,255,0.85)' }}>High</span>
+        {/* SECTION 3: PRIMARY DRIVERS */}
+        <div>
+          <div className="text-xs font-medium uppercase tracking-wider mb-3" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em' }}>
+            What's driving it
           </div>
+          <div className="space-y-1">
+            {inflationData.drivers.map((driver, idx) => (
+              <DriverRow key={idx} {...driver} />
+            ))}
+          </div>
+        </div>
+
+        {/* SECTION 4A: WHO FEELS IT */}
+        <div>
+          <div className="text-xs font-medium uppercase tracking-wider mb-3" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em' }}>
+            Who feels it
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <div className="text-xs font-medium mb-2" style={{ color: 'rgba(88, 227, 164, 0.80)' }}>Winners</div>
+              <ul className="space-y-1.5">
+                {inflationData.winners.map((item, idx) => (
+                  <li key={idx} className="text-sm" style={{ color: 'rgba(255,255,255,0.70)' }}>• {item}</li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <div className="text-xs font-medium mb-2" style={{ color: 'rgba(255, 106, 122, 0.80)' }}>Losers</div>
+              <ul className="space-y-1.5">
+                {inflationData.losers.map((item, idx) => (
+                  <li key={idx} className="text-sm" style={{ color: 'rgba(255,255,255,0.70)' }}>• {item}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* SECTION 4B: CPI VS PCE EXPLAINER */}
+        <div>
+          <button
+            onClick={() => setShowCPIPCE(!showCPIPCE)}
+            className="w-full flex items-center justify-between py-3 px-4 rounded-xl transition-colors"
+            style={{
+              background: 'rgba(255, 255, 255, 0.03)',
+              border: '1px solid rgba(255,255,255,0.06)'
+            }}
+          >
+            <div className="text-left">
+              <div className="text-sm font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.90)' }}>CPI vs PCE</div>
+              <div className="text-xs" style={{ color: 'rgba(255,255,255,0.60)' }}>{inflationData.cpi_pce_collapsed}</div>
+            </div>
+            <ChevronDown 
+              className="w-4 h-4 transition-transform" 
+              style={{ 
+                color: 'rgba(255,255,255,0.40)',
+                transform: showCPIPCE ? 'rotate(180deg)' : 'rotate(0deg)'
+              }} 
+            />
+          </button>
           
           <AnimatePresence>
-            {showSources && (
+            {showCPIPCE && (
               <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-                transition={{ duration: 0.2 }}
-                className="text-xs"
-                style={{ color: 'rgba(255,255,255,0.55)' }}
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: HORIZON_EASE }}
+                className="overflow-hidden"
               >
-                ~78% · Fed, BLS, market data
+                <div className="pt-3 space-y-2">
+                  <p className="text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>• {inflationData.cpi_plain}</p>
+                  <p className="text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>• {inflationData.pce_plain}</p>
+                  <p className="text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>• {inflationData.why_fed_prefers}</p>
+                  {inflationData.cpi_gt_pce_reason && (
+                    <p className="text-sm pt-2" style={{ color: 'rgba(255,255,255,0.65)', fontStyle: 'italic' }}>
+                      {inflationData.cpi_gt_pce_reason}
+                    </p>
+                  )}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
-      </motion.div>
-    </div>
+
+        {/* SECTION 5: WHAT TO WATCH */}
+        <div>
+          <div className="text-xs font-medium uppercase tracking-wider mb-3" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em' }}>
+            What to watch
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <div className="text-xs font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.70)' }}>Next 30–60 days</div>
+              <ul className="space-y-1.5">
+                {inflationData.watch_short.map((item, idx) => (
+                  <li key={idx} className="text-sm" style={{ color: 'rgba(255,255,255,0.65)' }}>• {item}</li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <div className="text-xs font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.70)' }}>Next 6–12 months</div>
+              <ul className="space-y-1.5">
+                {inflationData.watch_long.map((item, idx) => (
+                  <li key={idx} className="text-sm" style={{ color: 'rgba(255,255,255,0.65)' }}>• {item}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* SECTION 6: TRUST DRAWER */}
+      <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        {!showTrustDrawer ? (
+          <button
+            onClick={() => setShowTrustDrawer(true)}
+            className="w-full px-6 py-3 text-left text-sm transition-colors hover:bg-white/5"
+            style={{ color: 'rgba(255,255,255,0.50)' }}
+          >
+            Evidence · Tap to view sources
+          </button>
+        ) : (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="px-6 py-4 space-y-3"
+          >
+            <div>
+              <div className="text-sm font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.90)' }}>
+                Confidence {inflationData.confidence_score}/100
+              </div>
+              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.65)' }}>
+                {inflationData.confidence_reason}
+              </p>
+            </div>
+            
+            <div>
+              <div className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em' }}>
+                Top sources
+              </div>
+              <div className="space-y-1.5">
+                {inflationData.sources.map((source, idx) => (
+                  <div key={idx} className="flex items-center justify-between text-sm">
+                    <span style={{ color: 'rgba(255,255,255,0.70)' }}>{source.name}</span>
+                    <span style={{ color: 'rgba(255,255,255,0.50)' }}>{source.weight}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </div>
+    </motion.div>
   );
 }
