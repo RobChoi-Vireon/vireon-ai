@@ -47,34 +47,33 @@ const StateStatusRow = ({ arrow, label, status, sparkline }) => {
 // Primary Driver Row Component
 const DriverRow = ({ rank, name, weight, reason }) => {
   return (
-    <div className="space-y-2 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div 
-            className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
-            style={{
-              background: 'rgba(255, 255, 255, 0.08)',
-              color: 'rgba(255,255,255,0.70)'
-            }}
-          >
-            {rank}
+    <div className="py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-1">
+            <div 
+              className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+              style={{
+                background: 'rgba(255, 255, 255, 0.08)',
+                color: 'rgba(255,255,255,0.70)'
+              }}
+            >
+              {rank}
+            </div>
+            <span className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.90)' }}>{name}</span>
           </div>
-          <span className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.90)' }}>{name}</span>
+          <p className="text-xs pl-7" style={{ color: 'rgba(255,255,255,0.65)' }}>{reason}</p>
         </div>
-        <span className="text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>{weight}%</span>
+        <span 
+          className="text-xs font-semibold px-2 py-1 rounded-full flex-shrink-0"
+          style={{ 
+            background: 'rgba(94, 167, 255, 0.12)',
+            color: 'rgba(255,255,255,0.75)'
+          }}
+        >
+          {weight}%
+        </span>
       </div>
-      <div className="flex items-center gap-2 pl-9">
-        <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255, 255, 255, 0.06)' }}>
-          <div 
-            className="h-full rounded-full"
-            style={{ 
-              width: `${weight}%`,
-              background: 'linear-gradient(90deg, rgba(94, 167, 255, 0.40) 0%, rgba(94, 167, 255, 0.20) 100%)'
-            }}
-          />
-        </div>
-      </div>
-      <p className="text-xs pl-9" style={{ color: 'rgba(255,255,255,0.65)' }}>{reason}</p>
     </div>
   );
 };
@@ -103,9 +102,9 @@ export default function InflationSection({ data }) {
     
     // Primary drivers
     drivers: [
-      { rank: 1, name: 'Shelter & housing', weight: 45, reason: 'Rent inflation lags real-time data by 12–18 months' },
-      { rank: 2, name: 'Services ex-shelter', weight: 35, reason: 'Wage growth still elevated in leisure, healthcare' },
-      { rank: 3, name: 'Goods deflation', weight: 20, reason: 'Supply chain normalization, softer demand' }
+      { rank: 1, name: 'Shelter & housing', weight: 45, reason: 'Rent inflation takes 12–18 months to show up in official data' },
+      { rank: 2, name: 'Services (not housing)', weight: 35, reason: 'Wages still rising in leisure, healthcare' },
+      { rank: 3, name: 'Goods deflation', weight: 20, reason: 'Supply chains normalized, demand softer' }
     ],
     
     // Winners/Losers
@@ -113,22 +112,21 @@ export default function InflationSection({ data }) {
     losers: ['Renters', 'Fixed-income retirees', 'Long-duration growth stocks', 'Variable-rate borrowers'],
     
     // CPI vs PCE
-    cpi_pce_collapsed: "CPI (Consumer Price Index) runs ~0.5pp hotter than PCE (Personal Consumption Expenditures)",
-    cpi_plain: "CPI measures what households pay — includes rent, gas, food",
-    pce_plain: "PCE tracks what people actually spend — adjusts for substitution (buy chicken when beef is expensive)",
-    why_fed_prefers: "Fed prefers PCE because it better reflects real consumption behavior and adjusts faster",
-    cpi_gt_pce_reason: "CPI's shelter component uses lagged rent surveys; PCE uses real-time owner-equivalent data",
+    cpi_pce_collapsed: "CPI shows what people pay. PCE shows what people actually spend — the Fed prefers this.",
+    cpi_plain: "CPI includes rent, gas, food — and updates slowly",
+    pce_plain: "PCE adjusts when people change what they buy",
+    why_fed_prefers: "The Fed prefers PCE because it reflects real behavior faster",
     
     // Watch items
     watch_short: [
-      "Services CPI — still elevated above pre-pandemic",
-      "Average hourly earnings — wage growth driving services",
-      "Supercore PCE — Fed's real-time policy gauge"
+      "Services inflation: watch if price pressure stays high",
+      "Wage growth: still driving service costs up",
+      "Sticky services: the part the Fed worries about most"
     ],
     watch_long: [
-      "Shelter CPI rollover — expected late 2026",
-      "Labor market cooling — would ease wage pressure",
-      "Fed dot plot shifts — signal policy pivot"
+      "Housing costs: cool slowly and show up late in official data",
+      "Labor market: cooling would ease wage pressure",
+      "Fed outlook: watch for tone changes on rates"
     ],
     
     // Sources
@@ -210,7 +208,7 @@ export default function InflationSection({ data }) {
       <div className="p-6 space-y-6">
         {/* SECTION 1: CURRENT STATE */}
         <div>
-          <div className="text-xs font-medium uppercase tracking-wider mb-3" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em' }}>
+          <div className="text-xs font-medium mb-3" style={{ color: 'rgba(255,255,255,0.45)' }}>
             Current state
           </div>
           <div className="space-y-1">
@@ -222,7 +220,7 @@ export default function InflationSection({ data }) {
 
         {/* SECTION 2: WHY THIS MATTERS */}
         <div>
-          <div className="text-xs font-medium uppercase tracking-wider mb-3" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em' }}>
+          <div className="text-xs font-medium mb-3" style={{ color: 'rgba(255,255,255,0.45)' }}>
             Why it matters
           </div>
           <div className="space-y-2">
@@ -237,7 +235,7 @@ export default function InflationSection({ data }) {
 
         {/* SECTION 3: PRIMARY DRIVERS */}
         <div>
-          <div className="text-xs font-medium uppercase tracking-wider mb-3" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em' }}>
+          <div className="text-xs font-medium mb-3" style={{ color: 'rgba(255,255,255,0.45)' }}>
             What's driving it
           </div>
           <div className="space-y-1">
@@ -249,7 +247,7 @@ export default function InflationSection({ data }) {
 
         {/* SECTION 4A: WHO FEELS IT */}
         <div>
-          <div className="text-xs font-medium uppercase tracking-wider mb-3" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em' }}>
+          <div className="text-xs font-medium mb-3" style={{ color: 'rgba(255,255,255,0.45)' }}>
             Who feels it
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -308,11 +306,6 @@ export default function InflationSection({ data }) {
                   <p className="text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>• {inflationData.cpi_plain}</p>
                   <p className="text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>• {inflationData.pce_plain}</p>
                   <p className="text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>• {inflationData.why_fed_prefers}</p>
-                  {inflationData.cpi_gt_pce_reason && (
-                    <p className="text-sm pt-2" style={{ color: 'rgba(255,255,255,0.65)', fontStyle: 'italic' }}>
-                      {inflationData.cpi_gt_pce_reason}
-                    </p>
-                  )}
                 </div>
               </motion.div>
             )}
@@ -321,7 +314,7 @@ export default function InflationSection({ data }) {
 
         {/* SECTION 5: WHAT TO WATCH */}
         <div>
-          <div className="text-xs font-medium uppercase tracking-wider mb-3" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em' }}>
+          <div className="text-xs font-medium mb-3" style={{ color: 'rgba(255,255,255,0.45)' }}>
             What to watch
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -353,7 +346,7 @@ export default function InflationSection({ data }) {
             className="w-full px-6 py-3 text-left text-sm transition-colors hover:bg-white/5"
             style={{ color: 'rgba(255,255,255,0.50)' }}
           >
-            Evidence · Tap to view sources
+            Evidence · Confidence {inflationData.confidence_score}/100
           </button>
         ) : (
           <motion.div
@@ -372,8 +365,8 @@ export default function InflationSection({ data }) {
             </div>
             
             <div>
-              <div className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em' }}>
-                Top sources
+              <div className="text-xs font-medium mb-2" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                Sources
               </div>
               <div className="space-y-1.5">
                 {inflationData.sources.map((source, idx) => (
