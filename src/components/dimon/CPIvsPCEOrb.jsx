@@ -137,26 +137,9 @@ const LivingOrbNucleus = ({ cpiValue, pceValue, consensus, isHovered, onOrbClick
     return () => mediaQuery.removeEventListener('change', handler);
   }, []);
 
-  useEffect(() => {
-    if (shouldReduceMotion) return;
-    
-    let rafId;
-    let startTime = Date.now();
-    
-    const animate = () => {
-      const elapsed = (Date.now() - startTime) / 1000;
-      setBreathingPhase(elapsed);
-      rafId = requestAnimationFrame(animate);
-    };
-    
-    rafId = requestAnimationFrame(animate);
-    return () => {
-      if (rafId) cancelAnimationFrame(rafId);
-    };
-  }, [shouldReduceMotion]);
-
-  const breathingScale = 1 + Math.sin(breathingPhase * (2 * Math.PI / MOTION.durations.breathing)) * 0.025;
-  const breathingOpacity = 0.08 + Math.sin(breathingPhase * (2 * Math.PI / MOTION.durations.breathing)) * 0.04;
+  // Breathing animation removed for static display
+  const breathingScale = 1;
+  const breathingOpacity = 0.08;
 
   // Determine divergence/convergence
   const diff = Math.abs(cpiValue - pceValue);
@@ -168,21 +151,14 @@ const LivingOrbNucleus = ({ cpiValue, pceValue, consensus, isHovered, onOrbClick
   return (
     <div className="relative flex items-center justify-center" style={{ width: '280px', height: '280px' }}>
       {/* Volumetric Background Field */}
-      <motion.div
+      <div
         className="absolute"
         style={{
           width: '340px',
           height: '340px',
           background: `radial-gradient(circle, ${convergenceColor}15 0%, transparent 70%)`,
-          filter: 'blur(40px)'
-        }}
-        animate={{
-          scale: breathingScale * 1.1,
+          filter: 'blur(40px)',
           opacity: breathingOpacity
-        }}
-        transition={{
-          duration: MOTION.durations.breathing,
-          ease: 'easeInOut'
         }}
       />
 
@@ -209,7 +185,7 @@ const LivingOrbNucleus = ({ cpiValue, pceValue, consensus, isHovered, onOrbClick
           `
         }}
         animate={{
-          scale: isHovered ? 1.05 : breathingScale,
+          scale: isHovered ? 1.05 : 1,
           boxShadow: isHovered 
             ? `
               inset 0 2px 12px rgba(255, 255, 255, 0.12),
@@ -223,8 +199,7 @@ const LivingOrbNucleus = ({ cpiValue, pceValue, consensus, isHovered, onOrbClick
             `
         }}
         transition={{
-          scale: { duration: isHovered ? MOTION.durations.interaction : MOTION.durations.breathing, ease: 'easeInOut' },
-          boxShadow: { duration: MOTION.durations.interaction }
+          duration: MOTION.durations.interaction
         }}
       >
         {/* Top Specular Highlight */}
@@ -263,15 +238,13 @@ const LivingOrbNucleus = ({ cpiValue, pceValue, consensus, isHovered, onOrbClick
           `
         }}
         animate={{
-          scale: breathingScale * 0.98,
           filter: isHovered ? 'brightness(1.08)' : 'brightness(1)'
         }}
         transition={{
-          scale: { duration: isHovered ? MOTION.durations.interaction : MOTION.durations.breathing, ease: 'easeInOut' },
-          filter: { duration: MOTION.durations.interaction }
+          duration: MOTION.durations.interaction
         }}
         onClick={onOrbClick}
-        whileHover={{ scale: breathingScale * 1.02 }}
+        whileHover={{ scale: 1.02 }}
       >
         {/* Central Metric Display */}
         <div className="flex flex-col items-center gap-2">
@@ -350,36 +323,7 @@ const LivingOrbNucleus = ({ cpiValue, pceValue, consensus, isHovered, onOrbClick
         </div>
       </motion.div>
 
-      {/* Rotating Energy Ring */}
-      {!shouldReduceMotion && (
-        <motion.svg
-          className="absolute"
-          width="280"
-          height="280"
-          viewBox="0 0 280 280"
-          style={{ pointerEvents: 'none' }}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-        >
-          <defs>
-            <linearGradient id="energyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor={convergenceColor} stopOpacity="0.4" />
-              <stop offset="50%" stopColor={convergenceColor} stopOpacity="0.15" />
-              <stop offset="100%" stopColor={convergenceColor} stopOpacity="0.05" />
-            </linearGradient>
-          </defs>
-          <circle
-            cx="140"
-            cy="140"
-            r="128"
-            fill="none"
-            stroke="url(#energyGradient)"
-            strokeWidth="2"
-            strokeDasharray="8 16"
-            opacity="0.6"
-          />
-        </motion.svg>
-      )}
+
     </div>
   );
 };
