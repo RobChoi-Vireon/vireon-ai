@@ -411,10 +411,10 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
           strategy: 'Consider moving some money from high-growth tech stocks to stable, profitable companies. Short-term bonds may offer better protection against rate changes.',
           // 13. RELATED SIGNALS
           correlated: [
-            { id: 1, label: 'Fed Decision' },
-            { id: 2, label: 'Tech Earnings' },
-            { id: 3, label: 'EU Privacy Rules' },
-            { id: 4, label: 'AI Regulation' },
+            { id: 1, label: 'Bloomberg' },
+            { id: 2, label: 'Wall Street Journal' },
+            { id: 3, label: 'Financial Times' },
+            { id: 4, label: 'Reuters' },
           ]
         };
       
@@ -447,10 +447,10 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
           },
           strategy: 'Consider reducing investments in emerging markets and increasing U.S.-focused holdings. Companies with low debt are safer bets.',
           correlated: [
-            { id: 1, label: 'Dollar Strength' },
-            { id: 2, label: 'Fed Policy' },
-            { id: 3, label: 'China Economy' },
-            { id: 4, label: 'Bond Stress' },
+            { id: 1, label: 'Reuters' },
+            { id: 2, label: 'Bloomberg' },
+            { id: 3, label: 'CNBC' },
+            { id: 4, label: 'MarketWatch' },
           ]
         };
       
@@ -483,10 +483,10 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
           },
           strategy: 'This is a long-term trend. Gradually adding cybersecurity investments may pay off over several years.',
           correlated: [
-            { id: 1, label: 'Security Spending' },
-            { id: 2, label: 'Cloud Security' },
-            { id: 3, label: 'Privacy Rules' },
-            { id: 4, label: 'Tech Investment' },
+            { id: 1, label: 'TechCrunch' },
+            { id: 2, label: 'Wired' },
+            { id: 3, label: 'MIT Tech Review' },
+            { id: 4, label: 'The Verge' },
           ]
         };
       
@@ -519,10 +519,10 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
           },
           strategy: 'Consider favoring companies that produce domestically over those heavily dependent on imports.',
           correlated: [
-            { id: 1, label: 'China Relations' },
-            { id: 2, label: 'Tariff News' },
-            { id: 3, label: 'Supply Chain' },
-            { id: 4, label: 'Manufacturing' },
+            { id: 1, label: 'Financial Times' },
+            { id: 2, label: 'The Economist' },
+            { id: 3, label: 'Wall Street Journal' },
+            { id: 4, label: 'Bloomberg' },
           ]
         };
       
@@ -555,10 +555,10 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
           },
           strategy: 'Consider gradually shifting energy investments from traditional oil and gas toward renewable companies.',
           correlated: [
-            { id: 1, label: 'Climate Policy' },
-            { id: 2, label: 'Battery Tech' },
-            { id: 3, label: 'Electric Cars' },
-            { id: 4, label: 'Utilities' },
+            { id: 1, label: 'Nature' },
+            { id: 2, label: 'Scientific American' },
+            { id: 3, label: 'Energy News' },
+            { id: 4, label: 'Bloomberg Green' },
           ]
         };
       
@@ -591,10 +591,10 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
           },
           strategy: 'Consider reducing exposure to European consumer businesses and increasing safer investments.',
           correlated: [
-            { id: 1, label: 'Inflation Data' },
-            { id: 2, label: 'Energy Prices' },
-            { id: 3, label: 'Government Policy' },
-            { id: 4, label: 'Consumer Mood' },
+            { id: 1, label: 'BBC News' },
+            { id: 2, label: 'The Guardian' },
+            { id: 3, label: 'Le Monde' },
+            { id: 4, label: 'Reuters' },
           ]
         };
       
@@ -625,8 +625,8 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
           },
           strategy: 'Stay informed and consider how this fits with your investment goals and risk comfort.',
           correlated: [
-            { id: 1, label: 'Related News' },
-            { id: 2, label: 'Market Trends' },
+            { id: 1, label: 'Bloomberg' },
+            { id: 2, label: 'Reuters' },
           ]
         };
     }
