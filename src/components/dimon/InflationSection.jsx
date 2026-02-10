@@ -1,6 +1,6 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, Minus, ChevronRight, Home, Users, ShoppingBag, ArrowRight, Circle } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { TrendingUp, TrendingDown, Minus, ChevronRight, Home, Users, ShoppingBag, ArrowRight, Circle, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import CPIvsPCEOrb from './CPIvsPCEOrb';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
@@ -56,394 +56,239 @@ const KPIChip = ({ label, value, isCore = false }) => (
   </motion.div>
 );
 
-const ImplicationPill = ({ label, direction, note }) => {
-  const Icon = direction === 'up' ? TrendingUp : direction === 'down' ? TrendingDown : Minus;
-  const color = direction === 'up' ? '#58E3A4' : direction === 'down' ? '#FF6A7A' : '#A8B3C7';
+const DriverChip = ({ icon: Icon, label, detail }) => {
+  const [isHovered, setIsHovered] = useState(false);
   
   return (
     <motion.div
-      whileHover={{ scale: 1.02, y: -1 }}
-      className="relative flex items-center gap-2 rounded-xl overflow-hidden"
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      className="relative inline-flex items-center gap-2 px-3 py-2 rounded-full cursor-help"
       style={{
-        padding: '10px 16px',
-        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
-        backdropFilter: 'blur(28px) saturate(165%)',
-        WebkitBackdropFilter: 'blur(28px) saturate(165%)',
+        background: 'rgba(255, 255, 255, 0.04)',
         border: '1px solid rgba(255,255,255,0.08)',
-        boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 2px 8px rgba(0,0,0,0.06)'
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)'
       }}
+      whileHover={{ scale: 1.02 }}
     >
-      <Icon className="w-4 h-4 flex-shrink-0" style={{ color, strokeWidth: 2 }} />
-      <div className="flex flex-col">
-        <span className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.90)' }}>{label}</span>
-        {note && <span className="text-xs" style={{ color: 'rgba(255,255,255,0.50)' }}>{note}</span>}
-      </div>
+      <Icon className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.60)' }} strokeWidth={2} />
+      <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.85)' }}>{label}</span>
+      
+      <AnimatePresence>
+        {isHovered && (
+          <motion.div
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 5 }}
+            transition={{ duration: 0.15 }}
+            className="absolute top-full left-0 mt-2 px-3 py-2 rounded-lg whitespace-nowrap z-50"
+            style={{
+              background: 'rgba(18, 20, 28, 0.95)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              backdropFilter: 'blur(24px)',
+              WebkitBackdropFilter: 'blur(24px)',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.4)'
+            }}
+          >
+            <div className="text-xs" style={{ color: 'rgba(255,255,255,0.75)' }}>{detail}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
 
+const BiasIndicator = ({ label, direction, description }) => {
+  const Icon = direction === 'up' ? ArrowUpRight : direction === 'down' ? ArrowDownRight : Minus;
+  const color = direction === 'up' ? 'rgba(255, 106, 122, 0.90)' : direction === 'down' ? 'rgba(88, 227, 164, 0.90)' : 'rgba(168, 179, 199, 0.90)';
+  
+  return (
+    <div className="flex items-center gap-3">
+      <Icon className="w-4 h-4 flex-shrink-0" style={{ color }} strokeWidth={2.5} />
+      <div className="flex-1">
+        <div className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.90)' }}>{label}</div>
+        <div className="text-xs" style={{ color: 'rgba(255,255,255,0.55)' }}>{description}</div>
+      </div>
+    </div>
+  );
+};
+
 export default function InflationSection({ data }) {
+  const [showSources, setShowSources] = useState(false);
+  
   if (!data) return null;
 
   const stateColors = StatePillColors[data.state_tag] || StatePillColors.Mixed;
-  const policyColors = PolicyBiasColors[data.policy_bias] || PolicyBiasColors.Neutral;
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="pl-2 mb-6">
-        <h2 className="text-2xl font-bold mb-2" style={{ color: 'rgba(255,255,255,0.95)' }}>
-          Inflation
-        </h2>
-      </div>
-
-      {/* Current State — Primary */}
+    <div className="space-y-8">
+      {/* Hero State — Single Dominant Moment */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: HORIZON_EASE }}
-        className="relative rounded-2xl overflow-hidden mb-6"
+        transition={{ duration: 0.5, ease: HORIZON_EASE }}
+        className="pl-2"
+      >
+        <h2 className="text-3xl font-bold mb-3" style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.02em' }}>
+          Inflation: Still Sticky
+        </h2>
+        <p className="text-base mb-4" style={{ color: 'rgba(255,255,255,0.60)' }}>
+          Services and housing continue to limit progress.
+        </p>
+        <div 
+          className="inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full"
+          style={{
+            background: stateColors.bg,
+            border: `1px solid ${stateColors.border}`,
+            color: stateColors.text
+          }}
+        >
+          <Circle className="w-2.5 h-2.5 fill-current" />
+          <span>Above Target</span>
+        </div>
+      </motion.div>
+
+      {/* Inline Driver Chips — Progressive Disclosure */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: HORIZON_EASE, delay: 0.1 }}
+        className="flex flex-wrap gap-2 px-2"
+      >
+        <DriverChip icon={Home} label="Housing" detail="Lagged shelter inflation" />
+        <DriverChip icon={Users} label="Services" detail="Wage-driven pressure" />
+        <DriverChip icon={ShoppingBag} label="Goods" detail="No longer inflationary" />
+      </motion.div>
+
+      {/* CPI vs PCE — Single Insight Moment */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: HORIZON_EASE, delay: 0.15 }}
+        className="relative rounded-2xl overflow-hidden"
         style={{
           padding: '28px 32px',
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.050) 0%, rgba(255, 255, 255, 0.030) 100%)',
-          backdropFilter: 'blur(32px) saturate(165%)',
-          WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-          border: '1px solid rgba(255,255,255,0.10)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.10)'
+          background: 'linear-gradient(135deg, rgba(94, 167, 255, 0.06) 0%, rgba(94, 167, 255, 0.02) 100%)',
+          backdropFilter: 'blur(40px) saturate(160%)',
+          WebkitBackdropFilter: 'blur(40px) saturate(160%)',
+          border: '1px solid rgba(94, 167, 255, 0.14)',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 20px rgba(0,0,0,0.08)'
         }}
       >
         <div style={{
           position: 'absolute',
           top: 0,
-          left: '15%',
-          right: '15%',
+          left: '12%',
+          right: '12%',
           height: '1.5px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
+          background: 'linear-gradient(90deg, transparent, rgba(94, 167, 255, 0.24), transparent)',
           pointerEvents: 'none'
         }} />
 
-        <h3 className="text-lg font-bold mb-4" style={{ color: 'rgba(255,255,255,0.95)' }}>
-          Inflation remains above target and is not improving meaningfully.
+        <h3 className="text-lg font-bold mb-3" style={{ color: 'rgba(255,255,255,0.96)' }}>
+          CPI overstates inflation pressure
         </h3>
 
-        <div className="flex items-center gap-2 mb-4">
-          <div 
-            className="text-sm font-bold px-4 py-2 rounded-full flex items-center gap-2"
-            style={{
-              background: stateColors.bg,
-              border: `1px solid ${stateColors.border}`,
-              color: stateColors.text
-            }}
-          >
-            <Circle className="w-3 h-3 fill-current" />
-            <span>Above Target • {data.state_tag || 'Sticky'}</span>
-          </div>
-        </div>
-
-        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>
-          Goods prices have cooled. Services and housing inflation remain elevated.
+        <p className="text-sm leading-relaxed mb-4" style={{ color: 'rgba(255,255,255,0.75)' }}>
+          Shelter costs keep CPI elevated, while Core PCE — the Fed's anchor — reflects softer services inflation.
         </p>
-      </motion.div>
 
-      {/* What's Driving Inflation — Causes Only */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: HORIZON_EASE, delay: 0.05 }}
-        className="relative rounded-2xl overflow-hidden mb-6"
-        style={{
-          padding: '24px 28px',
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
-          backdropFilter: 'blur(32px) saturate(165%)',
-          WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.08)'
-        }}
-      >
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: '15%',
-          right: '15%',
-          height: '1.5px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-          pointerEvents: 'none'
-        }} />
-
-        <h3 className="text-base font-bold mb-4" style={{ color: 'rgba(255,255,255,0.95)' }}>
-          What's driving inflation
-        </h3>
-
-        <div className="space-y-3">
-          <div className="flex items-start gap-3">
-            <Home className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: 'rgba(255,255,255,0.60)' }} strokeWidth={2} />
-            <div>
-              <div className="text-sm font-medium mb-0.5" style={{ color: 'rgba(255,255,255,0.90)' }}>Housing</div>
-              <div className="text-sm" style={{ color: 'rgba(255,255,255,0.65)' }}>Shelter inflation adjusts slowly.</div>
-            </div>
-          </div>
-          <div className="flex items-start gap-3">
-            <Users className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: 'rgba(255,255,255,0.60)' }} strokeWidth={2} />
-            <div>
-              <div className="text-sm font-medium mb-0.5" style={{ color: 'rgba(255,255,255,0.90)' }}>Services & wages</div>
-              <div className="text-sm" style={{ color: 'rgba(255,255,255,0.65)' }}>Labor costs remain elevated.</div>
-            </div>
-          </div>
-          <div className="flex items-start gap-3">
-            <ShoppingBag className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: 'rgba(255,255,255,0.60)' }} strokeWidth={2} />
-            <div>
-              <div className="text-sm font-medium mb-0.5" style={{ color: 'rgba(255,255,255,0.90)' }}>Goods</div>
-              <div className="text-sm" style={{ color: 'rgba(255,255,255,0.65)' }}>Goods prices are no longer a material driver.</div>
-            </div>
-          </div>
+        <div className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: 'rgba(94, 167, 255, 0.12)', border: '1px solid rgba(94, 167, 255, 0.20)', color: 'rgba(94, 167, 255, 0.95)' }}>
+          Policy anchor: Core PCE
         </div>
       </motion.div>
 
-      {/* Why This Matters — Policy Link */}
+      {/* Market Impact — Directional Bias */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: HORIZON_EASE, delay: 0.1 }}
-        className="relative rounded-2xl overflow-hidden mb-6"
-        style={{
-          padding: '24px 28px',
-          background: 'linear-gradient(135deg, rgba(94, 167, 255, 0.08) 0%, rgba(94, 167, 255, 0.04) 100%)',
-          backdropFilter: 'blur(32px) saturate(165%)',
-          WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-          border: '1px solid rgba(94, 167, 255, 0.18)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.10)'
-        }}
+        transition={{ duration: 0.5, ease: HORIZON_EASE, delay: 0.2 }}
+        className="space-y-3 px-2"
       >
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: '15%',
-          right: '15%',
-          height: '1.5px',
-          background: 'linear-gradient(90deg, transparent, rgba(94, 167, 255, 0.28), transparent)',
-          pointerEvents: 'none'
-        }} />
-
-        <h3 className="text-base font-bold mb-3" style={{ color: 'rgba(255,255,255,0.95)' }}>
-          Why this matters
-        </h3>
-
-        <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.85)' }}>
-          Services inflation drives Fed policy, keeping rate cuts constrained while it remains elevated.
-        </p>
+        <BiasIndicator label="Rates" direction="up" description="Restrictive for longer" />
+        <BiasIndicator label="Equities" direction="neutral" description="Data sensitive" />
+        <BiasIndicator label="USD" direction="up" description="Rate support" />
+        <BiasIndicator label="Borrower flexibility" direction="down" description="Higher financing pressure" />
       </motion.div>
 
-      {/* Metrics Grid — Supporting Evidence */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <KPIChip 
-          label="CPI YoY" 
-          value={data.cpi_headline_yoy ? `${data.cpi_headline_yoy}%` : null} 
-        />
-        <KPIChip 
-          label="Core CPI YoY" 
-          value={data.cpi_core_yoy ? `${data.cpi_core_yoy}%` : null}
-          isCore 
-        />
-        <KPIChip 
-          label="PCE YoY" 
-          value={data.pce_headline_yoy ? `${data.pce_headline_yoy}%` : null} 
-        />
-        <KPIChip 
-          label="Core PCE YoY" 
-          value={data.pce_core_yoy ? `${data.pce_core_yoy}%` : null}
-          isCore 
-        />
-      </div>
-
-      {/* Market Impact — Downstream Effects */}
+      {/* Metrics Grid — Demoted Evidence */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: HORIZON_EASE, delay: 0.15 }}
-        className="relative rounded-2xl overflow-hidden mb-6"
-        style={{
-          padding: '24px 28px',
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
-          backdropFilter: 'blur(32px) saturate(165%)',
-          WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.08)'
-        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4, delay: 0.25 }}
+        className="grid grid-cols-2 lg:grid-cols-4 gap-3"
       >
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: '15%',
-          right: '15%',
-          height: '1.5px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-          pointerEvents: 'none'
-        }} />
-
-        <h3 className="text-base font-bold mb-4" style={{ color: 'rgba(255,255,255,0.95)' }}>
-          Market impact
-        </h3>
-
-        <div className="space-y-2.5">
-          <div className="flex items-start gap-2">
-            <ChevronRight className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: 'rgba(255,255,255,0.40)' }} />
-            <div>
-              <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.90)' }}>Rates: </span>
-              <span className="text-sm" style={{ color: 'rgba(255,255,255,0.70)' }}>Restrictive for longer</span>
-            </div>
-          </div>
-          <div className="flex items-start gap-2">
-            <ChevronRight className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: 'rgba(255,255,255,0.40)' }} />
-            <div>
-              <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.90)' }}>Equities: </span>
-              <span className="text-sm" style={{ color: 'rgba(255,255,255,0.70)' }}>Sensitive to inflation data</span>
-            </div>
-          </div>
-          <div className="flex items-start gap-2">
-            <ChevronRight className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: 'rgba(255,255,255,0.40)' }} />
-            <div>
-              <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.90)' }}>U.S. dollar: </span>
-              <span className="text-sm" style={{ color: 'rgba(255,255,255,0.70)' }}>Supported</span>
-            </div>
-          </div>
-          <div className="flex items-start gap-2">
-            <ChevronRight className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: 'rgba(255,255,255,0.40)' }} />
-            <div>
-              <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.90)' }}>Borrowers: </span>
-              <span className="text-sm" style={{ color: 'rgba(255,255,255,0.70)' }}>Higher financing pressure</span>
-            </div>
-          </div>
-        </div>
+        <KPIChip label="CPI" value={data.cpi_headline_yoy ? `${data.cpi_headline_yoy}%` : null} />
+        <KPIChip label="Core CPI" value={data.cpi_core_yoy ? `${data.cpi_core_yoy}%` : null} isCore />
+        <KPIChip label="PCE" value={data.pce_headline_yoy ? `${data.pce_headline_yoy}%` : null} />
+        <KPIChip label="Core PCE" value={data.pce_core_yoy ? `${data.pce_core_yoy}%` : null} isCore />
       </motion.div>
 
-      {/* What to Watch — Time Horizon */}
+      {/* What to Watch — Temporal Flow */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: HORIZON_EASE, delay: 0.2 }}
-        className="relative rounded-2xl overflow-hidden mb-6"
+        transition={{ duration: 0.5, ease: HORIZON_EASE, delay: 0.3 }}
+        className="relative px-2 py-6"
         style={{
-          padding: '24px 28px',
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
-          backdropFilter: 'blur(32px) saturate(165%)',
-          WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.08)'
+          borderTop: '1px solid rgba(255,255,255,0.06)'
         }}
       >
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: '15%',
-          right: '15%',
-          height: '1.5px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-          pointerEvents: 'none'
-        }} />
-
-        <h3 className="text-base font-bold mb-4" style={{ color: 'rgba(255,255,255,0.95)' }}>
-          What to watch
-        </h3>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'rgba(255,255,255,0.55)', letterSpacing: '0.06em' }}>
-              Short term
+        <div className="flex items-start gap-8">
+          <div className="flex-1">
+            <div className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em' }}>
+              Near-term
             </div>
-            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.80)' }}>
-              Services inflation and wage growth.
+            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>
+              Services inflation · wage growth
             </p>
           </div>
-          <div>
-            <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'rgba(255,255,255,0.55)', letterSpacing: '0.06em' }}>
-              Long term
+          <div className="flex-1">
+            <div className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em' }}>
+              Longer-term
             </div>
-            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.80)' }}>
-              Shelter CPI rollover and labor market cooling.
+            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>
+              Shelter CPI rollover · labor cooling
             </p>
           </div>
         </div>
       </motion.div>
 
-      {/* Consensus & Conditionality */}
+      {/* Ambient Confidence — Hover-Revealed Trust */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: HORIZON_EASE, delay: 0.25 }}
-        className="relative rounded-2xl overflow-hidden mb-6"
-        style={{
-          padding: '24px 28px',
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
-          backdropFilter: 'blur(32px) saturate(165%)',
-          WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.08)'
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4, delay: 0.35 }}
+        onMouseEnter={() => setShowSources(true)}
+        onMouseLeave={() => setShowSources(false)}
+        className="relative px-4 py-3 rounded-xl cursor-help transition-all duration-300"
+        style={{ 
+          background: 'rgba(255, 255, 255, 0.02)', 
+          border: '1px solid rgba(255,255,255,0.05)'
         }}
       >
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: '15%',
-          right: '15%',
-          height: '1.5px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-          pointerEvents: 'none'
-        }} />
-
-        <h3 className="text-base font-bold mb-3" style={{ color: 'rgba(255,255,255,0.95)' }}>
-          Consensus view
-        </h3>
-
-        <p className="text-sm mb-5 leading-relaxed" style={{ color: 'rgba(255,255,255,0.85)' }}>
-          Inflation progress has stalled, keeping policy restrictive until services inflation cools.
-        </p>
-
-        <div className="pt-4 border-t" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-          <div className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: 'rgba(255,255,255,0.55)', letterSpacing: '0.06em' }}>
-            What would change this view
+        <div className="flex items-center justify-between">
+          <div className="text-sm" style={{ color: 'rgba(255,255,255,0.65)' }}>
+            Confidence: <span className="font-semibold" style={{ color: 'rgba(255,255,255,0.85)' }}>High</span>
           </div>
-          <div className="space-y-2">
-            <div className="flex items-start gap-2">
-              <ChevronRight className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: 'rgba(255,255,255,0.40)' }} />
-              <p className="text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>
-                Sustained decline in core services PCE
-              </p>
-            </div>
-            <div className="flex items-start gap-2">
-              <ChevronRight className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: 'rgba(255,255,255,0.40)' }} />
-              <p className="text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>
-                Cooling wage growth
-              </p>
-            </div>
-            <div className="flex items-start gap-2">
-              <ChevronRight className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: 'rgba(255,255,255,0.40)' }} />
-              <p className="text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>
-                Clear shelter disinflation
-              </p>
-            </div>
-          </div>
+          
+          <AnimatePresence>
+            {showSources && (
+              <motion.div
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+                transition={{ duration: 0.2 }}
+                className="text-xs"
+                style={{ color: 'rgba(255,255,255,0.55)' }}
+              >
+                ~78% · Fed, BLS, market data
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </motion.div>
-
-      {/* Confidence Footer */}
-      <div className="flex items-center justify-between px-4 py-3 rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.025)', border: '1px solid rgba(255,255,255,0.06)' }}>
-        <div>
-          <div className="text-xs font-medium uppercase tracking-wider mb-0.5" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.06em' }}>
-            Confidence
-          </div>
-          <div className="text-base font-bold" style={{ color: 'rgba(255,255,255,0.80)' }}>
-            78%
-          </div>
-        </div>
-        <div className="text-right">
-          <div className="text-xs font-medium uppercase tracking-wider mb-0.5" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.06em' }}>
-            Sources
-          </div>
-          <div className="text-xs" style={{ color: 'rgba(255,255,255,0.60)' }}>
-            Federal Reserve · BLS · Bloomberg · WSJ · FT
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
