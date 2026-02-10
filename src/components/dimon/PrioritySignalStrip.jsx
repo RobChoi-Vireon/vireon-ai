@@ -457,9 +457,33 @@ export default function PrioritySignalStrip({ signals = [], onOpenDrawer }) {
         </p>
       </div>
       
-      <div className="grid gap-6 md:grid-cols-2">
-        {signals.slice(0, 2).map((signal, index) => (
-          <PrioritySignal key={index} signal={signal} index={index} onClick={onOpenDrawer} />
+      <div 
+        className="flex gap-6 overflow-x-auto pb-2"
+        style={{
+          scrollbarWidth: 'thin',
+          scrollbarColor: 'rgba(255, 255, 255, 0.18) rgba(255, 255, 255, 0.04)',
+        }}
+      >
+        <style>{`
+          .flex.overflow-x-auto::-webkit-scrollbar {
+            height: 6px;
+          }
+          .flex.overflow-x-auto::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 6px;
+          }
+          .flex.overflow-x-auto::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.18);
+            border-radius: 6px;
+          }
+          .flex.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.25);
+          }
+        `}</style>
+        {signals.slice(0, 4).map((signal, index) => (
+          <div key={index} className="flex-shrink-0" style={{ width: 'min(480px, 85vw)' }}>
+            <PrioritySignal signal={signal} index={index} onClick={onOpenDrawer} />
+          </div>
         ))}
       </div>
     </motion.section>
