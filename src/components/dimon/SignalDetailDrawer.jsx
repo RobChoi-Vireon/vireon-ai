@@ -1602,7 +1602,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                       <div className="ri-next">
                         <div className="flex items-center gap-2">
                           <strong style={{ fontSize: 14, color: 'rgba(255, 255, 255, 0.88)' }}>
-                            Top Sources
+                            Top Weighted Sources
                           </strong>
                           <div
                             className="flex items-center justify-center rounded-full"
