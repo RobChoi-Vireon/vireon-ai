@@ -4,12 +4,12 @@ import { TrendingUp, TrendingDown, Minus, ChevronDown, Info } from 'lucide-react
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
 const SMOOTH_EXPAND = { 
-  type: "spring", 
-  stiffness: 260, 
-  damping: 30, 
-  mass: 0.85,
-  restDelta: 0.001,
-  restSpeed: 0.001
+  duration: 0.35,
+  ease: [0.22, 0.61, 0.36, 1]
+};
+const CHEVRON_ROTATE = {
+  duration: 0.35,
+  ease: [0.22, 0.61, 0.36, 1]
 };
 
 // Arrow icon selector
@@ -186,7 +186,7 @@ export default function InflationSection({ data }) {
       </div>
 
       {/* DRAWER 1 - WHY INFLATION LOOKS THIS WAY */}
-      <motion.div
+      <div
         className="relative rounded-2xl"
         style={{
           background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
@@ -195,11 +195,9 @@ export default function InflationSection({ data }) {
           border: '1px solid rgba(255,255,255,0.08)',
           boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.08)',
           overflow: 'hidden',
-          willChange: 'box-shadow'
-        }}
-        whileHover={{
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), 0 8px 32px rgba(0,0,0,0.12)',
-          transition: { duration: 0.2 }
+          transform: 'translateZ(0)',
+          backfaceVisibility: 'hidden',
+          WebkitFontSmoothing: 'antialiased'
         }}
       >
         <button
@@ -215,22 +213,38 @@ export default function InflationSection({ data }) {
           </span>
           <motion.div
             animate={{ rotate: drawer1Open ? 180 : 0 }}
-            transition={SMOOTH_EXPAND}
+            transition={CHEVRON_ROTATE}
+            style={{ 
+              transformOrigin: 'center',
+              backfaceVisibility: 'hidden'
+            }}
           >
             <ChevronDown className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.50)' }} />
           </motion.div>
         </button>
         
-        <AnimatePresence initial={false} mode="wait">
+        <AnimatePresence initial={false}>
           {drawer1Open && (
             <motion.div
+              key="drawer1-content"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={SMOOTH_EXPAND}
-              style={{ overflow: 'hidden', willChange: 'height, opacity' }}
+              style={{ 
+                overflow: 'hidden',
+                transformOrigin: 'top',
+                backfaceVisibility: 'hidden',
+                perspective: 1000,
+                WebkitFontSmoothing: 'antialiased'
+              }}
             >
-              <div className="px-5 pb-4 pt-2 space-y-3">
+              <motion.div 
+                className="px-5 pb-4 pt-2 space-y-3"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.1, duration: 0.25 }}
+              >
                 {inflationData.drivers.slice(0, 3).map((driver, idx) => (
                   <div key={idx} className="py-2" style={{ borderBottom: idx < 2 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>
                     <div className="flex items-center justify-between gap-3 mb-1.5">
@@ -248,14 +262,14 @@ export default function InflationSection({ data }) {
                     <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)' }}>{driver.reason}</p>
                   </div>
                 ))}
-              </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
-      </motion.div>
+      </div>
 
       {/* DRAWER 2 - WHO FEELS THIS MOST */}
-      <motion.div
+      <div
         className="relative rounded-2xl"
         style={{
           background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
@@ -264,11 +278,9 @@ export default function InflationSection({ data }) {
           border: '1px solid rgba(255,255,255,0.08)',
           boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.08)',
           overflow: 'hidden',
-          willChange: 'box-shadow'
-        }}
-        whileHover={{
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), 0 8px 32px rgba(0,0,0,0.12)',
-          transition: { duration: 0.2 }
+          transform: 'translateZ(0)',
+          backfaceVisibility: 'hidden',
+          WebkitFontSmoothing: 'antialiased'
         }}
       >
         <button
@@ -284,22 +296,38 @@ export default function InflationSection({ data }) {
           </span>
           <motion.div
             animate={{ rotate: drawer2Open ? 180 : 0 }}
-            transition={SMOOTH_EXPAND}
+            transition={CHEVRON_ROTATE}
+            style={{ 
+              transformOrigin: 'center',
+              backfaceVisibility: 'hidden'
+            }}
           >
             <ChevronDown className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.50)' }} />
           </motion.div>
         </button>
         
-        <AnimatePresence initial={false} mode="wait">
+        <AnimatePresence initial={false}>
           {drawer2Open && (
             <motion.div
+              key="drawer2-content"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={SMOOTH_EXPAND}
-              style={{ overflow: 'hidden', willChange: 'height, opacity' }}
+              style={{ 
+                overflow: 'hidden',
+                transformOrigin: 'top',
+                backfaceVisibility: 'hidden',
+                perspective: 1000,
+                WebkitFontSmoothing: 'antialiased'
+              }}
             >
-              <div className="px-5 pb-4 pt-2">
+              <motion.div 
+                className="px-5 pb-4 pt-2"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.1, duration: 0.25 }}
+              >
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <div className="text-xs font-medium mb-2" style={{ color: 'rgba(88, 227, 164, 0.80)' }}>Winners</div>
@@ -318,14 +346,14 @@ export default function InflationSection({ data }) {
                     </ul>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
-      </motion.div>
+      </div>
 
       {/* DRAWER 3 - HOW TO READ THE DATA */}
-      <motion.div
+      <div
         className="relative rounded-2xl"
         style={{
           background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
@@ -334,11 +362,9 @@ export default function InflationSection({ data }) {
           border: '1px solid rgba(255,255,255,0.08)',
           boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.08)',
           overflow: 'hidden',
-          willChange: 'box-shadow'
-        }}
-        whileHover={{
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), 0 8px 32px rgba(0,0,0,0.12)',
-          transition: { duration: 0.2 }
+          transform: 'translateZ(0)',
+          backfaceVisibility: 'hidden',
+          WebkitFontSmoothing: 'antialiased'
         }}
       >
         <button
@@ -354,22 +380,38 @@ export default function InflationSection({ data }) {
           </span>
           <motion.div
             animate={{ rotate: drawer3Open ? 180 : 0 }}
-            transition={SMOOTH_EXPAND}
+            transition={CHEVRON_ROTATE}
+            style={{ 
+              transformOrigin: 'center',
+              backfaceVisibility: 'hidden'
+            }}
           >
             <ChevronDown className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.50)' }} />
           </motion.div>
         </button>
         
-        <AnimatePresence initial={false} mode="wait">
+        <AnimatePresence initial={false}>
           {drawer3Open && (
             <motion.div
+              key="drawer3-content"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={SMOOTH_EXPAND}
-              style={{ overflow: 'hidden', willChange: 'height, opacity' }}
+              style={{ 
+                overflow: 'hidden',
+                transformOrigin: 'top',
+                backfaceVisibility: 'hidden',
+                perspective: 1000,
+                WebkitFontSmoothing: 'antialiased'
+              }}
             >
-              <div className="px-5 pb-4 pt-2 space-y-3">
+              <motion.div 
+                className="px-5 pb-4 pt-2 space-y-3"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.1, duration: 0.25 }}
+              >
                 {/* CPI vs PCE - Nested */}
                 <div>
                   <button
@@ -387,7 +429,11 @@ export default function InflationSection({ data }) {
                     </div>
                     <motion.div
                       animate={{ rotate: showCPIPCE ? 180 : 0 }}
-                      transition={SMOOTH_EXPAND}
+                      transition={CHEVRON_ROTATE}
+                      style={{ 
+                        transformOrigin: 'center',
+                        backfaceVisibility: 'hidden'
+                      }}
                     >
                       <ChevronDown 
                         className="w-4 h-4" 
@@ -396,20 +442,32 @@ export default function InflationSection({ data }) {
                     </motion.div>
                   </button>
                   
-                  <AnimatePresence initial={false} mode="wait">
+                  <AnimatePresence initial={false}>
                     {showCPIPCE && (
                       <motion.div
+                        key="cpipce-content"
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         transition={SMOOTH_EXPAND}
-                        style={{ overflow: 'hidden', willChange: 'height, opacity' }}
+                        style={{ 
+                          overflow: 'hidden',
+                          transformOrigin: 'top',
+                          backfaceVisibility: 'hidden',
+                          perspective: 1000,
+                          WebkitFontSmoothing: 'antialiased'
+                        }}
                       >
-                        <div className="pt-3 space-y-2">
+                        <motion.div 
+                          className="pt-3 space-y-2"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.08, duration: 0.2 }}
+                        >
                           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>• {inflationData.cpi_plain}</p>
                           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>• {inflationData.pce_plain}</p>
                           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>• {inflationData.why_fed_prefers}</p>
-                        </div>
+                        </motion.div>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -470,13 +528,11 @@ export default function InflationSection({ data }) {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
-      </motion.div>
-
-
+      </div>
     </motion.div>
   );
 }
