@@ -414,7 +414,7 @@ export default function MacroSignalsPage() {
   const [isConsensusDrawerOpen, setIsConsensusDrawerOpen] = useState(false);
   const [selectedSegment, setSelectedSegment] = useState(null);
   const [showTestWelcome, setShowTestWelcome] = useState(false);
-  const [welcomeDismissed, setWelcomeDismissed] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Memoize sanitized data to prevent re-computation on re-renders
   const sanitizedDigest = useMemo(() => {
@@ -563,7 +563,7 @@ export default function MacroSignalsPage() {
       opacity: 1,
       transition: {
         staggerChildren: 0.08,
-        delayChildren: welcomeDismissed ? 0.5 : 0.2,
+        delayChildren: isTransitioning ? 1.0 : 0.2,
       },
     },
   };
@@ -595,6 +595,30 @@ export default function MacroSignalsPage() {
       background: '#0B0E13',
       color: '#F8FAFC'
     }}>
+      {/* Cinematic Transition Overlay */}
+      <motion.div
+        className="fixed inset-0 pointer-events-none z-40"
+        initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+        animate={{
+          opacity: isTransitioning ? 1 : 0,
+          backdropFilter: isTransitioning ? 'blur(24px)' : 'blur(0px)',
+          pointerEvents: isTransitioning ? 'auto' : 'none'
+        }}
+        transition={{
+          opacity: { duration: 0.72, ease: [0.16, 1, 0.3, 1] },
+          backdropFilter: { duration: 0.72, ease: [0.16, 1, 0.3, 1] }
+        }}
+        onAnimationComplete={() => {
+          if (isTransitioning) {
+            setTimeout(() => setIsTransitioning(false), 200);
+          }
+        }}
+        style={{
+          background: 'rgba(0, 0, 0, 0.15)',
+          WebkitBackdropFilter: 'blur(24px)'
+        }}
+      />
+
       {/* OS Horizon V2 Canvas Atmosphere */}
       <div 
         className="fixed inset-0 pointer-events-none"
@@ -905,7 +929,7 @@ export default function MacroSignalsPage() {
       {showTestWelcome && (
         <HorizonWelcomeOverlay 
           onDismiss={() => {
-            setWelcomeDismissed(true);
+            setIsTransitioning(true);
             setShowTestWelcome(false);
           }}
           isTestMode={true}
