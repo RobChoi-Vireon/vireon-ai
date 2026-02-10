@@ -35,6 +35,9 @@ const DriverItem = ({ title, detail }) => (
 export default function InflationSection({ data }) {
   if (!data) return null;
 
+  const [isFedInsightExpanded, setIsFedInsightExpanded] = useState(false);
+  const [isConditionalExpanded, setIsConditionalExpanded] = useState(false);
+
   const stateColors = StatePillColors[data.state_tag] || StatePillColors.Mixed;
   const policyColors = PolicyBiasColors[data.policy_bias] || PolicyBiasColors.Neutral;
 
