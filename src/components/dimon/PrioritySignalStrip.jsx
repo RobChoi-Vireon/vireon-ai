@@ -481,7 +481,7 @@ export default function PrioritySignalStrip({ signals = [], onOpenDrawer }) {
           }
         `}</style>
         {signals.slice(0, 4).map((signal, index) => (
-          <div key={index} className="flex-shrink-0" style={{ width: 'min(480px, 85vw)' }}>
+          <div key={index} className="flex-shrink-0" style={{ width: 'calc(50% - 12px)' }}>
             <PrioritySignal signal={signal} index={index} onClick={onOpenDrawer} />
           </div>
         ))}
