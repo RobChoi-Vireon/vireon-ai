@@ -343,18 +343,28 @@ export default function InflationSection({ data }) {
         {!showTrustDrawer ? (
           <button
             onClick={() => setShowTrustDrawer(true)}
-            className="w-full px-6 py-3 text-left text-sm transition-colors hover:bg-white/5"
+            className="w-full px-6 py-3 text-left text-sm transition-colors hover:bg-white/5 flex items-center justify-between"
             style={{ color: 'rgba(255,255,255,0.50)' }}
           >
-            Evidence · Confidence {inflationData.confidence_score}/100
+            <span>Evidence · Confidence {inflationData.confidence_score}/100</span>
+            <ChevronDown className="w-4 h-4" />
           </button>
         ) : (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="px-6 py-4 space-y-3"
-          >
+          <div>
+            <button
+              onClick={() => setShowTrustDrawer(false)}
+              className="w-full px-6 py-3 text-left text-sm transition-colors hover:bg-white/5 flex items-center justify-between"
+              style={{ color: 'rgba(255,255,255,0.70)' }}
+            >
+              <span>Evidence · Confidence {inflationData.confidence_score}/100</span>
+              <ChevronDown className="w-4 h-4 transition-transform" style={{ transform: 'rotate(180deg)' }} />
+            </button>
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="px-6 pb-4 space-y-3"
+            >
             <div>
               <div className="text-sm font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.90)' }}>
                 Confidence {inflationData.confidence_score}/100
@@ -377,7 +387,8 @@ export default function InflationSection({ data }) {
                 ))}
               </div>
             </div>
-          </motion.div>
+            </motion.div>
+          </div>
         )}
       </div>
     </motion.div>
