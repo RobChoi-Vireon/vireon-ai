@@ -568,6 +568,26 @@ export default function MacroSignalsPage() {
     },
   };
 
+  const headerVariants = {
+    hidden: {
+      opacity: 0,
+      y: -20,
+      filter: 'blur(12px)'
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: 'blur(0px)',
+      transition: {
+        duration: 1.1,
+        ease: [0.16, 1, 0.3, 1],
+        type: "spring",
+        stiffness: 60,
+        damping: 25
+      }
+    }
+  };
+
   const sectionVariants = {
     hidden: { 
       opacity: 0, 
@@ -674,7 +694,12 @@ export default function MacroSignalsPage() {
           willChange: 'filter'
         }}
       >
-        <div className="flex items-center justify-between mb-4">
+        <motion.div 
+          className="flex items-center justify-between mb-4"
+          variants={headerVariants}
+          initial="hidden"
+          animate="visible"
+        >
           <div className="flex-1">
             <DigestHeader 
               targetDate={targetDate}
@@ -708,7 +733,7 @@ export default function MacroSignalsPage() {
             <Sparkles className="w-4 h-4" />
             <span>Test Welcome</span>
           </motion.button>
-        </div>
+        </motion.div>
         <RetryWrapper 
           error={error} 
           isLoading={isLoading} 
