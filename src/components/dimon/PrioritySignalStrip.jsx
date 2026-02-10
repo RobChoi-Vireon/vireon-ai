@@ -4,28 +4,14 @@
 // See: DESIGN_LOCKED_COMPONENTS.md
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, Zap, TrendingDown, ExternalLink, ShieldAlert, Waves, Globe, Lock, CalendarClock, Link, Factory, Banknote } from 'lucide-react';
 
-const QuickGlanceBadge = ({ tag, delay }) => {
-  const icons = { ShieldAlert, Waves, Globe, Lock, CalendarClock, Link, Factory, Banknote, TrendingDown, Zap };
-  const Icon = icons[tag.icon] || Zap;
 
-  return (
-    <motion.div
-      className={`inline-flex items-center space-x-2 px-2 py-1 rounded-full text-xs font-semibold bg-black/40 border border-white/20 backdrop-blur-sm ${tag.color || 'text-gray-300'}`}
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: delay * 0.1 + 0.2, type: "spring", stiffness: 300, damping: 20 }}
-    >
-      <Icon className="w-3.5 h-3.5" />
-      <span>{tag.label}</span>
-    </motion.div>
-  );
-};
 
 const PrioritySignal = ({ signal, index, onClick }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isSourcesExpanded, setIsSourcesExpanded] = useState(false);
 
   const getUrgencyStyle = (urgency) => {
     switch (urgency) {
@@ -303,16 +289,74 @@ const PrioritySignal = ({ signal, index, onClick }) => {
           {signal.text}
         </motion.p>
         
-        {signal.quick_glance_tags && (
+        {signal.cross_referenced_sources && signal.cross_referenced_sources.length > 0 && (
           <motion.div 
-            className="flex flex-wrap gap-2 mt-4"
+            className="mt-4"
             initial={{ opacity: 0 }}
-            animate={{ opacity: isHovered ? 1 : 0 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
           >
-            {signal.quick_glance_tags.map((tag, i) => (
-              <QuickGlanceBadge key={i} tag={tag} delay={i} />
-            ))}
+            {/* Expandable Sources Pill */}
+            <motion.button
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsSourcesExpanded(!isSourcesExpanded);
+              }}
+              className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-black/40 border border-white/25 backdrop-blur-sm text-gray-300 hover:bg-black/50 hover:border-white/35 transition-all"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              <span>Sources: {signal.cross_referenced_sources.length}</span>
+              <motion.svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="12" 
+                height="12" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+                animate={{ rotate: isSourcesExpanded ? 180 : 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </motion.svg>
+            </motion.button>
+
+            {/* Expanded Sources List */}
+            <AnimatePresence>
+              {isSourcesExpanded && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.25, ease: [0.22, 0.61, 0.36, 1] }}
+                  className="overflow-hidden"
+                >
+                  <div 
+                    className="flex gap-2 mt-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent"
+                    style={{ 
+                      scrollbarWidth: 'thin',
+                      scrollbarColor: 'rgba(255,255,255,0.2) transparent'
+                    }}
+                  >
+                    {signal.cross_referenced_sources.map((source, i) => (
+                      <motion.div
+                        key={i}
+                        className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold bg-black/50 border border-white/20 backdrop-blur-sm text-gray-200"
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.05, duration: 0.2 }}
+                        whileHover={{ scale: 1.05, borderColor: 'rgba(255,255,255,0.35)' }}
+                      >
+                        {source}
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         )}
       </div>
