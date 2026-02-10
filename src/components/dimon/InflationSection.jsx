@@ -217,42 +217,67 @@ export default function InflationSection({ data }) {
         transition={{ duration: 0.6, ease: HORIZON_EASE, delay: 0.1 }}
         className="relative rounded-2xl overflow-hidden mb-6"
         style={{
-          padding: '24px',
-          background: 'linear-gradient(135deg, rgba(94, 167, 255, 0.08) 0%, rgba(94, 167, 255, 0.04) 100%)',
-          backdropFilter: 'blur(32px) saturate(165%)',
-          WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-          border: '1px solid rgba(94, 167, 255, 0.18)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.12)'
+          padding: '28px 32px',
+          background: 'linear-gradient(135deg, rgba(94, 167, 255, 0.10) 0%, rgba(94, 167, 255, 0.05) 100%)',
+          backdropFilter: 'blur(36px) saturate(168%)',
+          WebkitBackdropFilter: 'blur(36px) saturate(168%)',
+          border: '1px solid rgba(94, 167, 255, 0.22)',
+          boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.10), 0 6px 20px rgba(0,0,0,0.14)'
         }}
       >
         <div style={{
           position: 'absolute',
           top: 0,
-          left: '15%',
-          right: '15%',
-          height: '1.5px',
-          background: 'linear-gradient(90deg, transparent, rgba(94, 167, 255, 0.30), transparent)',
+          left: '12%',
+          right: '12%',
+          height: '2px',
+          background: 'linear-gradient(90deg, transparent, rgba(94, 167, 255, 0.38), transparent)',
           pointerEvents: 'none'
         }} />
 
-        <h3 className="text-base font-bold mb-3" style={{ color: 'rgba(255,255,255,0.95)' }}>
-          Why CPI Is Running Above PCE
-        </h3>
-
-        <div className="space-y-3 mb-4">
-          <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.80)' }}>
-            CPI remains elevated due to its heavy weighting of shelter costs, which lag real-time housing conditions.
-          </p>
-          <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.80)' }}>
-            PCE shows softer services inflation and is the Fed's preferred gauge.
+        {/* Forced Takeaway — Zero Thinking Required */}
+        <div className="mb-6 pb-5 border-b" style={{ borderColor: 'rgba(94, 167, 255, 0.18)' }}>
+          <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'rgba(94, 167, 255, 0.80)', letterSpacing: '0.08em' }}>
+            Primary Takeaway
+          </div>
+          <p className="text-lg font-bold leading-tight" style={{ color: 'rgba(255,255,255,0.98)' }}>
+            CPI overstates inflation pressure — Core PCE reflects the Fed's reality.
           </p>
         </div>
 
-        <div className="flex items-start gap-2 px-4 py-3 rounded-xl" style={{ background: 'rgba(94, 167, 255, 0.12)', border: '1px solid rgba(94, 167, 255, 0.20)' }}>
-          <ArrowRight className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: 'rgba(94, 167, 255, 0.90)' }} />
-          <p className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.95)' }}>
-            The Fed anchors policy decisions on Core PCE, not CPI headlines.
+        {/* Compressed Explanation */}
+        <div className="mb-5">
+          <h3 className="text-sm font-bold mb-3 uppercase tracking-wider" style={{ color: 'rgba(255,255,255,0.70)', letterSpacing: '0.06em' }}>
+            Why CPI Is Running Above PCE
+          </h3>
+          <p className="text-sm leading-relaxed mb-2" style={{ color: 'rgba(255,255,255,0.85)' }}>
+            CPI remains elevated due to its heavy weighting of shelter costs, which lag real-time housing conditions. PCE shows softer services inflation and is the Fed's preferred policy gauge.
           </p>
+        </div>
+
+        {/* Policy Benchmark Declaration */}
+        <div className="flex items-center gap-3 mb-5 px-4 py-3 rounded-xl" style={{ background: 'rgba(94, 167, 255, 0.14)', border: '1px solid rgba(94, 167, 255, 0.24)' }}>
+          <div className="flex-1">
+            <div className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: 'rgba(94, 167, 255, 0.90)', letterSpacing: '0.08em' }}>
+              Policy-Relevant Benchmark
+            </div>
+            <div className="text-2xl font-bold" style={{ color: 'rgba(255,255,255,0.96)' }}>
+              Core PCE ({data.pce_core_yoy ? `${data.pce_core_yoy}%` : '2.9%'})
+            </div>
+          </div>
+        </div>
+
+        {/* Market Translation — Plain English */}
+        <div className="flex items-start gap-2 px-4 py-3 rounded-xl" style={{ background: 'rgba(94, 167, 255, 0.10)', border: '1px solid rgba(94, 167, 255, 0.18)' }}>
+          <ArrowRight className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: 'rgba(94, 167, 255, 0.90)' }} />
+          <div>
+            <div className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: 'rgba(94, 167, 255, 0.80)', letterSpacing: '0.06em' }}>
+              Translation for Markets
+            </div>
+            <p className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.92)' }}>
+              CPI headlines may look hot, but they exaggerate policy pressure relative to what the Fed actually responds to.
+            </p>
+          </div>
         </div>
       </motion.div>
 
