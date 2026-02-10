@@ -3,7 +3,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, ChevronDown, Info } from 'lucide-react';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
-const SPRING = { type: "spring", stiffness: 280, damping: 28, mass: 0.8 };
+const SMOOTH_EXPAND = { 
+  type: "spring", 
+  stiffness: 260, 
+  damping: 30, 
+  mass: 0.85,
+  restDelta: 0.001,
+  restSpeed: 0.001
+};
 
 // Arrow icon selector
 const getArrowIcon = (direction) => {
@@ -103,13 +110,15 @@ export default function InflationSection({ data }) {
     >
       {/* PRIMARY STATUS CARD */}
       <div
-        className="relative rounded-3xl overflow-hidden"
+        className="relative rounded-3xl"
         style={{
           background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
           backdropFilter: 'blur(40px) saturate(165%)',
           WebkitBackdropFilter: 'blur(40px) saturate(165%)',
           border: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.08)'
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.08)',
+          overflow: 'hidden',
+          willChange: 'transform'
         }}
       >
         {/* Top specular highlight */}
@@ -178,13 +187,15 @@ export default function InflationSection({ data }) {
 
       {/* DRAWER 1 - WHY INFLATION LOOKS THIS WAY */}
       <motion.div
-        className="relative rounded-2xl overflow-hidden"
+        className="relative rounded-2xl"
         style={{
           background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
           backdropFilter: 'blur(40px) saturate(165%)',
           WebkitBackdropFilter: 'blur(40px) saturate(165%)',
           border: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.08)'
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.08)',
+          overflow: 'hidden',
+          willChange: 'box-shadow'
         }}
         whileHover={{
           boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), 0 8px 32px rgba(0,0,0,0.12)',
@@ -193,9 +204,10 @@ export default function InflationSection({ data }) {
       >
         <button
           onClick={() => setDrawer1Open(!drawer1Open)}
-          className="w-full px-5 py-4 text-left flex items-center justify-between transition-all"
+          className="w-full px-5 py-4 text-left flex items-center justify-between"
           style={{
-            background: drawer1Open ? 'rgba(255, 255, 255, 0.02)' : 'transparent'
+            background: drawer1Open ? 'rgba(255, 255, 255, 0.02)' : 'transparent',
+            transition: 'background 0.2s ease-out'
           }}
         >
           <span className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.90)' }}>
@@ -203,20 +215,20 @@ export default function InflationSection({ data }) {
           </span>
           <motion.div
             animate={{ rotate: drawer1Open ? 180 : 0 }}
-            transition={SPRING}
+            transition={SMOOTH_EXPAND}
           >
             <ChevronDown className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.50)' }} />
           </motion.div>
         </button>
         
-        <AnimatePresence>
+        <AnimatePresence initial={false} mode="wait">
           {drawer1Open && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={SPRING}
-              className="overflow-hidden"
+              transition={SMOOTH_EXPAND}
+              style={{ overflow: 'hidden', willChange: 'height, opacity' }}
             >
               <div className="px-5 pb-4 pt-2 space-y-3">
                 {inflationData.drivers.slice(0, 3).map((driver, idx) => (
@@ -244,13 +256,15 @@ export default function InflationSection({ data }) {
 
       {/* DRAWER 2 - WHO FEELS THIS MOST */}
       <motion.div
-        className="relative rounded-2xl overflow-hidden"
+        className="relative rounded-2xl"
         style={{
           background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
           backdropFilter: 'blur(40px) saturate(165%)',
           WebkitBackdropFilter: 'blur(40px) saturate(165%)',
           border: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.08)'
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.08)',
+          overflow: 'hidden',
+          willChange: 'box-shadow'
         }}
         whileHover={{
           boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), 0 8px 32px rgba(0,0,0,0.12)',
@@ -259,9 +273,10 @@ export default function InflationSection({ data }) {
       >
         <button
           onClick={() => setDrawer2Open(!drawer2Open)}
-          className="w-full px-5 py-4 text-left flex items-center justify-between transition-all"
+          className="w-full px-5 py-4 text-left flex items-center justify-between"
           style={{
-            background: drawer2Open ? 'rgba(255, 255, 255, 0.02)' : 'transparent'
+            background: drawer2Open ? 'rgba(255, 255, 255, 0.02)' : 'transparent',
+            transition: 'background 0.2s ease-out'
           }}
         >
           <span className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.90)' }}>
@@ -269,20 +284,20 @@ export default function InflationSection({ data }) {
           </span>
           <motion.div
             animate={{ rotate: drawer2Open ? 180 : 0 }}
-            transition={SPRING}
+            transition={SMOOTH_EXPAND}
           >
             <ChevronDown className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.50)' }} />
           </motion.div>
         </button>
         
-        <AnimatePresence>
+        <AnimatePresence initial={false} mode="wait">
           {drawer2Open && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={SPRING}
-              className="overflow-hidden"
+              transition={SMOOTH_EXPAND}
+              style={{ overflow: 'hidden', willChange: 'height, opacity' }}
             >
               <div className="px-5 pb-4 pt-2">
                 <div className="grid grid-cols-2 gap-4">
@@ -311,13 +326,15 @@ export default function InflationSection({ data }) {
 
       {/* DRAWER 3 - HOW TO READ THE DATA */}
       <motion.div
-        className="relative rounded-2xl overflow-hidden"
+        className="relative rounded-2xl"
         style={{
           background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.028) 100%)',
           backdropFilter: 'blur(40px) saturate(165%)',
           WebkitBackdropFilter: 'blur(40px) saturate(165%)',
           border: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.08)'
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.08)',
+          overflow: 'hidden',
+          willChange: 'box-shadow'
         }}
         whileHover={{
           boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), 0 8px 32px rgba(0,0,0,0.12)',
@@ -326,9 +343,10 @@ export default function InflationSection({ data }) {
       >
         <button
           onClick={() => setDrawer3Open(!drawer3Open)}
-          className="w-full px-5 py-4 text-left flex items-center justify-between transition-all"
+          className="w-full px-5 py-4 text-left flex items-center justify-between"
           style={{
-            background: drawer3Open ? 'rgba(255, 255, 255, 0.02)' : 'transparent'
+            background: drawer3Open ? 'rgba(255, 255, 255, 0.02)' : 'transparent',
+            transition: 'background 0.2s ease-out'
           }}
         >
           <span className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.90)' }}>
@@ -336,53 +354,56 @@ export default function InflationSection({ data }) {
           </span>
           <motion.div
             animate={{ rotate: drawer3Open ? 180 : 0 }}
-            transition={SPRING}
+            transition={SMOOTH_EXPAND}
           >
             <ChevronDown className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.50)' }} />
           </motion.div>
         </button>
         
-        <AnimatePresence>
+        <AnimatePresence initial={false} mode="wait">
           {drawer3Open && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={SPRING}
-              className="overflow-hidden"
+              transition={SMOOTH_EXPAND}
+              style={{ overflow: 'hidden', willChange: 'height, opacity' }}
             >
               <div className="px-5 pb-4 pt-2 space-y-3">
                 {/* CPI vs PCE - Nested */}
                 <div>
                   <button
                     onClick={() => setShowCPIPCE(!showCPIPCE)}
-                    className="w-full flex items-center justify-between py-3 px-4 rounded-xl transition-colors"
+                    className="w-full flex items-center justify-between py-3 px-4 rounded-xl"
                     style={{
                       background: 'rgba(255, 255, 255, 0.03)',
-                      border: '1px solid rgba(255,255,255,0.06)'
+                      border: '1px solid rgba(255,255,255,0.06)',
+                      transition: 'background 0.2s ease-out'
                     }}
                   >
                     <div className="text-left">
                       <div className="text-sm font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.90)' }}>CPI vs PCE</div>
                       <div className="text-xs" style={{ color: 'rgba(255,255,255,0.60)' }}>{inflationData.cpi_pce_collapsed}</div>
                     </div>
-                    <ChevronDown 
-                      className="w-4 h-4 transition-transform" 
-                      style={{ 
-                        color: 'rgba(255,255,255,0.40)',
-                        transform: showCPIPCE ? 'rotate(180deg)' : 'rotate(0deg)'
-                      }} 
-                    />
+                    <motion.div
+                      animate={{ rotate: showCPIPCE ? 180 : 0 }}
+                      transition={SMOOTH_EXPAND}
+                    >
+                      <ChevronDown 
+                        className="w-4 h-4" 
+                        style={{ color: 'rgba(255,255,255,0.40)' }} 
+                      />
+                    </motion.div>
                   </button>
                   
-                  <AnimatePresence>
+                  <AnimatePresence initial={false} mode="wait">
                     {showCPIPCE && (
                       <motion.div
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        transition={SPRING}
-                        className="overflow-hidden"
+                        transition={SMOOTH_EXPAND}
+                        style={{ overflow: 'hidden', willChange: 'height, opacity' }}
                       >
                         <div className="pt-3 space-y-2">
                           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>• {inflationData.cpi_plain}</p>
