@@ -970,6 +970,7 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
               border: var(--mp-border);
               box-shadow: var(--mp-shadow-soft);
               overflow: visible;
+              transition: box-shadow var(--ri-dur) var(--ri-ease-io), background var(--ri-dur) var(--ri-ease-io);
             }
             
             /* Inner shadow mask for depth (v1.1) */
