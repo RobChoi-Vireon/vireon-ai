@@ -447,13 +447,9 @@ function SectorHeatmap({ setSelectedSector }) {
                 </p>
 
                 {/* Benchmark Chip */}
-                <div 
-                  className="relative inline-block"
-                  onMouseEnter={() => setBenchmarkTooltip(sector.name)}
-                  onMouseLeave={() => setBenchmarkTooltip(null)}
-                >
+                <div className="relative inline-block">
                   <div 
-                    className="inline-flex items-center rounded-[10px] cursor-help"
+                    className="inline-flex items-center rounded-[10px]"
                     style={{
                       padding: '6px 10px',
                       background: 'rgba(255, 255, 255, 0.032)',
@@ -468,38 +464,6 @@ function SectorHeatmap({ setSelectedSector }) {
                       Benchmark: {getBenchmarkTicker(sector.name)}
                     </span>
                   </div>
-
-                  {/* Benchmark Tooltip */}
-                  <AnimatePresence>
-                    {benchmarkTooltip === sector.name && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 4, scale: 0.94 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 4, scale: 0.94 }}
-                        transition={{ duration: 0.14, ease: [0.22, 0.61, 0.36, 1] }}
-                        className="absolute bottom-full mb-2 left-0 w-max max-w-[280px] z-50 rounded-[12px] pointer-events-none"
-                        style={{ 
-                          padding: '10px 12px',
-                          background: 'linear-gradient(135deg, rgba(12, 16, 22, 0.96), rgba(18, 22, 30, 0.94))',
-                          backdropFilter: 'blur(20px) saturate(165%)',
-                          WebkitBackdropFilter: 'blur(20px) saturate(165%)',
-                          border: '1px solid rgba(255, 255, 255, 0.10)',
-                          boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 6px 20px rgba(0,0,0,0.30)'
-                        }}
-                      >
-                        <div className="text-[11px] font-medium leading-relaxed" style={{ color: 'rgba(255,255,255,0.72)' }}>
-                          {SECTOR_BENCHMARK_FULL_NAMES[sector.name]}
-                        </div>
-                        <div className="absolute top-full left-6 w-2 h-2 rotate-45" 
-                             style={{ 
-                               background: 'linear-gradient(135deg, rgba(12, 16, 22, 0.96), rgba(18, 22, 30, 0.94))',
-                               borderBottom: '1px solid rgba(255, 255, 255, 0.10)',
-                               borderRight: '1px solid rgba(255, 255, 255, 0.10)'
-                             }}
-                        />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
                 </div>
                 </div>
 
@@ -635,13 +599,9 @@ function SectorHeatmap({ setSelectedSector }) {
                         </AnimatePresence>
 
                         {/* Benchmark Chip - Compact Tiles */}
-                        <div 
-                          className="relative inline-block"
-                          onMouseEnter={() => setBenchmarkTooltip(sector.name)}
-                          onMouseLeave={() => setBenchmarkTooltip(null)}
-                        >
+                        <div className="relative inline-block">
                           <div 
-                            className="inline-flex items-center rounded-[8px] cursor-help"
+                            className="inline-flex items-center rounded-[8px]"
                             style={{
                               padding: '4px 8px',
                               background: 'rgba(255, 255, 255, 0.028)',
@@ -656,38 +616,6 @@ function SectorHeatmap({ setSelectedSector }) {
                               {getBenchmarkTicker(sector.name)}
                             </span>
                           </div>
-
-                          {/* Benchmark Tooltip */}
-                          <AnimatePresence>
-                            {benchmarkTooltip === sector.name && (
-                              <motion.div
-                                initial={{ opacity: 0, y: 4, scale: 0.94 }}
-                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                exit={{ opacity: 0, y: 4, scale: 0.94 }}
-                                transition={{ duration: 0.14, ease: [0.22, 0.61, 0.36, 1] }}
-                                className="absolute bottom-full mb-2 left-0 w-max max-w-[280px] z-50 rounded-[12px] pointer-events-none"
-                                style={{ 
-                                  padding: '10px 12px',
-                                  background: 'linear-gradient(135deg, rgba(12, 16, 22, 0.96), rgba(18, 22, 30, 0.94))',
-                                  backdropFilter: 'blur(20px) saturate(165%)',
-                                  WebkitBackdropFilter: 'blur(20px) saturate(165%)',
-                                  border: '1px solid rgba(255, 255, 255, 0.10)',
-                                  boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.08), 0 6px 20px rgba(0,0,0,0.30)'
-                                }}
-                              >
-                                <div className="text-[11px] font-medium leading-relaxed" style={{ color: 'rgba(255,255,255,0.72)' }}>
-                                  {SECTOR_BENCHMARK_FULL_NAMES[sector.name]}
-                                </div>
-                                <div className="absolute top-full left-6 w-2 h-2 rotate-45" 
-                                     style={{ 
-                                       background: 'linear-gradient(135deg, rgba(12, 16, 22, 0.96), rgba(18, 22, 30, 0.94))',
-                                       borderBottom: '1px solid rgba(255, 255, 255, 0.10)',
-                                       borderRight: '1px solid rgba(255, 255, 255, 0.10)'
-                                     }}
-                                />
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
                         </div>
                       </div>
                     </motion.div>
