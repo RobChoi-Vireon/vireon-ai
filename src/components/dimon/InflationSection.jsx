@@ -49,47 +49,47 @@ export default function InflationSection({ data }) {
 
   // Mock data structure - replace with actual data binding
   const inflationData = {
-    timestamp_et: data.timestamp_et || new Date().toLocaleString('en-US', { timeZone: 'America/New_York', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
-    delta_summary: data.delta_summary || "Core inflation ticked down 0.1pp while services remain elevated; no major surprises",
+    timestamp_et: data.timestamp_et || "Feb 12, 6:05 PM ET",
+    delta_summary: data.delta_summary || "No new CPI or PCE release; markets positioning ahead of January CPI test.",
     confidence_score: data.confidence_score || 82,
     confidence_reason: data.confidence_reason || "High-quality data from BLS, Fed, and market surveys",
     
     // State rows
-    headline_state: { arrow: 'down', label: 'Headline inflation', status: 'Cooling slowly' },
-    core_state: { arrow: 'flat', label: 'Core inflation', status: 'Sticky' },
-    services_state: { arrow: 'up', label: 'Services inflation', status: 'Elevated' },
+    headline_state: { arrow: 'flat', label: 'Headline inflation', status: 'Mid-2% YoY; above target but not re-accelerating' },
+    core_state: { arrow: 'flat', label: 'Core inflation', status: 'Mid-2% range; sticky but roughly flat month-over-month' },
+    services_state: { arrow: 'up', label: 'Services inflation', status: 'Shelter and select services applying modest but persistent pressure; goods muted' },
     
     // Why it matters
-    fed_implication: "Fed likely holds rates near current levels through Q2 given persistent services pressure",
-    market_implication: "Rate-sensitive sectors (REITs, utilities) remain under pressure until clear disinflation",
+    fed_implication: "Policy remains restrictive and data-dependent; Fed not in a rush to cut further.",
+    market_implication: "Inflation remains in high-2% zone; tomorrow's CPI is the key credibility test.",
     
     // Primary drivers
     drivers: [
-      { rank: 1, name: 'Shelter & housing', weight: 45, reason: 'Rent shows up slowly in official data' },
-      { rank: 2, name: 'Services (not housing)', weight: 35, reason: 'Wages still rising in leisure, healthcare' },
-      { rank: 3, name: 'Goods deflation', weight: 20, reason: 'Supply chains normalized' }
+      { rank: 1, name: 'Shelter & housing', weight: 45, reason: 'Rent data lags and keeps services inflation firm' },
+      { rank: 2, name: 'Services ex-housing', weight: 35, reason: 'Wage-sensitive categories easing slowly' },
+      { rank: 3, name: 'Goods disinflation', weight: 20, reason: 'Supply normalization offsetting services stickiness' }
     ],
     
     // Winners/Losers
-    winners: ['Lenders', 'Cash holders', 'Short-duration bonds', 'Pricing power firms'],
-    losers: ['Renters', 'Fixed-income retirees', 'Long-duration growth stocks', 'Variable-rate borrowers'],
+    winners: ['Cash holders', 'Short-duration bonds', 'Lenders', 'Firms with pricing power'],
+    losers: ['Renters', 'Long-duration growth equities', 'Fixed-income retirees', 'Variable-rate borrowers'],
     
     // CPI vs PCE
-    cpi_pce_collapsed: "CPI shows what people pay. PCE shows what people actually spend — the Fed prefers this.",
-    cpi_plain: "CPI includes rent, gas, food — and updates slowly",
-    pce_plain: "PCE adjusts when people change what they buy",
-    why_fed_prefers: "The Fed prefers PCE because it reflects real behavior faster",
+    cpi_pce_collapsed: "CPI measures consumer basket; PCE adjusts for spending shifts and is Fed-preferred.",
+    cpi_plain: "CPI measures consumer basket",
+    pce_plain: "PCE adjusts for spending shifts",
+    why_fed_prefers: "Markets react to surprises vs expectations, not the absolute level",
     
     // Watch items
     watch_short: [
-      "Services inflation: watch if price pressure stays high",
-      "Wage growth: still driving service costs up",
-      "Sticky services: the part the Fed worries about most"
+      "January CPI composition, especially shelter",
+      "Services ex-shelter momentum",
+      "Cleveland Fed nowcast revisions"
     ],
     watch_long: [
-      "Housing costs: cool slowly and show up late in official data",
-      "Labor market: cooling would ease wage pressure",
-      "Fed outlook: watch for tone changes on rates"
+      "Labor market cooling trajectory",
+      "Real wage growth vs inflation",
+      "Fed guidance on 2026 rate path"
     ],
     
     // Sources
