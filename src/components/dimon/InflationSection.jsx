@@ -94,10 +94,10 @@ export default function InflationSection({ data }) {
     
     // Sources
     sources: [
-      { name: 'BLS CPI', weight: 35 },
-      { name: 'BEA PCE', weight: 30 },
-      { name: 'Federal Reserve / FOMC', weight: 25 },
-      { name: 'Surveys / Nowcasts', weight: 10 }
+      { name: 'Federal Reserve / FOMC' },
+      { name: 'Cleveland Fed Nowcast' },
+      { name: 'BLS CPI (Upcoming)' },
+      { name: 'BEA PCE (Recent Context)' }
     ]
   };
 
