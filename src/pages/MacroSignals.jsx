@@ -374,29 +374,29 @@ const MOCK_DATA = {
   sentiment_flow: { green: 28, blue: 44, red: 28 },
   insight_line: "Markets are playing it safe — we found three areas where experts disagree about borrowing conditions.",
   inflation: {
-    cpi_headline_yoy: 3.4,
-    cpi_core_yoy: 3.9,
-    pce_headline_yoy: 2.6,
-    pce_core_yoy: 2.9,
-    cpi_mom: 0.3,
-    pce_mom: 0.2,
-    last_updated: "December 2025",
+    cpi_headline_yoy: 2.4,
+    cpi_core_yoy: 2.6,
+    pce_headline_yoy: 2.3,
+    pce_core_yoy: 2.5,
+    cpi_mom: 0.2,
+    pce_mom: 0.1,
+    last_updated: "February 2026",
     state_tag: "Sticky",
-    policy_bias: "Hawkish",
-    comparison_headline: "CPI running above PCE",
-    comparison_detail: "Shelter costs remain elevated in CPI, while PCE shows softer services inflation. Fed watches Core PCE most closely.",
+    policy_bias: "Restrictive",
+    comparison_headline: "CPI measures consumer basket; PCE adjusts for spending shifts",
+    comparison_detail: "CPI measures consumer basket; PCE adjusts for spending shifts and is Fed-preferred. Markets react to surprises vs expectations, not the absolute level.",
     interpretation_bullets: [
-      "Core inflation remains above the Fed's 2% target, with services prices showing persistence.",
-      "Housing costs are the primary driver of CPI strength, creating a wedge between CPI and PCE measures.",
-      "Month-over-month readings suggest disinflation has stalled, keeping pressure on monetary policy.",
-      "Labor market strength continues to support wage growth, limiting downside in services inflation."
+      "Inflation remains in high-2% zone; tomorrow's CPI is the key credibility test.",
+      "Shelter data lags and keeps services inflation firm, while goods disinflation offsets some pressure.",
+      "Services ex-housing are easing slowly due to wage-sensitive categories.",
+      "Policy remains restrictive and data-dependent; Fed not in a rush to cut further."
     ],
     market_implications: [
-      { label: "Rates", direction: "up", note: "Higher for longer" },
-      { label: "Equities", direction: "down", note: "Multiple compression" },
-      { label: "Credit", direction: "neutral", note: "Spreads stable" },
-      { label: "USD", direction: "up", note: "Rate differential support" },
-      { label: "Risk", direction: "down", note: "Policy uncertainty" }
+      { label: "Rates", direction: "neutral", note: "Data-dependent stance" },
+      { label: "Equities", direction: "neutral", note: "Watching for CPI surprise" },
+      { label: "Credit", direction: "neutral", note: "Positioning ahead of test" },
+      { label: "USD", direction: "neutral", note: "Range-bound" },
+      { label: "Risk", direction: "neutral", note: "Wait-and-see mode" }
     ]
   }
 };
