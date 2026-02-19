@@ -287,10 +287,10 @@ export default function DigestHeader({
     sources: sessionData?.top_block?.overview?.sources_count || 0,
     signals: sessionData?.top_block?.overview?.signals_count || 0
   };
-  const sentimentPosition = sessionData?.top_block?.overview?.sentiment?.position || "neutral";
-  const sentimentLabel = sessionData?.top_block?.overview?.sentiment?.label || "Neutral";
-  const sentimentConfidence = sessionData?.top_block?.overview?.sentiment?.confidence || 0;
-  const insightLine = sessionData?.top_block?.overview?.sentiment?.commentary || "Markets are being evaluated.";
+  const sentimentPosition = sessionData?.top_block?.sentiment?.position || "neutral";
+  const sentimentLabel = sessionData?.top_block?.sentiment?.label || "Neutral";
+  const sentimentConfidence = sessionData?.top_block?.sentiment?.confidence || 0;
+  const insightLine = sessionData?.top_block?.sentiment?.commentary || "Markets are being evaluated.";
   
   // Map sentiment position to sentimentFlow for gauge visualization
   const sentimentFlow = (() => {
