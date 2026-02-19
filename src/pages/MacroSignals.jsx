@@ -433,17 +433,22 @@ export default function MacroSignalsPage() {
     performance.mark('digest_fetch_start');
 
     try {
-      // Simulate fetching data with a delay
-      await new Promise(resolve => setTimeout(resolve, 1200));
+      const { base44 } = await import('@/api/base44Client');
+      const session = await base44.entities.OrientationSession.get('6996c712a69ab01cfc52598c');
       
-      setDigest(sanitizedDigest);
+      if (session) {
+        setDigest(session);
+      } else {
+        setDigest(sanitizedDigest);
+      }
+      
       performance.mark('digest_fetch_end');
       performance.measure('digest_fetch_duration', 'digest_fetch_start', 'digest_fetch_end');
 
     } catch (err) {
-      console.error("Error fetching digest:", err);
-      setError(err.message || "Digest unavailable. Please try again shortly.");
-      throw err;
+      console.error("Error fetching orientation session:", err);
+      setError(err.message || "Session unavailable. Please try again shortly.");
+      setDigest(sanitizedDigest);
     } finally {
       setIsLoading(false);
     }
