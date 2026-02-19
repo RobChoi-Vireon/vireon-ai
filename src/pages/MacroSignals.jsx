@@ -707,7 +707,6 @@ export default function MacroSignalsPage() {
               isLoading={isLoading}
               sentimentFlow={digest?.sentiment_flow}
               insightLine={digest?.insight_line}
-              digest={digest}
             />
           </div>
           

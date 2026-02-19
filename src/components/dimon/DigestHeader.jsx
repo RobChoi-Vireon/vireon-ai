@@ -281,8 +281,7 @@ export default function DigestHeader({
   stats = { sources: 43, signals: 7 },
   sentimentFlow = { green: 28, blue: 44, red: 28 },
   insightLine = "Markets lean risk-off — 3 divergences flagged in global credit spreads.",
-  error = null,
-  digest = null
+  error = null
 }) {
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -392,23 +391,7 @@ export default function DigestHeader({
   };
 
   const getSentimentProps = () => {
-    // Use top_block sentiment position if available
-    const position = digest?.top_block?.sentiment?.position;
-    
-    if (position) {
-      switch (position) {
-        case 'risk_on':
-          return { baseHue: '#73E6D2', luminance: 0.78, motionSpeed: 1.2, bloom: 0.6 };
-        case 'risk_off':
-          return { baseHue: '#ECA5FF', luminance: 0.83, motionSpeed: 1.3, bloom: 0.75 };
-        case 'neutral':
-        default:
-          return { baseHue: '#8DC4FF', luminance: 0.70, motionSpeed: 1.0, bloom: 0.4 };
-      }
-    }
-    
-    // Fallback to sentimentFlow calculation
-    if (!sentimentFlow) return { baseHue: '#8DC4FF', luminance: 0.70, motionSpeed: 1.0, bloom: 0.4 };
+    if (!sentimentFlow) return { baseHue: '#8DC4FF', luminance: 0.70, motionSpeed: 1.0, bloom: 0.4 }; // Default if no data
     const sentiment = getDominantSentiment();
     switch (sentiment) {
       case 'opportunity':
@@ -425,15 +408,6 @@ export default function DigestHeader({
 
   // Calculate nucleus color based on sentiment
   const getNucleusColor = () => {
-    // Use top_block sentiment position if available
-    const position = digest?.top_block?.sentiment?.position;
-    if (position) {
-      if (position === 'risk_on') return '#73E6D2'; // Mint
-      if (position === 'risk_off') return '#ECA5FF'; // Lavender
-      return '#8DC4FF'; // Blue
-    }
-    
-    // Fallback to sentimentFlow calculation
     if (!sentimentFlow) return '#8DC4FF';
     const sentiment = getDominantSentiment();
     if (sentiment === 'opportunity') return '#73E6D2'; // Mint
@@ -758,7 +732,7 @@ export default function DigestHeader({
               >
                 <Clock className="w-3.5 h-3.5" style={{ color: sentimentProps.baseHue, opacity: 0.92, strokeWidth: 2.0, filter: 'brightness(1.03)' }} />
                 <span className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.82)' }}>
-                  Updated <span style={{ color: 'rgba(255,255,255,0.96)', fontWeight: 600 }}>{digest?.top_block?.as_of?.updated_ago || lastUpdated}</span>
+                  Updated <span style={{ color: 'rgba(255,255,255,0.96)', fontWeight: 600 }}>{lastUpdated}</span>
                 </span>
               </motion.div>
 
@@ -795,7 +769,7 @@ export default function DigestHeader({
               >
                 <Database className="w-3.5 h-3.5" style={{ color: sentimentProps.baseHue, opacity: 0.92, strokeWidth: 2.0, filter: 'brightness(1.03)' }} />
                 <span className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.82)' }}>
-                  Sources <span style={{ color: 'rgba(255,255,255,0.96)', fontWeight: 600 }}>{digest?.top_block?.overview?.sources_count || stats.sources}</span>
+                  Sources <span style={{ color: 'rgba(255,255,255,0.96)', fontWeight: 600 }}>{stats.sources}</span>
                 </span>
               </motion.div>
 
@@ -832,7 +806,7 @@ export default function DigestHeader({
               >
                 <Zap className="w-3.5 h-3.5" style={{ color: sentimentProps.baseHue, opacity: 0.92, strokeWidth: 2.0, filter: 'brightness(1.03)' }} />
                 <span className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.82)' }}>
-                  Signals <span style={{ color: sentimentProps.baseHue, fontWeight: 700, filter: 'brightness(1.08)' }}>{digest?.top_block?.overview?.signals_count || stats.signals}</span>
+                  Signals <span style={{ color: sentimentProps.baseHue, fontWeight: 700, filter: 'brightness(1.08)' }}>{stats.signals}</span>
                 </span>
               </motion.div>
             </motion.div>
@@ -852,7 +826,7 @@ export default function DigestHeader({
                   marginBottom: '32px'
                 }}
               >
-                How markets are feeling today, based on {digest?.top_block?.overview?.sources_count || stats.sources} sources
+                How markets are feeling today, based on {stats.sources} sources
               </label>
 
               {/* Arc Visualization */}
@@ -1246,7 +1220,7 @@ export default function DigestHeader({
                         letterSpacing: '0.06em'
                       }}
                     >
-                      {digest?.top_block?.sentiment?.label || (getDominantSentiment() === 'opportunity' ? 'Moderately Risk-On' : getDominantSentiment() === 'risk' ? 'Moderately Risk-Off' : 'Market Neutral')}
+                      {getDominantSentiment() === 'opportunity' ? 'Moderately Risk-On' : getDominantSentiment() === 'risk' ? 'Moderately Risk-Off' : 'Market Neutral'}
                     </span>
                   </motion.div>
                 </div>
@@ -1267,7 +1241,7 @@ export default function DigestHeader({
               animate={{ opacity: isLoaded ? 1 : 0 }}
               transition={{ duration: 0.3, delay: 1.0 }}
             >
-              {digest?.top_block?.sentiment?.commentary || insightLine}
+              {insightLine}
             </motion.p>
           </motion.div>
 
@@ -1404,7 +1378,7 @@ export default function DigestHeader({
               >
                 <input
                   type="date"
-                  value={digest?.top_block?.as_of?.date_display || targetDate}
+                  value={targetDate}
                   onChange={(e) => setTargetDate(e.target.value)}
                   disabled={isLoading}
                   className="horizon-date-input text-sm border-none outline-none w-full transition-all"
