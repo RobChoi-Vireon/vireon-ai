@@ -4,6 +4,7 @@ import { DimonDigestRun } from '@/entities/DimonDigestRun';
 import { generateDimonDigest } from '@/functions/generateDimonDigest';
 import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import HorizonWelcomeOverlay from '@/components/core/HorizonWelcomeOverlay';
+import { base44 } from '@/api/base44Client';
 
 import DigestHeader from '@/components/dimon/DigestHeader';
 import PrioritySignalStrip from '@/components/dimon/PrioritySignalStrip';
