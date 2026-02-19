@@ -719,8 +719,7 @@ export default function MacroSignalsPage() {
               targetDate={targetDate}
               setTargetDate={setTargetDate}
               isLoading={isLoading}
-              sentimentFlow={digest?.sentiment_flow}
-              insightLine={digest?.insight_line}
+              sessionData={sessionData}
             />
           </div>
           
