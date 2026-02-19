@@ -277,12 +277,27 @@ export default function DigestHeader({
   targetDate,
   setTargetDate,
   isLoading,
-  lastUpdated = "2m ago",
-  stats = { sources: 43, signals: 7 },
-  sentimentFlow = { green: 28, blue: 44, red: 28 },
-  insightLine = "Markets lean risk-off — 3 divergences flagged in global credit spreads.",
+  sessionData = null,
   error = null
 }) {
+  // Bind to top_block with null-safe fallbacks
+  const lastUpdated = sessionData?.top_block?.as_of?.updated_ago || "—";
+  const dateDisplay = sessionData?.top_block?.as_of?.date_display || "—";
+  const stats = {
+    sources: sessionData?.top_block?.overview?.sources_count || 0,
+    signals: sessionData?.top_block?.overview?.signals_count || 0
+  };
+  const sentimentPosition = sessionData?.top_block?.overview?.sentiment?.position || "neutral";
+  const sentimentLabel = sessionData?.top_block?.overview?.sentiment?.label || "Neutral";
+  const sentimentConfidence = sessionData?.top_block?.overview?.sentiment?.confidence || 0;
+  const insightLine = sessionData?.top_block?.overview?.sentiment?.commentary || "Markets are being evaluated.";
+  
+  // Map sentiment position to sentimentFlow for gauge visualization
+  const sentimentFlow = (() => {
+    if (sentimentPosition === "risk_on") return { green: 60, blue: 25, red: 15 };
+    if (sentimentPosition === "risk_off") return { green: 15, blue: 25, red: 60 };
+    return { green: 28, blue: 44, red: 28 }; // neutral
+  })();
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
