@@ -430,12 +430,24 @@ export default function MacroSignalsPage() {
     setIsLoading(true);
     setError(null);
     setDigest(null);
+    setSessionData(null);
 
     // Add performance mark for tracking
     performance.mark('digest_fetch_start');
 
     try {
-      // Simulate fetching data with a delay
+      // Fetch latest OrientationSession where session_type = "macro_signals"
+      const sessions = await base44.entities.OrientationSession.filter(
+        { session_type: 'macro_signals' },
+        '-updated_date',
+        1
+      );
+      
+      if (sessions && sessions.length > 0) {
+        setSessionData(sessions[0]);
+      }
+      
+      // Simulate fetching digest data with a delay
       await new Promise(resolve => setTimeout(resolve, 1200));
       
       setDigest(sanitizedDigest);
