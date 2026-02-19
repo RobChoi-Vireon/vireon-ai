@@ -408,6 +408,7 @@ export default function MacroSignalsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [targetDate, setTargetDate] = useState(new Date().toISOString().split('T')[0]);
+  const [sessionData, setSessionData] = useState(null);
 
   const [selectedSignal, setSelectedSignal] = useState(null);
   const [selectedTakeaway, setSelectedTakeaway] = useState(null);
