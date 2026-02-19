@@ -231,8 +231,7 @@ export default function SourceAccordion({ source, density, index = 0 }) {
 
   if (!source) return null;
 
-  const sourceKey = source.source || 'unknown';
-  const logoInfo = sourceLogos[sourceKey] || { name: sourceKey.substring(0, 3).toUpperCase(), bg: "bg-gray-500", text: "text-white" };
+  const logoInfo = sourceLogos[source.source] || { name: source.source.substring(0, 3).toUpperCase(), bg: "bg-gray-500", text: "text-white" };
   const weight = getSourceWeight(source);
   
   const expandedSectionVariants = {
