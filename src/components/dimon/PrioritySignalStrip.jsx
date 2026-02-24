@@ -348,17 +348,7 @@ const PrioritySignal = ({ signal, index, onClick }) => {
 };
 
 export default function PrioritySignalStrip({ signals = [], onOpenDrawer }) {
-  // Parse front_page_signals object into array of buckets
-  const buckets = React.useMemo(() => {
-    if (!signals || typeof signals !== 'object') return [];
-    
-    const order = ['policy', 'credit', 'tech', 'geopolitics'];
-    return order
-      .map(key => signals[key])
-      .filter(bucket => bucket && bucket.headline);
-  }, [signals]);
-
-  if (buckets.length === 0) {
+  if (!signals || signals.length === 0) {
     return null;
   }
 
@@ -490,22 +480,11 @@ export default function PrioritySignalStrip({ signals = [], onOpenDrawer }) {
             background: rgba(255, 255, 255, 0.25);
           }
         `}</style>
-        {buckets.map((bucket, index) => {
-          // Transform bucket data to match PrioritySignal expected format
-          const signal = {
-            tag: bucket.headline || '',
-            text: bucket.summary || '',
-            urgency: bucket.urgency || 'medium',
-            source: bucket.top_sources?.[0] || '',
-            quick_glance_tags: bucket.impact_tags || []
-          };
-          
-          return (
-            <div key={index} className="flex-shrink-0" style={{ width: 'calc(50% - 12px)' }}>
-              <PrioritySignal signal={signal} index={index} onClick={() => onOpenDrawer(bucket)} />
-            </div>
-          );
-        })}
+        {signals.slice(0, 4).map((signal, index) => (
+          <div key={index} className="flex-shrink-0" style={{ width: 'calc(50% - 12px)' }}>
+            <PrioritySignal signal={signal} index={index} onClick={onOpenDrawer} />
+          </div>
+        ))}
       </div>
     </motion.section>
   );

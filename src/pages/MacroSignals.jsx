@@ -779,36 +779,14 @@ export default function MacroSignalsPage() {
                 )}
                 
                 {/* 1) U.S. Front Page Signals */}
-                {sessionData?.front_page_signals && (
+                {digest.priority_signals && digest.priority_signals.length > 0 && (
                   <motion.div 
                     variants={sectionVariants}
                     id="section-priority-signals" 
                     data-section-order="1"
                     className="col-span-12"
                   >
-                    <PrioritySignalStrip 
-                      signals={sessionData.front_page_signals} 
-                      onOpenDrawer={setSelectedSignal} 
-                    />
-                    
-                    {/* Debug Display */}
-                    {process.env.NODE_ENV === 'development' && (
-                      <div className="mt-2 p-3 rounded-lg text-xs font-mono" style={{
-                        background: 'rgba(0,0,0,0.3)',
-                        border: '1px solid rgba(255,255,255,0.1)',
-                        color: 'rgba(255,255,255,0.6)'
-                      }}>
-                        <div className="mb-1 font-bold" style={{ color: 'rgba(255,255,255,0.8)' }}>
-                          Debug: Field Validation
-                        </div>
-                        <div>
-                          front_page_signals.policy.headline: {sessionData.front_page_signals?.policy?.headline || 'null'}
-                        </div>
-                        <div>
-                          priority_signals_v1.cards.policy.headline: {sessionData.priority_signals_v1?.cards?.policy?.headline || 'null'}
-                        </div>
-                      </div>
-                    )}
+                    <PrioritySignalStrip signals={digest.priority_signals} onOpenDrawer={setSelectedSignal} />
                   </motion.div>
                 )}
 

@@ -366,47 +366,8 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
   const durationBias = 'Short-term risk-off';
   const confOverall = 78;
 
-  // Use data from front_page_signals if available, otherwise fallback to mock
-  const useFrontPageData = signal.simple || signal.why_it_matters;
-
   // Generate content based on signal type - CEP ENGINE FORMAT
   const getContentForSignal = () => {
-    // If we have front_page_signals data, use it
-    if (useFrontPageData) {
-      return {
-        summary: signal.simple || signal.summary || '',
-        why: signal.why_it_matters || '',
-        translation: signal.simple || '',
-        what: signal.summary || '',
-        impacts: (signal.impact_tags || []).map(tag => ({
-          text: tag.label || tag,
-          tone: tag.tone || 'neutral'
-        })),
-        downside: {
-          text: signal.why_it_matters || '',
-          confidence: 75,
-        },
-        upside: {
-          text: '',
-          confidence: 60,
-        },
-        rippleImpact: '',
-        quote: null,
-        relevance: {
-          impacts: '',
-          sectors: '',
-          assetClasses: '',
-        },
-        strategy: '',
-        correlated: (signal.top_sources || []).map((src, i) => ({
-          id: i,
-          label: src
-        }))
-      };
-    }
-
-    // Fallback to mock data
-
     switch (signal.tag) {
       case 'Policy Shock':
         return {
@@ -1408,49 +1369,42 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                   ============================================================ */}
                   
                   {/* 1. SUMMARY */}
-                  {summary && (
-                    <section className="ri-section mb-6">
-                      <h3 className="ri-section-title">
-                        <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                        Summary
-                      </h3>
-                      <p className="ri-section-body mb-4">{summary}</p>
-                      
-                      {/* 2. CONFIDENCE */}
-                      <div className="ri-confidence-inline">
-                        <span className="text-xs font-medium uppercase tracking-wide" style={{ color: '#AAB1B8', opacity: 0.7 }}>
-                          Confidence
-                        </span>
-                        <ConfidenceRing value={confOverall} color={HORIZON.color.neutral} size={42} sentiment={sentiment} />
-                        {analysis.correlated.length > 0 && (
-                          <span className="text-xs font-medium" style={{ color: 'rgba(255, 255, 255, 0.58)', marginLeft: '12px' }}>
-                            Backed by <span style={{ fontWeight: 700, color: 'rgba(255, 255, 255, 0.75)' }}>{analysis.correlated.length}</span> verified sources.
-                          </span>
-                        )}
-                      </div>
-                    </section>
-                  )}
+                  <section className="ri-section mb-6">
+                    <h3 className="ri-section-title">
+                      <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                      Summary
+                    </h3>
+                    <p className="ri-section-body mb-4">{summary}</p>
+                    
+                    {/* 2. CONFIDENCE */}
+                    <div className="ri-confidence-inline">
+                      <span className="text-xs font-medium uppercase tracking-wide" style={{ color: '#AAB1B8', opacity: 0.7 }}>
+                        Confidence
+                      </span>
+                      <ConfidenceRing value={confOverall} color={HORIZON.color.neutral} size={42} sentiment={sentiment} />
+                      <span className="text-xs font-medium" style={{ color: 'rgba(255, 255, 255, 0.58)', marginLeft: '12px' }}>
+                        Backed by <span style={{ fontWeight: 700, color: 'rgba(255, 255, 255, 0.75)' }}>{analysis.correlated.length}</span> verified sources.
+                      </span>
+                    </div>
+                  </section>
 
-                  {summary && <NarrativeLink />}
+                  <NarrativeLink />
 
                   {/* 3. WHY IT MATTERS */}
-                  {analysis.why && (
-                    <>
-                      <section className="ri-section">
-                        <h3 className="ri-section-title">
-                          <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                          Why It Matters
-                        </h3>
-                        <p className="ri-section-body">
-                          {analysis.why}
-                        </p>
-                      </section>
-                      <NarrativeLink />
-                    </>
-                  )}
+                  <section className="ri-section">
+                    <h3 className="ri-section-title">
+                      <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                      Why It Matters
+                    </h3>
+                    <p className="ri-section-body">
+                      {analysis.why}
+                    </p>
+                  </section>
+
+                  <NarrativeLink />
 
                   {/* 4. IN SIMPLE TERMS */}
-                  {translation && summary && (
+                  {translation && (
                     <section className="ri-section">
                       <div 
                         className="p-5 rounded-[16px] border relative"
@@ -1491,80 +1445,69 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                     <NarrativeLink />
 
                     {/* 5. WHAT HAPPENED (Detailed only) */}
-                    {analysis.what && (
-                      <>
-                        <section className="ri-section">
-                          <h3 className="ri-section-title">
-                            <Target className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                            What Happened
-                          </h3>
-                          <p className="ri-section-body">{analysis.what}</p>
-                        </section>
-                        <NarrativeLink />
-                      </>
-                    )}
+                    <section className="ri-section">
+                      <h3 className="ri-section-title">
+                        <Target className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                        What Happened
+                      </h3>
+                      <p className="ri-section-body">{analysis.what}</p>
+                    </section>
+
+                    <NarrativeLink />
 
                     {/* 6. IMPACT SNAPSHOT (Detailed only) */}
-                    {analysis.impacts && analysis.impacts.length > 0 && (
-                      <section className="ri-section">
-                        <h3 className="ri-section-title">
-                          <Activity className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                          Impact Snapshot
-                        </h3>
-                        <div className="flex flex-wrap gap-2">
-                          {analysis.impacts.map((impact, i) => (
-                            <ImpactChip key={i} text={impact.text} tone={impact.tone} />
-                          ))}
-                        </div>
-                      </section>
-                    )}
+                    <section className="ri-section">
+                      <h3 className="ri-section-title">
+                        <Activity className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                        Impact Snapshot
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {analysis.impacts.map((impact, i) => (
+                          <ImpactChip key={i} text={impact.text} tone={impact.tone} />
+                        ))}
+                      </div>
+                    </section>
 
                     <NarrativeLink />
 
                     {/* 7 & 8. DOWNSIDE RISK / UPSIDE POTENTIAL (Detailed only) */}
-                    {(analysis.downside.text || analysis.upside.text) && (
-                      <section className="ri-section">
-                        <div className="ri-grid mb-2">
-                          {analysis.downside.text && (
-                            <div className={`ri-card ${sentiment === 'risk' ? 'active risk' : ''}`}>
-                              <div className="flex items-center gap-3 mb-3">
-                                <AlertCircle className="w-5 h-5" style={{ color: HORIZON.color.risk }} />
-                                <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
-                                  Downside Risk
-                                </h4>
-                              </div>
-                              <p className="text-sm mb-3" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
-                                {analysis.downside.text}
-                              </p>
-                              <div className="text-xs" style={{ color: '#AAB1B8' }}>
-                                Confidence: <span style={{ color: HORIZON.color.risk, fontWeight: 700 }}>
-                                  {analysis.downside.confidence}%
-                                </span>
-                              </div>
-                            </div>
-                          )}
-
-                          {analysis.upside.text && (
-                            <div className={`ri-card ${sentiment === 'opportunity' ? 'active oppty' : ''}`}>
-                              <div className="flex items-center gap-3 mb-3">
-                                <ShieldCheck className="w-5 h-5" style={{ color: HORIZON.color.opportunity }} />
-                                <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
-                                  Upside Potential
-                                </h4>
-                              </div>
-                              <p className="text-sm mb-3" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
-                                {analysis.upside.text}
-                              </p>
-                              <div className="text-xs" style={{ color: '#AAB1B8' }}>
-                                Confidence: <span style={{ color: HORIZON.color.opportunity, fontWeight: 700 }}>
-                                  {analysis.upside.confidence}%
-                                </span>
-                              </div>
-                            </div>
-                          )}
+                    <section className="ri-section">
+                      <div className="ri-grid mb-2">
+                        <div className={`ri-card ${sentiment === 'risk' ? 'active risk' : ''}`}>
+                          <div className="flex items-center gap-3 mb-3">
+                            <AlertCircle className="w-5 h-5" style={{ color: HORIZON.color.risk }} />
+                            <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
+                              Downside Risk
+                            </h4>
+                          </div>
+                          <p className="text-sm mb-3" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
+                            {analysis.downside.text}
+                          </p>
+                          <div className="text-xs" style={{ color: '#AAB1B8' }}>
+                            Confidence: <span style={{ color: HORIZON.color.risk, fontWeight: 700 }}>
+                              {analysis.downside.confidence}%
+                            </span>
+                          </div>
                         </div>
-                      </section>
-                    )}
+
+                        <div className={`ri-card ${sentiment === 'opportunity' ? 'active oppty' : ''}`}>
+                          <div className="flex items-center gap-3 mb-3">
+                            <ShieldCheck className="w-5 h-5" style={{ color: HORIZON.color.opportunity }} />
+                            <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
+                              Upside Potential
+                            </h4>
+                          </div>
+                          <p className="text-sm mb-3" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
+                            {analysis.upside.text}
+                          </p>
+                          <div className="text-xs" style={{ color: '#AAB1B8' }}>
+                            Confidence: <span style={{ color: HORIZON.color.opportunity, fontWeight: 700 }}>
+                              {analysis.upside.confidence}%
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
 
                     <NarrativeLink />
 
@@ -1599,137 +1542,122 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                     )}
 
                     {/* 11. MARKET RELEVANCE (Detailed only) */}
-                    {(analysis.relevance.impacts || analysis.relevance.sectors || analysis.relevance.assetClasses) && (
-                      <>
-                        <div className="mb-6">
-                          <h4 className="ri-section-title">Market Relevance</h4>
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {analysis.relevance.impacts && (
-                              <div>
-                                <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
-                                  What Changes
-                                </div>
-                                <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
-                                  {analysis.relevance.impacts}
-                                </p>
-                              </div>
-                            )}
-                            {analysis.relevance.sectors && (
-                              <div>
-                                <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
-                                  Sectors Affected
-                                </div>
-                                <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
-                                  {analysis.relevance.sectors}
-                                </p>
-                              </div>
-                            )}
-                            {analysis.relevance.assetClasses && (
-                              <div>
-                                <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
-                                  Investment Types
-                                </div>
-                                <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
-                                  {analysis.relevance.assetClasses}
-                                </p>
-                              </div>
-                            )}
+                    <div className="mb-6">
+                      <h4 className="ri-section-title">Market Relevance</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
+                            What Changes
                           </div>
+                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
+                            {analysis.relevance.impacts}
+                          </p>
                         </div>
-                        <NarrativeLink />
-                      </>
-                    )}
+                        <div>
+                          <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
+                            Sectors Affected
+                          </div>
+                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
+                            {analysis.relevance.sectors}
+                          </p>
+                        </div>
+                        <div>
+                          <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
+                            Investment Types
+                          </div>
+                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
+                            {analysis.relevance.assetClasses}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <NarrativeLink />
 
                     {/* 12. HOW INVESTORS MAY RESPOND (Detailed only) */}
-                    {analysis.strategy && (
-                      <>
-                        <div
-                          className="ri-card mb-6"
-                          style={{
-                            background: 'rgba(255, 255, 255, 0.04)',
-                            border: '1px solid rgba(255, 255, 255, 0.08)',
-                          }}
-                        >
-                          <div className="flex items-center gap-2 mb-3">
-                            <Link2 className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                            <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
-                              How Investors May Respond
-                            </h4>
-                          </div>
-                          <p className="ai-voice">
-                            <span className="li-ai-voice-dot" />
-                            Based on this signal:
-                          </p>
-                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
-                            {analysis.strategy}
-                          </p>
-                        </div>
-                      </>
-                    )}
+                    <div
+                      className="ri-card mb-6"
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.04)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                      }}
+                    >
+                      <div className="flex items-center gap-2 mb-3">
+                        <Link2 className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                        <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
+                          How Investors May Respond
+                        </h4>
+                      </div>
+                      <p className="ai-voice">
+                        <span className="li-ai-voice-dot" />
+                        Based on this signal:
+                      </p>
+                      <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
+                        {analysis.strategy}
+                      </p>
+                    </div>
 
                     {/* 13. TOP SOURCES (Detailed only) */}
-                    {analysis.correlated && analysis.correlated.length > 0 && (
-                      <section className="ri-section">
-                        <div className="ri-next">
-                          <div className="flex items-center gap-2">
-                            <strong style={{ fontSize: 14, color: 'rgba(255, 255, 255, 0.88)' }}>
-                              Top Weighted Sources
-                            </strong>
-                            <div
-                              className="flex items-center justify-center rounded-full"
-                              style={{
-                                padding: '4px 10px',
-                                background: 'rgba(94, 167, 255, 0.12)',
-                                border: '1px solid rgba(94, 167, 255, 0.24)',
-                                fontSize: 11,
-                                fontWeight: 700,
-                                color: '#5EA7FF',
-                                letterSpacing: '0.01em'
-                              }}
-                            >
-                              {analysis.correlated.length}
-                            </div>
-                          </div>
-                          <div className="ri-carousel" ref={(el) => {
-                            if (el) el.scrollCarouselRef = el;
-                          }}>
-                            {analysis.correlated.map((s) => (
-                              <CorrelatedChip 
-                                key={s.id} 
-                                signal={s} 
-                                onNavigate={(id) => console.log('Navigate to signal:', id)} 
-                              />
-                            ))}
-                          </div>
-                          <button
-                            onClick={(e) => {
-                              const carousel = e.currentTarget.previousElementSibling;
-                              if (carousel) {
-                                carousel.scrollBy({ left: 200, behavior: 'smooth' });
-                              }
-                            }}
-                            className="flex-shrink-0 transition-all duration-180"
+                    <section className="ri-section">
+                      <div className="ri-next">
+                        <div className="flex items-center gap-2">
+                          <strong style={{ fontSize: 14, color: 'rgba(255, 255, 255, 0.88)' }}>
+                            Top Weighted Sources
+                          </strong>
+                          <div
+                            className="flex items-center justify-center rounded-full"
                             style={{
-                              background: 'rgba(255, 255, 255, 0.06)',
-                              border: '1px solid rgba(255, 255, 255, 0.08)',
-                              padding: '8px',
-                              borderRadius: '10px',
+                              padding: '4px 10px',
+                              background: 'rgba(94, 167, 255, 0.12)',
+                              border: '1px solid rgba(94, 167, 255, 0.24)',
+                              fontSize: 11,
+                              fontWeight: 700,
+                              color: '#5EA7FF',
+                              letterSpacing: '0.01em'
                             }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
-                              e.currentTarget.style.transform = 'scale(1.05) translateX(2px)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
-                              e.currentTarget.style.transform = 'scale(1) translateX(0)';
-                            }}
-                            aria-label="Scroll to see more sources"
                           >
-                            <ArrowRight className="w-4 h-4" style={{ color: 'rgba(255, 255, 255, 0.6)' }} />
-                          </button>
+                            {analysis.correlated.length}
+                          </div>
                         </div>
-                      </section>
-                    )}
+                        <div className="ri-carousel" ref={(el) => {
+                          if (el) el.scrollCarouselRef = el;
+                        }}>
+                          {analysis.correlated.map((s) => (
+                            <CorrelatedChip 
+                              key={s.id} 
+                              signal={s} 
+                              onNavigate={(id) => console.log('Navigate to signal:', id)} 
+                            />
+                          ))}
+                        </div>
+                        <button
+                          onClick={(e) => {
+                            const carousel = e.currentTarget.previousElementSibling;
+                            if (carousel) {
+                              carousel.scrollBy({ left: 200, behavior: 'smooth' });
+                            }
+                          }}
+                          className="flex-shrink-0 transition-all duration-180"
+                          style={{
+                            background: 'rgba(255, 255, 255, 0.06)',
+                            border: '1px solid rgba(255, 255, 255, 0.08)',
+                            padding: '8px',
+                            borderRadius: '10px',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
+                            e.currentTarget.style.transform = 'scale(1.05) translateX(2px)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                            e.currentTarget.style.transform = 'scale(1) translateX(0)';
+                          }}
+                          aria-label="Scroll to see more sources"
+                        >
+                          <ArrowRight className="w-4 h-4" style={{ color: 'rgba(255, 255, 255, 0.6)' }} />
+                        </button>
+                      </div>
+                    </section>
                   </div>
                 </div>
               </div>
