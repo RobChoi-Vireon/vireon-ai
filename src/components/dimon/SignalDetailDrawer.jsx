@@ -1502,17 +1502,19 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                     <NarrativeLink />
 
                     {/* 6. IMPACT SNAPSHOT (Detailed only) */}
-                    <section className="ri-section">
-                      <h3 className="ri-section-title">
-                        <Activity className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                        Impact Snapshot
-                      </h3>
-                      <div className="flex flex-wrap gap-2">
-                        {analysis.impacts.map((impact, i) => (
-                          <ImpactChip key={i} text={impact.text} tone={impact.tone} />
-                        ))}
-                      </div>
-                    </section>
+                    {analysis.impacts && analysis.impacts.length > 0 && (
+                      <section className="ri-section">
+                        <h3 className="ri-section-title">
+                          <Activity className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                          Impact Snapshot
+                        </h3>
+                        <div className="flex flex-wrap gap-2">
+                          {analysis.impacts.map((impact, i) => (
+                            <ImpactChip key={i} text={impact.text} tone={impact.tone} />
+                          ))}
+                        </div>
+                      </section>
+                    )}
 
                     <NarrativeLink />
 
