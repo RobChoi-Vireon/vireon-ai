@@ -366,8 +366,47 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
   const durationBias = 'Short-term risk-off';
   const confOverall = 78;
 
+  // Use data from front_page_signals if available, otherwise fallback to mock
+  const useFrontPageData = signal.simple || signal.why_it_matters;
+
   // Generate content based on signal type - CEP ENGINE FORMAT
   const getContentForSignal = () => {
+    // If we have front_page_signals data, use it
+    if (useFrontPageData) {
+      return {
+        summary: signal.simple || signal.summary || '',
+        why: signal.why_it_matters || '',
+        translation: signal.simple || '',
+        what: signal.summary || '',
+        impacts: (signal.impact_tags || []).map(tag => ({
+          text: tag.label || tag,
+          tone: tag.tone || 'neutral'
+        })),
+        downside: {
+          text: signal.why_it_matters || '',
+          confidence: 75,
+        },
+        upside: {
+          text: '',
+          confidence: 60,
+        },
+        rippleImpact: '',
+        quote: null,
+        relevance: {
+          impacts: '',
+          sectors: '',
+          assetClasses: '',
+        },
+        strategy: '',
+        correlated: (signal.top_sources || []).map((src, i) => ({
+          id: i,
+          label: src
+        }))
+      };
+    }
+
+    // Fallback to mock data
+
     switch (signal.tag) {
       case 'Policy Shock':
         return {
