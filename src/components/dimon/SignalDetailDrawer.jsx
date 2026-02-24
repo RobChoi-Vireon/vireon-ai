@@ -1491,15 +1491,18 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                     <NarrativeLink />
 
                     {/* 5. WHAT HAPPENED (Detailed only) */}
-                    <section className="ri-section">
-                      <h3 className="ri-section-title">
-                        <Target className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                        What Happened
-                      </h3>
-                      <p className="ri-section-body">{analysis.what}</p>
-                    </section>
-
-                    <NarrativeLink />
+                    {analysis.what && (
+                      <>
+                        <section className="ri-section">
+                          <h3 className="ri-section-title">
+                            <Target className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                            What Happened
+                          </h3>
+                          <p className="ri-section-body">{analysis.what}</p>
+                        </section>
+                        <NarrativeLink />
+                      </>
+                    )}
 
                     {/* 6. IMPACT SNAPSHOT (Detailed only) */}
                     {analysis.impacts && analysis.impacts.length > 0 && (
