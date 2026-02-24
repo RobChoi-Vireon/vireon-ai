@@ -1408,42 +1408,49 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                   ============================================================ */}
                   
                   {/* 1. SUMMARY */}
-                  <section className="ri-section mb-6">
-                    <h3 className="ri-section-title">
-                      <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                      Summary
-                    </h3>
-                    <p className="ri-section-body mb-4">{summary}</p>
-                    
-                    {/* 2. CONFIDENCE */}
-                    <div className="ri-confidence-inline">
-                      <span className="text-xs font-medium uppercase tracking-wide" style={{ color: '#AAB1B8', opacity: 0.7 }}>
-                        Confidence
-                      </span>
-                      <ConfidenceRing value={confOverall} color={HORIZON.color.neutral} size={42} sentiment={sentiment} />
-                      <span className="text-xs font-medium" style={{ color: 'rgba(255, 255, 255, 0.58)', marginLeft: '12px' }}>
-                        Backed by <span style={{ fontWeight: 700, color: 'rgba(255, 255, 255, 0.75)' }}>{analysis.correlated.length}</span> verified sources.
-                      </span>
-                    </div>
-                  </section>
+                  {summary && (
+                    <section className="ri-section mb-6">
+                      <h3 className="ri-section-title">
+                        <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                        Summary
+                      </h3>
+                      <p className="ri-section-body mb-4">{summary}</p>
+                      
+                      {/* 2. CONFIDENCE */}
+                      <div className="ri-confidence-inline">
+                        <span className="text-xs font-medium uppercase tracking-wide" style={{ color: '#AAB1B8', opacity: 0.7 }}>
+                          Confidence
+                        </span>
+                        <ConfidenceRing value={confOverall} color={HORIZON.color.neutral} size={42} sentiment={sentiment} />
+                        {analysis.correlated.length > 0 && (
+                          <span className="text-xs font-medium" style={{ color: 'rgba(255, 255, 255, 0.58)', marginLeft: '12px' }}>
+                            Backed by <span style={{ fontWeight: 700, color: 'rgba(255, 255, 255, 0.75)' }}>{analysis.correlated.length}</span> verified sources.
+                          </span>
+                        )}
+                      </div>
+                    </section>
+                  )}
 
-                  <NarrativeLink />
+                  {summary && <NarrativeLink />}
 
                   {/* 3. WHY IT MATTERS */}
-                  <section className="ri-section">
-                    <h3 className="ri-section-title">
-                      <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                      Why It Matters
-                    </h3>
-                    <p className="ri-section-body">
-                      {analysis.why}
-                    </p>
-                  </section>
-
-                  <NarrativeLink />
+                  {analysis.why && (
+                    <>
+                      <section className="ri-section">
+                        <h3 className="ri-section-title">
+                          <Sparkles className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                          Why It Matters
+                        </h3>
+                        <p className="ri-section-body">
+                          {analysis.why}
+                        </p>
+                      </section>
+                      <NarrativeLink />
+                    </>
+                  )}
 
                   {/* 4. IN SIMPLE TERMS */}
-                  {translation && (
+                  {translation && summary && (
                     <section className="ri-section">
                       <div 
                         className="p-5 rounded-[16px] border relative"
