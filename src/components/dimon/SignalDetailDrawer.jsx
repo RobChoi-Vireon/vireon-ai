@@ -1519,43 +1519,49 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                     <NarrativeLink />
 
                     {/* 7 & 8. DOWNSIDE RISK / UPSIDE POTENTIAL (Detailed only) */}
-                    <section className="ri-section">
-                      <div className="ri-grid mb-2">
-                        <div className={`ri-card ${sentiment === 'risk' ? 'active risk' : ''}`}>
-                          <div className="flex items-center gap-3 mb-3">
-                            <AlertCircle className="w-5 h-5" style={{ color: HORIZON.color.risk }} />
-                            <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
-                              Downside Risk
-                            </h4>
-                          </div>
-                          <p className="text-sm mb-3" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
-                            {analysis.downside.text}
-                          </p>
-                          <div className="text-xs" style={{ color: '#AAB1B8' }}>
-                            Confidence: <span style={{ color: HORIZON.color.risk, fontWeight: 700 }}>
-                              {analysis.downside.confidence}%
-                            </span>
-                          </div>
-                        </div>
+                    {(analysis.downside.text || analysis.upside.text) && (
+                      <section className="ri-section">
+                        <div className="ri-grid mb-2">
+                          {analysis.downside.text && (
+                            <div className={`ri-card ${sentiment === 'risk' ? 'active risk' : ''}`}>
+                              <div className="flex items-center gap-3 mb-3">
+                                <AlertCircle className="w-5 h-5" style={{ color: HORIZON.color.risk }} />
+                                <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
+                                  Downside Risk
+                                </h4>
+                              </div>
+                              <p className="text-sm mb-3" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
+                                {analysis.downside.text}
+                              </p>
+                              <div className="text-xs" style={{ color: '#AAB1B8' }}>
+                                Confidence: <span style={{ color: HORIZON.color.risk, fontWeight: 700 }}>
+                                  {analysis.downside.confidence}%
+                                </span>
+                              </div>
+                            </div>
+                          )}
 
-                        <div className={`ri-card ${sentiment === 'opportunity' ? 'active oppty' : ''}`}>
-                          <div className="flex items-center gap-3 mb-3">
-                            <ShieldCheck className="w-5 h-5" style={{ color: HORIZON.color.opportunity }} />
-                            <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
-                              Upside Potential
-                            </h4>
-                          </div>
-                          <p className="text-sm mb-3" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
-                            {analysis.upside.text}
-                          </p>
-                          <div className="text-xs" style={{ color: '#AAB1B8' }}>
-                            Confidence: <span style={{ color: HORIZON.color.opportunity, fontWeight: 700 }}>
-                              {analysis.upside.confidence}%
-                            </span>
-                          </div>
+                          {analysis.upside.text && (
+                            <div className={`ri-card ${sentiment === 'opportunity' ? 'active oppty' : ''}`}>
+                              <div className="flex items-center gap-3 mb-3">
+                                <ShieldCheck className="w-5 h-5" style={{ color: HORIZON.color.opportunity }} />
+                                <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
+                                  Upside Potential
+                                </h4>
+                              </div>
+                              <p className="text-sm mb-3" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
+                                {analysis.upside.text}
+                              </p>
+                              <div className="text-xs" style={{ color: '#AAB1B8' }}>
+                                Confidence: <span style={{ color: HORIZON.color.opportunity, fontWeight: 700 }}>
+                                  {analysis.upside.confidence}%
+                                </span>
+                              </div>
+                            </div>
+                          )}
                         </div>
-                      </div>
-                    </section>
+                      </section>
+                    )}
 
                     <NarrativeLink />
 
