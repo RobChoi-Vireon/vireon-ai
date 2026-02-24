@@ -640,20 +640,24 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
   const content = getContentForSignal();
   
   // CEP ENGINE content mapping
-  const summary = content.summary;
-  const translation = content.translation;
+  // If we have bucketData, use it; otherwise use legacy content
+  const summary = bucketData?.summary || content.summary;
+  const translation = hasSimpleTab ? bucketData.simple : content.translation;
   const rippleImpact = content.rippleImpact;
 
   const analysis = {
     what: content.what,
-    why: content.why,
+    why: hasDetailedTab ? bucketData.why_it_matters : content.why,
     impacts: content.impacts,
     quote: content.quote,
     relevance: content.relevance,
     downside: content.downside,
     upside: content.upside,
     strategy: content.strategy,
-    correlated: content.correlated
+    correlated: bucketData?.top_sources?.map((source, idx) => ({
+      id: idx,
+      label: source.source || source.name || 'Unknown'
+    })) || content.correlated
   };
 
   return (
