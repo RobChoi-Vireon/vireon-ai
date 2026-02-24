@@ -366,6 +366,11 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
   const durationBias = 'Short-term risk-off';
   const confOverall = 78;
 
+  // Check if this is a front_page_signals bucket signal (has rawData)
+  const bucketData = signal.rawData;
+  const hasSimpleTab = bucketData?.simple;
+  const hasDetailedTab = bucketData?.why_it_matters;
+
   // Generate content based on signal type - CEP ENGINE FORMAT
   const getContentForSignal = () => {
     switch (signal.tag) {
