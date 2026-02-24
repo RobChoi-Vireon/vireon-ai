@@ -347,8 +347,31 @@ const PrioritySignal = ({ signal, index, onClick }) => {
   );
 };
 
-export default function PrioritySignalStrip({ signals = [], onOpenDrawer }) {
-  if (!signals || signals.length === 0) {
+export default function PrioritySignalStrip({ frontPageSignals = null, signals = [], onOpenDrawer }) {
+  // Use frontPageSignals if provided (new binding), otherwise fallback to signals array (legacy)
+  const buckets = frontPageSignals ? ['policy', 'credit', 'tech', 'geopolitics'] : null;
+  const displaySignals = buckets 
+    ? buckets.map(bucket => {
+        const data = frontPageSignals[bucket];
+        if (!data) return null;
+        
+        return {
+          tag: data.headline || 'No Priority Signal Detected',
+          text: data.summary || '',
+          urgency: data.urgency || 'medium',
+          source: data.top_sources?.[0]?.source || '',
+          quick_glance_tags: (data.impact_tags || []).map(tag => ({
+            label: tag,
+            icon: 'Zap',
+            color: 'text-gray-300'
+          })),
+          bucket: bucket,
+          rawData: data
+        };
+      }).filter(Boolean)
+    : signals;
+
+  if (!displaySignals || displaySignals.length === 0) {
     return null;
   }
 
@@ -447,7 +470,7 @@ export default function PrioritySignalStrip({ signals = [], onOpenDrawer }) {
             letterSpacing: '-0.02em'
           }}
         >
-          U.S. Front Page Signals
+          U.S. Front Page Priority Signals
         </h2>
         <p 
           className="text-sm"
@@ -480,12 +503,31 @@ export default function PrioritySignalStrip({ signals = [], onOpenDrawer }) {
             background: rgba(255, 255, 255, 0.25);
           }
         `}</style>
-        {signals.slice(0, 4).map((signal, index) => (
+        {displaySignals.slice(0, 4).map((signal, index) => (
           <div key={index} className="flex-shrink-0" style={{ width: 'calc(50% - 12px)' }}>
             <PrioritySignal signal={signal} index={index} onClick={onOpenDrawer} />
           </div>
         ))}
       </div>
+
+      {/* Debug Panel - Validation */}
+      {frontPageSignals && process.env.NODE_ENV === 'development' && (
+        <div className="mt-4 p-3 rounded-lg bg-black/40 border border-yellow-500/30 text-xs font-mono">
+          <div className="text-yellow-400 font-bold mb-2">🔍 Binding Validation</div>
+          <div className="space-y-1 text-gray-300">
+            <div>
+              <span className="text-gray-500">front_page_signals.policy.headline:</span>{' '}
+              <span className="text-white">{frontPageSignals.policy?.headline || 'null'}</span>
+            </div>
+            <div>
+              <span className="text-gray-500">priority_signals_v1.cards.policy.headline:</span>{' '}
+              <span className="text-white">
+                {frontPageSignals._priority_signals_v1?.cards?.policy?.headline || 'N/A (not in front_page_signals)'}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
     </motion.section>
   );
 }
