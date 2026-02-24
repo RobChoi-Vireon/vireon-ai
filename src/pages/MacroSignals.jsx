@@ -779,14 +779,17 @@ export default function MacroSignalsPage() {
                 )}
                 
                 {/* 1) U.S. Front Page Signals */}
-                {digest.priority_signals && digest.priority_signals.length > 0 && (
+                {sessionData?.front_page_signals && (
                   <motion.div 
                     variants={sectionVariants}
                     id="section-priority-signals" 
                     data-section-order="1"
                     className="col-span-12"
                   >
-                    <PrioritySignalStrip signals={digest.priority_signals} onOpenDrawer={setSelectedSignal} />
+                    <PrioritySignalStrip 
+                      frontPageSignals={sessionData.front_page_signals} 
+                      onOpenDrawer={setSelectedSignal} 
+                    />
                   </motion.div>
                 )}
 
