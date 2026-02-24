@@ -1596,122 +1596,137 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                     )}
 
                     {/* 11. MARKET RELEVANCE (Detailed only) */}
-                    <div className="mb-6">
-                      <h4 className="ri-section-title">Market Relevance</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                          <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
-                            What Changes
+                    {(analysis.relevance.impacts || analysis.relevance.sectors || analysis.relevance.assetClasses) && (
+                      <>
+                        <div className="mb-6">
+                          <h4 className="ri-section-title">Market Relevance</h4>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {analysis.relevance.impacts && (
+                              <div>
+                                <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
+                                  What Changes
+                                </div>
+                                <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
+                                  {analysis.relevance.impacts}
+                                </p>
+                              </div>
+                            )}
+                            {analysis.relevance.sectors && (
+                              <div>
+                                <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
+                                  Sectors Affected
+                                </div>
+                                <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
+                                  {analysis.relevance.sectors}
+                                </p>
+                              </div>
+                            )}
+                            {analysis.relevance.assetClasses && (
+                              <div>
+                                <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
+                                  Investment Types
+                                </div>
+                                <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
+                                  {analysis.relevance.assetClasses}
+                                </p>
+                              </div>
+                            )}
                           </div>
-                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
-                            {analysis.relevance.impacts}
-                          </p>
                         </div>
-                        <div>
-                          <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
-                            Sectors Affected
-                          </div>
-                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
-                            {analysis.relevance.sectors}
-                          </p>
-                        </div>
-                        <div>
-                          <div className="text-xs font-semibold mb-1" style={{ color: '#AAB1B8', opacity: 0.6 }}>
-                            Investment Types
-                          </div>
-                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.5, opacity: 0.82 }}>
-                            {analysis.relevance.assetClasses}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <NarrativeLink />
+                        <NarrativeLink />
+                      </>
+                    )}
 
                     {/* 12. HOW INVESTORS MAY RESPOND (Detailed only) */}
-                    <div
-                      className="ri-card mb-6"
-                      style={{
-                        background: 'rgba(255, 255, 255, 0.04)',
-                        border: '1px solid rgba(255, 255, 255, 0.08)',
-                      }}
-                    >
-                      <div className="flex items-center gap-2 mb-3">
-                        <Link2 className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
-                        <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
-                          How Investors May Respond
-                        </h4>
-                      </div>
-                      <p className="ai-voice">
-                        <span className="li-ai-voice-dot" />
-                        Based on this signal:
-                      </p>
-                      <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
-                        {analysis.strategy}
-                      </p>
-                    </div>
+                    {analysis.strategy && (
+                      <>
+                        <div
+                          className="ri-card mb-6"
+                          style={{
+                            background: 'rgba(255, 255, 255, 0.04)',
+                            border: '1px solid rgba(255, 255, 255, 0.08)',
+                          }}
+                        >
+                          <div className="flex items-center gap-2 mb-3">
+                            <Link2 className="w-4 h-4" style={{ color: HORIZON.color.accent }} />
+                            <h4 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#AAB1B8', margin: 0 }}>
+                              How Investors May Respond
+                            </h4>
+                          </div>
+                          <p className="ai-voice">
+                            <span className="li-ai-voice-dot" />
+                            Based on this signal:
+                          </p>
+                          <p className="text-sm" style={{ color: '#D7DBE0', lineHeight: 1.6, opacity: 0.82 }}>
+                            {analysis.strategy}
+                          </p>
+                        </div>
+                      </>
+                    )}
 
                     {/* 13. TOP SOURCES (Detailed only) */}
-                    <section className="ri-section">
-                      <div className="ri-next">
-                        <div className="flex items-center gap-2">
-                          <strong style={{ fontSize: 14, color: 'rgba(255, 255, 255, 0.88)' }}>
-                            Top Weighted Sources
-                          </strong>
-                          <div
-                            className="flex items-center justify-center rounded-full"
-                            style={{
-                              padding: '4px 10px',
-                              background: 'rgba(94, 167, 255, 0.12)',
-                              border: '1px solid rgba(94, 167, 255, 0.24)',
-                              fontSize: 11,
-                              fontWeight: 700,
-                              color: '#5EA7FF',
-                              letterSpacing: '0.01em'
-                            }}
-                          >
-                            {analysis.correlated.length}
+                    {analysis.correlated && analysis.correlated.length > 0 && (
+                      <section className="ri-section">
+                        <div className="ri-next">
+                          <div className="flex items-center gap-2">
+                            <strong style={{ fontSize: 14, color: 'rgba(255, 255, 255, 0.88)' }}>
+                              Top Weighted Sources
+                            </strong>
+                            <div
+                              className="flex items-center justify-center rounded-full"
+                              style={{
+                                padding: '4px 10px',
+                                background: 'rgba(94, 167, 255, 0.12)',
+                                border: '1px solid rgba(94, 167, 255, 0.24)',
+                                fontSize: 11,
+                                fontWeight: 700,
+                                color: '#5EA7FF',
+                                letterSpacing: '0.01em'
+                              }}
+                            >
+                              {analysis.correlated.length}
+                            </div>
                           </div>
+                          <div className="ri-carousel" ref={(el) => {
+                            if (el) el.scrollCarouselRef = el;
+                          }}>
+                            {analysis.correlated.map((s) => (
+                              <CorrelatedChip 
+                                key={s.id} 
+                                signal={s} 
+                                onNavigate={(id) => console.log('Navigate to signal:', id)} 
+                              />
+                            ))}
+                          </div>
+                          <button
+                            onClick={(e) => {
+                              const carousel = e.currentTarget.previousElementSibling;
+                              if (carousel) {
+                                carousel.scrollBy({ left: 200, behavior: 'smooth' });
+                              }
+                            }}
+                            className="flex-shrink-0 transition-all duration-180"
+                            style={{
+                              background: 'rgba(255, 255, 255, 0.06)',
+                              border: '1px solid rgba(255, 255, 255, 0.08)',
+                              padding: '8px',
+                              borderRadius: '10px',
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
+                              e.currentTarget.style.transform = 'scale(1.05) translateX(2px)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                              e.currentTarget.style.transform = 'scale(1) translateX(0)';
+                            }}
+                            aria-label="Scroll to see more sources"
+                          >
+                            <ArrowRight className="w-4 h-4" style={{ color: 'rgba(255, 255, 255, 0.6)' }} />
+                          </button>
                         </div>
-                        <div className="ri-carousel" ref={(el) => {
-                          if (el) el.scrollCarouselRef = el;
-                        }}>
-                          {analysis.correlated.map((s) => (
-                            <CorrelatedChip 
-                              key={s.id} 
-                              signal={s} 
-                              onNavigate={(id) => console.log('Navigate to signal:', id)} 
-                            />
-                          ))}
-                        </div>
-                        <button
-                          onClick={(e) => {
-                            const carousel = e.currentTarget.previousElementSibling;
-                            if (carousel) {
-                              carousel.scrollBy({ left: 200, behavior: 'smooth' });
-                            }
-                          }}
-                          className="flex-shrink-0 transition-all duration-180"
-                          style={{
-                            background: 'rgba(255, 255, 255, 0.06)',
-                            border: '1px solid rgba(255, 255, 255, 0.08)',
-                            padding: '8px',
-                            borderRadius: '10px',
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
-                            e.currentTarget.style.transform = 'scale(1.05) translateX(2px)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
-                            e.currentTarget.style.transform = 'scale(1) translateX(0)';
-                          }}
-                          aria-label="Scroll to see more sources"
-                        >
-                          <ArrowRight className="w-4 h-4" style={{ color: 'rgba(255, 255, 255, 0.6)' }} />
-                        </button>
-                      </div>
-                    </section>
+                      </section>
+                    )}
                   </div>
                 </div>
               </div>
