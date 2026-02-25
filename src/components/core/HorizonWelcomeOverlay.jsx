@@ -288,32 +288,24 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
         style={{
           background: '#0B0E13'
         }}
-        initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-        animate={{ opacity: 1, backdropFilter: 'blur(28px) brightness(0.55) saturate(1.1)' }}
-        exit={{ opacity: 0, backdropFilter: 'blur(0px) brightness(1) saturate(1)', scale: 1.02 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0, scale: 1.02 }}
         transition={{ 
           opacity: { duration: 0.32, ease: [0.23, 1, 0.32, 1] },
-          backdropFilter: { duration: 0.48, ease: "easeOut" },
           exit: { duration: 0.72, ease: [0.4, 0, 0.2, 1] }
         }}
         onClick={isDismissing ? undefined : handleDismiss}
       >
-        {/* Subtle depth blur and brightness shift on background */}
-        <motion.div
-          className="absolute inset-0"
-          style={{
-            backdropFilter: 'blur(28px) brightness(0.55) saturate(1.1)',
-            WebkitBackdropFilter: 'blur(28px) brightness(0.55) saturate(1.1)',
-            pointerEvents: 'none'
-          }}
-        />
-
-        {/* Imperceptible noise texture */}
+        {/* OPTIMIZED: Single scrim layer with static effects */}
         <div
-          className="absolute inset-0 opacity-[0.008] pointer-events-none"
+          className="absolute inset-0 pointer-events-none"
           style={{
-            backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")',
-            mixBlendMode: 'overlay'
+            background: 'rgba(11, 14, 19, 0.85)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'2\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\' opacity=\'0.008\'/%3E%3C/svg%3E")',
+            mixBlendMode: 'normal'
           }}
         />
 

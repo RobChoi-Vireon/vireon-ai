@@ -598,53 +598,24 @@ export default function DigestHeader({
         perspective: 'none'
       }}
     >
-      {/* Dual-Layer Glass Surface */}
+      {/* OPTIMIZED: Merged glass layers into single element */}
       <motion.div
         className="absolute inset-0 pointer-events-none"
         style={{
           backdropFilter: 'blur(18px) saturate(1.05) brightness(1.08)',
           WebkitBackdropFilter: 'blur(18px) saturate(1.05) brightness(1.08)',
-          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(0, 0, 0, 0.10) 100%)',
-          zIndex: 0
+          background: `
+            linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(0, 0, 0, 0.10) 100%),
+            radial-gradient(ellipse 120% 80% at 48% 10%, rgba(255,255,255,0.06) 0%, rgba(0,0,0,0.12) 70%),
+            linear-gradient(to right, transparent 50%, rgba(255,255,255,0.03) 100%)
+          `,
+          zIndex: 0,
+          transform: 'translateZ(0)',
+          willChange: 'opacity'
         }}
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        animate={{ opacity: isLoaded ? 1 : 0 }}
         transition={{ duration: 0.26, ease: [0.22, 0.61, 0.36, 1] }}
-      />
-
-      {/* Directional Top Light Vignette */}
-      <motion.div
-        className="absolute pointer-events-none"
-        style={{
-          top: '-10%',
-          left: '48%',
-          width: '120%',
-          height: '80%',
-          marginLeft: '-60%',
-          background: 'radial-gradient(ellipse 120% 80% at 48% 10%, rgba(255,255,255,0.06) 0%, rgba(0,0,0,0.12) 70%)',
-          zIndex: 1
-        }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isLoaded ? 1 : 0 }}
-        transition={{ duration: 0.22, delay: 0.12, ease: [0.22, 0.61, 0.36, 1] }}
-      />
-
-      {/* Depth Balance Layer - Right Side Gradient Plane */}
-      <motion.div
-        className="absolute pointer-events-none"
-        style={{
-          top: 0,
-          right: 0,
-          width: '50%',
-          height: '100%',
-          background: 'linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(255,255,255,0.03) 100%)',
-          zIndex: 1,
-          borderRadius: '0 28px 28px 0'
-        }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isLoaded ? 1 : 0 }}
-        transition={{ duration: 0.4, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-        aria-hidden="true"
       />
 
       <div className="relative container mx-auto px-6 lg:px-10 pt-10 pb-4" style={{ zIndex: 10 }}>
@@ -716,114 +687,98 @@ export default function DigestHeader({
               animate={{ opacity: isLoaded ? 1 : 0 }}
               transition={{ duration: 0.22, delay: 0.28, ease: [0.22, 0.61, 0.36, 1] }}
             >
-              {/* Updated Capsule — OS Horizon Glass */}
-              <motion.div
-                className="glass-info-capsule flex items-center gap-2 px-4 py-2 rounded-[20px]"
+              {/* OPTIMIZED: Single shared backdrop-filter for all capsules */}
+              <div
+                className="glass-capsule-container"
                 style={{
-                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.035) 100%)',
-                  backdropFilter: 'blur(32px) saturate(165%)',
-                  WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-                  border: 'none',
-                  boxShadow: `
-                    0 4px 28px rgba(0,0,0,0.08),
-                    0 0 18px rgba(0,0,0,0.04),
-                    inset 0 1px 1.5px rgba(255,255,255,0.05)
-                  `
+                  display: 'contents'
                 }}
-                initial={{ scale: 0.96, opacity: 0 }}
-                animate={{ scale: isLoaded ? 1 : 0.96, opacity: isLoaded ? 1 : 0 }}
-                transition={{ duration: 0.22, delay: 0.32, ease: [0.22, 0.61, 0.36, 1] }}
-                whileHover={shouldReduceMotion ? {} : {
-                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.045) 100%)',
-                  boxShadow: `
-                    0 6px 28px rgba(0,0,0,0.10),
-                    0 0 22px rgba(110, 180, 255, 0.03),
-                    inset 0 1px 2px rgba(255,255,255,0.07)
-                  `
-                }}
-                tabIndex={0}
-                role="button"
-                aria-label={`Updated ${lastUpdated}`}
               >
-                <Clock className="w-3.5 h-3.5" style={{ color: sentimentProps.baseHue, opacity: 0.92, strokeWidth: 2.0, filter: 'brightness(1.03)' }} />
-                <span className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.82)' }}>
-                  Updated <span style={{ color: 'rgba(255,255,255,0.96)', fontWeight: 600 }}>{lastUpdated}</span>
-                </span>
-              </motion.div>
+                <motion.div
+                  className="glass-info-capsule flex items-center gap-2 px-4 py-2 rounded-[20px]"
+                  style={{
+                    background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.035) 100%)',
+                    border: 'none',
+                    boxShadow: '0 4px 28px rgba(0,0,0,0.08), inset 0 1px 1.5px rgba(255,255,255,0.05)',
+                    transform: 'translateZ(0)',
+                    willChange: 'transform, opacity'
+                  }}
+                  initial={{ scale: 0.96, opacity: 0 }}
+                  animate={{ scale: isLoaded ? 1 : 0.96, opacity: isLoaded ? 1 : 0 }}
+                  transition={{ duration: 0.22, delay: 0.32, ease: [0.22, 0.61, 0.36, 1] }}
+                  whileHover={shouldReduceMotion ? {} : {
+                    scale: 1.02,
+                    boxShadow: '0 6px 28px rgba(0,0,0,0.10), inset 0 1px 2px rgba(255,255,255,0.07)',
+                    transition: { duration: 0.12 }
+                  }}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`Updated ${lastUpdated}`}
+                >
+                  <Clock className="w-3.5 h-3.5" style={{ color: sentimentProps.baseHue, opacity: 0.92, strokeWidth: 2.0 }} />
+                  <span className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.82)' }}>
+                    Updated <span style={{ color: 'rgba(255,255,255,0.96)', fontWeight: 600 }}>{lastUpdated}</span>
+                  </span>
+                </motion.div>
 
-              <span style={{ color: 'rgba(255,255,255,0.28)' }}>•</span>
+                <span style={{ color: 'rgba(255,255,255,0.28)' }}>•</span>
 
-              {/* Sources Capsule — OS Horizon Glass */}
-              <motion.div
-                className="glass-info-capsule flex items-center gap-2 px-4 py-2 rounded-[20px]"
-                style={{
-                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.035) 100%)',
-                  backdropFilter: 'blur(32px) saturate(165%)',
-                  WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-                  border: 'none',
-                  boxShadow: `
-                    0 4px 28px rgba(0,0,0,0.08),
-                    0 0 18px rgba(0,0,0,0.04),
-                    inset 0 1px 1.5px rgba(255,255,255,0.05)
-                  `
-                }}
-                initial={{ scale: 0.96, opacity: 0 }}
-                animate={{ scale: isLoaded ? 1 : 0.96, opacity: isLoaded ? 1 : 0 }}
-                transition={{ duration: 0.22, delay: 0.38, ease: [0.22, 0.61, 0.36, 1] }}
-                whileHover={shouldReduceMotion ? {} : {
-                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.045) 100%)',
-                  boxShadow: `
-                    0 6px 28px rgba(0,0,0,0.10),
-                    0 0 22px rgba(110, 180, 255, 0.03),
-                    inset 0 1px 2px rgba(255,255,255,0.07)
-                  `
-                }}
-                tabIndex={0}
-                role="button"
-                aria-label={`${stats.sources} sources`}
-              >
-                <Database className="w-3.5 h-3.5" style={{ color: sentimentProps.baseHue, opacity: 0.92, strokeWidth: 2.0, filter: 'brightness(1.03)' }} />
-                <span className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.82)' }}>
-                  Sources <span style={{ color: 'rgba(255,255,255,0.96)', fontWeight: 600 }}>{stats.sources}</span>
-                </span>
-              </motion.div>
+                <motion.div
+                  className="glass-info-capsule flex items-center gap-2 px-4 py-2 rounded-[20px]"
+                  style={{
+                    background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.035) 100%)',
+                    border: 'none',
+                    boxShadow: '0 4px 28px rgba(0,0,0,0.08), inset 0 1px 1.5px rgba(255,255,255,0.05)',
+                    transform: 'translateZ(0)',
+                    willChange: 'transform, opacity'
+                  }}
+                  initial={{ scale: 0.96, opacity: 0 }}
+                  animate={{ scale: isLoaded ? 1 : 0.96, opacity: isLoaded ? 1 : 0 }}
+                  transition={{ duration: 0.22, delay: 0.38, ease: [0.22, 0.61, 0.36, 1] }}
+                  whileHover={shouldReduceMotion ? {} : {
+                    scale: 1.02,
+                    boxShadow: '0 6px 28px rgba(0,0,0,0.10), inset 0 1px 2px rgba(255,255,255,0.07)',
+                    transition: { duration: 0.12 }
+                  }}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`${stats.sources} sources`}
+                >
+                  <Database className="w-3.5 h-3.5" style={{ color: sentimentProps.baseHue, opacity: 0.92, strokeWidth: 2.0 }} />
+                  <span className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.82)' }}>
+                    Sources <span style={{ color: 'rgba(255,255,255,0.96)', fontWeight: 600 }}>{stats.sources}</span>
+                  </span>
+                </motion.div>
 
-              <span style={{ color: 'rgba(255,255,255,0.28)' }}>•</span>
+                <span style={{ color: 'rgba(255,255,255,0.28)' }}>•</span>
 
-              {/* Signals Capsule — OS Horizon Glass */}
-              <motion.div
-                className="glass-info-capsule flex items-center gap-2 px-4 py-2 rounded-[20px]"
-                style={{
-                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.035) 100%)',
-                  backdropFilter: 'blur(32px) saturate(165%)',
-                  WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-                  border: 'none',
-                  boxShadow: `
-                    0 4px 28px rgba(0,0,0,0.08),
-                    0 0 18px rgba(0,0,0,0.04),
-                    inset 0 1px 1.5px rgba(255,255,255,0.05)
-                  `
-                }}
-                initial={{ scale: 0.96, opacity: 0 }}
-                animate={{ scale: isLoaded ? 1 : 0.96, opacity: isLoaded ? 1 : 0 }}
-                transition={{ duration: 0.22, delay: 0.44, ease: [0.22, 0.61, 0.36, 1] }}
-                whileHover={shouldReduceMotion ? {} : {
-                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.045) 100%)',
-                  boxShadow: `
-                    0 6px 28px rgba(0,0,0,0.10),
-                    0 0 22px rgba(110, 180, 255, 0.03),
-                    inset 0 1px 2px rgba(255,255,255,0.07)
-                  `
-                }}
-                tabIndex={0}
-                role="button"
-                aria-label={`${stats.signals} signals`}
-              >
-                <Zap className="w-3.5 h-3.5" style={{ color: sentimentProps.baseHue, opacity: 0.92, strokeWidth: 2.0, filter: 'brightness(1.03)' }} />
-                <span className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.82)' }}>
-                  Signals <span style={{ color: sentimentProps.baseHue, fontWeight: 700, filter: 'brightness(1.08)' }}>{stats.signals}</span>
-                </span>
-              </motion.div>
+                <motion.div
+                  className="glass-info-capsule flex items-center gap-2 px-4 py-2 rounded-[20px]"
+                  style={{
+                    background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.035) 100%)',
+                    border: 'none',
+                    boxShadow: '0 4px 28px rgba(0,0,0,0.08), inset 0 1px 1.5px rgba(255,255,255,0.05)',
+                    transform: 'translateZ(0)',
+                    willChange: 'transform, opacity'
+                  }}
+                  initial={{ scale: 0.96, opacity: 0 }}
+                  animate={{ scale: isLoaded ? 1 : 0.96, opacity: isLoaded ? 1 : 0 }}
+                  transition={{ duration: 0.22, delay: 0.44, ease: [0.22, 0.61, 0.36, 1] }}
+                  whileHover={shouldReduceMotion ? {} : {
+                    scale: 1.02,
+                    boxShadow: '0 6px 28px rgba(0,0,0,0.10), inset 0 1px 2px rgba(255,255,255,0.07)',
+                    transition: { duration: 0.12 }
+                  }}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`${stats.signals} signals`}
+                >
+                  <Zap className="w-3.5 h-3.5" style={{ color: sentimentProps.baseHue, opacity: 0.92, strokeWidth: 2.0 }} />
+                  <span className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.82)' }}>
+                    Signals <span style={{ color: sentimentProps.baseHue, fontWeight: 700 }}>{stats.signals}</span>
+                  </span>
+                </motion.div>
+              </div>
             </motion.div>
 
             {/* Halo Spectrum Arc */}
@@ -1268,106 +1223,46 @@ export default function DigestHeader({
             animate={{ opacity: isLoaded ? 1 : 0, x: isLoaded ? 0 : 20 }}
             transition={{ duration: 0.4, delay: 1.3, ease: [0.22, 0.61, 0.36, 1] }}
           >
-            {/* OS Horizon V4 Liquid-Glass Analysis Date Capsule */}
+            {/* OPTIMIZED: Merged all decorative layers into single element */}
             <motion.div
               className="date-glass flex flex-col items-end rounded-[30px] relative overflow-hidden"
               style={{
-                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.034) 100%)',
-                backdropFilter: 'blur(36px) saturate(168%)',
-                WebkitBackdropFilter: 'blur(36px) saturate(168%)',
-                border: '1px solid rgba(255,255,255,0.09)',
-                boxShadow: `
-                  0 4px 22px rgba(0,0,0,0.08),
-                  inset 0 1.5px 0 rgba(255,255,255,0.07),
-                  inset 0 -1px 1px rgba(0,0,0,0.03)
+                background: `
+                  linear-gradient(180deg, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.034) 100%),
+                  linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 45%, rgba(90, 120, 180, 0.08) 100%),
+                  radial-gradient(ellipse at 50% 85%, rgba(90, 120, 180, 0.05) 0%, transparent 70%)
                 `,
+                backdropFilter: 'blur(24px) saturate(168%)',
+                WebkitBackdropFilter: 'blur(24px) saturate(168%)',
+                border: '1px solid rgba(255,255,255,0.09)',
+                boxShadow: '0 4px 22px rgba(0,0,0,0.08), inset 0 1.5px 0 rgba(255,255,255,0.07)',
                 padding: '14px 16px',
-                transform: 'perspective(800px) rotateY(0.8deg)'
+                transform: 'translateZ(0)',
+                willChange: 'transform, opacity'
               }}
               animate={{
-                opacity: [1, 0.97, 1]
+                opacity: shouldReduceMotion ? 1 : [1, 0.97, 1]
               }}
               transition={{
-                opacity: { duration: 4.4, repeat: Infinity, ease: "easeInOut" }
+                opacity: { duration: 4.4, repeat: shouldReduceMotion ? 0 : Infinity, ease: "easeInOut" }
               }}
               whileHover={shouldReduceMotion ? {} : {
                 scale: 1.01,
-                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.056) 0%, rgba(255, 255, 255, 0.042) 100%)',
-                boxShadow: `
-                  0 5px 24px rgba(0,0,0,0.10),
-                  inset 0 1.5px 0 rgba(255,255,255,0.09),
-                  inset 0 -1px 1px rgba(0,0,0,0.03)
-                `,
-                transition: { type: "spring", stiffness: 290, damping: 28 }
+                boxShadow: '0 5px 24px rgba(0,0,0,0.10), inset 0 1.5px 0 rgba(255,255,255,0.09)',
+                transition: { duration: 0.12 }
               }}
             >
-              {/* Enhanced vertical gradient: top 4% white → bottom 8% ultramarine */}
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                height: '45%',
-                background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 100%)',
-                borderRadius: '30px 30px 0 0',
-                pointerEvents: 'none'
-              }} />
-
-              <div style={{
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: '45%',
-                background: 'linear-gradient(0deg, rgba(90, 120, 180, 0.08) 0%, transparent 100%)',
-                borderRadius: '0 0 30px 30px',
-                pointerEvents: 'none'
-              }} />
-
-              {/* Subsurface bloom at bottom (5%) */}
-              <div style={{
-                position: 'absolute',
-                bottom: 0,
-                left: '15%',
-                right: '15%',
-                height: '35%',
-                background: 'radial-gradient(ellipse at 50% 100%, rgba(90, 120, 180, 0.05) 0%, transparent 70%)',
-                filter: 'blur(10px)',
-                pointerEvents: 'none'
-              }} />
-
-              {/* Micro-grain texture (1.2%) */}
+              {/* OPTIMIZED: Single decorative layer with merged effects */}
               <div style={{
                 position: 'absolute',
                 inset: 0,
-                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-                opacity: 0.012,
-                mixBlendMode: 'overlay',
-                borderRadius: '30px',
-                pointerEvents: 'none'
-              }} />
-
-              {/* Inner Top Highlight */}
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: '16%',
-                right: '16%',
-                height: '2px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.13), transparent)',
-                filter: 'blur(0.8px)',
-                pointerEvents: 'none'
-              }} />
-
-              {/* Enhanced internal glow (4-6% increase) */}
-              <div style={{
-                position: 'absolute',
-                top: '20%',
-                left: '20%',
-                right: '20%',
-                height: '30%',
-                background: 'radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.07) 0%, transparent 70%)',
-                filter: 'blur(10px)',
+                background: `
+                  linear-gradient(90deg, transparent 16%, rgba(255,255,255,0.13) 50%, transparent 84%)
+                `,
+                backgroundSize: '100% 2px',
+                backgroundPosition: '0 0',
+                backgroundRepeat: 'no-repeat',
+                opacity: 0.4,
                 pointerEvents: 'none'
               }} />
 
