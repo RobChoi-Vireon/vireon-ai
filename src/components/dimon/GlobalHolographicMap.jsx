@@ -1457,29 +1457,34 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             cursor: 'pointer',
             overflow: 'hidden',
             background: 'linear-gradient(180deg, rgba(14, 18, 26, 0.62) 0%, rgba(10, 13, 20, 0.68) 100%)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
+            backdropFilter: 'blur(16px) saturate(140%)',
+            WebkitBackdropFilter: 'blur(16px) saturate(140%)',
             border: isPillHovered ? '1px solid rgba(160, 191, 255, 0.35)' : '1px solid rgba(160, 191, 255, 0.22)',
             boxShadow: isPillHovered
-              ? '0 6px 24px rgba(0, 0, 0, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.18)'
-              : '0 4px 16px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12)',
-            transform: 'translateZ(0)',
-            willChange: 'transform, opacity'
+              ? `0 6px 24px rgba(0, 0, 0, 0.30), 0 0 18px rgba(106, 199, 247, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.18)`
+              : `0 4px 16px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12)`,
+            willChange: 'transform, filter, box-shadow'
           }}
           role="button"
           aria-label="Powered by Lyra AI"
           tabIndex={0}
         >
-          {/* OPTIMIZED: Static ambient glow - no animation */}
-          <div
+          {/* Ambient Inner Glow */}
+          <motion.div
             style={{
               position: 'absolute',
               inset: 0,
               background: 'radial-gradient(circle at 50% 20%, rgba(106, 199, 247, 0.08) 0%, transparent 70%)',
               pointerEvents: 'none',
-              borderRadius: '999px',
-              opacity: isPillHovered ? 0.8 : 0.7,
-              transition: 'opacity 0.18s ease'
+              borderRadius: '999px'
+            }}
+            animate={{
+              opacity: isPillHovered ? [0.7, 0.9, 0.7] : [0.6, 0.8, 0.6]
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: 'easeInOut'
             }}
           />
 
@@ -1560,37 +1565,59 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             transition: 'opacity 0.2s ease-out, filter 0.2s ease-out'
           }}
         >
-          {/* OPTIMIZED: Single merged background layer - eliminates 3 separate divs */}
+          {/* UNIFIED SMOOTH BACKGROUND — Single seamless gradient */}
           <div
             className="equilibrium-unified-background"
             style={{
               position: 'absolute',
-              inset: 0,
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
               background: `
-                radial-gradient(ellipse at center, transparent 55%, ${TOKENS.HORIZON.vignetteColor} 100%),
-                radial-gradient(ellipse 850px 520px at 50% 46%, rgba(18, 24, 35, 0.68) 0%, rgba(14, 18, 26, 0.52) 35%, rgba(11, 14, 19, 0.35) 58%, rgba(7, 10, 15, 0.18) 75%, transparent 100%)
+                radial-gradient(
+                  ellipse 850px 520px at 50% 46%, 
+                  rgba(18, 24, 35, 0.68) 0%, 
+                  rgba(14, 18, 26, 0.52) 35%, 
+                  rgba(11, 14, 19, 0.35) 58%, 
+                  rgba(7, 10, 15, 0.18) 75%, 
+                  transparent 100%
+                )
               `,
               borderRadius: '24px',
               pointerEvents: 'none',
-              zIndex: 1,
-              opacity: TOKENS.HORIZON.vignetteOpacity,
-              transform: 'translateZ(0)'
+              zIndex: 1
             }}
             aria-hidden="true"
           />
 
-          {/* OPTIMIZED: Static noise texture - no animation to save GPU */}
-          <div
+          {/* NOISE TEXTURE — SINGLE LAYER */}
+          <motion.div
             style={{
               position: 'absolute',
               inset: 0,
-              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulescence type='fractalNoise' baseFrequency='0.9' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E")`,
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E")`,
               backgroundSize: '200px 200px',
               opacity: 0.15,
               borderRadius: '24px',
               pointerEvents: 'none',
-              zIndex: 3,
-              mixBlendMode: 'overlay'
+              zIndex: 3
+            }}
+            animate={{ backgroundPosition: [`${noiseDrift}px 0px`, `${noiseDrift + 0.3}px 0px`] }}
+            transition={{ duration: 1, ease: 'linear' }}
+          />
+
+          {/* VIGNETTE — SINGLE UNIFORM LAYER */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: `radial-gradient(ellipse at center, transparent 55%, ${TOKENS.HORIZON.vignetteColor} 100%)`,
+              opacity: TOKENS.HORIZON.vignetteOpacity,
+              filter: `blur(${TOKENS.HORIZON.vignetteBlur}px)`,
+              borderRadius: '24px',
+              pointerEvents: 'none',
+              zIndex: 4
             }}
           />
 
@@ -1967,16 +1994,14 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                   maxWidth: 'calc(100% - 48px)',
                   maxHeight: '500px',
                   overflow: 'hidden',
-                  backdropFilter: 'blur(18px)',
-                  WebkitBackdropFilter: 'blur(18px)',
+                  backdropFilter: TOKENS.HORIZON.drawerBlur,
+                  WebkitBackdropFilter: TOKENS.HORIZON.drawerBlur,
                   background: TOKENS.HORIZON.drawerGlass,
                   border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
-                  boxShadow: `0 0 60px rgba(0, 0, 0, 0.15), ${TOKENS.HORIZON.panelShadow}`,
+                  boxShadow: `0 0 60px rgba(0, 0, 0, 0.15), ${TOKENS.HORIZON.panelShadow}, 0 0 12px ${TOKENS.HORIZON.drawerEdgeBloom}, inset 0 0 0 1px rgba(255,255,255,0.10)`,
                   borderRadius: '24px',
-                  filter: shouldReduceMotion ? 'none' : `brightness(${drawerLuminance})`,
-                  pointerEvents: 'auto',
-                  transform: 'translateZ(0)',
-                  willChange: 'transform, opacity'
+                  filter: `brightness(${drawerLuminance})`,
+                  pointerEvents: 'auto'
                 }}
               initial={{
                 scale: 0.92,
@@ -2018,22 +2043,60 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               aria-hidden="true"
             />
 
-            {/* OPTIMIZED: Single merged ambient layer - no parallax to save GPU */}
-            <div
+            <motion.div
               style={{
                 position: 'absolute',
-                inset: 0,
-                background: `
-                  linear-gradient(to bottom, ${TOKENS.HORIZON.lightTemp} 0%, transparent 30%, rgba(255,255,255,0) 100%),
-                  radial-gradient(circle at center, ${getDomainGlow(selectedDomain.id)} 0%, transparent 70%)
-                `,
+                left: '50%',
+                top: '50%',
+                transform: 'translate3d(-50%, -50%, 0)',
+                width: '120%',
+                height: '120%',
+                background: `radial-gradient(circle at center, ${getDomainGlow(selectedDomain.id)} 0%, transparent 70%)`,
                 opacity: 0.15,
+                filter: 'blur(40px)',
                 pointerEvents: 'none',
-                borderRadius: '24px',
-                zIndex: 1,
-                mixBlendMode: 'screen'
+                mixBlendMode: 'screen',
+                zIndex: 0
+              }}
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: 0.15,
+                x: glassParallaxX,
+                y: glassParallaxY,
+                transition: {
+                  opacity: { duration: 0.5, ease: 'easeOut' }
+                }
+              }}
+              exit={{
+                opacity: 0,
+                transition: { duration: 0.25 }
               }}
             />
+
+            <motion.div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '80px',
+                background: `linear-gradient(to bottom, ${TOKENS.HORIZON.lightTemp} 0%, ${TOKENS.HORIZON.lightTempBottom} 100%)`,
+                pointerEvents: 'none',
+                borderRadius: '24px 24px 0 0',
+                zIndex: 1
+              }}
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: 1,
+                transition: { duration: 0.35, delay: 0.15, ease: 'easeOut' }
+              }}
+              exit={{
+                opacity: 0,
+                transition: { duration: 0.2 }
+              }}
+            />
+
+            <div className="panel-glass" style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '100%', background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%)', pointerEvents: 'none', borderRadius: '24px', zIndex: 1 }} />
 
             {/* HEADER */}
             <motion.div
@@ -2041,10 +2104,10 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               style={{
                 background: TOKENS.HORIZON.drawerTint,
                 borderColor: TOKENS.HORIZON.drawerDivider,
+                backdropFilter: getBlur('chip'),
                 position: 'relative',
                 zIndex: 10,
-                overflow: 'visible',
-                transform: 'translateZ(0)'
+                overflow: 'visible'
               }}
               initial={{ opacity: 0, y: -4 }}
               animate={{
@@ -2445,13 +2508,13 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               style={{
                 background: TOKENS.HORIZON.drawerTint,
                 borderColor: TOKENS.HORIZON.drawerDivider,
+                backdropFilter: getBlur('panel'),
                 zIndex: 10,
                 paddingLeft: '16px',
                 paddingRight: '16px',
                 paddingTop: '12px',
                 paddingBottom: '12px',
-                overflow: 'visible',
-                transform: 'translateZ(0)'
+                overflow: 'visible'
               }}
               initial={{ opacity: 0, y: 10 }}
               animate={{

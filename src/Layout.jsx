@@ -825,14 +825,34 @@ function LayoutContent({ children, currentPageName }) {
 
           {/* Desktop Sidebar */}
           <aside className="hidden md:flex flex-col w-[280px] p-8 relative" style={{ background: '#0B0E13' }}>
-            {/* OPTIMIZED: Merged ambient gradients into single layer */}
             <div style={{
               position: 'absolute',
-              inset: 0,
-              background: `
-                linear-gradient(180deg, rgba(155, 140, 200, 0.012) 0%, transparent 40%, rgba(90, 115, 145, 0.012) 60%, transparent 100%),
-                radial-gradient(ellipse 140px 80px at 20px 50px, rgba(130, 150, 255, 0.020) 0%, transparent 70%)
-              `,
+              top: 0,
+              left: 0,
+              right: 0,
+              height: '40%',
+              background: 'linear-gradient(180deg, rgba(155, 140, 200, 0.012) 0%, transparent 100%)',
+              pointerEvents: 'none'
+            }} />
+
+            <div style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: '40%',
+              background: 'linear-gradient(0deg, rgba(90, 115, 145, 0.012) 0%, transparent 100%)',
+              pointerEvents: 'none'
+            }} />
+
+            <div style={{
+              position: 'absolute',
+              top: '20px',
+              left: '20px',
+              width: '140px',
+              height: '80px',
+              background: 'radial-gradient(ellipse at 50% 50%, rgba(130, 150, 255, 0.020) 0%, transparent 70%)',
+              filter: 'blur(35px)',
               pointerEvents: 'none',
               mixBlendMode: 'soft-light',
               zIndex: 1
@@ -897,23 +917,29 @@ function LayoutContent({ children, currentPageName }) {
                 className="relative rounded-[20px] overflow-hidden"
                 style={{
                   padding: '14px 18px',
-                  background: `
-                    linear-gradient(135deg, rgba(50, 194, 136, 0.11) 0%, rgba(40, 174, 116, 0.09) 100%),
-                    linear-gradient(180deg, rgba(255,255,255,0.030) 0%, rgba(0,0,0,0.030) 100%),
-                    radial-gradient(ellipse at 50% 30%, rgba(50, 194, 136, 0.08) 0%, transparent 70%)
-                  `,
-                  backdropFilter: 'blur(24px) saturate(168%)',
-                  WebkitBackdropFilter: 'blur(24px) saturate(168%)',
+                  background: 'linear-gradient(135deg, rgba(50, 194, 136, 0.11) 0%, rgba(40, 174, 116, 0.09) 100%)',
+                  backdropFilter: 'blur(32px) saturate(168%)',
+                  WebkitBackdropFilter: 'blur(32px) saturate(168%)',
                   border: '1px solid rgba(50, 194, 136, 0.18)',
-                  boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.12), 0 4px 16px rgba(0,0,0,0.08)',
-                  transform: 'translateZ(0)',
-                  willChange: 'transform, opacity'
+                  boxShadow: `
+                    inset 0 1.5px 0 rgba(255,255,255,0.12),
+                    inset 0 0 22px rgba(50, 194, 136, 0.09),
+                    0 4px 16px rgba(0,0,0,0.08),
+                    0 26px 30px -8px rgba(0,0,0,0.08)
+                  `
                 }}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.35, ...HORIZON_SPRING }}
               >
-                {/* OPTIMIZED: Single decorative overlay */}
+                <div style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'linear-gradient(180deg, rgba(255,255,255,0.030) 0%, rgba(0,0,0,0.030) 100%)',
+                  borderRadius: '20px',
+                  pointerEvents: 'none'
+                }} />
+
                 <div style={{
                   position: 'absolute',
                   top: 0,
@@ -921,6 +947,14 @@ function LayoutContent({ children, currentPageName }) {
                   right: '15%',
                   height: '1px',
                   background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+                  pointerEvents: 'none'
+                }} />
+
+                <div style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'radial-gradient(ellipse at 50% 30%, rgba(50, 194, 136, 0.08) 0%, transparent 70%)',
+                  borderRadius: '20px',
                   pointerEvents: 'none'
                 }} />
 
@@ -1059,7 +1093,7 @@ function LayoutContent({ children, currentPageName }) {
             </motion.main>
           </div>
 
-          <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 px-2 py-2 border-t border-white/[0.08] elevation-1" style={{ transform: 'translateZ(0)', willChange: 'transform' }}>
+          <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 px-2 py-2 border-t border-white/[0.08] elevation-1">
             <div className="flex justify-around items-center">
               {navItems.map(item => (
                 <Link

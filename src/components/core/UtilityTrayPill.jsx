@@ -213,7 +213,7 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
           pointerEvents: 'auto'
         }}
       >
-        {/* OPTIMIZED: Single glass background with merged layers */}
+        {/* Dynamic glass background */}
         <motion.div
           className="absolute inset-0 pointer-events-none"
           animate={{
@@ -221,10 +221,7 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
           }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           style={{
-            background: `
-              linear-gradient(180deg, rgba(35, 40, 48, 0.78) 0%, rgba(28, 33, 40, 0.74) 100%),
-              linear-gradient(180deg, rgba(0,0,0,0.05) 0%, transparent 35%, rgba(255,255,255,0.04) 100%)
-            `,
+            background: 'linear-gradient(180deg, rgba(35, 40, 48, 0.78) 0%, rgba(28, 33, 40, 0.74) 100%)',
             opacity: smoothOpacity,
             backdropFilter: useSpring(
               useTransform(smoothBlur, (blur) => `blur(${blur}px) saturate(${
@@ -239,13 +236,11 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
               { stiffness: 200, damping: 30 }
             ),
             scale: smoothScale,
-            y: smoothTranslateY,
-            transform: 'translateZ(0)',
-            willChange: 'transform, opacity'
+            y: smoothTranslateY
           }}
         />
 
-        {/* OPTIMIZED: Merged noise + rim highlight */}
+        {/* Noise Haze */}
         <motion.div
           className="absolute inset-0 pointer-events-none"
           animate={{
@@ -255,19 +250,35 @@ export default function UtilityTrayPill({ children, isOverlayOpen = false }) {
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
             opacity: 0.024,
-            mixBlendMode: 'overlay',
-            maskImage: 'linear-gradient(180deg, transparent 0%, black 2%, black 98%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(180deg, transparent 0%, black 2%, black 98%, transparent 100%)'
+            mixBlendMode: 'overlay'
           }}
-        >
-          <div
-            className="absolute top-0 left-0 right-0"
-            style={{
-              height: '1.5px',
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)'
-            }}
-          />
-        </motion.div>
+        />
+
+        {/* Vertical Gradient Depth */}
+        <motion.div
+          className="absolute inset-0 pointer-events-none"
+          animate={{
+            borderRadius: isExpanded ? '30px' : '50%'
+          }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          style={{
+            background: 'linear-gradient(180deg, rgba(0,0,0,0.05) 0%, transparent 35%, rgba(255,255,255,0.04) 100%)'
+          }}
+        />
+
+        {/* Glass Rim Edge Highlight */}
+        <motion.div
+          className="absolute top-0 left-0 right-0 pointer-events-none"
+          animate={{
+            borderRadius: isExpanded ? '30px 30px 0 0' : '50% 50% 0 0'
+          }}
+          transition={{ duration: 0.38, ease: [0.26, 0.11, 0.26, 1.0] }}
+          style={{
+            height: '1.5px',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+            filter: 'blur(0.5px)'
+          }}
+        />
 
         {/* Content with scroll-reactive transform */}
         <motion.div
