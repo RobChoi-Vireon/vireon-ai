@@ -586,18 +586,16 @@ export default function MacroSignalsPage() {
     hidden: {
       opacity: 0,
       y: -20,
-      filter: 'blur(12px)'
     },
     visible: {
       opacity: 1,
       y: 0,
-      filter: 'blur(0px)',
       transition: {
-        duration: 1.1,
+        duration: 0.8,
         ease: [0.16, 1, 0.3, 1],
         type: "spring",
-        stiffness: 60,
-        damping: 25
+        stiffness: 100,
+        damping: 20
       }
     }
   };
@@ -605,21 +603,17 @@ export default function MacroSignalsPage() {
   const sectionVariants = {
     hidden: { 
       opacity: 0, 
-      y: 40,
-      scale: 0.95,
-      filter: 'blur(8px)'
+      y: 20,
     },
     visible: { 
       opacity: 1, 
       y: 0,
-      scale: 1,
-      filter: 'blur(0px)',
       transition: {
-        duration: 0.9,
+        duration: 0.6,
         ease: [0.16, 1, 0.3, 1],
         type: "spring",
-        stiffness: 80,
-        damping: 20
+        stiffness: 120,
+        damping: 18
       }
     },
   };
@@ -705,7 +699,10 @@ export default function MacroSignalsPage() {
           paddingTop: '16px',
           filter: isAnyDrawerOpen ? 'blur(26px) saturate(1.3) brightness(1.15)' : 'none',
           transition: 'filter 280ms cubic-bezier(0.19, 1, 0.22, 1)',
-          willChange: 'filter'
+          willChange: isAnyDrawerOpen ? 'filter' : 'auto',
+          transform: 'translateZ(0)',
+          backfaceVisibility: 'hidden',
+          contain: 'layout style paint'
         }}
       >
         <motion.div 
