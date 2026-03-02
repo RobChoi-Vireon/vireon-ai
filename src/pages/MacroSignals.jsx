@@ -719,6 +719,12 @@ export default function MacroSignalsPage() {
               setTargetDate={setTargetDate}
               isLoading={isLoading}
               sessionData={sessionData}
+              lastUpdated={orientationData?.as_of?.updated_ago ?? "—"}
+              stats={{
+                sources: orientationData?.overview?.sources_count ?? 0,
+                signals: orientationData?.overview?.signals_count ?? 0
+              }}
+              insightLine={orientationData?.overview?.sentiment?.commentary ?? "Markets are being evaluated."}
             />
           </div>
           
