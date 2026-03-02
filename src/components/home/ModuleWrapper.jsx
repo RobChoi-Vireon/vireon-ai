@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import DragHandle from './DragHandle';
 
@@ -10,6 +9,7 @@ export default function ModuleWrapper({
   onMoveModule, 
   theme,
   index,
+  id,
   ...props 
 }) {
   const [isDragHandleVisible, setIsDragHandleVisible] = useState(false);
