@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DimonDigestRun } from '@/entities/DimonDigestRun';
+import { OrientationSession } from '@/entities/OrientationSession';
 import { generateDimonDigest } from '@/functions/generateDimonDigest';
 import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import HorizonWelcomeOverlay from '@/components/core/HorizonWelcomeOverlay';
