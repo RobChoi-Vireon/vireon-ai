@@ -1249,7 +1249,7 @@ export default function DigestHeader({
                         letterSpacing: '0.06em'
                       }}
                     >
-                      {getDominantSentiment() === 'opportunity' ? 'Moderately Risk-On' : getDominantSentiment() === 'risk' ? 'Moderately Risk-Off' : 'Market Neutral'}
+                      {sentimentLabel}
                     </span>
                   </motion.div>
                 </div>
