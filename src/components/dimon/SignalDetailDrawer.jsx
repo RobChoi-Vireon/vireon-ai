@@ -361,303 +361,34 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
 
   // Extract signal metadata
   const sentiment = signal.urgency === 'critical' ? 'risk' : signal.urgency === 'high' ? 'risk' : 'neutral';
-  const primarySector = 'Technology';
-  const ageLabel = '2h ago';
-  const durationBias = 'Short-term risk-off';
-  const confOverall = 78;
+  const primarySector = signal.bucket
+    ? signal.bucket.charAt(0).toUpperCase() + signal.bucket.slice(1)
+    : 'Markets';
+  const ageLabel = signal.rawData?.as_of?.updated_ago || '—';
+  const durationBias = signal.urgency === 'high' || signal.urgency === 'critical' ? 'Short-term risk-off' : 'Monitor';
+  const confOverall = signal.rawData?.confidence || 0;
 
-  // Check if this is a front_page_signals bucket signal (has rawData)
   const bucketData = signal.rawData;
-  const hasSimpleTab = bucketData?.simple;
-  const hasDetailedTab = bucketData?.why_it_matters;
-
-  // Generate content based on signal type - CEP ENGINE FORMAT
-  const getContentForSignal = () => {
-    switch (signal.tag) {
-      case 'Policy Shock':
-        return {
-          // 1. SUMMARY - Core event + immediate significance
-          summary: 'The U.S. government introduced new AI regulations that will increase costs for tech companies. This is expected to reduce profits and make tech stocks less attractive.',
-          // 2. CONFIDENCE - kept as confOverall variable
-          // 3. WHY IT MATTERS - Direct market effect
-          why: 'Tech companies will spend more on compliance, reducing profits and potentially lowering stock prices.',
-          // 4. IN SIMPLE TERMS - 8th grade reading level
-          translation: 'Big tech companies now have to follow stricter rules, which costs money and hurts their bottom line.',
-          // 5. WHAT HAPPENED - Factual only
-          what: 'The U.S. government announced new rules requiring companies that use AI tools to meet stricter safety and content standards.',
-          // 6. IMPACT SNAPSHOT - Ordered by magnitude
-          impacts: [
-            { text: 'Tech Stocks', tone: 'risk' },
-            { text: 'Government Bonds', tone: 'opportunity' },
-            { text: 'U.S. Dollar', tone: 'opportunity' },
-            { text: 'Corporate Bonds', tone: 'risk' },
-          ],
-          // 7. DOWNSIDE RISK
-          downside: {
-            text: 'If rules get stricter than expected, investors may sell tech stocks and other risky investments quickly.',
-            confidence: 85,
-          },
-          // 8. UPSIDE POTENTIAL
-          upside: {
-            text: 'Established, profitable companies may become more attractive as investors move away from high-risk growth stocks.',
-            confidence: 60,
-          },
-          // 9. RIPPLE EFFECTS
-          rippleImpact: 'Other countries may follow with similar rules. Tech companies may delay new products while adjusting to requirements.',
-          // 10. CONTEXT QUOTE
-          quote: 'This is the biggest change in tech oversight in over 20 years.',
-          // 11. MARKET RELEVANCE
-          relevance: {
-            impacts: 'Company profits, stock valuations, interest rate expectations',
-            sectors: 'Technology (negative), Banks (neutral), Manufacturing (slightly negative)',
-            assetClasses: 'Growth stocks (negative), Short-term bonds (positive), Dollar (positive)',
-          },
-          // 12. HOW INVESTORS MAY RESPOND
-          strategy: 'Consider moving some money from high-growth tech stocks to stable, profitable companies. Short-term bonds may offer better protection against rate changes.',
-          // 13. RELATED SIGNALS
-          correlated: [
-            { id: 1, label: 'Bloomberg' },
-            { id: 2, label: 'Wall Street Journal' },
-            { id: 3, label: 'Financial Times' },
-            { id: 4, label: 'Reuters' },
-          ]
-        };
-      
-      case 'Credit Stress':
-        return {
-          summary: 'Companies in developing countries are finding it harder and more expensive to borrow money. This financial stress could spread if it continues.',
-          why: 'Higher borrowing costs squeeze company profits and increase the risk of missed payments.',
-          translation: 'When loans get expensive, companies with debt struggle to pay their bills.',
-          what: 'Borrowing costs for companies in emerging markets jumped this week, and fewer companies are getting approved for new loans.',
-          impacts: [
-            { text: 'Emerging Market Bonds', tone: 'risk' },
-            { text: 'U.S. Dollar', tone: 'opportunity' },
-            { text: 'Safe Investments', tone: 'opportunity' },
-            { text: 'International Stocks', tone: 'risk' },
-          ],
-          downside: {
-            text: 'If more companies struggle to repay loans, it could shake confidence in global markets and hurt investors worldwide.',
-            confidence: 72,
-          },
-          upside: {
-            text: 'U.S. investments and the dollar may benefit as investors seek safer options.',
-            confidence: 55,
-          },
-          rippleImpact: 'U.S. companies that sell overseas may see weaker demand. Banks with international loans face higher risks.',
-          quote: null,
-          relevance: {
-            impacts: 'Global lending, investor confidence, currency values',
-            sectors: 'International businesses (negative), U.S.-focused companies (positive)',
-            assetClasses: 'Emerging market bonds (negative), U.S. bonds (positive), Dollar (positive)',
-          },
-          strategy: 'Consider reducing investments in emerging markets and increasing U.S.-focused holdings. Companies with low debt are safer bets.',
-          correlated: [
-            { id: 1, label: 'Reuters' },
-            { id: 2, label: 'Bloomberg' },
-            { id: 3, label: 'CNBC' },
-            { id: 4, label: 'MarketWatch' },
-          ]
-        };
-      
-      case 'Tech Disruption':
-        return {
-          summary: 'A quantum computing breakthrough could eventually threaten current digital security systems. The impact is long-term, not immediate.',
-          why: 'Companies and governments will need to upgrade security systems over time, creating new spending priorities.',
-          translation: 'New super-fast computers might one day crack today\'s security codes, so everyone will need better protection.',
-          what: 'Researchers showed that quantum computers are getting closer to breaking the encryption that protects most online data.',
-          impacts: [
-            { text: 'Cybersecurity Stocks', tone: 'opportunity' },
-            { text: 'Tech Infrastructure', tone: 'neutral' },
-            { text: 'Financial Services', tone: 'neutral' },
-            { text: 'Government Bonds', tone: 'neutral' },
-          ],
-          downside: {
-            text: 'If this technology advances faster than expected, companies may face surprise costs to upgrade security.',
-            confidence: 45,
-          },
-          upside: {
-            text: 'Security companies building quantum-proof protection could see strong growth over the next decade.',
-            confidence: 68,
-          },
-          rippleImpact: 'Banks and governments will likely increase security budgets. New security standards may become required.',
-          quote: null,
-          relevance: {
-            impacts: 'Security spending, technology priorities, data protection rules',
-            sectors: 'Cybersecurity (positive), Cloud services (neutral), Banks (neutral)',
-            assetClasses: 'Tech stocks (mixed), Infrastructure investments (neutral)',
-          },
-          strategy: 'This is a long-term trend. Gradually adding cybersecurity investments may pay off over several years.',
-          correlated: [
-            { id: 1, label: 'TechCrunch' },
-            { id: 2, label: 'Wired' },
-            { id: 3, label: 'MIT Tech Review' },
-            { id: 4, label: 'The Verge' },
-          ]
-        };
-      
-      case 'Geopolitical Risk':
-        return {
-          summary: 'Trade tensions between major countries are making it harder and more expensive for companies to get supplies and sell products globally.',
-          why: 'Higher costs for materials and shipping reduce company profits and can lead to higher prices for consumers.',
-          translation: 'Countries are making it harder to trade with each other, which raises costs for everyone.',
-          what: 'The U.S., China, and other major economies announced new tariffs and trade restrictions affecting many industries.',
-          impacts: [
-            { text: 'Manufacturing Stocks', tone: 'risk' },
-            { text: 'Consumer Goods', tone: 'risk' },
-            { text: 'U.S. Companies', tone: 'opportunity' },
-            { text: 'Shipping Costs', tone: 'risk' },
-          ],
-          downside: {
-            text: 'Worsening tensions could disrupt supply chains severely, forcing production shutdowns and product shortages.',
-            confidence: 78,
-          },
-          upside: {
-            text: 'Companies that make products in the U.S. may gain business as others look for alternatives to foreign suppliers.',
-            confidence: 62,
-          },
-          rippleImpact: 'Consumer prices may rise. Some products could become harder to find. Companies may move manufacturing.',
-          quote: null,
-          relevance: {
-            impacts: 'Product prices, supply availability, manufacturing costs',
-            sectors: 'Manufacturing (negative), Retail (negative), Domestic producers (positive)',
-            assetClasses: 'International stocks (negative), U.S. stocks (mixed), Commodities (volatile)',
-          },
-          strategy: 'Consider favoring companies that produce domestically over those heavily dependent on imports.',
-          correlated: [
-            { id: 1, label: 'Financial Times' },
-            { id: 2, label: 'The Economist' },
-            { id: 3, label: 'Wall Street Journal' },
-            { id: 4, label: 'Bloomberg' },
-          ]
-        };
-      
-      case 'Energy Transition':
-        return {
-          summary: 'A clean energy breakthrough could make solar and wind power significantly cheaper, speeding up the shift away from oil and gas.',
-          why: 'Cheaper renewable energy attracts more investment and puts pressure on traditional energy companies.',
-          translation: 'New technology is making clean energy cheaper, which is bad for oil companies but good for solar and wind.',
-          what: 'Scientists announced a major improvement in renewable energy technology that could cut production costs significantly.',
-          impacts: [
-            { text: 'Renewable Stocks', tone: 'opportunity' },
-            { text: 'Oil & Gas', tone: 'risk' },
-            { text: 'Utilities', tone: 'opportunity' },
-            { text: 'Battery Tech', tone: 'opportunity' },
-          ],
-          downside: {
-            text: 'Traditional energy companies may see falling demand and stock prices as renewables become cheaper.',
-            confidence: 65,
-          },
-          upside: {
-            text: 'Solar, wind, and battery companies could see strong growth as more people switch to clean energy.',
-            confidence: 72,
-          },
-          rippleImpact: 'Electric car adoption may speed up. Home solar installations could increase. Energy bills may eventually fall.',
-          quote: null,
-          relevance: {
-            impacts: 'Energy prices, climate policy, infrastructure spending',
-            sectors: 'Renewables (positive), Oil & gas (negative), Utilities (positive)',
-            assetClasses: 'Clean energy stocks (positive), Oil stocks (negative), Infrastructure bonds (positive)',
-          },
-          strategy: 'Consider gradually shifting energy investments from traditional oil and gas toward renewable companies.',
-          correlated: [
-            { id: 1, label: 'Nature' },
-            { id: 2, label: 'Scientific American' },
-            { id: 3, label: 'Energy News' },
-            { id: 4, label: 'Bloomberg Green' },
-          ]
-        };
-      
-      case 'Social Unrest':
-        return {
-          summary: 'Protests over high living costs are spreading across Europe, which could force governments to change policies and disrupt businesses.',
-          why: 'Political instability and policy changes can hurt business confidence and reduce consumer spending.',
-          translation: 'People are protesting because everything costs more, and governments may have to respond with new policies.',
-          what: 'Large protests over inflation and high prices are happening in major cities across France, the UK, and Spain.',
-          impacts: [
-            { text: 'European Stocks', tone: 'risk' },
-            { text: 'Consumer Spending', tone: 'risk' },
-            { text: 'Safe Bonds', tone: 'opportunity' },
-            { text: 'Political Risk', tone: 'risk' },
-          ],
-          downside: {
-            text: 'Growing unrest could lead to business disruptions, emergency government policies, or reduced consumer confidence.',
-            confidence: 68,
-          },
-          upside: {
-            text: 'Government spending programs to calm unrest could boost economic growth, and inflation may ease as energy costs fall.',
-            confidence: 52,
-          },
-          rippleImpact: 'European retailers and restaurants may see fewer customers. Governments may announce emergency support programs.',
-          quote: null,
-          relevance: {
-            impacts: 'Consumer spending, political stability, government policy',
-            sectors: 'European retail (negative), Luxury goods (negative), Utilities (neutral)',
-            assetClasses: 'European stocks (negative), Safe haven bonds (positive), U.S. assets (positive)',
-          },
-          strategy: 'Consider reducing exposure to European consumer businesses and increasing safer investments.',
-          correlated: [
-            { id: 1, label: 'BBC News' },
-            { id: 2, label: 'The Guardian' },
-            { id: 3, label: 'Le Monde' },
-            { id: 4, label: 'Reuters' },
-          ]
-        };
-      
-      default:
-        return {
-          summary: `${signal.text} This event may shift market sentiment.`,
-          why: 'Market conditions are changing, which could affect investment decisions.',
-          translation: 'Something important happened that investors are watching closely.',
-          what: signal.text,
-          impacts: [
-            { text: 'Global Markets', tone: 'neutral' },
-            { text: 'Investor Mood', tone: 'neutral' },
-          ],
-          downside: {
-            text: 'Uncertainty may cause investors to be more cautious, leading to market swings.',
-            confidence: 60,
-          },
-          upside: {
-            text: 'Markets often adapt to new situations, creating opportunities for prepared investors.',
-            confidence: 55,
-          },
-          rippleImpact: 'Watch for follow-up news and how markets react over the next few days.',
-          quote: null,
-          relevance: {
-            impacts: 'Market mood, investor confidence, risk appetite',
-            sectors: 'Various sectors may be affected',
-            assetClasses: 'Multiple investment types may see changes',
-          },
-          strategy: 'Stay informed and consider how this fits with your investment goals and risk comfort.',
-          correlated: [
-            { id: 1, label: 'Bloomberg' },
-            { id: 2, label: 'Reuters' },
-          ]
-        };
-    }
-  };
-
-  const content = getContentForSignal();
-  
-  // CEP ENGINE content mapping
-  // If we have bucketData, use it; otherwise use legacy content
-  const summary = bucketData?.summary || content.summary;
-  const translation = hasSimpleTab ? bucketData.simple : content.translation;
-  const rippleImpact = content.rippleImpact;
+  const summary = bucketData?.summary || 'Signal data loading...';
+  const translation = bucketData?.simple || null;
+  const rippleImpact = bucketData?.ripple_effects || null;
 
   const analysis = {
-    what: content.what,
-    why: hasDetailedTab ? bucketData.why_it_matters : content.why,
-    impacts: content.impacts,
-    quote: content.quote,
-    relevance: content.relevance,
-    downside: content.downside,
-    upside: content.upside,
-    strategy: content.strategy,
-    correlated: bucketData?.top_sources?.map((source, idx) => ({
-      id: idx,
-      label: source.source || source.name || 'Unknown'
-    })) || content.correlated
+    what: bucketData?.what_happened || bucketData?.summary || '',
+    why: bucketData?.why_it_matters || '',
+    impacts: (bucketData?.impact_snapshot || []).map(item => ({
+      text: item.text, tone: item.tone
+    })),
+    quote: bucketData?.context_quote || null,
+    relevance: {
+      impacts: bucketData?.market_relevance?.impacts || '',
+      sectors: bucketData?.market_relevance?.sectors || '',
+      assetClasses: bucketData?.market_relevance?.asset_classes || ''
+    },
+    downside: { text: bucketData?.downside_risk?.text || '', confidence: bucketData?.downside_risk?.confidence || 0 },
+    upside: { text: bucketData?.upside_potential?.text || '', confidence: bucketData?.upside_potential?.confidence || 0 },
+    strategy: bucketData?.investor_response_strategy || '',
+    correlated: (bucketData?.source_pills || []).map((pill, idx) => ({ id: idx, label: pill.label || 'Source' }))
   };
 
   return (
