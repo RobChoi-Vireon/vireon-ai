@@ -438,15 +438,12 @@ export default function MacroSignalsPage() {
     performance.mark('digest_fetch_start');
 
     try {
-      // Fetch latest OrientationSession where session_type = "macro_signals"
-      const sessions = await base44.entities.OrientationSession.filter(
-        { session_type: 'macro_signals' },
-        '-updated_date',
-        1
-      );
+      // Fetch latest OrientationSession
+      const sessions = await OrientationSession.list('-updated_date', 1);
       
       if (sessions && sessions.length > 0) {
         setSessionData(sessions[0]);
+        setOrientationData(sessions[0]);
       }
       
       // Simulate fetching digest data with a delay
