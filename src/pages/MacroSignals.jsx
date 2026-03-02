@@ -411,6 +411,7 @@ export default function MacroSignalsPage() {
   const [targetDate, setTargetDate] = useState(new Date().toISOString().split('T')[0]);
   const [sessionData, setSessionData] = useState(null);
 
+  const [orientationData, setOrientationData] = useState(null);
   const [selectedSignal, setSelectedSignal] = useState(null);
   const [selectedTakeaway, setSelectedTakeaway] = useState(null);
   const [selectedDivergence, setSelectedDivergence] = useState(null);
