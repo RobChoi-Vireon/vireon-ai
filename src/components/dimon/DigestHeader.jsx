@@ -288,15 +288,29 @@ export default function DigestHeader({
     signals: sessionData?.top_block?.overview?.signals_count || 0
   };
   const sentimentPosition = sessionData?.top_block?.sentiment?.position || "neutral";
-  const sentimentLabel = sessionData?.top_block?.sentiment?.label || "Neutral";
   const sentimentConfidence = sessionData?.top_block?.sentiment?.confidence || 0;
   const insightLine = sessionData?.top_block?.sentiment?.commentary || "Markets are being evaluated.";
-  
-  // Map sentiment position to sentimentFlow for gauge visualization
+
+  // Continuous sentiment score: 0 = full risk-on, 50 = neutral, 100 = full risk-off
+  const sentimentScore = sessionData?.top_block?.sentiment?.sentiment_score ?? 50;
+
+  // Derive label from score (5 tiers for nuanced display)
+  const sentimentLabel = (() => {
+    if (sentimentScore <= 15) return "Risk-On";
+    if (sentimentScore <= 35) return "Cautiously Risk-On";
+    if (sentimentScore <= 65) return "Market Neutral";
+    if (sentimentScore <= 85) return "Cautiously Risk-Off";
+    return "Risk-Off";
+  })();
+
+  // Map sentiment score to sentimentFlow for gauge visualization
+  // Score 0 = full green (risk-on), 50 = balanced, 100 = full red (risk-off)
   const sentimentFlow = (() => {
-    if (sentimentPosition === "risk_on") return { green: 60, blue: 25, red: 15 };
-    if (sentimentPosition === "risk_off") return { green: 15, blue: 25, red: 60 };
-    return { green: 28, blue: 44, red: 28 }; // neutral
+    const t = sentimentScore / 100;
+    const green = Math.round(60 - (t * 45));
+    const red = Math.round(15 + (t * 45));
+    const blue = Math.round(100 - green - red);
+    return { green, blue, red };
   })();
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
