@@ -359,7 +359,7 @@ export default function PrioritySignalStrip({ frontPageSignals = null, signals =
           tag: data.headline || 'No Priority Signal Detected',
           text: data.summary || '',
           urgency: data.urgency || 'medium',
-          source: data.top_sources?.[0]?.source || '',
+          source: data.source_pills?.[0]?.label || '',
           quick_glance_tags: (data.impact_tags || []).map(tag => ({
             label: tag,
             icon: 'Zap',
