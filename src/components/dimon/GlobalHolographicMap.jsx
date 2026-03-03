@@ -1466,7 +1466,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
             willChange: 'transform, filter, box-shadow'
           }}
           role="button"
-          aria-label="Powered by Lyra AI"
+          aria-label="Powered by Ori AI"
           tabIndex={0}
         >
           {/* Ambient Inner Glow */}
