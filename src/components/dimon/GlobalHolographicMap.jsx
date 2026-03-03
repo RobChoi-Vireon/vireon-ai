@@ -765,7 +765,7 @@ const HoverCardPortal = ({
             letterSpacing: '0.3px',
             color: 'rgba(106, 199, 247, 0.9)'
           }}>
-            Lyra Insight →
+            Ori Insight →
           </span>
           <span style={{ fontWeight: 400, opacity: 0.92 }}>
             {domain.insight}
