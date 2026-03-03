@@ -22,32 +22,13 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
   const type = String(item?.type || 'Analysis');
   const headline = String(item?.headline || 'No headline available');
 
-  // Signal metadata (static placeholders for now)
-  const getSignalMeta = (type) => {
-    const meta = {
-      'Markets': {
-        sentiment: 'Bearish',
-        timeframe: 'Short-term',
-        impact: 'High',
-        summary: 'Companies may start spending less soon.'
-      },
-      'Policy': {
-        sentiment: 'Mixed',
-        timeframe: '3–12M',
-        impact: 'High',
-        summary: 'Big tech stocks may get shakier.'
-      },
-      'Global': {
-        sentiment: 'Bearish',
-        timeframe: 'Multi-year',
-        impact: 'Medium',
-        summary: 'A real recovery may not come until 2026.'
-      }
-    };
-    return meta[type] || meta['Global'];
+  // Signal metadata from live contract data
+  const signalMeta = {
+    sentiment: item?.sentiment || 'MIXED',
+    timeframe: item?.timeframe || 'SHORT-TERM',
+    impact: item?.impact || 'MEDIUM',
+    summary: item?.drawer?.simplified?.mood || ''
   };
-
-  const signalMeta = getSignalMeta(type);
 
   // Cursor proximity detection + parallax tilt
   React.useEffect(() => {
@@ -382,7 +363,7 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
                 width: '4px',
                 height: '4px',
                 borderRadius: '50%',
-                background: signalMeta.impact === 'High' ? '#E6A84E' : (signalMeta.impact === 'Medium' ? '#9BA8B8' : '#6BCAB8'),
+                background: signalMeta.impact === 'HIGH' ? '#E6A84E' : (signalMeta.impact === 'MEDIUM' ? '#9BA8B8' : '#6BCAB8'),
                 opacity: 0.72
               }} />
               {signalMeta.impact}
@@ -613,7 +594,7 @@ const EmptyState = () => (
   </motion.div>
 );
 
-export default function ExecutiveTakeaway({ digest, onOpenMemo, isLoading = false }) {
+export default function ExecutiveTakeaway({ businessMarkets, onOpenMemo, isLoading = false }) {
   if (isLoading) {
     return (
       <motion.section 
@@ -651,7 +632,9 @@ export default function ExecutiveTakeaway({ digest, onOpenMemo, isLoading = fals
     );
   }
 
-  if (!digest?.executive_takeaway || !Array.isArray(digest.executive_takeaway) || digest.executive_takeaway.length === 0) {
+  const cards = businessMarkets?.cards ? Object.values(businessMarkets.cards) : [];
+
+  if (cards.length === 0) {
     return (
       <motion.section 
         className="relative group"
@@ -734,7 +717,7 @@ export default function ExecutiveTakeaway({ digest, onOpenMemo, isLoading = fals
 
         {/* Responsive grid with Horizon OS spacing */}
         <div className="grid grid-cols-1 gap-y-6 gap-x-8 sm:grid-cols-2 xl:grid-cols-3 relative z-10">
-          {digest.executive_takeaway.map((item, index) => (
+          {cards.map((item, index) => (
             <TakeawayItem 
               key={index} 
               item={item}
