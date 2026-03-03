@@ -388,7 +388,11 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
     downside: { text: bucketData?.downside_risk?.text || '', confidence: bucketData?.downside_risk?.confidence || 0 },
     upside: { text: bucketData?.upside_potential?.text || '', confidence: bucketData?.upside_potential?.confidence || 0 },
     strategy: bucketData?.investor_response_strategy || '',
-    correlated: (bucketData?.source_pills || []).map((pill, idx) => ({ id: idx, label: pill.label || 'Source' }))
+    correlated: (bucketData?.source_pills || []).map((pill, idx) => ({
+      id: idx,
+      label: pill.label || 'Source',
+      url: pill.url || bucketData?.top_sources?.[idx] || null
+    }))
   };
 
   return (
