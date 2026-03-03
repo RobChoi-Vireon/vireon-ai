@@ -772,22 +772,54 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
             }
             
             .ri-chip {
-              padding: 6px 10px;
+              padding: 6px 14px;
               border-radius: 999px;
-              background: rgba(255, 255, 255, 0.06);
+              background: rgba(255, 255, 255, 0.07);
               white-space: nowrap;
               font-size: 13px;
               font-weight: 500;
               color: rgba(255, 255, 255, 0.85);
-              border: 1px solid rgba(255, 255, 255, 0.08);
+              border: 1px solid rgba(255, 255, 255, 0.10);
               cursor: pointer;
-              transition: background var(--ri-dur-fast) var(--ri-ease-io), 
-                          transform var(--ri-dur-fast) var(--ri-ease-io);
+              display: inline-flex;
+              align-items: center;
+              text-decoration: none;
+              user-select: none;
+              -webkit-user-select: none;
+              -webkit-tap-highlight-color: transparent;
+              will-change: transform, box-shadow, background;
+              transition: 
+                background 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                box-shadow 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                border-color 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                color 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+              backdrop-filter: blur(8px);
+              -webkit-backdrop-filter: blur(8px);
+              box-shadow: 
+                0 1px 3px rgba(0, 0, 0, 0.18),
+                inset 0 1px 0 rgba(255, 255, 255, 0.10);
             }
             
             .ri-chip:hover {
-              background: rgba(255, 255, 255, 0.10);
-              transform: translateY(-1px);
+              background: rgba(255, 255, 255, 0.12);
+              border-color: rgba(255, 255, 255, 0.16);
+              color: rgba(255, 255, 255, 0.96);
+              transform: translateY(-1.5px) scale(1.02);
+              box-shadow:
+                0 4px 14px rgba(0, 0, 0, 0.22),
+                0 1px 4px rgba(0, 0, 0, 0.14),
+                inset 0 1px 0 rgba(255, 255, 255, 0.14);
+            }
+            
+            .ri-chip:active {
+              transform: translateY(0px) scale(0.97);
+              background: rgba(255, 255, 255, 0.08);
+              box-shadow:
+                0 1px 3px rgba(0, 0, 0, 0.12),
+                inset 0 1px 3px rgba(0, 0, 0, 0.18),
+                inset 0 1px 0 rgba(255, 255, 255, 0.06);
+              transition-duration: 80ms;
             }
             
             .li-preview {
