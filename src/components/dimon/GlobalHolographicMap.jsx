@@ -1850,7 +1850,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
               const isSelected = selectedDomain?.id === domain.id;
               
               const labelText = {
-                fx: 'Currency (FX) Markets',
+                fx: 'Currency Markets',
                 rates: 'Rates Markets',
                 growth: 'Growth Markets',
                 geopolitics: 'Geopolitics'
