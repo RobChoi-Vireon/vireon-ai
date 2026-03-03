@@ -627,7 +627,7 @@ export default function LyraChatbot({ pageContext }) {
             scale: (isScrolling && !isOpen) ? 1.05 : 1.0,
           }}
           whileTap={{ scale: 0.95 }}
-          aria-label={isOpen ? 'Close Lyra chat' : 'Open Lyra chat'}
+          aria-label={isOpen ? 'Close Ori chat' : 'Open Ori chat'}
           aria-expanded={isOpen}
         >
           {/* Animated Neon Ring */}
