@@ -1950,7 +1950,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
       </div>
 
       <div className="flex justify-center" style={{ marginTop: '10px' }}>
-        <p style={{ fontSize: '9px', fontWeight: 400, color: TOKENS.colors.textTertiary, opacity: 0.55, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Data via Lyra models</p>
+        <p style={{ fontSize: '9px', fontWeight: 400, color: TOKENS.colors.textTertiary, opacity: 0.55, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Data via Ori models</p>
       </div>
 
       {/* EXPANSION DRAWER — ANCHORED INSIDE ORB CLUSTER */}
