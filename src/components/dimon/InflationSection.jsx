@@ -47,58 +47,25 @@ export default function InflationSection({ data }) {
   
   if (!data) return null;
 
-  // Mock data structure - replace with actual data binding
   const inflationData = {
-    timestamp_et: data.timestamp_et || "Feb 12, 6:05 PM ET",
-    delta_summary: data.delta_summary || "No new CPI or PCE release; markets positioning ahead of January CPI test.",
-    confidence_score: data.confidence_score || 82,
-    confidence_reason: data.confidence_reason || "High-quality data from BLS, Fed, and market surveys",
-    
-    // State rows
-    headline_state: { arrow: 'flat', label: 'Headline inflation', status: 'Mid-2% YoY; above target but not re-accelerating' },
-    core_state: { arrow: 'flat', label: 'Core inflation', status: 'Mid-2% range; sticky but roughly flat month-over-month' },
-    services_state: { arrow: 'up', label: 'Services inflation', status: 'Shelter and select services applying modest but persistent pressure; goods muted' },
-    
-    // Why it matters
-    fed_implication: "Policy remains restrictive and data-dependent; Fed not in a rush to cut further.",
-    market_implication: "Inflation remains in high-2% zone; tomorrow's CPI is the key credibility test.",
-    
-    // Primary drivers
-    drivers: [
-      { rank: 1, name: 'Shelter & housing', weight: 45, reason: 'Rent data lags and keeps services inflation firm' },
-      { rank: 2, name: 'Services ex-housing', weight: 35, reason: 'Wage-sensitive categories easing slowly' },
-      { rank: 3, name: 'Goods disinflation', weight: 20, reason: 'Supply normalization offsetting services stickiness' }
-    ],
-    
-    // Winners/Losers
-    winners: ['Cash holders', 'Short-duration bonds', 'Lenders', 'Firms with pricing power'],
-    losers: ['Renters', 'Long-duration growth equities', 'Fixed-income retirees', 'Variable-rate borrowers'],
-    
-    // CPI vs PCE
-    cpi_pce_collapsed: "CPI measures consumer basket; PCE adjusts for spending shifts and is Fed-preferred.",
-    cpi_plain: "CPI measures consumer basket",
-    pce_plain: "PCE adjusts for spending shifts",
-    why_fed_prefers: "Markets react to surprises vs expectations, not the absolute level",
-    
-    // Watch items
-    watch_short: [
-      "January CPI composition, especially shelter",
-      "Services ex-shelter momentum",
-      "Cleveland Fed nowcast revisions"
-    ],
-    watch_long: [
-      "Labor market cooling trajectory",
-      "Real wage growth vs inflation",
-      "Fed guidance on 2026 rate path"
-    ],
-    
-    // Sources
-    sources: [
-      { name: 'Federal Reserve / FOMC' },
-      { name: 'Cleveland Fed Nowcast' },
-      { name: 'BLS CPI (Upcoming)' },
-      { name: 'BEA PCE (Recent Context)' }
-    ]
+    timestamp_display: data.timestamp_display || '',
+    delta_summary: data.delta_summary || '',
+    confidence: data.confidence || 0,
+    confidence_reason: data.confidence_reason || '',
+    headline_state: data.headline_state || { arrow: 'flat', label: 'Headline inflation', status: '' },
+    core_state: data.core_state || { arrow: 'flat', label: 'Core inflation', status: '' },
+    services_state: data.services_state || { arrow: 'flat', label: 'Services inflation', status: '' },
+    fed_implication: data.fed_implication || '',
+    drivers: data.drivers || [],
+    winners: data.winners || [],
+    losers: data.losers || [],
+    cpi_pce_collapsed: data.cpi_pce_collapsed || '',
+    cpi_plain: data.cpi_plain || '',
+    pce_plain: data.pce_plain || '',
+    why_fed_prefers: data.why_fed_prefers || '',
+    watch_short: data.watch_short || [],
+    watch_long: data.watch_long || [],
+    sources: data.sources || []
   };
 
   return (
@@ -139,7 +106,7 @@ export default function InflationSection({ data }) {
               Inflation
             </h3>
             <p className="text-xs" style={{ color: 'rgba(255,255,255,0.50)' }}>
-              Last updated {inflationData.timestamp_et} ET
+              Last updated {inflationData.timestamp_display}
             </p>
           </div>
         </div>
@@ -540,16 +507,19 @@ export default function InflationSection({ data }) {
           
           <div className="flex gap-2">
             {inflationData.sources.slice(0, 4).map((source, idx) => (
-              <button
+              <a
                 key={idx}
-                onClick={() => console.log(`Navigate to source: ${source.name}`)}
+                href={source.url || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="px-3 py-2 rounded-full font-medium text-sm whitespace-nowrap flex-shrink-0 transition-all"
                 style={{
                   background: 'rgba(255, 255, 255, 0.08)',
                   border: '1px solid rgba(255, 255, 255, 0.12)',
                   color: 'rgba(255, 255, 255, 0.80)',
                   backdropFilter: 'blur(12px)',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  textDecoration: 'none'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.14)';
@@ -563,7 +533,7 @@ export default function InflationSection({ data }) {
                 }}
               >
                 {source.name}
-              </button>
+              </a>
             ))}
           </div>
 
