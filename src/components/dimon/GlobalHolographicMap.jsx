@@ -289,12 +289,6 @@ const calculateSmartPlacement = (nodeRect, cardWidth = 320, cardHeight = 360) =>
   if (y + cardHeight > footerTop - SAFE_MARGIN) {
     placement = 'top';
     y = nodeRect.top - GAP_FROM_NODE - cardHeight;
-
-    if (y < SAFE_TOP) {
-      y = SAFE_TOP;
-      maxHeight = nodeRect.top - GAP_FROM_NODE - SAFE_TOP;
-      placement = 'top-capped';
-    }
   }
 
   if (x + cardWidth > viewport.width - SAFE_MARGIN) {
@@ -308,9 +302,6 @@ const calculateSmartPlacement = (nodeRect, cardWidth = 320, cardHeight = 360) =>
   // Final safety check to ensure card never goes above header
   if (y < SAFE_TOP) {
     y = SAFE_TOP;
-    if (maxHeight === null) {
-      maxHeight = Math.max(200, nodeRect.top - GAP_FROM_NODE - SAFE_TOP);
-    }
   }
 
   const arrowX = nodeRect.left + (nodeRect.width / 2) - x;
