@@ -510,24 +510,7 @@ export default function PrioritySignalStrip({ frontPageSignals = null, signals =
         ))}
       </div>
 
-      {/* Debug Panel - Validation */}
-      {frontPageSignals && process.env.NODE_ENV === 'development' && (
-        <div className="mt-4 p-3 rounded-lg bg-black/40 border border-yellow-500/30 text-xs font-mono">
-          <div className="text-yellow-400 font-bold mb-2">🔍 Binding Validation</div>
-          <div className="space-y-1 text-gray-300">
-            <div>
-              <span className="text-gray-500">front_page_signals.policy.headline:</span>{' '}
-              <span className="text-white">{frontPageSignals.policy?.headline || 'null'}</span>
-            </div>
-            <div>
-              <span className="text-gray-500">priority_signals_v1.cards.policy.headline:</span>{' '}
-              <span className="text-white">
-                {frontPageSignals._priority_signals_v1?.cards?.policy?.headline || 'N/A (not in front_page_signals)'}
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
+
     </motion.section>
   );
 }
