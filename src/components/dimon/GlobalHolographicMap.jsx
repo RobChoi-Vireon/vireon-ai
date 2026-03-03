@@ -1039,11 +1039,11 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
     const norm = Math.hypot(vx, vy) || 1;
     // Offset distances for each domain to match visual distance
     const baseOffset = {
-      'fx': 72,
-      'rates': 72,
-      'growth': 64,
-      'geopolitics': 64
-    }[domainId] || 64;
+      'fx': 18,
+      'rates': 18,
+      'growth': 16,
+      'geopolitics': 16
+    }[domainId] || 16;
     const offset = orbRadius + (baseOffset * TOKENS.HORIZON.labelDistanceScale);
     return { x: orbX + (vx / norm) * offset, y: orbY + (vy / norm) * offset };
   }, [cx, cy]);
