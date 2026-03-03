@@ -264,20 +264,18 @@ const contextIcons = {
 // TIMESTAMP RECENCY HELPER
 // ============================================================================
 const getTimestampColor = (timestamp) => {
-  const now = new Date();
-  // Mock time parsing for demonstration. In a real app, you'd parse actual ISO strings or similar.
-  // Assuming timestamp is like "HH:MM UTC" and relative to current day.
-  const [timePart] = timestamp.split(' ');
-  const [hoursStr] = timePart.split(':');
-  const hours = parseInt(hoursStr, 10);
-
-  // For demonstration, let's assume "now" is around 12 UTC for consistent mock output
-  const currentHour = 12; // new Date().getHours();
-  const diff = Math.abs(currentHour - hours);
-  
-  if (diff < 6) return HORIZON.mission.timestampRecencyGreen;
-  if (diff < 12) return HORIZON.mission.timestampRecencyYellow;
+  const ts = new Date(timestamp);
+  if (isNaN(ts.getTime())) return HORIZON.mission.timestampRecencyGray;
+  const diffHours = Math.abs(Date.now() - ts.getTime()) / (1000 * 60 * 60);
+  if (diffHours < 6) return HORIZON.mission.timestampRecencyGreen;
+  if (diffHours < 12) return HORIZON.mission.timestampRecencyYellow;
   return HORIZON.mission.timestampRecencyGray;
+};
+
+const formatTimestamp = (timestamp) => {
+  const ts = new Date(timestamp);
+  if (isNaN(ts.getTime())) return timestamp;
+  return ts.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' }) + ' UTC';
 };
 
 const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
@@ -411,162 +409,54 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
     }
   };
 
-  const getEnhancedAnalysis = (item) => {
-    const type = item?.type || 'Analysis';
-    const baseAnalysis = {
-      headline_summary: "",
-      morning_takeaway: "",
-      translation: "",
-      ripple_impact: "",
-      context_points: [],
-      market_impact: {
-        short_term: { text: "", severity: 0.8, confidence: 0.75 },
-        medium_term: { text: "", severity: 0.55, confidence: 0.65 },
-        long_term: { text: "", severity: 0.30, confidence: 0.45 }
+  // Build analysis from live contract data (drawer.simplified + drawer.detailed)
+  const buildAnalysis = (item) => {
+    const simp = item?.drawer?.simplified || {};
+    const det = item?.drawer?.detailed || {};
+    const colorMap = { red: 'text-red-300', amber: 'text-amber-300', blue: 'text-blue-300', green: 'text-green-300', gray: 'text-gray-300' };
+    const mappedContextPoints = (det.context_points || []).map(pt => ({
+      ...pt,
+      color: colorMap[pt.color] || 'text-gray-300'
+    }));
+    return {
+      headline_summary: simp.headline_summary || '',
+      morning_takeaway: simp.morning_takeaway || '',
+      translation: simp.translation || '',
+      impact_tags: simp.impact_tags || [],
+      ripple_impact: det.ripple_impact || '',
+      context_points: mappedContextPoints,
+      market_impact: det.market_impact || {
+        short_term: { text: '', severity: 0, confidence: 0 },
+        medium_term: { text: '', severity: 0, confidence: 0 },
+        long_term: { text: '', severity: 0, confidence: 0 }
       },
-      risk_opportunity: {
-        risk: { text: "", confidence: 0.7 },
-        opportunity: { text: "", confidence: 0.6 }
+      risk_opportunity: det.risk_opportunity || {
+        risk: { text: '', confidence: 0 },
+        opportunity: { text: '', confidence: 0 }
       },
-      impact_tags: [],
-      key_takeaway: "",
-      source_count: 42,
+      key_takeaway: det.key_takeaway || ''
     };
-
-    switch (type) {
-      case 'Markets':
-        return {
-          ...baseAnalysis,
-          headline_summary: "Industrial activity is slowing as borrowing costs rise and banks get stricter.",
-          morning_takeaway: "A wave of upcoming debt repayments is raising costs for companies and putting pressure on riskier stocks.",
-          translation: "Borrowing is getting harder and more expensive, so investors are becoming more cautious.",
-          ripple_impact: "Keep an eye on riskier stocks and industrial company borrowing costs for more signs of stress.",
-          context_points: [
-            { icon: 'TrendingDown', text: "Borrowing costs rose significantly this week", color: "text-red-300" },
-            { icon: 'Landmark', text: "Banks are being pickier about who they lend to", color: "text-amber-300" },
-            { icon: 'Globe', text: "Companies in developing countries are struggling to borrow", color: "text-orange-300" }
-          ],
-          market_impact: {
-            short_term: { text: "Watch for market swings and companies struggling to get new loans", severity: 0.8, confidence: 0.75 },
-            medium_term: { text: "Borrowing conditions may worsen if this trend continues", severity: 0.55, confidence: 0.65 },
-            long_term: { text: "Long-term impact depends on how the broader economy performs", severity: 0.30, confidence: 0.45 }
-          },
-          risk_opportunity: {
-            risk: { text: "Many industrial companies need to refinance soon, and deals may fall through if rates stay high", confidence: 0.78 },
-            opportunity: { text: "If borrowing costs stabilize, patient investors may find good buying opportunities", confidence: 0.65 }
-          },
-          impact_tags: [
-            { asset: "Industrials", detail: "Weaker (–)", direction: "-" },
-            { asset: "Corporate credit", detail: "Higher costs (–)", direction: "-" },
-            { asset: "Rates", detail: "Unchanged", direction: "=" },
-            { asset: "USD", detail: "Strengthening (+)", direction: "+" }
-          ],
-          key_takeaway: "Companies are struggling to refinance debt, which could hurt riskier investments in the short term.",
-          source_count: 38,
-        };
-      case 'Policy':
-        return {
-          ...baseAnalysis,
-          headline_summary: "The government is increasing pressure on big tech companies, requiring more audits and stricter rules.",
-          morning_takeaway: "New rules will cost tech companies more money, which could hurt their stock prices.",
-          translation: "Big tech will spend more following new rules, leaving less profit and making their stocks less appealing.",
-          ripple_impact: "Tech company profits may shrink as they adjust to these new requirements.",
-          context_points: [
-            { icon: 'Scale', text: "Both parties agree on tighter rules for content and privacy", color: "text-blue-300" },
-            { icon: 'Banknote', text: "Companies are spending more to meet new requirements", color: "text-amber-300" },
-            { icon: 'Landmark', text: "Regulators signal more enforcement is coming", color: "text-purple-300" }
-          ],
-          market_impact: {
-            short_term: { text: "Tech profits may shrink due to new costs", severity: 0.85, confidence: 0.80 },
-            medium_term: { text: "Tech companies may need to change how they operate", severity: 0.60, confidence: 0.70 },
-            long_term: { text: "These costs will become a permanent part of doing business", severity: 0.40, confidence: 0.50 }
-          },
-          risk_opportunity: {
-            risk: { text: "Tech company profits could drop significantly as new compliance costs rise 40-60%", confidence: 0.85 },
-            opportunity: { text: "Companies that adapt quickly may gain an advantage over slower competitors", confidence: 0.55 }
-          },
-          impact_tags: [
-            { asset: "Tech stocks", detail: "Under pressure (–)", direction: "-" },
-            { asset: "Government bonds", detail: "More attractive (+)", direction: "+" },
-            { asset: "US Dollar", detail: "Strengthening (+)", direction: "+" },
-            { asset: "Corporate bonds", detail: "Unchanged", direction: "=" }
-          ],
-          key_takeaway: "Stricter rules mean higher costs for tech companies, which could push their stock prices down.",
-          source_count: 45,
-        };
-      case 'Global':
-        return {
-          ...baseAnalysis,
-          headline_summary: "Chinese consumers are spending less, and this slowdown is expected to continue into 2026.",
-          morning_takeaway: "Weaker Chinese demand means lower prices for raw materials and slower growth worldwide.",
-          translation: "When Chinese shoppers buy less, companies around the world sell fewer products and materials.",
-          ripple_impact: "Watch for falling prices in oil, metals, and goods exported to China.",
-          context_points: [
-            { icon: 'Package', text: "Exports are returning to normal after the reopening surge", color: "text-orange-300" },
-            { icon: 'Home', text: "Chinese families remain hesitant to spend despite government efforts", color: "text-red-300" },
-            { icon: 'Construction', text: "Government building projects are providing less support", color: "text-amber-300" }
-          ],
-          market_impact: {
-            short_term: { text: "Less demand for raw materials; international trade slowing", severity: 0.75, confidence: 0.70 },
-            medium_term: { text: "Companies are rethinking where they make and sell products", severity: 0.50, confidence: 0.60 },
-            long_term: { text: "Global trade patterns may shift permanently", severity: 0.35, confidence: 0.45 }
-          },
-          risk_opportunity: {
-            risk: { text: "World economic growth could slow because Chinese consumers are still 15% less confident than before the pandemic", confidence: 0.72 },
-            opportunity: { text: "US companies may benefit from cheaper materials and less reliance on Chinese suppliers", confidence: 0.58 }
-          },
-          impact_tags: [
-            { asset: "International stocks", detail: "Under pressure (–)", direction: "-" },
-            { asset: "Oil & metals", detail: "Prices falling (–)", direction: "-" },
-            { asset: "US Dollar", detail: "Strengthening (+)", direction: "+" },
-            { asset: "Interest rates", detail: "Unchanged", direction: "=" }
-          ],
-          key_takeaway: "China's slowdown means lower commodity prices and slower growth for the global economy.",
-          source_count: 49,
-        };
-      default:
-        return {
-          ...baseAnalysis,
-          translation: "In plain terms: borrowing is getting harder, so it's wise to be cautious until things settle down.",
-          ripple_impact: "Watch for pressure on riskier stocks and fewer new loans being issued."
-        };
-    }
   };
 
   const type = String(item?.type || 'Analysis');
   const theme = useMemo(() => getTheme(type), [type]);
-  const analysis = useMemo(() => getEnhancedAnalysis(item), [item]);
+  const analysis = useMemo(() => buildAnalysis(item), [item]);
 
   if (!isOpen || !item) return null;
 
   const headline = String(item.headline || 'No headline available');
   const { Icon } = theme;
-  const confOverall = Math.round((item.confidence_level || 0.75) * 100);
+  const confOverall = item.confidence || 50;
 
   // Calculate source count
-  const sourceCount = analysis.source_count || 42; // Fallback to a default if not specified
+  const sourceCount = item.source_count || 0;
 
-  // Macro posture (could be dynamic from data)
-  const getMacroPosture = (type) => {
-    switch (type) {
-      case 'Markets': return 'slightly cautious';
-      case 'Policy': return 'watching closely';
-      case 'Global': return 'concerned about growth';
-      default: return 'wait and see';
-    }
-  };
+  const macroPosture = item?.drawer?.simplified?.mood || 'wait and see';
 
   const getSeverityColor = (severity) => {
-    if (severity >= 0.7) return { color: '#EF4444', bg: 'bg-red-500' };
-    if (severity >= 0.4) return { color: '#F59E0B', bg: 'bg-amber-500' };
+    if (severity >= 70) return { color: '#EF4444', bg: 'bg-red-500' };
+    if (severity >= 40) return { color: '#F59E0B', bg: 'bg-amber-500' };
     return { color: '#10B981', bg: 'bg-green-500' };
-  };
-
-  const getTrendArrow = (value, prevValue) => {
-    if (!prevValue) return '→';
-    if (value > prevValue) return '↗︎';
-    if (value < prevValue) return '↘︎';
-    return '→';
   };
 
   const ImpactTag = ({ tag, delay }) => {
