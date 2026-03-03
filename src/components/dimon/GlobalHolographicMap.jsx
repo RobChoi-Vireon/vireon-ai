@@ -899,7 +899,7 @@ const HoverCardPortal = ({
   return createPortal(cardContent, portalRoot);
 };
 
-const MacroConstellation = ({ onOpenSignalDrawer }) => {
+const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
   const containerRef = useRef(null);
   const constellationRef = useRef(null);
   const drawerRef = useRef(null);

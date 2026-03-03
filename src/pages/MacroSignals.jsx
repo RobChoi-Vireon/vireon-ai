@@ -830,7 +830,10 @@ export default function MacroSignalsPage() {
                   data-section-order="3"
                   className="col-span-12"
                 >
-                  <GlobalSignalLattice onOpenSignalDrawer={setSelectedSignal} />
+                  <GlobalSignalLattice
+  equilibriumData={sessionData?.equilibrium}
+  onOpenSignalDrawer={setSelectedSignal}
+/>
                 </motion.div>
                 
                 {/* 4) Global Signals — OS HORIZON REFINED LAYOUT */}

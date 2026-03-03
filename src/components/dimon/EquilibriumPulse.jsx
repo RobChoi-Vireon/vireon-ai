@@ -53,8 +53,10 @@ export default function EquilibriumPulse({
   },
   stabilityIndex = 72,
   summary = "Growth resilience offsetting tight rates",
+  lyraInsight,
+  stateLabel,
   onOpenDrawer,
-  isEquilibriumActive = false // NEW PROP: controlled by parent focus region
+  isEquilibriumActive = false
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isSliderHovered, setIsSliderHovered] = useState(false);
