@@ -1521,7 +1521,7 @@ const MacroConstellation = ({ onOpenSignalDrawer }) => {
                 fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
               }}
             >
-              Lyra
+              Ori
             </span>
           </motion.div>
         </motion.div>
