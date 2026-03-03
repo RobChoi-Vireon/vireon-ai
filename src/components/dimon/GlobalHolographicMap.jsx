@@ -939,7 +939,15 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
   const [isEquilibriumActive, setIsEquilibriumActive] = useState(false);
   const equilibriumExitTimerRef = useRef(null);
 
-  const domains = MOCK_DOMAINS;
+  const domains = useMemo(() => {
+    if (!equilibriumData?.domains) return MOCK_DOMAINS;
+    return ['rates','fx','growth','geopolitics'].map(key => {
+      const d = equilibriumData.domains[key];
+      const mock = MOCK_DOMAINS.find(m => m.id === key);
+      if (!d) return mock;
+      return { id: key, title: d.title || mock?.title || key, posture: d.posture || '', trend: d.trend || 'stable', confidence_pct: typeof d.confidence === 'number' ? d.confidence : 50, strength: typeof d.strength === 'number' ? d.strength / 100 : 0.5, confidence_label: d.confidence >= 70 ? 'Strong signal' : d.confidence >= 40 ? 'Moderate signal' : 'Weak signal', summary: d.summary || '', insight: d.insight || '', downstream_effects: Array.isArray(d.downstream_effects) ? d.downstream_effects.map(de => ({ title: de.text || '', tags: Array.isArray(de.tags) ? de.tags : [], link: '#' })) : [], actionable: d.actionable ? { horizon: d.actionable.horizon || '', conviction: d.actionable.conviction || 'Moderate', directives: Array.isArray(d.actionable.directives) ? d.actionable.directives : [] } : null, footer: { primary_cta: { label: 'View detailed analysis', route: `/${key}` }, secondary_link: { label: 'View timeline', route: `/timeline/${key}` }, timestamp: equilibriumData.as_of || new Date().toISOString() }, last_updated_iso: equilibriumData.as_of || new Date().toISOString(), sparkline: mock?.sparkline || [], confidenceDelta: typeof d.confidence_delta === 'number' ? d.confidence_delta : 0 };
+    });
+  }, [equilibriumData]);
 
   const getGlobalScale = useCallback(() => {
     if (viewportSize === 'sm') return TOKENS.HORIZON.globalScaleSm;
@@ -948,33 +956,30 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
   }, [viewportSize]);
 
   const dominantDriver = useMemo(() => {
+    if (equilibriumData?.dominant_force) return equilibriumData.dominant_force;
     const maxStrength = Math.max(...domains.map(d => d.strength));
     const dominant = domains.find(d => d.strength === maxStrength);
     if (maxStrength < 0.65) return "balanced";
     const sortedByStrength = [...domains].sort((a, b) => b.strength - a.strength);
     if (sortedByStrength[0].strength - sortedByStrength[1].strength < 0.1) return "balanced";
     return dominant.id;
-  }, [domains]);
+  }, [domains, equilibriumData]);
 
   const balanceBias = useMemo(() => {
+    if (equilibriumData?.equilibrium_score != null) return equilibriumData.equilibrium_score / 100;
     if (dominantDriver === "balanced") return 0.5;
     const dominant = domains.find(d => d.id === dominantDriver);
     const normalizedStrength = Math.min(Math.max((dominant.strength - 0.5) / (1.0 - 0.5), 0), 1);
-
-    if (dominant.id === "rates" || dominant.id === "geopolitics") { // Rates and geopolitics are "negative" forces
-      return 0.5 - (normalizedStrength * 0.5);
-    } else { // FX and Growth are "positive" forces
-      return 0.5 + (normalizedStrength * 0.5);
-    }
-  }, [dominantDriver, domains]);
+    if (dominant.id === "rates" || dominant.id === "geopolitics") return 0.5 - (normalizedStrength * 0.5);
+    return 0.5 + (normalizedStrength * 0.5);
+  }, [dominantDriver, domains, equilibriumData]);
 
   const globalSummary = useMemo(() => {
-    if (dominantDriver === "balanced") {
-      return `Market forces in near-perfect balance; tactical opportunities across sectors.`;
-    }
+    if (equilibriumData?.summary) return equilibriumData.summary;
+    if (dominantDriver === "balanced") return `Market forces in near-perfect balance; tactical opportunities across sectors.`;
     const dominant = domains.find(d => d.id === dominantDriver);
     return `${dominant.title.split(' ')[0]} dynamics are pulling the market with ${Math.round(dominant.strength * 100)}% conviction.`;
-  }, [domains, dominantDriver]);
+  }, [domains, dominantDriver, equilibriumData]);
 
   const balanceAngle = useMemo(() => dominantDriver === "balanced" ? 0 : ANGLES[dominantDriver] || 0, [dominantDriver]);
 
@@ -1915,20 +1920,13 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
         >
           <EquilibriumPulse
             equilibriumScore={balanceBias}
-            volatility={0.3 + (Math.abs(balanceBias - 0.5) * 0.4)}
+            volatility={equilibriumData?.volatility != null ? equilibriumData.volatility / 100 : 0.3 + (Math.abs(balanceBias - 0.5) * 0.4)}
             dominantForce={dominantDriver}
-            forces={{
-              growth: domains.find(d => d.id === 'growth')?.strength || 0,
-              rates: -(domains.find(d => d.id === 'rates')?.strength || 0),
-              fx: (domains.find(d => d.id === 'fx')?.strength || 0) * 0.5,
-              geopolitics: -(domains.find(d => d.id === 'geopolitics')?.strength || 0)
-            }}
-            stabilityIndex={
-              dominantDriver === 'balanced'
-                ? 85
-                : Math.round(75 - (Math.abs(balanceBias - 0.5) * 50))
-            }
+            forces={equilibriumData?.forces ? { growth: equilibriumData.forces.growth / 100, rates: equilibriumData.forces.rates / 100, fx: equilibriumData.forces.fx / 100, geopolitics: equilibriumData.forces.geopolitics / 100 } : { growth: domains.find(d => d.id === 'growth')?.strength || 0, rates: -(domains.find(d => d.id === 'rates')?.strength || 0), fx: (domains.find(d => d.id === 'fx')?.strength || 0) * 0.5, geopolitics: -(domains.find(d => d.id === 'geopolitics')?.strength || 0) }}
+            stabilityIndex={equilibriumData?.stability_index != null ? equilibriumData.stability_index : (dominantDriver === 'balanced' ? 85 : Math.round(75 - (Math.abs(balanceBias - 0.5) * 50)))}
             summary={globalSummary}
+            lyraInsight={equilibriumData?.lyra_insight}
+            stateLabel={equilibriumData?.state_label}
             onOpenDrawer={() => console.log('Equilibrium drawer requested')}
             isEquilibriumActive={isEquilibriumActive}
           />
