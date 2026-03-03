@@ -1367,11 +1367,44 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                           if (el) el.scrollCarouselRef = el;
                         }}>
                           {analysis.correlated.map((s) => (
-                            <CorrelatedChip 
-                              key={s.id} 
-                              signal={s} 
-                              onNavigate={(id) => console.log('Navigate to signal:', id)} 
-                            />
+                            s.url ? (
+                              <a
+                                key={s.id}
+                                href={s.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="ri-chip"
+                                style={{
+                                  padding: '6px 10px',
+                                  borderRadius: '999px',
+                                  background: 'rgba(255, 255, 255, 0.06)',
+                                  whiteSpace: 'nowrap',
+                                  fontSize: 13,
+                                  fontWeight: 500,
+                                  color: 'rgba(255, 255, 255, 0.85)',
+                                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                                  cursor: 'pointer',
+                                  textDecoration: 'none',
+                                  transition: 'background 180ms cubic-bezier(0.4, 0, 0.2, 1), transform 180ms cubic-bezier(0.4, 0, 0.2, 1)'
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
+                                  e.currentTarget.style.transform = 'translateY(-1px)';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                                  e.currentTarget.style.transform = 'translateY(0)';
+                                }}
+                              >
+                                {s.label}
+                              </a>
+                            ) : (
+                              <CorrelatedChip
+                                key={s.id}
+                                signal={s}
+                                onNavigate={(id) => console.log('Navigate to signal:', id)}
+                              />
+                            )
                           ))}
                         </div>
                         <button
