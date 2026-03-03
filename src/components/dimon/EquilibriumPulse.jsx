@@ -144,6 +144,7 @@ export default function EquilibriumPulse({
   }, [pulseTime, shouldReduceMotion, drawerOpen, isMounted]);
 
   const getStateLabel = () => {
+    if (stateLabel) return stateLabel;
     if (dominantForce === 'balanced') return 'Balanced';
     if (Math.abs(equilibriumScore - 0.5) < 0.15) return 'Steady';
     if (volatility > 0.6) return 'Splitting';
@@ -855,11 +856,11 @@ export default function EquilibriumPulse({
                       fontWeight: 400,
                       letterSpacing: '-0.003em'
                     }}>
-                      {dominantForce === 'balanced'
+                      {lyraInsight || (dominantForce === 'balanced'
                         ? "Markets are calm right now. Good time to look at both safe and growth-oriented investments."
                         : equilibriumScore > 0.6
                           ? "Global tensions and rising rates are creating pressure. Consider safer investments."
-                          : "The economy is holding up well despite higher borrowing costs. Growth stocks look attractive."}
+                          : "The economy is holding up well despite higher borrowing costs. Growth stocks look attractive.")}
                     </p>
                   </div>
                 </div>
