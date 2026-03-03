@@ -800,14 +800,14 @@ export default function MacroSignalsPage() {
                 )}
 
                 {/* 2) U.S. Business & Markets */}
-                {digest.executive_takeaway && digest.executive_takeaway.length > 0 && (
-                  <motion.div 
+                {sessionData?.us_business_markets?.cards && (
+                  <motion.div
                     variants={sectionVariants}
-                    id="section-executive-takeaway" 
+                    id="section-executive-takeaway"
                     data-section-order="2"
                     className="col-span-12"
                   >
-                    <ExecutiveTakeaway digest={digest} onOpenMemo={setSelectedTakeaway} />
+                    <ExecutiveTakeaway businessMarkets={sessionData.us_business_markets} onOpenMemo={setSelectedTakeaway} />
                   </motion.div>
                 )}
 
