@@ -468,14 +468,15 @@ export default function MacroSignalsPage() {
 
   // Wrap navigation handlers in useCallback to stabilize them for child components
   const handleNavigateTakeaway = useCallback((direction) => {
-    if (!digest?.executive_takeaway || !selectedTakeaway) return;
-    const takeaways = digest.executive_takeaway;
+    const bmCards = sessionData?.us_business_markets?.cards;
+    if (!bmCards || !selectedTakeaway) return;
+    const takeaways = Object.values(bmCards);
     const currentIndex = takeaways.findIndex(item => item.headline === selectedTakeaway.headline);
     if (currentIndex === -1) return;
     const totalItems = takeaways.length;
     const nextIndex = direction === 'next' ? (currentIndex + 1) % totalItems : (currentIndex - 1 + totalItems) % totalItems;
     setSelectedTakeaway(takeaways[nextIndex]);
-  }, [digest, selectedTakeaway]);
+  }, [sessionData, selectedTakeaway]);
 
   const handleNavigateSignal = useCallback((direction) => {
     if (!digest?.priority_signals || !selectedSignal) return;
