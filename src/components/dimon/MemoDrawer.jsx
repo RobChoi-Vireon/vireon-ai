@@ -1271,7 +1271,7 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
                         letterSpacing: '0.02em',
                       }}
                     >
-                      Market mood: {getMacroPosture(type)}
+                      Market mood: {macroPosture}
                     </p>
                     
                     {/* Meta Row */}
@@ -1633,10 +1633,10 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
                       <div className="space-y-3">
                         {analysis.context_points.map((point, i) => {
                           const IconComp = contextIcons[point.icon];
-                          const timestamp = `${9 + i}:${30 + (i * 15)} UTC`;
-                          const timestampColor = getTimestampColor(timestamp);
-                          const hours = parseInt(timestamp.split(':')[0]) - 9;
-                          const timestampClass = hours < 6 ? 'timestamp-recent-6h' : hours < 12 ? 'timestamp-recent-12h' : 'timestamp-older';
+                          const timestamp = point.timestamp ? formatTimestamp(point.timestamp) : '';
+                          const timestampColor = getTimestampColor(point.timestamp || '');
+                          const diffHours = point.timestamp ? Math.abs(Date.now() - new Date(point.timestamp).getTime()) / (1000 * 60 * 60) : 999;
+                          const timestampClass = diffHours < 6 ? 'timestamp-recent-6h' : diffHours < 12 ? 'timestamp-recent-12h' : 'timestamp-older';
                           
                           return (
                             <motion.div
@@ -1679,13 +1679,10 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
                         Market Impact
                       </h4>
                       <div className="grid gap-4">
-                        {Object.entries(analysis.market_impact).map(([horizon, data], i) => {
+                        {Object.entries(analysis.market_impact).filter(([k]) => ['short_term','medium_term','long_term'].includes(k)).map(([horizon, data], i) => {
                           const severityInfo = getSeverityColor(data.severity);
                           const confidenceInfo = getSeverityColor(data.confidence);
-                          // Mock prev values for trend arrows
-                          const prevSeverity = data.severity - 0.05;
-                          const prevConfidence = data.confidence - 0.03;
-                          
+
                           return (
                             <motion.div 
                               key={horizon}
@@ -1698,31 +1695,31 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
                               <div className="flex items-center justify-between">
                                 <span className="relative font-semibold text-white bg-gray-500/20 px-3 py-1 rounded-full text-sm" style={{ boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.15)' }}>
                                   {horizon.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}:
-                                Stewardship
+                                  {analysis.market_impact.category || ''}
                                 </span>
                                 <div className="flex items-center space-x-4">
                                   <div className="flex items-center space-x-2">
                                     <span className="text-xs text-gray-400">Severity:</span>
                                     <span className="text-xs" style={{ color: severityInfo.color }}>
-                                      {getTrendArrow(data.severity, prevSeverity)}
+                                      {data.severity >= 70 ? '↗︎' : data.severity >= 40 ? '→' : '↘︎'}
                                     </span>
                                     <div className="severity-bar w-16 bg-black/30">
-                                      <div style={{ width: `${data.severity*100}%`, color: severityInfo.color }}></div>
+                                      <div style={{ width: `${data.severity}%`, color: severityInfo.color }}></div>
                                     </div>
                                     <span className="text-xs font-bold" style={{color: severityInfo.color}}>
-                                      {Math.round(data.severity * 100)}%
+                                      {data.severity}%
                                     </span>
                                   </div>
                                   <div className="flex items-center space-x-2">
                                     <span className="text-xs text-gray-400">Confidence:</span>
                                     <span className="text-xs" style={{ color: confidenceInfo.color }}>
-                                      {getTrendArrow(data.confidence, prevConfidence)}
+                                      {data.confidence >= 70 ? '↗︎' : data.confidence >= 40 ? '→' : '↘︎'}
                                     </span>
                                     <div className="confidence-bar w-16 bg-black/30">
-                                      <div style={{ width: `${data.confidence*100}%`, color: confidenceInfo.color }}></div>
+                                      <div style={{ width: `${data.confidence}%`, color: confidenceInfo.color }}></div>
                                     </div>
                                     <span className="text-xs font-bold" style={{color: confidenceInfo.color}}>
-                                      {Math.round(data.confidence * 100)}%
+                                      {data.confidence}%
                                     </span>
                                   </div>
                                 </div>
@@ -1749,7 +1746,7 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
                         </p>
                         <div className="text-xs" style={{ color: '#AAB1B8' }}>
                           Confidence: <span style={{ color: HORIZON.color.risk, fontWeight: 700 }}>
-                            {Math.round(analysis.risk_opportunity.risk.confidence * 100)}%
+                            {analysis.risk_opportunity.risk.confidence}%
                           </span>
                         </div>
                       </div>
@@ -1767,7 +1764,7 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
                         </p>
                         <div className="text-xs" style={{ color: '#AAB1B8' }}>
                           Confidence: <span style={{ color: HORIZON.color.opportunity, fontWeight: 700 }}>
-                            {Math.round(analysis.risk_opportunity.opportunity.confidence * 100)}%
+                            {analysis.risk_opportunity.opportunity.confidence}%
                           </span>
                         </div>
                       </div>
@@ -1830,43 +1827,47 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
                               letterSpacing: '0.01em'
                             }}
                           >
-                            4
-                          </div>
-                        </div>
-                        <div className="ri-carousel" style={{ flex: 1, display: 'flex', gap: '12px', overflowX: 'auto', scrollbarWidth: 'none', paddingRight: '6px' }}>
-                          <style>{`
-                            .ri-carousel::-webkit-scrollbar {
-                              display: none;
-                            }
-                          `}</style>
-                          {['Bloomberg', 'Wall Street Journal', 'Financial Times', 'Reuters'].map((source, i) => (
-                            <div 
-                              key={i}
-                              className="ri-chip"
-                              style={{
-                                padding: '6px 10px',
-                                borderRadius: '999px',
-                                background: 'rgba(255, 255, 255, 0.06)',
-                                whiteSpace: 'nowrap',
-                                fontSize: 13,
-                                fontWeight: 500,
-                                color: 'rgba(255, 255, 255, 0.85)',
-                                border: '1px solid rgba(255, 255, 255, 0.08)',
-                                cursor: 'pointer',
-                                transition: 'background 180ms cubic-bezier(0.4, 0, 0.2, 1), transform 180ms cubic-bezier(0.4, 0, 0.2, 1)'
-                              }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
-                                e.currentTarget.style.transform = 'translateY(-1px)';
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
-                                e.currentTarget.style.transform = 'translateY(0)';
-                              }}
-                            >
-                              {source}
+                            {(item.top_weighted_sources || []).length}
                             </div>
-                          ))}
+                            </div>
+                            <div className="ri-carousel" style={{ flex: 1, display: 'flex', gap: '12px', overflowX: 'auto', scrollbarWidth: 'none', paddingRight: '6px' }}>
+                            <style>{`
+                            .ri-carousel::-webkit-scrollbar {
+                             display: none;
+                            }
+                            `}</style>
+                            {(item.top_weighted_sources || []).map((source, i) => (
+                            <a 
+                             key={i}
+                             href={source.url}
+                             target="_blank"
+                             rel="noopener noreferrer"
+                             className="ri-chip"
+                             style={{
+                               padding: '6px 10px',
+                               borderRadius: '999px',
+                               background: 'rgba(255, 255, 255, 0.06)',
+                               whiteSpace: 'nowrap',
+                               fontSize: 13,
+                               fontWeight: 500,
+                               color: 'rgba(255, 255, 255, 0.85)',
+                               border: '1px solid rgba(255, 255, 255, 0.08)',
+                               cursor: 'pointer',
+                               textDecoration: 'none',
+                               transition: 'background 180ms cubic-bezier(0.4, 0, 0.2, 1), transform 180ms cubic-bezier(0.4, 0, 0.2, 1)'
+                             }}
+                             onMouseEnter={(e) => {
+                               e.currentTarget.style.background = 'rgba(255, 255, 255, 0.10)';
+                               e.currentTarget.style.transform = 'translateY(-1px)';
+                             }}
+                             onMouseLeave={(e) => {
+                               e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                               e.currentTarget.style.transform = 'translateY(0)';
+                             }}
+                            >
+                             {source.name}
+                            </a>
+                            ))}
                         </div>
                         <button
                           onClick={(e) => {
