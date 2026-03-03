@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect, useCallback, memo, useMemo } from 'react';
 import { motion, AnimatePresence, useMotionValue } from 'framer-motion';
 import { MessageCircle, Send, X, Sparkles, Copy, Check, MoreVertical, ArrowDown } from 'lucide-react';
@@ -124,8 +123,8 @@ export default function LyraChatbot({ pageContext }) {
 
   const initialMessages = useMemo(() => {
     const welcomeMessage = pageContext === 'landing'
-      ? "Hi, I'm Lyra, your guide to Vireon. Ask me anything about what we do, who we're for, or our key features!"
-      : "Hi, I'm Lyra — ask me anything about markets, finance, or Vireon.";
+      ? "Hi, I'm Ori, your guide to Vireon. Ask me anything about what we do, who we're for, or our key features!"
+      : "Hi, I'm Ori — ask me anything about markets, finance, or Vireon.";
     return [{ id: 1, text: welcomeMessage, isUser: false, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }];
   }, [pageContext]);
 
