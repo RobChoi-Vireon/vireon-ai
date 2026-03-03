@@ -778,8 +778,8 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               white-space: nowrap;
               font-size: 13px;
               font-weight: 500;
-              color: rgba(255, 255, 255, 0.85);
-              border: 1px solid rgba(255, 255, 255, 0.10);
+              color: rgba(255, 255, 255, 0.80);
+              border: 1px solid rgba(255, 255, 255, 0.09);
               cursor: pointer;
               display: inline-flex;
               align-items: center;
@@ -787,39 +787,65 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
               user-select: none;
               -webkit-user-select: none;
               -webkit-tap-highlight-color: transparent;
-              will-change: transform, box-shadow, background;
+              will-change: transform, box-shadow, background, filter;
               transition: 
-                background 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                transform 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                box-shadow 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                border-color 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                color 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-              backdrop-filter: blur(8px);
-              -webkit-backdrop-filter: blur(8px);
+                background 240ms cubic-bezier(0.34, 1.56, 0.64, 1),
+                transform 240ms cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 240ms cubic-bezier(0.34, 1.56, 0.64, 1),
+                border-color 240ms cubic-bezier(0.34, 1.56, 0.64, 1),
+                color 160ms ease,
+                filter 240ms cubic-bezier(0.34, 1.56, 0.64, 1);
+              backdrop-filter: blur(12px) saturate(1.4);
+              -webkit-backdrop-filter: blur(12px) saturate(1.4);
               box-shadow: 
-                0 1px 3px rgba(0, 0, 0, 0.18),
-                inset 0 1px 0 rgba(255, 255, 255, 0.10);
+                0 1px 2px rgba(0, 0, 0, 0.14),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+              position: relative;
+              overflow: hidden;
+            }
+
+            .ri-chip::before {
+              content: '';
+              position: absolute;
+              inset: 0;
+              border-radius: 999px;
+              background: linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.00) 55%);
+              opacity: 0;
+              transition: opacity 240ms cubic-bezier(0.34, 1.56, 0.64, 1);
+              pointer-events: none;
             }
             
             .ri-chip:hover {
-              background: rgba(255, 255, 255, 0.12);
-              border-color: rgba(255, 255, 255, 0.16);
-              color: rgba(255, 255, 255, 0.96);
-              transform: translateY(-1.5px) scale(1.02);
+              background: rgba(255, 255, 255, 0.13);
+              border-color: rgba(255, 255, 255, 0.18);
+              color: rgba(255, 255, 255, 0.98);
+              transform: translateY(-2px) scale(1.04);
+              filter: brightness(1.08);
               box-shadow:
-                0 4px 14px rgba(0, 0, 0, 0.22),
-                0 1px 4px rgba(0, 0, 0, 0.14),
-                inset 0 1px 0 rgba(255, 255, 255, 0.14);
+                0 6px 20px rgba(0, 0, 0, 0.28),
+                0 2px 6px rgba(0, 0, 0, 0.16),
+                inset 0 1px 0 rgba(255, 255, 255, 0.18),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.06);
+            }
+
+            .ri-chip:hover::before {
+              opacity: 1;
             }
             
             .ri-chip:active {
-              transform: translateY(0px) scale(0.97);
-              background: rgba(255, 255, 255, 0.08);
+              transform: translateY(0.5px) scale(0.96);
+              background: rgba(255, 255, 255, 0.06);
+              filter: brightness(0.96);
               box-shadow:
-                0 1px 3px rgba(0, 0, 0, 0.12),
-                inset 0 1px 3px rgba(0, 0, 0, 0.18),
-                inset 0 1px 0 rgba(255, 255, 255, 0.06);
-              transition-duration: 80ms;
+                0 1px 2px rgba(0, 0, 0, 0.10),
+                inset 0 2px 4px rgba(0, 0, 0, 0.22),
+                inset 0 1px 0 rgba(255, 255, 255, 0.04);
+              transition: 
+                background 60ms ease,
+                transform 60ms ease,
+                box-shadow 60ms ease,
+                filter 60ms ease;
             }
             
             .li-preview {
