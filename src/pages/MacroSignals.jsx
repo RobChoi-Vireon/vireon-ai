@@ -812,14 +812,14 @@ export default function MacroSignalsPage() {
                 )}
 
                 {/* 2.5) Inflation Section */}
-                {sessionData?.inflation && (
+                {(sessionData?.inflation || digest?.inflation) && (
                   <motion.div 
                     variants={sectionVariants}
                     id="section-inflation" 
                     data-section-order="2.5"
                     className="col-span-12 mt-8"
                   >
-                    <InflationSection data={sessionData.inflation} />
+                    <InflationSection data={sessionData?.inflation || digest.inflation} />
                   </motion.div>
                 )}
 
