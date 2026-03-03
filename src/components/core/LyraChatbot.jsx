@@ -779,7 +779,7 @@ export default function LyraChatbot({ pageContext }) {
                       className="font-semibold"
                       style={{ color: 'var(--text-primary)' }}
                     >
-                      Lyra
+                      Ori
                     </h3>
                     <div className="flex items-center space-x-2">
                       <div className="w-2 h-2 bg-green-500 rounded-full" />
