@@ -191,7 +191,7 @@ const ConsensusCard = ({ item, index }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.06 * index, duration: 0.38, ease: HORIZON_EASE }}
     >
-      <HoverCard glowColor="rgba(88,227,164,0.14)" subsurface="rgba(88,227,164,0.025)" style={{ borderRadius: '22px', padding: '22px' }}>
+      <HoverCard glowColor="rgba(88,227,164,0.10)" subsurface="rgba(88,227,164,0.018)" style={{ borderRadius: '16px', padding: '20px 22px' }}>
         <div className="relative z-10 space-y-3.5">
           <div className="flex items-start justify-between gap-3">
             <p className="text-[14px] font-semibold leading-snug flex-1" style={{ color: 'rgba(255,255,255,0.94)', letterSpacing: '-0.015em' }}>
