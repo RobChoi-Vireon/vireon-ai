@@ -722,7 +722,13 @@ export default function DigestHeader({
               animate={{ opacity: isLoaded ? 1 : 0 }}
               transition={{ duration: 0.22, delay: 0.22 }}
             >
-              <MarketBiasBadge sentimentScore={sentimentScore} isLoaded={isLoaded} />
+              <MarketBiasBadge
+                sentimentScore={sentimentScore}
+                isLoaded={isLoaded}
+                tone={sentimentTone}
+                barLevel={barLevel}
+                barColor={barColor}
+              />
             </motion.div>
 
             {/* OS Horizon V2 Tagline — Improved Contrast */}
