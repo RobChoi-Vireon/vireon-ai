@@ -358,7 +358,7 @@ const USGlobalCard = ({ item, index }) => {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.06 * index, duration: 0.38, ease: HORIZON_EASE }}
-      className="relative rounded-[22px] overflow-hidden"
+      className="relative rounded-[16px] overflow-hidden"
       style={{ ...GLASS_CARD }}
     >
       <SpecularLine />
