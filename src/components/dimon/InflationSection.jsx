@@ -519,7 +519,8 @@ export default function InflationSection({ data }) {
                   color: 'rgba(255, 255, 255, 0.80)',
                   backdropFilter: 'blur(12px)',
                   cursor: 'pointer',
-                  textDecoration: 'none'
+                  textDecoration: 'none',
+                  transition: 'background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.14)';
