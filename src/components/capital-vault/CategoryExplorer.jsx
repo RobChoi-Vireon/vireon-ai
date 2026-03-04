@@ -71,7 +71,7 @@ export default function CategoryExplorer({ onCategorySelect }) {
                 >
                   <Icon className="w-4.5 h-4.5" style={{ color: cat.accent, width: '18px', height: '18px' }} strokeWidth={1.8} />
                 </div>
-                <h3 className="text-[13.5px] font-bold mb-1.5" style={{ color: 'rgba(255,255,255,0.92)', letterSpacing: '-0.005em' }}>
+                <h3 className="text-[13.5px] font-semibold mb-1.5" style={{ color: 'rgba(255,255,255,0.92)', letterSpacing: '-0.015em' }}>
                   {cat.name}
                 </h3>
                 <p className="text-[11.5px] leading-relaxed" style={{ color: 'rgba(175,185,210,0.58)' }}>

@@ -89,7 +89,7 @@ export default function MarketConceptsSection({ onSearch }) {
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="text-[15px] font-bold" style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.005em' }}>
+                    <h3 className="text-[15px] font-semibold" style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.015em' }}>
                       {concept.name}
                     </h3>
                     <span className="text-sm font-bold" style={{ color: concept.accentColor }}>{concept.trend}</span>

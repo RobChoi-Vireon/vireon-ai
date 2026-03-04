@@ -72,7 +72,7 @@ export default function AIInsightsSection({ onSearch }) {
 
             <div className="relative z-10">
               <div className="flex items-start justify-between mb-3">
-                <h3 className="text-[14px] font-bold" style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.005em' }}>
+                <h3 className="text-[14px] font-semibold" style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.015em' }}>
                   {item.concept}
                 </h3>
                 <ArrowUpRight className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: 'rgba(160,170,195,0.40)' }} />
