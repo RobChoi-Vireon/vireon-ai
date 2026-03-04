@@ -332,7 +332,7 @@ const DivergenceCard = ({ item, index }) => {
               <ul className="space-y-1.5">
                 {resolution.slice(0, 2).map((r, i) => (
                   <li key={i} className="flex items-start gap-2 text-[12px]" style={{ color: 'rgba(255,255,255,0.60)' }}>
-                    <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(200,160,255,0.50)' }} />
+                    <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(160,180,220,0.50)' }} />
                     {r}
                   </li>
                 ))}
