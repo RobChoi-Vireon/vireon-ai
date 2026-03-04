@@ -8,36 +8,33 @@ const SMOOTH = { duration: 0.28, ease: [0.22, 0.61, 0.36, 1] };
 
 // ─── Shared design tokens ────────────────────────────────────────────────────
 
-// macOS Tahoe liquid-glass card surface — multi-layer refraction
+// Screenshot-matched: deep navy/slate card — clean, minimal, premium
 const GLASS_CARD = {
-  background: 'linear-gradient(160deg, rgba(255,255,255,0.072) 0%, rgba(255,255,255,0.034) 55%, rgba(255,255,255,0.048) 100%)',
-  backdropFilter: 'blur(56px) saturate(180%) brightness(1.06)',
-  WebkitBackdropFilter: 'blur(56px) saturate(180%) brightness(1.06)',
-  border: '1px solid rgba(255,255,255,0.12)',
+  background: 'linear-gradient(160deg, rgba(18,22,38,0.92) 0%, rgba(13,16,28,0.96) 60%, rgba(16,19,34,0.94) 100%)',
+  backdropFilter: 'blur(32px) saturate(140%)',
+  WebkitBackdropFilter: 'blur(32px) saturate(140%)',
+  border: '1px solid rgba(255,255,255,0.07)',
   boxShadow: [
-    'inset 0 1.5px 0 rgba(255,255,255,0.14)',      // top specular
-    'inset 0 -1px 0 rgba(0,0,0,0.12)',              // bottom absorption
-    'inset 1px 0 0 rgba(255,255,255,0.06)',          // left edge catch
-    '0 1px 0 rgba(255,255,255,0.04)',               // outer base-lift
-    '0 10px 40px rgba(0,0,0,0.22)',                 // depth shadow
-    '0 2px 8px rgba(0,0,0,0.14)',                   // near shadow
+    'inset 0 1px 0 rgba(255,255,255,0.07)',
+    '0 4px 24px rgba(0,0,0,0.32)',
+    '0 1px 4px rgba(0,0,0,0.20)',
   ].join(', ')
 };
 
-// Crisp single specular highlight band (macOS-style top-light)
-const SpecularLine = ({ opacity = 0.16 }) => (
+// Specular highlight — very subtle on dark cards
+const SpecularLine = ({ opacity = 0.07 }) => (
   <div style={{
     position: 'absolute', top: 0, left: '8%', right: '8%', height: '1px',
-    background: `linear-gradient(90deg, transparent 0%, rgba(255,255,255,${opacity}) 35%, rgba(255,255,255,${(opacity * 1.3).toFixed(2)}) 50%, rgba(255,255,255,${opacity}) 65%, transparent 100%)`,
+    background: `linear-gradient(90deg, transparent 0%, rgba(255,255,255,${opacity}) 40%, rgba(255,255,255,${opacity}) 60%, transparent 100%)`,
     pointerEvents: 'none', zIndex: 2
   }} />
 );
 
-// Subsurface scatter (inner glow — simulates frosted glass light diffusion)
-const SubsurfaceGlow = ({ color = 'rgba(255,255,255,0.03)' }) => (
+// Minimal subsurface — barely visible accent tint
+const SubsurfaceGlow = ({ color = 'rgba(255,255,255,0.015)' }) => (
   <div style={{
     position: 'absolute', inset: 0,
-    background: `radial-gradient(ellipse at 50% 0%, ${color} 0%, transparent 65%)`,
+    background: `radial-gradient(ellipse at 50% 0%, ${color} 0%, transparent 60%)`,
     pointerEvents: 'none', zIndex: 0, borderRadius: 'inherit'
   }} />
 );
