@@ -8,33 +8,36 @@ const SMOOTH = { duration: 0.28, ease: [0.22, 0.61, 0.36, 1] };
 
 // ─── Shared design tokens ────────────────────────────────────────────────────
 
-// Screenshot-matched: deep navy/slate card — clean, minimal, premium
+// macOS Tahoe liquid-glass card surface — multi-layer refraction
 const GLASS_CARD = {
-  background: 'linear-gradient(160deg, rgba(18,22,38,0.92) 0%, rgba(13,16,28,0.96) 60%, rgba(16,19,34,0.94) 100%)',
-  backdropFilter: 'blur(32px) saturate(140%)',
-  WebkitBackdropFilter: 'blur(32px) saturate(140%)',
-  border: '1px solid rgba(255,255,255,0.07)',
+  background: 'linear-gradient(160deg, rgba(255,255,255,0.072) 0%, rgba(255,255,255,0.034) 55%, rgba(255,255,255,0.048) 100%)',
+  backdropFilter: 'blur(56px) saturate(180%) brightness(1.06)',
+  WebkitBackdropFilter: 'blur(56px) saturate(180%) brightness(1.06)',
+  border: '1px solid rgba(255,255,255,0.12)',
   boxShadow: [
-    'inset 0 1px 0 rgba(255,255,255,0.07)',
-    '0 4px 24px rgba(0,0,0,0.32)',
-    '0 1px 4px rgba(0,0,0,0.20)',
+    'inset 0 1.5px 0 rgba(255,255,255,0.14)',      // top specular
+    'inset 0 -1px 0 rgba(0,0,0,0.12)',              // bottom absorption
+    'inset 1px 0 0 rgba(255,255,255,0.06)',          // left edge catch
+    '0 1px 0 rgba(255,255,255,0.04)',               // outer base-lift
+    '0 10px 40px rgba(0,0,0,0.22)',                 // depth shadow
+    '0 2px 8px rgba(0,0,0,0.14)',                   // near shadow
   ].join(', ')
 };
 
-// Specular highlight — very subtle on dark cards
-const SpecularLine = ({ opacity = 0.07 }) => (
+// Crisp single specular highlight band (macOS-style top-light)
+const SpecularLine = ({ opacity = 0.16 }) => (
   <div style={{
     position: 'absolute', top: 0, left: '8%', right: '8%', height: '1px',
-    background: `linear-gradient(90deg, transparent 0%, rgba(255,255,255,${opacity}) 40%, rgba(255,255,255,${opacity}) 60%, transparent 100%)`,
+    background: `linear-gradient(90deg, transparent 0%, rgba(255,255,255,${opacity}) 35%, rgba(255,255,255,${(opacity * 1.3).toFixed(2)}) 50%, rgba(255,255,255,${opacity}) 65%, transparent 100%)`,
     pointerEvents: 'none', zIndex: 2
   }} />
 );
 
-// Minimal subsurface — barely visible accent tint
-const SubsurfaceGlow = ({ color = 'rgba(255,255,255,0.015)' }) => (
+// Subsurface scatter (inner glow — simulates frosted glass light diffusion)
+const SubsurfaceGlow = ({ color = 'rgba(255,255,255,0.03)' }) => (
   <div style={{
     position: 'absolute', inset: 0,
-    background: `radial-gradient(ellipse at 50% 0%, ${color} 0%, transparent 60%)`,
+    background: `radial-gradient(ellipse at 50% 0%, ${color} 0%, transparent 65%)`,
     pointerEvents: 'none', zIndex: 0, borderRadius: 'inherit'
   }} />
 );
@@ -43,21 +46,36 @@ const SubsurfaceGlow = ({ color = 'rgba(255,255,255,0.015)' }) => (
 
 const StrengthBar = ({ pct, color, delay = 0 }) => (
   <div style={{
-    height: '6px', borderRadius: '4px',
-    background: 'rgba(255,255,255,0.06)',
+    height: '7px', borderRadius: '5px',
+    background: 'linear-gradient(180deg, rgba(0,0,0,0.22) 0%, rgba(255,255,255,0.05) 100%)',
     overflow: 'hidden', width: '100%',
+    boxShadow: 'inset 0 1.5px 3px rgba(0,0,0,0.28), inset 0 -0.5px 0 rgba(255,255,255,0.06)',
     position: 'relative'
   }}>
     <motion.div
-      initial={{ width: 0 }}
-      animate={{ width: `${pct}%` }}
-      transition={{ duration: 0.9, delay, ease: HORIZON_EASE }}
+      initial={{ width: 0, opacity: 0.6 }}
+      animate={{ width: `${pct}%`, opacity: 1 }}
+      transition={{ duration: 0.95, delay, ease: HORIZON_EASE }}
       style={{
-        height: '100%', borderRadius: '4px',
-        background: color,
-        boxShadow: `0 0 8px ${color.replace(/[\d.]+\)$/, '0.35)')}`,
+        height: '100%', borderRadius: '5px',
+        background: `linear-gradient(90deg, ${color.replace(/[\d.]+\)$/, '0.55)')} 0%, ${color} 60%, ${color.replace(/[\d.]+\)$/, '0.72)')} 100%)`,
+        boxShadow: `0 0 12px ${color.replace(/[\d.]+\)$/, '0.50)')}, 0 0 4px ${color.replace(/[\d.]+\)$/, '0.30)')}`,
+        position: 'relative', overflow: 'hidden'
       }}
-    />
+    >
+      {/* Liquid-glass gloss — top half catch-light */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '45%', background: 'linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 100%)', borderRadius: '5px 5px 0 0' }} />
+      {/* Slow shimmer sweep */}
+      <motion.div
+        animate={{ x: ['-120%', '220%'] }}
+        transition={{ duration: 2.4, delay: delay + 1.0, repeat: Infinity, repeatDelay: 6, ease: 'easeInOut' }}
+        style={{
+          position: 'absolute', top: 0, bottom: 0, width: '35%',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent)',
+          borderRadius: '5px'
+        }}
+      />
+    </motion.div>
   </div>
 );
 
@@ -131,29 +149,34 @@ const TABS = [
 
 // ─── Liquid-glass hoverable card wrapper ─────────────────────────────────────
 
-const HoverCard = ({ children, glowColor = 'rgba(255,255,255,0.04)', subsurface = 'rgba(255,255,255,0.015)', style = {}, className = '' }) => {
+const HoverCard = ({ children, glowColor = 'rgba(255,255,255,0.06)', subsurface = 'rgba(255,255,255,0.03)', style = {}, className = '' }) => {
   const [hovered, setHovered] = useState(false);
   return (
     <motion.div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       animate={{
-        y: hovered ? -2 : 0,
+        y: hovered ? -3 : 0,
+        scale: hovered ? 1.002 : 1,
         boxShadow: hovered
           ? [
-              'inset 0 1px 0 rgba(255,255,255,0.10)',
-              '0 8px 32px rgba(0,0,0,0.40)',
-              '0 2px 8px rgba(0,0,0,0.24)',
-              `0 0 24px ${glowColor}`,
+              'inset 0 1.5px 0 rgba(255,255,255,0.18)',
+              'inset 0 -1px 0 rgba(0,0,0,0.14)',
+              'inset 1px 0 0 rgba(255,255,255,0.08)',
+              '0 1px 0 rgba(255,255,255,0.05)',
+              '0 18px 52px rgba(0,0,0,0.28)',
+              '0 4px 14px rgba(0,0,0,0.18)',
+              `0 0 32px ${glowColor}`,
+              `0 0 0 1px rgba(255,255,255,0.09)`,
             ].join(', ')
           : GLASS_CARD.boxShadow
       }}
-      transition={{ duration: 0.18, ease: 'easeOut' }}
+      transition={{ duration: 0.20, ease: 'easeOut' }}
       className={`relative ${className}`}
       style={{ ...GLASS_CARD, ...style, overflow: 'hidden' }}
     >
       <SpecularLine />
-      <SubsurfaceGlow color={hovered ? glowColor.replace(/[\d.]+\)$/, '0.04)') : subsurface} />
+      <SubsurfaceGlow color={hovered ? glowColor.replace(/[\d.]+\)$/, '0.06)') : subsurface} />
       {children}
     </motion.div>
   );
@@ -176,7 +199,7 @@ const ConsensusCard = ({ item, index }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.06 * index, duration: 0.38, ease: HORIZON_EASE }}
     >
-      <HoverCard glowColor="rgba(88,227,164,0.10)" subsurface="rgba(88,227,164,0.018)" style={{ borderRadius: '16px', padding: '20px 22px' }}>
+      <HoverCard glowColor="rgba(88,227,164,0.14)" subsurface="rgba(88,227,164,0.025)" style={{ borderRadius: '22px', padding: '22px' }}>
         <div className="relative z-10 space-y-3.5">
           <div className="flex items-start justify-between gap-3">
             <p className="text-[14px] font-semibold leading-snug flex-1" style={{ color: 'rgba(255,255,255,0.94)', letterSpacing: '-0.015em' }}>
@@ -254,13 +277,13 @@ const DivergenceCard = ({ item, index }) => {
       transition={{ delay: 0.06 * index, duration: 0.38, ease: HORIZON_EASE }}
     >
       <HoverCard
-        glowColor="rgba(180,120,255,0.12)"
-        subsurface="rgba(160,100,255,0.02)"
+        glowColor="rgba(180,120,255,0.16)"
+        subsurface="rgba(160,100,255,0.04)"
         style={{
-          borderRadius: '16px',
-          background: 'linear-gradient(160deg, rgba(22,16,44,0.96) 0%, rgba(15,12,32,0.98) 60%, rgba(18,14,38,0.96) 100%)',
-          border: '1px solid rgba(147,90,230,0.14)',
-          padding: '20px 22px'
+          borderRadius: '22px',
+          background: 'linear-gradient(160deg, rgba(147,51,234,0.09) 0%, rgba(100,30,180,0.11) 55%, rgba(130,45,210,0.08) 100%)',
+          border: '1px solid rgba(180,120,255,0.16)',
+          padding: '22px'
         }}
       >
         <div className="relative z-10 space-y-4">
@@ -343,7 +366,7 @@ const USGlobalCard = ({ item, index }) => {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.06 * index, duration: 0.38, ease: HORIZON_EASE }}
-      className="relative rounded-[16px] overflow-hidden"
+      className="relative rounded-[22px] overflow-hidden"
       style={{ ...GLASS_CARD }}
     >
       <SpecularLine />
@@ -429,13 +452,13 @@ const ChangingCard = ({ item, index }) => {
       transition={{ delay: 0.06 * index, duration: 0.38, ease: HORIZON_EASE }}
     >
       <HoverCard
-        glowColor={rising ? 'rgba(255,190,80,0.10)' : 'rgba(255,106,122,0.10)'}
-        subsurface={rising ? 'rgba(255,190,80,0.018)' : 'rgba(255,106,122,0.018)'}
+        glowColor={rising ? 'rgba(255,190,80,0.14)' : 'rgba(255,106,122,0.14)'}
+        subsurface={rising ? 'rgba(255,190,80,0.03)' : 'rgba(255,106,122,0.03)'}
         style={{
-          borderRadius: '16px',
-          background: 'linear-gradient(160deg, rgba(18,22,38,0.92) 0%, rgba(13,16,28,0.96) 60%, rgba(16,19,34,0.94) 100%)',
+          borderRadius: '22px',
+          background: `linear-gradient(160deg, ${bgColor} 0%, rgba(255,255,255,0.022) 55%, ${bgColor.replace(/[\d.]+\)$/, '0.04)')} 100%)`,
           border: `1px solid ${borderColor}`,
-          padding: '20px 22px'
+          padding: '22px'
         }}
       >
         <div className="relative z-10 space-y-3.5">
@@ -495,10 +518,12 @@ const ChangingCard = ({ item, index }) => {
 // ─── Premium empty state ──────────────────────────────────────────────────────
 
 const EmptyState = ({ label }) => (
-  <div className="relative flex flex-col items-center justify-center py-16 text-center rounded-[14px]" style={{
-    background: 'rgba(14,17,30,0.80)',
-    border: '1px solid rgba(255,255,255,0.06)',
-    boxShadow: '0 2px 12px rgba(0,0,0,0.24)'
+  <div className="relative flex flex-col items-center justify-center py-16 text-center rounded-[20px]" style={{
+    background: 'linear-gradient(160deg, rgba(255,255,255,0.040) 0%, rgba(255,255,255,0.018) 55%, rgba(255,255,255,0.028) 100%)',
+    backdropFilter: 'blur(40px) saturate(160%)',
+    WebkitBackdropFilter: 'blur(40px) saturate(160%)',
+    border: '1px solid rgba(255,255,255,0.08)',
+    boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.10), 0 6px 24px rgba(0,0,0,0.16)'
   }}>
     <SpecularLine opacity={0.08} />
     {/* Pulsing system-active dot */}
@@ -589,47 +614,96 @@ export default function NarrativeMap({ synthesis, density }) {
         </div>
       </div>
 
-      {/* Outer container — deep slate, screenshot-matched */}
-      <div className="relative rounded-[20px] overflow-hidden" style={{
-        background: 'linear-gradient(160deg, rgba(14,17,30,0.98) 0%, rgba(10,13,22,1) 60%, rgba(12,15,26,0.99) 100%)',
-        backdropFilter: 'blur(24px) saturate(120%)',
-        WebkitBackdropFilter: 'blur(24px) saturate(120%)',
-        border: '1px solid rgba(255,255,255,0.07)',
-        boxShadow: '0 8px 40px rgba(0,0,0,0.48), 0 2px 8px rgba(0,0,0,0.32)',
+      {/* Outer liquid-glass container — macOS Tahoe depth model */}
+      <div className="relative rounded-[28px] overflow-hidden" style={{
+        // Outer shell: deep frosted panel
+        background: 'linear-gradient(160deg, rgba(22,26,40,0.68) 0%, rgba(12,15,24,0.78) 60%, rgba(16,20,34,0.72) 100%)',
+        backdropFilter: 'blur(64px) saturate(180%) brightness(1.04)',
+        WebkitBackdropFilter: 'blur(64px) saturate(180%) brightness(1.04)',
+        border: '1px solid rgba(255,255,255,0.10)',
+        boxShadow: [
+          'inset 0 1.5px 0 rgba(255,255,255,0.10)',           // top specular
+          'inset 0 -1px 0 rgba(0,0,0,0.18)',                  // bottom absorption edge
+          'inset 1px 0 0 rgba(255,255,255,0.05)',              // left edge
+          'inset -1px 0 0 rgba(255,255,255,0.03)',             // right edge
+          '0 12px 48px rgba(0,0,0,0.36)',                      // deep drop shadow
+          '0 4px 16px rgba(0,0,0,0.22)',                       // near shadow
+          `0 0 80px rgba(${activeTabDef?.glow?.match(/[\d.]+/g)?.slice(0,3).join(',') || '255,255,255'},0.06)`, // ambient tab glow
+        ].join(', ')
       }}>
-        {/* Subtle top edge catch */}
-        <div style={{ position: 'absolute', top: 0, left: '8%', right: '8%', height: '1px', background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 40%, rgba(255,255,255,0.08) 60%, transparent 100%)', pointerEvents: 'none', zIndex: 3 }} />
+        {/* Liquid-glass top specular band — macOS-style catch-light */}
+        <div style={{ position: 'absolute', top: 0, left: '8%', right: '8%', height: '1px', background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 30%, rgba(255,255,255,0.16) 50%, rgba(255,255,255,0.12) 70%, transparent 100%)', pointerEvents: 'none', zIndex: 3 }} />
+        {/* Subsurface scatter — tab-reactive ambient glow */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '120px', background: `radial-gradient(ellipse at 50% -10%, ${activeTabDef?.glow || 'rgba(255,255,255,0.04)'} 0%, transparent 70%)`, pointerEvents: 'none', zIndex: 0, transition: 'background 0.5s ease' }} />
+        {/* Bottom edge absorption */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '40px', background: 'linear-gradient(0deg, rgba(0,0,0,0.12) 0%, transparent 100%)', pointerEvents: 'none', zIndex: 0 }} />
 
-        {/* Tab bar */}
-        <div className="relative flex px-4 pt-3 pb-0 gap-1 overflow-x-auto z-10" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        {/* Tab bar — liquid-glass signal mode switcher */}
+        <div className="relative flex px-4 pt-4 pb-0 gap-0.5 overflow-x-auto z-10" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
           {TABS.map(tab => {
             const isActive = activeTab === tab.id;
             return (
               <motion.button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                whileTap={{ scale: 0.97 }}
-                transition={{ duration: 0.13 }}
-                className="relative flex items-center gap-2 pb-3 pt-2.5 px-3.5 flex-shrink-0"
+                whileHover={!isActive ? { background: 'rgba(255,255,255,0.04)' } : {}}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.15 }}
+                className="relative flex flex-col items-start pb-3.5 pt-3 px-4 flex-shrink-0"
                 style={{
-                  borderRadius: '0',
-                  background: 'transparent',
-                  border: 'none',
-                  borderBottom: isActive ? `2px solid ${tab.color}` : '2px solid transparent',
+                  borderRadius: '14px 14px 0 0',
+                  background: isActive
+                    ? 'linear-gradient(180deg, rgba(255,255,255,0.082) 0%, rgba(255,255,255,0.040) 100%)'
+                    : 'transparent',
+                  border: isActive ? '1px solid rgba(255,255,255,0.10)' : '1px solid transparent',
+                  borderBottom: '1px solid transparent',
+                  minWidth: '88px',
                   cursor: 'pointer',
+                  boxShadow: isActive
+                    ? 'inset 0 1px 0 rgba(255,255,255,0.12), inset 1px 0 0 rgba(255,255,255,0.05), inset -1px 0 0 rgba(255,255,255,0.04)'
+                    : 'none',
                 }}
               >
-                <tab.Icon
-                  className="w-3.5 h-3.5 flex-shrink-0"
-                  style={{
-                    color: isActive ? tab.color : 'rgba(255,255,255,0.28)',
-                    strokeWidth: 2,
-                    transition: 'color 0.15s ease'
-                  }}
-                />
-                <span className="text-[13px] font-semibold whitespace-nowrap" style={{ color: isActive ? 'rgba(255,255,255,0.94)' : 'rgba(255,255,255,0.36)', letterSpacing: '-0.01em', transition: 'color 0.15s ease' }}>
-                  {tab.label}
+                {/* Active: subsurface glow behind label */}
+                {isActive && (
+                  <div style={{
+                    position: 'absolute', inset: 0, borderRadius: '14px 14px 0 0',
+                    background: `radial-gradient(ellipse at 50% -20%, ${tab.glow} 0%, transparent 65%)`,
+                    pointerEvents: 'none'
+                  }} />
+                )}
+                <div className="flex items-center gap-1.5 mb-0.5 relative z-10">
+                  <tab.Icon
+                    className="w-3.5 h-3.5 flex-shrink-0"
+                    style={{
+                      color: isActive ? tab.color : 'rgba(255,255,255,0.30)',
+                      filter: isActive ? `drop-shadow(0 0 6px ${tab.glow}) brightness(1.1)` : 'none',
+                      strokeWidth: isActive ? 2.2 : 1.8,
+                      transition: 'all 0.2s ease'
+                    }}
+                  />
+                  <span className="text-[13px] font-semibold whitespace-nowrap" style={{ color: isActive ? 'rgba(255,255,255,0.96)' : 'rgba(255,255,255,0.42)', letterSpacing: '-0.012em', transition: 'color 0.2s ease' }}>
+                    {tab.label}
+                  </span>
+                </div>
+                <span className="text-[10px] relative z-10" style={{ color: isActive ? 'rgba(255,255,255,0.38)' : 'rgba(255,255,255,0.20)', transition: 'color 0.2s ease' }}>
+                  {tab.sub}
                 </span>
+                {/* Glowing underline — liquid light edge */}
+                {isActive && (
+                  <motion.div
+                    layoutId="tab-indicator"
+                    className="absolute bottom-0 left-2 right-2"
+                    style={{ height: '2px', borderRadius: '2px 2px 0 0' }}
+                    transition={{ type: 'spring', stiffness: 380, damping: 36 }}
+                  >
+                    <div style={{
+                      width: '100%', height: '100%', borderRadius: '2px 2px 0 0',
+                      background: `linear-gradient(90deg, transparent 0%, ${tab.color} 30%, ${tab.color} 70%, transparent 100%)`,
+                      boxShadow: `0 0 10px ${tab.glow}, 0 0 4px ${tab.color}`
+                    }} />
+                  </motion.div>
+                )}
               </motion.button>
             );
           })}
