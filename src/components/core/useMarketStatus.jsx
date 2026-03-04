@@ -1,16 +1,43 @@
 import { useState, useEffect } from 'react';
 
+// Market hours in ET
+const MARKET_HOURS = {
+  premarket: { start: 4, end: 9.5 }, // 4:00 AM - 9:30 AM
+  regular: { start: 9.5, end: 16 },  // 9:30 AM - 4:00 PM
+  afterhours: { start: 16, end: 20 } // 4:00 PM - 8:00 PM
+};
+
 const MARKET_CONFIG = {
-  open: {
-    label: 'Markets Open',
+  premarket: {
+    label: 'Premarket Trading',
+    description: 'Extended hours trading',
+    color: 'rgba(100, 165, 255, 0.72)',
+    bg: 'rgba(100, 165, 255, 0.11)',
+    border: 'rgba(100, 165, 255, 0.18)',
+    dot: 'rgba(100, 165, 255, 0.88)',
+    dotGlow: 'rgba(100, 165, 255, 0.30)',
+  },
+  regular: {
+    label: 'Market Open',
+    description: 'Live data streaming',
     color: 'rgba(88, 227, 164, 0.88)',
     bg: 'rgba(50, 194, 136, 0.11)',
     border: 'rgba(50, 194, 136, 0.18)',
     dot: 'rgba(88, 227, 164, 0.88)',
     dotGlow: 'rgba(88, 227, 164, 0.40)',
   },
+  afterhours: {
+    label: 'After-Hours Trading',
+    description: 'Extended hours trading',
+    color: 'rgba(255, 180, 80, 0.88)',
+    bg: 'rgba(255, 180, 80, 0.11)',
+    border: 'rgba(255, 180, 80, 0.18)',
+    dot: 'rgba(255, 180, 80, 0.88)',
+    dotGlow: 'rgba(255, 180, 80, 0.30)',
+  },
   closed: {
-    label: 'Markets Closed',
+    label: 'Market Closed',
+    description: 'Opens 9:30 AM ET',
     color: 'rgba(255, 255, 255, 0.56)',
     bg: 'rgba(255, 255, 255, 0.05)',
     border: 'rgba(255, 255, 255, 0.10)',
@@ -39,15 +66,26 @@ function getMarketStatus() {
   const dayNum = date.getDay();
   const isWeekday = dayNum >= 1 && dayNum <= 5;
   
-  // Check if within market hours: 9:30 AM - 4:00 PM ET on weekdays
-  const isOpen = isWeekday && currentHours >= 9.5 && currentHours < 16;
+  // If not a weekday, market is closed
+  if (!isWeekday) {
+    return 'closed';
+  }
   
-  return isOpen ? 'open' : 'closed';
+  // Check market hours
+  if (currentHours >= MARKET_HOURS.regular.start && currentHours < MARKET_HOURS.regular.end) {
+    return 'regular';
+  } else if (currentHours >= MARKET_HOURS.premarket.start && currentHours < MARKET_HOURS.premarket.end) {
+    return 'premarket';
+  } else if (currentHours >= MARKET_HOURS.afterhours.start && currentHours < MARKET_HOURS.afterhours.end) {
+    return 'afterhours';
+  } else {
+    return 'closed';
+  }
 }
 
 export function useMarketStatus() {
-  const [status, setStatus] = useState('open');
-  const [config, setConfig] = useState(MARKET_CONFIG.open);
+  const [status, setStatus] = useState('regular');
+  const [config, setConfig] = useState(MARKET_CONFIG.regular);
   
   useEffect(() => {
     // Initial status
