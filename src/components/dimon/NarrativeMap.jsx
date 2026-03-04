@@ -202,11 +202,11 @@ const ConsensusCard = ({ item, index }) => {
       <HoverCard glowColor="rgba(255,255,255,0.04)" subsurface="rgba(255,255,255,0.015)" style={{ borderRadius: '20px', padding: '18px' }}>
         <div className="relative z-10 space-y-3.5">
           <div className="flex items-start justify-between gap-3">
-            <p className="text-[13px] font-semibold leading-snug flex-1" style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.015em' }}>
+            <p className="text-[13px] font-semibold leading-[1.5] flex-1" style={{ color: 'rgba(255,255,255,0.95)' }}>
               {item.claim}
             </p>
             <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-              <span className="text-[20px] font-bold" style={{ color: 'rgba(200,215,255,0.90)', letterSpacing: '-0.035em', lineHeight: 1 }}>{pct}%</span>
+              <span className="text-[18px] font-bold" style={{ color: 'rgba(200,215,255,0.92)', lineHeight: 1.2 }}>{pct}%</span>
               <ConfidenceBadge level={confidence_level} />
             </div>
           </div>
