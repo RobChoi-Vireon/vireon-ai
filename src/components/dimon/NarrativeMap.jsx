@@ -424,7 +424,7 @@ const NarrativeShiftCard = ({ item, index }) => {
   const shift = item.shift_pts ?? item.momentum_pts ?? 0;
   const isRising = shift >= 0;
   const shiftColor = isRising ? 'rgba(88,227,164,0.88)' : 'rgba(255,106,122,0.88)';
-  const shiftBg = isRising ? 'rgba(88,227,164,0.12)' : 'rgba(255,106,122,0.12)';
+  const shiftBg = isRising ? 'rgba(88,227,164,0.10)' : 'rgba(255,106,122,0.10)';
   const momentum = item.momentum || 'Stable';
   const confidence = item.confidence || 'Moderate';
   const interpretation = item.interpretation || '';
