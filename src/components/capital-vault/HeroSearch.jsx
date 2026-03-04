@@ -102,6 +102,8 @@ export default function HeroSearch({ onSearch, isLoading, history, setHistory, s
               style={{
                 color: 'rgba(255,255,255,0.92)',
                 caretColor: 'rgba(100, 160, 255, 0.90)',
+                letterSpacing: '-0.01em',
+                fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', sans-serif",
               }}
             />
 
@@ -148,7 +150,7 @@ export default function HeroSearch({ onSearch, isLoading, history, setHistory, s
                   </div>
                   {suggestions.slice(0, 5).map(s => (
                     <button key={s} onClick={() => handleSuggestionClick(s)}
-                      className="w-full text-left px-4 py-2.5 rounded-xl flex items-center gap-3 hover:bg-white/07 transition-colors"
+                      className="w-full text-left px-4 py-2.5 rounded-xl flex items-center gap-3 hover:bg-white/[0.07] transition-colors"
                     >
                       <Zap className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'rgba(88, 200, 150, 0.70)' }} />
                       <span className="text-sm font-medium" style={{ color: 'rgba(235,240,255,0.88)' }}>{s}</span>
@@ -168,7 +170,7 @@ export default function HeroSearch({ onSearch, isLoading, history, setHistory, s
                   </div>
                   {history.slice(0, 4).map(t => (
                     <button key={t} onClick={() => handleHistoryClick(t)}
-                      className="w-full text-left px-4 py-2.5 rounded-xl flex items-center gap-3 hover:bg-white/07 transition-colors group"
+                      className="w-full text-left px-4 py-2.5 rounded-xl flex items-center gap-3 hover:bg-white/[0.07] transition-colors group"
                     >
                       <History className="w-3.5 h-3.5 flex-shrink-0 group-hover:text-purple-400 transition-colors" style={{ color: 'rgba(160,170,185,0.55)' }} />
                       <span className="text-sm font-medium group-hover:text-white transition-colors" style={{ color: 'rgba(200,205,220,0.75)' }}>{t}</span>
