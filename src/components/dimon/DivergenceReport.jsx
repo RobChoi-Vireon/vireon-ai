@@ -215,7 +215,7 @@ const DivergenceCard = ({ divergence, onClick, index }) => {
               letterSpacing: '-0.01em', lineHeight: 1.3,
               overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
             }}>
-              {String(divergence?.topic || 'Unknown Topic')}
+              {String(headline)}
             </h4>
           </div>
 
