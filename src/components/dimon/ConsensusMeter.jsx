@@ -683,7 +683,7 @@ const CategoryGlassChips = ({ segments, isHovered, onChipHover, onChipLeave }) =
 // ============================================================================
 // MAIN CONSENSUS COMPONENT — Cinematic Choreography System
 // ============================================================================
-export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
+export default function ConsensusMeter({ score, breakdown, onOpenDrawer, sourcesCount, timestampDisplay, confidenceLabel, consensusLabel }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isHintHovered, setIsHintHovered] = useState(false);
   const [isAnyChipHovered, setIsAnyChipHovered] = useState(false);
@@ -729,8 +729,8 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
   }
 
   const segments = breakdown?.segments || [];
-  const sourcesCount = 5;
-  const updatedAgo = "2m ago";
+  const resolvedSourcesCount = sourcesCount ?? 5;
+  const updatedAgo = timestampDisplay ?? "2m ago";
 
   const handleOpenDrawer = () => {
     try {
@@ -947,7 +947,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer }) {
           opacity: { duration: 0.2, ease: MOTION.CURVES.tertiary }
         }}
       >
-        Based on {sourcesCount} sources • Updated {updatedAgo}
+        Based on {resolvedSourcesCount} sources • Updated {updatedAgo}
       </motion.p>
 
       {/* Interactive breakdown hint */}
