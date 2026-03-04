@@ -141,10 +141,10 @@ const MomentumTag = ({ pts }) => {
 // ─── Tab definition ───────────────────────────────────────────────────────────
 
 const TABS = [
-  { id: 'consensus',   label: 'Consensus',    sub: 'Where the Street agrees',      Icon: CheckCircle, color: 'rgba(88,227,164,0.85)',  glow: 'rgba(88,227,164,0.20)'  },
-  { id: 'divergences', label: 'Divergences',  sub: 'Where narratives fracture',    Icon: GitCommit,   color: 'rgba(180,120,255,0.85)', glow: 'rgba(180,120,255,0.18)' },
-  { id: 'us_global',   label: 'US vs Global', sub: 'Regional interpretation',      Icon: Globe,       color: 'rgba(94,167,255,0.85)',  glow: 'rgba(94,167,255,0.18)'  },
-  { id: 'changing',    label: 'Changing',     sub: 'Narratives changing this week',Icon: Zap,         color: 'rgba(255,190,80,0.85)',  glow: 'rgba(255,190,80,0.18)'  },
+  { id: 'consensus',   label: 'Consensus',    sub: { prefix: 'Where', rest: ' the Street agrees' },      Icon: CheckCircle, color: 'rgba(88,227,164,0.85)',  glow: 'rgba(88,227,164,0.20)'  },
+  { id: 'divergences', label: 'Divergences',  sub: { prefix: 'Where', rest: ' narratives fracture' },    Icon: GitCommit,   color: 'rgba(180,120,255,0.85)', glow: 'rgba(180,120,255,0.18)' },
+  { id: 'us_global',   label: 'US vs Global', sub: { prefix: 'Regional', rest: ' interpretation' },      Icon: Globe,       color: 'rgba(94,167,255,0.85)',  glow: 'rgba(94,167,255,0.18)'  },
+  { id: 'changing',    label: 'Changing',     sub: { prefix: 'Narratives', rest: ' changing this week' },Icon: Zap,         color: 'rgba(255,190,80,0.85)',  glow: 'rgba(255,190,80,0.18)'  },
 ];
 
 // ─── Liquid-glass hoverable card wrapper ─────────────────────────────────────
