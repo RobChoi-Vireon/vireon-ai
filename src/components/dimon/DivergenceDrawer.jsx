@@ -6,9 +6,14 @@ import { X, AlertCircle, Eye, GitMerge, CheckCircle, XCircle, ChevronLeft, Chevr
 const EASE = [0.22, 0.61, 0.36, 1];
 
 function getDivergenceTheme(type) {
-  switch (type) {
+  const t = (type || '').toUpperCase();
+  switch (t) {
+    case 'COVERAGE_GAP':
     case 'coverage_gap':    return { Icon: Eye,         label: 'Coverage Gap',      color: '#FFB020', glow: 'rgba(255,176,32,0.12)' };
-    case 'angle_disagreement': return { Icon: GitMerge, label: 'Angle Disagreement', color: '#B47FFF', glow: 'rgba(180,127,255,0.12)' };
+    case 'ANGLE_DISAGREE':
+    case 'angle_disagreement': return { Icon: GitMerge, label: 'Angle Disagree', color: '#B47FFF', glow: 'rgba(180,127,255,0.12)' };
+    case 'DATA_CONFLICT':   return { Icon: AlertCircle, label: 'Data Conflict',    color: '#F26A6A', glow: 'rgba(242,106,106,0.12)' };
+    case 'TIMING_MISMATCH': return { Icon: AlertCircle, label: 'Timing Mismatch',  color: '#5EA7FF', glow: 'rgba(94,167,255,0.12)' };
     default:                return { Icon: AlertCircle, label: 'Narrative Fracture', color: '#5EA7FF', glow: 'rgba(94,167,255,0.12)' };
   }
 }
