@@ -806,6 +806,7 @@ export default function DigestHeader({
               <span style={{ color: 'rgba(255,255,255,0.28)' }}>•</span>
 
               {/* Signals Capsule — OS Horizon Glass */}
+
               <motion.div
                 className="glass-info-capsule flex items-center gap-2 px-4 py-2 rounded-[20px]"
                 style={{
