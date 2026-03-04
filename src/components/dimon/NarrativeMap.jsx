@@ -662,7 +662,7 @@ export default function NarrativeMap({ synthesis, density }) {
           </p>
         </div>
         <div className="text-right mt-1 max-w-[200px]">
-          <p className="text-[11px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.26)', fontStyle: 'italic' }}>
+          <p className="text-[12px] leading-[1.6]" style={{ color: 'rgba(255,255,255,0.32)' }}>
             Narratives summarize how markets are being interpreted, not guaranteed predictions.
           </p>
         </div>
