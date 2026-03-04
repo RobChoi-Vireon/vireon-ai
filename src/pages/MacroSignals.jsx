@@ -962,8 +962,21 @@ export default function MacroSignalsPage() {
       <SentimentDrawer 
         isOpen={isConsensusDrawerOpen}
         onClose={closeConsensusDrawer}
-        score={digest?.consensus_score}
-        breakdown={digest?.consensus_breakdown}
+        score={sessionData?.global_signals?.consensus?.score ?? digest?.consensus_score}
+        breakdown={sessionData?.global_signals
+          ? {
+              segments: (sessionData.global_signals.consensus?.forces || []).map(f => ({
+                name: f.name,
+                weight: (f.weight || 0) / 100,
+                trend: f.trend,
+                insight: f.insight
+              }))
+            }
+          : digest?.consensus_breakdown}
+        summary={sessionData?.global_signals?.consensus?.summary}
+        sourcesCount={sessionData?.global_signals?.consensus?.sources_count}
+        timestampDisplay={sessionData?.global_signals?.timestamp_display}
+        forceDetails={sessionData?.global_signals?.consensus?.force_details}
         onOpenDetail={setSelectedSegment}
       />
       <DivergenceDrawer
