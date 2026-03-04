@@ -867,7 +867,7 @@ export default function MacroSignalsPage() {
 
                 {/* Enhanced Grid with Breathing Room */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
-                    <div className="flex flex-col">
+                    <div className="flex flex-col h-full">
                         <ConsensusMeter 
                             score={consensusScore}
                             breakdown={consensusBreakdown}
@@ -878,7 +878,7 @@ export default function MacroSignalsPage() {
                             onOpenDrawer={openConsensusDrawer}
                         />
                     </div>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col h-full">
                         <DivergenceReport 
                             divergences={divergenceItems.length ? divergenceItems : (digest?.synthesis?.divergences || [])}
                             fractureIntensity={fracture}
