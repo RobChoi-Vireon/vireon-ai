@@ -124,10 +124,22 @@ const FractureBar = ({ count }) => {
 const DivergenceCard = ({ divergence, onClick, index }) => {
   const [hovered, setHovered] = useState(false);
   const typeTheme = getTypeTheme(divergence?.type);
-  const risk = getRiskLevel(divergence?.confidence || 0.6);
-  const contextCue = getContextCue(divergence);
-  const sourceCount = (divergence?.present_in || []).length + (divergence?.missing_in || []).length;
-  const confidence = Math.round((divergence?.confidence || 0.6) * 100);
+  // Support both live data (severity string + confidence integer) and old format (confidence 0-1)
+  const hasLiveData = divergence?.severity !== undefined || divergence?.headline !== undefined;
+  const risk = hasLiveData
+    ? getSeverityTheme(divergence?.severity)
+    : getRiskLevel(divergence?.confidence || 0.6);
+  const contextCue = hasLiveData
+    ? (divergence?.summary || divergence?.headline || '')
+    : getContextCue(divergence);
+  // confidence: live data = integer 0-100, old = float 0-1
+  const rawConf = divergence?.confidence || 0;
+  const confidence = hasLiveData ? rawConf : Math.round(rawConf * 100);
+  // source count: live data has source_count field
+  const sourceCount = divergence?.source_count
+    ?? ((divergence?.present_in || []).length + (divergence?.missing_in || []).length);
+  // headline: live data uses headline, old uses topic
+  const headline = divergence?.headline || divergence?.topic || 'Unknown Topic';
 
   return (
     <motion.div
