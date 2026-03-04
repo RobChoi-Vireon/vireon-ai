@@ -169,7 +169,7 @@ export default function NarrativePulseCard({ summary = null, isEmpty = false, po
               )}
 
               {/* Footer pills */}
-              <div className="flex gap-2.5 mt-3.5 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+              <div className="flex gap-2.5 mt-3.5 pt-3 flex-wrap" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                 <span className="text-[10px] px-2.5 py-1 rounded-full" style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.48)' }}>
                   Consensus: —
                 </span>
@@ -179,6 +179,62 @@ export default function NarrativePulseCard({ summary = null, isEmpty = false, po
                 <span className="text-[10px] px-2.5 py-1 rounded-full" style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.48)' }}>
                   Momentum: —
                 </span>
+
+                {/* Positioning Pressure Pill */}
+                <div className="relative">
+                  <motion.span
+                    className="text-[10px] px-2.5 py-1 rounded-full cursor-help transition-all duration-150 inline-block"
+                    style={{
+                      background: positioningConfig.bg,
+                      color: positioningConfig.color,
+                      border: `1px solid ${positioningConfig.border}`,
+                    }}
+                    onMouseEnter={() => setPositioningTooltipVisible(true)}
+                    onMouseLeave={() => setPositioningTooltipVisible(false)}
+                    whileHover={{
+                      scale: 1.02,
+                      boxShadow: `0 0 8px ${positioningConfig.color.replace(/[\d.]+\)$/, '0.20)')}`
+                    }}
+                  >
+                    Positioning: <span style={{ fontWeight: 600 }}>{positioningConfig.label}</span>
+                  </motion.span>
+
+                  {/* Tooltip */}
+                  {positioningTooltipVisible && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 2 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 2 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute bottom-full left-0 mb-2 z-50 max-w-[180px]"
+                      style={{
+                        background: 'rgba(20,24,35,0.95)',
+                        backdropFilter: 'blur(16px)',
+                        border: '1px solid rgba(255,255,255,0.12)',
+                        borderRadius: '10px',
+                        padding: '8px 10px',
+                        boxShadow: '0 4px 16px rgba(0,0,0,0.32)',
+                      }}
+                    >
+                      <p className="text-[10px] leading-[1.4]" style={{ color: 'rgba(255,255,255,0.72)' }}>
+                        {positioningConfig.tooltip}
+                      </p>
+                      {/* Tooltip arrow */}
+                      <div
+                        style={{
+                          position: 'absolute',
+                          bottom: '-4px',
+                          left: '12px',
+                          width: '0',
+                          height: '0',
+                          borderLeft: '4px solid transparent',
+                          borderRight: '4px solid transparent',
+                          borderTop: '4px solid rgba(20,24,35,0.95)',
+                        }}
+                      />
+                    </motion.div>
+                  )}
+                </div>
               </div>
             </>
           )}
