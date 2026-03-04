@@ -1,560 +1,380 @@
-// 🔒 DESIGN LOCKED — OS HORIZON V4.0
-// Last Updated: 2025-01-20
-// Do not modify visual design without explicit assignment
-// See: DESIGN_LOCKED_COMPONENTS.md
-
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GitCommit, AlertTriangle, ExternalLink, TrendingUp, TrendingDown, Minus, Database, BarChart2 } from 'lucide-react';
+import { GitCommit, AlertTriangle, ChevronRight, BarChart2, Database, Eye, GitMerge, AlertCircle } from 'lucide-react';
 
-const DivergenceIntensityMeter = ({ divergences = [] }) => {
-  const intensity = Math.min(5, Math.max(1, divergences.length));
-  const [hoveredOrb, setHoveredOrb] = useState(null);
-  
+// ─── OS HORIZON TOKENS ───────────────────────────────────────────────────────
+const EASE = [0.22, 0.61, 0.36, 1];
+
+const GLASS = {
+  panel: {
+    background: 'linear-gradient(180deg, rgba(18,22,30,0.72) 0%, rgba(12,15,22,0.80) 100%)',
+    backdropFilter: 'blur(32px) saturate(160%)',
+    WebkitBackdropFilter: 'blur(32px) saturate(160%)',
+    border: '1px solid rgba(255,255,255,0.07)',
+    boxShadow: '0 20px 60px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.08)',
+    borderRadius: '28px',
+  },
+  card: {
+    background: 'linear-gradient(180deg, rgba(255,255,255,0.045) 0%, rgba(255,255,255,0.025) 100%)',
+    backdropFilter: 'blur(20px) saturate(150%)',
+    WebkitBackdropFilter: 'blur(20px) saturate(150%)',
+    border: '1px solid rgba(255,255,255,0.08)',
+    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.07), 0 4px 20px rgba(0,0,0,0.20)',
+    borderRadius: '20px',
+  }
+};
+
+function getTypeTheme(type) {
+  switch (type) {
+    case 'coverage_gap': return { Icon: Eye, label: 'Coverage Gap', color: '#FFB020', glow: 'rgba(255,176,32,0.15)' };
+    case 'angle_disagreement': return { Icon: GitMerge, label: 'Angle Disagree', color: '#B47FFF', glow: 'rgba(180,127,255,0.15)' };
+    default: return { Icon: AlertCircle, label: 'Narrative Fracture', color: '#5EA7FF', glow: 'rgba(94,167,255,0.15)' };
+  }
+}
+
+function getRiskLevel(confidence) {
+  if (confidence >= 0.7) return { label: 'Elevated', color: '#F26A6A', glow: 'rgba(242,106,106,0.20)' };
+  if (confidence >= 0.5) return { label: 'Moderate', color: '#FFB020', glow: 'rgba(255,176,32,0.20)' };
+  return { label: 'Low', color: '#5EA7FF', glow: 'rgba(94,167,255,0.20)' };
+}
+
+function getContextCue(divergence) {
+  switch (divergence?.id) {
+    case 'em_credit': return 'Companies in developing countries are struggling to borrow money';
+    case 'energy_vs_industrials': return 'Energy companies are doing well while factories are slowing down';
+    default: return 'News sources are telling different stories about this topic';
+  }
+}
+
+// ─── FRACTURE BAR ─────────────────────────────────────────────────────────────
+const FractureBar = ({ count }) => {
+  const intensity = Math.min(5, Math.max(1, count));
+  const [tooltip, setTooltip] = useState(false);
+
   return (
-    <div className="mb-8" style={{ marginTop: '8px' }}>
-      <div className="flex items-center gap-4 mb-2.5">
-        <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.70)', letterSpacing: '0.02em' }}>
-          Fracture Intensity
-        </span>
-        <div className="flex items-center gap-2.5">
-          {[...Array(5)].map((_, level) => {
-            const isActive = level < intensity;
-            const isHovered = hoveredOrb === level;
-            
-            return (
-              <motion.div 
-                key={level} 
-                className="relative cursor-pointer"
-                onHoverStart={() => setHoveredOrb(level)}
-                onHoverEnd={() => setHoveredOrb(null)}
-              >
-                {/* Liquid Neon Orb */}
-                <motion.div
-                  className="w-2.5 h-2.5 rounded-full relative"
-                  style={{
-                    background: isActive 
-                      ? 'linear-gradient(135deg, rgba(168, 110, 235, 0.88) 0%, rgba(200, 120, 245, 0.82) 100%)'
-                      : 'rgba(255, 255, 255, 0.08)',
-                    border: isActive ? '0.5px solid rgba(200, 120, 245, 0.30)' : '0.5px solid rgba(255,255,255,0.06)',
-                    boxShadow: isActive 
-                      ? '0 0 8px rgba(168, 110, 235, 0.28), inset 0 0.5px 0.5px rgba(255,255,255,0.22)'
-                      : 'none'
-                  }}
-                  animate={isActive ? {
-                    opacity: [0.85, 1, 0.85],
-                    boxShadow: [
-                      '0 0 8px rgba(168, 110, 235, 0.28), inset 0 0.5px 0.5px rgba(255,255,255,0.22)',
-                      '0 0 11px rgba(168, 110, 235, 0.36), inset 0 0.5px 0.5px rgba(255,255,255,0.24)',
-                      '0 0 8px rgba(168, 110, 235, 0.28), inset 0 0.5px 0.5px rgba(255,255,255,0.22)'
-                    ]
-                  } : {}}
-                  transition={isActive ? {
-                    duration: 5.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: level * 0.15
-                  } : {}}
-                  whileHover={isActive ? {
-                    scale: 1.15,
-                    boxShadow: '0 0 14px rgba(168, 110, 235, 0.42), inset 0 0.5px 0.5px rgba(255,255,255,0.26)',
-                    transition: { duration: 0.22, ease: [0.25, 0.8, 0.25, 1] }
-                  } : {}}
-                >
-                  {/* Orb specular highlight */}
-                  {isActive && (
-                    <div style={{
-                      position: 'absolute',
-                      top: '0.5px',
-                      left: '0.5px',
-                      width: '1px',
-                      height: '1px',
-                      borderRadius: '50%',
-                      background: 'rgba(255,255,255,0.48)',
-                      filter: 'blur(0.3px)',
-                      pointerEvents: 'none'
-                    }} />
-                  )}
-
-                  {/* Soft bloom */}
-                  {isActive && (
-                    <motion.div
-                      style={{
-                        position: 'absolute',
-                        inset: '-3px',
-                        borderRadius: '50%',
-                        background: 'radial-gradient(circle, rgba(168, 110, 235, 0.25) 0%, transparent 75%)',
-                        filter: 'blur(4px)',
-                        pointerEvents: 'none'
-                      }}
-                      animate={{
-                        opacity: [0.5, 0.7, 0.5]
-                      }}
-                      transition={{
-                        duration: 5.5,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: level * 0.15
-                      }}
-                    />
-                  )}
-                </motion.div>
-              </motion.div>
-            );
-          })}
-        </div>
-        <span className="text-xs font-semibold" style={{ color: 'rgba(180, 140, 240, 0.88)' }}>
-          {intensity}/5
-        </span>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <span style={{ fontSize: '11px', fontWeight: 500, color: 'rgba(255,255,255,0.55)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+        Fracture Intensity
+      </span>
+      <div
+        style={{ display: 'flex', gap: '4px', position: 'relative', cursor: 'default' }}
+        onMouseEnter={() => setTooltip(true)}
+        onMouseLeave={() => setTooltip(false)}
+      >
+        {[...Array(5)].map((_, i) => {
+          const active = i < intensity;
+          return (
+            <motion.div
+              key={i}
+              style={{
+                width: '20px', height: '5px', borderRadius: '999px',
+                background: active
+                  ? `linear-gradient(90deg, rgba(180,127,255,0.70), rgba(160,100,255,0.85))`
+                  : 'rgba(255,255,255,0.08)',
+                border: active ? '1px solid rgba(180,127,255,0.20)' : '1px solid rgba(255,255,255,0.05)',
+                boxShadow: active ? '0 0 6px rgba(180,127,255,0.18), inset 0 1px 0 rgba(255,255,255,0.12)' : 'none',
+              }}
+              animate={active ? { opacity: [0.75, 1, 0.75] } : {}}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: i * 0.4 }}
+            />
+          );
+        })}
+        <AnimatePresence>
+          {tooltip && (
+            <motion.div
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 4 }}
+              transition={{ duration: 0.15 }}
+              style={{
+                position: 'absolute', bottom: 'calc(100% + 8px)', left: '50%', transform: 'translateX(-50%)',
+                padding: '5px 10px', borderRadius: '8px', whiteSpace: 'nowrap',
+                background: 'rgba(10,13,20,0.96)', border: '1px solid rgba(255,255,255,0.10)',
+                backdropFilter: 'blur(16px)', fontSize: '11px', color: 'rgba(255,255,255,0.80)',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.40)', zIndex: 20
+              }}
+            >
+              How much credible sources disagree.
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-      
-      {/* Micro descriptor */}
-      <p className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.68)', letterSpacing: '0.02em', lineHeight: '1.4' }}>
-        How much sources disagree with each other
-      </p>
+      <span style={{ fontSize: '11px', fontWeight: 700, color: 'rgba(180,127,255,0.85)', letterSpacing: '0.02em' }}>
+        {intensity}/5
+      </span>
     </div>
   );
 };
 
-const DivergenceCapsule = ({ divergence, onClick, index }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [ripplePos, setRipplePos] = useState({ x: 0, y: 0 });
-  const [showRipple, setShowRipple] = useState(false);
-
-  const getContextCue = (divergence) => {
-    switch (divergence?.id) {
-      case 'em_credit':
-        return 'Companies in developing countries are struggling to borrow money';
-      case 'energy_vs_industrials':
-        return 'Energy companies are doing well while factories are slowing down';
-      default:
-        return 'News sources are telling different stories about this topic';
-    }
-  };
-
-  const getRiskLevel = (divergence) => {
-    const confidence = divergence?.confidence || 0.6;
-    if (confidence >= 0.7) return { label: 'Elevated', color: '#F26A6A' };
-    if (confidence >= 0.5) return { label: 'Moderate', color: '#FFB020' };
-    return { label: 'Low', color: '#5EA7FF' };
-  };
-
-  const getSourceCount = (divergence) => {
-    return (divergence?.present_in || []).length + (divergence?.missing_in || []).length;
-  };
-
+// ─── DIVERGENCE CARD ──────────────────────────────────────────────────────────
+const DivergenceCard = ({ divergence, onClick, index }) => {
+  const [hovered, setHovered] = useState(false);
+  const typeTheme = getTypeTheme(divergence?.type);
+  const risk = getRiskLevel(divergence?.confidence || 0.6);
   const contextCue = getContextCue(divergence);
-  const riskLevel = getRiskLevel(divergence);
-  const sourceCount = getSourceCount(divergence);
+  const sourceCount = (divergence?.present_in || []).length + (divergence?.missing_in || []).length;
   const confidence = Math.round((divergence?.confidence || 0.6) * 100);
-
-  const handleClick = (e) => {
-    try {
-      if (divergence && onClick) {
-        const rect = e.currentTarget.getBoundingClientRect();
-        setRipplePos({
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top
-        });
-        setShowRipple(true);
-        setTimeout(() => setShowRipple(false), 280);
-        onClick(divergence);
-      }
-    } catch (error) {
-      console.error('Error handling divergence click:', error);
-    }
-  };
 
   return (
     <motion.div
-      className="relative"
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.08, duration: 0.36, ease: [0.22, 0.61, 0.36, 1] }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
+      transition={{ delay: index * 0.07, duration: 0.30, ease: EASE }}
+      onHoverStart={() => setHovered(true)}
+      onHoverEnd={() => setHovered(false)}
+      tabIndex={0}
+      role="button"
+      aria-label={`View divergence: ${divergence?.topic}`}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick?.(divergence); }}
+      style={{ outline: 'none', position: 'relative' }}
     >
       <motion.div
-        onClick={handleClick}
-        className="relative cursor-pointer group"
-        whileHover={{ 
-          y: -2,
-          scale: 1.01
+        onClick={() => onClick?.(divergence)}
+        animate={{
+          y: hovered ? -2 : 0,
+          boxShadow: hovered
+            ? `inset 0 1px 0 rgba(255,255,255,0.10), 0 8px 32px rgba(0,0,0,0.30), 0 0 0 1px rgba(255,255,255,0.09)`
+            : GLASS.card.boxShadow
         }}
-        whileTap={{
-          y: 2,
-          scale: 0.995
-        }}
-        transition={{ 
-          type: "spring", 
-          stiffness: 290, 
-          damping: 28,
-          mass: 1
+        transition={{ duration: 0.16, ease: EASE }}
+        style={{
+          ...GLASS.card,
+          padding: '20px 22px',
+          cursor: 'pointer',
+          position: 'relative',
+          overflow: 'hidden',
         }}
       >
-        {/* OS Horizon V4 Liquid Silk + Glass Hybrid Micro-Plate */}
-        <div
-          className="relative rounded-[23px] overflow-hidden"
+        {/* Top specular edge */}
+        <div style={{
+          position: 'absolute', top: 0, left: '15%', right: '15%', height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)',
+          pointerEvents: 'none'
+        }} />
+
+        {/* Hover specular sweep */}
+        <motion.div
           style={{
-            background: 'linear-gradient(180deg, rgba(115, 90, 200, 0.14) 0%, rgba(70, 55, 140, 0.18) 100%)',
-            backdropFilter: 'blur(24px) saturate(165%)',
-            WebkitBackdropFilter: 'blur(24px) saturate(165%)',
-            border: '1px solid rgba(160, 120, 240, 0.16)',
-            boxShadow: `
-              inset 0 1.5px 0 rgba(255,255,255,0.06),
-              inset 0 -1px 1px rgba(0,0,0,0.08),
-              0 4px 16px rgba(0,0,0,0.16)
-            `,
-            padding: '24px 26px'
+            position: 'absolute', inset: 0, borderRadius: '20px', pointerEvents: 'none',
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 55%)'
           }}
-        >
-          {/* Subsurface top gradient */}
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: '45%',
-            background: 'linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%)',
-            borderRadius: '23px 23px 0 0',
-            pointerEvents: 'none'
-          }} />
+          animate={{ opacity: hovered ? 1 : 0 }}
+          transition={{ duration: 0.16 }}
+        />
 
-          {/* Glass highlight intensifies on hover */}
-          <motion.div
-            className="absolute inset-0 rounded-[23px] pointer-events-none"
-            style={{
-              background: 'radial-gradient(ellipse at 50% 10%, rgba(180, 140, 255, 0.08) 0%, transparent 65%)'
-            }}
-            animate={{ 
-              opacity: isHovered ? 0.12 : 0.06
-            }}
-            transition={{ duration: 0.18, ease: [0.26, 0.11, 0.26, 1.0] }}
-          />
+        {/* Type accent glow (very subtle) */}
+        <motion.div
+          style={{
+            position: 'absolute', inset: 0, borderRadius: '20px', pointerEvents: 'none',
+            background: `radial-gradient(ellipse at 0% 50%, ${typeTheme.glow} 0%, transparent 65%)`
+          }}
+          animate={{ opacity: hovered ? 1 : 0.4 }}
+          transition={{ duration: 0.18 }}
+        />
 
-          {/* Inner-glass diagonal sheen */}
-          <motion.div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.02) 45%, transparent 100%)',
-              borderRadius: '23px'
-            }}
-            animate={{
-              opacity: isHovered ? 0.08 : 0.04
-            }}
-            transition={{ duration: 0.16 }}
-          />
-
-          {/* Soft bloom on edges (Bloom.PurpleSoft +4% on hover) */}
-          <motion.div
-            className="absolute -inset-1 rounded-[24px] pointer-events-none blur-lg"
-            style={{
-              background: 'radial-gradient(ellipse at 50% 50%, rgba(160, 110, 235, 0.18) 0%, transparent 70%)'
-            }}
-            animate={{
-              opacity: isHovered ? 0.22 : 0.08
-            }}
-            transition={{ duration: 0.18 }}
-          />
-
-          {/* Radial ripple on click */}
-          <AnimatePresence>
-            {showRipple && (
-              <motion.div
-                className="absolute pointer-events-none"
-                style={{
-                  left: ripplePos.x,
-                  top: ripplePos.y,
-                  transform: 'translate(-50%, -50%)',
-                  width: '80px',
-                  height: '80px',
-                  borderRadius: '50%',
-                  background: 'radial-gradient(circle, rgba(160, 110, 255, 0.20) 0%, transparent 70%)'
-                }}
-                initial={{ scale: 0, opacity: 0.6 }}
-                animate={{ scale: 2, opacity: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.28, ease: 'easeOut' }}
-              />
-            )}
-          </AnimatePresence>
-
-          {/* Header Row */}
-          <div className="flex items-center justify-between mb-3 relative z-10">
-            <div className="flex items-center gap-3">
-              <AlertTriangle className="w-4 h-4" style={{ color: 'rgba(200, 140, 255, 0.82)', strokeWidth: 2 }} />
-              <h4 className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.94)', letterSpacing: '-0.005em' }}>
-                {String(divergence?.topic || 'Unknown Topic')}
-              </h4>
+        {/* ── Header Row ── */}
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', marginBottom: '10px', position: 'relative', zIndex: 2 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
+            {/* Icon puck */}
+            <div style={{
+              width: '30px', height: '30px', borderRadius: '9px', flexShrink: 0,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: `${typeTheme.color}12`, border: `1px solid ${typeTheme.color}22`,
+              boxShadow: `0 0 10px ${typeTheme.glow}`
+            }}>
+              <typeTheme.Icon className="w-3.5 h-3.5" style={{ color: typeTheme.color }} strokeWidth={2} />
             </div>
-            
-            {/* OS Horizon Risk Capsule */}
-            <div
-              className="px-3.5 py-1.5 rounded-full text-[10px] font-semibold uppercase tracking-wide relative overflow-hidden"
-              style={{
-                background: `linear-gradient(180deg, ${riskLevel.color}08, ${riskLevel.color}14)`,
-                backdropFilter: 'blur(16px)',
-                WebkitBackdropFilter: 'blur(16px)',
-                border: `1px solid ${riskLevel.color}${riskLevel.label === 'Moderate' ? '28' : '32'}`,
-                color: `${riskLevel.color}${riskLevel.label === 'Moderate' ? 'D9' : 'E5'}`,
-                letterSpacing: '0.06em',
-                boxShadow: `inset 0 0.5px 0 rgba(255,255,255,0.08)`
-              }}
-            >
-              {/* Risk-level dot indicator */}
-              <div style={{
-                position: 'absolute',
-                left: '8px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                width: '4px',
-                height: '4px',
-                borderRadius: '50%',
-                background: riskLevel.color,
-                boxShadow: `0 0 6px ${riskLevel.color}${riskLevel.label === 'Moderate' ? '60' : '70'}`,
-                pointerEvents: 'none'
-              }} />
-              <span style={{ marginLeft: '10px' }}>Risk: {riskLevel.label}</span>
-            </div>
+            <h4 style={{
+              fontSize: '14px', fontWeight: 600, color: 'rgba(255,255,255,0.94)',
+              letterSpacing: '-0.01em', lineHeight: 1.3,
+              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
+            }}>
+              {String(divergence?.topic || 'Unknown Topic')}
+            </h4>
           </div>
 
-          {/* Body - One-Line Explanation */}
-          <p 
-            className="text-sm relative z-10"
-            style={{ 
-              color: 'rgba(255,255,255,0.82)', 
-              lineHeight: '1.52',
-              fontWeight: 400,
-              letterSpacing: '0.002em'
-            }}
-          >
-            {contextCue}
-          </p>
+          {/* Risk pill */}
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '5px', flexShrink: 0,
+            padding: '4px 10px 4px 8px', borderRadius: '999px',
+            background: `${risk.color}0C`, border: `1px solid ${risk.color}22`,
+            backdropFilter: 'blur(12px)', fontSize: '10px', fontWeight: 600,
+            color: risk.color, letterSpacing: '0.05em', textTransform: 'uppercase'
+          }}>
+            <div style={{
+              width: '5px', height: '5px', borderRadius: '50%',
+              background: risk.color, boxShadow: `0 0 5px ${risk.color}80`
+            }} />
+            {risk.label}
+          </div>
+        </div>
 
-          {/* Metadata Footer - Fade In On Hover */}
+        {/* ── Summary ── */}
+        <p style={{
+          fontSize: '13px', lineHeight: '1.55', color: 'rgba(255,255,255,0.72)',
+          fontWeight: 400, position: 'relative', zIndex: 2, marginBottom: '14px'
+        }}>
+          {contextCue}
+        </p>
+
+        {/* ── Footer row (always visible) ── */}
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '16px',
+          paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.06)',
+          position: 'relative', zIndex: 2
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <BarChart2 className="w-3 h-3" style={{ color: 'rgba(255,255,255,0.40)' }} strokeWidth={2} />
+            <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.52)', fontWeight: 500 }}>
+              {confidence}% confidence
+            </span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <Database className="w-3 h-3" style={{ color: 'rgba(255,255,255,0.40)' }} strokeWidth={2} />
+            <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.52)', fontWeight: 500 }}>
+              {sourceCount} {sourceCount === 1 ? 'source' : 'sources'}
+            </span>
+          </div>
+
+          {/* Type chip */}
+          <div style={{
+            marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '4px',
+            padding: '2px 8px', borderRadius: '999px',
+            background: `${typeTheme.color}0A`, border: `1px solid ${typeTheme.color}18`,
+            fontSize: '10px', fontWeight: 600, color: `${typeTheme.color}CC`, letterSpacing: '0.04em',
+            textTransform: 'uppercase'
+          }}>
+            {typeTheme.label}
+          </div>
+
+          {/* Chevron affordance */}
           <motion.div
-            className="flex items-center gap-5 mt-4 pt-3 border-t relative z-10"
-            style={{ 
-              borderColor: 'rgba(255,255,255,0.08)'
-            }}
-            animate={{ 
-              opacity: isHovered ? 1 : 0,
-              y: isHovered ? 0 : 4
-            }}
-            transition={{ duration: 0.18, ease: [0.26, 0.11, 0.26, 1.0] }}
+            animate={{ opacity: hovered ? 1 : 0, x: hovered ? 0 : -4 }}
+            transition={{ duration: 0.14, ease: EASE }}
+            style={{ flexShrink: 0 }}
           >
-            <div className="flex items-center gap-2 text-xs" style={{ color: 'rgba(255,255,255,0.76)' }}>
-              <BarChart2 className="w-3 h-3" strokeWidth={2} />
-              <span className="font-medium">{confidence}% confidence</span>
-            </div>
-            <div className="flex items-center gap-2 text-xs" style={{ color: 'rgba(255,255,255,0.76)' }}>
-              <Database className="w-3 h-3" strokeWidth={2} />
-              <span className="font-medium">{sourceCount} sources</span>
-            </div>
-            <ExternalLink 
-              className="w-3.5 h-3.5 ml-auto" 
-              style={{ color: 'rgba(180, 120, 240, 0.72)' }}
-              strokeWidth={2}
-            />
+            <ChevronRight className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.45)' }} strokeWidth={2} />
           </motion.div>
         </div>
+
+        {/* Focus ring */}
+        <motion.div
+          style={{
+            position: 'absolute', inset: '-1px', borderRadius: '21px', pointerEvents: 'none',
+            border: '2px solid rgba(180,127,255,0.40)', opacity: 0
+          }}
+          whileFocus={{ opacity: 1 }}
+        />
       </motion.div>
     </motion.div>
   );
 };
 
+// ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 export default function DivergenceReport({ divergences = [], onOpenDrawer }) {
+  // ── Empty state ──
   if (!Array.isArray(divergences) || divergences.length === 0) {
     return (
       <motion.div
         variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
-        className="h-full rounded-[28px] p-8 backdrop-filter backdrop-blur-lg border flex flex-col items-center justify-center relative overflow-hidden"
-        style={{ 
-          background: 'linear-gradient(180deg, rgba(40, 38, 60, 0.28) 0%, rgba(18, 16, 28, 0.42) 100%)',
-          borderColor: 'rgba(160, 120, 240, 0.12)',
-          boxShadow: `
-            0 12px 42px rgba(0,0,0,0.32),
-            inset 0 1.5px 0 rgba(255,255,255,0.04)
-          `
-        }}
+        style={{ ...GLASS.panel, padding: '40px 28px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '220px', position: 'relative', overflow: 'hidden' }}
       >
-        {/* Micro-grain texture */}
+        <div style={{ position: 'absolute', top: 0, left: '20%', right: '20%', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)', pointerEvents: 'none' }} />
         <div style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-          opacity: 0.012,
-          mixBlendMode: 'overlay',
-          borderRadius: '28px',
-          pointerEvents: 'none'
-        }} />
-
-        <div className="text-center relative z-10">
-          <div 
-            className="p-3.5 rounded-[18px] mb-4 inline-block"
-            style={{ 
-              background: 'linear-gradient(180deg, rgba(0, 0, 0, 0.32) 0%, rgba(0, 0, 0, 0.42) 100%)',
-              border: '1px solid rgba(160, 120, 240, 0.14)',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)'
-            }}
-          >
-            <GitCommit className="w-5 h-5" style={{ color: 'rgba(180, 140, 255, 0.82)', strokeWidth: 2 }} />
-          </div>
-          <h3 className="text-sm font-semibold mb-1.5" style={{ color: 'rgba(255,255,255,0.92)', letterSpacing: '0.01em' }}>
-            No Divergences Detected
-          </h3>
-          <p className="text-xs" style={{ color: 'rgba(255,255,255,0.72)', lineHeight: '1.4' }}>
-            All sources agree on the key points today.
-          </p>
+          width: '40px', height: '40px', borderRadius: '12px', marginBottom: '14px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)'
+        }}>
+          <GitCommit className="w-5 h-5" style={{ color: 'rgba(180,127,255,0.80)' }} strokeWidth={2} />
         </div>
+        <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'rgba(255,255,255,0.88)', marginBottom: '6px', letterSpacing: '-0.005em' }}>
+          No Divergences Detected
+        </h3>
+        <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.48)', lineHeight: '1.5', textAlign: 'center' }}>
+          All sources are aligned on the key narratives today.
+        </p>
       </motion.div>
     );
   }
-  
+
   return (
     <motion.div
       variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
-      className="h-full rounded-[28px] relative overflow-hidden"
+      style={{ ...GLASS.panel, padding: '26px 24px 24px', position: 'relative', overflow: 'visible' }}
     >
-      {/* OS Horizon V4 Atmospheric Background Integration */}
+      {/* Top specular edge */}
       <div style={{
-        position: 'absolute',
-        inset: 0,
-        background: 'linear-gradient(180deg, rgba(13, 15, 18, 0.04) 0%, rgba(21, 27, 34, 0.05) 100%)',
-        zIndex: 0,
-        pointerEvents: 'none'
+        position: 'absolute', top: 0, left: '15%', right: '15%', height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+        borderRadius: '999px', pointerEvents: 'none'
       }} />
 
-      {/* Micro-grain texture (1.2%) */}
+      {/* Ambient violet bloom in top area */}
       <div style={{
-        position: 'absolute',
-        inset: 0,
-        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-        opacity: 0.012,
-        mixBlendMode: 'overlay',
-        borderRadius: '28px',
-        zIndex: 1,
-        pointerEvents: 'none'
+        position: 'absolute', top: 0, left: 0, right: 0, height: '120px',
+        background: 'radial-gradient(ellipse at 50% 0%, rgba(140,100,255,0.07) 0%, transparent 70%)',
+        borderRadius: '28px 28px 0 0', pointerEvents: 'none'
       }} />
 
-      {/* LAYER 1: Dark Liquid Silk Base */}
-      <div
-        className="relative"
-        style={{
-          background: 'linear-gradient(180deg, rgba(40, 38, 60, 0.35) 0%, rgba(18, 16, 28, 0.60) 100%)',
-          backdropFilter: 'blur(32px) saturate(165%)',
-          WebkitBackdropFilter: 'blur(32px) saturate(165%)',
-          border: '1px solid rgba(160, 120, 240, 0.12)',
-          boxShadow: `
-            0 18px 58px rgba(0,0,0,0.45),
-            0 0 40px rgba(120, 80, 255, 0.14),
-            inset 0 1.5px 0 rgba(255,255,255,0.04)
-          `,
-          borderRadius: '28px',
-          padding: '32px 28px 28px 28px',
-          zIndex: 2
-        }}
-      >
-        {/* LAYER 2: Light Glass Upper Shell (top 38%) */}
-        <div
-          className="absolute top-0 left-0 right-0 rounded-t-[26px] overflow-hidden"
-          style={{
-            height: '38%',
-            background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.06) 100%)',
-            backdropFilter: 'blur(42px) saturate(170%)',
-            WebkitBackdropFilter: 'blur(42px) saturate(170%)',
-            border: '1px solid rgba(255,255,255,0.06)',
-            borderBottom: 'none',
-            zIndex: 3,
-            pointerEvents: 'none'
-          }}
-        >
-          {/* Subsurface bloom along upper edge (Bloom.TopEdgeSoft) */}
+      {/* ── Header ── */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px', marginBottom: '18px', position: 'relative' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{
-            position: 'absolute',
-            top: 0,
-            left: '10%',
-            right: '10%',
-            height: '3px',
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
-            filter: 'blur(1.5px)',
-            pointerEvents: 'none'
-          }} />
-        </div>
-
-        {/* Header Section */}
-        <div className="flex items-start mb-6 relative z-10">
-          <div 
-            className="p-3 rounded-[18px] mr-3.5"
-            style={{ 
-              background: 'linear-gradient(180deg, rgba(0, 0, 0, 0.32) 0%, rgba(0, 0, 0, 0.42) 100%)',
-              border: '1px solid rgba(160, 120, 240, 0.16)',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)'
-            }}
-          >
-            <GitCommit className="w-5 h-5" style={{ color: 'rgba(180, 140, 255, 0.88)', strokeWidth: 2 }} />
+            width: '36px', height: '36px', borderRadius: '10px', flexShrink: 0,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'rgba(180,127,255,0.10)', border: '1px solid rgba(180,127,255,0.18)',
+            boxShadow: '0 0 12px rgba(180,127,255,0.12), inset 0 1px 0 rgba(255,255,255,0.08)'
+          }}>
+            <GitCommit className="w-4.5 h-4.5" style={{ color: 'rgba(180,127,255,0.88)' }} strokeWidth={2} />
           </div>
           <div>
-            <h2 
-              className="text-xl font-semibold mb-1"
-              style={{ 
-                color: 'rgba(255,255,255,0.96)',
-                letterSpacing: '-0.01em'
-              }}
-            >
+            <h2 style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.01em', lineHeight: 1.2, marginBottom: '3px' }}>
               Divergence Report
             </h2>
-            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.70)', lineHeight: '1.4' }}>
-              Where the experts disagree.
+            <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.48)', lineHeight: 1.4 }}>
+              Where credible sources disagree.
             </p>
           </div>
         </div>
-
-        {/* Divergence Intensity Meter */}
-        <DivergenceIntensityMeter divergences={divergences} />
-        
-        {/* Divergence Cards - OS Horizon spacing */}
-        <div className="space-y-5 relative z-10">
-          {divergences.slice(0, 3).map((divergence, index) => (
-            <DivergenceCapsule
-              key={divergence?.id || index}
-              divergence={divergence}
-              onClick={onOpenDrawer}
-              index={index}
-            />
-          ))}
-        </div>
-
-        {divergences.length > 3 && (
-          <motion.div
-            className="text-center mt-7 pt-5 relative z-10"
-            style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-          >
-            <p className="text-sm mb-2" style={{ color: 'rgba(255,255,255,0.76)', lineHeight: '1.4' }}>
-              <span style={{ color: 'rgba(180, 140, 240, 0.92)', fontWeight: 600 }}>
-                +{divergences.length - 3}
-              </span> more fractures detected
-            </p>
-            <motion.button
-              onClick={() => onOpenDrawer && onOpenDrawer(divergences[3])}
-              className="text-xs font-medium"
-              style={{ 
-                color: 'rgba(180, 120, 240, 0.82)',
-                letterSpacing: '0.02em'
-              }}
-              whileHover={{
-                color: 'rgba(200, 140, 255, 0.94)',
-                transition: { duration: 0.16 }
-              }}
-            >
-              See all disagreements →
-            </motion.button>
-          </motion.div>
-        )}
+        <FractureBar count={divergences.length} />
       </div>
+
+      {/* Divider */}
+      <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)', marginBottom: '18px' }} />
+
+      {/* ── Cards ── */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        {divergences.slice(0, 3).map((d, i) => (
+          <DivergenceCard key={d?.id || i} divergence={d} onClick={onOpenDrawer} index={i} />
+        ))}
+      </div>
+
+      {/* ── More button ── */}
+      {divergences.length > 3 && (
+        <motion.div
+          style={{ marginTop: '16px', paddingTop: '14px', borderTop: '1px solid rgba(255,255,255,0.06)', textAlign: 'center' }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+        >
+          <span style={{ fontSize: '12px', color: 'rgba(180,127,255,0.80)', fontWeight: 500 }}>
+            +{divergences.length - 3} more fractures detected
+          </span>
+          <motion.button
+            onClick={() => onOpenDrawer?.(divergences[3])}
+            style={{
+              display: 'block', margin: '6px auto 0',
+              fontSize: '11px', fontWeight: 500, color: 'rgba(255,255,255,0.45)',
+              background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.02em'
+            }}
+            whileHover={{ color: 'rgba(255,255,255,0.70)' }}
+            transition={{ duration: 0.14 }}
+          >
+            See all →
+          </motion.button>
+        </motion.div>
+      )}
     </motion.div>
   );
 }
