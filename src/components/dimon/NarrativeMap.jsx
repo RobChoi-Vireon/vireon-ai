@@ -741,7 +741,7 @@ export default function NarrativeMap({ synthesis, density }) {
                   </span>
                   </div>
                   <span className="text-[11px] relative z-10 leading-[1.3]" style={{ color: isActive ? 'rgba(255,255,255,0.40)' : 'rgba(255,255,255,0.25)', transition: 'color 0.2s ease' }}>
-                  {tab.sub}
+                    <span style={{ fontWeight: 600, color: isActive ? 'rgba(255,255,255,0.52)' : 'rgba(255,255,255,0.35)' }}>{tab.sub.prefix}</span>{tab.sub.rest}
                   </span>
                 {/* Glowing underline — liquid light edge */}
                 {isActive && (
