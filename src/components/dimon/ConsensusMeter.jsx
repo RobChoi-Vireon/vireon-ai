@@ -33,7 +33,7 @@ const CATEGORY_COLORS = {
 // ============================================================================
 // SIGNAL LENS NODE — Hero Object with Cinematic Motion
 // ============================================================================
-const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hoveredChipColor }) => {
+const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hoveredChipColor, consensusLabel, confidenceLabel }) => {
   const [wavePhase, setWavePhase] = useState(0);
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
   const [breathingPhase, setBreathingPhase] = useState(0);
@@ -915,6 +915,8 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer, sources
           parentRef={containerRef}
           isAnyChipHovered={isAnyChipHovered}
           hoveredChipColor={hoveredChipColor}
+          consensusLabel={consensusLabel}
+          confidenceLabel={confidenceLabel}
         />
       </div>
 
