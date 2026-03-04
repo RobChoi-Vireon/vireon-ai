@@ -545,9 +545,16 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
           const config = SEGMENT_CONFIG[segment.name];
           if (!config) return null;
 
-          const StatusIcon = config.status === 'Rising' || config.status === 'Softening' 
-            ? (config.status === 'Rising' ? TrendingUp : TrendingDown)
+          // Use live data from segment if available, fall back to static config
+          const liveInsight = segment.insight || config.insight;
+          const liveTrend = segment.trend || config.status;
+          const StatusIcon = (liveTrend === 'rising' || liveTrend === 'Rising') ? TrendingUp
+            : (liveTrend === 'falling' || liveTrend === 'Softening' || liveTrend === 'softening') ? TrendingDown
             : Minus;
+          const statusColor = (liveTrend === 'rising' || liveTrend === 'Rising') ? '#FFB020'
+            : (liveTrend === 'falling' || liveTrend === 'Softening' || liveTrend === 'softening') ? '#F26A6A'
+            : (liveTrend === 'stable' || liveTrend === 'Stable') ? '#5EA7FF'
+            : config.statusColor;
 
           const isHovered = hoveredCapsule === segment.name;
           const isClicked = clickedCapsule === segment.name;
