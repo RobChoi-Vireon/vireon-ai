@@ -308,12 +308,12 @@ const DivergenceCard = ({ item, index }) => {
 
             {/* Counter */}
             <div className="space-y-2.5 pl-5">
-              <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(200,160,255,0.55)', letterSpacing: '0.06em' }}>Counter</p>
-              <p className="text-[13px] font-semibold leading-snug" style={{ color: 'rgba(255,255,255,0.78)', letterSpacing: '-0.01em' }}>{counterNarrative}</p>
-              <span className="text-[20px] font-bold block" style={{ color: 'rgba(200,160,255,0.78)', letterSpacing: '-0.03em', lineHeight: 1 }}>{ctrPct}%</span>
-              <StrengthBar pct={ctrPct} color="rgba(200,160,255,0.55)" delay={0.1 + 0.06 * index} />
+              <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(160,175,210,0.45)', letterSpacing: '0.06em' }}>Counter</p>
+              <p className="text-[13px] font-semibold leading-snug" style={{ color: 'rgba(255,255,255,0.68)', letterSpacing: '-0.01em' }}>{counterNarrative}</p>
+              <span className="text-[20px] font-bold block" style={{ color: 'rgba(190,205,240,0.62)', letterSpacing: '-0.03em', lineHeight: 1 }}>{ctrPct}%</span>
+              <StrengthBar pct={ctrPct} color="rgba(140,160,200,0.42)" delay={0.1 + 0.06 * index} />
               <div className="flex items-center gap-2 flex-wrap">
-                <MiniSparkline data={ctrSpark} color="rgba(200,160,255,0.68)" delay={0.45 + 0.06 * index} />
+                <MiniSparkline data={ctrSpark} color="rgba(155,175,215,0.55)" delay={0.45 + 0.06 * index} />
                 <MomentumTag pts={ctrMom} />
               </div>
             </div>
