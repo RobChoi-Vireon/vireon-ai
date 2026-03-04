@@ -4,6 +4,7 @@ import { Calendar, Share, Info, Clock, Database, Zap, AlertCircle } from 'lucide
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import MarketBiasBadge from '@/components/dimon/MarketBiasBadge';
+import { useMarketStatus } from '@/components/core/useMarketStatus';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
 
