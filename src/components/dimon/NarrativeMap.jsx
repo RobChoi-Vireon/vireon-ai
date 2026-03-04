@@ -146,34 +146,29 @@ const TABS = [
 
 // ─── Liquid-glass hoverable card wrapper ─────────────────────────────────────
 
-const HoverCard = ({ children, glowColor = 'rgba(255,255,255,0.06)', subsurface = 'rgba(255,255,255,0.03)', style = {}, className = '' }) => {
+const HoverCard = ({ children, glowColor = 'rgba(255,255,255,0.04)', subsurface = 'rgba(255,255,255,0.015)', style = {}, className = '' }) => {
   const [hovered, setHovered] = useState(false);
   return (
     <motion.div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       animate={{
-        y: hovered ? -3 : 0,
-        scale: hovered ? 1.002 : 1,
+        y: hovered ? -2 : 0,
         boxShadow: hovered
           ? [
-              'inset 0 1.5px 0 rgba(255,255,255,0.18)',
-              'inset 0 -1px 0 rgba(0,0,0,0.14)',
-              'inset 1px 0 0 rgba(255,255,255,0.08)',
-              '0 1px 0 rgba(255,255,255,0.05)',
-              '0 18px 52px rgba(0,0,0,0.28)',
-              '0 4px 14px rgba(0,0,0,0.18)',
-              `0 0 32px ${glowColor}`,
-              `0 0 0 1px rgba(255,255,255,0.09)`,
+              'inset 0 1px 0 rgba(255,255,255,0.10)',
+              '0 8px 32px rgba(0,0,0,0.40)',
+              '0 2px 8px rgba(0,0,0,0.24)',
+              `0 0 24px ${glowColor}`,
             ].join(', ')
           : GLASS_CARD.boxShadow
       }}
-      transition={{ duration: 0.20, ease: 'easeOut' }}
+      transition={{ duration: 0.18, ease: 'easeOut' }}
       className={`relative ${className}`}
       style={{ ...GLASS_CARD, ...style, overflow: 'hidden' }}
     >
       <SpecularLine />
-      <SubsurfaceGlow color={hovered ? glowColor.replace(/[\d.]+\)$/, '0.06)') : subsurface} />
+      <SubsurfaceGlow color={hovered ? glowColor.replace(/[\d.]+\)$/, '0.04)') : subsurface} />
       {children}
     </motion.div>
   );
