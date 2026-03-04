@@ -527,6 +527,93 @@ const EmptyState = ({ label }) => (
   </div>
 );
 
+// ─── ChangingTabContent (with Narrative Momentum header) ──────────────────────
+
+const NARRATIVE_MOMENTUM_DATA = [
+  {
+    title: 'AI productivity driving earnings expansion',
+    shift_pts: 12,
+    momentum: 'Increasing',
+    confidence: 'Moderate',
+    interpretation: 'More commentary frames AI as an earnings driver rather than a cost center.'
+  },
+  {
+    title: 'Soft landing narrative strengthening',
+    shift_pts: 6,
+    momentum: 'Increasing',
+    confidence: 'High',
+    interpretation: 'Recent macro prints are being interpreted as growth holding up without re-accelerating inflation.'
+  },
+  {
+    title: 'Rate cuts pulled forward',
+    shift_pts: -5,
+    momentum: 'Weakening',
+    confidence: 'Moderate',
+    interpretation: 'Market pricing is drifting toward fewer/farther cuts as inflation stickiness dominates.'
+  },
+  {
+    title: 'China recovery optimism',
+    shift_pts: -8,
+    momentum: 'Weakening',
+    confidence: 'Low',
+    interpretation: 'Narrative attention is fading as growth concerns reassert and stimulus expectations cool.'
+  }
+];
+
+const ChangingTabContent = () => (
+  <div className="space-y-4">
+    {/* Header */}
+    <div className="flex items-start justify-between gap-6 mb-6 px-1">
+      <div>
+        <h3 className="text-[18px] font-semibold" style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.02em' }}>
+          Narrative Momentum
+        </h3>
+        <p className="text-[12px] mt-1" style={{ color: 'rgba(255,255,255,0.40)' }}>
+          Narratives gaining or losing traction this week
+        </p>
+      </div>
+      <div className="flex items-center gap-2 flex-shrink-0 mt-1">
+        <motion.div
+          animate={{ opacity: [0.6, 1, 0.6], scale: [0.95, 1.05, 0.95] }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
+          className="w-1.5 h-1.5 rounded-full"
+          style={{ background: 'rgba(88,227,164,0.85)', boxShadow: '0 0 6px rgba(88,227,164,0.50)' }}
+        />
+        <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.46)' }}>
+          Monitor: Active
+        </span>
+      </div>
+    </div>
+
+    {/* Narrative Shift Cards */}
+    {NARRATIVE_MOMENTUM_DATA.length > 0 ? (
+      <div className="space-y-3">
+        {NARRATIVE_MOMENTUM_DATA.map((item, i) => (
+          <NarrativeShiftCard key={i} item={item} index={i} />
+        ))}
+      </div>
+    ) : (
+      <div className="relative flex flex-col items-center justify-center py-12 text-center rounded-[20px]" style={{
+        background: 'linear-gradient(160deg, rgba(255,255,255,0.040) 0%, rgba(255,255,255,0.018) 55%, rgba(255,255,255,0.028) 100%)',
+        backdropFilter: 'blur(40px) saturate(160%)',
+        WebkitBackdropFilter: 'blur(40px) saturate(160%)',
+        border: '1px solid rgba(255,255,255,0.08)'
+      }}>
+        <div className="relative mb-4">
+          <motion.div
+            animate={{ opacity: [0.5, 1, 0.5], scale: [0.9, 1.1, 0.9] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            className="w-2 h-2 rounded-full mx-auto"
+            style={{ background: 'rgba(255,255,255,0.30)' }}
+          />
+        </div>
+        <p className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.50)' }}>Narrative Monitor Active</p>
+        <p className="text-[11px] mt-1.5" style={{ color: 'rgba(255,255,255,0.30)' }}>No significant narrative shifts detected this week.</p>
+      </div>
+    )}
+  </div>
+);
+
 // ─── Main export ─────────────────────────────────────────────────────────────
 
 export default function NarrativeMap({ synthesis, density }) {
