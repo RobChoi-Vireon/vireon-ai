@@ -1,119 +1,75 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+
+const BAR_COUNT = 12;
 
 export default function MarketBiasBadge({ sentimentScore = 50, isLoaded = true }) {
-  const [breathe, setBreathe] = useState(0);
-
-  useEffect(() => {
-    let rafId, start = Date.now();
-    const animate = () => {
-      setBreathe((Date.now() - start) / 1000);
-      rafId = requestAnimationFrame(animate);
-    };
-    rafId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafId);
-  }, []);
-
-  // Derive bias from score: 0 = full bullish, 100 = full bearish
+  // sentimentScore: 0 = full bullish, 100 = full bearish
   const isBullish = sentimentScore <= 35;
   const isBearish = sentimentScore >= 65;
-  const isNeutral = !isBullish && !isBearish;
 
-  const config = isBullish
-    ? {
-        label: 'Bullish',
-        sublabel: 'Risk-On Bias',
-        Icon: TrendingUp,
-        color: '#32C288',
-        glow: 'rgba(50, 194, 136, 0.28)',
-        bg: 'rgba(50, 194, 136, 0.08)',
-        border: 'rgba(50, 194, 136, 0.22)',
-        dotColor: '#32C288',
-      }
+  const label = isBullish ? 'Bullish Sentiment' : isBearish ? 'Bearish Sentiment' : 'Upbeat Sentiment';
+  const color = isBullish ? '#32C288' : isBearish ? '#F26A6A' : '#32C288';
+
+  // How many bars are "active" (filled), based on score
+  // Bullish: more active bars. Bearish: fewer. Neutral: half.
+  const activeBars = isBullish
+    ? Math.round(BAR_COUNT * 0.75)
     : isBearish
-    ? {
-        label: 'Bearish',
-        sublabel: 'Risk-Off Bias',
-        Icon: TrendingDown,
-        color: '#F26A6A',
-        glow: 'rgba(242, 106, 106, 0.28)',
-        bg: 'rgba(242, 106, 106, 0.08)',
-        border: 'rgba(242, 106, 106, 0.22)',
-        dotColor: '#F26A6A',
-      }
-    : {
-        label: 'Neutral',
-        sublabel: 'Mixed Signals',
-        Icon: Minus,
-        color: '#8EBBFF',
-        glow: 'rgba(142, 187, 255, 0.22)',
-        bg: 'rgba(142, 187, 255, 0.07)',
-        border: 'rgba(142, 187, 255, 0.18)',
-        dotColor: '#8EBBFF',
-      };
+    ? Math.round(BAR_COUNT * 0.35)
+    : Math.round(BAR_COUNT * 0.55);
 
-  const pulseScale = 1 + Math.sin(breathe * Math.PI * 2 / 3) * 0.025;
+  // Heights: vary slightly for a natural waveform look
+  const barHeights = [10, 14, 18, 16, 20, 18, 14, 16, 12, 16, 14, 10];
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.92, y: 6 }}
-      animate={{ opacity: isLoaded ? 1 : 0, scale: isLoaded ? 1 : 0.92, y: isLoaded ? 0 : 6 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: isLoaded ? 1 : 0 }}
       transition={{ duration: 0.32, delay: 1.5, ease: [0.22, 0.61, 0.36, 1] }}
-      className="flex items-center gap-3 px-4 py-3 rounded-[20px] relative overflow-hidden"
-      style={{
-        background: config.bg,
-        border: `1px solid ${config.border}`,
-        boxShadow: `0 0 22px ${config.glow}, inset 0 1px 0 rgba(255,255,255,0.07)`,
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        minWidth: '170px'
-      }}
+      className="flex items-center gap-3"
     >
-      {/* Ambient glow */}
-      <div style={{
-        position: 'absolute',
-        inset: 0,
-        background: `radial-gradient(ellipse at 30% 50%, ${config.bg} 0%, transparent 70%)`,
-        pointerEvents: 'none',
-        borderRadius: '20px'
-      }} />
-
-      {/* Pulsing dot */}
-      <div className="relative flex-shrink-0">
-        <motion.div
-          style={{
-            width: '10px',
-            height: '10px',
-            borderRadius: '50%',
-            background: config.dotColor,
-            boxShadow: `0 0 12px ${config.glow}`,
-            scale: pulseScale
-          }}
-        />
-        <motion.div
-          className="absolute inset-0 rounded-full"
-          style={{ background: config.dotColor, opacity: 0 }}
-          animate={{ scale: [1, 1.8, 1], opacity: [0.5, 0, 0.5] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-        />
+      {/* Bar chart */}
+      <div className="flex items-end gap-[3px]" style={{ height: '22px' }}>
+        {barHeights.map((h, i) => {
+          const active = i < activeBars;
+          return (
+            <motion.div
+              key={i}
+              initial={{ scaleY: 0, opacity: 0 }}
+              animate={{ scaleY: 1, opacity: active ? 1 : 0.2 }}
+              transition={{
+                delay: 1.5 + i * 0.04,
+                duration: 0.28,
+                ease: [0.22, 0.61, 0.36, 1]
+              }}
+              style={{
+                width: '3px',
+                height: `${h}px`,
+                borderRadius: '2px',
+                background: active ? color : 'rgba(255,255,255,0.25)',
+                transformOrigin: 'bottom',
+                boxShadow: active ? `0 0 4px ${color}60` : 'none'
+              }}
+            />
+          );
+        })}
       </div>
 
-      {/* Icon */}
-      <config.Icon
-        className="w-4 h-4 flex-shrink-0 relative z-10"
-        style={{ color: config.color, strokeWidth: 2.5 }}
-      />
-
-      {/* Text */}
-      <div className="relative z-10">
-        <div className="text-[13px] font-semibold leading-none mb-0.5" style={{ color: config.color }}>
-          {config.label}
-        </div>
-        <div className="text-[10px] font-medium" style={{ color: 'rgba(255,255,255,0.52)', letterSpacing: '0.02em' }}>
-          {config.sublabel}
-        </div>
-      </div>
+      {/* Label */}
+      <motion.span
+        initial={{ opacity: 0, x: -4 }}
+        animate={{ opacity: isLoaded ? 1 : 0, x: isLoaded ? 0 : -4 }}
+        transition={{ duration: 0.28, delay: 1.7, ease: [0.22, 0.61, 0.36, 1] }}
+        style={{
+          fontSize: '15px',
+          fontWeight: 600,
+          color: 'rgba(255,255,255,0.88)',
+          letterSpacing: '-0.01em'
+        }}
+      >
+        {label}
+      </motion.span>
     </motion.div>
   );
 }
