@@ -444,13 +444,13 @@ const ChangingCard = ({ item, index }) => {
       transition={{ delay: 0.06 * index, duration: 0.38, ease: HORIZON_EASE }}
     >
       <HoverCard
-        glowColor={rising ? 'rgba(255,190,80,0.14)' : 'rgba(255,106,122,0.14)'}
-        subsurface={rising ? 'rgba(255,190,80,0.03)' : 'rgba(255,106,122,0.03)'}
+        glowColor={rising ? 'rgba(255,190,80,0.10)' : 'rgba(255,106,122,0.10)'}
+        subsurface={rising ? 'rgba(255,190,80,0.018)' : 'rgba(255,106,122,0.018)'}
         style={{
-          borderRadius: '22px',
-          background: `linear-gradient(160deg, ${bgColor} 0%, rgba(255,255,255,0.022) 55%, ${bgColor.replace(/[\d.]+\)$/, '0.04)')} 100%)`,
+          borderRadius: '16px',
+          background: 'linear-gradient(160deg, rgba(18,22,38,0.92) 0%, rgba(13,16,28,0.96) 60%, rgba(16,19,34,0.94) 100%)',
           border: `1px solid ${borderColor}`,
-          padding: '22px'
+          padding: '20px 22px'
         }}
       >
         <div className="relative z-10 space-y-3.5">
