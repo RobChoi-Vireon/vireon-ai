@@ -297,10 +297,10 @@ const DivergenceCard = ({ item, index }) => {
             </div>
 
             {/* Counter */}
-            <div className="space-y-2 pl-4">
-              <p className="text-[9px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(160,175,210,0.40)', letterSpacing: '0.06em' }}>Counter</p>
-              <p className="text-[12px] font-semibold leading-snug" style={{ color: 'rgba(255,255,255,0.65)', letterSpacing: '-0.01em' }}>{counterNarrative}</p>
-              <span className="text-[18px] font-bold block" style={{ color: 'rgba(175,190,225,0.58)', letterSpacing: '-0.03em', lineHeight: 1 }}>{ctrPct}%</span>
+            <div className="space-y-2.5 pl-4">
+              <p className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: 'rgba(160,175,210,0.38)' }}>Counter</p>
+              <p className="text-[12px] font-semibold leading-[1.5]" style={{ color: 'rgba(255,255,255,0.68)' }}>{counterNarrative}</p>
+              <span className="text-[18px] font-bold block" style={{ color: 'rgba(175,190,225,0.62)', lineHeight: 1.2 }}>{ctrPct}%</span>
               <StrengthBar pct={ctrPct} color="rgba(130,155,195,0.38)" delay={0.1 + 0.06 * index} />
               <div className="flex items-center gap-1.5 flex-wrap">
                 <MiniSparkline data={ctrSpark} color="rgba(145,170,210,0.52)" delay={0.45 + 0.06 * index} />
