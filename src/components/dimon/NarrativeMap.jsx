@@ -706,13 +706,13 @@ export default function NarrativeMap({ synthesis, density }) {
         </div>
 
         {/* Content area */}
-        <div className="p-5 relative z-10">
+        <div className="p-5 pt-4 relative z-10">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -5 }}
+              initial={{ opacity: 0, y: 10, filter: 'blur(2px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, y: -6, filter: 'blur(1px)' }}
               transition={SMOOTH}
             >
               {renderContent()}
