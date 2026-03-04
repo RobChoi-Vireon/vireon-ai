@@ -280,49 +280,49 @@ const DivergenceCard = ({ item, index }) => {
             {/* Vertical glow divider */}
             <div style={{
               position: 'absolute', top: '8px', bottom: '8px', left: '50%', width: '1px',
-              background: 'linear-gradient(180deg, transparent, rgba(255,255,255,0.10), rgba(255,255,255,0.07), transparent)',
+              background: 'linear-gradient(180deg, transparent, rgba(255,255,255,0.08), rgba(255,255,255,0.05), transparent)',
               transform: 'translateX(-50%)', pointerEvents: 'none'
             }} />
 
             {/* Dominant */}
-            <div className="space-y-2.5 pr-5">
-              <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(160,175,210,0.65)', letterSpacing: '0.06em' }}>Dominant</p>
-              <p className="text-[13px] font-bold leading-snug" style={{ color: 'rgba(255,255,255,0.94)', letterSpacing: '-0.01em' }}>{item.topic}</p>
-              <span className="text-[20px] font-bold block" style={{ color: 'rgba(200,215,255,0.90)', letterSpacing: '-0.03em', lineHeight: 1 }}>{domPct}%</span>
-              <StrengthBar pct={domPct} color="rgba(140,165,220,0.72)" delay={0.1 + 0.06 * index} />
-              <div className="flex items-center gap-2 flex-wrap">
-                <MiniSparkline data={domSpark} color="rgba(155,180,230,0.78)" delay={0.45 + 0.06 * index} />
+            <div className="space-y-2 pr-4">
+              <p className="text-[9px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(160,175,210,0.60)', letterSpacing: '0.06em' }}>Dominant</p>
+              <p className="text-[12px] font-bold leading-snug" style={{ color: 'rgba(255,255,255,0.92)', letterSpacing: '-0.01em' }}>{item.topic}</p>
+              <span className="text-[18px] font-bold block" style={{ color: 'rgba(190,205,235,0.88)', letterSpacing: '-0.03em', lineHeight: 1 }}>{domPct}%</span>
+              <StrengthBar pct={domPct} color="rgba(140,165,220,0.68)" delay={0.1 + 0.06 * index} />
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <MiniSparkline data={domSpark} color="rgba(155,180,230,0.75)" delay={0.45 + 0.06 * index} />
                 <MomentumTag pts={domMom} />
               </div>
             </div>
 
             {/* Counter */}
-            <div className="space-y-2.5 pl-5">
-              <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(160,175,210,0.45)', letterSpacing: '0.06em' }}>Counter</p>
-              <p className="text-[13px] font-semibold leading-snug" style={{ color: 'rgba(255,255,255,0.68)', letterSpacing: '-0.01em' }}>{counterNarrative}</p>
-              <span className="text-[20px] font-bold block" style={{ color: 'rgba(190,205,240,0.62)', letterSpacing: '-0.03em', lineHeight: 1 }}>{ctrPct}%</span>
-              <StrengthBar pct={ctrPct} color="rgba(140,160,200,0.42)" delay={0.1 + 0.06 * index} />
-              <div className="flex items-center gap-2 flex-wrap">
-                <MiniSparkline data={ctrSpark} color="rgba(155,175,215,0.55)" delay={0.45 + 0.06 * index} />
+            <div className="space-y-2 pl-4">
+              <p className="text-[9px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(160,175,210,0.40)', letterSpacing: '0.06em' }}>Counter</p>
+              <p className="text-[12px] font-semibold leading-snug" style={{ color: 'rgba(255,255,255,0.65)', letterSpacing: '-0.01em' }}>{counterNarrative}</p>
+              <span className="text-[18px] font-bold block" style={{ color: 'rgba(175,190,225,0.58)', letterSpacing: '-0.03em', lineHeight: 1 }}>{ctrPct}%</span>
+              <StrengthBar pct={ctrPct} color="rgba(130,155,195,0.38)" delay={0.1 + 0.06 * index} />
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <MiniSparkline data={ctrSpark} color="rgba(145,170,210,0.52)" delay={0.45 + 0.06 * index} />
                 <MomentumTag pts={ctrMom} />
               </div>
             </div>
           </div>
 
           {interpretation && (
-            <div className="p-3.5 rounded-[14px]" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
-              <p className="text-[10px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: 'rgba(255,255,255,0.28)', letterSpacing: '0.07em' }}>Interpretation</p>
-              <p className="text-[12px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.70)' }}>"{interpretation}"</p>
+            <div className="p-2.5 rounded-[12px]" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
+              <p className="text-[9px] font-semibold uppercase tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.24)', letterSpacing: '0.07em' }}>Interpretation</p>
+              <p className="text-[11px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.62)' }}>"{interpretation}"</p>
             </div>
           )}
 
           {resolution.length > 0 && (
-            <div className="pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-              <p className="text-[10px] font-semibold uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.28)', letterSpacing: '0.07em' }}>What would resolve this</p>
-              <ul className="space-y-1.5">
-                {resolution.slice(0, 2).map((r, i) => (
-                  <li key={i} className="flex items-start gap-2 text-[12px]" style={{ color: 'rgba(255,255,255,0.60)' }}>
-                    <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(160,180,220,0.50)' }} />
+            <div className="pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+              <p className="text-[9px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: 'rgba(255,255,255,0.24)', letterSpacing: '0.07em' }}>Would resolve</p>
+              <ul className="space-y-1">
+                {resolution.slice(0, 1).map((r, i) => (
+                  <li key={i} className="flex items-start gap-2 text-[11px]" style={{ color: 'rgba(255,255,255,0.50)' }}>
+                    <div className="w-1 h-1 rounded-full mt-1 flex-shrink-0" style={{ background: 'rgba(160,180,220,0.45)' }} />
                     {r}
                   </li>
                 ))}
