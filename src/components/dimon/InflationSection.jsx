@@ -525,11 +525,15 @@ export default function InflationSection({ data }) {
                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.14)';
                   e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.20)';
                   e.currentTarget.style.color = 'rgba(255, 255, 255, 0.95)';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.28)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
                   e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.12)';
                   e.currentTarget.style.color = 'rgba(255, 255, 255, 0.80)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
                 }}
               >
                 {source.name}
