@@ -310,19 +310,19 @@ const DivergenceCard = ({ item, index }) => {
           </div>
 
           {interpretation && (
-            <div className="p-2.5 rounded-[12px]" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
-              <p className="text-[9px] font-semibold uppercase tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.24)', letterSpacing: '0.07em' }}>Interpretation</p>
-              <p className="text-[11px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.62)' }}>"{interpretation}"</p>
+            <div className="p-3 rounded-[12px]" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
+              <p className="text-[11px] font-semibold uppercase tracking-wide mb-2" style={{ color: 'rgba(255,255,255,0.30)' }}>Interpretation</p>
+              <p className="text-[12px] leading-[1.6]" style={{ color: 'rgba(255,255,255,0.65)' }}>"{interpretation}"</p>
             </div>
           )}
 
           {resolution.length > 0 && (
-            <div className="pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-              <p className="text-[9px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: 'rgba(255,255,255,0.24)', letterSpacing: '0.07em' }}>Would resolve</p>
-              <ul className="space-y-1">
+            <div className="pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+              <p className="text-[11px] font-semibold uppercase tracking-wide mb-2" style={{ color: 'rgba(255,255,255,0.28)' }}>Would resolve</p>
+              <ul className="space-y-1.5">
                 {resolution.slice(0, 1).map((r, i) => (
-                  <li key={i} className="flex items-start gap-2 text-[11px]" style={{ color: 'rgba(255,255,255,0.50)' }}>
-                    <div className="w-1 h-1 rounded-full mt-1 flex-shrink-0" style={{ background: 'rgba(160,180,220,0.45)' }} />
+                  <li key={i} className="flex items-start gap-2 text-[12px] leading-[1.5]" style={{ color: 'rgba(255,255,255,0.55)' }}>
+                    <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(160,180,220,0.45)' }} />
                     {r}
                   </li>
                 ))}
