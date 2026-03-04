@@ -277,12 +277,10 @@ const DivergenceCard = ({ item, index }) => {
       transition={{ delay: 0.06 * index, duration: 0.38, ease: HORIZON_EASE }}
     >
       <HoverCard
-        glowColor="rgba(180,120,255,0.16)"
-        subsurface="rgba(160,100,255,0.04)"
+        glowColor="rgba(255,255,255,0.06)"
+        subsurface="rgba(255,255,255,0.02)"
         style={{
           borderRadius: '22px',
-          background: 'linear-gradient(160deg, rgba(147,51,234,0.09) 0%, rgba(100,30,180,0.11) 55%, rgba(130,45,210,0.08) 100%)',
-          border: '1px solid rgba(180,120,255,0.16)',
           padding: '22px'
         }}
       >
