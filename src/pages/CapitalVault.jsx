@@ -113,7 +113,7 @@ export default function CapitalVault() {
   const isSearchActive = !!searchTerm;
 
   return (
-    <div className="relative min-h-screen" style={{ background: '#0B0E13' }}>
+    <div className="relative min-h-screen" style={{ background: '#0B0E13', fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter', sans-serif", WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale' }}>
       <StarfieldBackground />
 
       {/* Page ambient glow */}
@@ -137,7 +137,7 @@ export default function CapitalVault() {
               style={{ background: 'linear-gradient(135deg, rgba(30,36,56,0.90) 0%, rgba(18,22,38,0.95) 100%)', border: '1px solid rgba(100, 160, 255, 0.22)', boxShadow: '0 0 20px rgba(80, 130, 255, 0.12)' }}>
               <BookOpen className="w-5 h-5" style={{ color: 'rgba(100, 175, 255, 0.88)' }} strokeWidth={1.8} />
             </div>
-            <h1 className="text-4xl font-black tracking-[-0.04em]" style={{
+            <h1 className="text-4xl font-bold tracking-[-0.03em]" style={{
               background: 'linear-gradient(135deg, #F0F4FF 0%, #D0DCFF 40%, #A8BCFF 80%, #8AA4FF 100%)',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'
             }}>
@@ -147,7 +147,7 @@ export default function CapitalVault() {
               <LyraLogo className="w-9 h-9" />
             </div>
           </div>
-          <p className="text-[15px]" style={{ color: 'rgba(180, 190, 215, 0.60)' }}>
+          <p className="text-[15px]" style={{ color: 'rgba(180, 190, 215, 0.60)', letterSpacing: '-0.01em', fontWeight: 400 }}>
             Bloomberg-grade financial knowledge engine, powered by AI
           </p>
         </motion.div>
