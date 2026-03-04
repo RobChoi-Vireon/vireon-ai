@@ -366,50 +366,48 @@ const USGlobalCard = ({ item, index }) => {
       }} />
 
       <div className="grid grid-cols-2 relative z-10">
-        {/* US — subtle blue tint */}
-        <div className="p-5 space-y-3" style={{ background: 'rgba(94,167,255,0.03)' }}>
+        {/* US */}
+        <div className="p-4 space-y-2.5">
           <div className="flex items-center gap-1.5">
-            <TrendingUp className="w-3.5 h-3.5" style={{ color: 'rgba(94,167,255,0.82)', filter: 'drop-shadow(0 0 4px rgba(94,167,255,0.40))' }} strokeWidth={2} />
-            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: 'rgba(94,167,255,0.76)', letterSpacing: '0.06em' }}>US Tilt</span>
+            <TrendingUp className="w-3.5 h-3.5" style={{ color: 'rgba(140,165,220,0.75)' }} strokeWidth={2} />
+            <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(160,175,210,0.65)', letterSpacing: '0.06em' }}>US Tilt</span>
           </div>
-          <p className="text-[13px] font-semibold leading-snug" style={{ color: 'rgba(255,255,255,0.90)', letterSpacing: '-0.01em' }}>"{item.us_view}"</p>
+          <p className="text-[12px] font-semibold leading-snug" style={{ color: 'rgba(255,255,255,0.88)', letterSpacing: '-0.01em' }}>"{item.us_view}"</p>
           <div className="flex items-center justify-between">
-            <span className="text-[22px] font-bold" style={{ color: 'rgba(94,167,255,0.92)', letterSpacing: '-0.03em', lineHeight: 1 }}>{usPct}%</span>
+            <span className="text-[20px] font-bold" style={{ color: 'rgba(190,205,235,0.85)', letterSpacing: '-0.03em', lineHeight: 1 }}>{usPct}%</span>
             <MomentumTag pts={usMom} />
           </div>
-          <StrengthBar pct={usPct} color="rgba(94,167,255,0.72)" delay={0.1 + 0.06 * index} />
-          <MiniSparkline data={usSpark} color="rgba(94,167,255,0.80)" delay={0.4 + 0.06 * index} />
-          {usView && <p className="text-[11px] leading-relaxed pt-1" style={{ color: 'rgba(255,255,255,0.55)', fontStyle: 'italic' }}>View: "{usView}"</p>}
+          <StrengthBar pct={usPct} color="rgba(140,165,220,0.68)" delay={0.1 + 0.06 * index} />
+          <MiniSparkline data={usSpark} color="rgba(155,180,230,0.75)" delay={0.4 + 0.06 * index} />
           {usFlip && (
-            <div className="pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-              <p className="text-[10px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: 'rgba(255,255,255,0.26)', letterSpacing: '0.06em' }}>What flips it</p>
-              <div className="flex items-start gap-2 text-[11px]" style={{ color: 'rgba(255,255,255,0.58)' }}>
-                <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(94,167,255,0.55)' }} />
+            <div className="pt-1.5" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
+              <p className="text-[9px] font-semibold uppercase tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.22)', letterSpacing: '0.06em' }}>Flip trigger</p>
+              <div className="flex items-start gap-2 text-[10px]" style={{ color: 'rgba(255,255,255,0.50)' }}>
+                <div className="w-1 h-1 rounded-full mt-1 flex-shrink-0" style={{ background: 'rgba(155,180,230,0.50)' }} />
                 {usFlip}
               </div>
             </div>
           )}
         </div>
 
-        {/* Global — very subtle cool tint */}
-        <div className="p-5 space-y-3" style={{ background: 'rgba(150,190,255,0.025)', borderLeft: '1px solid rgba(255,255,255,0.05)' }}>
+        {/* Global */}
+        <div className="p-4 space-y-2.5" style={{ borderLeft: '1px solid rgba(255,255,255,0.04)' }}>
           <div className="flex items-center gap-1.5">
-            <Globe className="w-3.5 h-3.5" style={{ color: 'rgba(150,190,255,0.75)' }} strokeWidth={2} />
-            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: 'rgba(150,190,255,0.65)', letterSpacing: '0.06em' }}>Global Tilt</span>
+            <Globe className="w-3.5 h-3.5" style={{ color: 'rgba(130,155,195,0.65)' }} strokeWidth={2} />
+            <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(160,175,210,0.45)', letterSpacing: '0.06em' }}>Global</span>
           </div>
-          <p className="text-[13px] font-semibold leading-snug" style={{ color: 'rgba(255,255,255,0.78)', letterSpacing: '-0.01em' }}>"{item.global_view}"</p>
+          <p className="text-[12px] font-semibold leading-snug" style={{ color: 'rgba(255,255,255,0.75)', letterSpacing: '-0.01em' }}>"{item.global_view}"</p>
           <div className="flex items-center justify-between">
-            <span className="text-[22px] font-bold" style={{ color: 'rgba(150,190,255,0.78)', letterSpacing: '-0.03em', lineHeight: 1 }}>{glbPct}%</span>
+            <span className="text-[20px] font-bold" style={{ color: 'rgba(170,190,225,0.70)', letterSpacing: '-0.03em', lineHeight: 1 }}>{glbPct}%</span>
             <MomentumTag pts={glbMom} />
           </div>
-          <StrengthBar pct={glbPct} color="rgba(150,190,255,0.55)" delay={0.1 + 0.06 * index} />
-          <MiniSparkline data={glbSpark} color="rgba(150,190,255,0.72)" delay={0.4 + 0.06 * index} />
-          {glbView && <p className="text-[11px] leading-relaxed pt-1" style={{ color: 'rgba(255,255,255,0.48)', fontStyle: 'italic' }}>View: "{glbView}"</p>}
+          <StrengthBar pct={glbPct} color="rgba(130,155,195,0.38)" delay={0.1 + 0.06 * index} />
+          <MiniSparkline data={glbSpark} color="rgba(145,170,210,0.52)" delay={0.4 + 0.06 * index} />
           {glbFlip && (
-            <div className="pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-              <p className="text-[10px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: 'rgba(255,255,255,0.26)', letterSpacing: '0.06em' }}>What flips it</p>
-              <div className="flex items-start gap-2 text-[11px]" style={{ color: 'rgba(255,255,255,0.55)' }}>
-                <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(150,190,255,0.48)' }} />
+            <div className="pt-1.5" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
+              <p className="text-[9px] font-semibold uppercase tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.22)', letterSpacing: '0.06em' }}>Flip trigger</p>
+              <div className="flex items-start gap-2 text-[10px]" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                <div className="w-1 h-1 rounded-full mt-1 flex-shrink-0" style={{ background: 'rgba(145,170,210,0.40)' }} />
                 {glbFlip}
               </div>
             </div>
