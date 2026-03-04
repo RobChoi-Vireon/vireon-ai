@@ -869,21 +869,12 @@ export default function MacroSignalsPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
                     <div className="lg:col-span-5 min-h-[480px]">
                         <ConsensusMeter 
-                            score={sessionData?.global_signals?.consensus?.score ?? digest.consensus_score} 
-                            breakdown={sessionData?.global_signals
-                              ? {
-                                  segments: (sessionData.global_signals.consensus?.forces || []).map(f => ({
-                                    name: f.name,
-                                    weight: (f.weight || 0) / 100,
-                                    trend: f.trend,
-                                    insight: f.insight
-                                  }))
-                                }
-                              : digest.consensus_breakdown}
-                            sourcesCount={sessionData?.global_signals?.consensus?.sources_count}
-                            timestampDisplay={sessionData?.global_signals?.timestamp_display}
-                            confidenceLabel={sessionData?.global_signals?.consensus?.confidence_label}
-                            consensusLabel={sessionData?.global_signals?.consensus?.label}
+                            score={consensusScore}
+                            breakdown={consensusBreakdown}
+                            sourcesCount={sourcesCount}
+                            timestampDisplay={timestampDisplay}
+                            confidenceLabel={confidenceLabel}
+                            consensusLabel={consensusLabel}
                             onOpenDrawer={openConsensusDrawer}
                         />
                     </div>
