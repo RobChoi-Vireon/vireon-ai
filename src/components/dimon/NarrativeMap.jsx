@@ -736,13 +736,13 @@ export default function NarrativeMap({ synthesis, density }) {
                       transition: 'all 0.2s ease'
                     }}
                   />
-                  <span className="text-[13px] font-semibold whitespace-nowrap" style={{ color: isActive ? 'rgba(255,255,255,0.96)' : 'rgba(255,255,255,0.42)', letterSpacing: '-0.012em', transition: 'color 0.2s ease' }}>
+                  <span className="text-[13px] font-semibold whitespace-nowrap" style={{ color: isActive ? 'rgba(255,255,255,0.96)' : 'rgba(255,255,255,0.42)', transition: 'color 0.2s ease' }}>
                     {tab.label}
                   </span>
-                </div>
-                <span className="text-[10px] relative z-10" style={{ color: isActive ? 'rgba(255,255,255,0.38)' : 'rgba(255,255,255,0.20)', transition: 'color 0.2s ease' }}>
+                  </div>
+                  <span className="text-[11px] relative z-10 leading-[1.3]" style={{ color: isActive ? 'rgba(255,255,255,0.40)' : 'rgba(255,255,255,0.25)', transition: 'color 0.2s ease' }}>
                   {tab.sub}
-                </span>
+                  </span>
                 {/* Glowing underline — liquid light edge */}
                 {isActive && (
                   <motion.div
