@@ -43,36 +43,21 @@ const SubsurfaceGlow = ({ color = 'rgba(255,255,255,0.015)' }) => (
 
 const StrengthBar = ({ pct, color, delay = 0 }) => (
   <div style={{
-    height: '7px', borderRadius: '5px',
-    background: 'linear-gradient(180deg, rgba(0,0,0,0.22) 0%, rgba(255,255,255,0.05) 100%)',
+    height: '6px', borderRadius: '4px',
+    background: 'rgba(255,255,255,0.06)',
     overflow: 'hidden', width: '100%',
-    boxShadow: 'inset 0 1.5px 3px rgba(0,0,0,0.28), inset 0 -0.5px 0 rgba(255,255,255,0.06)',
     position: 'relative'
   }}>
     <motion.div
-      initial={{ width: 0, opacity: 0.6 }}
-      animate={{ width: `${pct}%`, opacity: 1 }}
-      transition={{ duration: 0.95, delay, ease: HORIZON_EASE }}
+      initial={{ width: 0 }}
+      animate={{ width: `${pct}%` }}
+      transition={{ duration: 0.9, delay, ease: HORIZON_EASE }}
       style={{
-        height: '100%', borderRadius: '5px',
-        background: `linear-gradient(90deg, ${color.replace(/[\d.]+\)$/, '0.55)')} 0%, ${color} 60%, ${color.replace(/[\d.]+\)$/, '0.72)')} 100%)`,
-        boxShadow: `0 0 12px ${color.replace(/[\d.]+\)$/, '0.50)')}, 0 0 4px ${color.replace(/[\d.]+\)$/, '0.30)')}`,
-        position: 'relative', overflow: 'hidden'
+        height: '100%', borderRadius: '4px',
+        background: color,
+        boxShadow: `0 0 8px ${color.replace(/[\d.]+\)$/, '0.35)')}`,
       }}
-    >
-      {/* Liquid-glass gloss — top half catch-light */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '45%', background: 'linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 100%)', borderRadius: '5px 5px 0 0' }} />
-      {/* Slow shimmer sweep */}
-      <motion.div
-        animate={{ x: ['-120%', '220%'] }}
-        transition={{ duration: 2.4, delay: delay + 1.0, repeat: Infinity, repeatDelay: 6, ease: 'easeInOut' }}
-        style={{
-          position: 'absolute', top: 0, bottom: 0, width: '35%',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent)',
-          borderRadius: '5px'
-        }}
-      />
-    </motion.div>
+    />
   </div>
 );
 
