@@ -880,8 +880,8 @@ export default function MacroSignalsPage() {
                     </div>
                     <div className="lg:col-span-7">
                         <DivergenceReport 
-                            divergences={sessionData?.global_signals?.divergence?.items || digest.synthesis?.divergences || []}
-                            fractureIntensity={sessionData?.global_signals?.divergence?.fracture_intensity}
+                            divergences={divergenceItems.length ? divergenceItems : (digest?.synthesis?.divergences || [])}
+                            fractureIntensity={fracture}
                             onOpenDrawer={setSelectedDivergence} 
                         />
                     </div>
