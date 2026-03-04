@@ -482,11 +482,10 @@ export default function InflationSection({ data }) {
           border: '1px solid rgba(255,255,255,0.08)',
           boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.08)',
           overflow: 'visible',
-          paddingTop: '10px',
           transform: 'translateZ(0)',
           backfaceVisibility: 'hidden',
           WebkitFontSmoothing: 'antialiased',
-          padding: '16px 20px'
+          padding: '20px 20px 16px 20px'
         }}
       >
         <div className="flex items-center gap-3 overflow-x-auto pb-2">
