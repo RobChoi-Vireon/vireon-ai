@@ -28,9 +28,12 @@ const POSITIONING_STATES = {
   }
 };
 
-export default function NarrativePulseCard({ summary = null, isEmpty = false }) {
+export default function NarrativePulseCard({ summary = null, isEmpty = false, positioningState = 'neutral' }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [hovered, setHovered] = useState(false);
+  const [positioningTooltipVisible, setPositioningTooltipVisible] = useState(false);
+
+  const positioningConfig = POSITIONING_STATES[positioningState] || POSITIONING_STATES.neutral;
 
   const placeholderText = "Markets show strong consensus around increasing regulatory pressure on large tech firms, while investors remain divided on emerging market credit stress and the global growth outlook.";
   const displayText = summary || placeholderText;
