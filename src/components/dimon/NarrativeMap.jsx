@@ -654,10 +654,10 @@ export default function NarrativeMap({ synthesis, density }) {
       {/* Header */}
       <div className="flex items-start justify-between mb-6 px-1">
         <div>
-          <h2 id="narrative-map-heading" className="text-[26px] font-bold" style={{ color: 'rgba(255,255,255,0.95)', letterSpacing: '-0.028em' }}>
+          <h2 id="narrative-map-heading" className="text-[24px] font-bold leading-[1.3]" style={{ color: 'rgba(255,255,255,0.96)' }}>
             Narrative Map
           </h2>
-          <p className="text-[12px] mt-1.5" style={{ color: 'rgba(255,255,255,0.36)' }}>
+          <p className="text-[13px] mt-2 leading-[1.5]" style={{ color: 'rgba(255,255,255,0.40)' }}>
             Connecting the macro dots.
           </p>
         </div>
