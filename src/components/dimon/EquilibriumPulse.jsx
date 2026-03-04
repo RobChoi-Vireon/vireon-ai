@@ -847,7 +847,7 @@ export default function EquilibriumPulse({
                       color: 'rgba(106, 199, 247, 0.85)',
                       marginBottom: '6px'
                     }}>
-                      Lyra Insight
+                      Ori Insight
                     </p>
                     <p style={{
                       fontSize: '13px',
