@@ -707,6 +707,16 @@ export default function DigestHeader({
               </h1>
             </motion.div>
 
+            {/* Market Bias Badge — inline with title context */}
+            <motion.div
+              className="mb-3"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isLoaded ? 1 : 0 }}
+              transition={{ duration: 0.22, delay: 0.22 }}
+            >
+              <MarketBiasBadge sentimentScore={sentimentScore} isLoaded={isLoaded} />
+            </motion.div>
+
             {/* OS Horizon V2 Tagline — Improved Contrast */}
             <motion.p
               className="text-sm italic"
