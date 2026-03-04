@@ -518,10 +518,12 @@ const ChangingCard = ({ item, index }) => {
 // ─── Premium empty state ──────────────────────────────────────────────────────
 
 const EmptyState = ({ label }) => (
-  <div className="relative flex flex-col items-center justify-center py-16 text-center rounded-[18px]" style={{
-    background: 'linear-gradient(180deg, rgba(255,255,255,0.032) 0%, rgba(255,255,255,0.018) 100%)',
-    border: '1px solid rgba(255,255,255,0.07)',
-    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)'
+  <div className="relative flex flex-col items-center justify-center py-16 text-center rounded-[20px]" style={{
+    background: 'linear-gradient(160deg, rgba(255,255,255,0.040) 0%, rgba(255,255,255,0.018) 55%, rgba(255,255,255,0.028) 100%)',
+    backdropFilter: 'blur(40px) saturate(160%)',
+    WebkitBackdropFilter: 'blur(40px) saturate(160%)',
+    border: '1px solid rgba(255,255,255,0.08)',
+    boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.10), 0 6px 24px rgba(0,0,0,0.16)'
   }}>
     <SpecularLine opacity={0.08} />
     {/* Pulsing system-active dot */}
