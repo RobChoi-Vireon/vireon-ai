@@ -842,6 +842,16 @@ export default function DigestHeader({
               </motion.div>
             </motion.div>
 
+            {/* Market Bias Badge */}
+            <motion.div
+              className="mt-1 mb-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isLoaded ? 1 : 0 }}
+              transition={{ duration: 0.22, delay: 1.4 }}
+            >
+              <MarketBiasBadge sentimentScore={sentimentScore} isLoaded={isLoaded} />
+            </motion.div>
+
             {/* Halo Spectrum Arc */}
             <motion.div
               className="relative pt-2 pb-2 w-full"
