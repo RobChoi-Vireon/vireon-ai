@@ -25,10 +25,24 @@ const GLASS = {
 };
 
 function getTypeTheme(type) {
-  switch (type) {
+  const t = (type || '').toUpperCase();
+  switch (t) {
+    case 'COVERAGE_GAP':
     case 'coverage_gap': return { Icon: Eye, label: 'Coverage Gap', color: '#FFB020', glow: 'rgba(255,176,32,0.15)' };
+    case 'ANGLE_DISAGREE':
     case 'angle_disagreement': return { Icon: GitMerge, label: 'Angle Disagree', color: '#B47FFF', glow: 'rgba(180,127,255,0.15)' };
+    case 'DATA_CONFLICT': return { Icon: AlertCircle, label: 'Data Conflict', color: '#F26A6A', glow: 'rgba(242,106,106,0.15)' };
+    case 'TIMING_MISMATCH': return { Icon: Database, label: 'Timing Mismatch', color: '#5EA7FF', glow: 'rgba(94,167,255,0.15)' };
     default: return { Icon: AlertCircle, label: 'Narrative Fracture', color: '#5EA7FF', glow: 'rgba(94,167,255,0.15)' };
+  }
+}
+
+function getSeverityTheme(severity) {
+  switch ((severity || '').toUpperCase()) {
+    case 'CRITICAL': return { label: 'Critical', color: '#F26A6A', glow: 'rgba(242,106,106,0.20)' };
+    case 'HIGH': return { label: 'Elevated', color: '#F26A6A', glow: 'rgba(242,106,106,0.20)' };
+    case 'MODERATE': return { label: 'Moderate', color: '#FFB020', glow: 'rgba(255,176,32,0.20)' };
+    default: return { label: 'Low', color: '#5EA7FF', glow: 'rgba(94,167,255,0.20)' };
   }
 }
 
