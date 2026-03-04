@@ -297,7 +297,7 @@ const DivergenceCard = ({ divergence, onClick, index }) => {
 };
 
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
-export default function DivergenceReport({ divergences = [], onOpenDrawer }) {
+export default function DivergenceReport({ divergences = [], fractureIntensity, onOpenDrawer }) {
   // ── Empty state ──
   if (!Array.isArray(divergences) || divergences.length === 0) {
     return (
@@ -363,7 +363,7 @@ export default function DivergenceReport({ divergences = [], onOpenDrawer }) {
             </p>
           </div>
         </div>
-        <FractureBar count={divergences.length} />
+        <FractureBar count={fractureIntensity ?? divergences.length} />
       </div>
 
       {/* Divider */}
