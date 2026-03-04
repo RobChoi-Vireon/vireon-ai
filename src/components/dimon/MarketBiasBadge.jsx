@@ -1,23 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 
 const BAR_COUNT = 12;
 
-export default function MarketBiasBadge({ sentimentScore = 50, isLoaded = true }) {
-  // sentimentScore: 0 = full bullish, 100 = full bearish
-  const isBullish = sentimentScore <= 35;
-  const isBearish = sentimentScore >= 65;
+// Map bar_color string to actual CSS color
+const BAR_COLOR_MAP = {
+  green: '#32C288',
+  yellow: '#FFB020',
+  red: '#F26A6A',
+  gray: 'rgba(255,255,255,0.45)',
+};
 
-  const label = isBullish ? 'Bullish Sentiment' : isBearish ? 'Bearish Sentiment' : 'Upbeat Sentiment';
-  const color = isBullish ? '#32C288' : isBearish ? '#F26A6A' : '#32C288';
+export default function MarketBiasBadge({
+  sentimentScore = 50,
+  isLoaded = true,
+  tone = null,
+  barLevel = null,
+  barColor = null,
+}) {
+  // Resolve bar color
+  const resolvedBarColor = BAR_COLOR_MAP[barColor] || '#32C288';
 
-  // How many bars are "active" (filled), based on score
-  // Bullish: more active bars. Bearish: fewer. Neutral: half.
-  const activeBars = isBullish
-    ? Math.round(BAR_COUNT * 0.75)
-    : isBearish
-    ? Math.round(BAR_COUNT * 0.35)
-    : Math.round(BAR_COUNT * 0.55);
+  // Resolve active bar count: use live barLevel (1-10 scaled to 12 bars), else derive from score
+  const activeBars = barLevel != null
+    ? Math.round((barLevel / 10) * BAR_COUNT)
+    : sentimentScore <= 35
+      ? Math.round(BAR_COUNT * 0.75)
+      : sentimentScore >= 65
+        ? Math.round(BAR_COUNT * 0.35)
+        : Math.round(BAR_COUNT * 0.55);
+
+  // Resolve label: use live tone, else derive from score
+  const label = tone || (
+    sentimentScore <= 35 ? 'Bullish Sentiment' :
+    sentimentScore >= 65 ? 'Bearish Sentiment' :
+    'Upbeat Sentiment'
+  );
 
   // Heights: vary slightly for a natural waveform look
   const barHeights = [10, 14, 18, 16, 20, 18, 14, 16, 12, 16, 14, 10];
@@ -47,9 +65,9 @@ export default function MarketBiasBadge({ sentimentScore = 50, isLoaded = true }
                 width: '3px',
                 height: `${h}px`,
                 borderRadius: '2px',
-                background: active ? color : 'rgba(255,255,255,0.25)',
+                background: active ? resolvedBarColor : 'rgba(255,255,255,0.25)',
                 transformOrigin: 'bottom',
-                boxShadow: active ? `0 0 4px ${color}60` : 'none'
+                boxShadow: active ? `0 0 4px ${resolvedBarColor}60` : 'none'
               }}
             />
           );
