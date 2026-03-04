@@ -285,10 +285,10 @@ const DivergenceCard = ({ item, index }) => {
             }} />
 
             {/* Dominant */}
-            <div className="space-y-2 pr-4">
-              <p className="text-[9px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(160,175,210,0.60)', letterSpacing: '0.06em' }}>Dominant</p>
-              <p className="text-[12px] font-bold leading-snug" style={{ color: 'rgba(255,255,255,0.92)', letterSpacing: '-0.01em' }}>{item.topic}</p>
-              <span className="text-[18px] font-bold block" style={{ color: 'rgba(190,205,235,0.88)', letterSpacing: '-0.03em', lineHeight: 1 }}>{domPct}%</span>
+            <div className="space-y-2.5 pr-4">
+              <p className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: 'rgba(160,175,210,0.55)' }}>Dominant</p>
+              <p className="text-[12px] font-bold leading-[1.5]" style={{ color: 'rgba(255,255,255,0.94)' }}>{item.topic}</p>
+              <span className="text-[18px] font-bold block" style={{ color: 'rgba(190,205,235,0.90)', lineHeight: 1.2 }}>{domPct}%</span>
               <StrengthBar pct={domPct} color="rgba(140,165,220,0.68)" delay={0.1 + 0.06 * index} />
               <div className="flex items-center gap-1.5 flex-wrap">
                 <MiniSparkline data={domSpark} color="rgba(155,180,230,0.75)" delay={0.45 + 0.06 * index} />
