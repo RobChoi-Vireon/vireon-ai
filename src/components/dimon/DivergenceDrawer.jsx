@@ -153,10 +153,24 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
 
   const theme = getDivergenceTheme(divergence.type);
   const { Icon } = theme;
-  const details = getDivergenceDetails(divergence);
-  const presentIn = divergence.present_in || [];
-  const missingIn = divergence.missing_in || [];
-  const confidence = Math.round((divergence.confidence || 0.6) * 100);
+
+  // Support both live data shape and old shape
+  const hasLiveData = divergence?.morning_takeaway !== undefined || divergence?.ai_rationale !== undefined;
+  const details = hasLiveData
+    ? {
+        morning_takeaway: divergence.morning_takeaway || '',
+        rationale_bullets: divergence.ai_rationale || [],
+        forward_outlook: divergence.forward_outlook || ''
+      }
+    : getDivergenceDetails(divergence);
+
+  const presentIn = divergence.sources_present || divergence.present_in || [];
+  const missingIn = divergence.sources_missing || divergence.missing_in || [];
+  // confidence: live = integer 0-100, old = float 0-1
+  const rawConf = divergence.confidence || 0;
+  const confidence = hasLiveData ? rawConf : Math.round(rawConf * 100);
+  // topic/headline display
+  const displayTitle = divergence.headline || divergence.topic || 'Divergence Analysis';
 
   return (
     <AnimatePresence>
@@ -255,7 +269,7 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                     fontSize: '12.5px', color: 'rgba(255,255,255,0.48)', lineHeight: 1.4,
                     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
                   }}>
-                    {divergence.topic}
+                    {displayTitle}
                   </p>
                 </div>
               </div>
