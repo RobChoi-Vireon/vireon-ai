@@ -848,7 +848,7 @@ export default function NarrativeMap({ synthesis, density }) {
 
       {/* OS Horizon V4 Container with atmospheric background */}
       <div 
-        className="relative flex items-start justify-around p-10 rounded-[28px] overflow-hidden"
+        className="relative flex items-start justify-around p-10 rounded-[28px]"
         style={{ 
           background: 'linear-gradient(180deg, rgba(12, 15, 25, 0.42) 0%, rgba(21, 27, 45, 0.48) 100%)',
           backdropFilter: 'blur(32px) saturate(165%)',
