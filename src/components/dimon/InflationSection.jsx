@@ -481,7 +481,7 @@ export default function InflationSection({ data }) {
           WebkitBackdropFilter: 'blur(40px) saturate(165%)',
           border: '1px solid rgba(255,255,255,0.08)',
           boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.08)',
-          overflow: 'hidden',
+          overflow: 'visible',
           transform: 'translateZ(0)',
           backfaceVisibility: 'hidden',
           WebkitFontSmoothing: 'antialiased',
