@@ -264,7 +264,7 @@ const LivingAlignmentOrb = ({ score, delay }) => {
 // ============================================================================
 // NARRATIVE CAPSULE (Apple-Grade Optical Centering)
 // ============================================================================
-const InsightRevealPanel = ({ segments, delay }) => {
+const InsightRevealPanel = ({ segments, delay, summary }) => {
   return (
     <motion.div
       className="relative rounded-[28px] overflow-hidden mx-auto"
@@ -902,7 +902,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail, summ
             </motion.p>
 
             {/* Insight Reveal Panel */}
-            <InsightRevealPanel segments={segments} delay={0.78} />
+            <InsightRevealPanel segments={segments} delay={0.78} summary={summary} />
 
             {/* Macro Forces Grid */}
             <MacroForceGrid segments={segments} delay={0.88} onOpenDetail={onOpenDetail} />
