@@ -47,8 +47,8 @@ export default function SearchResultCard({ data, viewMode, onTermClick }) {
             <BookOpen className="w-5 h-5" style={{ color: 'rgba(100, 175, 255, 0.88)' }} strokeWidth={1.8} />
           </div>
           <div className="flex-1 min-w-0">
-            <h2 className="text-2xl font-black mb-1" style={{
-              color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.02em',
+            <h2 className="text-2xl font-bold mb-1" style={{
+              color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.025em',
               background: 'linear-gradient(135deg, #F0F4FF 0%, #C8D8FF 60%, #A8B8FF 100%)',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'
             }}>

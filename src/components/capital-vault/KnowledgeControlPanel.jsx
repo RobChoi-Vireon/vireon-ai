@@ -26,7 +26,7 @@ export default function KnowledgeControlPanel({ viewMode, setViewMode, onSearch 
     <div className="space-y-4 sticky top-8">
       {/* Header */}
       <div>
-        <h3 className="text-base font-bold mb-0.5" style={{ color: 'rgba(255,255,255,0.88)', letterSpacing: '-0.005em' }}>
+        <h3 className="text-base font-semibold mb-0.5" style={{ color: 'rgba(255,255,255,0.88)', letterSpacing: '-0.015em' }}>
           Knowledge Controls
         </h3>
         <p className="text-[12px]" style={{ color: 'rgba(160,170,190,0.55)' }}>Adjust how concepts are explained</p>
@@ -71,7 +71,7 @@ export default function KnowledgeControlPanel({ viewMode, setViewMode, onSearch 
                   <Icon className="w-3.5 h-3.5" style={{ color: isActive ? mode.accent : 'rgba(160,170,195,0.60)', strokeWidth: 1.8 }} />
                 </div>
                 <div>
-                  <p className="text-[13px] font-semibold" style={{ color: isActive ? 'rgba(255,255,255,0.95)' : 'rgba(200,210,230,0.72)' }}>
+                  <p className="text-[13px] font-medium" style={{ color: isActive ? 'rgba(255,255,255,0.95)' : 'rgba(200,210,230,0.72)', letterSpacing: '-0.01em' }}>
                     {mode.label}
                   </p>
                   <p className="text-[11px]" style={{ color: 'rgba(155,165,185,0.52)' }}>{mode.sub}</p>
