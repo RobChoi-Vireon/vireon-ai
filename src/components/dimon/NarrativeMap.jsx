@@ -617,72 +617,36 @@ export default function NarrativeMap({ synthesis, density }) {
         {/* Subtle top edge catch */}
         <div style={{ position: 'absolute', top: 0, left: '8%', right: '8%', height: '1px', background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 40%, rgba(255,255,255,0.08) 60%, transparent 100%)', pointerEvents: 'none', zIndex: 3 }} />
 
-        {/* Tab bar — liquid-glass signal mode switcher */}
-        <div className="relative flex px-4 pt-4 pb-0 gap-0.5 overflow-x-auto z-10" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+        {/* Tab bar */}
+        <div className="relative flex px-4 pt-3 pb-0 gap-1 overflow-x-auto z-10" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
           {TABS.map(tab => {
             const isActive = activeTab === tab.id;
             return (
               <motion.button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                whileHover={!isActive ? { background: 'rgba(255,255,255,0.04)' } : {}}
-                whileTap={{ scale: 0.98 }}
-                transition={{ duration: 0.15 }}
-                className="relative flex flex-col items-start pb-3.5 pt-3 px-4 flex-shrink-0"
+                whileTap={{ scale: 0.97 }}
+                transition={{ duration: 0.13 }}
+                className="relative flex items-center gap-2 pb-3 pt-2.5 px-3.5 flex-shrink-0"
                 style={{
-                  borderRadius: '14px 14px 0 0',
-                  background: isActive
-                    ? 'linear-gradient(180deg, rgba(255,255,255,0.082) 0%, rgba(255,255,255,0.040) 100%)'
-                    : 'transparent',
-                  border: isActive ? '1px solid rgba(255,255,255,0.10)' : '1px solid transparent',
-                  borderBottom: '1px solid transparent',
-                  minWidth: '88px',
+                  borderRadius: '0',
+                  background: 'transparent',
+                  border: 'none',
+                  borderBottom: isActive ? `2px solid ${tab.color}` : '2px solid transparent',
                   cursor: 'pointer',
-                  boxShadow: isActive
-                    ? 'inset 0 1px 0 rgba(255,255,255,0.12), inset 1px 0 0 rgba(255,255,255,0.05), inset -1px 0 0 rgba(255,255,255,0.04)'
-                    : 'none',
                 }}
               >
-                {/* Active: subsurface glow behind label */}
-                {isActive && (
-                  <div style={{
-                    position: 'absolute', inset: 0, borderRadius: '14px 14px 0 0',
-                    background: `radial-gradient(ellipse at 50% -20%, ${tab.glow} 0%, transparent 65%)`,
-                    pointerEvents: 'none'
-                  }} />
-                )}
-                <div className="flex items-center gap-1.5 mb-0.5 relative z-10">
-                  <tab.Icon
-                    className="w-3.5 h-3.5 flex-shrink-0"
-                    style={{
-                      color: isActive ? tab.color : 'rgba(255,255,255,0.30)',
-                      filter: isActive ? `drop-shadow(0 0 6px ${tab.glow}) brightness(1.1)` : 'none',
-                      strokeWidth: isActive ? 2.2 : 1.8,
-                      transition: 'all 0.2s ease'
-                    }}
-                  />
-                  <span className="text-[13px] font-semibold whitespace-nowrap" style={{ color: isActive ? 'rgba(255,255,255,0.96)' : 'rgba(255,255,255,0.42)', letterSpacing: '-0.012em', transition: 'color 0.2s ease' }}>
-                    {tab.label}
-                  </span>
-                </div>
-                <span className="text-[10px] relative z-10" style={{ color: isActive ? 'rgba(255,255,255,0.38)' : 'rgba(255,255,255,0.20)', transition: 'color 0.2s ease' }}>
-                  {tab.sub}
+                <tab.Icon
+                  className="w-3.5 h-3.5 flex-shrink-0"
+                  style={{
+                    color: isActive ? tab.color : 'rgba(255,255,255,0.28)',
+                    strokeWidth: 2,
+                    transition: 'color 0.15s ease'
+                  }}
+                />
+                <span className="text-[13px] font-semibold whitespace-nowrap" style={{ color: isActive ? 'rgba(255,255,255,0.94)' : 'rgba(255,255,255,0.36)', letterSpacing: '-0.01em', transition: 'color 0.15s ease' }}>
+                  {tab.label}
                 </span>
-                {/* Glowing underline — liquid light edge */}
-                {isActive && (
-                  <motion.div
-                    layoutId="tab-indicator"
-                    className="absolute bottom-0 left-2 right-2"
-                    style={{ height: '2px', borderRadius: '2px 2px 0 0' }}
-                    transition={{ type: 'spring', stiffness: 380, damping: 36 }}
-                  >
-                    <div style={{
-                      width: '100%', height: '100%', borderRadius: '2px 2px 0 0',
-                      background: `linear-gradient(90deg, transparent 0%, ${tab.color} 30%, ${tab.color} 70%, transparent 100%)`,
-                      boxShadow: `0 0 10px ${tab.glow}, 0 0 4px ${tab.color}`
-                    }} />
-                  </motion.div>
-                )}
               </motion.button>
             );
           })}
