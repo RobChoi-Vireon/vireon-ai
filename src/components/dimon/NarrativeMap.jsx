@@ -3,24 +3,42 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, GitCommit, Globe, TrendingUp, TrendingDown, Minus, Zap, Info, Clock } from 'lucide-react';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
-const SMOOTH = { duration: 0.30, ease: [0.22, 0.61, 0.36, 1] };
+const SPRING = { type: 'spring', stiffness: 340, damping: 38, mass: 0.9 };
+const SMOOTH = { duration: 0.28, ease: [0.22, 0.61, 0.36, 1] };
 
 // ─── Shared design tokens ────────────────────────────────────────────────────
 
-// Inner card glass surface — layered depth
+// macOS Tahoe liquid-glass card surface — multi-layer refraction
 const GLASS_CARD = {
-  background: 'linear-gradient(180deg, rgba(255,255,255,0.058) 0%, rgba(255,255,255,0.030) 100%)',
-  backdropFilter: 'blur(48px) saturate(172%)',
-  WebkitBackdropFilter: 'blur(48px) saturate(172%)',
-  border: '1px solid rgba(255,255,255,0.10)',
-  boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.10), 0 8px 32px rgba(0,0,0,0.18)',
+  background: 'linear-gradient(160deg, rgba(255,255,255,0.072) 0%, rgba(255,255,255,0.034) 55%, rgba(255,255,255,0.048) 100%)',
+  backdropFilter: 'blur(56px) saturate(180%) brightness(1.06)',
+  WebkitBackdropFilter: 'blur(56px) saturate(180%) brightness(1.06)',
+  border: '1px solid rgba(255,255,255,0.12)',
+  boxShadow: [
+    'inset 0 1.5px 0 rgba(255,255,255,0.14)',      // top specular
+    'inset 0 -1px 0 rgba(0,0,0,0.12)',              // bottom absorption
+    'inset 1px 0 0 rgba(255,255,255,0.06)',          // left edge catch
+    '0 1px 0 rgba(255,255,255,0.04)',               // outer base-lift
+    '0 10px 40px rgba(0,0,0,0.22)',                 // depth shadow
+    '0 2px 8px rgba(0,0,0,0.14)',                   // near shadow
+  ].join(', ')
 };
 
-const SpecularLine = ({ opacity = 0.14 }) => (
+// Crisp single specular highlight band (macOS-style top-light)
+const SpecularLine = ({ opacity = 0.16 }) => (
   <div style={{
-    position: 'absolute', top: 0, left: '10%', right: '10%', height: '1.5px',
-    background: `linear-gradient(90deg, transparent, rgba(255,255,255,${opacity}), transparent)`,
-    pointerEvents: 'none', zIndex: 1, borderRadius: '1px'
+    position: 'absolute', top: 0, left: '8%', right: '8%', height: '1px',
+    background: `linear-gradient(90deg, transparent 0%, rgba(255,255,255,${opacity}) 35%, rgba(255,255,255,${(opacity * 1.3).toFixed(2)}) 50%, rgba(255,255,255,${opacity}) 65%, transparent 100%)`,
+    pointerEvents: 'none', zIndex: 2
+  }} />
+);
+
+// Subsurface scatter (inner glow — simulates frosted glass light diffusion)
+const SubsurfaceGlow = ({ color = 'rgba(255,255,255,0.03)' }) => (
+  <div style={{
+    position: 'absolute', inset: 0,
+    background: `radial-gradient(ellipse at 50% 0%, ${color} 0%, transparent 65%)`,
+    pointerEvents: 'none', zIndex: 0, borderRadius: 'inherit'
   }} />
 );
 
