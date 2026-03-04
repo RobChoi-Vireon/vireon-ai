@@ -676,7 +676,7 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
                     marginBottom: '0'
                   }}
                 >
-                  {config.insight}
+                  {liveInsight}
                 </p>
               </div>
 
@@ -684,8 +684,8 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
               <div 
                 className="inline-flex items-center gap-1.5 rounded-md flex-shrink-0"
                 style={{
-                  background: `${config.statusColor}14`,
-                  border: `1px solid ${config.statusColor}24`,
+                  background: `${statusColor}14`,
+                  border: `1px solid ${statusColor}24`,
                   paddingLeft: '8px',
                   paddingRight: '8px',
                   paddingTop: '4px',
@@ -693,18 +693,18 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
                   borderRadius: '9px'
                 }}
               >
-                <StatusIcon className="w-3 h-3" style={{ color: config.statusColor }} strokeWidth={2.5} />
+                <StatusIcon className="w-3 h-3" style={{ color: statusColor }} strokeWidth={2.5} />
                 <span 
                   className="uppercase whitespace-nowrap" 
                   style={{ 
                     fontSize: '9px',
-                    color: config.statusColor,
+                    color: statusColor,
                     letterSpacing: '0.04em',
                     fontWeight: 500,
                     opacity: 0.78
                   }}
                 >
-                  {config.status}
+                  {liveTrend}
                 </span>
               </div>
             </motion.button>
