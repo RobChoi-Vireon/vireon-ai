@@ -445,36 +445,36 @@ const NarrativeShiftCard = ({ item, index }) => {
       transition={{ delay: 0.05 * index, duration: 0.36, ease: HORIZON_EASE }}
     >
       <HoverCard glowColor="rgba(255,255,255,0.04)" subsurface="rgba(255,255,255,0.015)" style={{ borderRadius: '20px', padding: '18px' }}>
-        <div className="relative z-10 space-y-3">
+        <div className="relative z-10 space-y-2.5">
           {/* Narrative title + shift pill */}
           <div className="flex items-start justify-between gap-3">
-            <p className="text-[13px] font-semibold leading-snug flex-1" style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.015em' }}>
+            <p className="text-[13px] font-semibold leading-[1.5] flex-1" style={{ color: 'rgba(255,255,255,0.95)' }}>
               {item.title || item.narrative}
             </p>
-            <span className="text-[13px] font-bold px-2.5 py-1.5 rounded-full flex-shrink-0" style={{ background: shiftBg, color: shiftColor, letterSpacing: '-0.01em' }}>
+            <span className="text-[12px] font-bold px-2.5 py-1.5 rounded-full flex-shrink-0" style={{ background: shiftBg, color: shiftColor }}>
               {isRising ? '+' : ''}{shift} pts
             </span>
           </div>
 
           {/* Meta chips: Momentum + Confidence */}
           <div className="flex gap-2 flex-wrap">
-            <span className="text-[10px] font-medium px-2 py-1 rounded-full" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.60)' }}>
-              Momentum: <span style={{ color: 'rgba(255,255,255,0.85)' }}>{momentum}</span>
+            <span className="text-[11px] font-medium px-2 py-1 rounded-full" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.65)' }}>
+              Momentum: <span style={{ color: 'rgba(255,255,255,0.88)' }}>{momentum}</span>
             </span>
-            <span className="text-[10px] font-medium px-2 py-1 rounded-full" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: confColor }}>
+            <span className="text-[11px] font-medium px-2 py-1 rounded-full" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: confColor }}>
               Confidence: <span style={{ color: confColor }}>{confidence}</span>
             </span>
           </div>
 
           {/* Trend sparkline */}
           <div>
-            <p className="text-[9px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: 'rgba(255,255,255,0.26)', letterSpacing: '0.07em' }}>7-day trend</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wide mb-2" style={{ color: 'rgba(255,255,255,0.33)' }}>7-day trend</p>
             <MiniSparkline data={sparkData} color={shiftColor} delay={0.25 + 0.05 * index} />
           </div>
 
           {/* Interpretation */}
           {interpretation && (
-            <p className="text-[11px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)' }}>
+            <p className="text-[12px] leading-[1.5]" style={{ color: 'rgba(255,255,255,0.68)' }}>
               {interpretation}
             </p>
           )}
