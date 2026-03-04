@@ -13,6 +13,7 @@ import LyraChatbot from "./components/core/LyraChatbot";
 import UserMenu from "./components/core/UserMenu";
 import OnboardingModal from "./components/core/OnboardingModal";
 import UtilityTrayPill from "./components/core/UtilityTrayPill";
+import MarketStatusBadge from "./components/core/MarketStatusBadge";
 import HorizonWelcomeOverlay from "./components/core/HorizonWelcomeOverlay";
 import { motion, AnimatePresence } from 'framer-motion';
 import NetworkErrorBoundary from "./components/core/NetworkErrorBoundary";
