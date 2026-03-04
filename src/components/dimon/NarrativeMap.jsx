@@ -290,7 +290,7 @@ const DivergenceCard = ({ item, index }) => {
             {/* Vertical glow divider */}
             <div style={{
               position: 'absolute', top: '8px', bottom: '8px', left: '50%', width: '1px',
-              background: 'linear-gradient(180deg, transparent, rgba(180,120,255,0.25), rgba(180,120,255,0.15), transparent)',
+              background: 'linear-gradient(180deg, transparent, rgba(255,255,255,0.10), rgba(255,255,255,0.07), transparent)',
               transform: 'translateX(-50%)', pointerEvents: 'none'
             }} />
 
