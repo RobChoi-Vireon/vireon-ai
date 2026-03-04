@@ -650,9 +650,7 @@ export default function NarrativeMap({ synthesis, density }) {
           ? <div className="space-y-4">{us_global_split.slice(0, 4).map((item, i) => <USGlobalCard key={i} item={item} index={i} />)}</div>
           : <EmptyState label="US vs Global" />;
       case 'changing':
-        return changingItems.length > 0
-          ? <div className="space-y-4">{changingItems.map((item, i) => <ChangingCard key={i} item={item} index={i} />)}</div>
-          : <EmptyState label="changing narrative" />;
+        return <ChangingTabContent />;
       default:
         return null;
     }
