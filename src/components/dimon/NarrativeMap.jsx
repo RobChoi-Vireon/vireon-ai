@@ -370,11 +370,11 @@ const USGlobalCard = ({ item, index }) => {
         <div className="p-4 space-y-2.5">
           <div className="flex items-center gap-1.5">
             <TrendingUp className="w-3.5 h-3.5" style={{ color: 'rgba(140,165,220,0.75)' }} strokeWidth={2} />
-            <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(160,175,210,0.65)', letterSpacing: '0.06em' }}>US Tilt</span>
+            <span className="text-[11px] font-bold uppercase tracking-wide" style={{ color: 'rgba(160,175,210,0.55)' }}>US Tilt</span>
           </div>
-          <p className="text-[12px] font-semibold leading-snug" style={{ color: 'rgba(255,255,255,0.88)', letterSpacing: '-0.01em' }}>"{item.us_view}"</p>
+          <p className="text-[12px] font-semibold leading-[1.5]" style={{ color: 'rgba(255,255,255,0.90)' }}>"{item.us_view}"</p>
           <div className="flex items-center justify-between">
-            <span className="text-[20px] font-bold" style={{ color: 'rgba(190,205,235,0.85)', letterSpacing: '-0.03em', lineHeight: 1 }}>{usPct}%</span>
+            <span className="text-[18px] font-bold" style={{ color: 'rgba(190,205,235,0.88)', lineHeight: 1.2 }}>{usPct}%</span>
             <MomentumTag pts={usMom} />
           </div>
           <StrengthBar pct={usPct} color="rgba(140,165,220,0.68)" delay={0.1 + 0.06 * index} />
