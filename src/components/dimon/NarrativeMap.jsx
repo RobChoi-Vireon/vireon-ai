@@ -430,83 +430,66 @@ const USGlobalCard = ({ item, index }) => {
   );
 };
 
-// ─── ChangingCard ─────────────────────────────────────────────────────────────
+// ─── NarrativeShiftCard (premium OS Horizon for Changing tab) ──────────────────
 
-const ChangingCard = ({ item, index }) => {
-  const pts = item.momentum_pts ?? item.momentum ?? 0;
-  const rising = (typeof pts === 'number' ? pts : parseFloat(pts) || 0) >= 0;
-  const accentColor = rising ? 'rgba(255,190,80,0.88)' : 'rgba(255,106,122,0.88)';
-  const bgColor = rising ? 'rgba(255,190,80,0.07)' : 'rgba(255,106,122,0.07)';
-  const borderColor = rising ? 'rgba(255,190,80,0.16)' : 'rgba(255,106,122,0.16)';
-  const whyChanged = item.why_changed || item.drivers || [];
-  const watchNext = item.watch_next || item.what_to_watch || null;
-  const sources = item.sources_count ?? item.sources ?? 0;
-  const sparkData = item.sparkline || (rising ? [40, 44, 48, 52, 57, 62, 67] : [67, 62, 57, 52, 48, 44, 40]);
+const NarrativeShiftCard = ({ item, index }) => {
+  const shift = item.shift_pts ?? item.momentum_pts ?? 0;
+  const isRising = shift >= 0;
+  const shiftColor = isRising ? 'rgba(88,227,164,0.88)' : 'rgba(255,106,122,0.88)';
+  const shiftBg = isRising ? 'rgba(88,227,164,0.12)' : 'rgba(255,106,122,0.12)';
+  const momentum = item.momentum || 'Stable';
+  const confidence = item.confidence || 'Moderate';
+  const interpretation = item.interpretation || '';
+  const sparkData = item.sparkline || (isRising ? [45, 48, 50, 52, 54, 57, 60] : [60, 57, 54, 52, 50, 48, 45]);
+
+  // Confidence color mapping
+  const confidenceMap = {
+    'High': 'rgba(88,227,164,0.70)',
+    'Moderate': 'rgba(255,190,80,0.70)',
+    'Low': 'rgba(255,106,122,0.70)'
+  };
+  const confColor = confidenceMap[confidence] || confidenceMap['Moderate'];
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.06 * index, duration: 0.38, ease: HORIZON_EASE }}
+      transition={{ delay: 0.05 * index, duration: 0.36, ease: HORIZON_EASE }}
     >
-      <HoverCard
-        glowColor={rising ? 'rgba(255,190,80,0.14)' : 'rgba(255,106,122,0.14)'}
-        subsurface={rising ? 'rgba(255,190,80,0.03)' : 'rgba(255,106,122,0.03)'}
-        style={{
-          borderRadius: '22px',
-          background: `linear-gradient(160deg, ${bgColor} 0%, rgba(255,255,255,0.022) 55%, ${bgColor.replace(/[\d.]+\)$/, '0.04)')} 100%)`,
-          border: `1px solid ${borderColor}`,
-          padding: '22px'
-        }}
-      >
-        <div className="relative z-10 space-y-3.5">
+      <HoverCard glowColor="rgba(255,255,255,0.04)" subsurface="rgba(255,255,255,0.015)" style={{ borderRadius: '20px', padding: '18px' }}>
+        <div className="relative z-10 space-y-3">
+          {/* Narrative title + shift pill */}
           <div className="flex items-start justify-between gap-3">
-            <p className="text-[14px] font-semibold leading-snug flex-1" style={{ color: 'rgba(255,255,255,0.94)', letterSpacing: '-0.015em' }}>
-              {item.claim || item.title || item.narrative}
+            <p className="text-[13px] font-semibold leading-snug flex-1" style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.015em' }}>
+              {item.title || item.narrative}
             </p>
-            <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-              <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: bgColor, border: `1px solid ${borderColor}`, color: accentColor }}>
-                {rising ? '↑ Rising' : '↓ Falling'}
-              </span>
-              <MomentumTag pts={pts} />
-            </div>
+            <span className="text-[13px] font-bold px-2.5 py-1.5 rounded-full flex-shrink-0" style={{ background: shiftBg, color: shiftColor, letterSpacing: '-0.01em' }}>
+              {isRising ? '+' : ''}{shift} pts
+            </span>
           </div>
-          <MiniSparkline data={sparkData} color={accentColor} delay={0.3 + 0.06 * index} />
-          {whyChanged.length > 0 && (
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.30)', letterSpacing: '0.07em' }}>Why it changed</p>
-              <ul className="space-y-1.5">
-                {(Array.isArray(whyChanged) ? whyChanged : [whyChanged]).slice(0, 2).map((w, i) => (
-                  <li key={i} className="flex items-start gap-2 text-[12px]" style={{ color: 'rgba(255,255,255,0.68)' }}>
-                    <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: accentColor }} />
-                    {w}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {watchNext && (
-            <div className="pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-              <p className="text-[10px] font-semibold uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.26)', letterSpacing: '0.07em' }}>What to watch next</p>
-              <div className="flex items-start gap-2 text-[12px]" style={{ color: 'rgba(255,255,255,0.60)' }}>
-                <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(255,255,255,0.32)' }} />
-                {watchNext}
-              </div>
-            </div>
-          )}
-          <div className="flex items-center gap-2 pt-1">
-            {sources > 0 && (
-              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.38)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                {sources} sources
-              </span>
-            )}
-            {item.updated && (
-              <span className="text-[10px] flex items-center gap-1" style={{ color: 'rgba(255,255,255,0.26)' }}>
-                <Clock className="w-3 h-3" />
-                {item.updated}
-              </span>
-            )}
+
+          {/* Meta chips: Momentum + Confidence */}
+          <div className="flex gap-2 flex-wrap">
+            <span className="text-[10px] font-medium px-2 py-1 rounded-full" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.60)' }}>
+              Momentum: <span style={{ color: 'rgba(255,255,255,0.85)' }}>{momentum}</span>
+            </span>
+            <span className="text-[10px] font-medium px-2 py-1 rounded-full" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: confColor }}>
+              Confidence: <span style={{ color: confColor }}>{confidence}</span>
+            </span>
           </div>
+
+          {/* Trend sparkline */}
+          <div>
+            <p className="text-[9px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: 'rgba(255,255,255,0.26)', letterSpacing: '0.07em' }}>7-day trend</p>
+            <MiniSparkline data={sparkData} color={shiftColor} delay={0.25 + 0.05 * index} />
+          </div>
+
+          {/* Interpretation */}
+          {interpretation && (
+            <p className="text-[11px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)' }}>
+              {interpretation}
+            </p>
+          )}
         </div>
       </HoverCard>
     </motion.div>
