@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Globe, Zap, CheckCircle, GitCommit, Info } from 'lucide-react';
 
