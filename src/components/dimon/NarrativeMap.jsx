@@ -670,6 +670,9 @@ export default function NarrativeMap({ synthesis, density }) {
         </div>
       </div>
 
+      {/* Narrative State Indicator */}
+      <NarrativeStateCard narrativeState="debated_regime" narrativeStateExplainer={null} />
+
       {/* Narrative Pulse Summary */}
       <NarrativePulseCard summary={null} isEmpty={false} positioningState="neutral" />
 
