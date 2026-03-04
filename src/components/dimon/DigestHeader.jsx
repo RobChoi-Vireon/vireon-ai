@@ -1278,6 +1278,26 @@ export default function DigestHeader({
                       {sentimentLabel}
                     </span>
                   </motion.div>
+
+                  {/* Market Status */}
+                  {marketStatusLabel && (
+                    <motion.div
+                      className="flex items-center justify-center gap-1.5 mt-3"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: isLoaded ? 1 : 0 }}
+                      transition={{ duration: 0.28, delay: 1.4 }}
+                    >
+                      <div style={{
+                        width: '6px', height: '6px', borderRadius: '50%',
+                        background: marketIsOpen ? '#32C288' : 'rgba(255,255,255,0.35)',
+                        boxShadow: marketIsOpen ? '0 0 6px rgba(50,194,136,0.6)' : 'none',
+                        flexShrink: 0
+                      }} />
+                      <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.52)', fontWeight: 500 }}>
+                        {marketStatusLabel}
+                      </span>
+                    </motion.div>
+                  )}
                 </div>
               </div>
             </motion.div>
