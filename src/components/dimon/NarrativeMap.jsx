@@ -634,33 +634,37 @@ export default function NarrativeMap({ synthesis, density }) {
         {/* Bottom edge absorption */}
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '40px', background: 'linear-gradient(0deg, rgba(0,0,0,0.12) 0%, transparent 100%)', pointerEvents: 'none', zIndex: 0 }} />
 
-        {/* Tab bar */}
-        <div className="relative flex px-4 pt-4 pb-0 gap-1 overflow-x-auto z-10" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+        {/* Tab bar — liquid-glass signal mode switcher */}
+        <div className="relative flex px-4 pt-4 pb-0 gap-0.5 overflow-x-auto z-10" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
           {TABS.map(tab => {
             const isActive = activeTab === tab.id;
             return (
-              <button
+              <motion.button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className="relative flex flex-col items-start pb-3 pt-2.5 px-4 flex-shrink-0 transition-colors duration-200"
+                whileHover={!isActive ? { background: 'rgba(255,255,255,0.04)' } : {}}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.15 }}
+                className="relative flex flex-col items-start pb-3.5 pt-3 px-4 flex-shrink-0"
                 style={{
                   borderRadius: '14px 14px 0 0',
                   background: isActive
-                    ? 'linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.04) 100%)'
+                    ? 'linear-gradient(180deg, rgba(255,255,255,0.082) 0%, rgba(255,255,255,0.040) 100%)'
                     : 'transparent',
-                  border: isActive ? '1px solid rgba(255,255,255,0.09)' : '1px solid transparent',
+                  border: isActive ? '1px solid rgba(255,255,255,0.10)' : '1px solid transparent',
                   borderBottom: '1px solid transparent',
-                  minWidth: '85px',
+                  minWidth: '88px',
                   cursor: 'pointer',
+                  boxShadow: isActive
+                    ? 'inset 0 1px 0 rgba(255,255,255,0.12), inset 1px 0 0 rgba(255,255,255,0.05), inset -1px 0 0 rgba(255,255,255,0.04)'
+                    : 'none',
                 }}
-                onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; }}
-                onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
               >
-                {/* Active tab glow bg */}
+                {/* Active: subsurface glow behind label */}
                 {isActive && (
                   <div style={{
                     position: 'absolute', inset: 0, borderRadius: '14px 14px 0 0',
-                    background: `radial-gradient(ellipse at 50% 0%, ${tab.glow} 0%, transparent 70%)`,
+                    background: `radial-gradient(ellipse at 50% -20%, ${tab.glow} 0%, transparent 65%)`,
                     pointerEvents: 'none'
                   }} />
                 )}
@@ -668,28 +672,35 @@ export default function NarrativeMap({ synthesis, density }) {
                   <tab.Icon
                     className="w-3.5 h-3.5 flex-shrink-0"
                     style={{
-                      color: isActive ? tab.color : 'rgba(255,255,255,0.32)',
-                      filter: isActive ? `drop-shadow(0 0 5px ${tab.glow})` : 'none',
-                      strokeWidth: 2
+                      color: isActive ? tab.color : 'rgba(255,255,255,0.30)',
+                      filter: isActive ? `drop-shadow(0 0 6px ${tab.glow}) brightness(1.1)` : 'none',
+                      strokeWidth: isActive ? 2.2 : 1.8,
+                      transition: 'all 0.2s ease'
                     }}
                   />
-                  <span className="text-[13px] font-semibold whitespace-nowrap" style={{ color: isActive ? 'rgba(255,255,255,0.94)' : 'rgba(255,255,255,0.44)', letterSpacing: '-0.01em' }}>
+                  <span className="text-[13px] font-semibold whitespace-nowrap" style={{ color: isActive ? 'rgba(255,255,255,0.96)' : 'rgba(255,255,255,0.42)', letterSpacing: '-0.012em', transition: 'color 0.2s ease' }}>
                     {tab.label}
                   </span>
                 </div>
-                <span className="text-[10px] relative z-10" style={{ color: isActive ? 'rgba(255,255,255,0.36)' : 'rgba(255,255,255,0.22)' }}>
+                <span className="text-[10px] relative z-10" style={{ color: isActive ? 'rgba(255,255,255,0.38)' : 'rgba(255,255,255,0.20)', transition: 'color 0.2s ease' }}>
                   {tab.sub}
                 </span>
-                {/* Glow underline indicator */}
+                {/* Glowing underline — liquid light edge */}
                 {isActive && (
                   <motion.div
                     layoutId="tab-indicator"
-                    className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full"
-                    style={{ background: `linear-gradient(90deg, transparent, ${tab.color}, transparent)`, boxShadow: `0 0 8px ${tab.glow}` }}
-                    transition={{ duration: 0.28, ease: HORIZON_EASE }}
-                  />
+                    className="absolute bottom-0 left-2 right-2"
+                    style={{ height: '2px', borderRadius: '2px 2px 0 0' }}
+                    transition={{ type: 'spring', stiffness: 380, damping: 36 }}
+                  >
+                    <div style={{
+                      width: '100%', height: '100%', borderRadius: '2px 2px 0 0',
+                      background: `linear-gradient(90deg, transparent 0%, ${tab.color} 30%, ${tab.color} 70%, transparent 100%)`,
+                      boxShadow: `0 0 10px ${tab.glow}, 0 0 4px ${tab.color}`
+                    }} />
+                  </motion.div>
                 )}
-              </button>
+              </motion.button>
             );
           })}
         </div>
