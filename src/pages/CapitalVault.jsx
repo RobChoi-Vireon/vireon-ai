@@ -125,45 +125,40 @@ export default function CapitalVault() {
 
       <div className="relative z-10 px-4 sm:px-6 lg:px-8 py-8 max-w-[1380px] mx-auto">
         
-        {/* ── Header ─────────────────────────────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, y: -12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.26, 0.11, 0.26, 1] }}
-          className="text-center mb-10"
-        >
-          <div className="flex items-center justify-center gap-4 mb-3">
-            <div className="w-11 h-11 rounded-2xl flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, rgba(30,36,56,0.90) 0%, rgba(18,22,38,0.95) 100%)', border: '1px solid rgba(100, 160, 255, 0.22)', boxShadow: '0 0 20px rgba(80, 130, 255, 0.12)' }}>
-              <BookOpen className="w-5 h-5" style={{ color: 'rgba(100, 175, 255, 0.88)' }} strokeWidth={1.8} />
-            </div>
-            <h1 className="text-4xl font-bold tracking-[-0.03em]" style={{
-              background: 'linear-gradient(135deg, #F0F4FF 0%, #D0DCFF 40%, #A8BCFF 80%, #8AA4FF 100%)',
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'
-            }}>
-              Capital Vault
-            </h1>
-            <div style={{ filter: 'drop-shadow(0 0 8px rgba(140, 100, 255, 0.70))' }}>
-              <LyraLogo className="w-9 h-9" />
-            </div>
-          </div>
-          <p className="text-[15px]" style={{ color: 'rgba(180, 190, 215, 0.60)', letterSpacing: '-0.01em', fontWeight: 400 }}>
-            Bloomberg-grade financial knowledge engine, powered by AI
-          </p>
-        </motion.div>
-
         {/* ── Main Layout ─────────────────────────────────────────────────── */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-8">
           
           {/* Left: main content */}
           <div className="min-w-0 space-y-10">
 
-            {/* Hero Search */}
+            {/* ── Header + Search ─────────────────────────────────────────── */}
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.1, ease: [0.26, 0.11, 0.26, 1] }}
+              transition={{ duration: 0.5, ease: [0.26, 0.11, 0.26, 1] }}
+              className="text-center space-y-5"
             >
+              <div>
+                <div className="flex items-center justify-center gap-4 mb-2">
+                  <div className="w-11 h-11 rounded-2xl flex items-center justify-center"
+                    style={{ background: 'linear-gradient(135deg, rgba(30,36,56,0.90) 0%, rgba(18,22,38,0.95) 100%)', border: '1px solid rgba(100, 160, 255, 0.22)', boxShadow: '0 0 20px rgba(80, 130, 255, 0.12)' }}>
+                    <BookOpen className="w-5 h-5" style={{ color: 'rgba(100, 175, 255, 0.88)' }} strokeWidth={1.8} />
+                  </div>
+                  <h1 className="text-4xl font-bold tracking-[-0.03em]" style={{
+                    background: 'linear-gradient(135deg, #F0F4FF 0%, #D0DCFF 40%, #A8BCFF 80%, #8AA4FF 100%)',
+                    WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'
+                  }}>
+                    Capital Vault
+                  </h1>
+                  <div style={{ filter: 'drop-shadow(0 0 8px rgba(140, 100, 255, 0.70))' }}>
+                    <LyraLogo className="w-9 h-9" />
+                  </div>
+                </div>
+                <p className="text-[15px]" style={{ color: 'rgba(180, 190, 215, 0.60)', letterSpacing: '-0.01em', fontWeight: 400 }}>
+                  Bloomberg-grade financial knowledge engine, powered by AI
+                </p>
+              </div>
+
               <HeroSearch
                 onSearch={handleSearch}
                 isLoading={isLoading}
