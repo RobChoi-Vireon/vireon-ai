@@ -606,29 +606,16 @@ export default function NarrativeMap({ synthesis, density }) {
         </div>
       </div>
 
-      {/* Outer liquid-glass container — macOS Tahoe depth model */}
-      <div className="relative rounded-[28px] overflow-hidden" style={{
-        // Outer shell: deep frosted panel
-        background: 'linear-gradient(160deg, rgba(22,26,40,0.68) 0%, rgba(12,15,24,0.78) 60%, rgba(16,20,34,0.72) 100%)',
-        backdropFilter: 'blur(64px) saturate(180%) brightness(1.04)',
-        WebkitBackdropFilter: 'blur(64px) saturate(180%) brightness(1.04)',
-        border: '1px solid rgba(255,255,255,0.10)',
-        boxShadow: [
-          'inset 0 1.5px 0 rgba(255,255,255,0.10)',           // top specular
-          'inset 0 -1px 0 rgba(0,0,0,0.18)',                  // bottom absorption edge
-          'inset 1px 0 0 rgba(255,255,255,0.05)',              // left edge
-          'inset -1px 0 0 rgba(255,255,255,0.03)',             // right edge
-          '0 12px 48px rgba(0,0,0,0.36)',                      // deep drop shadow
-          '0 4px 16px rgba(0,0,0,0.22)',                       // near shadow
-          `0 0 80px rgba(${activeTabDef?.glow?.match(/[\d.]+/g)?.slice(0,3).join(',') || '255,255,255'},0.06)`, // ambient tab glow
-        ].join(', ')
+      {/* Outer container — deep slate, screenshot-matched */}
+      <div className="relative rounded-[20px] overflow-hidden" style={{
+        background: 'linear-gradient(160deg, rgba(14,17,30,0.98) 0%, rgba(10,13,22,1) 60%, rgba(12,15,26,0.99) 100%)',
+        backdropFilter: 'blur(24px) saturate(120%)',
+        WebkitBackdropFilter: 'blur(24px) saturate(120%)',
+        border: '1px solid rgba(255,255,255,0.07)',
+        boxShadow: '0 8px 40px rgba(0,0,0,0.48), 0 2px 8px rgba(0,0,0,0.32)',
       }}>
-        {/* Liquid-glass top specular band — macOS-style catch-light */}
-        <div style={{ position: 'absolute', top: 0, left: '8%', right: '8%', height: '1px', background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 30%, rgba(255,255,255,0.16) 50%, rgba(255,255,255,0.12) 70%, transparent 100%)', pointerEvents: 'none', zIndex: 3 }} />
-        {/* Subsurface scatter — tab-reactive ambient glow */}
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '120px', background: `radial-gradient(ellipse at 50% -10%, ${activeTabDef?.glow || 'rgba(255,255,255,0.04)'} 0%, transparent 70%)`, pointerEvents: 'none', zIndex: 0, transition: 'background 0.5s ease' }} />
-        {/* Bottom edge absorption */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '40px', background: 'linear-gradient(0deg, rgba(0,0,0,0.12) 0%, transparent 100%)', pointerEvents: 'none', zIndex: 0 }} />
+        {/* Subtle top edge catch */}
+        <div style={{ position: 'absolute', top: 0, left: '8%', right: '8%', height: '1px', background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 40%, rgba(255,255,255,0.08) 60%, transparent 100%)', pointerEvents: 'none', zIndex: 3 }} />
 
         {/* Tab bar — liquid-glass signal mode switcher */}
         <div className="relative flex px-4 pt-4 pb-0 gap-0.5 overflow-x-auto z-10" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
