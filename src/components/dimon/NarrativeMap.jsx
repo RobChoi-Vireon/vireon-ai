@@ -394,11 +394,11 @@ const USGlobalCard = ({ item, index }) => {
         <div className="p-4 space-y-2.5" style={{ borderLeft: '1px solid rgba(255,255,255,0.04)' }}>
           <div className="flex items-center gap-1.5">
             <Globe className="w-3.5 h-3.5" style={{ color: 'rgba(130,155,195,0.65)' }} strokeWidth={2} />
-            <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(160,175,210,0.45)', letterSpacing: '0.06em' }}>Global</span>
+            <span className="text-[11px] font-bold uppercase tracking-wide" style={{ color: 'rgba(160,175,210,0.38)' }}>Global</span>
           </div>
-          <p className="text-[12px] font-semibold leading-snug" style={{ color: 'rgba(255,255,255,0.75)', letterSpacing: '-0.01em' }}>"{item.global_view}"</p>
+          <p className="text-[12px] font-semibold leading-[1.5]" style={{ color: 'rgba(255,255,255,0.78)' }}>"{item.global_view}"</p>
           <div className="flex items-center justify-between">
-            <span className="text-[20px] font-bold" style={{ color: 'rgba(170,190,225,0.70)', letterSpacing: '-0.03em', lineHeight: 1 }}>{glbPct}%</span>
+            <span className="text-[18px] font-bold" style={{ color: 'rgba(170,190,225,0.73)', lineHeight: 1.2 }}>{glbPct}%</span>
             <MomentumTag pts={glbMom} />
           </div>
           <StrengthBar pct={glbPct} color="rgba(130,155,195,0.38)" delay={0.1 + 0.06 * index} />
