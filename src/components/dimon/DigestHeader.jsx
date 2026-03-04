@@ -295,8 +295,16 @@ export default function DigestHeader({
   // Continuous sentiment score: 0 = full risk-on, 50 = neutral, 100 = full risk-off
   const sentimentScore = sessionData?.top_block?.sentiment?.sentiment_score ?? 50;
 
-  // Derive label from score (5 tiers for nuanced display)
-  const sentimentLabel = (() => {
+  // Live data bindings
+  const sentimentTone = sessionData?.top_block?.sentiment?.tone || "Upbeat Sentiment";
+  const barLevel = sessionData?.top_block?.sentiment?.bar_level ?? 6;
+  const barColor = sessionData?.top_block?.sentiment?.bar_color || "green";
+  const positionLabel = sessionData?.top_block?.sentiment?.label || null;
+  const marketStatusLabel = sessionData?.top_block?.market_status?.label || null;
+  const marketIsOpen = sessionData?.top_block?.market_status?.is_open ?? null;
+
+  // Derive label from live data if available, else fallback from score
+  const sentimentLabel = positionLabel || (() => {
     if (sentimentScore <= 15) return "Risk-On";
     if (sentimentScore <= 35) return "Cautiously Risk-On";
     if (sentimentScore <= 65) return "Market Neutral";
