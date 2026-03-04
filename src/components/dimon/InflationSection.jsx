@@ -3,10 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, ChevronDown, BarChart2 } from 'lucide-react';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
-const SMOOTH_EXPAND = { duration: 0.35, ease: [0.22, 0.61, 0.36, 1] };
-const CHEVRON_ROTATE = { duration: 0.35, ease: [0.22, 0.61, 0.36, 1] };
+const SMOOTH_EXPAND = { duration: 0.38, ease: [0.22, 0.61, 0.36, 1] };
+const CHEVRON_ROTATE = { duration: 0.32, ease: [0.22, 0.61, 0.36, 1] };
 
-// Shared glass surface style
 const GLASS_CARD = {
   background: 'linear-gradient(180deg, rgba(255,255,255,0.052) 0%, rgba(255,255,255,0.030) 100%)',
   backdropFilter: 'blur(42px) saturate(170%)',
@@ -19,12 +18,6 @@ const GLASS_CARD = {
   WebkitFontSmoothing: 'antialiased',
 };
 
-const DRAWER_GLASS = {
-  ...GLASS_CARD,
-  borderRadius: '20px',
-};
-
-// Top specular highlight shared element
 const SpecularLine = () => (
   <div style={{
     position: 'absolute', top: 0, left: '12%', right: '12%', height: '1.5px',
@@ -41,145 +34,189 @@ const getArrowIcon = (direction) => {
   }
 };
 
-// Enhanced State Status Row with subtle bar
-const StateStatusRow = ({ arrow, label, status, sparkline }) => {
+// 1) MACRO SIGNAL CHIPS — floating elevated chips replacing the old rows
+const SignalChip = ({ arrow, label, status, index }) => {
+  const [hovered, setHovered] = useState(false);
   const Icon = getArrowIcon(arrow);
-  const color = arrow === 'up'
-    ? 'rgba(255, 106, 122, 0.90)'
-    : arrow === 'down'
-      ? 'rgba(88, 227, 164, 0.90)'
-      : 'rgba(168, 179, 199, 0.90)';
-  const barColor = arrow === 'up'
-    ? 'rgba(255, 106, 122, 0.18)'
-    : arrow === 'down'
-      ? 'rgba(88, 227, 164, 0.14)'
-      : 'rgba(168, 179, 199, 0.10)';
+  const isUp = arrow === 'up';
+  const isDown = arrow === 'down';
+  const accentColor = isUp ? '#FF6A7A' : isDown ? '#58E3A4' : '#A8B3C7';
+  const glowColor = isUp ? 'rgba(255,106,122,0.18)' : isDown ? 'rgba(88,227,164,0.14)' : 'rgba(168,179,199,0.10)';
+  const borderColor = isUp ? 'rgba(255,106,122,0.22)' : isDown ? 'rgba(88,227,164,0.18)' : 'rgba(168,179,199,0.14)';
 
   return (
-    <div
-      className="flex items-center justify-between py-3 relative"
-      style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.1 + index * 0.07, duration: 0.4, ease: HORIZON_EASE }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="flex-1 relative rounded-[18px] p-4 cursor-default"
+      style={{
+        background: hovered
+          ? `linear-gradient(180deg, ${glowColor.replace('0.18', '0.22').replace('0.14', '0.18').replace('0.10', '0.13')} 0%, rgba(255,255,255,0.025) 100%)`
+          : `linear-gradient(180deg, ${glowColor} 0%, rgba(255,255,255,0.015) 100%)`,
+        border: `1px solid ${hovered ? borderColor.replace('0.22', '0.32').replace('0.18', '0.26').replace('0.14', '0.22') : borderColor}`,
+        boxShadow: hovered
+          ? `inset 0 1px 0 rgba(255,255,255,0.10), 0 8px 28px rgba(0,0,0,0.18), 0 0 20px ${glowColor}`
+          : `inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 16px rgba(0,0,0,0.10)`,
+        backdropFilter: 'blur(24px) saturate(160%)',
+        WebkitBackdropFilter: 'blur(24px) saturate(160%)',
+        transition: 'all 0.22s ease-out',
+        minWidth: 0,
+      }}
     >
-      {/* Subtle background bar */}
+      {/* Specular */}
       <div style={{
-        position: 'absolute', inset: 0,
-        background: barColor,
-        borderRadius: '8px',
-        opacity: 0.6,
+        position: 'absolute', top: 0, left: '20%', right: '20%', height: '1px',
+        background: `linear-gradient(90deg, transparent, ${accentColor}30, transparent)`,
         pointerEvents: 'none'
       }} />
-      <div className="flex items-center gap-3 relative z-10 px-2">
-        <Icon className="w-4 h-4 flex-shrink-0" style={{ color }} strokeWidth={2.5} />
-        <span className="text-sm" style={{ color: 'rgba(255,255,255,0.62)' }}>{label}</span>
+
+      <div className="flex items-center gap-1.5 mb-2">
+        <Icon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: accentColor, filter: `drop-shadow(0 0 4px ${accentColor}80)` }} strokeWidth={2.5} />
+        <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.06em' }}>
+          {label}
+        </span>
       </div>
-      <span className="text-sm font-semibold relative z-10 px-2" style={{ color: 'rgba(255,255,255,0.92)' }}>
+      <div className="text-[15px] font-bold leading-tight" style={{ color: 'rgba(255,255,255,0.94)', letterSpacing: '-0.015em' }}>
         {status}
-      </span>
-    </div>
+      </div>
+
+      {/* Bottom pulse dot */}
+      <motion.div
+        animate={{ opacity: [0.5, 1, 0.5], scale: [0.9, 1.1, 0.9] }}
+        transition={{ duration: 3 + index * 0.5, repeat: Infinity, ease: 'easeInOut' }}
+        style={{
+          position: 'absolute', bottom: '12px', right: '12px',
+          width: '5px', height: '5px', borderRadius: '50%',
+          background: accentColor,
+          boxShadow: `0 0 6px ${accentColor}`,
+        }}
+      />
+    </motion.div>
   );
 };
 
-// Driver row with visual percentage bar
-const DriverRow = ({ driver, idx, total }) => (
+// 2) DRIVER FORCE METER
+const DriverForceMeter = ({ driver, idx, total }) => (
   <div
-    className="py-3"
+    className="py-3.5"
     style={{ borderBottom: idx < total - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}
   >
-    <div className="flex items-center justify-between gap-3 mb-2">
-      <span className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.92)', letterSpacing: '-0.01em' }}>
+    <div className="flex items-center justify-between gap-3 mb-2.5">
+      <span className="text-[13px] font-semibold" style={{ color: 'rgba(255,255,255,0.92)', letterSpacing: '-0.01em' }}>
         {driver.name}
       </span>
       <span
-        className="text-xs font-bold px-2.5 py-1 rounded-full flex-shrink-0"
+        className="text-[11px] font-bold px-2.5 py-1 rounded-full flex-shrink-0"
         style={{
-          background: 'rgba(94, 167, 255, 0.14)',
-          color: 'rgba(140, 195, 255, 0.92)',
-          border: '1px solid rgba(94, 167, 255, 0.22)'
+          background: 'rgba(94,167,255,0.14)',
+          color: 'rgba(140,195,255,0.92)',
+          border: '1px solid rgba(94,167,255,0.22)'
         }}
       >
         {driver.weight}%
       </span>
     </div>
-    {/* Visual bar derived from existing weight value */}
+    {/* Force meter bar */}
     <div style={{
-      height: '3px', borderRadius: '2px',
+      height: '5px', borderRadius: '3px',
       background: 'rgba(255,255,255,0.06)',
-      marginBottom: '8px', overflow: 'hidden'
+      marginBottom: '10px', overflow: 'hidden', position: 'relative'
     }}>
       <motion.div
         initial={{ width: 0 }}
         animate={{ width: `${Math.min(driver.weight, 100)}%` }}
-        transition={{ duration: 0.6, delay: idx * 0.08, ease: [0.22, 0.61, 0.36, 1] }}
+        transition={{ duration: 0.8, delay: 0.15 + idx * 0.1, ease: [0.22, 0.61, 0.36, 1] }}
         style={{
-          height: '100%', borderRadius: '2px',
-          background: 'linear-gradient(90deg, rgba(94, 167, 255, 0.60), rgba(140, 195, 255, 0.40))'
+          height: '100%', borderRadius: '3px',
+          background: 'linear-gradient(90deg, rgba(94,167,255,0.70), rgba(160,120,255,0.55), rgba(88,227,164,0.40))',
+          boxShadow: '0 0 8px rgba(94,167,255,0.35)',
+          position: 'relative'
         }}
-      />
+      >
+        {/* Animated shimmer on bar */}
+        <motion.div
+          animate={{ x: ['-100%', '200%'] }}
+          transition={{ duration: 2.2, delay: 0.8 + idx * 0.1, repeat: Infinity, repeatDelay: 4, ease: 'easeInOut' }}
+          style={{
+            position: 'absolute', top: 0, bottom: 0, width: '40%',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.30), transparent)',
+            borderRadius: '3px'
+          }}
+        />
+      </motion.div>
     </div>
-    <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.62)' }}>
+    <p className="text-[12px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.58)' }}>
       {driver.reason}
     </p>
   </div>
 );
 
-// Accordion wrapper with hover glow
-const AccordionPanel = ({ isOpen, onToggle, title, children }) => (
-  <div
-    className="relative"
-    style={{
-      ...DRAWER_GLASS,
-      transition: 'box-shadow 0.2s ease',
-    }}
-    onMouseEnter={(e) => {
-      e.currentTarget.style.boxShadow = 'inset 0 1.5px 0 rgba(255,255,255,0.10), 0 8px 32px rgba(0,0,0,0.16), 0 0 0 1px rgba(255,255,255,0.07)';
-    }}
-    onMouseLeave={(e) => {
-      e.currentTarget.style.boxShadow = DRAWER_GLASS.boxShadow;
-    }}
-  >
-    <SpecularLine />
-    <button
-      onClick={onToggle}
-      className="w-full px-5 py-4 text-left flex items-center justify-between relative z-10"
+// Accordion panel with hover glow
+const AccordionPanel = ({ isOpen, onToggle, title, children, delay = 0 }) => {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay, ease: HORIZON_EASE }}
+      className="relative rounded-[20px]"
       style={{
-        background: isOpen ? 'rgba(255,255,255,0.025)' : 'transparent',
-        transition: 'background 0.2s ease-out',
-        borderBottom: isOpen ? '1px solid rgba(255,255,255,0.06)' : '1px solid transparent',
+        ...GLASS_CARD,
+        boxShadow: hovered
+          ? 'inset 0 1.5px 0 rgba(255,255,255,0.11), 0 10px 36px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.07)'
+          : GLASS_CARD.boxShadow,
+        transition: 'box-shadow 0.22s ease',
       }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      <span className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.92)', letterSpacing: '-0.01em' }}>
-        {title}
-      </span>
-      <motion.div
-        animate={{ rotate: isOpen ? 180 : 0 }}
-        transition={CHEVRON_ROTATE}
-        style={{ transformOrigin: 'center', backfaceVisibility: 'hidden' }}
+      <SpecularLine />
+      <button
+        onClick={onToggle}
+        className="w-full px-5 py-4 text-left flex items-center justify-between relative z-10"
+        style={{
+          background: isOpen ? 'rgba(255,255,255,0.025)' : 'transparent',
+          transition: 'background 0.2s ease-out',
+          borderBottom: isOpen ? '1px solid rgba(255,255,255,0.06)' : '1px solid transparent',
+        }}
       >
-        <ChevronDown className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.45)' }} />
-      </motion.div>
-    </button>
-
-    <AnimatePresence initial={false}>
-      {isOpen && (
+        <span className="text-[13px] font-semibold" style={{ color: 'rgba(255,255,255,0.92)', letterSpacing: '-0.01em' }}>
+          {title}
+        </span>
         <motion.div
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: 'auto', opacity: 1 }}
-          exit={{ height: 0, opacity: 0 }}
-          transition={SMOOTH_EXPAND}
-          style={{ overflow: 'hidden', transformOrigin: 'top', backfaceVisibility: 'hidden', perspective: 1000 }}
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={CHEVRON_ROTATE}
+          style={{ transformOrigin: 'center', backfaceVisibility: 'hidden' }}
         >
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.1, duration: 0.25 }}
-          >
-            {children}
-          </motion.div>
+          <ChevronDown className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.40)' }} />
         </motion.div>
-      )}
-    </AnimatePresence>
-  </div>
-);
+      </button>
+
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={SMOOTH_EXPAND}
+            style={{ overflow: 'hidden', transformOrigin: 'top', backfaceVisibility: 'hidden', perspective: 1000 }}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.28 }}
+            >
+              {children}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+};
 
 
 export default function InflationSection({ data }) {
@@ -219,47 +256,60 @@ export default function InflationSection({ data }) {
       className="space-y-3"
       style={{ overflow: 'visible' }}
     >
-      {/* PRIMARY STATUS CARD */}
-      <div className="relative rounded-3xl" style={GLASS_CARD}>
+      {/* ── PRIMARY STATUS CARD ─────────────────────────────────────── */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: HORIZON_EASE }}
+        className="relative rounded-3xl"
+        style={GLASS_CARD}
+      >
         <SpecularLine />
 
-        {/* Ambient top glow */}
+        {/* Ambient top bloom */}
         <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, height: '60%',
-          background: 'radial-gradient(ellipse at 50% 0%, rgba(94, 160, 255, 0.06) 0%, transparent 70%)',
+          position: 'absolute', top: 0, left: 0, right: 0, height: '55%',
+          background: 'radial-gradient(ellipse at 50% 0%, rgba(94,160,255,0.065) 0%, transparent 70%)',
           pointerEvents: 'none', borderRadius: '24px 24px 0 0'
         }} />
 
         {/* HEADER */}
         <div className="flex items-start justify-between px-6 pt-6 pb-3 relative z-10">
           <div className="flex-1">
-            <h3
-              className="text-2xl font-bold mb-1.5"
-              style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.025em' }}
-            >
+            <h3 className="text-2xl font-bold mb-1.5" style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.025em' }}>
               Inflation
             </h3>
-            <p className="text-[12px] font-medium" style={{ color: 'rgba(255,255,255,0.42)', letterSpacing: '0.01em' }}>
+            <p className="text-[12px] font-medium" style={{ color: 'rgba(255,255,255,0.40)', letterSpacing: '0.01em' }}>
               Last updated {inflationData.timestamp_display}
             </p>
           </div>
         </div>
 
-        {/* Glow divider line beneath header */}
+        {/* Glow divider line */}
         <div style={{
-          height: '1px', marginBottom: '0',
-          background: 'linear-gradient(90deg, transparent 0%, rgba(94, 160, 255, 0.22) 40%, rgba(180, 140, 255, 0.18) 70%, transparent 100%)',
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent 0%, rgba(94,160,255,0.28) 35%, rgba(180,140,255,0.20) 65%, transparent 100%)',
         }} />
 
-        {/* DELTA ANCHOR — highlighted ribbon */}
-        <div
-          className="px-6 py-3.5 relative z-10"
-          style={{
-            background: 'linear-gradient(90deg, rgba(94, 167, 255, 0.10) 0%, rgba(94, 167, 255, 0.04) 100%)',
-            borderBottom: '1px solid rgba(94, 167, 255, 0.10)',
-          }}
-        >
-          <div className="text-[11px] font-semibold uppercase tracking-widest mb-1" style={{ color: 'rgba(94, 167, 255, 0.70)', letterSpacing: '0.06em' }}>
+        {/* Light sweep animation on divider */}
+        <div style={{ position: 'relative', height: 0, overflow: 'visible' }}>
+          <motion.div
+            animate={{ x: ['-100%', '200%'] }}
+            transition={{ duration: 3, repeat: Infinity, repeatDelay: 6, ease: 'easeInOut' }}
+            style={{
+              position: 'absolute', top: '-1px', left: 0, width: '30%', height: '1px',
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent)',
+              pointerEvents: 'none'
+            }}
+          />
+        </div>
+
+        {/* DELTA ANCHOR */}
+        <div className="px-6 py-3.5 relative z-10" style={{
+          background: 'linear-gradient(90deg, rgba(94,167,255,0.10) 0%, rgba(94,167,255,0.04) 100%)',
+          borderBottom: '1px solid rgba(94,167,255,0.10)',
+        }}>
+          <div className="text-[11px] font-semibold uppercase tracking-widest mb-1" style={{ color: 'rgba(94,167,255,0.70)', letterSpacing: '0.07em' }}>
             Δ Since last update
           </div>
           <p className="text-sm font-semibold leading-snug" style={{ color: 'rgba(255,255,255,0.90)' }}>
@@ -267,40 +317,41 @@ export default function InflationSection({ data }) {
           </p>
         </div>
 
-        <div className="px-6 py-5 space-y-5 relative z-10">
-          {/* CURRENT STATE */}
+        <div className="px-5 py-5 space-y-5 relative z-10">
+          {/* SIGNAL CHIPS — Current State */}
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.35)', letterSpacing: '0.07em' }}>
+            <div className="text-[11px] font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.32)', letterSpacing: '0.08em' }}>
               Current state
             </div>
-            <div className="space-y-1">
-              <StateStatusRow {...inflationData.headline_state} />
-              <StateStatusRow {...inflationData.core_state} />
-              <StateStatusRow {...inflationData.services_state} />
+            <div className="flex gap-2.5">
+              <SignalChip {...inflationData.headline_state} index={0} />
+              <SignalChip {...inflationData.core_state} index={1} />
+              <SignalChip {...inflationData.services_state} index={2} />
             </div>
           </div>
 
           {/* WHY IT MATTERS */}
-          <div>
-            <div className="text-[11px] font-semibold uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.35)', letterSpacing: '0.07em' }}>
+          <div style={{ opacity: 0.92 }}>
+            <div className="text-[11px] font-semibold uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.32)', letterSpacing: '0.08em' }}>
               Why it matters
             </div>
-            <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.80)' }}>
+            <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.78)' }}>
               {inflationData.fed_implication}
             </p>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      {/* DRAWER 1 — WHY INFLATION LOOKS THIS WAY */}
+      {/* ── DRAWER 1 — WHY INFLATION LOOKS THIS WAY ─────────────────── */}
       <AccordionPanel
         isOpen={drawer1Open}
         onToggle={() => setDrawer1Open(!drawer1Open)}
         title="Why inflation looks this way"
+        delay={0.08}
       >
         <div className="px-5 pb-5 pt-1">
           {inflationData.drivers.slice(0, 3).map((driver, idx) => (
-            <DriverRow
+            <DriverForceMeter
               key={idx}
               driver={driver}
               idx={idx}
@@ -310,49 +361,46 @@ export default function InflationSection({ data }) {
         </div>
       </AccordionPanel>
 
-      {/* DRAWER 2 — WHO FEELS THIS MOST */}
+      {/* ── DRAWER 2 — WHO FEELS THIS MOST ──────────────────────────── */}
       <AccordionPanel
         isOpen={drawer2Open}
         onToggle={() => setDrawer2Open(!drawer2Open)}
         title="Who feels this most"
+        delay={0.12}
       >
         <div className="px-5 pb-5 pt-3">
           <div className="grid grid-cols-2 gap-3">
             {/* Winners panel */}
-            <div
-              className="p-4 rounded-[16px]"
-              style={{
-                background: 'linear-gradient(180deg, rgba(88, 227, 164, 0.08) 0%, rgba(88, 227, 164, 0.04) 100%)',
-                border: '1px solid rgba(88, 227, 164, 0.14)',
-              }}
-            >
-              <div className="text-[11px] font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(88, 227, 164, 0.80)', letterSpacing: '0.06em' }}>
+            <div className="p-4 rounded-[16px]" style={{
+              background: 'linear-gradient(180deg, rgba(88,227,164,0.09) 0%, rgba(88,227,164,0.04) 100%)',
+              border: '1px solid rgba(88,227,164,0.15)',
+              boxShadow: 'inset 0 1px 0 rgba(88,227,164,0.08)'
+            }}>
+              <div className="text-[11px] font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(88,227,164,0.78)', letterSpacing: '0.06em' }}>
                 Winners
               </div>
               <ul className="space-y-1.5">
                 {inflationData.winners.slice(0, 4).map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-2 text-sm" style={{ color: 'rgba(255,255,255,0.72)' }}>
-                    <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(88, 227, 164, 0.70)' }} />
+                  <li key={idx} className="flex items-start gap-2 text-[13px]" style={{ color: 'rgba(255,255,255,0.72)' }}>
+                    <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(88,227,164,0.70)' }} />
                     {item}
                   </li>
                 ))}
               </ul>
             </div>
             {/* Losers panel */}
-            <div
-              className="p-4 rounded-[16px]"
-              style={{
-                background: 'linear-gradient(180deg, rgba(255, 106, 122, 0.08) 0%, rgba(255, 106, 122, 0.04) 100%)',
-                border: '1px solid rgba(255, 106, 122, 0.14)',
-              }}
-            >
-              <div className="text-[11px] font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(255, 106, 122, 0.80)', letterSpacing: '0.06em' }}>
+            <div className="p-4 rounded-[16px]" style={{
+              background: 'linear-gradient(180deg, rgba(255,106,122,0.09) 0%, rgba(255,106,122,0.04) 100%)',
+              border: '1px solid rgba(255,106,122,0.15)',
+              boxShadow: 'inset 0 1px 0 rgba(255,106,122,0.08)'
+            }}>
+              <div className="text-[11px] font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(255,106,122,0.78)', letterSpacing: '0.06em' }}>
                 Losers
               </div>
               <ul className="space-y-1.5">
                 {inflationData.losers.slice(0, 4).map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-2 text-sm" style={{ color: 'rgba(255,255,255,0.72)' }}>
-                    <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(255, 106, 122, 0.70)' }} />
+                  <li key={idx} className="flex items-start gap-2 text-[13px]" style={{ color: 'rgba(255,255,255,0.72)' }}>
+                    <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(255,106,122,0.70)' }} />
                     {item}
                   </li>
                 ))}
@@ -362,21 +410,19 @@ export default function InflationSection({ data }) {
         </div>
       </AccordionPanel>
 
-      {/* DRAWER 3 — HOW TO READ THE DATA */}
+      {/* ── DRAWER 3 — HOW TO READ THE DATA ─────────────────────────── */}
       <AccordionPanel
         isOpen={drawer3Open}
         onToggle={() => setDrawer3Open(!drawer3Open)}
         title="How to read the data"
+        delay={0.16}
       >
-        <div className="px-5 pb-5 pt-3 space-y-4">
-          {/* CPI vs PCE — glass card */}
-          <div
-            className="rounded-[16px] overflow-hidden"
-            style={{
-              background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%)',
-              border: '1px solid rgba(255,255,255,0.08)',
-            }}
-          >
+        <div className="px-5 pb-5 pt-3 space-y-4" style={{ opacity: 0.92 }}>
+          {/* CPI vs PCE card */}
+          <div className="rounded-[16px] overflow-hidden" style={{
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%)',
+            border: '1px solid rgba(255,255,255,0.08)',
+          }}>
             <button
               onClick={() => setShowCPIPCE(!showCPIPCE)}
               className="w-full flex items-center justify-between py-3.5 px-4"
@@ -387,10 +433,10 @@ export default function InflationSection({ data }) {
               }}
             >
               <div className="flex items-center gap-2.5 text-left">
-                <BarChart2 className="w-4 h-4 flex-shrink-0" style={{ color: 'rgba(140, 190, 255, 0.70)' }} strokeWidth={1.8} />
+                <BarChart2 className="w-4 h-4 flex-shrink-0" style={{ color: 'rgba(140,190,255,0.70)' }} strokeWidth={1.8} />
                 <div>
-                  <div className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.92)', letterSpacing: '-0.01em' }}>CPI vs PCE</div>
-                  <div className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.52)' }}>{inflationData.cpi_pce_collapsed}</div>
+                  <div className="text-[13px] font-semibold" style={{ color: 'rgba(255,255,255,0.92)', letterSpacing: '-0.01em' }}>CPI vs PCE</div>
+                  <div className="text-[12px] mt-0.5" style={{ color: 'rgba(255,255,255,0.50)' }}>{inflationData.cpi_pce_collapsed}</div>
                 </div>
               </div>
               <motion.div
@@ -398,7 +444,7 @@ export default function InflationSection({ data }) {
                 transition={CHEVRON_ROTATE}
                 style={{ transformOrigin: 'center', backfaceVisibility: 'hidden' }}
               >
-                <ChevronDown className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.35)' }} />
+                <ChevronDown className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.32)' }} />
               </motion.div>
             </button>
 
@@ -414,15 +460,14 @@ export default function InflationSection({ data }) {
                 >
                   <motion.div
                     className="px-4 pb-4 pt-3 space-y-2"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.08, duration: 0.2 }}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.08, duration: 0.22 }}
                   >
-                    {/* Glow divider */}
-                    <div style={{ height: '1px', marginBottom: '12px', background: 'linear-gradient(90deg, transparent, rgba(140, 190, 255, 0.20), transparent)' }} />
-                    <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>• {inflationData.cpi_plain}</p>
-                    <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>• {inflationData.pce_plain}</p>
-                    <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>• {inflationData.why_fed_prefers}</p>
+                    <div style={{ height: '1px', marginBottom: '12px', background: 'linear-gradient(90deg, transparent, rgba(140,190,255,0.22), transparent)' }} />
+                    <p className="text-[13px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>• {inflationData.cpi_plain}</p>
+                    <p className="text-[13px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>• {inflationData.pce_plain}</p>
+                    <p className="text-[13px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>• {inflationData.why_fed_prefers}</p>
                   </motion.div>
                 </motion.div>
               )}
@@ -431,27 +476,27 @@ export default function InflationSection({ data }) {
 
           {/* What to Watch */}
           <div className="pt-1" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-            <div className="text-[11px] font-semibold uppercase tracking-widest mb-3 pt-3" style={{ color: 'rgba(255,255,255,0.38)', letterSpacing: '0.07em' }}>
+            <div className="text-[11px] font-semibold uppercase tracking-widest mb-3 pt-3" style={{ color: 'rgba(255,255,255,0.35)', letterSpacing: '0.07em' }}>
               What to watch
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <div className="text-xs font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.68)' }}>Next 30–60 days</div>
+                <div className="text-[12px] font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.65)' }}>Next 30–60 days</div>
                 <ul className="space-y-1.5">
                   {inflationData.watch_short.slice(0, 3).map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-2 text-sm" style={{ color: 'rgba(255,255,255,0.65)' }}>
-                      <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(255,255,255,0.30)' }} />
+                    <li key={idx} className="flex items-start gap-2 text-[13px]" style={{ color: 'rgba(255,255,255,0.62)' }}>
+                      <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(255,255,255,0.28)' }} />
                       {item}
                     </li>
                   ))}
                 </ul>
               </div>
               <div>
-                <div className="text-xs font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.68)' }}>Next 6–12 months</div>
+                <div className="text-[12px] font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.65)' }}>Next 6–12 months</div>
                 <ul className="space-y-1.5">
                   {inflationData.watch_long.slice(0, 3).map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-2 text-sm" style={{ color: 'rgba(255,255,255,0.65)' }}>
-                      <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(255,255,255,0.30)' }} />
+                    <li key={idx} className="flex items-start gap-2 text-[13px]" style={{ color: 'rgba(255,255,255,0.62)' }}>
+                      <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(255,255,255,0.28)' }} />
                       {item}
                     </li>
                   ))}
@@ -462,29 +507,30 @@ export default function InflationSection({ data }) {
         </div>
       </AccordionPanel>
 
-      {/* TOP WEIGHTED SOURCES */}
-      <div
+      {/* ── TOP WEIGHTED SOURCES ──────────────────────────────────────── */}
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.2, ease: HORIZON_EASE }}
         className="relative rounded-[20px]"
         style={{
           ...GLASS_CARD,
           padding: '18px 20px 16px 20px',
           overflow: 'visible',
+          opacity: 0.88
         }}
       >
         <SpecularLine />
         <div className="flex items-center gap-3 overflow-x-auto pb-1 relative z-10">
           <div className="flex items-center gap-2 flex-shrink-0">
-            <span className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.90)', letterSpacing: '-0.01em' }}>
+            <span className="text-[13px] font-semibold" style={{ color: 'rgba(255,255,255,0.88)', letterSpacing: '-0.01em' }}>
               Top Weighted Sources
             </span>
-            <div
-              className="rounded-full px-2 py-0.5 text-xs font-bold flex-shrink-0"
-              style={{
-                background: 'rgba(94, 167, 255, 0.14)',
-                color: 'rgba(140, 195, 255, 0.90)',
-                border: '1px solid rgba(94, 167, 255, 0.22)'
-              }}
-            >
+            <div className="rounded-full px-2 py-0.5 text-[11px] font-bold flex-shrink-0" style={{
+              background: 'rgba(94,167,255,0.14)',
+              color: 'rgba(140,195,255,0.90)',
+              border: '1px solid rgba(94,167,255,0.22)'
+            }}>
               {inflationData.sources.length}
             </div>
           </div>
@@ -496,15 +542,15 @@ export default function InflationSection({ data }) {
                 href={source.url || '#'}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-3.5 py-1.5 rounded-full font-medium text-sm whitespace-nowrap flex-shrink-0"
+                className="px-3.5 py-1.5 rounded-full font-medium text-[13px] whitespace-nowrap flex-shrink-0"
                 style={{
                   background: 'rgba(255,255,255,0.07)',
                   border: '1px solid rgba(255,255,255,0.11)',
-                  color: 'rgba(255,255,255,0.78)',
+                  color: 'rgba(255,255,255,0.76)',
                   backdropFilter: 'blur(16px)',
                   textDecoration: 'none',
                   boxShadow: '0 2px 10px rgba(0,0,0,0.12)',
-                  transition: 'background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease'
+                  transition: 'all 0.18s ease-out'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = 'rgba(255,255,255,0.13)';
@@ -516,7 +562,7 @@ export default function InflationSection({ data }) {
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = 'rgba(255,255,255,0.07)';
                   e.currentTarget.style.borderColor = 'rgba(255,255,255,0.11)';
-                  e.currentTarget.style.color = 'rgba(255,255,255,0.78)';
+                  e.currentTarget.style.color = 'rgba(255,255,255,0.76)';
                   e.currentTarget.style.transform = 'translateY(0)';
                   e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.12)';
                 }}
@@ -531,22 +577,22 @@ export default function InflationSection({ data }) {
             style={{
               background: 'rgba(255,255,255,0.05)',
               border: '1px solid rgba(255,255,255,0.09)',
-              color: 'rgba(255,255,255,0.45)',
-              transition: 'all 0.2s ease-out'
+              color: 'rgba(255,255,255,0.42)',
+              transition: 'all 0.18s ease-out'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = 'rgba(255,255,255,0.10)';
-              e.currentTarget.style.color = 'rgba(255,255,255,0.72)';
+              e.currentTarget.style.color = 'rgba(255,255,255,0.70)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-              e.currentTarget.style.color = 'rgba(255,255,255,0.45)';
+              e.currentTarget.style.color = 'rgba(255,255,255,0.42)';
             }}
           >
             <ChevronDown className="w-4 h-4" style={{ transform: 'rotate(-90deg)' }} />
           </button>
         </div>
-      </div>
+      </motion.div>
     </motion.div>
   );
 }
