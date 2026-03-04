@@ -32,7 +32,7 @@ export default function AIInsightsSection({ onSearch }) {
   return (
     <section>
       <div className="flex items-baseline gap-4 mb-6">
-        <h2 className="text-xl font-bold" style={{ color: 'rgba(255,255,255,0.94)', letterSpacing: '-0.01em' }}>
+        <h2 className="text-xl font-semibold" style={{ color: 'rgba(255,255,255,0.94)', letterSpacing: '-0.02em' }}>
           AI Market Concepts Today
         </h2>
         <p className="text-sm" style={{ color: 'rgba(255,255,255,0.42)' }}>Powered by Ori</p>
