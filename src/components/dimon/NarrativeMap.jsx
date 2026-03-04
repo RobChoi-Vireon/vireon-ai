@@ -380,10 +380,10 @@ const USGlobalCard = ({ item, index }) => {
           <StrengthBar pct={usPct} color="rgba(140,165,220,0.68)" delay={0.1 + 0.06 * index} />
           <MiniSparkline data={usSpark} color="rgba(155,180,230,0.75)" delay={0.4 + 0.06 * index} />
           {usFlip && (
-            <div className="pt-1.5" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
-              <p className="text-[9px] font-semibold uppercase tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.22)', letterSpacing: '0.06em' }}>Flip trigger</p>
-              <div className="flex items-start gap-2 text-[10px]" style={{ color: 'rgba(255,255,255,0.50)' }}>
-                <div className="w-1 h-1 rounded-full mt-1 flex-shrink-0" style={{ background: 'rgba(155,180,230,0.50)' }} />
+            <div className="pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
+              <p className="text-[11px] font-semibold uppercase tracking-wide mb-1.5" style={{ color: 'rgba(255,255,255,0.28)' }}>Flip trigger</p>
+              <div className="flex items-start gap-2 text-[12px] leading-[1.5]" style={{ color: 'rgba(255,255,255,0.55)' }}>
+                <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(155,180,230,0.50)' }} />
                 {usFlip}
               </div>
             </div>
