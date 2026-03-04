@@ -571,6 +571,24 @@ export default function MacroSignalsPage() {
   
   const isDegraded = useMemo(() => digest?.status === 'degraded' || (digest?.missing_sources?.length || 0) > 0, [digest]);
 
+  // Global signals — all derived variables defined before JSX
+  const globalSignals = sessionData?.global_signals;
+  const consensus = globalSignals?.consensus;
+  const consensusLabel = consensus?.label || "Mixed View";
+  const consensusScore = consensus?.score ?? 66;
+  const confidenceLabel = consensus?.confidence_label || "Moderate";
+  const sourcesCount = consensus?.sources_count || 5;
+  const forces = consensus?.forces || [];
+  const forceDetails = consensus?.force_details || {};
+  const divergence = globalSignals?.divergence;
+  const fracture = divergence?.fracture_intensity || 2;
+  const divergenceItems = divergence?.items || [];
+  const timestampDisplay = globalSignals?.timestamp_display || "";
+
+  const consensusBreakdown = globalSignals
+    ? { segments: forces.map(f => ({ name: f.name, weight: (f.weight || 0) / 100, trend: f.trend, insight: f.insight })) }
+    : digest?.consensus_breakdown;
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
