@@ -210,14 +210,14 @@ const ConsensusCard = ({ item, index }) => {
               <ConfidenceBadge level={confidence_level} />
             </div>
           </div>
-          <StrengthBar pct={pct} color="rgba(88,227,164,0.75)" delay={0.1 + 0.06 * index} />
+          <StrengthBar pct={pct} color="rgba(140,165,220,0.72)" delay={0.1 + 0.06 * index} />
           {drivers.length > 0 && (
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.32)', letterSpacing: '0.07em' }}>Drivers</p>
-              <ul className="space-y-1.5">
-                {drivers.slice(0, 3).map((d, i) => (
-                  <li key={i} className="flex items-start gap-2 text-[12px]" style={{ color: 'rgba(255,255,255,0.68)' }}>
-                    <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(88,227,164,0.60)' }} />
+              <p className="text-[9px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: 'rgba(255,255,255,0.28)', letterSpacing: '0.07em' }}>Drivers</p>
+              <ul className="space-y-1">
+                {drivers.slice(0, 2).map((d, i) => (
+                  <li key={i} className="flex items-start gap-2 text-[11px]" style={{ color: 'rgba(255,255,255,0.60)' }}>
+                    <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(155,180,230,0.60)' }} />
                     {d}
                   </li>
                 ))}
@@ -225,31 +225,21 @@ const ConsensusCard = ({ item, index }) => {
             </div>
           )}
           {breakConditions.length > 0 && (
-            <div className="pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-              <p className="text-[10px] font-semibold uppercase tracking-widest mb-2" style={{ color: 'rgba(255,106,122,0.50)', letterSpacing: '0.07em' }}>What could break this</p>
-              <ul className="space-y-1.5">
-                {breakConditions.slice(0, 2).map((b, i) => (
-                  <li key={i} className="flex items-start gap-2 text-[12px]" style={{ color: 'rgba(255,255,255,0.58)' }}>
-                    <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(255,106,122,0.50)' }} />
+            <div className="pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+              <p className="text-[9px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: 'rgba(255,255,255,0.22)', letterSpacing: '0.07em' }}>Could break</p>
+              <ul className="space-y-1">
+                {breakConditions.slice(0, 1).map((b, i) => (
+                  <li key={i} className="flex items-start gap-2 text-[11px]" style={{ color: 'rgba(255,255,255,0.50)' }}>
+                    <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(255,160,150,0.50)' }} />
                     {b}
                   </li>
                 ))}
               </ul>
             </div>
           )}
-          <div className="flex items-center justify-between pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-            <div className="flex items-center gap-3">
-              <MiniSparkline data={sparkData} color="rgba(88,227,164,0.80)" delay={0.5 + 0.06 * index} />
-              <MomentumTag pts={momentum} />
-            </div>
-            <div className="flex items-center gap-2">
-              {sources > 0 && (
-                <span className="text-[11px] font-medium px-2 py-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.40)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                  {sources} sources
-                </span>
-              )}
-              <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.26)' }}>7d trend</span>
-            </div>
+          <div className="flex items-center gap-2 pt-2">
+            <MiniSparkline data={sparkData} color="rgba(155,180,230,0.78)" delay={0.5 + 0.06 * index} />
+            <MomentumTag pts={momentum} />
           </div>
         </div>
       </HoverCard>
