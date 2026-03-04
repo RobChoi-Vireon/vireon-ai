@@ -296,12 +296,12 @@ const DivergenceCard = ({ item, index }) => {
 
             {/* Dominant */}
             <div className="space-y-2.5 pr-5">
-              <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(180,120,255,0.72)', letterSpacing: '0.06em' }}>Dominant</p>
+              <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(160,175,210,0.65)', letterSpacing: '0.06em' }}>Dominant</p>
               <p className="text-[13px] font-bold leading-snug" style={{ color: 'rgba(255,255,255,0.94)', letterSpacing: '-0.01em' }}>{item.topic}</p>
-              <span className="text-[20px] font-bold block" style={{ color: 'rgba(180,120,255,0.92)', letterSpacing: '-0.03em', lineHeight: 1 }}>{domPct}%</span>
-              <StrengthBar pct={domPct} color="rgba(180,120,255,0.75)" delay={0.1 + 0.06 * index} />
+              <span className="text-[20px] font-bold block" style={{ color: 'rgba(200,215,255,0.90)', letterSpacing: '-0.03em', lineHeight: 1 }}>{domPct}%</span>
+              <StrengthBar pct={domPct} color="rgba(140,165,220,0.72)" delay={0.1 + 0.06 * index} />
               <div className="flex items-center gap-2 flex-wrap">
-                <MiniSparkline data={domSpark} color="rgba(180,120,255,0.80)" delay={0.45 + 0.06 * index} />
+                <MiniSparkline data={domSpark} color="rgba(155,180,230,0.78)" delay={0.45 + 0.06 * index} />
                 <MomentumTag pts={domMom} />
               </div>
             </div>
