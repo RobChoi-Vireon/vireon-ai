@@ -4,6 +4,30 @@ import { ChevronDown } from 'lucide-react';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
 
+const POSITIONING_STATES = {
+  'under_owned': {
+    label: 'Under-owned',
+    color: 'rgba(100,165,255,0.76)',
+    bg: 'rgba(100,165,255,0.09)',
+    border: 'rgba(100,165,255,0.16)',
+    tooltip: 'Market positioning appears light relative to the dominant narrative'
+  },
+  'neutral': {
+    label: 'Neutral',
+    color: 'rgba(255,255,255,0.56)',
+    bg: 'rgba(255,255,255,0.05)',
+    border: 'rgba(255,255,255,0.10)',
+    tooltip: 'Market positioning is balanced relative to the dominant narrative'
+  },
+  'crowded': {
+    label: 'Crowded',
+    color: 'rgba(255,180,80,0.76)',
+    bg: 'rgba(255,180,80,0.09)',
+    border: 'rgba(255,180,80,0.16)',
+    tooltip: 'Market positioning appears heavy relative to the dominant narrative'
+  }
+};
+
 export default function NarrativePulseCard({ summary = null, isEmpty = false }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [hovered, setHovered] = useState(false);
