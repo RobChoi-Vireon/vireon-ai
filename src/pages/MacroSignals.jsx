@@ -838,31 +838,45 @@ export default function MacroSignalsPage() {
                 
                 {/* 4) Global Signals — OS HORIZON REFINED LAYOUT */}
                 <motion.div className="col-span-12" variants={sectionVariants} id="section-global-signals" data-section-order="4">
-                    <div className="mb-4 pl-2">
-                        <h2 className="text-xl font-bold mb-1" style={{ color: 'rgba(255,255,255,0.95)' }}>
-                          Global Signals
-                        </h2>
-                        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.70)' }}>
-                          Consensus and divergence across key sources.
-                        </p>
+                <div className="mb-4 pl-2">
+                    <h2 className="text-xl font-bold mb-1" style={{ color: 'rgba(255,255,255,0.95)' }}>
+                      Global Signals
+                    </h2>
+                    <p className="text-xs" style={{ color: 'rgba(255,255,255,0.70)' }}>
+                      Consensus and divergence across key sources.
+                    </p>
+                </div>
+
+                {/* Enhanced Grid with Breathing Room */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+                    <div className="lg:col-span-5 min-h-[480px]">
+                        <ConsensusMeter 
+                            score={sessionData?.global_signals?.consensus?.score ?? digest.consensus_score} 
+                            breakdown={sessionData?.global_signals
+                              ? {
+                                  segments: (sessionData.global_signals.consensus?.forces || []).map(f => ({
+                                    name: f.name,
+                                    weight: (f.weight || 0) / 100,
+                                    trend: f.trend,
+                                    insight: f.insight
+                                  }))
+                                }
+                              : digest.consensus_breakdown}
+                            sourcesCount={sessionData?.global_signals?.consensus?.sources_count}
+                            timestampDisplay={sessionData?.global_signals?.timestamp_display}
+                            confidenceLabel={sessionData?.global_signals?.consensus?.confidence_label}
+                            consensusLabel={sessionData?.global_signals?.consensus?.label}
+                            onOpenDrawer={openConsensusDrawer}
+                        />
                     </div>
-                    
-                    {/* Enhanced Grid with Breathing Room */}
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-                        <div className="lg:col-span-5 min-h-[480px]">
-                            <ConsensusMeter 
-                                score={digest.consensus_score} 
-                                breakdown={digest.consensus_breakdown} 
-                                onOpenDrawer={openConsensusDrawer}
-                            />
-                        </div>
-                        <div className="lg:col-span-7">
-                            <DivergenceReport 
-                                divergences={digest.synthesis?.divergences || []} 
-                                onOpenDrawer={setSelectedDivergence} 
-                            />
-                        </div>
+                    <div className="lg:col-span-7">
+                        <DivergenceReport 
+                            divergences={sessionData?.global_signals?.divergence?.items || digest.synthesis?.divergences || []}
+                            fractureIntensity={sessionData?.global_signals?.divergence?.fracture_intensity}
+                            onOpenDrawer={setSelectedDivergence} 
+                        />
                     </div>
+                </div>
                 </motion.div>
 
                 {/* 5) Narrative Map */}
