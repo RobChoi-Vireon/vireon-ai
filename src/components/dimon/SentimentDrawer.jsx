@@ -340,7 +340,7 @@ const InsightRevealPanel = ({ segments, delay }) => {
           minHeight: '100%'
         }}
       >
-        Markets are showing slight upward pressure as stricter policies and early signs of credit strain push investors to be more cautious.
+        {summary || 'Markets are showing slight upward pressure as stricter policies and early signs of credit strain push investors to be more cautious.'}
       </p>
     </motion.div>
   );
@@ -711,7 +711,7 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
 // ============================================================================
 // MAIN STREET ALIGNMENT DRAWER
 // ============================================================================
-const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) => {
+const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail, summary, sourcesCount, timestampDisplay, forceDetails }) => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -891,7 +891,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail }) =>
               animate={{ opacity: 1 }}
               transition={{ delay: 0.72, duration: 0.25 }}
             >
-              Based on 5 sources • Updated 2m ago
+              Based on {sourcesCount ?? 5} sources • Updated {timestampDisplay ?? '2m ago'}
             </motion.p>
 
             {/* Insight Reveal Panel */}
