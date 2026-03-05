@@ -193,8 +193,16 @@ const HoverCard = ({ children, glowColor = 'rgba(255,255,255,0.06)', subsurface 
 
 const getRingColor = (pct) => {
   if (pct >= 80) return '#22c55e';
-  if (pct >= 60) return '#f59e0b';
-  return '#9ca3af';
+  if (pct >= 65) return '#f59e0b';
+  if (pct >= 50) return '#9ca3af';
+  return '#ef4444';
+};
+
+const getRingBadge = (pct) => {
+  if (pct >= 80) return { label: 'High', color: '#22c55e' };
+  if (pct >= 65) return { label: 'Moderate', color: '#f59e0b' };
+  if (pct >= 50) return { label: 'Weak', color: '#9ca3af' };
+  return { label: 'Fragmented', color: '#ef4444' };
 };
 
 const getShortLabel = (item) => {
