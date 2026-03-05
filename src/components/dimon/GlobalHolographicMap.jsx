@@ -1402,13 +1402,12 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
       }}
     >
       <div className="flex items-center justify-between mb-6 pl-2">
-        <div className="flex items-center space-x-3">
-          <Globe className="w-6 h-6" style={{ color: '#6AC7F7' }} />
-          <div>
-            <h2 style={{ fontSize: '18px', lineHeight: '24px', fontWeight: 600, color: TOKENS.colors.textPrimary, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif' }}>Equilibrium</h2>
-            <p style={{ fontSize: '13px', color: TOKENS.colors.textTertiary, letterSpacing: '0.2em', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Real-time balance of global macro forces.</p>
-          </div>
-        </div>
+         <div className="flex items-center space-x-3">
+           <div>
+             <h2 style={{ fontSize: '18px', lineHeight: '24px', fontWeight: 600, color: TOKENS.colors.textPrimary, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif' }}>Equilibrium</h2>
+             <p style={{ fontSize: '13px', color: TOKENS.colors.textTertiary, letterSpacing: '0.2em', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Real-time balance of global macro forces.</p>
+           </div>
+         </div>
 
         {/* LIQUID GLASS PILL — POWERED BY LYRA */}
         <motion.div
