@@ -407,7 +407,7 @@ const USGlobalCard = ({ item, index }) => {
             <Globe className="w-3.5 h-3.5" style={{ color: 'rgba(130,155,195,0.65)' }} strokeWidth={2} />
             <span className="text-[11px] font-bold uppercase tracking-wide" style={{ color: 'rgba(160,175,210,0.38)' }}>Global</span>
           </div>
-          <p className="text-[12px] font-semibold leading-[1.5]" style={{ color: 'rgba(255,255,255,0.78)' }}>"{item.global_view}"</p>
+          <p className="text-[12px] font-semibold leading-[1.5]" style={{ color: 'rgba(255,255,255,0.78)' }}>"{glbViewText}"</p>
           <div className="flex items-center justify-between">
             <span className="text-[18px] font-bold" style={{ color: 'rgba(170,190,225,0.73)', lineHeight: 1.2 }}>{glbPct}%</span>
             <MomentumTag pts={glbMom} />
