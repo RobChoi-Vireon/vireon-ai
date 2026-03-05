@@ -203,7 +203,7 @@ const ConsensusCard = ({ item, index }) => {
   const confidence_level = (typeof rawConf === 'string' && ['HIGH','MODERATE','LOW'].includes(rawConf))
     ? rawConf.charAt(0) + rawConf.slice(1).toLowerCase()
     : (item.confidence_level || (pct >= 70 ? 'High' : pct >= 45 ? 'Medium' : 'Low'));
-  const sparkData = FLAT_SPARK;
+  const sparkData = item.trend_7d || null;
 
   return (
     <motion.div
@@ -249,10 +249,12 @@ const ConsensusCard = ({ item, index }) => {
               </ul>
             </div>
           )}
-          <div className="flex items-center gap-2 pt-2">
-            <MiniSparkline data={sparkData} color="rgba(155,180,230,0.78)" delay={0.5 + 0.06 * index} />
-            <MomentumTag pts={momentum} />
-          </div>
+          {(sparkData || momentum) && (
+            <div className="flex items-center gap-2 pt-2">
+              <MiniSparkline data={sparkData} color="rgba(155,180,230,0.78)" delay={0.5 + 0.06 * index} />
+              <MomentumTag pts={momentum} />
+            </div>
+          )}
         </div>
       </HoverCard>
     </motion.div>
