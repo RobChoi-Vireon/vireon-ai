@@ -312,11 +312,13 @@ const ImpactIntelligence = ({ implications = [] }) => {
        </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
-        {implList.slice(0, 4).map((impl, i) => {
-          const title = getTitle(impl, i);
-          const description = getDescription(impl, i);
-          const icon = getIcon(i);
-          
+        {implList.map((impl, i) => {
+          const signal = impl.signal || impl.title || '';
+          const description = impl.description || '';
+          const direction = impl.direction;
+          const iconName = impl.icon || '◈';
+          const directionColor = getDirectionColor(direction);
+
           return (
             <motion.div
               key={i}
@@ -345,37 +347,35 @@ const ImpactIntelligence = ({ implications = [] }) => {
                 transition: { duration: 0.16 }
               }}
             >
-              <div style={{ fontFamily: TOKENS.font.family, fontSize: '12px', fontWeight: 600, letterSpacing: '0.10em', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', marginBottom: '8px' }}>
-                {impl.label || 'SIGNAL'}
-              </div>
-
               {/* Title row with leading icon chip */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
                 <div style={{
                   fontFamily: TOKENS.font.family,
-                  width: '22px',
-                  height: '22px',
+                  width: '28px',
+                  height: '28px',
                   borderRadius: '8px',
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.08)',
+                  background: `rgba(${directionColor === '#5FD1A3' ? '95,209,163' : directionColor === '#FF8C6B' ? '255,140,107' : '160,174,192'},0.12)`,
+                  border: `1px solid ${directionColor}33`,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
-                  fontSize: '11px',
-                  color: 'rgba(213,220,229,0.75)',
-                  fontWeight: 500
+                  fontSize: '12px',
+                  color: directionColor,
+                  fontWeight: 600
                 }}>
-                  {icon}
+                  {getIcon(iconName)}
                 </div>
                 <h4 style={{ fontFamily: TOKENS.font.family, fontSize: '16px', fontWeight: 600, letterSpacing: '-0.01em', color: TOKENS.color.text_primary, lineHeight: 1.2, margin: 0 }}>
-                  {title}
+                  {signal}
                 </h4>
               </div>
 
-              <p style={{ fontFamily: TOKENS.font.family, fontSize: '13.5px', fontWeight: 400, color: 'rgba(213,220,229,0.75)', lineHeight: 1.45 }}>
-                {description}
-              </p>
+              {description && (
+                <p style={{ fontFamily: TOKENS.font.family, fontSize: '13.5px', fontWeight: 400, color: 'rgba(213,220,229,0.75)', lineHeight: 1.45 }}>
+                  {description}
+                </p>
+              )}
             </motion.div>
           );
         })}
