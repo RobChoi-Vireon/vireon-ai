@@ -432,21 +432,30 @@ const ConsensusRingGrid = ({ consensus }) => {
   );
 };
 
+// ─── Shared bar primitive ────────────────────────────────────────────────────
+
+const NarrativeBar = ({ pct, color, height = 8, delay = 0 }) => (
+  <div style={{
+    height, borderRadius: '999px', width: '100%',
+    background: 'rgba(255,255,255,0.12)', overflow: 'hidden', position: 'relative'
+  }}>
+    <motion.div
+      initial={{ width: 0 }}
+      animate={{ width: `${pct}%` }}
+      transition={{ duration: 0.85, delay, ease: 'easeOut' }}
+      style={{ height: '100%', borderRadius: '999px', background: color }}
+    />
+  </div>
+);
+
 // ─── DivergenceCard ───────────────────────────────────────────────────────────
 
 const DivergenceCard = ({ item, index }) => {
-  // Support narrative_map_v1: item.dominant.statement/.score, item.counter.statement/.score
+  const [hovered, setHovered] = useState(false);
   const domPct = item.dominant?.score ?? Math.round((item.confidence || 0.62) * 100);
   const ctrPct = item.counter?.score ?? (100 - domPct);
-  const domMomRaw = item.change_7d ?? item.dominant_momentum ?? item.momentum_pts ?? 0;
-  const domMom = domMomRaw || null;
-  const ctrMomRaw = item.change_7d != null ? -item.change_7d : (item.counter_momentum ?? -domMomRaw);
-  const ctrMom = ctrMomRaw || null;
   const interpretation = item.interpretation || item.summary || '';
   const resolution = item.resolution_triggers || item.break_conditions || [];
-  const domSpark = item.dominant?.trend_7d || null;
-  const ctrSpark = item.counter?.trend_7d || null;
-  // dominant statement
   const domStatement = item.dominant?.statement || item.topic || '—';
   const counterNarrative = item.counter?.statement || item.counter_narrative || (typeof item.counter === 'string' ? item.counter : null) || '—';
 
@@ -455,76 +464,56 @@ const DivergenceCard = ({ item, index }) => {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.06 * index, duration: 0.38, ease: HORIZON_EASE }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      <HoverCard
-        glowColor="rgba(255,255,255,0.04)"
-        subsurface="rgba(255,255,255,0.015)"
+      <motion.div
+        animate={{ scale: hovered ? 1.02 : 1 }}
+        transition={{ duration: 0.18, ease: 'easeOut' }}
         style={{
-          borderRadius: '20px',
-          padding: '18px'
+          padding: '24px', borderRadius: '22px',
+          background: 'rgba(14,18,26,0.62)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          backdropFilter: 'blur(22px)', WebkitBackdropFilter: 'blur(22px)',
         }}
       >
-        <div className="relative z-10 space-y-4">
-          {/* Two-column with glow divider */}
-          <div className="grid grid-cols-2 gap-0 relative">
-            {/* Vertical glow divider */}
-            <div style={{
-              position: 'absolute', top: '8px', bottom: '8px', left: '50%', width: '1px',
-              background: 'linear-gradient(180deg, transparent, rgba(255,255,255,0.08), rgba(255,255,255,0.05), transparent)',
-              transform: 'translateX(-50%)', pointerEvents: 'none'
-            }} />
-
-            {/* Dominant */}
-            <div className="space-y-2.5 pr-4">
-             <p className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: 'rgba(160,175,210,0.55)' }}>Dominant</p>
-             <p className="text-[12px] font-bold leading-[1.5]" style={{ color: 'rgba(255,255,255,0.94)' }}>{domStatement}</p>
-              <span className="text-[18px] font-bold block" style={{ color: 'rgba(190,205,235,0.90)', lineHeight: 1.2 }}>{domPct}%</span>
-              <StrengthBar pct={domPct} color="rgba(140,165,220,0.68)" delay={0.1 + 0.06 * index} />
-              {(domSpark || domMom != null) && (
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <MiniSparkline data={domSpark} color="rgba(155,180,230,0.75)" delay={0.45 + 0.06 * index} />
-                  {domMom != null && <MomentumTag pts={domMom} />}
-                </div>
-              )}
-            </div>
-
-            {/* Counter */}
-            <div className="space-y-2.5 pl-4">
-              <p className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: 'rgba(160,175,210,0.38)' }}>Counter</p>
-              <p className="text-[12px] font-semibold leading-[1.5]" style={{ color: 'rgba(255,255,255,0.68)' }}>{counterNarrative}</p>
-              <span className="text-[18px] font-bold block" style={{ color: 'rgba(175,190,225,0.62)', lineHeight: 1.2 }}>{ctrPct}%</span>
-              <StrengthBar pct={ctrPct} color="rgba(130,155,195,0.38)" delay={0.1 + 0.06 * index} />
-              {(ctrSpark || ctrMom != null) && (
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <MiniSparkline data={ctrSpark} color="rgba(145,170,210,0.52)" delay={0.45 + 0.06 * index} />
-                  {ctrMom != null && <MomentumTag pts={ctrMom} />}
-                </div>
-              )}
-            </div>
+        {/* Two-column split */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1px 1fr', gap: '0' }}>
+          {/* Dominant — full opacity */}
+          <div style={{ paddingRight: '20px', opacity: 1 }}>
+            <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: 'rgba(255,255,255,0.35)', marginBottom: '8px' }}>Dominant</p>
+            <p style={{ fontSize: '16px', fontWeight: 550, lineHeight: 1.6, color: 'rgba(255,255,255,0.92)', marginBottom: '12px' }}>{domStatement}</p>
+            <p style={{ fontSize: '28px', fontWeight: 600, color: 'rgba(255,255,255,0.90)', lineHeight: 1, marginBottom: '10px' }}>{domPct}%</p>
+            <NarrativeBar pct={domPct} color="rgba(255,255,255,0.9)" delay={0.1 + 0.06 * index} />
           </div>
 
-          {interpretation && (
-            <div className="p-3 rounded-[12px]" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
-              <p className="text-[11px] font-semibold uppercase tracking-wide mb-2" style={{ color: 'rgba(255,255,255,0.30)' }}>Interpretation</p>
-              <p className="text-[12px] leading-[1.6]" style={{ color: 'rgba(255,255,255,0.65)' }}>"{interpretation}"</p>
-            </div>
-          )}
+          {/* Divider */}
+          <div style={{ background: 'linear-gradient(180deg, transparent, rgba(255,255,255,0.08), transparent)', margin: '8px 0' }} />
 
-          {resolution.length > 0 && (
-            <div className="pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-              <p className="text-[11px] font-semibold uppercase tracking-wide mb-2" style={{ color: 'rgba(255,255,255,0.28)' }}>Would resolve</p>
-              <ul className="space-y-1.5">
-                {resolution.slice(0, 1).map((r, i) => (
-                  <li key={i} className="flex items-start gap-2 text-[12px] leading-[1.5]" style={{ color: 'rgba(255,255,255,0.55)' }}>
-                    <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(160,180,220,0.45)' }} />
-                    {r}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {/* Counter — reduced opacity */}
+          <div style={{ paddingLeft: '20px', opacity: 0.75 }}>
+            <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: 'rgba(255,255,255,0.28)', marginBottom: '8px' }}>Counter</p>
+            <p style={{ fontSize: '16px', fontWeight: 550, lineHeight: 1.6, color: 'rgba(255,255,255,0.75)', marginBottom: '12px' }}>{counterNarrative}</p>
+            <p style={{ fontSize: '28px', fontWeight: 600, color: 'rgba(255,255,255,0.65)', lineHeight: 1, marginBottom: '10px' }}>{ctrPct}%</p>
+            <NarrativeBar pct={ctrPct} color="rgba(255,255,255,0.45)" delay={0.15 + 0.06 * index} />
+          </div>
         </div>
-      </HoverCard>
+
+        {/* Interpretation */}
+        {interpretation && (
+          <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+            <p style={{ fontSize: '13px', lineHeight: 1.6, color: 'rgba(255,255,255,0.55)', fontStyle: 'italic' }}>{interpretation}</p>
+          </div>
+        )}
+
+        {/* Resolution trigger */}
+        {resolution.length > 0 && (
+          <div style={{ marginTop: '12px' }}>
+            <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.25)', marginBottom: '6px' }}>Would resolve if</p>
+            <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.50)', lineHeight: 1.5 }}>{resolution[0]}</p>
+          </div>
+        )}
+      </motion.div>
     </motion.div>
   );
 };
