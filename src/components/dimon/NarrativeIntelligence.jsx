@@ -214,14 +214,14 @@ const HeroPanel = ({ narrativePulse, timestamp }) => {
 
 // ─── DRIVERS — FLOATING NARRATIVE CHIPS ────────────────────────────────────
 const DriversSection = ({ drivers = [] }) => {
-  const defaultDrivers = [
-    'Policy tightening driving compliance costs',
-    'Credit stress in emerging markets',
-    'Sector divergence (energy vs industrial)',
-    'China slowdown moderating global growth'
-  ];
-
-  const driverList = drivers.length > 0 ? drivers : defaultDrivers;
+  // Extract driver labels from driver objects (rank + label)
+  const driverList = drivers
+    .map(driver => {
+      if (typeof driver === 'string') return driver;
+      if (driver?.label) return driver.label;
+      return null;
+    })
+    .filter(Boolean);
 
   return (
     <motion.div
