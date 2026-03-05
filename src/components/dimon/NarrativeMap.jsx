@@ -572,7 +572,7 @@ const NarrativeShiftCard = ({ item, index }) => {
       </p>
 
       {/* Badge row */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '12px' }}>
         <span style={{
           display: 'inline-flex', alignItems: 'center', gap: '5px',
           fontSize: '12px', fontWeight: 600,
@@ -584,15 +584,18 @@ const NarrativeShiftCard = ({ item, index }) => {
           <MomIcon style={{ width: '13px', height: '13px' }} strokeWidth={2.5} />
           {dir}
         </span>
-        <span style={{
-          fontSize: '12px', fontWeight: 600,
-          padding: '7px 13px', borderRadius: '999px',
-          background: 'rgba(20,24,32,0.55)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          color: confidenceColor,
-        }}>
-          {confidence}
-        </span>
+        {/* Confidence dot indicator */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          {[0, 1, 2].map(i => {
+            const filled = confidence === 'High' ? 3 : confidence === 'Moderate' ? 2 : 1;
+            return (
+              <div key={i} style={{
+                width: '6px', height: '6px', borderRadius: '50%',
+                background: i < filled ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.20)',
+              }} />
+            );
+          })}
+        </div>
       </div>
 
       {/* Description */}
