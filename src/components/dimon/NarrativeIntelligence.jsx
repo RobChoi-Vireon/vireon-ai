@@ -789,7 +789,7 @@ export default function NarrativeIntelligence({ sources, sentiment, drivers, imp
         left: 0,
         right: 0,
         height: '200px',
-        background: `linear-gradient(135deg, #0E1420 0%, #101827 50%, #0C1320 100%), radial-gradient(ellipse at 50% 0%, rgba(80,120,160,0.08) 0%, transparent 70%)`,
+        background: `linear-gradient(135deg, #0E1420 0%, #101827 50%, #0C1320 100%)`,
         pointerEvents: 'none',
         zIndex: 0
       }} />
