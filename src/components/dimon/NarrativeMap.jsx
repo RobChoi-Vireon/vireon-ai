@@ -398,7 +398,7 @@ const USGlobalCard = ({ item, index }) => {
           <p className="text-[12px] font-semibold leading-[1.5]" style={{ color: 'rgba(255,255,255,0.90)' }}>"{usViewText}"</p>
           <div className="flex items-center justify-between">
             <span className="text-[18px] font-bold" style={{ color: 'rgba(190,205,235,0.88)', lineHeight: 1.2 }}>{usPct}%</span>
-            <MomentumTag pts={usMom} />
+            {usMom !== 0 && <MomentumTag pts={usMom} />}
           </div>
           <StrengthBar pct={usPct} color="rgba(140,165,220,0.68)" delay={0.1 + 0.06 * index} />
           {usSpark && <MiniSparkline data={usSpark} color="rgba(155,180,230,0.75)" delay={0.4 + 0.06 * index} />}
