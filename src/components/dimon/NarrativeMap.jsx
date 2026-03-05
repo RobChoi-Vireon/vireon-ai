@@ -4,8 +4,8 @@ import { CheckCircle, GitCommit, Globe, TrendingUp, TrendingDown, Minus, Zap, In
 import NarrativeStateCard from './NarrativeStateCard';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
-const SPRING = { type: 'spring', stiffness: 340, damping: 38, mass: 0.9 };
-const SMOOTH = { duration: 0.28, ease: [0.22, 0.61, 0.36, 1] };
+const SPRING = { type: 'spring', stiffness: 380, damping: 40, mass: 0.8 };
+const SMOOTH = { duration: 0.26, ease: [0.22, 0.61, 0.36, 1] };
 
 // ─── Shared design tokens ────────────────────────────────────────────────────
 
@@ -56,7 +56,7 @@ const StrengthBar = ({ pct, color, delay = 0 }) => (
     <motion.div
       initial={{ width: 0, opacity: 0.6 }}
       animate={{ width: `${pct}%`, opacity: 1 }}
-      transition={{ duration: 0.95, delay, ease: HORIZON_EASE }}
+      transition={{ duration: 0.9, delay, ease: HORIZON_EASE }}
       style={{
         height: '100%', borderRadius: '5px',
         background: `linear-gradient(90deg, ${color.replace(/[\d.]+\)$/, '0.55)')} 0%, ${color} 60%, ${color.replace(/[\d.]+\)$/, '0.72)')} 100%)`,
@@ -101,7 +101,7 @@ const MiniSparkline = ({ data, color, delay = 0 }) => {
         filter={`url(#sg-${delay})`}
         initial={{ pathLength: 0, opacity: 0 }}
         animate={{ pathLength: 1, opacity: 0.85 }}
-        transition={{ duration: 1.1, delay, ease: HORIZON_EASE }}
+        transition={{ duration: 1.0, delay, ease: HORIZON_EASE }}
       />
       <motion.circle cx={lx} cy={ly} r="2" fill={color}
         initial={{ scale: 0 }} animate={{ scale: 1 }}
