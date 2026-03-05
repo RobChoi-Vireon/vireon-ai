@@ -403,10 +403,10 @@ const ImpactIntelligence = ({ impactIntelligence = [], implications = [] }) => {
        </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
-        {implList.slice(0, 4).map((impl, i) => {
+        {implList.map((impl, i) => {
           const title = getTitle(impl, i);
           const description = getDescription(impl, i);
-          const icon = getIcon(i);
+          const icon = getIcon(impl, i);
           
           return (
             <motion.div
