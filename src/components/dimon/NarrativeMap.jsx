@@ -452,7 +452,6 @@ const NarrativeBar = ({ pct, color, height = 8, delay = 0 }) => (
 // ─── DivergenceCard ───────────────────────────────────────────────────────────
 
 const DivergenceCard = ({ item, index }) => {
-  const [hovered, setHovered] = useState(false);
   const domPct = item.dominant?.score ?? Math.round((item.confidence || 0.62) * 100);
   const ctrPct = item.counter?.score ?? (100 - domPct);
   const interpretation = item.interpretation || item.summary || '';
@@ -462,59 +461,41 @@ const DivergenceCard = ({ item, index }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.06 * index, duration: 0.38, ease: HORIZON_EASE }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      transition={{ delay: 0.06 * index, duration: 0.36, ease: HORIZON_EASE }}
     >
-      <motion.div
-        animate={{ scale: hovered ? 1.02 : 1 }}
-        transition={{ duration: 0.18, ease: 'easeOut' }}
-        style={{
-          padding: '24px', borderRadius: '22px',
-          background: 'rgba(14,18,26,0.62)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          backdropFilter: 'blur(22px)', WebkitBackdropFilter: 'blur(22px)',
-        }}
-      >
-        {/* Two-column split */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1px 1fr', gap: '0' }}>
-          {/* Dominant — full opacity */}
-          <div style={{ paddingRight: '20px', opacity: 1 }}>
-            <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: 'rgba(255,255,255,0.35)', marginBottom: '8px' }}>Dominant</p>
-            <p style={{ fontSize: '16px', fontWeight: 550, lineHeight: 1.6, color: 'rgba(255,255,255,0.92)', marginBottom: '12px' }}>{domStatement}</p>
-            <p style={{ fontSize: '28px', fontWeight: 600, color: 'rgba(255,255,255,0.90)', lineHeight: 1, marginBottom: '10px' }}>{domPct}%</p>
-            <NarrativeBar pct={domPct} color="rgba(255,255,255,0.9)" delay={0.1 + 0.06 * index} />
-          </div>
+      {/* Dominant */}
+      <div style={{ opacity: 1 }}>
+        <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: 'rgba(255,255,255,0.30)', marginBottom: '8px' }}>Dominant</p>
+        <p style={{ fontSize: '16px', fontWeight: 550, lineHeight: 1.6, color: 'rgba(255,255,255,0.92)', marginBottom: '12px' }}>{domStatement}</p>
+        <p style={{ fontSize: '28px', fontWeight: 600, color: 'rgba(255,255,255,0.88)', lineHeight: 1, marginBottom: '10px' }}>{domPct}%</p>
+        <NarrativeBar pct={domPct} color="rgba(255,255,255,0.88)" delay={0.08 + 0.06 * index} />
+      </div>
 
-          {/* Divider */}
-          <div style={{ background: 'linear-gradient(180deg, transparent, rgba(255,255,255,0.08), transparent)', margin: '8px 0' }} />
+      {/* Horizontal divider */}
+      <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)', margin: '28px 0' }} />
 
-          {/* Counter — reduced opacity */}
-          <div style={{ paddingLeft: '20px', opacity: 0.75 }}>
-            <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: 'rgba(255,255,255,0.28)', marginBottom: '8px' }}>Counter</p>
-            <p style={{ fontSize: '16px', fontWeight: 550, lineHeight: 1.6, color: 'rgba(255,255,255,0.75)', marginBottom: '12px' }}>{counterNarrative}</p>
-            <p style={{ fontSize: '28px', fontWeight: 600, color: 'rgba(255,255,255,0.65)', lineHeight: 1, marginBottom: '10px' }}>{ctrPct}%</p>
-            <NarrativeBar pct={ctrPct} color="rgba(255,255,255,0.45)" delay={0.15 + 0.06 * index} />
-          </div>
+      {/* Counter */}
+      <div style={{ opacity: 0.80 }}>
+        <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: 'rgba(255,255,255,0.25)', marginBottom: '8px' }}>Counter</p>
+        <p style={{ fontSize: '16px', fontWeight: 550, lineHeight: 1.6, color: 'rgba(255,255,255,0.72)', marginBottom: '12px' }}>{counterNarrative}</p>
+        <p style={{ fontSize: '28px', fontWeight: 600, color: 'rgba(255,255,255,0.62)', lineHeight: 1, marginBottom: '10px' }}>{ctrPct}%</p>
+        <NarrativeBar pct={ctrPct} color="rgba(255,255,255,0.42)" delay={0.14 + 0.06 * index} />
+      </div>
+
+      {/* Interpretation */}
+      {interpretation && (
+        <p style={{ fontSize: '13px', lineHeight: 1.6, color: 'rgba(255,255,255,0.42)', marginTop: '16px', fontStyle: 'italic' }}>{interpretation}</p>
+      )}
+
+      {/* Resolution trigger */}
+      {resolution.length > 0 && (
+        <div style={{ marginTop: '12px' }}>
+          <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.22)', marginBottom: '5px' }}>Would resolve if</p>
+          <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>{resolution[0]}</p>
         </div>
-
-        {/* Interpretation */}
-        {interpretation && (
-          <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-            <p style={{ fontSize: '13px', lineHeight: 1.6, color: 'rgba(255,255,255,0.55)', fontStyle: 'italic' }}>{interpretation}</p>
-          </div>
-        )}
-
-        {/* Resolution trigger */}
-        {resolution.length > 0 && (
-          <div style={{ marginTop: '12px' }}>
-            <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.25)', marginBottom: '6px' }}>Would resolve if</p>
-            <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.50)', lineHeight: 1.5 }}>{resolution[0]}</p>
-          </div>
-        )}
-      </motion.div>
+      )}
     </motion.div>
   );
 };
