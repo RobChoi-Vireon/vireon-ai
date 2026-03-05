@@ -401,7 +401,7 @@ const USGlobalCard = ({ item, index }) => {
             <MomentumTag pts={usMom} />
           </div>
           <StrengthBar pct={usPct} color="rgba(140,165,220,0.68)" delay={0.1 + 0.06 * index} />
-          <MiniSparkline data={usSpark} color="rgba(155,180,230,0.75)" delay={0.4 + 0.06 * index} />
+          {usSpark && <MiniSparkline data={usSpark} color="rgba(155,180,230,0.75)" delay={0.4 + 0.06 * index} />}
           {usFlip && (
             <div className="pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
               <p className="text-[11px] font-semibold uppercase tracking-wide mb-1.5" style={{ color: 'rgba(255,255,255,0.28)' }}>Flip trigger</p>
