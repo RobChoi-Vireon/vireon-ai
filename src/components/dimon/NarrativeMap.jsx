@@ -503,7 +503,6 @@ const DivergenceCard = ({ item, index }) => {
 // ─── USGlobalCard ─────────────────────────────────────────────────────────────
 
 const USGlobalCard = ({ item, index }) => {
-  const [hovered, setHovered] = useState(false);
   const usPct = item.us?.score ?? Math.round((item.confidence || 0.71) * 100);
   const glbPct = item.global?.score ?? (100 - usPct);
   const usFlip = item.us_flip_trigger || item.flip_trigger || null;
@@ -513,62 +512,36 @@ const USGlobalCard = ({ item, index }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.06 * index, duration: 0.38, ease: HORIZON_EASE }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      transition={{ delay: 0.06 * index, duration: 0.36, ease: HORIZON_EASE }}
     >
-      <motion.div
-        animate={{ scale: hovered ? 1.02 : 1 }}
-        transition={{ duration: 0.18, ease: 'easeOut' }}
-        style={{
-          padding: '24px', borderRadius: '22px',
-          background: 'rgba(14,18,26,0.62)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          backdropFilter: 'blur(22px)', WebkitBackdropFilter: 'blur(22px)',
-        }}
-      >
-        {/* Two-column: US | Global */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1px 1fr' }}>
-          {/* US */}
-          <div style={{ paddingRight: '20px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-              <TrendingUp className="w-3.5 h-3.5" style={{ color: '#3b82f6', opacity: 0.8 }} strokeWidth={2} />
-              <span style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: 'rgba(59,130,246,0.65)' }}>US Tilt</span>
-            </div>
-            <p style={{ fontSize: '16px', fontWeight: 550, lineHeight: 1.6, color: 'rgba(255,255,255,0.90)', marginBottom: '12px' }}>{usViewText}</p>
-            <p style={{ fontSize: '28px', fontWeight: 600, color: '#3b82f6', opacity: 0.9, lineHeight: 1, marginBottom: '10px' }}>{usPct}%</p>
-            <NarrativeBar pct={usPct} color="#3b82f6" delay={0.1 + 0.06 * index} />
-            {usFlip && (
-              <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.42)', marginTop: '10px', lineHeight: 1.5 }}>
-                <span style={{ color: 'rgba(255,255,255,0.25)', fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '3px' }}>Flip trigger</span>
-                {usFlip}
-              </p>
-            )}
-          </div>
-
-          {/* Divider */}
-          <div style={{ background: 'linear-gradient(180deg, transparent, rgba(255,255,255,0.07), transparent)', margin: '8px 0' }} />
-
-          {/* Global */}
-          <div style={{ paddingLeft: '20px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-              <Globe className="w-3.5 h-3.5" style={{ color: '#9ca3af', opacity: 0.8 }} strokeWidth={2} />
-              <span style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: 'rgba(156,163,175,0.55)' }}>Global</span>
-            </div>
-            <p style={{ fontSize: '16px', fontWeight: 550, lineHeight: 1.6, color: 'rgba(255,255,255,0.75)', marginBottom: '12px' }}>{glbViewText}</p>
-            <p style={{ fontSize: '28px', fontWeight: 600, color: '#9ca3af', opacity: 0.85, lineHeight: 1, marginBottom: '10px' }}>{glbPct}%</p>
-            <NarrativeBar pct={glbPct} color="#9ca3af" delay={0.15 + 0.06 * index} />
-            {glbFlip && (
-              <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.38)', marginTop: '10px', lineHeight: 1.5 }}>
-                <span style={{ color: 'rgba(255,255,255,0.22)', fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '3px' }}>Flip trigger</span>
-                {glbFlip}
-              </p>
-            )}
-          </div>
+      {/* US */}
+      <div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+          <TrendingUp className="w-3.5 h-3.5" style={{ color: '#3b82f6', opacity: 0.75 }} strokeWidth={2} />
+          <span style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: 'rgba(59,130,246,0.60)' }}>US Tilt</span>
         </div>
-      </motion.div>
+        <p style={{ fontSize: '16px', fontWeight: 550, lineHeight: 1.6, color: 'rgba(255,255,255,0.90)', marginBottom: '12px' }}>{usViewText}</p>
+        <p style={{ fontSize: '28px', fontWeight: 600, color: 'rgba(59,130,246,0.88)', lineHeight: 1, marginBottom: '10px' }}>{usPct}%</p>
+        <NarrativeBar pct={usPct} color="rgba(59,130,246,0.75)" delay={0.08 + 0.06 * index} />
+        {usFlip && <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.40)', marginTop: '10px', lineHeight: 1.5 }}>{usFlip}</p>}
+      </div>
+
+      {/* Divider */}
+      <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)', margin: '28px 0' }} />
+
+      {/* Global */}
+      <div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+          <Globe className="w-3.5 h-3.5" style={{ color: '#9ca3af', opacity: 0.75 }} strokeWidth={2} />
+          <span style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: 'rgba(156,163,175,0.52)' }}>Global</span>
+        </div>
+        <p style={{ fontSize: '16px', fontWeight: 550, lineHeight: 1.6, color: 'rgba(255,255,255,0.75)', marginBottom: '12px' }}>{glbViewText}</p>
+        <p style={{ fontSize: '28px', fontWeight: 600, color: 'rgba(156,163,175,0.82)', lineHeight: 1, marginBottom: '10px' }}>{glbPct}%</p>
+        <NarrativeBar pct={glbPct} color="rgba(156,163,175,0.60)" delay={0.14 + 0.06 * index} />
+        {glbFlip && <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.36)', marginTop: '10px', lineHeight: 1.5 }}>{glbFlip}</p>}
+      </div>
     </motion.div>
   );
 };
