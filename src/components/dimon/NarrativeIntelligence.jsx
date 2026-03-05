@@ -448,15 +448,17 @@ const SourceItem = ({ source, index, onExpand, isExpanded }) => {
           >
             <div
               style={{
-                background: TOKENS.color.deep_glass,
-                backdropFilter: `blur(20px)`,
-                WebkitBackdropFilter: `blur(20px)`,
-                border: `1px rgba(255,255,255,0.04)`,
-                borderRadius: TOKENS.radius_row,
+                background: 'rgba(30,40,60,0.28)',
+                backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01))',
+                backdropFilter: 'blur(22px)',
+                WebkitBackdropFilter: 'blur(22px)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: '18px',
                 padding: '18px',
                 display: 'grid',
                 gridTemplateColumns: '1fr 1fr',
-                gap: '24px'
+                gap: '24px',
+                boxShadow: '0 0 0 1px rgba(255,255,255,0.02) inset, 0 12px 40px rgba(0,0,0,0.35)'
               }}
             >
               {/* Left column */}
