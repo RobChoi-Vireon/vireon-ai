@@ -942,7 +942,7 @@ export default function MacroSignalsPage() {
                 )}
                 
                 {/* 6) Narrative Intelligence — New OS Horizon Layout */}
-                {(digest.sources || digest.synthesis) && (
+                {(sessionData?.narrative_intelligence || digest.sources || digest.synthesis) && (
                    <motion.div 
                      variants={sectionVariants}
                      id="section-narrative-intelligence" 
@@ -950,18 +950,18 @@ export default function MacroSignalsPage() {
                      className="col-span-12"
                    >
                      <NarrativeIntelligence 
-                       sources={digest.sources || []}
-                       sentiment={{ cautious: 71, neutral: 29 }}
-                       drivers={[
-                         'Policy tightening driving compliance costs',
-                         'Credit stress in emerging markets',
-                         'Sector divergence (energy vs industrial)',
-                         'China slowdown moderating global growth'
-                       ]}
-                       implications={digest.strategic_implications?.slice(0, 4) || []}
-                       outlets={digest.sources?.length || 7}
-                       window="24h"
-                       confidence="Moderate"
+                       narrativePulse={sessionData?.narrative_intelligence?.narrative_pulse}
+                       timestamp={sessionData?.narrative_intelligence?.timestamp_display || sessionData?.narrative_intelligence?.timestamp}
+                       narrativeDrivers={sessionData?.narrative_intelligence?.narrative_drivers}
+                       impactIntelligence={sessionData?.narrative_intelligence?.impact_intelligence}
+                       intelligenceSources={sessionData?.narrative_intelligence?.intelligence_sources}
+                       sources={sessionData?.narrative_intelligence?.intelligence_sources || digest.sources || []}
+                       sentiment={sessionData?.narrative_intelligence?.narrative_pulse?.sentiment}
+                       drivers={sessionData?.narrative_intelligence?.narrative_drivers?.map(d => d.label) || []}
+                       implications={sessionData?.narrative_intelligence?.impact_intelligence || digest.strategic_implications?.slice(0, 4) || []}
+                       outlets={sessionData?.narrative_intelligence?.narrative_pulse?.outlets_count || digest.sources?.length || 7}
+                       window={sessionData?.narrative_intelligence?.narrative_pulse?.time_window || "24h"}
+                       confidence={sessionData?.narrative_intelligence?.narrative_pulse?.confidence_label || "Moderate"}
                      />
                    </motion.div>
                  )}

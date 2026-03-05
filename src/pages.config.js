@@ -58,7 +58,6 @@ import FinanceDictionary from './pages/FinanceDictionary';
 import Home from './pages/Home';
 import Insights from './pages/Insights';
 import LiveFeed from './pages/LiveFeed';
-import MacroSignals from './pages/MacroSignals';
 import Me from './pages/Me';
 import Reports from './pages/Reports';
 import SentimentHeatmap from './pages/SentimentHeatmap';
@@ -69,6 +68,7 @@ import SettingsNotifications from './pages/SettingsNotifications';
 import SettingsSecurity from './pages/SettingsSecurity';
 import SmartTracker from './pages/SmartTracker';
 import Watchlist from './pages/Watchlist';
+import MacroSignals from './pages/MacroSignals';
 import __Layout from './Layout.jsx';
 
 
@@ -84,7 +84,6 @@ export const PAGES = {
     "Home": Home,
     "Insights": Insights,
     "LiveFeed": LiveFeed,
-    "MacroSignals": MacroSignals,
     "Me": Me,
     "Reports": Reports,
     "SentimentHeatmap": SentimentHeatmap,
@@ -95,6 +94,7 @@ export const PAGES = {
     "SettingsSecurity": SettingsSecurity,
     "SmartTracker": SmartTracker,
     "Watchlist": Watchlist,
+    "MacroSignals": MacroSignals,
 }
 
 export const pagesConfig = {
