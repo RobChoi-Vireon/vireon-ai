@@ -222,7 +222,7 @@ const ConsensusCard = ({ item, index }) => {
               <ConfidenceBadge level={confidence_level} />
             </div>
           </div>
-          <StrengthBar pct={pct} color="rgba(140,165,220,0.72)" delay={0.1 + 0.06 * index} />
+          {pct != null && <StrengthBar pct={pct} color="rgba(140,165,220,0.72)" delay={0.1 + 0.06 * index} />}
           {drivers.length > 0 && (
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-wide mb-2" style={{ color: 'rgba(255,255,255,0.35)' }}>Drivers</p>
