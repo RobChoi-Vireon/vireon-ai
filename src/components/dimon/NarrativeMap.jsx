@@ -422,15 +422,17 @@ const USGlobalCard = ({ item, index }) => {
 
 // ─── NarrativeShiftCard (premium OS Horizon for Changing tab) ──────────────────
 
+const FLAT_SPARK = [50, 50, 50, 50, 50, 50, 50];
+
 const NarrativeShiftCard = ({ item, index }) => {
-  const shift = item.shift_pts ?? item.momentum_pts ?? 0;
+  const shift = item.change_7d ?? item.shift_pts ?? item.momentum_pts ?? 0;
   const isRising = shift >= 0;
   const shiftColor = isRising ? 'rgba(88,227,164,0.88)' : 'rgba(255,106,122,0.88)';
   const shiftBg = isRising ? 'rgba(88,227,164,0.10)' : 'rgba(255,106,122,0.10)';
-  const momentum = item.momentum || 'Stable';
+  const momentum = item.direction || item.momentum || 'Stable';
   const confidence = item.confidence || 'Moderate';
-  const interpretation = item.interpretation || '';
-  const sparkData = item.sparkline || (isRising ? [45, 48, 50, 52, 54, 57, 60] : [60, 57, 54, 52, 50, 48, 45]);
+  const interpretation = item.commentary || item.interpretation || '';
+  const sparkData = FLAT_SPARK;
 
   // Confidence color mapping
   const confidenceMap = {
