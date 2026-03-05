@@ -722,6 +722,25 @@ const ChangingTabContent = ({ momentumItems = [] }) => (
 
 export default function NarrativeMap({ synthesis, density, narrativeMap }) {
   const [activeTab, setActiveTab] = useState('consensus');
+  const tabIds = TABS.map(t => t.id);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowRight') {
+        setActiveTab(prev => {
+          const i = tabIds.indexOf(prev);
+          return tabIds[(i + 1) % tabIds.length];
+        });
+      } else if (e.key === 'ArrowLeft') {
+        setActiveTab(prev => {
+          const i = tabIds.indexOf(prev);
+          return tabIds[(i - 1 + tabIds.length) % tabIds.length];
+        });
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Use live narrativeMap if provided, otherwise fall back to legacy synthesis prop
   const hasLiveData = !!narrativeMap;
