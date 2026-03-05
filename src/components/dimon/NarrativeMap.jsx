@@ -266,7 +266,7 @@ const ConsensusRing = ({ item, index, isSelected, onSelect }) => {
             </linearGradient>
           </defs>
           {/* Track */}
-          <circle cx={SIZE / 2} cy={SIZE / 2} r={RADIUS} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth={STROKE} />
+          <circle cx={SIZE / 2} cy={SIZE / 2} r={RADIUS} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={STROKE} />
           {/* Animated gradient fill */}
           <motion.circle
             cx={SIZE / 2} cy={SIZE / 2} r={RADIUS}
