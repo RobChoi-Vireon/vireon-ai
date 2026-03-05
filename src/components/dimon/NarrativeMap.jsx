@@ -192,10 +192,10 @@ const HoverCard = ({ children, glowColor = 'rgba(255,255,255,0.06)', subsurface 
 // ─── Consensus Ring ───────────────────────────────────────────────────────────
 
 const RING_CONFIG = {
-  high:       { color: '#22c55e', gradEnd: '#34D399', label: 'High',       badgeColor: '#22c55e' },
-  moderate:   { color: '#f59e0b', gradEnd: '#FB923C', label: 'Moderate',   badgeColor: '#f59e0b' },
-  weak:       { color: '#9ca3af', gradEnd: '#D1D5DB', label: 'Weak',       badgeColor: '#9ca3af' },
-  fragmented: { color: '#ef4444', gradEnd: '#F87171', label: 'Fragmented', badgeColor: '#ef4444' },
+  high:       { color: '#4fa67a', gradEnd: '#6ccf9f', label: 'High',       badgeColor: '#5db88a', opacity: 0.90 },
+  moderate:   { color: '#d4a24c', gradEnd: '#f0c57a', label: 'Moderate',   badgeColor: '#dba95a', opacity: 0.90 },
+  weak:       { color: '#8a94a6', gradEnd: '#a8b0be', label: 'Weak',       badgeColor: '#8a94a6', opacity: 0.90 },
+  fragmented: { color: '#c86b6b', gradEnd: '#d98888', label: 'Fragmented', badgeColor: '#c86b6b', opacity: 0.90 },
 };
 
 const getRingConfig = (pct) => {
