@@ -132,8 +132,8 @@ const TakeawayItem = ({ item, onOpenMemo, index }) => {
         animate={{
           y: isPressed ? 2 : (isHovered ? -2 : 0),
           scale: isPressed ? 0.99 : (isHovered ? 1.01 : 1),
-          rotationX: tiltX,
-          rotationY: tiltY,
+          rotateX: tiltX,
+          rotateY: tiltY,
           background: isPressed 
             ? `linear-gradient(145deg, rgba(255, 255, 255, 0.072) 0%, rgba(255, 255, 255, 0.058) 100%)`
             : (isHovered 

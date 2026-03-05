@@ -400,28 +400,24 @@ const ImpactIntelligence = ({ implications = [] }) => {
               </div>
 
               {/* Title row with leading icon chip */}
-               <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '8px' }}>
-                 <div style={{
-                   fontFamily: TOKENS.font.family,
-                   width: '24px',
-                   height: '24px',
-                   borderRadius: '8px',
-                   background: 'rgba(255,255,255,0.05)',
-                   backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01))',
-                   border: '1px solid rgba(255,255,255,0.10)',
-                   backdropFilter: 'blur(10px)',
-                   WebkitBackdropFilter: 'blur(10px)',
-                   display: 'flex',
-                   alignItems: 'center',
-                   justifyContent: 'center',
-                   flexShrink: 0,
-                   fontSize: '14px',
-                   color: 'rgba(213,220,229,0.75)',
-                   fontWeight: 500,
-                   boxShadow: '0 0 0 1px rgba(255,255,255,0.02) inset'
-                 }}>
-                   {icon}
-                 </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                <div style={{
+                  fontFamily: TOKENS.font.family,
+                  width: '22px',
+                  height: '22px',
+                  borderRadius: '8px',
+                  background: 'rgba(255,255,255,0.05)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  fontSize: '11px',
+                  color: 'rgba(213,220,229,0.75)',
+                  fontWeight: 500
+                }}>
+                  {icon}
+                </div>
                 <h4 style={{ fontFamily: TOKENS.font.family, fontSize: '16px', fontWeight: 600, letterSpacing: '-0.01em', color: TOKENS.color.text_primary, lineHeight: 1.2, margin: 0 }}>
                   {title}
                 </h4>
