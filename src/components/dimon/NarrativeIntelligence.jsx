@@ -648,8 +648,8 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
             <motion.div
               key={i}
               title={dot.label}
-              initial={{ scale: 1, opacity: 0.7 }}
-              animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
+              initial={{ scale: 1, opacity: 0.6 }}
+              animate={{ scale: [1, 1.3, 1], opacity: [0.6, 1, 0.6] }}
               transition={{
                 duration: 2.5,
                 repeat: Infinity,
@@ -660,9 +660,9 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
                 width: '6px',
                 height: '6px',
                 borderRadius: '50%',
-                background: dot.color,
+                background: '#FFFFFF',
                 flexShrink: 0,
-                boxShadow: `0 0 6px ${dot.color}`
+                boxShadow: '0 0 6px rgba(255,255,255,0.5)'
               }}
             />
           ))}
