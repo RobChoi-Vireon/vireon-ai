@@ -384,9 +384,9 @@ export default function DivergenceReport({ divergences = [], fractureIntensity, 
       {divergences.length > 3 && (
         <motion.div
           style={{ marginTop: '16px', paddingTop: '14px', borderTop: '1px solid rgba(255,255,255,0.06)', textAlign: 'center' }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...ENTRY, delay: 0.38 }}
         >
           <span style={{ fontSize: '12px', color: 'rgba(180,127,255,0.80)', fontWeight: 500 }}>
             +{divergences.length - 3} more fractures detected
