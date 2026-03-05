@@ -162,8 +162,9 @@ const HoverCard = ({ children, glowColor = 'rgba(255,255,255,0.06)', subsurface 
     <motion.div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      whileHover={{ y: -2, scale: 1.002 }}
       animate={{
-        y: hovered ? -3 : 0,
+        y: hovered ? -2 : 0,
         scale: hovered ? 1.002 : 1,
         boxShadow: hovered
           ? [
@@ -250,7 +251,7 @@ const ConsensusRing = ({ item, index, isSelected, onSelect }) => {
       {/* Ring + bloom wrapper */}
       <motion.div
         animate={{ scale: pressed ? 0.985 : hovered ? 1.04 : 1 }}
-        transition={{ duration: pressed ? 0.08 : 0.18, ease: 'easeOut' }}
+        transition={pressed ? { type: 'spring', stiffness: 500, damping: 30 } : SPRING}
         style={{
           position: 'relative', width: SIZE, height: SIZE,
           // Outer bloom glow
@@ -635,7 +636,7 @@ const EmptyState = ({ label }) => (
     <div className="relative mb-5">
       <motion.div
         animate={{ opacity: [0.5, 1, 0.5], scale: [0.9, 1.1, 0.9] }}
-        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+        transition={{ duration: 3.2, repeat: Infinity, ease: [0.22, 0.61, 0.36, 1] }}
         className="w-2 h-2 rounded-full mx-auto"
         style={{ background: 'rgba(255,255,255,0.30)', boxShadow: '0 0 8px rgba(255,255,255,0.18)' }}
       />
