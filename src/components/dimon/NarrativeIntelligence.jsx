@@ -24,102 +24,6 @@ const TOKENS = {
   motion: '160ms',
 };
 
-// ─── NARRATIVE SHIFT INDICATOR ───────────────────────────────────────────
-const NarrativeShiftIndicator = ({ cautious }) => {
-  // UI-only fallback logic based on sentiment
-  let direction = '→';
-  let shiftText = 'Stable — narrative unchanged';
-  let bgTint = 'rgba(255,255,255,0.03)';
-  let momentum = null;
-
-  if (cautious >= 65) {
-    direction = '↑';
-    shiftText = 'Caution elevated — monitor drivers';
-    bgTint = 'rgba(255,176,102,0.06)';
-    momentum = '+12%';
-  } else if (cautious >= 45 && cautious < 65) {
-    direction = '→';
-    shiftText = 'Stable — mixed narrative';
-    bgTint = 'rgba(255,255,255,0.03)';
-    momentum = '0%';
-  } else {
-    direction = '↓';
-    shiftText = 'Risk easing — tone improving';
-    bgTint = 'rgba(95,209,163,0.06)';
-    momentum = '−8%';
-  }
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.25 }}
-      style={{
-        height: '36px',
-        marginTop: '10px',
-        padding: '8px 10px',
-        borderRadius: '12px',
-        background: bgTint,
-        border: '1px solid rgba(255,255,255,0.06)',
-        backdropFilter: 'blur(14px)',
-        WebkitBackdropFilter: 'blur(14px)',
-        transition: 'all 200ms ease',
-        cursor: 'default',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: '12px',
-        position: 'relative',
-        zIndex: 1
-      }}
-      whileHover={{
-        background: cautious >= 65 
-          ? 'rgba(255,176,102,0.10)' 
-          : cautious >= 45 
-          ? 'rgba(255,255,255,0.06)' 
-          : 'rgba(95,209,163,0.10)',
-        border: '1px solid rgba(255,255,255,0.09)',
-        transition: { duration: 0.2 }
-      }}
-    >
-      {/* Left: Label + Icon + Text */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.10em', color: 'rgba(255,255,255,0.60)', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
-          Narrative Shift
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, minWidth: 0 }}>
-          <span style={{ fontSize: '13px', color: 'rgba(213,220,229,0.75)', fontWeight: 500 }}>{direction}</span>
-          <span style={{ fontSize: '13px', color: 'rgba(213,220,229,0.82)', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {shiftText}
-          </span>
-        </div>
-      </div>
-
-      {/* Right: Momentum chip (if available) */}
-      {momentum && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3, delay: 0.35 }}
-          style={{
-            padding: '6px 10px',
-            borderRadius: '999px',
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.06)',
-            fontSize: '12px',
-            color: 'rgba(213,220,229,0.78)',
-            fontWeight: 500,
-            whiteSpace: 'nowrap',
-            flexShrink: 0
-          }}
-        >
-          {momentum}
-        </motion.div>
-      )}
-    </motion.div>
-  );
-};
-
 // ─── HERO PANEL — NARRATIVE PULSE ─────────────────────────────────────────
 const HeroPanel = ({ sentiment, outlets, window, confidence }) => {
   const cautious = sentiment?.cautious || 71;
@@ -263,9 +167,6 @@ const HeroPanel = ({ sentiment, outlets, window, confidence }) => {
           <span>Cautious {cautious_pct}% / Neutral {neutral_pct}%</span>
         </div>
       </div>
-
-      {/* ── Narrative Shift Indicator ── */}
-      <NarrativeShiftIndicator cautious={cautious_pct} />
 
       {/* ── Meta Pills ── */}
       <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', position: 'relative', zIndex: 1 }}>
