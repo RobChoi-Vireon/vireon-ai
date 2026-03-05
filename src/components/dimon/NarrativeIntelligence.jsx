@@ -4,6 +4,9 @@ import { ChevronDown, ChevronRight } from 'lucide-react';
 
 // ─── OS HORIZON NARRATIVE INTELLIGENCE DESIGN TOKENS ────────────────────────
 const TOKENS = {
+  font: {
+    family: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif'
+  },
   color: {
     bg_base: '#0B0F17',
     text_primary: '#D5DCE5',
@@ -89,18 +92,19 @@ const HeroPanel = ({ sentiment, outlets, window, confidence }) => {
 
       {/* ── Row 1: Header ── */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', position: 'relative', zIndex: 1 }}>
-        <h3 style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.10em', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase' }}>
+        <h3 style={{ fontFamily: TOKENS.font.family, fontSize: '12px', fontWeight: 600, letterSpacing: '0.10em', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase' }}>
           Narrative Pulse
         </h3>
         <motion.div
           style={{
+            fontFamily: TOKENS.font.family,
             padding: '7px 14px',
             borderRadius: '12px',
             background: statusBadge.bg,
             border: `1px ${statusBadge.border}`,
             color: statusBadge.text,
             fontSize: '12px',
-            fontWeight: 600,
+            fontWeight: 500,
             backdropFilter: 'blur(12px)',
             boxShadow: `0 0 12px ${statusBadge.text}20, inset 0 1px 0 rgba(255,255,255,0.08)`,
             transition: `all ${TOKENS.motion} ease`
@@ -117,11 +121,11 @@ const HeroPanel = ({ sentiment, outlets, window, confidence }) => {
 
       {/* ── Row 2: Headline + Subcopy ── */}
       <div style={{ marginBottom: '28px', position: 'relative', zIndex: 1 }}>
-        <h2 style={{ fontSize: '22px', fontWeight: 600, letterSpacing: '-0.015em', color: TOKENS.color.text_primary, marginBottom: '10px', lineHeight: 1.35 }}>
+        <h2 style={{ fontFamily: TOKENS.font.family, fontSize: '26px', fontWeight: 600, letterSpacing: '-0.015em', color: TOKENS.color.text_primary, marginBottom: '12px', lineHeight: 1.15 }}>
           Markets are playing it safe — mixed signals on borrowing, policy costs.
         </h2>
-        <p style={{ fontSize: '14px', color: 'rgba(213,220,229,0.70)', lineHeight: 1.65, maxWidth: '740px' }}>
-          New government rules are creating costs for companies. Borrowing is getting harder and more expensive, especially for companies in emerging markets. China's slowdown is making investors cautious.
+        <p style={{ fontFamily: TOKENS.font.family, fontSize: '14px', fontWeight: 400, color: 'rgba(213,220,229,0.78)', lineHeight: 1.45, maxWidth: '680px' }}>
+          New government rules are creating costs for companies. Borrowing is getting harder and more expensive.
         </p>
       </div>
 
@@ -162,7 +166,7 @@ const HeroPanel = ({ sentiment, outlets, window, confidence }) => {
             }}
           />
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px', fontSize: '11px', color: 'rgba(213,220,229,0.60)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px', fontSize: '12px', fontFamily: TOKENS.font.family, fontWeight: 500, color: 'rgba(213,220,229,0.65)' }}>
           <div />
           <span>Cautious {cautious_pct}% / Neutral {neutral_pct}%</span>
         </div>
@@ -181,13 +185,15 @@ const HeroPanel = ({ sentiment, outlets, window, confidence }) => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4, delay: 0.3 + i * 0.05 }}
             style={{
+              fontFamily: TOKENS.font.family,
               padding: '8px 12px',
               borderRadius: '10px',
               background: 'rgba(255,255,255,0.05)',
               border: `1px solid rgba(255,255,255,0.08)`,
               backdropFilter: 'blur(12px)',
-              fontSize: '12px',
-              color: TOKENS.color.text_secondary,
+              fontSize: '13px',
+              fontWeight: 500,
+              color: 'rgba(213,220,229,0.75)',
               whiteSpace: 'nowrap',
               boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)',
               transition: `all ${TOKENS.motion} ease`
@@ -226,7 +232,7 @@ const DriversSection = ({ drivers = [] }) => {
       transition={{ duration: 0.5, delay: 0.2 }}
     >
       <div style={{ marginBottom: '14px' }}>
-        <h3 style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.10em', color: 'rgba(255,255,255,0.65)', textTransform: 'uppercase' }}>
+        <h3 style={{ fontFamily: TOKENS.font.family, fontSize: '12px', fontWeight: 600, letterSpacing: '0.10em', color: 'rgba(255,255,255,0.60)', textTransform: 'uppercase' }}>
           Narrative Drivers
         </h3>
       </div>
@@ -240,6 +246,7 @@ const DriversSection = ({ drivers = [] }) => {
             transition={{ duration: 0.3, delay: 0.3 + i * 0.04 }}
             className="group"
             style={{
+              fontFamily: TOKENS.font.family,
               padding: '10px 14px',
               borderRadius: '999px',
               background: 'rgba(30,40,60,0.22)',
@@ -248,15 +255,15 @@ const DriversSection = ({ drivers = [] }) => {
               backdropFilter: `blur(20px)`,
               WebkitBackdropFilter: `blur(20px)`,
               fontSize: '13px',
-              color: 'rgba(213,220,229,0.90)',
+              fontWeight: 500,
+              color: 'rgba(213,220,229,0.85)',
               cursor: 'default',
-              transition: `all 180ms ease`,
+              transition: `all 200ms ease`,
               whiteSpace: 'nowrap',
               textOverflow: 'ellipsis',
               overflow: 'hidden',
               maxWidth: '280px',
-              boxShadow: '0 0 0 1px rgba(255,255,255,0.03) inset, 0 10px 28px rgba(0,0,0,0.25)',
-              fontWeight: 500
+              boxShadow: '0 0 0 1px rgba(255,255,255,0.03) inset, 0 10px 28px rgba(0,0,0,0.25)'
             }}
             whileHover={{
               background: 'rgba(30,40,60,0.30)',
@@ -349,10 +356,10 @@ const ImpactIntelligence = ({ implications = [] }) => {
       transition={{ duration: 0.5, delay: 0.3 }}
     >
       <div style={{ marginBottom: '14px' }}>
-        <h3 style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.10em', color: 'rgba(255,255,255,0.65)', textTransform: 'uppercase' }}>
-          Impact Intelligence
-        </h3>
-      </div>
+         <h3 style={{ fontFamily: TOKENS.font.family, fontSize: '12px', fontWeight: 600, letterSpacing: '0.10em', color: 'rgba(255,255,255,0.60)', textTransform: 'uppercase' }}>
+           Impact Intelligence
+         </h3>
+       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
         {implList.slice(0, 4).map((impl, i) => {
@@ -388,13 +395,14 @@ const ImpactIntelligence = ({ implications = [] }) => {
                 transition: { duration: 0.16 }
               }}
             >
-              <div style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.60)', textTransform: 'uppercase', marginBottom: '8px' }}>
+              <div style={{ fontFamily: TOKENS.font.family, fontSize: '12px', fontWeight: 600, letterSpacing: '0.10em', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', marginBottom: '8px' }}>
                 {impl.label || 'SIGNAL'}
               </div>
-              
+
               {/* Title row with leading icon chip */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
                 <div style={{
+                  fontFamily: TOKENS.font.family,
                   width: '22px',
                   height: '22px',
                   borderRadius: '8px',
@@ -410,12 +418,12 @@ const ImpactIntelligence = ({ implications = [] }) => {
                 }}>
                   {icon}
                 </div>
-                <h4 style={{ fontSize: '16px', fontWeight: 600, letterSpacing: '-0.01em', color: TOKENS.color.text_primary, lineHeight: 1.3, margin: 0 }}>
+                <h4 style={{ fontFamily: TOKENS.font.family, fontSize: '16px', fontWeight: 600, letterSpacing: '-0.01em', color: TOKENS.color.text_primary, lineHeight: 1.2, margin: 0 }}>
                   {title}
                 </h4>
               </div>
-              
-              <p style={{ fontSize: '13.5px', color: 'rgba(213,220,229,0.75)', lineHeight: 1.45 }}>
+
+              <p style={{ fontFamily: TOKENS.font.family, fontSize: '13.5px', fontWeight: 400, color: 'rgba(213,220,229,0.75)', lineHeight: 1.45 }}>
                 {description}
               </p>
             </motion.div>
@@ -497,10 +505,10 @@ const SourceItem = ({ source, index, onExpand, isExpanded }) => {
             {getSourceAbbrev(label)}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: '15px', fontWeight: 600, color: TOKENS.color.text_primary, marginBottom: '3px' }}>
+            <div style={{ fontFamily: TOKENS.font.family, fontSize: '15px', fontWeight: 600, color: TOKENS.color.text_primary, marginBottom: '3px', lineHeight: 1.2 }}>
               {label}
             </div>
-            <div style={{ fontSize: '12px', color: TOKENS.color.text_secondary, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+            <div style={{ fontFamily: TOKENS.font.family, fontSize: '13px', fontWeight: 500, color: 'rgba(213,220,229,0.65)', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
               {context}
             </div>
           </div>
@@ -510,12 +518,13 @@ const SourceItem = ({ source, index, onExpand, isExpanded }) => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
           <div
             style={{
+              fontFamily: TOKENS.font.family,
               padding: '6px 12px',
               borderRadius: '10px',
               background: sentiment.bg,
               border: `1px ${sentiment.border}`,
               color: sentiment.text,
-              fontSize: '11px',
+              fontSize: '12px',
               fontWeight: 500,
               whiteSpace: 'nowrap'
             }}
@@ -563,35 +572,36 @@ const SourceItem = ({ source, index, onExpand, isExpanded }) => {
             >
               {/* Left column */}
               <div>
-                <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.06em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', marginBottom: '6px' }}>
-                  Primary Topic
-                </div>
-                <p style={{ fontSize: '13px', color: TOKENS.color.text_secondary, lineHeight: 1.5, marginBottom: '14px' }}>
-                  {source?.topline || 'No topic'}
-                </p>
+                <div style={{ fontFamily: TOKENS.font.family, fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.50)', textTransform: 'uppercase', marginBottom: '6px' }}>
+                    Primary Topic
+                  </div>
+                  <p style={{ fontFamily: TOKENS.font.family, fontSize: '13px', fontWeight: 400, color: 'rgba(213,220,229,0.75)', lineHeight: 1.45, marginBottom: '14px' }}>
+                    {source?.topline || 'No topic'}
+                  </p>
 
-                <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.06em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', marginBottom: '6px' }}>
-                  Coverage Context
-                </div>
-                <p style={{ fontSize: '13px', color: TOKENS.color.text_secondary, lineHeight: 1.5 }}>
-                  {source?.market_macro || 'General market focus'}
-                </p>
+                  <div style={{ fontFamily: TOKENS.font.family, fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.50)', textTransform: 'uppercase', marginBottom: '6px' }}>
+                    Coverage Context
+                  </div>
+                  <p style={{ fontFamily: TOKENS.font.family, fontSize: '13px', fontWeight: 400, color: 'rgba(213,220,229,0.75)', lineHeight: 1.45 }}>
+                    {source?.market_macro || 'General market focus'}
+                  </p>
               </div>
 
               {/* Right column */}
               <div>
-                <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.06em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', marginBottom: '6px' }}>
+                <div style={{ fontFamily: TOKENS.font.family, fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.50)', textTransform: 'uppercase', marginBottom: '6px' }}>
                   Sentiment
                 </div>
                 <div
                   style={{
+                    fontFamily: TOKENS.font.family,
                     padding: '8px 12px',
                     borderRadius: '10px',
                     background: sentiment.bg,
                     border: `1px ${sentiment.border}`,
                     color: sentiment.text,
                     fontSize: '12px',
-                    fontWeight: 600,
+                    fontWeight: 500,
                     marginBottom: '14px',
                     display: 'inline-block'
                   }}
@@ -599,10 +609,10 @@ const SourceItem = ({ source, index, onExpand, isExpanded }) => {
                   {sentiment.label}
                 </div>
 
-                <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.06em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', marginBottom: '6px' }}>
+                <div style={{ fontFamily: TOKENS.font.family, fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.50)', textTransform: 'uppercase', marginBottom: '6px' }}>
                   Latest Headline
                 </div>
-                <p style={{ fontSize: '13px', color: TOKENS.color.text_secondary, lineHeight: 1.5, fontStyle: 'italic' }}>
+                <p style={{ fontFamily: TOKENS.font.family, fontSize: '13px', fontWeight: 400, color: 'rgba(213,220,229,0.75)', lineHeight: 1.45 }}>
                   {source?.policy || 'No recent headline'}
                 </p>
               </div>
@@ -697,10 +707,10 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
     >
       {/* Left: Label + Helper */}
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '5px', minWidth: '160px' }}>
-        <div style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.70)', textTransform: 'uppercase' }}>
+        <div style={{ fontFamily: TOKENS.font.family, fontSize: '12px', fontWeight: 600, letterSpacing: '0.10em', color: 'rgba(255,255,255,0.60)', textTransform: 'uppercase' }}>
           Intelligence Sources ({sourceList.length})
         </div>
-        <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.60)', lineHeight: 1.2 }}>
+        <div style={{ fontFamily: TOKENS.font.family, fontSize: '13px', fontWeight: 400, color: 'rgba(255,255,255,0.65)', lineHeight: 1.35 }}>
           Tap to view coverage
         </div>
       </div>
@@ -717,6 +727,7 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
               transition={{ duration: 0.2, delay: i * 0.02 }}
               title={source.name}
               style={{
+                fontFamily: TOKENS.font.family,
                 width: '44px',
                 height: '44px',
                 borderRadius: '12px',
@@ -725,13 +736,13 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: '12px',
-                fontWeight: 700,
+                fontWeight: 600,
                 color: isExpanded ? 'rgba(255,255,255,0.35)' : color.text,
                 flexShrink: 0,
                 cursor: 'default',
                 boxShadow: isExpanded ? 'none' : '0 4px 12px rgba(0,0,0,0.24)',
                 filter: isExpanded ? 'saturate(0.8)' : 'saturate(1)',
-                transition: 'all 180ms ease'
+                transition: 'all 200ms ease'
               }}
             >
               {getSourceAbbrev(source.name)}
@@ -744,6 +755,7 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.2, delay: visibleCount * 0.02 }}
             style={{
+              fontFamily: TOKENS.font.family,
               width: '44px',
               height: '44px',
               borderRadius: '12px',
@@ -752,13 +764,13 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
               alignItems: 'center',
               justifyContent: 'center',
               fontSize: '12px',
-              fontWeight: 700,
+              fontWeight: 600,
               color: isExpanded ? 'rgba(255,255,255,0.35)' : '#FFFFFF',
               flexShrink: 0,
               boxShadow: isExpanded ? 'none' : '0 4px 12px rgba(0,0,0,0.24)',
               cursor: 'default',
               filter: isExpanded ? 'saturate(0.8)' : 'saturate(1)',
-              transition: 'all 180ms ease'
+              transition: 'all 200ms ease'
             }}
             title="Politico"
           >
@@ -893,10 +905,10 @@ export default function NarrativeIntelligence({ sources, sentiment, drivers, imp
       }}
     >
       <div style={{ marginBottom: '24px', paddingLeft: '8px' }}>
-        <h2 style={{ fontSize: '22px', fontWeight: 600, letterSpacing: '-0.01em', color: 'rgba(226,232,240,0.95)', marginBottom: '6px' }}>
+        <h2 style={{ fontFamily: TOKENS.font.family, fontSize: '22px', fontWeight: 600, letterSpacing: '-0.01em', color: 'rgba(226,232,240,0.95)', marginBottom: '6px', lineHeight: 1.15 }}>
           Narrative Intelligence
         </h2>
-        <p style={{ fontSize: '13px', color: 'rgba(213,220,229,0.55)', opacity: 0.60, maxWidth: '600px', lineHeight: 1.4 }}>
+        <p style={{ fontFamily: TOKENS.font.family, fontSize: '13px', fontWeight: 400, color: 'rgba(213,220,229,0.65)', lineHeight: 1.35, maxWidth: '620px' }}>
           Curated synthesis from trusted financial outlets.
         </p>
       </div>
