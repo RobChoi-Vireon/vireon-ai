@@ -142,10 +142,10 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
   const scoreColor = getZoneColor(score);
   const scoreLabel = getZoneLabel(score);
   
-  // Cinematic breathing motion (4-6 seconds, 3-6% intensity)
-  const breathingScale = 1 + Math.sin(breathingPhase * (2 * Math.PI / MOTION.DURATIONS.breathing)) * 0.01;
-  const breathingOpacity = 0.03 + Math.sin(breathingPhase * (2 * Math.PI / MOTION.DURATIONS.breathing)) * 0.03;
-  const internalGradientShift = Math.sin(breathingPhase * (2 * Math.PI / 6)) * 3;
+  // Breathing motion — only active on hover
+  const breathingScale = isHovered ? 1 + Math.sin(breathingPhase * (2 * Math.PI / MOTION.DURATIONS.breathing)) * 0.01 : 1;
+  const breathingOpacity = isHovered ? 0.03 + Math.sin(breathingPhase * (2 * Math.PI / MOTION.DURATIONS.breathing)) * 0.03 : 0.03;
+  const internalGradientShift = isHovered ? Math.sin(breathingPhase * (2 * Math.PI / 6)) * 3 : 0;
 
   // Interaction choreography: orb brightness when chips are hovered
   const orbBrightness = isAnyChipHovered ? 0.97 : 1;
