@@ -379,13 +379,17 @@ const ConsensusRingGrid = ({ consensus }) => {
 
   return (
     <div>
+      {/* Rings Rail — true centered layout */}
       <div style={{
         display: 'flex',
         flexWrap: 'wrap',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: '72px',
-        padding: '24px 16px',
+        gap: 'clamp(44px, 5vw, 84px)',
+        paddingTop: '44px',
+        paddingBottom: '26px',
+        paddingLeft: '16px',
+        paddingRight: '16px',
       }}>
         {consensus.slice(0, 6).map((item, i) => (
           <ConsensusRing
