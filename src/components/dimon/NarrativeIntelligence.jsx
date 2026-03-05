@@ -968,7 +968,20 @@ const SourcesSection = ({ intelligenceSources = [], sources = [] }) => {
 };
 
 // ─── MAIN EXPORT ──────────────────────────────────────────────────────────
-export default function NarrativeIntelligence({ sources, sentiment, drivers, implications, outlets, window, confidence }) {
+export default function NarrativeIntelligence({
+  narrativePulse,
+  timestamp,
+  narrativeDrivers,
+  impactIntelligence,
+  intelligenceSources,
+  sources,
+  sentiment,
+  drivers,
+  implications,
+  outlets,
+  window,
+  confidence
+}) {
   return (
     <div
       style={{
@@ -980,33 +993,40 @@ export default function NarrativeIntelligence({ sources, sentiment, drivers, imp
       }}
     >
       <div style={{ marginBottom: '24px', paddingLeft: '8px' }}>
-        <h2 style={{ fontFamily: TOKENS.font.family, fontSize: '22px', fontWeight: 600, letterSpacing: '-0.01em', color: 'rgba(226,232,240,0.95)', marginBottom: '6px', lineHeight: 1.15 }}>
-          Narrative Intelligence
-        </h2>
-        <p style={{ fontFamily: TOKENS.font.family, fontSize: '13px', fontWeight: 400, color: 'rgba(213,220,229,0.65)', lineHeight: 1.35, maxWidth: '620px' }}>
-          Curated synthesis from trusted financial outlets.
-        </p>
-      </div>
+         <h2 style={{ fontFamily: TOKENS.font.family, fontSize: '22px', fontWeight: 600, letterSpacing: '-0.01em', color: 'rgba(226,232,240,0.95)', marginBottom: '6px', lineHeight: 1.15 }}>
+           Narrative Intelligence
+         </h2>
+         <p style={{ fontFamily: TOKENS.font.family, fontSize: '13px', fontWeight: 400, color: 'rgba(213,220,229,0.65)', lineHeight: 1.35, maxWidth: '620px' }}>
+           Curated synthesis from trusted financial outlets.
+         </p>
+       </div>
 
-      {/* Hero Panel */}
-      <div style={{ marginBottom: '28px' }}>
-        <HeroPanel sentiment={sentiment} outlets={outlets} window={window} confidence={confidence} />
-      </div>
+       {/* Hero Panel */}
+       <div style={{ marginBottom: '28px' }}>
+         <HeroPanel 
+           narrativePulse={narrativePulse}
+           sentiment={sentiment}
+           outlets={outlets}
+           window={window}
+           confidence={confidence}
+           timestamp={timestamp}
+         />
+       </div>
 
-      {/* Drivers */}
-      <div style={{ marginBottom: '28px' }}>
-        <DriversSection drivers={drivers} />
-      </div>
+       {/* Drivers */}
+       <div style={{ marginBottom: '28px' }}>
+         <DriversSection narrativeDrivers={narrativeDrivers} drivers={drivers} />
+       </div>
 
-      {/* Impact Intelligence */}
-      <div style={{ marginBottom: '28px' }}>
-        <ImpactIntelligence implications={implications} />
-      </div>
+       {/* Impact Intelligence */}
+       <div style={{ marginBottom: '28px' }}>
+         <ImpactIntelligence impactIntelligence={impactIntelligence} implications={implications} />
+       </div>
 
-      {/* Sources */}
-      <div>
-        <SourcesSection sources={sources} />
-      </div>
-    </div>
+       {/* Sources */}
+       <div>
+         <SourcesSection intelligenceSources={intelligenceSources} sources={sources} />
+       </div>
+     </div>
   );
 }
