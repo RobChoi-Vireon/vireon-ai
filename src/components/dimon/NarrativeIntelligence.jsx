@@ -853,14 +853,14 @@ const SourcesSection = ({ sources = [] }) => {
           >
             <div
               style={{
-                background: 'rgba(30,40,60,0.28)',
-                backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01))',
+                background: 'rgba(30,40,60,0.18)',
+                backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01))',
                 backdropFilter: 'blur(22px)',
                 WebkitBackdropFilter: 'blur(22px)',
                 border: '1px solid rgba(255,255,255,0.08)',
                 borderRadius: '18px',
                 padding: '12px',
-                boxShadow: '0 0 0 1px rgba(255,255,255,0.02) inset'
+                boxShadow: '0 0 0 1px rgba(255,255,255,0.03) inset, 0 12px 36px rgba(0,0,0,0.28)'
               }}
             >
               {sourceList.map((source, i) => (
