@@ -549,91 +549,58 @@ const USGlobalCard = ({ item, index }) => {
 // ─── NarrativeShiftCard ──────────────────────────────────────────────────────
 
 const NarrativeShiftCard = ({ item, index }) => {
-  const [hovered, setHovered] = useState(false);
   const shift = item.change_7d ?? item.shift_pts ?? item.momentum_pts ?? 0;
   const dir = item.direction || item.momentum || 'Stable';
   const isRising = dir === 'Increasing' || shift > 0;
   const isWeakening = dir === 'Weakening' || shift < 0;
-  const momentumColor = isWeakening ? '#ef4444' : isRising ? '#22c55e' : '#9ca3af';
+  const momentumColor = isWeakening ? '#c86b6b' : isRising ? '#4fa67a' : '#8a94a6';
   const MomIcon = isWeakening ? TrendingDown : isRising ? TrendingUp : Minus;
   const rawConf = item.confidence || 'Moderate';
   const confidence = rawConf.charAt(0).toUpperCase() + rawConf.slice(1).toLowerCase();
   const interpretation = item.commentary || item.interpretation || '';
-  const confidenceColor = { High: 'rgba(88,227,164,0.80)', Moderate: 'rgba(255,190,80,0.80)', Low: 'rgba(255,106,122,0.80)' }[confidence] || 'rgba(255,190,80,0.80)';
+  const confidenceColor = { High: 'rgba(79,166,122,0.80)', Moderate: 'rgba(212,162,76,0.80)', Low: 'rgba(200,107,107,0.80)' }[confidence] || 'rgba(212,162,76,0.80)';
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.05 * index, duration: 0.36, ease: HORIZON_EASE }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
     >
-      <motion.div
-        animate={{ scale: hovered ? 1.02 : 1 }}
-        transition={{ duration: 0.18, ease: 'easeOut' }}
-        style={{
-          padding: '24px', borderRadius: '22px',
-          background: 'rgba(14,18,26,0.62)',
+      {/* Title */}
+      <p style={{ fontSize: '16px', fontWeight: 550, lineHeight: 1.6, color: 'rgba(255,255,255,0.92)', marginBottom: '8px' }}>
+        {item.statement || item.title || item.narrative || '—'}
+      </p>
+
+      {/* Badge row */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px', flexWrap: 'wrap' }}>
+        <span style={{
+          display: 'inline-flex', alignItems: 'center', gap: '5px',
+          fontSize: '12px', fontWeight: 600,
+          padding: '7px 13px', borderRadius: '999px',
+          background: 'rgba(20,24,32,0.55)',
           border: '1px solid rgba(255,255,255,0.08)',
-          backdropFilter: 'blur(22px)', WebkitBackdropFilter: 'blur(22px)',
-        }}
-      >
-        {/* Title */}
-        <p style={{ fontSize: '16px', fontWeight: 550, lineHeight: 1.6, color: 'rgba(255,255,255,0.92)', marginBottom: '8px' }}>
-          {item.statement || item.title || item.narrative || '—'}
+          color: momentumColor,
+        }}>
+          <MomIcon style={{ width: '13px', height: '13px' }} strokeWidth={2.5} />
+          {dir}
+        </span>
+        <span style={{
+          fontSize: '12px', fontWeight: 600,
+          padding: '7px 13px', borderRadius: '999px',
+          background: 'rgba(20,24,32,0.55)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          color: confidenceColor,
+        }}>
+          {confidence}
+        </span>
+      </div>
+
+      {/* Description */}
+      {interpretation && (
+        <p style={{ fontSize: '13px', lineHeight: 1.6, color: 'rgba(255,255,255,0.48)', marginTop: '12px' }}>
+          {interpretation}
         </p>
-
-        {/* Description */}
-        {interpretation && (
-          <p style={{ fontSize: '13px', lineHeight: 1.6, color: 'rgba(255,255,255,0.55)', marginBottom: '4px' }}>
-            {interpretation}
-          </p>
-        )}
-
-        {/* Badge row */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px', flexWrap: 'wrap' }}>
-          {/* Momentum badge */}
-          <span style={{
-            display: 'inline-flex', alignItems: 'center', gap: '5px',
-            fontSize: '12px', fontWeight: 600,
-            padding: '8px 14px', borderRadius: '999px',
-            background: 'rgba(20,24,32,0.55)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)',
-            color: momentumColor,
-          }}>
-            <MomIcon style={{ width: '13px', height: '13px' }} strokeWidth={2.5} />
-            {dir}
-          </span>
-
-          {/* Confidence badge */}
-          <span style={{
-            display: 'inline-flex', alignItems: 'center',
-            fontSize: '12px', fontWeight: 600,
-            padding: '8px 14px', borderRadius: '999px',
-            background: 'rgba(20,24,32,0.55)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)',
-            color: confidenceColor,
-          }}>
-            {confidence}
-          </span>
-
-          {/* Shift pts */}
-          {shift !== 0 && (
-            <span style={{
-              fontSize: '12px', fontWeight: 600,
-              padding: '8px 14px', borderRadius: '999px',
-              background: 'rgba(20,24,32,0.55)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              color: momentumColor,
-            }}>
-              {isRising ? '+' : ''}{shift} pts
-            </span>
-          )}
-        </div>
-      </motion.div>
+      )}
     </motion.div>
   );
 };
