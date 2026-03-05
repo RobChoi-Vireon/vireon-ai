@@ -334,7 +334,6 @@ const BlindspotCard = ({ blindspot, index, isExpandedView = false }) => {
 };
 
 export default function CounterpointsPanel({ counterpoints = [], blindspots = [], density }) {
-  const [viewMode, setViewMode] = useState('glance');
   const [showAll, setShowAll] = useState(false);
   const [expandedItemId, setExpandedItemId] = useState(null);
   
