@@ -453,7 +453,7 @@ const NarrativeShiftCard = ({ item, index }) => {
           {/* Narrative title + shift pill */}
           <div className="flex items-start justify-between gap-3">
             <p className="text-[13px] font-semibold leading-[1.5] flex-1" style={{ color: 'rgba(255,255,255,0.95)' }}>
-              {item.title || item.narrative}
+              {item.statement || item.title || item.narrative || '—'}
             </p>
             <span className="text-[12px] font-bold px-2.5 py-1.5 rounded-full flex-shrink-0" style={{ background: shiftBg, color: shiftColor }}>
               {isRising ? '+' : ''}{shift} pts
