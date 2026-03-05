@@ -30,7 +30,9 @@ const sourceLogos = {
   nyt: { name: "NYT", bg: "bg-gray-800", text: "text-white" },
   wsj: { name: "WSJ", bg: "bg-orange-600", text: "text-white" },
   ft: { name: "FT", bg: "bg-pink-600", text: "text-white" },
-  economist: { name: "ECN", bg: "bg-red-700", text: "text-white" }
+  economist: { name: "ECN", bg: "bg-red-700", text: "text-white" },
+  axios: { name: "AXS", bg: "bg-violet-600", text: "text-white" },
+  politico: { name: "POL", bg: "bg-slate-700", text: "text-white" }
 };
 
 const getSourceWeight = (source) => {
