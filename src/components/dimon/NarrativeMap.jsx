@@ -681,19 +681,19 @@ const ChangingTabContent = ({ momentumItems = [] }) => (
               }}
             >
               {/* Title */}
-              <p style={{ fontSize: '14px', fontWeight: 550, lineHeight: 1.5, color: 'rgba(255,255,255,0.92)', marginBottom: '10px' }}>
+              <p style={{ fontSize: '15px', fontWeight: 600, lineHeight: 1.55, color: 'rgba(255,255,255,0.94)', marginBottom: '12px' }}>
                 {item.statement || item.title || item.narrative || '—'}
               </p>
 
               {/* Momentum indicator */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '8px' }}>
-                <MomIcon style={{ width: '13px', height: '13px', color: momentumColor }} strokeWidth={2.5} />
-                <span style={{ fontSize: '12px', fontWeight: 600, color: momentumColor }}>{dir}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
+                <MomIcon style={{ width: '14px', height: '14px', color: momentumColor }} strokeWidth={2.5} />
+                <span style={{ fontSize: '13px', fontWeight: 700, color: momentumColor, letterSpacing: '0.01em' }}>{dir}</span>
               </div>
 
               {/* Explanation */}
               {interpretation && (
-                <p style={{ fontSize: '12px', lineHeight: 1.5, color: 'rgba(255,255,255,0.45)' }}>
+                <p style={{ fontSize: '13px', lineHeight: 1.6, color: 'rgba(255,255,255,0.55)' }}>
                   {interpretation}
                 </p>
               )}
