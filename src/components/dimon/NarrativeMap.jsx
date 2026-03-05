@@ -219,13 +219,10 @@ const getShortLabel = (item) => {
 const ConsensusRing = ({ item, index, isSelected, onSelect }) => {
   const [hovered, setHovered] = useState(false);
   const pct = item.score ?? (typeof item.confidence === 'number' && item.confidence > 0 ? Math.round(item.confidence * 100) : 65);
-  const rawConf = item.confidence;
-  const confidence_level = (typeof rawConf === 'string' && ['HIGH','MODERATE','LOW'].includes(rawConf))
-    ? rawConf.charAt(0) + rawConf.slice(1).toLowerCase()
-    : (item.confidence_level || (pct >= 70 ? 'High' : pct >= 45 ? 'Medium' : 'Low'));
 
   const color = getRingColor(pct);
-  const SIZE = 120;
+  const badge = getRingBadge(pct);
+  const SIZE = 130;
   const STROKE = 10;
   const RADIUS = (SIZE - STROKE) / 2;
   const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
@@ -240,25 +237,21 @@ const ConsensusRing = ({ item, index, isSelected, onSelect }) => {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       className="flex flex-col items-center cursor-pointer select-none"
-      style={{ gap: '10px' }}
+      style={{ gap: '12px' }}
     >
       {/* Ring SVG */}
       <motion.div
-        animate={{
-          scale: hovered ? 1.04 : 1,
-          filter: hovered ? 'drop-shadow(0 0 14px rgba(80,200,255,0.28))' : 'drop-shadow(0 0 0px transparent)',
+        animate={{ scale: hovered ? 1.04 : 1 }}
+        transition={{ duration: 0.18, ease: 'easeOut' }}
+        style={{
+          position: 'relative', width: SIZE, height: SIZE,
+          filter: hovered ? `drop-shadow(0 0 18px ${color}59)` : `drop-shadow(0 0 8px ${color}26)`,
+          transition: 'filter 0.18s ease',
         }}
-        transition={{ duration: 0.22, ease: 'easeOut' }}
-        style={{ position: 'relative', width: SIZE, height: SIZE }}
       >
         <svg width={SIZE} height={SIZE} style={{ transform: 'rotate(-90deg)' }}>
           {/* Track */}
-          <circle
-            cx={SIZE / 2} cy={SIZE / 2} r={RADIUS}
-            fill="none"
-            stroke="rgba(255,255,255,0.12)"
-            strokeWidth={STROKE}
-          />
+          <circle cx={SIZE / 2} cy={SIZE / 2} r={RADIUS} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth={STROKE} />
           {/* Animated fill */}
           <motion.circle
             cx={SIZE / 2} cy={SIZE / 2} r={RADIUS}
@@ -269,26 +262,33 @@ const ConsensusRing = ({ item, index, isSelected, onSelect }) => {
             strokeDasharray={CIRCUMFERENCE}
             initial={{ strokeDashoffset: CIRCUMFERENCE }}
             animate={{ strokeDashoffset: CIRCUMFERENCE - (pct / 100) * CIRCUMFERENCE }}
-            transition={{ duration: 0.85, delay: 0.1 + 0.07 * index, ease: 'easeOut' }}
-            style={{ filter: `drop-shadow(0 0 6px ${color}55)` }}
+            transition={{ duration: 0.8, delay: 0.1 + 0.07 * index, ease: 'easeOut' }}
           />
         </svg>
         {/* Center text */}
         <div style={{
           position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'center', gap: '1px'
+          alignItems: 'center', justifyContent: 'center', gap: '2px'
         }}>
-          <span style={{ fontSize: '28px', fontWeight: 600, color: 'rgba(255,255,255,0.95)', lineHeight: 1 }}>
+          <span style={{ fontSize: '30px', fontWeight: 600, color: 'rgba(255,255,255,0.95)', lineHeight: 1 }}>
             {pct}%
           </span>
-          <span style={{ fontSize: '10px', fontWeight: 500, letterSpacing: '0.05em', opacity: 0.75, color: 'rgba(255,255,255,0.75)', textAlign: 'center', maxWidth: '80px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span style={{ fontSize: '13px', fontWeight: 500, letterSpacing: '0.05em', opacity: 0.75, color: 'rgba(255,255,255,0.75)', textAlign: 'center', maxWidth: '90px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {shortLabel}
           </span>
         </div>
       </motion.div>
 
-      {/* Confidence badge */}
-      <ConfidenceBadge level={confidence_level} />
+      {/* Strength badge */}
+      <span style={{
+        fontSize: '11px', fontWeight: 700, letterSpacing: '0.04em',
+        padding: '3px 10px', borderRadius: '99px',
+        background: `${badge.color}18`,
+        border: `1px solid ${badge.color}40`,
+        color: badge.color,
+      }}>
+        {badge.label}
+      </span>
     </motion.div>
   );
 };
