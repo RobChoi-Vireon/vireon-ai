@@ -511,8 +511,157 @@ const SourceItem = ({ source, index, onExpand, isExpanded }) => {
   );
 };
 
+const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
+  const defaultSources = [
+    { name: 'Washington Post', specialty: 'Policy', topline: 'Tech oversight increasing', policy: 'Congressional committees signaling more enforcement ahead' },
+    { name: 'New York Times', specialty: 'Domestic', topline: 'Clean energy gaining', market_macro: 'Consumer spending showing mixed results' },
+    { name: 'Wall Street Journal', specialty: 'Markets', topline: 'M&A activity declining', policy: 'Company executives expect interest rates to stay high' },
+    { name: 'Financial Times', specialty: 'Global', topline: 'China slowdown', market_macro: 'Export patterns changing' },
+    { name: 'The Economist', specialty: 'Analysis', topline: 'Structural headwinds', policy: 'Central banks face credibility test' },
+    { name: 'Axios', specialty: 'DC', topline: 'AI executive action', policy: 'Bipartisan support forming around data privacy' },
+    { name: 'Politico', specialty: 'Politics', topline: 'Fiscal gridlock', market_macro: 'Defense and infrastructure spending at risk' }
+  ];
+
+  const sourceList = sources.length > 0 ? sources : defaultSources;
+  const visibleCount = 6;
+  const hasOverflow = sourceList.length > visibleCount;
+  const displaySources = sourceList.slice(0, visibleCount);
+
+  // Sentiment mix: map to dots (simplified: assume balanced mix)
+  const sentimentDots = [
+    { color: 'rgba(255,176,102,0.85)', label: 'Cautious' },
+    { color: 'rgba(160,174,192,0.80)', label: 'Neutral' },
+    { color: 'rgba(95,209,163,0.85)', label: 'Positive' },
+    { color: 'rgba(255,176,102,0.85)', label: 'Cautious' },
+    { color: 'rgba(160,174,192,0.80)', label: 'Neutral' },
+    { color: 'rgba(255,176,102,0.85)', label: 'Cautious' },
+    { color: 'rgba(160,174,192,0.80)', label: 'Neutral' }
+  ];
+
+  return (
+    <motion.div
+      onClick={onToggle}
+      style={{
+        height: '56px',
+        background: 'rgba(20,25,35,0.35)',
+        backdropFilter: 'blur(18px)',
+        WebkitBackdropFilter: 'blur(18px)',
+        border: `1px rgba(255,255,255,0.06)`,
+        borderRadius: '16px',
+        padding: '12px 14px',
+        boxShadow: '0 10px 26px rgba(0,0,0,0.32)',
+        transition: `all ${TOKENS.motion} ease`,
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '12px'
+      }}
+      whileHover={{
+        background: 'rgba(20,25,35,0.45)',
+        border: `1px rgba(255,255,255,0.09)`,
+        y: -1,
+        transition: { duration: 0.12 }
+      }}
+    >
+      {/* Left: Label + Helper */}
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '3px' }}>
+        <div style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.70)', textTransform: 'uppercase' }}>
+          Intelligence Sources ({sourceList.length})
+        </div>
+        <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.60)', lineHeight: 1 }}>
+          Tap to view coverage
+        </div>
+      </div>
+
+      {/* Middle: Outlet Pills + Overflow */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+        {displaySources.map((source, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.2, delay: i * 0.02 }}
+            title={source.name}
+            style={{
+              width: '28px',
+              height: '28px',
+              borderRadius: '10px',
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px rgba(255,255,255,0.06)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '10px',
+              fontWeight: 600,
+              color: 'rgba(255,255,255,0.50)',
+              boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.03)',
+              flexShrink: 0,
+              cursor: 'default'
+            }}
+          >
+            {source.name.charAt(0)}
+          </motion.div>
+        ))}
+        {hasOverflow && (
+          <div
+            style={{
+              width: '28px',
+              height: '28px',
+              borderRadius: '10px',
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px rgba(255,255,255,0.06)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '10px',
+              fontWeight: 600,
+              color: 'rgba(255,255,255,0.45)',
+              flexShrink: 0
+            }}
+          >
+            +{sourceList.length - visibleCount}
+          </div>
+        )}
+      </div>
+
+      {/* Right: Sentiment Dots + Chevron */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
+        {/* Sentiment dots */}
+        <div style={{ display: 'flex', gap: '5px' }}>
+          {sentimentDots.map((dot, i) => (
+            <div
+              key={i}
+              title={dot.label}
+              style={{
+                width: '6px',
+                height: '6px',
+                borderRadius: '50%',
+                background: dot.color,
+                flexShrink: 0
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Chevron */}
+        <ChevronDown
+          className="w-4 h-4"
+          style={{
+            color: 'rgba(255,255,255,0.40)',
+            transition: `transform ${TOKENS.motion} ease`,
+            transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+            flexShrink: 0
+          }}
+        />
+      </div>
+    </motion.div>
+  );
+};
+
 const SourcesSection = ({ sources = [] }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
+  const [isSourcesExpanded, setIsSourcesExpanded] = useState(false);
 
   const defaultSources = [
     { name: 'Washington Post', specialty: 'Policy', topline: 'Tech oversight increasing', policy: 'Congressional committees signaling more enforcement ahead' },
@@ -532,33 +681,48 @@ const SourcesSection = ({ sources = [] }) => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5, delay: 0.45 }}
     >
-      <div style={{ marginBottom: '14px' }}>
-        <h3 style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.48)', textTransform: 'uppercase' }}>
-          Intelligence Sources ({sourceList.length})
-        </h3>
-      </div>
+      {/* Summary bar (always visible, acts as toggle) */}
+      <SourcesSummaryBar
+        sources={sourceList}
+        isExpanded={isSourcesExpanded}
+        onToggle={() => setIsSourcesExpanded(!isSourcesExpanded)}
+      />
 
-      <div
-        style={{
-          background: TOKENS.color.glass_secondary,
-          backdropFilter: `blur(18px)`,
-          WebkitBackdropFilter: `blur(18px)`,
-          border: `1px ${TOKENS.color.hairline}`,
-          borderRadius: TOKENS.radius_panel,
-          padding: '12px',
-          transition: `all ${TOKENS.motion} ease`
-        }}
-      >
-        {sourceList.map((source, i) => (
-          <SourceItem
-            key={i}
-            source={source}
-            index={i}
-            onExpand={(idx) => setExpandedIndex(expandedIndex === idx ? null : idx)}
-            isExpanded={expandedIndex === i}
-          />
-        ))}
-      </div>
+      {/* Expanded list */}
+      <AnimatePresence>
+        {isSourcesExpanded && (
+          <motion.div
+            initial={{ opacity: 0, height: 0, marginTop: 0 }}
+            animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
+            exit={{ opacity: 0, height: 0, marginTop: 0 }}
+            transition={{ duration: 0.2 }}
+            style={{
+              overflow: 'hidden'
+            }}
+          >
+            <div
+              style={{
+                background: 'rgba(20,25,35,0.30)',
+                backdropFilter: 'blur(18px)',
+                WebkitBackdropFilter: 'blur(18px)',
+                border: `1px ${TOKENS.color.hairline}`,
+                borderRadius: TOKENS.radius_panel,
+                padding: '12px'
+              }}
+            >
+              {sourceList.map((source, i) => (
+                <SourceItem
+                  key={i}
+                  source={source}
+                  index={i}
+                  onExpand={(idx) => setExpandedIndex(expandedIndex === idx ? null : idx)}
+                  isExpanded={expandedIndex === i}
+                />
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
