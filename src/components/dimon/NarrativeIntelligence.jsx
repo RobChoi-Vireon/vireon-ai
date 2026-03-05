@@ -906,7 +906,7 @@ export default function NarrativeIntelligence({ sources, sentiment, drivers, imp
     >
       <div style={{ marginBottom: '24px', paddingLeft: '8px' }}>
         <h2 style={{ fontFamily: TOKENS.font.family, fontSize: '22px', fontWeight: 600, letterSpacing: '-0.01em', color: 'rgba(226,232,240,0.95)', marginBottom: '6px', lineHeight: 1.15 }}>
-          Narrative Intelligence
+          Narrative Pulse
         </h2>
         <p style={{ fontFamily: TOKENS.font.family, fontSize: '13px', fontWeight: 400, color: 'rgba(213,220,229,0.65)', lineHeight: 1.35, maxWidth: '620px' }}>
           Curated synthesis from trusted financial outlets.
