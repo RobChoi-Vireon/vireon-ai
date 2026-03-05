@@ -240,12 +240,12 @@ const DriversSection = ({ drivers = [] }) => {
       transition={{ duration: 0.5, delay: 0.2 }}
     >
       <div style={{ marginBottom: '14px' }}>
-        <h3 style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.48)', textTransform: 'uppercase' }}>
+        <h3 style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.10em', color: 'rgba(255,255,255,0.65)', textTransform: 'uppercase' }}>
           Narrative Drivers
         </h3>
       </div>
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
         {driverList.map((driver, i) => (
           <motion.div
             key={i}
@@ -255,24 +255,28 @@ const DriversSection = ({ drivers = [] }) => {
             className="group"
             style={{
               padding: '10px 14px',
-              borderRadius: TOKENS.radius_chip,
-              background: 'rgba(255,255,255,0.04)',
-              border: `1px ${TOKENS.color.hairline}`,
-              backdropFilter: `blur(8px)`,
-              WebkitBackdropFilter: `blur(8px)`,
+              borderRadius: '999px',
+              background: 'rgba(30,40,60,0.22)',
+              backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01))',
+              border: `1px solid rgba(255,255,255,0.10)`,
+              backdropFilter: `blur(20px)`,
+              WebkitBackdropFilter: `blur(20px)`,
               fontSize: '13px',
-              color: TOKENS.color.text_secondary,
+              color: 'rgba(213,220,229,0.90)',
               cursor: 'default',
-              transition: `all ${TOKENS.motion} ease`,
+              transition: `all 180ms ease`,
               whiteSpace: 'nowrap',
               textOverflow: 'ellipsis',
               overflow: 'hidden',
-              maxWidth: '280px'
+              maxWidth: '280px',
+              boxShadow: '0 0 0 1px rgba(255,255,255,0.03) inset, 0 10px 28px rgba(0,0,0,0.25)',
+              fontWeight: 500
             }}
             whileHover={{
-              background: 'rgba(255,255,255,0.08)',
+              background: 'rgba(30,40,60,0.30)',
+              border: `1px solid rgba(255,255,255,0.14)`,
               y: -1,
-              boxShadow: '0 6px 16px rgba(0,0,0,0.35)',
+              boxShadow: '0 0 0 1px rgba(255,255,255,0.03) inset, 0 14px 34px rgba(0,0,0,0.28)',
               transition: { duration: 0.16 }
             }}
             title={driver}
@@ -359,12 +363,12 @@ const ImpactIntelligence = ({ implications = [] }) => {
       transition={{ duration: 0.5, delay: 0.3 }}
     >
       <div style={{ marginBottom: '14px' }}>
-        <h3 style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.48)', textTransform: 'uppercase' }}>
+        <h3 style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.10em', color: 'rgba(255,255,255,0.65)', textTransform: 'uppercase' }}>
           Impact Intelligence
         </h3>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
         {implList.slice(0, 4).map((impl, i) => {
           const title = getTitle(impl, i);
           const description = getDescription(impl, i);
@@ -378,22 +382,27 @@ const ImpactIntelligence = ({ implications = [] }) => {
               transition={{ duration: 0.4, delay: 0.35 + i * 0.06 }}
               className="group"
               style={{
-                background: TOKENS.color.glass_secondary,
-                backdropFilter: `blur(16px)`,
-                WebkitBackdropFilter: `blur(16px)`,
-                border: `1px ${TOKENS.color.hairline}`,
-                borderRadius: TOKENS.radius_panel,
-                padding: '20px',
-                transition: `all ${TOKENS.motion} ease`,
-                cursor: 'default'
+                background: 'rgba(30,40,60,0.20)',
+                backgroundImage: 'radial-gradient(120% 90% at 15% 10%, rgba(255,255,255,0.08), rgba(255,255,255,0.02) 45%, rgba(255,255,255,0.00) 70%), linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01))',
+                backdropFilter: `blur(24px)`,
+                WebkitBackdropFilter: `blur(24px)`,
+                border: `1px solid rgba(255,255,255,0.10)`,
+                borderRadius: '18px',
+                padding: '22px',
+                transition: `all 180ms ease`,
+                cursor: 'default',
+                boxShadow: '0 0 0 1px rgba(255,255,255,0.03) inset, 0 16px 44px rgba(0,0,0,0.30)'
               }}
               whileHover={{
                 y: -2,
-                boxShadow: '0 10px 24px rgba(0,0,0,0.45)',
+                background: 'rgba(30,40,60,0.26)',
+                backgroundImage: 'radial-gradient(120% 90% at 15% 10%, rgba(255,255,255,0.10), rgba(255,255,255,0.02) 45%, rgba(255,255,255,0.00) 70%), linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01))',
+                border: `1px solid rgba(255,255,255,0.14)`,
+                boxShadow: '0 0 0 1px rgba(255,255,255,0.04) inset, 0 22px 56px rgba(0,0,0,0.34)',
                 transition: { duration: 0.16 }
               }}
             >
-              <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.48)', textTransform: 'uppercase', marginBottom: '8px' }}>
+              <div style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.60)', textTransform: 'uppercase', marginBottom: '8px' }}>
                 {impl.label || 'SIGNAL'}
               </div>
               
@@ -403,8 +412,8 @@ const ImpactIntelligence = ({ implications = [] }) => {
                   width: '22px',
                   height: '22px',
                   borderRadius: '8px',
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.06)',
+                  background: 'rgba(255,255,255,0.05)',
+                  border: '1px solid rgba(255,255,255,0.08)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -415,12 +424,12 @@ const ImpactIntelligence = ({ implications = [] }) => {
                 }}>
                   {icon}
                 </div>
-                <h4 style={{ fontSize: '15px', fontWeight: 600, color: TOKENS.color.text_primary, lineHeight: 1.3, margin: 0 }}>
+                <h4 style={{ fontSize: '16px', fontWeight: 600, letterSpacing: '-0.01em', color: TOKENS.color.text_primary, lineHeight: 1.3, margin: 0 }}>
                   {title}
                 </h4>
               </div>
               
-              <p style={{ fontSize: '13px', color: TOKENS.color.text_secondary, lineHeight: 1.5 }}>
+              <p style={{ fontSize: '13.5px', color: 'rgba(213,220,229,0.75)', lineHeight: 1.45 }}>
                 {description}
               </p>
             </motion.div>
