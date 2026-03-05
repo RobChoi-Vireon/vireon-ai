@@ -102,7 +102,7 @@ const FractureBar = ({ count }) => {
               initial={{ opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 4 }}
-              transition={{ duration: 0.15 }}
+              transition={{ duration: 0.16, ease: EASE }}
               style={{
                 position: 'absolute', bottom: 'calc(100% + 8px)', left: '50%', transform: 'translateX(-50%)',
                 padding: '5px 10px', borderRadius: '8px', whiteSpace: 'nowrap',
@@ -160,12 +160,13 @@ const DivergenceCard = ({ divergence, onClick, index }) => {
       <motion.div
         onClick={() => onClick?.(divergence)}
         animate={{
-          y: hovered ? -3 : 0,
+          y: hovered ? -2 : 0,
           boxShadow: hovered
             ? `inset 0 1px 0 rgba(255,255,255,0.12), 0 12px 40px rgba(0,0,0,0.32), 0 0 0 1px rgba(255,255,255,0.10)`
             : GLASS.card.boxShadow
         }}
         transition={SPRING}
+        whileHover={{ scale: 1.002 }}
         style={{
           ...GLASS.card,
           padding: '20px 22px',
@@ -188,7 +189,7 @@ const DivergenceCard = ({ divergence, onClick, index }) => {
             background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 55%)'
           }}
           animate={{ opacity: hovered ? 1 : 0 }}
-          transition={{ duration: 0.16 }}
+          transition={{ type: 'spring', stiffness: 350, damping: 38 }}
         />
 
         {/* Type accent glow (very subtle) */}
@@ -198,7 +199,7 @@ const DivergenceCard = ({ divergence, onClick, index }) => {
             background: `radial-gradient(ellipse at 0% 50%, ${typeTheme.glow} 0%, transparent 65%)`
           }}
           animate={{ opacity: hovered ? 1 : 0.4 }}
-          transition={{ duration: 0.18 }}
+          transition={{ type: 'spring', stiffness: 320, damping: 35 }}
         />
 
         {/* ── Header Row ── */}
@@ -278,8 +279,8 @@ const DivergenceCard = ({ divergence, onClick, index }) => {
 
           {/* Chevron affordance */}
           <motion.div
-            animate={{ opacity: hovered ? 1 : 0, x: hovered ? 0 : -4 }}
-            transition={{ duration: 0.14, ease: EASE }}
+            animate={{ opacity: hovered ? 1 : 0, x: hovered ? 0 : -3 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 40 }}
             style={{ flexShrink: 0 }}
           >
             <ChevronRight className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.45)' }} strokeWidth={2} />
