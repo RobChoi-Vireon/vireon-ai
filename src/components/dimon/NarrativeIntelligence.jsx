@@ -252,6 +252,29 @@ const DriversSection = ({ drivers = [] }) => {
 
 // ─── IMPACT INTELLIGENCE — 2×2 GRID ───────────────────────────────────────
 const ImpactIntelligence = ({ implications = [] }) => {
+  const fallbackMap = {
+    0: {
+      title: 'Credit Spreads',
+      description: 'Rising borrowing costs could pressure leveraged companies and widen high-yield spreads.',
+      icon: '◈'
+    },
+    1: {
+      title: 'Growth Allocation',
+      description: 'Slowing global growth expectations may shift capital toward defensive sectors.',
+      icon: '↗'
+    },
+    2: {
+      title: 'Policy Risk',
+      description: 'Tighter regulation and fiscal gridlock may increase volatility in regulated industries.',
+      icon: '⌁'
+    },
+    3: {
+      title: 'Growth Allocation',
+      description: 'Slowing global growth expectations may shift capital toward defensive sectors.',
+      icon: '↗'
+    }
+  };
+
   const defaultImplications = [
     {
       label: 'WATCH Tech Compliance',
@@ -276,6 +299,23 @@ const ImpactIntelligence = ({ implications = [] }) => {
   ];
 
   const implList = implications.length > 0 ? implications : defaultImplications;
+  
+  // Helper: resolve title with fallback
+  const getTitle = (impl, index) => {
+    if (impl.title && impl.title.trim()) return impl.title;
+    return fallbackMap[index]?.title || 'Market Signal';
+  };
+  
+  // Helper: resolve description with fallback
+  const getDescription = (impl, index) => {
+    if (impl.description && impl.description.trim()) return impl.description;
+    return fallbackMap[index]?.description || 'Monitor this signal for trading implications.';
+  };
+  
+  // Helper: get icon for card
+  const getIcon = (index) => {
+    return fallbackMap[index]?.icon || '◈';
+  };
 
   return (
     <motion.div
@@ -290,40 +330,67 @@ const ImpactIntelligence = ({ implications = [] }) => {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
-        {implList.slice(0, 4).map((impl, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.35 + i * 0.06 }}
-            className="group"
-            style={{
-              background: TOKENS.color.glass_secondary,
-              backdropFilter: `blur(16px)`,
-              WebkitBackdropFilter: `blur(16px)`,
-              border: `1px ${TOKENS.color.hairline}`,
-              borderRadius: TOKENS.radius_panel,
-              padding: '20px',
-              transition: `all ${TOKENS.motion} ease`,
-              cursor: 'default'
-            }}
-            whileHover={{
-              y: -2,
-              boxShadow: '0 10px 24px rgba(0,0,0,0.45)',
-              transition: { duration: 0.16 }
-            }}
-          >
-            <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.48)', textTransform: 'uppercase', marginBottom: '8px' }}>
-              {impl.label || 'SIGNAL'}
-            </div>
-            <h4 style={{ fontSize: '15px', fontWeight: 600, color: TOKENS.color.text_primary, marginBottom: '6px', lineHeight: 1.3 }}>
-              {impl.title || 'Untitled'}
-            </h4>
-            <p style={{ fontSize: '13px', color: TOKENS.color.text_secondary, lineHeight: 1.5 }}>
-              {impl.description || 'No description'}
-            </p>
-          </motion.div>
-        ))}
+        {implList.slice(0, 4).map((impl, i) => {
+          const title = getTitle(impl, i);
+          const description = getDescription(impl, i);
+          const icon = getIcon(i);
+          
+          return (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.35 + i * 0.06 }}
+              className="group"
+              style={{
+                background: TOKENS.color.glass_secondary,
+                backdropFilter: `blur(16px)`,
+                WebkitBackdropFilter: `blur(16px)`,
+                border: `1px ${TOKENS.color.hairline}`,
+                borderRadius: TOKENS.radius_panel,
+                padding: '20px',
+                transition: `all ${TOKENS.motion} ease`,
+                cursor: 'default'
+              }}
+              whileHover={{
+                y: -2,
+                boxShadow: '0 10px 24px rgba(0,0,0,0.45)',
+                transition: { duration: 0.16 }
+              }}
+            >
+              <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.48)', textTransform: 'uppercase', marginBottom: '8px' }}>
+                {impl.label || 'SIGNAL'}
+              </div>
+              
+              {/* Title row with leading icon chip */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
+                <div style={{
+                  width: '22px',
+                  height: '22px',
+                  borderRadius: '8px',
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.06)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  fontSize: '11px',
+                  color: 'rgba(213,220,229,0.75)',
+                  fontWeight: 500
+                }}>
+                  {icon}
+                </div>
+                <h4 style={{ fontSize: '15px', fontWeight: 600, color: TOKENS.color.text_primary, lineHeight: 1.3, margin: 0 }}>
+                  {title}
+                </h4>
+              </div>
+              
+              <p style={{ fontSize: '13px', color: TOKENS.color.text_secondary, lineHeight: 1.5 }}>
+                {description}
+              </p>
+            </motion.div>
+          );
+        })}
       </div>
     </motion.div>
   );
