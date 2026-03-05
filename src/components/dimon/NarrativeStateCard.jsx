@@ -122,7 +122,7 @@ export default function NarrativeStateCard({ narrativeState = 'debated_regime', 
               Narrative State
             </h3>
             <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.32)' }}>
-              As of: —
+              As of: {asOf}
             </span>
           </div>
 
