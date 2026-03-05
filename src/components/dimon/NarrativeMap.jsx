@@ -479,9 +479,11 @@ const NarrativeShiftCard = ({ item, index }) => {
             <p className="text-[13px] font-semibold leading-[1.5] flex-1" style={{ color: 'rgba(255,255,255,0.95)' }}>
               {item.statement || item.title || item.narrative || '—'}
             </p>
-            <span className="text-[12px] font-bold px-2.5 py-1.5 rounded-full flex-shrink-0" style={{ background: shiftBg, color: shiftColor }}>
-              {isRising ? '+' : ''}{shift} pts
-            </span>
+            {shift !== 0 && (
+              <span className="text-[12px] font-bold px-2.5 py-1.5 rounded-full flex-shrink-0" style={{ background: shiftBg, color: shiftColor }}>
+                {isRising ? '+' : ''}{shift} pts
+              </span>
+            )}
           </div>
 
           {/* Meta chips: Momentum + Confidence */}
