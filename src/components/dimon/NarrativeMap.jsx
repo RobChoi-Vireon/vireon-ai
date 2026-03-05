@@ -222,73 +222,202 @@ const ConsensusRing = ({ item, index, isSelected, onSelect }) => {
 
   const color = getRingColor(pct);
   const badge = getRingBadge(pct);
-  const SIZE = 130;
-  const STROKE = 10;
-  const RADIUS = (SIZE - STROKE) / 2;
+  const SIZE = 140;
+  const STROKE = 9;
+  const INNER_STROKE = 7; // secondary inner track
+  const RADIUS = (SIZE - STROKE * 2) / 2;
   const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
   const shortLabel = getShortLabel(item);
 
+  // Derive a slightly lighter tint for gloss gradients
+  const colorAlpha = (a) => {
+    const hex = color.replace('#', '');
+    const r = parseInt(hex.slice(0,2),16);
+    const g = parseInt(hex.slice(2,4),16);
+    const b = parseInt(hex.slice(4,6),16);
+    return `rgba(${r},${g},${b},${a})`;
+  };
+
+  const ringId = `ring-grad-${index}`;
+  const glowId = `ring-glow-${index}`;
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.07 * index, duration: 0.36, ease: HORIZON_EASE }}
+      initial={{ opacity: 0, scale: 0.88, y: 14 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ delay: 0.08 * index, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
       onClick={() => onSelect(index)}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       className="flex flex-col items-center cursor-pointer select-none"
-      style={{ gap: '12px' }}
+      style={{ gap: '14px' }}
     >
-      {/* Ring SVG */}
+      {/* Outer frosted disc — Liquid Glass substrate */}
       <motion.div
         animate={{ scale: hovered ? 1.04 : 1 }}
-        transition={{ duration: 0.18, ease: 'easeOut' }}
+        transition={{ duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }}
         style={{
-          position: 'relative', width: SIZE, height: SIZE,
-          filter: hovered ? `drop-shadow(0 0 18px ${color}59)` : `drop-shadow(0 0 8px ${color}26)`,
-          transition: 'filter 0.18s ease',
+          position: 'relative',
+          width: SIZE + 16,
+          height: SIZE + 16,
+          borderRadius: '50%',
+          // Frosted glass disc
+          background: hovered
+            ? `radial-gradient(circle at 38% 28%, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.055) 55%, rgba(0,0,0,0.10) 100%)`
+            : `radial-gradient(circle at 38% 28%, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.035) 55%, rgba(0,0,0,0.10) 100%)`,
+          backdropFilter: 'blur(32px) saturate(180%) brightness(1.08)',
+          WebkitBackdropFilter: 'blur(32px) saturate(180%) brightness(1.08)',
+          border: `1px solid ${hovered ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.11)'}`,
+          boxShadow: hovered
+            ? [
+                `inset 0 1.5px 0 rgba(255,255,255,0.22)`,
+                `inset 0 -1px 0 rgba(0,0,0,0.18)`,
+                `0 8px 32px rgba(0,0,0,0.30)`,
+                `0 0 40px ${colorAlpha(0.22)}`,
+                `0 0 80px ${colorAlpha(0.10)}`,
+              ].join(', ')
+            : [
+                `inset 0 1.5px 0 rgba(255,255,255,0.14)`,
+                `inset 0 -1px 0 rgba(0,0,0,0.12)`,
+                `0 4px 20px rgba(0,0,0,0.22)`,
+                `0 0 22px ${colorAlpha(0.12)}`,
+              ].join(', '),
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease',
         }}
       >
-        <svg width={SIZE} height={SIZE} style={{ transform: 'rotate(-90deg)' }}>
-          {/* Track */}
-          <circle cx={SIZE / 2} cy={SIZE / 2} r={RADIUS} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth={STROKE} />
-          {/* Animated fill */}
+        {/* Top specular catch-light */}
+        <div style={{
+          position: 'absolute',
+          top: '10%', left: '20%', right: '20%',
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.30), transparent)',
+          borderRadius: '50%',
+          pointerEvents: 'none',
+          zIndex: 3,
+        }} />
+
+        {/* Inner subsurface scatter */}
+        <div style={{
+          position: 'absolute', inset: 0, borderRadius: '50%',
+          background: `radial-gradient(circle at 50% 20%, ${colorAlpha(0.07)} 0%, transparent 60%)`,
+          pointerEvents: 'none', zIndex: 1,
+        }} />
+
+        {/* SVG Ring */}
+        <svg width={SIZE} height={SIZE} style={{ transform: 'rotate(-90deg)', position: 'relative', zIndex: 2 }}>
+          <defs>
+            {/* Gradient arc stroke */}
+            <linearGradient id={ringId} x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor={colorAlpha(0.55)} />
+              <stop offset="50%" stopColor={color} />
+              <stop offset="100%" stopColor={colorAlpha(0.75)} />
+            </linearGradient>
+            {/* Glow filter */}
+            <filter id={glowId} x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
+
+          {/* Track — recessed groove */}
+          <circle
+            cx={SIZE / 2} cy={SIZE / 2} r={RADIUS}
+            fill="none"
+            stroke="rgba(255,255,255,0.07)"
+            strokeWidth={STROKE + 2}
+          />
+          <circle
+            cx={SIZE / 2} cy={SIZE / 2} r={RADIUS}
+            fill="none"
+            stroke="rgba(255,255,255,0.12)"
+            strokeWidth={STROKE}
+          />
+
+          {/* Glow shadow arc (blurred duplicate below) */}
           <motion.circle
             cx={SIZE / 2} cy={SIZE / 2} r={RADIUS}
             fill="none"
-            stroke={color}
+            stroke={colorAlpha(0.35)}
+            strokeWidth={STROKE + 4}
+            strokeLinecap="round"
+            strokeDasharray={CIRCUMFERENCE}
+            initial={{ strokeDashoffset: CIRCUMFERENCE }}
+            animate={{ strokeDashoffset: CIRCUMFERENCE - (pct / 100) * CIRCUMFERENCE }}
+            transition={{ duration: 0.8, delay: 0.12 + 0.08 * index, ease: 'easeOut' }}
+            filter={`url(#${glowId})`}
+          />
+
+          {/* Main arc — gradient stroke */}
+          <motion.circle
+            cx={SIZE / 2} cy={SIZE / 2} r={RADIUS}
+            fill="none"
+            stroke={`url(#${ringId})`}
             strokeWidth={STROKE}
             strokeLinecap="round"
             strokeDasharray={CIRCUMFERENCE}
             initial={{ strokeDashoffset: CIRCUMFERENCE }}
             animate={{ strokeDashoffset: CIRCUMFERENCE - (pct / 100) * CIRCUMFERENCE }}
-            transition={{ duration: 0.8, delay: 0.1 + 0.07 * index, ease: 'easeOut' }}
+            transition={{ duration: 0.8, delay: 0.12 + 0.08 * index, ease: 'easeOut' }}
+          />
+
+          {/* Leading tip gloss dot */}
+          <motion.circle
+            cx={SIZE / 2} cy={SIZE / 2} r={RADIUS}
+            fill="none"
+            stroke="rgba(255,255,255,0.55)"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeDasharray={`3 ${CIRCUMFERENCE - 3}`}
+            initial={{ strokeDashoffset: CIRCUMFERENCE }}
+            animate={{ strokeDashoffset: CIRCUMFERENCE - (pct / 100) * CIRCUMFERENCE + 1.5 }}
+            transition={{ duration: 0.8, delay: 0.12 + 0.08 * index, ease: 'easeOut' }}
           />
         </svg>
-        {/* Center text */}
+
+        {/* Center label */}
         <div style={{
           position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'center', gap: '2px'
+          alignItems: 'center', justifyContent: 'center', gap: '3px', zIndex: 4,
         }}>
-          <span style={{ fontSize: '30px', fontWeight: 600, color: 'rgba(255,255,255,0.95)', lineHeight: 1 }}>
+          <span style={{
+            fontSize: '30px', fontWeight: 600, lineHeight: 1,
+            color: 'rgba(255,255,255,0.96)',
+            textShadow: `0 0 20px ${colorAlpha(0.45)}, 0 1px 3px rgba(0,0,0,0.30)`,
+            letterSpacing: '-0.02em',
+          }}>
             {pct}%
           </span>
-          <span style={{ fontSize: '13px', fontWeight: 500, letterSpacing: '0.05em', opacity: 0.75, color: 'rgba(255,255,255,0.75)', textAlign: 'center', maxWidth: '90px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span style={{
+            fontSize: '13px', fontWeight: 500, letterSpacing: '0.04em',
+            color: 'rgba(255,255,255,0.75)', textAlign: 'center',
+            maxWidth: '90px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+          }}>
             {shortLabel}
           </span>
         </div>
       </motion.div>
 
-      {/* Strength badge */}
-      <span style={{
-        fontSize: '11px', fontWeight: 700, letterSpacing: '0.04em',
-        padding: '3px 10px', borderRadius: '99px',
-        background: `${badge.color}18`,
-        border: `1px solid ${badge.color}40`,
-        color: badge.color,
-      }}>
+      {/* Strength badge — glass pill */}
+      <motion.span
+        initial={{ opacity: 0, y: 4 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 + 0.08 * index, duration: 0.3 }}
+        style={{
+          fontSize: '11px', fontWeight: 700, letterSpacing: '0.05em',
+          padding: '4px 12px', borderRadius: '99px',
+          background: `${colorAlpha(0.12)}`,
+          border: `1px solid ${colorAlpha(0.30)}`,
+          color: color,
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.10), 0 0 14px ${colorAlpha(0.14)}`,
+        }}
+      >
         {badge.label}
-      </span>
+      </motion.span>
     </motion.div>
   );
 };
