@@ -897,7 +897,7 @@ export default function MacroSignalsPage() {
                     data-section-order="5"
                     className="col-span-12 relative z-10"
                   >
-                    <NarrativeMap synthesis={digest.synthesis} density="compact" />
+                    <NarrativeMap synthesis={digest.synthesis} density="compact" narrativeMap={sessionData?.narrative_map || null} />
                   </motion.div>
                 )}
                 
