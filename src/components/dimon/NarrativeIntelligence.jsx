@@ -358,10 +358,10 @@ const SourceItem = ({ source, index, onExpand, isExpanded }) => {
         onClick={() => onExpand(index)}
         style={{
           padding: '14px',
-          borderRadius: TOKENS.radius_row,
-          background: 'rgba(255,255,255,0.03)',
-          border: `1px rgba(255,255,255,0.04)`,
-          transition: `all ${TOKENS.motion} ease`,
+          borderRadius: '16px',
+          background: 'rgba(255,255,255,0.04)',
+          border: `1px rgba(255,255,255,0.06)`,
+          transition: `all 180ms ease`,
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
@@ -369,9 +369,9 @@ const SourceItem = ({ source, index, onExpand, isExpanded }) => {
           gap: '12px'
         }}
         whileHover={{
-          background: 'rgba(255,255,255,0.06)',
-          x: 2,
-          transition: { duration: 0.12 }
+          background: 'rgba(255,255,255,0.07)',
+          y: -1,
+          transition: { duration: 0.18 }
         }}
       >
         {/* Left cluster */}
@@ -750,12 +750,14 @@ const SourcesSection = ({ sources = [] }) => {
           >
             <div
               style={{
-                background: 'rgba(20,25,35,0.30)',
-                backdropFilter: 'blur(18px)',
-                WebkitBackdropFilter: 'blur(18px)',
-                border: `1px ${TOKENS.color.hairline}`,
-                borderRadius: TOKENS.radius_panel,
-                padding: '12px'
+                background: 'rgba(30,40,60,0.28)',
+                backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01))',
+                backdropFilter: 'blur(22px)',
+                WebkitBackdropFilter: 'blur(22px)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: '18px',
+                padding: '12px',
+                boxShadow: '0 0 0 1px rgba(255,255,255,0.02) inset'
               }}
             >
               {sourceList.map((source, i) => (
