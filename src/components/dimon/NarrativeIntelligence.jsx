@@ -525,7 +525,6 @@ const SourceItem = ({ source, index, onExpand, isExpanded }) => {
           borderRadius: '16px',
           background: 'rgba(30,40,60,0.18)',
           border: `1px solid rgba(255,255,255,0.08)`,
-          transition: `all 200ms ease`,
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
@@ -538,7 +537,7 @@ const SourceItem = ({ source, index, onExpand, isExpanded }) => {
           background: 'rgba(30,40,60,0.26)',
           border: `1px solid rgba(255,255,255,0.10)`,
           y: -1,
-          transition: { duration: 0.18 }
+          transition: SPRING
         }}
       >
         {/* Left cluster */}
@@ -608,7 +607,7 @@ const SourceItem = ({ source, index, onExpand, isExpanded }) => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.18, ease: EASE }}
             style={{
               overflow: 'hidden',
               marginTop: '10px'
