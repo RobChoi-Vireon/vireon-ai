@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GitBranch, Eye, AlertCircle, ChevronDown, ChevronUp, Scale, ArrowRight, Target, Radar } from 'lucide-react';
+import { GitBranch, Eye, ChevronDown, ChevronUp, Scale, ArrowRight, Target, Radar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
