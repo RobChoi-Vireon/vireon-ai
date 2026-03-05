@@ -4,8 +4,9 @@ import { GitCommit, AlertTriangle, ChevronRight, BarChart2, Database, Eye, GitMe
 
 // ─── OS HORIZON TOKENS ───────────────────────────────────────────────────────
 const EASE = [0.26, 0.11, 0.26, 1.0];
-const SPRING = { type: 'spring', stiffness: 340, damping: 38, mass: 0.85 };
-const ENTRY = { type: 'spring', stiffness: 280, damping: 32, mass: 0.9 };
+const SPRING = { type: 'spring', stiffness: 380, damping: 40, mass: 0.8 };
+const ENTRY = { type: 'spring', stiffness: 320, damping: 35, mass: 0.85 };
+const SMOOTH = { duration: 0.26, ease: [0.22, 0.61, 0.36, 1] };
 
 const GLASS = {
   panel: {
