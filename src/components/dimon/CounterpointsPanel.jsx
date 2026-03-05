@@ -440,121 +440,74 @@ export default function CounterpointsPanel({ counterpoints = [], blindspots = []
           <span>Overall: <span className={`font-bold ${consensusState.color}`}>{consensusState.text}</span></span>
         </motion.div>
 
-        <AnimatePresence mode="wait">
-          {viewMode === 'cards' ? (
-            <motion.div 
-              key="cards"
-              className="space-y-6"
-              variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-              initial="hidden"
-              animate="visible"
-              exit={{ opacity: 0 }}
+        <div className="space-y-1">
+          {combinedItems.map((item, index) => (
+            <motion.div
+              key={item.id}
+              layout
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
             >
-              {counterpoints && counterpoints.length > 0 && (
-                <motion.div variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}>
-                  <h3 className="text-md font-semibold mb-4 flex items-center text-gray-200">
-                    <Scale className="w-4 h-4 mr-2 text-amber-400" />
-                    Active Debates ({counterpoints.length})
-                  </h3>
-                  <div className="space-y-4">
-                    {visibleCounterpoints.map((counterpoint, index) => (
-                      <DebateCard key={counterpoint.id} counterpoint={counterpoint} index={index} />
-                    ))}
+              <div 
+                onClick={() => handleRowClick(item.id)}
+                className="p-3 rounded-lg group hover:bg-white/5 transition-colors duration-200 cursor-pointer"
+              >
+                {item.type === 'debate' ? (
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <Scale className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                      <p className="text-gray-300 truncate">
+                        <span className="font-semibold text-amber-300">Consensus:</span> {item.consensus}
+                      </p>
+                      <ArrowRight className="w-4 h-4 text-white/40 mx-2 flex-shrink-0" />
+                      <p className="text-orange-300 truncate flex-1">
+                        {item.counter}
+                      </p>
+                    </div>
+                    <div className="ml-4">
+                      <MiniConfidenceBar confidence={item.confidence} />
+                    </div>
                   </div>
-                </motion.div>
-              )}
-
-              {blindspots && blindspots.length > 0 && (
-                <motion.div variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}>
-                  <h3 className="text-md font-semibold mb-4 flex items-center text-gray-200">
-                    <Radar className="w-4 h-4 mr-2 text-purple-400" />
-                    Radar Detections ({blindspots.length})
-                  </h3>
-                  <div className="space-y-4">
-                    {visibleBlindspots.map((blindspot, index) => (
-                      <BlindspotCard key={blindspot.id} blindspot={blindspot} index={index} />
-                    ))}
+                ) : (
+                  <div className="flex items-center justify-between text-sm hover:bg-purple-500/10 rounded-lg -m-3 p-3 transition-colors duration-200">
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <motion.div 
+                        className="text-purple-400 flex-shrink-0"
+                        animate={{ scale: [1, 1.1, 1], opacity: [0.8, 1, 0.8] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                      >
+                        <Radar className="w-4 h-4" />
+                      </motion.div>
+                      <p className="font-semibold text-purple-300 truncate">{item.title}</p>
+                      <p className="text-gray-400 truncate ml-2 flex-1">{item.text}</p>
+                    </div>
+                    <Badge variant="outline" className="ml-4 border-purple-500/40 text-purple-300 bg-purple-900/30 text-xs">
+                      {item.region?.toUpperCase() || 'GLOBAL'}
+                    </Badge>
                   </div>
-                </motion.div>
-              )}
-            </motion.div>
-          ) : (
-            <motion.div 
-              key="glance"
-              className="space-y-1"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              {combinedItems.map((item, index) => (
-                <motion.div
-                  key={item.id}
-                  layout
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                >
-                  <div 
-                    onClick={() => handleRowClick(item.id)}
-                    className="p-3 rounded-lg group hover:bg-white/5 transition-colors duration-200 cursor-pointer"
+                )}
+              </div>
+              <AnimatePresence>
+                {expandedItemId === item.id && (
+                  <motion.div
+                    className="pl-3 pr-3 pb-3"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
                   >
                     {item.type === 'debate' ? (
-                      <div className="flex items-center justify-between text-sm">
-                        <div className="flex items-center gap-2 flex-1 min-w-0">
-                          <Scale className="w-4 h-4 text-amber-400 flex-shrink-0" />
-                          <p className="text-gray-300 truncate">
-                            <span className="font-semibold text-amber-300">Consensus:</span> {item.consensus}
-                          </p>
-                          <ArrowRight className="w-4 h-4 text-white/40 mx-2 flex-shrink-0" />
-                          <p className="text-orange-300 truncate flex-1">
-                            {item.counter}
-                          </p>
-                        </div>
-                        <div className="ml-4">
-                          <MiniConfidenceBar confidence={item.confidence} />
-                        </div>
-                      </div>
+                      <DebateCard counterpoint={item} index={0} isExpandedView={true} /> 
                     ) : (
-                      <div className="flex items-center justify-between text-sm hover:bg-purple-500/10 rounded-lg -m-3 p-3 transition-colors duration-200">
-                         <div className="flex items-center gap-2 flex-1 min-w-0">
-                          <motion.div 
-                            className="text-purple-400 flex-shrink-0"
-                            animate={{ scale: [1, 1.1, 1], opacity: [0.8, 1, 0.8] }}
-                            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                          >
-                            <Radar className="w-4 h-4" />
-                          </motion.div>
-                          <p className="font-semibold text-purple-300 truncate">{item.title}</p>
-                          <p className="text-gray-400 truncate ml-2 flex-1">{item.text}</p>
-                        </div>
-                        <Badge variant="outline" className="ml-4 border-purple-500/40 text-purple-300 bg-purple-900/30 text-xs">
-                          {item.region?.toUpperCase() || 'GLOBAL'}
-                        </Badge>
-                      </div>
+                      <BlindspotCard blindspot={item} index={0} isExpandedView={true} /> 
                     )}
-                  </div>
-                  <AnimatePresence>
-                    {expandedItemId === item.id && (
-                      <motion.div
-                        className="pl-3 pr-3 pb-3"
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.3, ease: 'easeInOut' }}
-                      >
-                        {item.type === 'debate' ? (
-                          <DebateCard counterpoint={item} index={0} isExpandedView={true} /> 
-                        ) : (
-                          <BlindspotCard blindspot={item} index={0} isExpandedView={true} /> 
-                        )}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
-          )}
-        </AnimatePresence>
+          ))}
+        </div>
 
         {/* Show More/Less Toggle */}
         {totalItems > visibleItemsCount && (
