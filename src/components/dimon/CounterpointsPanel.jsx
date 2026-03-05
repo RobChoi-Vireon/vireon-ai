@@ -422,24 +422,7 @@ export default function CounterpointsPanel({ counterpoints = [], blindspots = []
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Button
-              variant={viewMode === 'glance' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('glance')}
-              className="text-xs"
-            >
-              Quick Glance
-            </Button>
-            <Button
-              variant={viewMode === 'cards' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('cards')}
-              className="text-xs"
-            >
-              Cards
-            </Button>
-          </div>
+
         </div>
         
         {/* Net Summary Bar */}
