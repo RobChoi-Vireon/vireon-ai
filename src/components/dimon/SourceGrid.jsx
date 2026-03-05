@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
-// ─── Design tokens ────────────────────────────────────────────────────────────
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
 
 const GLASS_PANEL = {
@@ -29,13 +28,7 @@ const SpecularLine = () => (
   }} />
 );
 
-const SectionLabel = ({ children }) => (
-  <p className="text-[10px] font-semibold uppercase tracking-widest px-1" style={{ color: 'rgba(255,255,255,0.32)', letterSpacing: '0.08em' }}>
-    {children}
-  </p>
-);
-
-// ─── Source logo config ───────────────────────────────────────────────────────
+// ─── Source logos ─────────────────────────────────────────────────────────────
 const SOURCE_LOGOS = {
   wapo:      { abbr: 'WP',  bg: '#1a4fa3', label: 'Washington Post' },
   nyt:       { abbr: 'NYT', bg: '#1a1a1a', label: 'New York Times' },
@@ -46,7 +39,6 @@ const SOURCE_LOGOS = {
   politico:  { abbr: 'POL', bg: '#374151', label: 'Politico' },
 };
 
-// ─── Derived data helpers ─────────────────────────────────────────────────────
 const orderedSources = ['wapo', 'nyt', 'wsj', 'ft', 'economist', 'axios', 'politico'];
 
 const getSentiment = (source) => {
@@ -55,13 +47,12 @@ const getSentiment = (source) => {
   return 'neutral';
 };
 
-const getDrivers = (sources) => {
-  const drivers = [
-    'Credit Risk', 'China Slowdown', 'Industrial M&A',
-    'Clean Energy Growth', 'AI Regulation', 'Fiscal Gridlock',
-  ];
-  return drivers;
-};
+const getDrivers = () => [
+  'Credit Risk', 'China Slowdown', 'Industrial M&A',
+  'Clean Energy Growth', 'AI Regulation', 'Fiscal Gridlock',
+];
+
+const WATCH_LABELS = ['Watch Spreads', 'Watch Growth', 'Watch Policy', 'Watch Sentiment', 'Watch Flows', 'Watch Yields'];
 
 const getNarrativeSummary = (sources) => {
   const cautCount = sources.filter(s => getSentiment(s) === 'cautionary').length;
@@ -73,8 +64,7 @@ const getNarrativeSummary = (sources) => {
     headline: pct >= 50
       ? 'Global media coverage is turning slightly cautious.'
       : 'Coverage remains broadly neutral across major outlets.',
-    summary:
-      'Coverage across major financial publications suggests increasing attention to credit risks and slowing Chinese growth, while industrial M&A and clean energy momentum remain neutral-to-positive themes.',
+    summary: 'Coverage across major financial publications suggests increasing attention to credit risks and slowing Chinese growth, while industrial M&A and clean energy momentum remain neutral-to-positive themes.',
     sentiment: pct >= 50 ? 'Mildly Cautious' : 'Broadly Neutral',
   };
 };
@@ -92,7 +82,6 @@ const SentimentChip = ({ label, isCautionary }) => {
   );
 };
 
-// ─── Micro chip (info pills in pulse card) ────────────────────────────────────
 const MicroChip = ({ label }) => (
   <span className="inline-flex items-center px-2.5 py-0.5 text-[10px] font-medium rounded-full"
     style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.09)', color: 'rgba(255,255,255,0.50)' }}>
@@ -100,99 +89,152 @@ const MicroChip = ({ label }) => (
   </span>
 );
 
-// ─── Improved animated fill bar with tick marks ───────────────────────────────
-const SentimentBar = ({ label, pct, color, glowColor, delay }) => (
-  <div className="space-y-1.5">
-    <div className="flex items-center justify-between">
-      <span className="text-[12px] font-medium" style={{ color: 'rgba(255,255,255,0.60)' }}>{label}</span>
-    </div>
-    <div className="relative h-2.5 rounded-full overflow-visible" style={{ background: 'rgba(255,255,255,0.06)' }}>
-      {/* Tick marks at 25 / 50 / 75 */}
-      {[25, 50, 75].map(tick => (
-        <div key={tick} style={{
-          position: 'absolute', top: '-2px', bottom: '-2px',
-          left: `${tick}%`, width: '1px',
-          background: 'rgba(255,255,255,0.06)',
-          pointerEvents: 'none', zIndex: 1
-        }} />
-      ))}
-      <motion.div
-        initial={{ width: 0 }}
-        animate={{ width: `${pct}%` }}
-        transition={{ duration: 1.2, delay, ease: HORIZON_EASE }}
-        className="h-full rounded-full relative z-10 overflow-hidden"
+// ─── Narrative Board ──────────────────────────────────────────────────────────
+
+const MOMENTUM_CONFIG = {
+  Accelerating: { color: 'rgba(251,146,60,0.90)', bg: 'rgba(251,146,60,0.10)', border: 'rgba(251,146,60,0.20)' },
+  Building:     { color: 'rgba(94,167,255,0.90)',  bg: 'rgba(94,167,255,0.10)',  border: 'rgba(94,167,255,0.20)'  },
+  Stable:       { color: 'rgba(148,163,184,0.80)', bg: 'rgba(148,163,184,0.08)', border: 'rgba(148,163,184,0.15)' },
+};
+
+const getMomentum = (sentiment, index) => {
+  if (sentiment.toLowerCase().includes('cautious')) return index < 2 ? 'Accelerating' : 'Stable';
+  if (sentiment.toLowerCase().includes('positive') || sentiment.toLowerCase().includes('constructive')) return 'Building';
+  return index === 0 ? 'Accelerating' : 'Stable';
+};
+
+const getDirection = (sentiment, index) => {
+  if (sentiment.toLowerCase().includes('cautious')) return index < 2 ? 'down' : 'flat';
+  return index === 0 ? 'up' : 'flat';
+};
+
+const DirectionArrow = ({ dir, hovered }) => {
+  const config = {
+    up:   { Icon: TrendingUp,   color: 'rgba(88,227,164,0.85)',  glow: 'rgba(88,227,164,0.40)'  },
+    down: { Icon: TrendingDown, color: 'rgba(251,146,60,0.85)',  glow: 'rgba(251,146,60,0.40)'  },
+    flat: { Icon: Minus,        color: 'rgba(148,163,184,0.70)', glow: 'rgba(148,163,184,0.30)' },
+  }[dir] || { Icon: Minus, color: 'rgba(148,163,184,0.70)', glow: 'rgba(148,163,184,0.30)' };
+
+  return (
+    <motion.div
+      animate={{ y: hovered ? (dir === 'up' ? -1 : dir === 'down' ? 1 : 0) : 0 }}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
+    >
+      <config.Icon
+        className="w-4 h-4"
         style={{
-          background: `linear-gradient(90deg, ${color.replace('0.90', '0.55')} 0%, ${color} 100%)`,
-          boxShadow: `0 0 10px ${glowColor}`
+          color: config.color,
+          filter: hovered ? `drop-shadow(0 0 5px ${config.glow})` : 'none',
+          transition: 'filter 0.18s ease',
+          strokeWidth: 2
         }}
       />
-      {/* % label at end of bar */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: delay + 0.9, duration: 0.3 }}
-        style={{
-          position: 'absolute', top: '50%', transform: 'translateY(-50%)',
-          left: `calc(${pct}% + 6px)`, pointerEvents: 'none', zIndex: 10
-        }}
-      >
-        <span className="text-[11px] font-bold" style={{ color }}>{pct}%</span>
-      </motion.div>
-    </div>
-  </div>
-);
-
-// ─── Signal chip (upgraded driver chip) ──────────────────────────────────────
-const SignalChip = ({ label, index, isHighlighted, onClick }) => {
-  const [hovered, setHovered] = useState(false);
-  const active = hovered || isHighlighted;
-  return (
-    <motion.button
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.05 * index, duration: 0.35, ease: HORIZON_EASE }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onClick={onClick}
-      className="inline-flex items-center px-3.5 py-2 text-[12px] font-medium rounded-xl cursor-pointer select-none"
-      style={{
-        background: active ? 'rgba(110,180,255,0.12)' : 'rgba(255,255,255,0.055)',
-        border: `1px solid ${active ? 'rgba(110,180,255,0.24)' : 'rgba(255,255,255,0.10)'}`,
-        color: active ? 'rgba(180,215,255,0.95)' : 'rgba(255,255,255,0.68)',
-        boxShadow: active ? '0 4px 20px rgba(110,180,255,0.14), inset 0 1px 0 rgba(255,255,255,0.10)' : 'inset 0 1px 0 rgba(255,255,255,0.06)',
-        transform: active ? 'translateY(-1px)' : 'translateY(0)',
-        transition: 'all 0.18s ease',
-      }}
-    >
-      {label}
-    </motion.button>
+    </motion.div>
   );
 };
 
-// ─── Static watch pill ────────────────────────────────────────────────────────
-const WatchPill = ({ label }) => (
-  <span className="inline-flex items-center px-2.5 py-1 text-[10px] font-semibold rounded-full flex-shrink-0"
-    style={{ background: 'rgba(94,167,255,0.08)', border: '1px solid rgba(94,167,255,0.16)', color: 'rgba(94,167,255,0.75)' }}>
-    {label}
-  </span>
-);
-
-// ─── Momentum pill ────────────────────────────────────────────────────────────
-const MomentumPill = ({ sentiment }) => {
-  const isCautious = sentiment.toLowerCase().includes('cautious');
-  const isPositive = sentiment.toLowerCase().includes('positive') || sentiment.toLowerCase().includes('constructive');
-  const label = isCautious ? 'Accelerating' : isPositive ? 'Building' : 'Stable';
-  const color = isCautious ? 'rgba(251,146,60,0.85)' : isPositive ? 'rgba(88,227,164,0.85)' : 'rgba(148,163,184,0.80)';
-  const bg = isCautious ? 'rgba(251,146,60,0.10)' : isPositive ? 'rgba(88,227,164,0.10)' : 'rgba(148,163,184,0.08)';
+const MomentumPill = ({ label }) => {
+  const c = MOMENTUM_CONFIG[label] || MOMENTUM_CONFIG.Stable;
   return (
-    <span className="inline-flex items-center px-2.5 py-1 text-[10px] font-bold rounded-full flex-shrink-0"
-      style={{ background: bg, border: `1px solid ${color.replace('0.85', '0.20')}`, color }}>
+    <span className="inline-flex items-center px-2.5 py-0.5 text-[10px] font-bold rounded-full"
+      style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.color }}>
       {label}
     </span>
   );
 };
 
-// ─── What-this-tilts pills ────────────────────────────────────────────────────
+const WatchPill = ({ label }) => (
+  <span className="inline-flex items-center px-2.5 py-0.5 text-[10px] font-semibold rounded-full flex-shrink-0"
+    style={{ background: 'rgba(94,167,255,0.07)', border: '1px solid rgba(94,167,255,0.14)', color: 'rgba(94,167,255,0.72)' }}>
+    {label}
+  </span>
+);
+
+const BoardRow = ({ narrative, direction, momentum, watch, index }) => {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.06 * index, duration: 0.28, ease: HORIZON_EASE }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="flex items-center gap-4 px-4"
+      style={{
+        height: '52px',
+        borderRadius: '12px',
+        background: hovered ? 'rgba(255,255,255,0.04)' : 'transparent',
+        borderTop: index > 0 ? '1px solid rgba(255,255,255,0.04)' : 'none',
+        transition: 'background 0.16s ease',
+      }}
+    >
+      {/* Narrative */}
+      <span className="flex-1 min-w-0 text-[13px] font-medium truncate" style={{ color: hovered ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,0.78)', transition: 'color 0.16s ease' }}>
+        {narrative}
+      </span>
+      {/* Direction */}
+      <div className="w-8 flex justify-center flex-shrink-0">
+        <DirectionArrow dir={direction} hovered={hovered} />
+      </div>
+      {/* Momentum */}
+      <div className="w-28 flex justify-center flex-shrink-0">
+        <MomentumPill label={momentum} />
+      </div>
+      {/* Market Watch */}
+      <div className="w-32 flex justify-end flex-shrink-0">
+        <WatchPill label={watch} />
+      </div>
+    </motion.div>
+  );
+};
+
+const NarrativeBoard = ({ drivers, sentiment }) => {
+  const rows = drivers.slice(0, 5).map((driver, i) => ({
+    narrative: driver,
+    direction: getDirection(sentiment, i),
+    momentum: getMomentum(sentiment, i),
+    watch: WATCH_LABELS[i] || 'Watch Markets',
+  }));
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-end justify-between px-1">
+        <div>
+          <p className="text-[15px] font-semibold" style={{ color: 'rgba(255,255,255,0.90)' }}>Narrative Board</p>
+          <p className="text-[11px] mt-0.5" style={{ color: 'rgba(255,255,255,0.36)' }}>
+            Major narratives emerging across financial and policy media.
+          </p>
+        </div>
+      </div>
+
+      <div className="relative rounded-[18px] overflow-hidden" style={GLASS_CARD}>
+        <SpecularLine />
+        {/* Column headers */}
+        <div className="flex items-center gap-4 px-4 py-2.5" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+          <span className="flex-1 text-[9px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.28)', letterSpacing: '0.09em' }}>Narrative</span>
+          <span className="w-8 text-center text-[9px] font-bold uppercase tracking-widest flex-shrink-0" style={{ color: 'rgba(255,255,255,0.28)' }}>Dir</span>
+          <span className="w-28 text-center text-[9px] font-bold uppercase tracking-widest flex-shrink-0" style={{ color: 'rgba(255,255,255,0.28)' }}>Momentum</span>
+          <span className="w-32 text-right text-[9px] font-bold uppercase tracking-widest flex-shrink-0" style={{ color: 'rgba(255,255,255,0.28)' }}>Market Watch</span>
+        </div>
+        {/* Rows */}
+        <div className="py-1 relative z-10">
+          {rows.length > 0 ? rows.map((row, i) => (
+            <BoardRow key={row.narrative} {...row} index={i} />
+          )) : (
+            <div className="px-4 py-6 text-center">
+              <p className="text-[12px]" style={{ color: 'rgba(255,255,255,0.30)' }}>
+                Narrative signals will populate after the next intelligence refresh.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ─── Source Coverage Drawer ───────────────────────────────────────────────────
+
 const TiltPills = ({ isCautionary }) => {
   const pills = isCautionary ? ['Risk', 'Rates', 'Credit'] : ['Balance', 'Wait & See'];
   return (
@@ -207,142 +249,7 @@ const TiltPills = ({ isCautionary }) => {
   );
 };
 
-// ─── Market effects rows ──────────────────────────────────────────────────────
-const WATCH_LABELS = ['Watch Spreads', 'Watch Growth', 'Watch Policy'];
-const EFFECT_LINES = [
-  'Rising credit premiums may weigh on risk appetite.',
-  'Slowing growth signals could shift allocation toward defensives.',
-  'Policy uncertainty is keeping institutional positioning cautious.',
-];
-
-const MarketEffectsSection = ({ drivers, summary }) => {
-  const rows = drivers.slice(0, 3).map((driver, i) => ({
-    driver,
-    effect: EFFECT_LINES[i] || summary,
-    watch: WATCH_LABELS[i] || 'Watch Markets',
-  }));
-
-  return (
-    <div className="space-y-3">
-      <SectionLabel>Potential Market Effects</SectionLabel>
-      <div className="relative rounded-[18px] overflow-hidden p-4 space-y-3" style={GLASS_CARD}>
-        <SpecularLine />
-        {rows.length > 0 ? rows.map((row, i) => (
-          <motion.div
-            key={row.driver}
-            initial={{ opacity: 0, x: -6 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.06 * i + 0.2, duration: 0.35, ease: HORIZON_EASE }}
-            className="flex items-center gap-3 min-w-0"
-            style={{ borderTop: i > 0 ? '1px solid rgba(255,255,255,0.04)' : 'none', paddingTop: i > 0 ? '10px' : 0 }}
-          >
-            <span className="text-[11px] font-semibold px-2.5 py-1 rounded-lg flex-shrink-0"
-              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.09)', color: 'rgba(255,255,255,0.70)' }}>
-              {row.driver}
-            </span>
-            <span className="text-[12px] flex-1 min-w-0 truncate" style={{ color: 'rgba(255,255,255,0.55)' }}>
-              {row.effect}
-            </span>
-            <WatchPill label={row.watch} />
-          </motion.div>
-        )) : (
-          <p className="text-[12px]" style={{ color: 'rgba(255,255,255,0.35)' }}>
-            Impact mapping will appear as narrative clusters strengthen.
-          </p>
-        )}
-      </div>
-    </div>
-  );
-};
-
-// ─── Narrative velocity section ───────────────────────────────────────────────
-const NarrativeVelocitySection = ({ drivers, sentiment }) => {
-  const top3 = drivers.slice(0, 3);
-  return (
-    <div className="space-y-3">
-      <SectionLabel>Narrative Velocity</SectionLabel>
-      <div className="relative rounded-[18px] overflow-hidden p-4 space-y-3" style={GLASS_CARD}>
-        <SpecularLine />
-        {top3.length > 0 ? top3.map((driver, i) => (
-          <motion.div
-            key={driver}
-            initial={{ opacity: 0, x: -6 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.06 * i + 0.2, duration: 0.35, ease: HORIZON_EASE }}
-            className="flex items-center justify-between gap-3 min-w-0"
-            style={{ borderTop: i > 0 ? '1px solid rgba(255,255,255,0.04)' : 'none', paddingTop: i > 0 ? '10px' : 0 }}
-          >
-            <span className="text-[13px] font-medium truncate flex-1" style={{ color: 'rgba(255,255,255,0.82)' }}>
-              {driver}
-            </span>
-            <MomentumPill sentiment={sentiment} />
-          </motion.div>
-        )) : (
-          <p className="text-[12px]" style={{ color: 'rgba(255,255,255,0.35)' }}>
-            This layer will populate as narrative clusters strengthen.
-          </p>
-        )}
-      </div>
-    </div>
-  );
-};
-
-// ─── Source row (upgraded) ────────────────────────────────────────────────────
-const SourceRow = ({ source, onClick, isOpen }) => {
-  const [hovered, setHovered] = useState(false);
-  const logo = SOURCE_LOGOS[source.source] || { abbr: source.source?.slice(0,3).toUpperCase(), bg: '#374151', label: source.name };
-  const isCautionary = getSentiment(source) === 'cautionary';
-  const sentColor = isCautionary ? 'rgba(251,146,60,0.88)' : 'rgba(148,163,184,0.75)';
-  const sentBg = isCautionary ? 'rgba(251,146,60,0.10)' : 'rgba(148,163,184,0.07)';
-  const sentBorder = isCautionary ? 'rgba(251,146,60,0.20)' : 'rgba(148,163,184,0.12)';
-  const primaryTheme = source.topline || null;
-
-  return (
-    <motion.button
-      onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className="flex items-center gap-3 px-3 py-3 rounded-[14px] w-full text-left min-w-0"
-      style={{
-        background: isOpen ? 'rgba(110,180,255,0.07)' : hovered ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.025)',
-        border: `1px solid ${isOpen ? 'rgba(110,180,255,0.16)' : hovered ? 'rgba(255,255,255,0.09)' : 'rgba(255,255,255,0.05)'}`,
-        boxShadow: hovered ? '0 4px 20px rgba(0,0,0,0.15)' : 'none',
-        transform: hovered ? 'translateY(-1px)' : 'translateY(0)',
-        transition: 'all 0.18s ease',
-      }}
-      whileTap={{ scale: 0.99 }}
-    >
-      {/* Logo badge */}
-      <div className="w-8 h-8 rounded-[10px] flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0"
-        style={{ background: logo.bg, boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.18)' }}>
-        {logo.abbr}
-      </div>
-      {/* Name + primary theme */}
-      <div className="flex-1 min-w-0">
-        <span className="text-[13px] font-medium block truncate" style={{ color: 'rgba(255,255,255,0.85)' }}>
-          {logo.label}
-        </span>
-        {primaryTheme && (
-          <span className="text-[11px] block truncate" style={{ color: 'rgba(255,255,255,0.38)' }}>
-            {primaryTheme}
-          </span>
-        )}
-      </div>
-      {/* Sentiment pill */}
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold rounded-full flex-shrink-0"
-        style={{ background: sentBg, border: `1px solid ${sentBorder}`, color: sentColor }}>
-        {isCautionary ? '⚠' : '●'} {isCautionary ? 'Cautionary' : 'Neutral'}
-      </span>
-      {/* Chevron */}
-      <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2, ease: 'easeOut' }}>
-        <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'rgba(255,255,255,0.28)' }} />
-      </motion.div>
-    </motion.button>
-  );
-};
-
-// ─── Source drawer (upgraded 2-col layout) ────────────────────────────────────
-const SourceDrawer = ({ source }) => {
+const SourceExpandedView = ({ source }) => {
   const isCautionary = getSentiment(source) === 'cautionary';
   return (
     <motion.div
@@ -352,44 +259,40 @@ const SourceDrawer = ({ source }) => {
       transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
       className="overflow-hidden"
     >
-      <div className="mx-2 mb-2 p-4 rounded-[14px]"
-        style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-        {/* 2-column desktop grid */}
+      <div className="mx-2 mb-1.5 p-4 rounded-[12px]"
+        style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Left: Primary Topic + Coverage Context */}
           <div className="space-y-2">
             {source.topline && (
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-wide mb-1" style={{ color: 'rgba(255,255,255,0.30)' }}>Primary Topic</p>
+                <p className="text-[9px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.28)' }}>Primary Topic</p>
                 <p className="text-[13px] font-bold" style={{ color: 'rgba(255,255,255,0.90)' }}>{source.topline}</p>
               </div>
             )}
             {source.policy && (
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-wide mb-1" style={{ color: 'rgba(255,255,255,0.30)' }}>Coverage Context</p>
-                <p className="text-[12px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.58)' }}>{source.policy}</p>
+                <p className="text-[9px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.28)' }}>Coverage Context</p>
+                <p className="text-[12px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>{source.policy}</p>
               </div>
             )}
           </div>
-          {/* Right: Sentiment + Latest Headline */}
           <div className="space-y-2">
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-wide mb-1.5" style={{ color: 'rgba(255,255,255,0.30)' }}>Sentiment</p>
+              <p className="text-[9px] font-bold uppercase tracking-widest mb-1.5" style={{ color: 'rgba(255,255,255,0.28)' }}>Sentiment</p>
               <SentimentChip label={isCautionary ? 'Cautionary' : 'Neutral'} isCautionary={isCautionary} />
             </div>
             {source.market_macro && (
               <div className="pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                <p className="text-[10px] font-semibold uppercase tracking-wide mb-1" style={{ color: 'rgba(255,255,255,0.28)' }}>Latest Headline</p>
-                <p className="text-[12px] italic" style={{ color: 'rgba(255,255,255,0.55)', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                <p className="text-[9px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.28)' }}>Latest Headline</p>
+                <p className="text-[12px] italic" style={{ color: 'rgba(255,255,255,0.52)', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
                   "{source.market_macro}"
                 </p>
               </div>
             )}
           </div>
         </div>
-        {/* What this tilts */}
         <div className="mt-3 pt-3 flex items-center gap-2" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-          <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: 'rgba(255,255,255,0.28)' }}>What this tilts</span>
+          <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.25)' }}>What this tilts</span>
           <TiltPills isCautionary={isCautionary} />
         </div>
       </div>
@@ -397,23 +300,139 @@ const SourceDrawer = ({ source }) => {
   );
 };
 
+const SourceItem = ({ source, isOpen, onToggle }) => {
+  const [hovered, setHovered] = useState(false);
+  const logo = SOURCE_LOGOS[source.source] || { abbr: source.source?.slice(0, 3).toUpperCase(), bg: '#374151', label: source.name };
+  const isCautionary = getSentiment(source) === 'cautionary';
+  const sentColor = isCautionary ? 'rgba(251,146,60,0.88)' : 'rgba(148,163,184,0.75)';
+  const sentBg = isCautionary ? 'rgba(251,146,60,0.10)' : 'rgba(148,163,184,0.07)';
+  const sentBorder = isCautionary ? 'rgba(251,146,60,0.20)' : 'rgba(148,163,184,0.12)';
+
+  return (
+    <div>
+      <motion.button
+        onClick={onToggle}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        className="flex items-center gap-3 px-3 py-2.5 rounded-[12px] w-full text-left min-w-0"
+        style={{
+          background: isOpen ? 'rgba(110,180,255,0.07)' : hovered ? 'rgba(255,255,255,0.04)' : 'transparent',
+          border: `1px solid ${isOpen ? 'rgba(110,180,255,0.14)' : 'transparent'}`,
+          transition: 'all 0.16s ease',
+        }}
+        whileTap={{ scale: 0.99 }}
+      >
+        <div className="w-7 h-7 rounded-[8px] flex items-center justify-center text-[9px] font-bold text-white flex-shrink-0"
+          style={{ background: logo.bg }}>
+          {logo.abbr}
+        </div>
+        <div className="flex-1 min-w-0">
+          <span className="text-[13px] font-medium block truncate" style={{ color: 'rgba(255,255,255,0.82)' }}>
+            {logo.label}
+          </span>
+          {source.topline && (
+            <span className="text-[10px] block truncate" style={{ color: 'rgba(255,255,255,0.36)' }}>
+              {source.topline}
+            </span>
+          )}
+        </div>
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold rounded-full flex-shrink-0"
+          style={{ background: sentBg, border: `1px solid ${sentBorder}`, color: sentColor }}>
+          {isCautionary ? '⚠' : '●'} {isCautionary ? 'Cautionary' : 'Neutral'}
+        </span>
+        <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2, ease: 'easeOut' }}>
+          <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'rgba(255,255,255,0.28)' }} />
+        </motion.div>
+      </motion.button>
+      <AnimatePresence>
+        {isOpen && <SourceExpandedView source={source} />}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+const SourceCoverageDrawer = ({ sources }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [openSourceId, setOpenSourceId] = useState(null);
+
+  const sorted = [...sources].sort((a, b) => orderedSources.indexOf(a.source) - orderedSources.indexOf(b.source));
+  const toggleSource = (id) => setOpenSourceId(prev => prev === id ? null : id);
+
+  return (
+    <div className="space-y-0">
+      {/* Drawer trigger */}
+      <motion.button
+        onClick={() => setIsOpen(v => !v)}
+        className="flex items-center justify-between w-full px-4 py-3.5 rounded-[16px]"
+        style={{
+          ...GLASS_CARD,
+          borderRadius: isOpen ? '16px 16px 0 0' : '16px',
+          transition: 'border-radius 0.2s ease',
+        }}
+        whileTap={{ scale: 0.99 }}
+      >
+        <div className="flex items-center gap-3">
+          <span className="text-[14px] font-semibold" style={{ color: 'rgba(255,255,255,0.88)' }}>
+            Source Coverage
+          </span>
+          <span className="text-[11px] font-bold px-2 py-0.5 rounded-full"
+            style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.50)' }}>
+            {sorted.length}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.35)' }}>
+            {isOpen ? 'Collapse' : 'Open to see how each publication is framing the narrative'}
+          </span>
+          <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.22, ease: 'easeOut' }}>
+            <ChevronDown className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.38)' }} />
+          </motion.div>
+        </div>
+      </motion.button>
+
+      {/* Expanded content */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden"
+            style={{
+              background: 'linear-gradient(160deg, rgba(18,22,36,0.60) 0%, rgba(10,13,22,0.70) 100%)',
+              backdropFilter: 'blur(40px)',
+              WebkitBackdropFilter: 'blur(40px)',
+              border: '1px solid rgba(255,255,255,0.07)',
+              borderTop: 'none',
+              borderRadius: '0 0 16px 16px',
+            }}
+          >
+            <div className="p-3 space-y-0.5">
+              {sorted.map(s => (
+                <SourceItem
+                  key={s.source}
+                  source={s}
+                  isOpen={openSourceId === s.source}
+                  onToggle={() => toggleSource(s.source)}
+                />
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 // ─── Main export ──────────────────────────────────────────────────────────────
 export default function SourceGrid({ sources, density }) {
-  const [openSourceId, setOpenSourceId] = useState(null);
-  const [highlightedDriver, setHighlightedDriver] = useState(null);
-
   if (!Array.isArray(sources) || sources.length === 0) return null;
 
   const sorted = [...sources].sort((a, b) => orderedSources.indexOf(a.source) - orderedSources.indexOf(b.source));
-  const { cautPct, neutralPct, headline, summary, sentiment } = getNarrativeSummary(sorted);
-  const drivers = getDrivers(sorted);
+  const { cautPct, headline, summary, sentiment } = getNarrativeSummary(sorted);
+  const drivers = getDrivers();
   const isCautious = cautPct >= 50;
-
-  const cautionSources = sorted.filter(s => getSentiment(s) === 'cautionary');
-  const neutralSources = sorted.filter(s => getSentiment(s) === 'neutral');
-
-  const toggleSource = (id) => setOpenSourceId(prev => prev === id ? null : id);
-  const toggleDriver = (d) => setHighlightedDriver(prev => prev === d ? null : d);
 
   return (
     <motion.section
@@ -423,11 +442,11 @@ export default function SourceGrid({ sources, density }) {
       transition={{ duration: 0.55, ease: HORIZON_EASE }}
     >
       {/* Section header */}
-      <div className="mb-6 px-1">
+      <div className="mb-5 px-1">
         <h2 id="narrative-intelligence-heading" className="text-[22px] font-bold" style={{ color: 'rgba(255,255,255,0.96)' }}>
           Narrative Intelligence
         </h2>
-        <p className="text-[13px] mt-1.5 leading-relaxed" style={{ color: 'rgba(255,255,255,0.40)', maxWidth: '520px' }}>
+        <p className="text-[13px] mt-1" style={{ color: 'rgba(255,255,255,0.40)', maxWidth: '500px' }}>
           How major publications are framing risk, growth, and policy — distilled into market-ready narrative signals.
         </p>
       </div>
@@ -435,41 +454,39 @@ export default function SourceGrid({ sources, density }) {
       {/* Outer glass panel */}
       <div className="relative rounded-[26px] overflow-hidden" style={GLASS_PANEL}>
         <SpecularLine />
-        {/* Subsurface ambient */}
         <div style={{
           position: 'absolute', top: 0, left: 0, right: 0, height: '100px',
           background: 'radial-gradient(ellipse at 50% -10%, rgba(110,180,255,0.05) 0%, transparent 70%)',
           pointerEvents: 'none',
         }} />
 
-        <div className="relative z-10 p-6 space-y-8">
+        <div className="relative z-10 p-5 space-y-5">
 
-          {/* 1 ─ Narrative Pulse card */}
+          {/* 1 — Narrative Pulse */}
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, ease: HORIZON_EASE }}
-            className="relative rounded-[20px] overflow-hidden p-5"
+            className="relative rounded-[18px] overflow-hidden p-5"
             style={GLASS_CARD}
           >
             <SpecularLine />
             <div className="relative z-10">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0 space-y-1.5">
-                  <p className="text-[9px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.32)', letterSpacing: '0.10em' }}>
+                  <p className="text-[9px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.30)', letterSpacing: '0.10em' }}>
                     Narrative Pulse
                   </p>
-                  <h3 className="text-[17px] font-bold leading-snug" style={{ color: 'rgba(255,255,255,0.95)' }}>
+                  <h3 className="text-[16px] font-bold leading-snug" style={{ color: 'rgba(255,255,255,0.95)' }}>
                     {headline}
                   </h3>
-                  <p className="text-[13px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.58)' }}>
+                  <p className="text-[13px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.56)' }}>
                     {summary}
                   </p>
                 </div>
                 <SentimentChip label={sentiment} isCautionary={isCautious} />
               </div>
-              {/* Micro chips */}
-              <div className="flex items-center gap-2 flex-wrap mt-4 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+              <div className="flex items-center gap-2 flex-wrap mt-3 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                 <MicroChip label={`Outlets: ${sorted.length}`} />
                 <MicroChip label="Window: Latest" />
                 <MicroChip label="Confidence: —" />
@@ -477,108 +494,11 @@ export default function SourceGrid({ sources, density }) {
             </div>
           </motion.div>
 
-          {/* 2 ─ Sentiment Mix */}
-          <div className="space-y-3">
-            <div>
-              <SectionLabel>Sentiment Mix</SectionLabel>
-              <p className="text-[11px] mt-1 px-1" style={{ color: 'rgba(255,255,255,0.32)' }}>
-                Share of coverage tone across tracked outlets.
-              </p>
-            </div>
-            <div className="space-y-4 pr-10">
-              <SentimentBar
-                label="Cautionary Coverage"
-                pct={cautPct}
-                color="rgba(251,146,60,0.90)"
-                glowColor="rgba(251,146,60,0.30)"
-                delay={0.3}
-              />
-              <SentimentBar
-                label="Neutral Coverage"
-                pct={neutralPct}
-                color="rgba(148,163,184,0.80)"
-                glowColor="rgba(148,163,184,0.20)"
-                delay={0.45}
-              />
-            </div>
-          </div>
+          {/* 2 — Narrative Board */}
+          <NarrativeBoard drivers={drivers} sentiment={sentiment} />
 
-          {/* 3 ─ Narrative Drivers */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between px-1">
-              <SectionLabel>Narrative Drivers</SectionLabel>
-              <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.25)' }}>
-                Tap a driver to filter sources
-              </span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {drivers.map((d, i) => (
-                <SignalChip
-                  key={d}
-                  label={d}
-                  index={i}
-                  isHighlighted={highlightedDriver === d}
-                  onClick={() => toggleDriver(d)}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* 4 ─ Potential Market Effects */}
-          <MarketEffectsSection drivers={drivers} summary={summary} />
-
-          {/* 5 ─ Narrative Velocity */}
-          <NarrativeVelocitySection drivers={drivers} sentiment={sentiment} />
-
-          {/* 6 ─ Source Breakdown */}
-          <div className="space-y-4">
-            <div>
-              <SectionLabel>Source Breakdown</SectionLabel>
-              <p className="text-[11px] mt-1 px-1" style={{ color: 'rgba(255,255,255,0.30)' }}>
-                Open a source to see what it's emphasizing right now.
-              </p>
-            </div>
-
-            {cautionSources.length > 0 && (
-              <div className="space-y-1.5">
-                <p className="text-[10px] font-semibold uppercase tracking-wide px-1 mb-2" style={{ color: 'rgba(251,146,60,0.55)', letterSpacing: '0.07em' }}>
-                  ⚠ Cautionary
-                </p>
-                {cautionSources.map(s => (
-                  <div key={s.source}>
-                    <SourceRow
-                      source={s}
-                      onClick={() => toggleSource(s.source)}
-                      isOpen={openSourceId === s.source}
-                    />
-                    <AnimatePresence>
-                      {openSourceId === s.source && <SourceDrawer source={s} />}
-                    </AnimatePresence>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {neutralSources.length > 0 && (
-              <div className="space-y-1.5">
-                <p className="text-[10px] font-semibold uppercase tracking-wide px-1 mb-2" style={{ color: 'rgba(148,163,184,0.45)', letterSpacing: '0.07em' }}>
-                  ● Neutral
-                </p>
-                {neutralSources.map(s => (
-                  <div key={s.source}>
-                    <SourceRow
-                      source={s}
-                      onClick={() => toggleSource(s.source)}
-                      isOpen={openSourceId === s.source}
-                    />
-                    <AnimatePresence>
-                      {openSourceId === s.source && <SourceDrawer source={s} />}
-                    </AnimatePresence>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          {/* 3 — Source Coverage Drawer */}
+          <SourceCoverageDrawer sources={sources} />
 
         </div>
       </div>
