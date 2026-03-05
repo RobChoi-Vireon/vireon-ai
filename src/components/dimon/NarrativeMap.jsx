@@ -584,22 +584,22 @@ const ChangingTabContent = ({ momentumItems = [] }) => (
 
 // ─── Main export ─────────────────────────────────────────────────────────────
 
-export default function NarrativeMap({ synthesis, density }) {
+export default function NarrativeMap({ synthesis, density, narrativeMap }) {
   const [activeTab, setActiveTab] = useState('consensus');
 
-  if (!synthesis) return null;
+  // Use live narrativeMap if provided, otherwise fall back to legacy synthesis prop
+  const hasLiveData = !!narrativeMap;
 
-  const { consensus = [], divergences = [], us_global_split = [] } = synthesis;
+  if (!narrativeMap && !synthesis) return null;
 
-  const allItems = [
-    ...consensus.map(i => ({ ...i, _src: 'consensus' })),
-    ...divergences.map(i => ({ ...i, _src: 'divergences' })),
-    ...us_global_split.map(i => ({ ...i, _src: 'us_global' })),
-  ];
-  const changingItems = allItems
-    .filter(i => i.momentum_pts !== undefined || i.momentum !== undefined)
-    .sort((a, b) => Math.abs(b.momentum_pts ?? b.momentum ?? 0) - Math.abs(a.momentum_pts ?? a.momentum ?? 0))
-    .slice(0, 6);
+  // Resolve data sources
+  const consensus = narrativeMap?.consensus || synthesis?.consensus || [];
+  const divergences = narrativeMap?.divergences || synthesis?.divergences || [];
+  // us_vs_global from narrativeMap is a single object, wrap in array for rendering
+  const us_global_split = narrativeMap?.us_vs_global
+    ? [narrativeMap.us_vs_global]
+    : (synthesis?.us_global_split || []);
+  const momentumItems = narrativeMap?.momentum || [];
 
   const activeTabDef = TABS.find(t => t.id === activeTab);
 
@@ -607,18 +607,18 @@ export default function NarrativeMap({ synthesis, density }) {
     switch (activeTab) {
       case 'consensus':
         return consensus.length > 0
-          ? <div className="space-y-4">{consensus.slice(0, 5).map((item, i) => <ConsensusCard key={i} item={item} index={i} />)}</div>
+          ? <div className="space-y-4">{consensus.slice(0, 5).map((item, i) => <ConsensusCard key={item.id || i} item={item} index={i} />)}</div>
           : <EmptyState label="consensus" />;
       case 'divergences':
         return divergences.length > 0
-          ? <div className="space-y-4">{divergences.slice(0, 4).map((item, i) => <DivergenceCard key={i} item={item} index={i} />)}</div>
+          ? <div className="space-y-4">{divergences.slice(0, 4).map((item, i) => <DivergenceCard key={item.id || i} item={item} index={i} />)}</div>
           : <EmptyState label="divergence" />;
       case 'us_global':
         return us_global_split.length > 0
           ? <div className="space-y-4">{us_global_split.slice(0, 4).map((item, i) => <USGlobalCard key={i} item={item} index={i} />)}</div>
           : <EmptyState label="US vs Global" />;
       case 'changing':
-        return <ChangingTabContent />;
+        return <ChangingTabContent momentumItems={momentumItems} />;
       default:
         return null;
     }
