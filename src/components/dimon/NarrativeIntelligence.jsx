@@ -3,6 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 
 // ─── OS HORIZON NARRATIVE INTELLIGENCE DESIGN TOKENS ────────────────────────
+const EASE = [0.26, 0.11, 0.26, 1.0];
+const SPRING = { type: 'spring', stiffness: 380, damping: 40, mass: 0.8 };
+const SMOOTH = { duration: 0.26, ease: EASE };
+
 const TOKENS = {
   font: {
     family: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif'
@@ -70,9 +74,9 @@ const HeroPanel = ({ narrativePulse, sentiment, outlets, window, confidence, tim
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
+      transition={{ duration: 0.48, ease: EASE }}
       className="rounded-[22px] overflow-hidden relative"
       style={{
         background: 'rgba(30,40,60,0.20)',
@@ -117,9 +121,9 @@ const HeroPanel = ({ narrativePulse, sentiment, outlets, window, confidence, tim
             transition: `all ${TOKENS.motion} ease`
           }}
           whileHover={{
-            scale: 1.05,
+            scale: 1.04,
             boxShadow: `0 0 16px ${statusBadge.text}30, inset 0 1px 0 rgba(255,255,255,0.12)`,
-            transition: { duration: 0.16 }
+            transition: SPRING
           }}
         >
           {statusBadge.label}
