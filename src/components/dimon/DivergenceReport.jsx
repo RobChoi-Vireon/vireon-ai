@@ -145,9 +145,9 @@ const DivergenceCard = ({ divergence, onClick, index }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.07, duration: 0.30, ease: EASE }}
+      initial={{ opacity: 0, y: 14, scale: 0.985 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ ...ENTRY, delay: index * 0.09 }}
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
       tabIndex={0}
