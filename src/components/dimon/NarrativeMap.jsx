@@ -218,7 +218,7 @@ const ConsensusCard = ({ item, index }) => {
               {item.statement || item.claim || '—'}
             </p>
             <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-              <span className="text-[18px] font-bold" style={{ color: 'rgba(200,215,255,0.92)', lineHeight: 1.2 }}>{pct}%</span>
+              {pct != null && <span className="text-[18px] font-bold" style={{ color: 'rgba(200,215,255,0.92)', lineHeight: 1.2 }}>{pct}%</span>}
               <ConfidenceBadge level={confidence_level} />
             </div>
           </div>
