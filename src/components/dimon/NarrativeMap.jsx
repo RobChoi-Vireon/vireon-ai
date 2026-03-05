@@ -456,7 +456,7 @@ const NarrativeShiftCard = ({ item, index }) => {
   const rawConf = item.confidence || 'Moderate';
   const confidence = rawConf.charAt(0).toUpperCase() + rawConf.slice(1).toLowerCase();
   const interpretation = item.commentary || item.interpretation || '';
-  const sparkData = FLAT_SPARK;
+  const sparkData = item.trend_7d || null;
 
   // Confidence color mapping
   const confidenceMap = {
