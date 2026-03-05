@@ -365,8 +365,10 @@ const USGlobalCard = ({ item, index }) => {
   // Support narrative_map_v1 shape: item.us.statement/.score, item.global.statement/.score
   const usPct = item.us?.score ?? Math.round((item.confidence || 0.71) * 100);
   const glbPct = item.global?.score ?? (100 - usPct);
-  const usMom = item.change_7d ?? item.us_momentum ?? item.momentum_pts ?? 0;
-  const glbMom = item.change_7d != null ? -item.change_7d : (item.global_momentum ?? -usMom);
+  const usMomRaw = item.change_7d ?? item.us_momentum ?? item.momentum_pts ?? 0;
+  const usMom = usMomRaw || null;
+  const glbMomRaw = item.change_7d != null ? -item.change_7d : (item.global_momentum ?? -usMomRaw);
+  const glbMom = glbMomRaw || null;
   const usFlip = item.us_flip_trigger || item.flip_trigger || null;
   const glbFlip = item.global_flip_trigger || null;
   const usSpark = item.us?.trend_7d || null;
