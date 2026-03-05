@@ -347,16 +347,18 @@ const DivergenceCard = ({ item, index }) => {
 // ─── USGlobalCard ─────────────────────────────────────────────────────────────
 
 const USGlobalCard = ({ item, index }) => {
-  const usPct = Math.round((item.confidence || 0.71) * 100);
-  const glbPct = 100 - usPct;
-  const usMom = item.us_momentum ?? item.momentum_pts ?? 0;
-  const glbMom = item.global_momentum ?? -usMom;
+  // Support narrative_map_v1 shape: item.us.statement/.score, item.global.statement/.score
+  const usPct = item.us?.score ?? Math.round((item.confidence || 0.71) * 100);
+  const glbPct = item.global?.score ?? (100 - usPct);
+  const usMom = item.change_7d ?? item.us_momentum ?? item.momentum_pts ?? 0;
+  const glbMom = item.change_7d != null ? -item.change_7d : (item.global_momentum ?? -usMom);
   const usFlip = item.us_flip_trigger || item.flip_trigger || null;
   const glbFlip = item.global_flip_trigger || null;
-  const usView = item.us_view_rationale || item.us_view_detail || null;
-  const glbView = item.global_view_rationale || item.global_view_detail || null;
-  const usSpark = item.us_sparkline || [usPct - 4, usPct - 2, usPct - 3, usPct, usPct - 1, usPct + 1, usPct];
-  const glbSpark = item.global_sparkline || [glbPct + 4, glbPct + 2, glbPct + 3, glbPct, glbPct + 1, glbPct - 1, glbPct];
+  const usSpark = FLAT_SPARK;
+  const glbSpark = FLAT_SPARK;
+  // statements
+  const usViewText = item.us?.statement || item.us_view || '—';
+  const glbViewText = item.global?.statement || item.global_view || '—';
 
   return (
     <motion.div
