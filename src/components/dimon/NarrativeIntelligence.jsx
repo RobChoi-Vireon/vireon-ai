@@ -28,38 +28,32 @@ const TOKENS = {
 };
 
 // ─── HERO PANEL — NARRATIVE PULSE ─────────────────────────────────────────
-const HeroPanel = ({ sentiment, outlets, window, confidence }) => {
-  const cautious = sentiment?.cautious || 71;
-  const neutral = sentiment?.neutral || 29;
-  const cautious_pct = cautious;
-  const neutral_pct = neutral;
+const HeroPanel = ({ narrativePulse, timestamp }) => {
+  const headline = narrativePulse?.headline;
+  const summary = narrativePulse?.summary;
+  const badge = narrativePulse?.badge;
+  const primaryLabel = narrativePulse?.sentiment?.primary?.label;
+  const primaryPct = narrativePulse?.sentiment?.primary?.percentage ?? 0;
+  const secondaryLabel = narrativePulse?.sentiment?.secondary?.label;
+  const secondaryPct = narrativePulse?.sentiment?.secondary?.percentage ?? 0;
+  const confidenceLabel = narrativePulse?.confidence_label;
+  const outlets = narrativePulse?.outlets_count;
+  const window = narrativePulse?.time_window;
 
-  const getStatusBadgeStyle = (pct) => {
-    if (pct >= 70) {
-      return {
-        bg: 'rgba(255,176,102,0.14)',
-        border: 'rgba(255,176,102,0.22)',
-        text: '#FFB066',
-        label: 'Mildly Cautious'
-      };
-    }
-    if (pct >= 50) {
-      return {
-        bg: 'rgba(170,172,180,0.14)',
-        border: 'rgba(170,172,180,0.22)',
-        text: '#A0AEC0',
-        label: 'Mixed View'
-      };
-    }
-    return {
-      bg: 'rgba(95,209,163,0.14)',
-      border: 'rgba(95,209,163,0.22)',
-      text: '#5FD1A3',
-      label: 'Optimistic'
-    };
+  const getStatusBadgeStyle = (badgeText) => {
+    if (!badgeText) return { bg: 'rgba(170,172,180,0.14)', border: 'rgba(170,172,180,0.22)', text: '#A0AEC0', label: 'Unknown' };
+    const lower = badgeText.toLowerCase();
+    if (lower.includes('strongly bullish')) return { bg: 'rgba(95,209,163,0.14)', border: 'rgba(95,209,163,0.22)', text: '#5FD1A3', label: badgeText };
+    if (lower.includes('mildly bullish')) return { bg: 'rgba(132,229,190,0.14)', border: 'rgba(132,229,190,0.22)', text: '#84E5BE', label: badgeText };
+    if (lower.includes('neutral')) return { bg: 'rgba(170,172,180,0.14)', border: 'rgba(170,172,180,0.22)', text: '#A0AEC0', label: badgeText };
+    if (lower.includes('mildly cautious')) return { bg: 'rgba(255,200,124,0.14)', border: 'rgba(255,200,124,0.22)', text: '#FFC87C', label: badgeText };
+    if (lower.includes('strongly cautious')) return { bg: 'rgba(255,176,102,0.14)', border: 'rgba(255,176,102,0.22)', text: '#FFB066', label: badgeText };
+    return { bg: 'rgba(170,172,180,0.14)', border: 'rgba(170,172,180,0.22)', text: '#A0AEC0', label: badgeText };
   };
 
-  const statusBadge = getStatusBadgeStyle(cautious_pct);
+  const statusBadge = getStatusBadgeStyle(badge);
+  
+  if (!headline) return null;
 
   return (
     <motion.div
