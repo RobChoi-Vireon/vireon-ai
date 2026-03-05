@@ -173,9 +173,9 @@ const HeroPanel = ({ narrativePulse, timestamp }) => {
       {/* ── Meta Pills ── */}
       <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', position: 'relative', zIndex: 1 }}>
         {[
-          { label: 'Outlets', value: outlets || '7' },
-          { label: 'Window', value: window || '24h' },
-          { label: 'Confidence', value: confidence || 'Moderate' }
+          ...(outlets ? [{ label: 'Outlets', value: outlets }] : []),
+          ...(window ? [{ label: 'Window', value: window }] : []),
+          ...(confidenceLabel ? [{ label: 'Confidence', value: confidenceLabel }] : [])
         ].map((pill, i) => (
           <motion.div
             key={i}
