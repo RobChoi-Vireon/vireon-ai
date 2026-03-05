@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, GitCommit, Globe, TrendingUp, TrendingDown, Minus, Zap, Info, Clock } from 'lucide-react';
 import NarrativeStateCard from './NarrativeStateCard';
 
+const EASE = [0.26, 0.11, 0.26, 1.0];
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
 const SPRING = { type: 'spring', stiffness: 380, damping: 40, mass: 0.8 };
 const SMOOTH = { duration: 0.26, ease: [0.22, 0.61, 0.36, 1] };
