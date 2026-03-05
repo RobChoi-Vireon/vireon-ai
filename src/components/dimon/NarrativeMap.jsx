@@ -254,7 +254,7 @@ const ConsensusRing = ({ item, index, isSelected, onSelect }) => {
         style={{
           position: 'relative', width: SIZE, height: SIZE,
           // Outer bloom glow
-          filter: `drop-shadow(0 0 22px ${cfg.color}${Math.round(bloomOpacity * 255).toString(16).padStart(2,'0')})`,
+          filter: `drop-shadow(0 0 26px ${cfg.color}${Math.round(bloomOpacity * 255).toString(16).padStart(2,'0')})`,
           transition: 'filter 0.18s ease',
         }}
       >
