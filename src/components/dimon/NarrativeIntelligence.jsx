@@ -382,18 +382,19 @@ const SourceItem = ({ source, index, onExpand, isExpanded }) => {
               width: '40px',
               height: '40px',
               borderRadius: '10px',
-              background: 'rgba(255,255,255,0.06)',
-              border: '1px rgba(255,255,255,0.08)',
+              background: getSourceColor(label).bg,
+              border: 'none',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               flexShrink: 0,
-              fontSize: '18px',
-              fontWeight: 600,
-              color: 'rgba(255,255,255,0.35)'
+              fontSize: '13px',
+              fontWeight: 700,
+              color: getSourceColor(label).text,
+              boxShadow: '0 4px 12px rgba(0,0,0,0.24)'
             }}
           >
-            {label.charAt(0)}
+            {getSourceAbbrev(label)}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: '15px', fontWeight: 600, color: TOKENS.color.text_primary, marginBottom: '3px' }}>
