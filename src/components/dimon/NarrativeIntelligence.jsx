@@ -513,15 +513,15 @@ const SourceItem = ({ source, index, onExpand, isExpanded }) => {
 
 const getSourceColor = (sourceName) => {
   const colorMap = {
-    'Washington Post': { bg: 'rgba(150, 100, 200, 0.18)', border: 'rgba(150, 100, 200, 0.28)', text: 'rgba(200, 150, 255, 0.85)' },
-    'New York Times': { bg: 'rgba(100, 150, 220, 0.18)', border: 'rgba(100, 150, 220, 0.28)', text: 'rgba(150, 190, 255, 0.85)' },
-    'Wall Street Journal': { bg: 'rgba(200, 100, 100, 0.18)', border: 'rgba(200, 100, 100, 0.28)', text: 'rgba(255, 140, 140, 0.85)' },
-    'Financial Times': { bg: 'rgba(100, 180, 140, 0.18)', border: 'rgba(100, 180, 140, 0.28)', text: 'rgba(150, 220, 180, 0.85)' },
-    'The Economist': { bg: 'rgba(200, 160, 100, 0.18)', border: 'rgba(200, 160, 100, 0.28)', text: 'rgba(255, 200, 120, 0.85)' },
-    'Axios': { bg: 'rgba(150, 150, 180, 0.18)', border: 'rgba(150, 150, 180, 0.28)', text: 'rgba(190, 190, 220, 0.85)' },
-    'Politico': { bg: 'rgba(200, 120, 150, 0.18)', border: 'rgba(200, 120, 150, 0.28)', text: 'rgba(255, 160, 190, 0.85)' }
+    'Washington Post': { bg: '#3B5FD9', text: '#FFFFFF' },
+    'New York Times': { bg: '#1E3A5F', text: '#FFFFFF' },
+    'Wall Street Journal': { bg: '#FF6B35', text: '#FFFFFF' },
+    'Financial Times': { bg: '#D946A6', text: '#FFFFFF' },
+    'The Economist': { bg: '#F59E0B', text: '#FFFFFF' },
+    'Axios': { bg: '#6B7280', text: '#FFFFFF' },
+    'Politico': { bg: '#8B5CF6', text: '#FFFFFF' }
   };
-  return colorMap[sourceName] || { bg: 'rgba(255,255,255,0.04)', border: '1px rgba(255,255,255,0.06)', text: 'rgba(255,255,255,0.50)' };
+  return colorMap[sourceName] || { bg: 'rgba(255,255,255,0.08)', text: '#FFFFFF' };
 };
 
 const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
@@ -599,23 +599,22 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
               transition={{ duration: 0.2, delay: i * 0.02 }}
               title={source.name}
               style={{
-                width: '28px',
-                height: '28px',
-                borderRadius: '10px',
+                width: '40px',
+                height: '40px',
+                borderRadius: '12px',
                 background: color.bg,
-                border: `1px ${color.border}`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '10px',
-                fontWeight: 600,
+                fontSize: '12px',
+                fontWeight: 700,
                 color: color.text,
-                boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.03)',
                 flexShrink: 0,
-                cursor: 'default'
+                cursor: 'default',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.24)'
               }}
             >
-              {source.name.charAt(0)}
+              {source.name.split(' ').map(w => w.charAt(0)).join('').slice(0, 2)}
             </motion.div>
           );
         })}
