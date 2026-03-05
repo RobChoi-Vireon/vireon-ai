@@ -268,8 +268,10 @@ const DivergenceCard = ({ item, index }) => {
   // Support narrative_map_v1: item.dominant.statement/.score, item.counter.statement/.score
   const domPct = item.dominant?.score ?? Math.round((item.confidence || 0.62) * 100);
   const ctrPct = item.counter?.score ?? (100 - domPct);
-  const domMom = item.change_7d ?? item.dominant_momentum ?? item.momentum_pts ?? 0;
-  const ctrMom = item.change_7d != null ? -item.change_7d : (item.counter_momentum ?? -domMom);
+  const domMomRaw = item.change_7d ?? item.dominant_momentum ?? item.momentum_pts ?? 0;
+  const domMom = domMomRaw || null;
+  const ctrMomRaw = item.change_7d != null ? -item.change_7d : (item.counter_momentum ?? -domMomRaw);
+  const ctrMom = ctrMomRaw || null;
   const interpretation = item.interpretation || item.summary || '';
   const resolution = item.resolution_triggers || item.break_conditions || [];
   const domSpark = item.dominant?.trend_7d || null;
