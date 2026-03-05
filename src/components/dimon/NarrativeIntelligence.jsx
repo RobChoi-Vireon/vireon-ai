@@ -850,21 +850,11 @@ const SourcesSection = ({ sources = [] }) => {
 export default function NarrativeIntelligence({ sources, sentiment, drivers, implications, outlets, window, confidence }) {
   return (
     <div style={{ marginTop: '32px' }}>
-      <div style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        height: '200px',
-        background: `linear-gradient(135deg, #0E1420 0%, #101827 50%, #0C1320 100%), radial-gradient(ellipse at 50% 0%, rgba(80,120,160,0.08) 0%, transparent 70%)`,
-        pointerEvents: 'none',
-        zIndex: 0
-      }} />
-      <div style={{ marginBottom: '14px', paddingLeft: '8px', position: 'relative', zIndex: 1 }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 600, color: TOKENS.color.text_primary, marginBottom: '4px' }}>
+      <div style={{ marginBottom: '18px', paddingLeft: '8px' }}>
+        <h2 style={{ fontSize: '20px', fontWeight: 600, color: TOKENS.color.text_primary, marginBottom: '4px', opacity: 0.95 }}>
           Narrative Intelligence
         </h2>
-        <p style={{ fontSize: '13px', color: 'rgba(213,220,229,0.55)', opacity: 0.75, maxWidth: '680px', lineHeight: 1.45 }}>
+        <p style={{ fontSize: '13px', color: 'rgba(213,220,229,0.55)', opacity: 0.70, maxWidth: '600px', lineHeight: 1.4 }}>
           Curated synthesis from trusted financial outlets.
         </p>
       </div>
