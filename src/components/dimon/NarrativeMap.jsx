@@ -652,41 +652,54 @@ const EmptyState = ({ label }) => (
 );
 
 const ChangingTabContent = ({ momentumItems = [] }) => (
-  <div className="space-y-4">
-    {/* Header */}
-    <div className="flex items-start justify-between gap-6 mb-6 px-1">
-      <div>
-        <h3 className="text-[18px] font-semibold" style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.02em' }}>
-          Narrative Momentum
-        </h3>
-        <p className="text-[12px] mt-1" style={{ color: 'rgba(255,255,255,0.40)' }}>
-          Narratives gaining or losing traction this week
-        </p>
-      </div>
-      <div className="flex items-center gap-2 flex-shrink-0 mt-1">
-        <motion.div
-          animate={{ opacity: [0.6, 1, 0.6], scale: [0.95, 1.05, 0.95] }}
-          transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-          className="w-1.5 h-1.5 rounded-full"
-          style={{ background: 'rgba(88,227,164,0.85)', boxShadow: '0 0 6px rgba(88,227,164,0.50)' }}
-        />
-        <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.46)' }}>
-          Monitor: Active
-        </span>
-      </div>
-    </div>
-
-    {/* Narrative Shift Cards */}
+  <div>
     {momentumItems.length > 0 ? (
-      <div>
-        {momentumItems.map((item, i) => (
-          <div key={item.id || i}>
-            <NarrativeShiftCard item={item} index={i} />
-            {i < momentumItems.length - 1 && (
-              <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)', margin: '28px 0' }} />
-            )}
-          </div>
-        ))}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
+        {momentumItems.map((item, i) => {
+          const shift = item.change_7d ?? item.shift_pts ?? item.momentum_pts ?? 0;
+          const dir = item.direction || item.momentum || 'Stable';
+          const isRising = dir === 'Increasing' || shift > 0;
+          const isWeakening = dir === 'Weakening' || shift < 0;
+          const momentumColor = isWeakening ? '#e06b6b' : isRising ? '#6ccf9f' : '#9aa3b2';
+          const MomIcon = isWeakening ? TrendingDown : isRising ? TrendingUp : Minus;
+          const interpretation = item.commentary || item.interpretation || '';
+
+          return (
+            <motion.div
+              key={item.id || i}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 * i, duration: 0.36, ease: HORIZON_EASE }}
+              style={{
+                background: 'rgba(20,24,32,0.35)',
+                border: '1px solid rgba(255,255,255,0.06)',
+                borderRadius: '18px',
+                backdropFilter: 'blur(18px)',
+                WebkitBackdropFilter: 'blur(18px)',
+                padding: '22px',
+                minHeight: '150px',
+              }}
+            >
+              {/* Title */}
+              <p style={{ fontSize: '14px', fontWeight: 550, lineHeight: 1.5, color: 'rgba(255,255,255,0.92)', marginBottom: '10px' }}>
+                {item.statement || item.title || item.narrative || '—'}
+              </p>
+
+              {/* Momentum indicator */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '8px' }}>
+                <MomIcon style={{ width: '13px', height: '13px', color: momentumColor }} strokeWidth={2.5} />
+                <span style={{ fontSize: '12px', fontWeight: 600, color: momentumColor }}>{dir}</span>
+              </div>
+
+              {/* Explanation */}
+              {interpretation && (
+                <p style={{ fontSize: '12px', lineHeight: 1.5, color: 'rgba(255,255,255,0.45)' }}>
+                  {interpretation}
+                </p>
+              )}
+            </motion.div>
+          );
+        })}
       </div>
     ) : (
       <div className="relative flex flex-col items-center justify-center py-12 text-center rounded-[20px]" style={{
@@ -695,14 +708,6 @@ const ChangingTabContent = ({ momentumItems = [] }) => (
         WebkitBackdropFilter: 'blur(40px) saturate(160%)',
         border: '1px solid rgba(255,255,255,0.08)'
       }}>
-        <div className="relative mb-4">
-          <motion.div
-            animate={{ opacity: [0.5, 1, 0.5], scale: [0.9, 1.1, 0.9] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-            className="w-2 h-2 rounded-full mx-auto"
-            style={{ background: 'rgba(255,255,255,0.30)' }}
-          />
-        </div>
         <p className="text-[13px] font-medium" style={{ color: 'rgba(255,255,255,0.50)' }}>Narrative Monitor Active</p>
         <p className="text-[11px] mt-1.5" style={{ color: 'rgba(255,255,255,0.30)' }}>No significant narrative shifts detected this week.</p>
       </div>
