@@ -128,12 +128,16 @@ const HeroPanel = ({ narrativePulse, sentiment, outlets, window, confidence, tim
 
       {/* ── Row 2: Headline + Subcopy ── */}
       <div style={{ marginBottom: '28px', position: 'relative', zIndex: 1 }}>
-        <h2 style={{ fontFamily: TOKENS.font.family, fontSize: '26px', fontWeight: 600, letterSpacing: '-0.015em', color: TOKENS.color.text_primary, marginBottom: '12px', lineHeight: 1.15 }}>
-          Markets are playing it safe — mixed signals on borrowing, policy costs.
-        </h2>
-        <p style={{ fontFamily: TOKENS.font.family, fontSize: '14px', fontWeight: 400, color: 'rgba(213,220,229,0.78)', lineHeight: 1.45, maxWidth: '680px' }}>
-          New government rules are creating costs for companies. Borrowing is getting harder and more expensive.
-        </p>
+        {headline && (
+          <h2 style={{ fontFamily: TOKENS.font.family, fontSize: '26px', fontWeight: 600, letterSpacing: '-0.015em', color: TOKENS.color.text_primary, marginBottom: '12px', lineHeight: 1.15 }}>
+            {headline}
+          </h2>
+        )}
+        {summary && (
+          <p style={{ fontFamily: TOKENS.font.family, fontSize: '14px', fontWeight: 400, color: 'rgba(213,220,229,0.78)', lineHeight: 1.45, maxWidth: '680px' }}>
+            {summary}
+          </p>
+        )}
       </div>
 
       {/* ── Row 3: Sentiment Mix Bar ── */}
