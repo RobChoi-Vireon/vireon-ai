@@ -632,24 +632,29 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
           );
         })}
         {hasOverflow && (
-          <div
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.2, delay: visibleCount * 0.02 }}
             style={{
-              width: '28px',
-              height: '28px',
-              borderRadius: '10px',
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px rgba(255,255,255,0.06)',
+              width: '40px',
+              height: '40px',
+              borderRadius: '12px',
+              background: '#8B5CF6',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '10px',
-              fontWeight: 600,
-              color: 'rgba(255,255,255,0.45)',
-              flexShrink: 0
+              fontSize: '12px',
+              fontWeight: 700,
+              color: '#FFFFFF',
+              flexShrink: 0,
+              boxShadow: '0 4px 12px rgba(0,0,0,0.24)',
+              cursor: 'default'
             }}
+            title="Politico"
           >
-            +{sourceList.length - visibleCount}
-          </div>
+            PO
+          </motion.div>
         )}
       </div>
 
