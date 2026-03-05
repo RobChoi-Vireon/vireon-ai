@@ -226,7 +226,12 @@ const HeroPanel = ({ narrativePulse, sentiment, outlets, window, confidence, tim
 };
 
 // ─── DRIVERS — FLOATING NARRATIVE CHIPS ────────────────────────────────────
-const DriversSection = ({ drivers = [] }) => {
+const DriversSection = ({ narrativeDrivers = [], drivers = [] }) => {
+  // Map narrative_drivers array (with rank, label fields) to simple labels
+  const processedDrivers = narrativeDrivers && narrativeDrivers.length > 0
+    ? narrativeDrivers.map(d => d.label).filter(Boolean)
+    : drivers;
+
   const defaultDrivers = [
     'Policy tightening driving compliance costs',
     'Credit stress in emerging markets',
@@ -234,7 +239,7 @@ const DriversSection = ({ drivers = [] }) => {
     'China slowdown moderating global growth'
   ];
 
-  const driverList = drivers.length > 0 ? drivers : defaultDrivers;
+  const driverList = (processedDrivers && processedDrivers.length > 0) ? processedDrivers : defaultDrivers;
 
   return (
     <motion.div
