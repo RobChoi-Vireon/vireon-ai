@@ -194,7 +194,7 @@ const HoverCard = ({ children, glowColor = 'rgba(255,255,255,0.06)', subsurface 
 
 const ConsensusCard = ({ item, index }) => {
   // Support both legacy shape and narrative_map_v1 shape
-  const pct = item.score ?? Math.round((item.confidence || 0) * 100);
+  const pct = item.score ?? (typeof item.confidence === 'number' && item.confidence > 0 ? Math.round(item.confidence * 100) : null);
   const momentum = item.change_7d ?? item.momentum_pts ?? item.momentum ?? 0;
   const drivers = item.drivers || [];
   const breakConditions = item.break_conditions || item.break_triggers || [];
