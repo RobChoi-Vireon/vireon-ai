@@ -179,7 +179,7 @@ const HoverCard = ({ children, glowColor = 'rgba(255,255,255,0.06)', subsurface 
             ].join(', ')
           : GLASS_CARD.boxShadow
       }}
-      transition={{ duration: 0.20, ease: 'easeOut' }}
+      transition={SPRING}
       className={`relative ${className}`}
       style={{ ...GLASS_CARD, ...style, overflow: 'hidden' }}
     >
@@ -642,7 +642,7 @@ const EmptyState = ({ label }) => (
       />
       <motion.div
         animate={{ opacity: [0.15, 0, 0.15], scale: [1, 2.2, 1] }}
-        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+         transition={{ duration: 3.2, repeat: Infinity, ease: [0.22, 0.61, 0.36, 1] }}
         className="absolute inset-0 w-2 h-2 rounded-full mx-auto"
         style={{ background: 'rgba(255,255,255,0.20)' }}
       />
@@ -854,8 +854,8 @@ export default function NarrativeMap({ synthesis, density, narrativeMap }) {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 whileHover={!isActive ? { background: 'rgba(255,255,255,0.04)' } : {}}
-                whileTap={{ scale: 0.98 }}
-                transition={{ duration: 0.15 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ duration: 0.16, ease: EASE }}
                 className="relative flex flex-col items-start pb-3.5 pt-3 px-4 flex-shrink-0"
                 style={{
                   borderRadius: '14px 14px 0 0',
@@ -902,7 +902,7 @@ export default function NarrativeMap({ synthesis, density, narrativeMap }) {
                     layoutId="tab-indicator"
                     className="absolute bottom-0 left-2 right-2"
                     style={{ height: '2px', borderRadius: '2px 2px 0 0' }}
-                    transition={{ type: 'spring', stiffness: 380, damping: 36 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 38 }}
                   >
                     <div style={{
                       width: '100%', height: '100%', borderRadius: '2px 2px 0 0',
