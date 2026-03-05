@@ -740,11 +740,25 @@ export default function NarrativeMap({ synthesis, density, narrativeMap }) {
           : <EmptyState label="consensus" />;
       case 'divergences':
         return divergences.length > 0
-          ? <div className="space-y-4">{divergences.slice(0, 4).map((item, i) => <DivergenceCard key={item.id || i} item={item} index={i} />)}</div>
+          ? <div>{divergences.slice(0, 4).map((item, i) => (
+              <div key={item.id || i}>
+                <DivergenceCard item={item} index={i} />
+                {i < divergences.slice(0, 4).length - 1 && (
+                  <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)', margin: '28px 0' }} />
+                )}
+              </div>
+            ))}</div>
           : <EmptyState label="divergence" />;
       case 'us_global':
         return us_global_split.length > 0
-          ? <div className="space-y-4">{us_global_split.slice(0, 4).map((item, i) => <USGlobalCard key={i} item={item} index={i} />)}</div>
+          ? <div>{us_global_split.slice(0, 4).map((item, i) => (
+              <div key={i}>
+                <USGlobalCard item={item} index={i} />
+                {i < us_global_split.slice(0, 4).length - 1 && (
+                  <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)', margin: '28px 0' }} />
+                )}
+              </div>
+            ))}</div>
           : <EmptyState label="US vs Global" />;
       case 'changing':
         return <ChangingTabContent momentumItems={momentumItems} />;
