@@ -256,15 +256,18 @@ const ConsensusCard = ({ item, index }) => {
 // ─── DivergenceCard ───────────────────────────────────────────────────────────
 
 const DivergenceCard = ({ item, index }) => {
-  const domPct = Math.round((item.confidence || 0.62) * 100);
-  const ctrPct = 100 - domPct;
-  const domMom = item.dominant_momentum ?? item.momentum_pts ?? 0;
-  const ctrMom = item.counter_momentum ?? -domMom;
+  // Support narrative_map_v1: item.dominant.statement/.score, item.counter.statement/.score
+  const domPct = item.dominant?.score ?? Math.round((item.confidence || 0.62) * 100);
+  const ctrPct = item.counter?.score ?? (100 - domPct);
+  const domMom = item.change_7d ?? item.dominant_momentum ?? item.momentum_pts ?? 0;
+  const ctrMom = item.change_7d != null ? -item.change_7d : (item.counter_momentum ?? -domMom);
   const interpretation = item.interpretation || item.summary || '';
   const resolution = item.resolution_triggers || item.break_conditions || [];
-  const domSpark = item.dominant_sparkline || [domPct - 6, domPct - 4, domPct - 5, domPct - 2, domPct - 1, domPct, domPct];
-  const ctrSpark = item.counter_sparkline  || [ctrPct + 6, ctrPct + 4, ctrPct + 5, ctrPct + 2, ctrPct + 1, ctrPct, ctrPct];
-  const counterNarrative = item.counter_narrative || item.counter || 'Counter narrative';
+  const domSpark = FLAT_SPARK;
+  const ctrSpark = FLAT_SPARK;
+  // dominant statement
+  const domStatement = item.dominant?.statement || item.topic || '—';
+  const counterNarrative = item.counter?.statement || item.counter_narrative || item.counter || 'Counter narrative';
 
   return (
     <motion.div
