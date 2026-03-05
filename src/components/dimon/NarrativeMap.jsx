@@ -663,9 +663,14 @@ const ChangingTabContent = ({ momentumItems = [] }) => (
 
     {/* Narrative Shift Cards */}
     {momentumItems.length > 0 ? (
-      <div className="space-y-3">
+      <div>
         {momentumItems.map((item, i) => (
-          <NarrativeShiftCard key={item.id || i} item={item} index={i} />
+          <div key={item.id || i}>
+            <NarrativeShiftCard item={item} index={i} />
+            {i < momentumItems.length - 1 && (
+              <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)', margin: '28px 0' }} />
+            )}
+          </div>
         ))}
       </div>
     ) : (
