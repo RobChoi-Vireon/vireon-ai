@@ -71,7 +71,7 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
   }, []);
 
   useEffect(() => {
-    if (shouldReduceMotion || isLowPower) return;
+    if (shouldReduceMotion || isLowPower || !isHovered) return;
     
     let rafId;
     let startTime = Date.now();
@@ -87,7 +87,7 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
     return () => {
       if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [shouldReduceMotion, isLowPower]);
+  }, [shouldReduceMotion, isLowPower, isHovered]);
 
   // Mouse parallax effect
   useEffect(() => {
