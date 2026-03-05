@@ -425,7 +425,7 @@ const USGlobalCard = ({ item, index }) => {
             <MomentumTag pts={glbMom} />
           </div>
           <StrengthBar pct={glbPct} color="rgba(130,155,195,0.38)" delay={0.1 + 0.06 * index} />
-          <MiniSparkline data={glbSpark} color="rgba(145,170,210,0.52)" delay={0.4 + 0.06 * index} />
+          {glbSpark && <MiniSparkline data={glbSpark} color="rgba(145,170,210,0.52)" delay={0.4 + 0.06 * index} />}
           {glbFlip && (
             <div className="pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
               <p className="text-[11px] font-semibold uppercase tracking-wide mb-1.5" style={{ color: 'rgba(255,255,255,0.28)' }}>Flip trigger</p>
