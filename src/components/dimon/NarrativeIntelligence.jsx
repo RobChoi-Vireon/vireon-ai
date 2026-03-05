@@ -28,38 +28,45 @@ const TOKENS = {
 };
 
 // ─── HERO PANEL — NARRATIVE PULSE ─────────────────────────────────────────
-const HeroPanel = ({ sentiment, outlets, window, confidence }) => {
-  const cautious = sentiment?.cautious || 71;
-  const neutral = sentiment?.neutral || 29;
+const HeroPanel = ({ narrativePulse, sentiment, outlets, window, confidence, timestamp }) => {
+  // Bind to live data if available
+  const headline = narrativePulse?.headline || 'Markets are playing it safe — mixed signals on borrowing, policy costs.';
+  const summary = narrativePulse?.summary || 'New government rules are creating costs for companies. Borrowing is getting harder and more expensive.';
+  const badge = narrativePulse?.badge || null;
+  const primary = narrativePulse?.sentiment?.primary;
+  const secondary = narrativePulse?.sentiment?.secondary;
+
+  const cautious = primary?.percentage ?? sentiment?.cautious ?? (sentiment?.primary?.percentage ?? 71);
+  const neutral = secondary?.percentage ?? sentiment?.neutral ?? (sentiment?.secondary?.percentage ?? 29);
   const cautious_pct = cautious;
   const neutral_pct = neutral;
+  const primaryLabel = primary?.label || sentiment?.primary?.label || 'Cautious';
+  const secondaryLabel = secondary?.label || sentiment?.secondary?.label || 'Neutral';
+  const confidenceLabel = narrativePulse?.confidence_label || confidence || 'Moderate';
+  const outletsCount = narrativePulse?.outlets_count || outlets || 7;
+  const timeWindow = narrativePulse?.time_window || window || '24h';
 
-  const getStatusBadgeStyle = (pct) => {
-    if (pct >= 70) {
-      return {
-        bg: 'rgba(255,176,102,0.14)',
-        border: 'rgba(255,176,102,0.22)',
-        text: '#FFB066',
-        label: 'Mildly Cautious'
-      };
+  const getStatusBadgeStyle = (label) => {
+    const lower = (label || '').toLowerCase();
+    if (lower.includes('strongly bullish') || lower.includes('strongly positive')) {
+      return { bg: 'rgba(95,209,163,0.14)', border: 'rgba(95,209,163,0.22)', text: '#5FD1A3', label };
     }
-    if (pct >= 50) {
-      return {
-        bg: 'rgba(170,172,180,0.14)',
-        border: 'rgba(170,172,180,0.22)',
-        text: '#A0AEC0',
-        label: 'Mixed View'
-      };
+    if (lower.includes('bullish') || lower.includes('positive') || lower.includes('mildly bullish')) {
+      return { bg: 'rgba(95,209,163,0.14)', border: 'rgba(95,209,163,0.22)', text: '#5FD1A3', label };
     }
-    return {
-      bg: 'rgba(95,209,163,0.14)',
-      border: 'rgba(95,209,163,0.22)',
-      text: '#5FD1A3',
-      label: 'Optimistic'
-    };
+    if (lower.includes('cautious') || lower.includes('negative') || lower.includes('bearish') || lower.includes('strongly cautious') || lower.includes('strongly bearish')) {
+      if (lower.includes('strongly') || lower.includes('strong')) {
+        return { bg: 'rgba(255,140,80,0.14)', border: 'rgba(255,140,80,0.22)', text: '#FF8C6B', label };
+      }
+      return { bg: 'rgba(255,176,102,0.14)', border: 'rgba(255,176,102,0.22)', text: '#FFB066', label };
+    }
+    if (lower.includes('neutral') || lower.includes('mixed')) {
+      return { bg: 'rgba(170,172,180,0.14)', border: 'rgba(170,172,180,0.22)', text: '#A0AEC0', label };
+    }
+    return { bg: 'rgba(170,172,180,0.14)', border: 'rgba(170,172,180,0.22)', text: '#A0AEC0', label: label || 'Mixed View' };
   };
 
-  const statusBadge = getStatusBadgeStyle(cautious_pct);
+  const statusBadge = badge ? getStatusBadgeStyle(badge) : getStatusBadgeStyle(cautious_pct >= 70 ? 'Cautious' : cautious_pct >= 50 ? 'Neutral' : 'Optimistic');
 
   return (
     <motion.div
