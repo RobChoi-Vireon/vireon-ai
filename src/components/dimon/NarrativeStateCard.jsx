@@ -160,7 +160,7 @@ export default function NarrativeStateCard({ narrativeState = 'debated_regime', 
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.2, ease: HORIZON_EASE }}
             >
-              {config.label}
+              {label}
             </motion.h2>
           </div>
 
