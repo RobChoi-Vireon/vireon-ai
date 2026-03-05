@@ -974,21 +974,7 @@ export default function MacroSignalsPage() {
                     )}
                  </div>
 
-                {/* 8) Counterpoints & Blindspots */}
-                {((digest.counterpoints && digest.counterpoints.length > 0) || (digest.blindspots && digest.blindspots.length > 0)) && (
-                  <motion.div 
-                    variants={sectionVariants}
-                    id="section-counterpoints" 
-                    data-section-order="8"
-                    className="col-span-12"
-                  >
-                    <CounterpointsPanel 
-                      counterpoints={digest.counterpoints || []} 
-                      blindspots={digest.blindspots || []}
-                      density="compact"
-                    />
-                  </motion.div>
-                )}
+
               </motion.div>
             )}
           </AnimatePresence>
