@@ -249,7 +249,7 @@ const DriversSection = ({ narrativeDrivers = [], drivers = [] }) => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.5, delay: 0.2 }}
+      transition={{ duration: 0.48, delay: 0.18, ease: EASE }}
     >
       <div style={{ marginBottom: '14px' }}>
         <h3 style={{ fontFamily: TOKENS.font.family, fontSize: '12px', fontWeight: 600, letterSpacing: '0.10em', color: 'rgba(255,255,255,0.60)', textTransform: 'uppercase' }}>
@@ -398,7 +398,7 @@ const ImpactIntelligence = ({ impactIntelligence = [], implications = [] }) => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.5, delay: 0.3 }}
+      transition={{ duration: 0.48, delay: 0.28, ease: EASE }}
     >
       <div style={{ marginBottom: '14px' }}>
          <h3 style={{ fontFamily: TOKENS.font.family, fontSize: '12px', fontWeight: 600, letterSpacing: '0.10em', color: 'rgba(255,255,255,0.60)', textTransform: 'uppercase' }}>
@@ -921,7 +921,7 @@ const SourcesSection = ({ intelligenceSources = [], sources = [] }) => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.5, delay: 0.45 }}
+      transition={{ duration: 0.48, delay: 0.42, ease: EASE }}
     >
       {/* Summary bar (always visible, acts as toggle) */}
       <SourcesSummaryBar
