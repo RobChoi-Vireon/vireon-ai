@@ -823,26 +823,16 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer, sources
         pointerEvents: 'none'
       }} />
 
-      {/* Ultra-low opacity noise with movement (2%) */}
-      {!isLowPower && (
-        <motion.div 
-          className="absolute inset-0 rounded-[30px] pointer-events-none"
-          style={{
-            backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.88\' numOctaves=\'3\' /%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\' /%3E%3C/svg%3E")',
-            backgroundSize: '200px 200px',
-            opacity: 0.02,
-            mixBlendMode: 'overlay'
-          }}
-          animate={{
-            backgroundPosition: ['0% 0%', '100% 100%']
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: 'linear'
-          }}
-        />
-      )}
+      {/* Ultra-low opacity noise — static */}
+      <div 
+        className="absolute inset-0 rounded-[30px] pointer-events-none"
+        style={{
+          backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.88\' numOctaves=\'3\' /%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\' /%3E%3C/svg%3E")',
+          backgroundSize: '200px 200px',
+          opacity: 0.02,
+          mixBlendMode: 'overlay'
+        }}
+      />
 
       <div className="flex items-center justify-between mb-5" style={{ position: 'relative', zIndex: 10 }}>
         <motion.h2 
