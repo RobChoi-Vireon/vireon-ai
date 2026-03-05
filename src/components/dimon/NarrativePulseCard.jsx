@@ -181,13 +181,13 @@ export default function NarrativePulseCard({ summary = null, isEmpty = false, po
               {/* Footer pills */}
               <div className="flex gap-2.5 mt-3.5 pt-3 flex-wrap" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                 <span className="text-[10px] px-2.5 py-1 rounded-full" style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.48)' }}>
-                  Consensus: —
+                  Consensus: {consensusScore}
                 </span>
                 <span className="text-[10px] px-2.5 py-1 rounded-full" style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.48)' }}>
-                  Divergence: —
+                  Divergence: {divergenceScore}
                 </span>
                 <span className="text-[10px] px-2.5 py-1 rounded-full" style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.48)' }}>
-                  Momentum: —
+                  Momentum: {momentumScore}
                 </span>
 
                 {/* Positioning Pressure Pill */}
@@ -206,7 +206,7 @@ export default function NarrativePulseCard({ summary = null, isEmpty = false, po
                       boxShadow: `0 0 8px ${positioningConfig.color.replace(/[\d.]+\)$/, '0.20)')}`
                     }}
                   >
-                    Positioning: <span style={{ fontWeight: 600 }}>{positioningConfig.label}</span>
+                    Positioning: <span style={{ fontWeight: 600 }}>{positioningLabel}</span>
                   </motion.span>
 
                   {/* Tooltip */}
