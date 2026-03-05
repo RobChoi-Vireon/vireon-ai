@@ -597,14 +597,16 @@ export default function NarrativeMap({ synthesis, density, narrativeMap }) {
 
   if (!narrativeMap && !synthesis) return null;
 
-  // Resolve data sources
-  const consensus = narrativeMap?.consensus || synthesis?.consensus || [];
-  const divergences = narrativeMap?.divergences || synthesis?.divergences || [];
+  // Resolve data sources — ensure all are arrays
+  const consensus = Array.isArray(narrativeMap?.consensus) ? narrativeMap.consensus
+    : Array.isArray(synthesis?.consensus) ? synthesis.consensus : [];
+  const divergences = Array.isArray(narrativeMap?.divergences) ? narrativeMap.divergences
+    : Array.isArray(synthesis?.divergences) ? synthesis.divergences : [];
   // us_vs_global from narrativeMap is a single object, wrap in array for rendering
   const us_global_split = narrativeMap?.us_vs_global
     ? [narrativeMap.us_vs_global]
-    : (synthesis?.us_global_split || []);
-  const momentumItems = narrativeMap?.momentum || [];
+    : (Array.isArray(synthesis?.us_global_split) ? synthesis.us_global_split : []);
+  const momentumItems = Array.isArray(narrativeMap?.momentum) ? narrativeMap.momentum : [];
 
   const activeTabDef = TABS.find(t => t.id === activeTab);
 
