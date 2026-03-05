@@ -366,8 +366,8 @@ const USGlobalCard = ({ item, index }) => {
   const glbMom = item.change_7d != null ? -item.change_7d : (item.global_momentum ?? -usMom);
   const usFlip = item.us_flip_trigger || item.flip_trigger || null;
   const glbFlip = item.global_flip_trigger || null;
-  const usSpark = FLAT_SPARK;
-  const glbSpark = FLAT_SPARK;
+  const usSpark = item.us?.trend_7d || null;
+  const glbSpark = item.global?.trend_7d || null;
   // statements
   const usViewText = item.us?.statement || item.us_view || '—';
   const glbViewText = item.global?.statement || item.global_view || '—';
