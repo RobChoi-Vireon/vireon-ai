@@ -889,7 +889,7 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
   );
 };
 
-const SourcesSection = ({ sources = [] }) => {
+const SourcesSection = ({ intelligenceSources = [], sources = [] }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
   const [isSourcesExpanded, setIsSourcesExpanded] = useState(false);
 
@@ -903,7 +903,15 @@ const SourcesSection = ({ sources = [] }) => {
     { name: 'Politico', specialty: 'Politics', topline: 'Fiscal gridlock', market_macro: 'Defense and infrastructure spending at risk' }
   ];
 
-  const sourceList = sources.length > 0 ? sources : defaultSources;
+  // Prefer intelligenceSources from narrative_intelligence, fall back to sources
+  let sourceList = [];
+  if (intelligenceSources && intelligenceSources.length > 0) {
+    sourceList = intelligenceSources.slice(0, 7);
+  } else if (sources && sources.length > 0) {
+    sourceList = sources.slice(0, 7);
+  } else {
+    sourceList = defaultSources;
+  }
 
   return (
     <motion.div
