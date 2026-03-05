@@ -83,7 +83,10 @@ const StrengthBar = ({ pct, color, delay = 0 }) => (
 
 // ─── MiniSparkline (unchanged logic, same rendering) ────────────────────────
 
-const MiniSparkline = ({ data = [60, 58, 62, 61, 65, 67, 66], color, delay = 0 }) => {
+const MiniSparkline = ({ data, color, delay = 0 }) => {
+  // Hide if no data, empty, or all zeros
+  if (!data || data.length === 0 || data.every(v => v === 0)) return null;
+  data = data;
   const max = Math.max(...data), min = Math.min(...data), range = max - min || 1;
   const pts = data.map((v, i) => `${(i / (data.length - 1)) * 44},${12 - ((v - min) / range) * 12}`).join(' ');
   const [lx, ly] = pts.split(' ').pop().split(',').map(Number);
