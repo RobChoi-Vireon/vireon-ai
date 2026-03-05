@@ -15,6 +15,7 @@ import DivergenceReport from '@/components/dimon/DivergenceReport';
 import CounterpointsPanel from '@/components/dimon/CounterpointsPanel';
 import NarrativeMap from '@/components/dimon/NarrativeMap';
 import SourceGrid from '@/components/dimon/SourceGrid';
+import NarrativeIntelligence from '@/components/dimon/NarrativeIntelligence';
 import StrategicTrajectory from '@/components/dimon/StrategicTrajectory';
 import ImplicationsPanel from '@/components/dimon/ImplicationsPanel';
 import DigestSkeleton from '@/components/dimon/DigestSkeleton';
@@ -940,17 +941,30 @@ export default function MacroSignalsPage() {
                   </motion.div>
                 )}
                 
-                {/* 6) Trusted Source Weighting */}
-                {digest.sources && digest.sources.length > 0 && (
+                {/* 6) Narrative Intelligence — New OS Horizon Layout */}
+                {(digest.sources || digest.synthesis) && (
                    <motion.div 
-                    variants={sectionVariants}
-                    id="section-source-weighting" 
-                    data-section-order="6"
-                    className="col-span-12"
-                  >
-                    <SourceGrid sources={digest.sources} density="compact" />
-                  </motion.div>
-                )}
+                     variants={sectionVariants}
+                     id="section-narrative-intelligence" 
+                     data-section-order="6"
+                     className="col-span-12"
+                   >
+                     <NarrativeIntelligence 
+                       sources={digest.sources || []}
+                       sentiment={{ cautious: 71, neutral: 29 }}
+                       drivers={[
+                         'Policy tightening driving compliance costs',
+                         'Credit stress in emerging markets',
+                         'Sector divergence (energy vs industrial)',
+                         'China slowdown moderating global growth'
+                       ]}
+                       implications={digest.strategic_implications?.slice(0, 4) || []}
+                       outlets={digest.sources?.length || 7}
+                       window="24h"
+                       confidence="Moderate"
+                     />
+                   </motion.div>
+                 )}
 
                 {/* 7) Strategic Implications & Trajectory */}
                  <div className="col-span-12 grid grid-cols-1 gap-6 md:gap-8">
