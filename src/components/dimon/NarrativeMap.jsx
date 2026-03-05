@@ -324,10 +324,10 @@ const DivergenceCard = ({ item, index }) => {
               <p className="text-[12px] font-semibold leading-[1.5]" style={{ color: 'rgba(255,255,255,0.68)' }}>{counterNarrative}</p>
               <span className="text-[18px] font-bold block" style={{ color: 'rgba(175,190,225,0.62)', lineHeight: 1.2 }}>{ctrPct}%</span>
               <StrengthBar pct={ctrPct} color="rgba(130,155,195,0.38)" delay={0.1 + 0.06 * index} />
-              {(ctrSpark || ctrMom) && (
+              {(ctrSpark || ctrMom != null) && (
                 <div className="flex items-center gap-1.5 flex-wrap">
                   <MiniSparkline data={ctrSpark} color="rgba(145,170,210,0.52)" delay={0.45 + 0.06 * index} />
-                  <MomentumTag pts={ctrMom} />
+                  {ctrMom != null && <MomentumTag pts={ctrMom} />}
                 </div>
               )}
             </div>
