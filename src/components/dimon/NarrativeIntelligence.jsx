@@ -63,14 +63,15 @@ const HeroPanel = ({ sentiment, outlets, window, confidence }) => {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
-      className="rounded-[18px] overflow-hidden relative"
+      className="rounded-[28px] overflow-hidden relative"
       style={{
-        background: TOKENS.color.glass_primary,
-        backdropFilter: `blur(${TOKENS.blur}) saturate(150%)`,
-        WebkitBackdropFilter: `blur(${TOKENS.blur}) saturate(150%)`,
-        border: `1px ${TOKENS.color.hairline}`,
-        boxShadow: TOKENS.shadow,
-        padding: '28px'
+        background: 'linear-gradient(180deg, rgba(30,45,70,0.32) 0%, rgba(18,28,48,0.38) 100%)',
+        backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01))',
+        backdropFilter: `blur(28px) saturate(160%)`,
+        WebkitBackdropFilter: `blur(28px) saturate(160%)`,
+        border: `1px solid rgba(255,255,255,0.10)`,
+        boxShadow: `0 0 0 1px rgba(255,255,255,0.02) inset, 0 20px 60px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.10)`,
+        padding: '32px'
       }}
     >
       {/* Top specular edge */}
@@ -78,55 +79,78 @@ const HeroPanel = ({ sentiment, outlets, window, confidence }) => {
         style={{
           position: 'absolute',
           top: 0,
-          left: '15%',
-          right: '15%',
-          height: '1px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+          left: '12%',
+          right: '12%',
+          height: '1.5px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+          pointerEvents: 'none'
+        }}
+      />
+      
+      {/* Ambient top glow */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '80px',
+          background: 'radial-gradient(ellipse at 50% 0%, rgba(100,150,220,0.08) 0%, transparent 70%)',
+          borderRadius: '28px 28px 0 0',
           pointerEvents: 'none'
         }}
       />
 
       {/* ── Row 1: Header ── */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h3 style={{ fontSize: '14px', fontWeight: 600, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.48)', textTransform: 'uppercase' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', position: 'relative', zIndex: 1 }}>
+        <h3 style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.10em', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase' }}>
           Narrative Pulse
         </h3>
-        <div
+        <motion.div
           style={{
-            padding: '6px 12px',
-            borderRadius: '10px',
+            padding: '7px 14px',
+            borderRadius: '12px',
             background: statusBadge.bg,
             border: `1px ${statusBadge.border}`,
             color: statusBadge.text,
             fontSize: '12px',
-            fontWeight: 500,
+            fontWeight: 600,
+            backdropFilter: 'blur(12px)',
+            boxShadow: `0 0 12px ${statusBadge.text}20, inset 0 1px 0 rgba(255,255,255,0.08)`,
             transition: `all ${TOKENS.motion} ease`
+          }}
+          whileHover={{
+            scale: 1.05,
+            boxShadow: `0 0 16px ${statusBadge.text}30, inset 0 1px 0 rgba(255,255,255,0.12)`,
+            transition: { duration: 0.16 }
           }}
         >
           {statusBadge.label}
-        </div>
+        </motion.div>
       </div>
 
       {/* ── Row 2: Headline + Subcopy ── */}
-      <div style={{ marginBottom: '24px' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 600, letterSpacing: '-0.01em', color: TOKENS.color.text_primary, marginBottom: '8px', lineHeight: 1.3 }}>
+      <div style={{ marginBottom: '28px', position: 'relative', zIndex: 1 }}>
+        <h2 style={{ fontSize: '22px', fontWeight: 600, letterSpacing: '-0.015em', color: TOKENS.color.text_primary, marginBottom: '10px', lineHeight: 1.35 }}>
           Markets are playing it safe — mixed signals on borrowing, policy costs.
         </h2>
-        <p style={{ fontSize: '14px', color: 'rgba(213,220,229,0.75)', lineHeight: 1.6, maxWidth: '760px' }}>
+        <p style={{ fontSize: '14px', color: 'rgba(213,220,229,0.70)', lineHeight: 1.65, maxWidth: '740px' }}>
           New government rules are creating costs for companies. Borrowing is getting harder and more expensive, especially for companies in emerging markets. China's slowdown is making investors cautious.
         </p>
       </div>
 
       {/* ── Row 3: Sentiment Mix Bar ── */}
-      <div style={{ marginBottom: '18px' }}>
+      <div style={{ marginBottom: '22px', position: 'relative', zIndex: 1 }}>
         <div
           style={{
-            height: '8px',
-            borderRadius: '6px',
-            background: 'rgba(255,255,255,0.08)',
+            height: '6px',
+            borderRadius: '8px',
+            background: 'rgba(255,255,255,0.06)',
             overflow: 'hidden',
             display: 'flex',
-            width: '100%'
+            width: '100%',
+            boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.20)',
+            border: '1px solid rgba(255,255,255,0.04)'
           }}
         >
           {/* Cautious segment */}
@@ -135,7 +159,8 @@ const HeroPanel = ({ sentiment, outlets, window, confidence }) => {
             animate={{ width: `${cautious_pct}%` }}
             transition={{ duration: 0.8, ease: [0.22, 0.61, 0.36, 1] }}
             style={{
-              background: `linear-gradient(90deg, #F7A44C, #FF6B3D)`,
+              background: `linear-gradient(90deg, #FF9E3A 0%, #FF6B3D 100%)`,
+              boxShadow: '0 0 12px rgba(255,107,61,0.30)',
               transition: `width 0.8s ease`
             }}
           />
@@ -145,19 +170,20 @@ const HeroPanel = ({ sentiment, outlets, window, confidence }) => {
             animate={{ width: `${neutral_pct}%` }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 0.61, 0.36, 1] }}
             style={{
-              background: `linear-gradient(90deg, #6B7A90, #A0AEC0)`,
+              background: `linear-gradient(90deg, #687A8C, #9BA8BC)`,
+              boxShadow: '0 0 8px rgba(155,168,188,0.20)',
               transition: `width 0.8s ease`
             }}
           />
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px', fontSize: '12px', color: TOKENS.color.text_secondary }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px', fontSize: '11px', color: 'rgba(213,220,229,0.60)' }}>
           <div />
           <span>Cautious {cautious_pct}% / Neutral {neutral_pct}%</span>
         </div>
       </div>
 
       {/* ── Meta Pills ── */}
-      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', position: 'relative', zIndex: 1 }}>
         {[
           { label: 'Outlets', value: outlets || '7' },
           { label: 'Window', value: window || '24h' },
@@ -169,17 +195,26 @@ const HeroPanel = ({ sentiment, outlets, window, confidence }) => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4, delay: 0.3 + i * 0.05 }}
             style={{
-              padding: '6px 10px',
-              borderRadius: TOKENS.radius_chip,
-              background: 'rgba(255,255,255,0.04)',
-              border: `1px ${TOKENS.color.hairline}`,
+              padding: '8px 12px',
+              borderRadius: '10px',
+              background: 'rgba(255,255,255,0.05)',
+              border: `1px solid rgba(255,255,255,0.08)`,
+              backdropFilter: 'blur(12px)',
               fontSize: '12px',
               color: TOKENS.color.text_secondary,
-              whiteSpace: 'nowrap'
+              whiteSpace: 'nowrap',
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)',
+              transition: `all ${TOKENS.motion} ease`
+            }}
+            whileHover={{
+              background: 'rgba(255,255,255,0.08)',
+              border: `1px solid rgba(255,255,255,0.12)`,
+              y: -1,
+              transition: { duration: 0.16 }
             }}
           >
-            <span style={{ fontWeight: 500, color: 'rgba(255,255,255,0.65)' }}>{pill.label}</span>
-            <span style={{ marginLeft: '4px', color: TOKENS.color.text_secondary }}>{pill.value}</span>
+            <span style={{ fontWeight: 500, color: 'rgba(255,255,255,0.70)' }}>{pill.label}</span>
+            <span style={{ marginLeft: '6px', color: 'rgba(213,220,229,0.75)', fontWeight: 500 }}>{pill.value}</span>
           </motion.div>
         ))}
       </div>
