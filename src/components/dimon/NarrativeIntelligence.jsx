@@ -116,55 +116,59 @@ const HeroPanel = ({ narrativePulse, timestamp }) => {
       {/* ── Row 2: Headline + Subcopy ── */}
       <div style={{ marginBottom: '28px', position: 'relative', zIndex: 1 }}>
         <h2 style={{ fontFamily: TOKENS.font.family, fontSize: '26px', fontWeight: 600, letterSpacing: '-0.015em', color: TOKENS.color.text_primary, marginBottom: '12px', lineHeight: 1.15 }}>
-          Markets are playing it safe — mixed signals on borrowing, policy costs.
+          {headline}
         </h2>
-        <p style={{ fontFamily: TOKENS.font.family, fontSize: '14px', fontWeight: 400, color: 'rgba(213,220,229,0.78)', lineHeight: 1.45, maxWidth: '680px' }}>
-          New government rules are creating costs for companies. Borrowing is getting harder and more expensive.
-        </p>
+        {summary && (
+          <p style={{ fontFamily: TOKENS.font.family, fontSize: '14px', fontWeight: 400, color: 'rgba(213,220,229,0.78)', lineHeight: 1.45, maxWidth: '680px' }}>
+            {summary}
+          </p>
+        )}
       </div>
 
       {/* ── Row 3: Sentiment Mix Bar ── */}
-      <div style={{ marginBottom: '22px', position: 'relative', zIndex: 1 }}>
-        <div
-          style={{
-            height: '6px',
-            borderRadius: '999px',
-            background: 'rgba(255,255,255,0.12)',
-            overflow: 'hidden',
-            display: 'flex',
-            width: '100%'
-          }}
-        >
-          {/* Cautious segment */}
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: `${cautious_pct}%` }}
-            transition={{ duration: 0.8, ease: [0.22, 0.61, 0.36, 1] }}
+      {(primaryLabel || secondaryLabel) && (
+        <div style={{ marginBottom: '22px', position: 'relative', zIndex: 1 }}>
+          <div
             style={{
-              background: `linear-gradient(90deg, #ffb15c, #ff7b4d)`,
-              boxShadow: '0 0 12px rgba(255,140,80,0.25)',
+              height: '6px',
               borderRadius: '999px',
-              transition: `width 0.8s ease`
+              background: 'rgba(255,255,255,0.12)',
+              overflow: 'hidden',
+              display: 'flex',
+              width: '100%'
             }}
-          />
-          {/* Neutral segment */}
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: `${neutral_pct}%` }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 0.61, 0.36, 1] }}
-            style={{
-              background: `linear-gradient(90deg, #687A8C, #9BA8BC)`,
-              boxShadow: '0 0 8px rgba(155,168,188,0.20)',
-              borderRadius: '999px',
-              transition: `width 0.8s ease`
-            }}
-          />
+          >
+            {/* Primary segment */}
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${primaryPct}%` }}
+              transition={{ duration: 0.8, ease: [0.22, 0.61, 0.36, 1] }}
+              style={{
+                background: `linear-gradient(90deg, #ffb15c, #ff7b4d)`,
+                boxShadow: '0 0 12px rgba(255,140,80,0.25)',
+                borderRadius: '999px',
+                transition: `width 0.8s ease`
+              }}
+            />
+            {/* Secondary segment */}
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${secondaryPct}%` }}
+              transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 0.61, 0.36, 1] }}
+              style={{
+                background: `linear-gradient(90deg, #687A8C, #9BA8BC)`,
+                boxShadow: '0 0 8px rgba(155,168,188,0.20)',
+                borderRadius: '999px',
+                transition: `width 0.8s ease`
+              }}
+            />
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px', fontSize: '12px', fontFamily: TOKENS.font.family, fontWeight: 500, color: 'rgba(213,220,229,0.65)' }}>
+            <div />
+            <span>{primaryLabel} {primaryPct}% / {secondaryLabel} {secondaryPct}%</span>
+          </div>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px', fontSize: '12px', fontFamily: TOKENS.font.family, fontWeight: 500, color: 'rgba(213,220,229,0.65)' }}>
-          <div />
-          <span>Cautious {cautious_pct}% / Neutral {neutral_pct}%</span>
-        </div>
-      </div>
+      )}
 
       {/* ── Meta Pills ── */}
       <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', position: 'relative', zIndex: 1 }}>
