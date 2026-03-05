@@ -307,10 +307,12 @@ const DivergenceCard = ({ item, index }) => {
              <p className="text-[12px] font-bold leading-[1.5]" style={{ color: 'rgba(255,255,255,0.94)' }}>{domStatement}</p>
               <span className="text-[18px] font-bold block" style={{ color: 'rgba(190,205,235,0.90)', lineHeight: 1.2 }}>{domPct}%</span>
               <StrengthBar pct={domPct} color="rgba(140,165,220,0.68)" delay={0.1 + 0.06 * index} />
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <MiniSparkline data={domSpark} color="rgba(155,180,230,0.75)" delay={0.45 + 0.06 * index} />
-                <MomentumTag pts={domMom} />
-              </div>
+              {(domSpark || domMom) && (
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <MiniSparkline data={domSpark} color="rgba(155,180,230,0.75)" delay={0.45 + 0.06 * index} />
+                  <MomentumTag pts={domMom} />
+                </div>
+              )}
             </div>
 
             {/* Counter */}
@@ -319,10 +321,12 @@ const DivergenceCard = ({ item, index }) => {
               <p className="text-[12px] font-semibold leading-[1.5]" style={{ color: 'rgba(255,255,255,0.68)' }}>{counterNarrative}</p>
               <span className="text-[18px] font-bold block" style={{ color: 'rgba(175,190,225,0.62)', lineHeight: 1.2 }}>{ctrPct}%</span>
               <StrengthBar pct={ctrPct} color="rgba(130,155,195,0.38)" delay={0.1 + 0.06 * index} />
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <MiniSparkline data={ctrSpark} color="rgba(145,170,210,0.52)" delay={0.45 + 0.06 * index} />
-                <MomentumTag pts={ctrMom} />
-              </div>
+              {(ctrSpark || ctrMom) && (
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <MiniSparkline data={ctrSpark} color="rgba(145,170,210,0.52)" delay={0.45 + 0.06 * index} />
+                  <MomentumTag pts={ctrMom} />
+                </div>
+              )}
             </div>
           </div>
 
