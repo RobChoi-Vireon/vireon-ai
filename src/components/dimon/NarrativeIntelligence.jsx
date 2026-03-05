@@ -570,14 +570,15 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
       onClick={onToggle}
       style={{
         height: '56px',
-        background: 'rgba(20,25,35,0.35)',
-        backdropFilter: 'blur(18px)',
-        WebkitBackdropFilter: 'blur(18px)',
-        border: `1px rgba(255,255,255,0.06)`,
-        borderRadius: '16px',
+        background: 'rgba(30,40,60,0.28)',
+        backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01))',
+        backdropFilter: 'blur(22px)',
+        WebkitBackdropFilter: 'blur(22px)',
+        border: `1px solid rgba(255,255,255,0.08)`,
+        borderRadius: '18px',
         padding: '12px 14px',
-        boxShadow: '0 10px 26px rgba(0,0,0,0.32)',
-        transition: `all ${TOKENS.motion} ease`,
+        boxShadow: '0 0 0 1px rgba(255,255,255,0.02) inset, 0 12px 40px rgba(0,0,0,0.35)',
+        transition: `all 180ms ease`,
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
@@ -585,10 +586,10 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
         gap: '12px'
       }}
       whileHover={{
-        background: 'rgba(20,25,35,0.45)',
-        border: `1px rgba(255,255,255,0.09)`,
+        background: 'rgba(30,40,60,0.36)',
+        border: `1px solid rgba(255,255,255,0.10)`,
         y: -1,
-        transition: { duration: 0.12 }
+        transition: { duration: 0.18 }
       }}
     >
       {/* Left: Label + Helper */}
@@ -626,7 +627,8 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
                 flexShrink: 0,
                 cursor: 'default',
                 boxShadow: isExpanded ? 'none' : '0 4px 12px rgba(0,0,0,0.24)',
-                transition: 'all 0.2s ease'
+                filter: isExpanded ? 'saturate(0.8)' : 'saturate(1)',
+                transition: 'all 180ms ease'
               }}
             >
               {getSourceAbbrev(source.name)}
@@ -652,7 +654,8 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
               flexShrink: 0,
               boxShadow: isExpanded ? 'none' : '0 4px 12px rgba(0,0,0,0.24)',
               cursor: 'default',
-              transition: 'all 0.2s ease'
+              filter: isExpanded ? 'saturate(0.8)' : 'saturate(1)',
+              transition: 'all 180ms ease'
             }}
             title="Politico"
           >
@@ -776,11 +779,21 @@ const SourcesSection = ({ sources = [] }) => {
 export default function NarrativeIntelligence({ sources, sentiment, drivers, implications, outlets, window, confidence }) {
   return (
     <div style={{ marginTop: '32px' }}>
-      <div style={{ marginBottom: '14px', paddingLeft: '8px' }}>
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: '200px',
+        background: `linear-gradient(135deg, #0E1420 0%, #101827 50%, #0C1320 100%), radial-gradient(ellipse at 50% 0%, rgba(80,120,160,0.08) 0%, transparent 70%)`,
+        pointerEvents: 'none',
+        zIndex: 0
+      }} />
+      <div style={{ marginBottom: '14px', paddingLeft: '8px', position: 'relative', zIndex: 1 }}>
         <h2 style={{ fontSize: '20px', fontWeight: 600, color: TOKENS.color.text_primary, marginBottom: '4px' }}>
           Narrative Intelligence
         </h2>
-        <p style={{ fontSize: '13px', color: 'rgba(213,220,229,0.55)' }}>
+        <p style={{ fontSize: '13px', color: 'rgba(213,220,229,0.55)', opacity: 0.75, maxWidth: '680px', lineHeight: 1.45 }}>
           Curated synthesis from trusted financial outlets.
         </p>
       </div>
