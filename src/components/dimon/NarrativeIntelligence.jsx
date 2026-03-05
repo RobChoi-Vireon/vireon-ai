@@ -282,70 +282,22 @@ const DriversSection = ({ drivers = [] }) => {
 
 // ─── IMPACT INTELLIGENCE — 2×2 GRID ───────────────────────────────────────
 const ImpactIntelligence = ({ implications = [] }) => {
-  const fallbackMap = {
-    0: {
-      title: 'Credit Spreads',
-      description: 'Rising borrowing costs could pressure leveraged companies and widen high-yield spreads.',
-      icon: '◈'
-    },
-    1: {
-      title: 'Growth Allocation',
-      description: 'Slowing global growth expectations may shift capital toward defensive sectors.',
-      icon: '↗'
-    },
-    2: {
-      title: 'Policy Risk',
-      description: 'Tighter regulation and fiscal gridlock may increase volatility in regulated industries.',
-      icon: '⌁'
-    },
-    3: {
-      title: 'Growth Allocation',
-      description: 'Slowing global growth expectations may shift capital toward defensive sectors.',
-      icon: '↗'
-    }
+  const getDirectionColor = (direction) => {
+    if (!direction) return '#687A8C';
+    const lower = direction.toLowerCase();
+    if (lower === 'positive') return '#5FD1A3';
+    if (lower === 'negative') return '#FF8C6B';
+    return '#A0AEC0';
   };
 
-  const defaultImplications = [
-    {
-      label: 'WATCH Tech Compliance',
-      title: 'Rising costs eat into profits',
-      description: 'New regulations will increase company spending on compliance by 40-60%. Watch for earnings guidance cuts.'
-    },
-    {
-      label: 'WATCH Credit Conditions',
-      title: 'Refinancing challenges ahead',
-      description: 'Emerging market companies face higher borrowing costs. M&A activity likely to slow in Q1.'
-    },
-    {
-      label: 'OPPORTUNITY Supply Chain',
-      title: 'Lower material costs',
-      description: 'China slowdown reducing input costs for U.S. manufacturers. Industrial stocks may benefit.'
-    },
-    {
-      label: 'WATCH Policy Risk',
-      title: 'Fiscal package uncertainty',
-      description: 'Congressional gridlock could delay infrastructure and defense spending. Political risk increasing.'
-    }
-  ];
+  const getIcon = (iconName) => {
+    const iconMap = { '◈': '◈', '↗': '↗', '⌁': '⌁', '↓': '↓' };
+    return iconMap[iconName] || '◈';
+  };
 
-  const implList = implications.length > 0 ? implications : defaultImplications;
-  
-  // Helper: resolve title with fallback
-  const getTitle = (impl, index) => {
-    if (impl.title && impl.title.trim()) return impl.title;
-    return fallbackMap[index]?.title || 'Market Signal';
-  };
-  
-  // Helper: resolve description with fallback
-  const getDescription = (impl, index) => {
-    if (impl.description && impl.description.trim()) return impl.description;
-    return fallbackMap[index]?.description || 'Monitor this signal for trading implications.';
-  };
-  
-  // Helper: get icon for card
-  const getIcon = (index) => {
-    return fallbackMap[index]?.icon || '◈';
-  };
+  const implList = implications
+    .filter(impl => impl && (impl.signal || impl.title))
+    .slice(0, 3);
 
   return (
     <motion.div
