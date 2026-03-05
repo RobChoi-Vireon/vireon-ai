@@ -672,12 +672,16 @@ const SourceItem = ({ source, index, onExpand, isExpanded }) => {
                   {sentiment.label}
                 </div>
 
-                <div style={{ fontFamily: TOKENS.font.family, fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.50)', textTransform: 'uppercase', marginBottom: '6px' }}>
-                  Latest Headline
-                </div>
-                <p style={{ fontFamily: TOKENS.font.family, fontSize: '13px', fontWeight: 400, color: 'rgba(213,220,229,0.75)', lineHeight: 1.45 }}>
-                  {source?.policy || 'No recent headline'}
-                </p>
+                {(source?.latest_headline || source?.policy) && (
+                  <>
+                    <div style={{ fontFamily: TOKENS.font.family, fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.50)', textTransform: 'uppercase', marginBottom: '6px' }}>
+                      Latest Headline
+                    </div>
+                    <p style={{ fontFamily: TOKENS.font.family, fontSize: '13px', fontWeight: 400, color: 'rgba(213,220,229,0.75)', lineHeight: 1.45 }}>
+                      {source?.latest_headline || source?.policy}
+                    </p>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>
