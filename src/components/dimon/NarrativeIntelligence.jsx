@@ -524,6 +524,19 @@ const getSourceColor = (sourceName) => {
   return colorMap[sourceName] || { bg: 'rgba(255,255,255,0.08)', text: '#FFFFFF' };
 };
 
+const getSourceAbbrev = (sourceName) => {
+  const abbrevMap = {
+    'Washington Post': 'WP',
+    'New York Times': 'NYT',
+    'Wall Street Journal': 'WSJ',
+    'Financial Times': 'FT',
+    'The Economist': 'TE',
+    'Axios': 'AX',
+    'Politico': 'PO'
+  };
+  return abbrevMap[sourceName] || sourceName.charAt(0);
+};
+
 const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
   const defaultSources = [
     { name: 'Washington Post', specialty: 'Policy', topline: 'Tech oversight increasing', policy: 'Congressional committees signaling more enforcement ahead' },
@@ -614,7 +627,7 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
                 boxShadow: '0 4px 12px rgba(0,0,0,0.24)'
               }}
             >
-              {source.name.split(' ').map(w => w.charAt(0)).join('').slice(0, 2)}
+              {getSourceAbbrev(source.name)}
             </motion.div>
           );
         })}
