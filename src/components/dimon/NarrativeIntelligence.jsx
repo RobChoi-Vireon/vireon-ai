@@ -602,7 +602,7 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
       </div>
 
       {/* Middle: Outlet Pills + Overflow */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+      <div style={{ display: isExpanded ? 'none' : 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
         {displaySources.map((source, i) => {
           const color = getSourceColor(source.name);
           return (
