@@ -232,7 +232,7 @@ const ConsensusRing = ({ item, index, isSelected, onSelect }) => {
   const shortLabel = getShortLabel(item).slice(0, 16);
   const gradId = `ring-grad-${index}`;
 
-  const bloomOpacity = hovered ? 0.45 : 0.35;
+  const bloomOpacity = hovered ? 0.22 : 0.14;
 
   return (
     <motion.div
