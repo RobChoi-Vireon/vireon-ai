@@ -191,19 +191,23 @@ const HoverCard = ({ children, glowColor = 'rgba(255,255,255,0.06)', subsurface 
 
 // ─── Consensus Ring ───────────────────────────────────────────────────────────
 
-const getRingColor = (pct) => {
-  if (pct >= 80) return '#22c55e';
-  if (pct >= 65) return '#f59e0b';
-  if (pct >= 50) return '#9ca3af';
-  return '#ef4444';
+const RING_CONFIG = {
+  high:       { color: '#22c55e', gradEnd: '#34D399', label: 'High',       badgeColor: '#22c55e' },
+  moderate:   { color: '#f59e0b', gradEnd: '#FB923C', label: 'Moderate',   badgeColor: '#f59e0b' },
+  weak:       { color: '#9ca3af', gradEnd: '#D1D5DB', label: 'Weak',       badgeColor: '#9ca3af' },
+  fragmented: { color: '#ef4444', gradEnd: '#F87171', label: 'Fragmented', badgeColor: '#ef4444' },
 };
 
-const getRingBadge = (pct) => {
-  if (pct >= 80) return { label: 'High', color: '#22c55e' };
-  if (pct >= 65) return { label: 'Moderate', color: '#f59e0b' };
-  if (pct >= 50) return { label: 'Weak', color: '#9ca3af' };
-  return { label: 'Fragmented', color: '#ef4444' };
+const getRingConfig = (pct) => {
+  if (pct >= 80) return RING_CONFIG.high;
+  if (pct >= 65) return RING_CONFIG.moderate;
+  if (pct >= 50) return RING_CONFIG.weak;
+  return RING_CONFIG.fragmented;
 };
+
+// Keep legacy helpers for any other code that might reference them
+const getRingColor = (pct) => getRingConfig(pct).color;
+const getRingBadge = (pct) => ({ label: getRingConfig(pct).label, color: getRingConfig(pct).badgeColor });
 
 const getShortLabel = (item) => {
   const stmt = item.statement || item.claim || item.title || '';
