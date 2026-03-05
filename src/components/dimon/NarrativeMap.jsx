@@ -130,6 +130,7 @@ const ConfidenceBadge = ({ level }) => {
 
 const MomentumTag = ({ pts }) => {
   const n = typeof pts === 'number' ? pts : (parseFloat(pts) || 0);
+  if (!n) return null;
   const up = n >= 0;
   const color = up ? 'rgba(88,227,164,0.88)' : 'rgba(255,106,122,0.88)';
   const bg = up ? 'rgba(88,227,164,0.10)' : 'rgba(255,106,122,0.10)';
