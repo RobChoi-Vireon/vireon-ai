@@ -22,7 +22,6 @@ import DigestSkeleton from '@/components/dimon/DigestSkeleton';
 import DegradedBanner from '@/components/dimon/DegradedBanner';
 import RetryWrapper from '@/components/core/RetryWrapper';
 import InflationSection from '@/components/dimon/InflationSection';
-import NarrativeIntelligenceSection from '@/components/dimon/NarrativeIntelligenceSection';
 
 // NOTE: Lazy loading components is a key performance optimization.
 // In a real build setup, these would be loaded asynchronously.
@@ -963,21 +962,6 @@ export default function MacroSignalsPage() {
                        outlets={digest.sources?.length || 7}
                        window="24h"
                        confidence="Moderate"
-                     />
-                   </motion.div>
-                 )}
-
-                {/* 6.5) Narrative Intelligence Section — From OrientationSession */}
-                {sessionData?.narrative_intelligence && (
-                   <motion.div 
-                     variants={sectionVariants}
-                     id="section-narrative-intelligence-v2" 
-                     data-section-order="6.5"
-                     className="col-span-12"
-                   >
-                     <NarrativeIntelligenceSection 
-                       narrative_intelligence={sessionData.narrative_intelligence}
-                       timestamp_display={sessionData?.as_of?.updated_ago || '—'}
                      />
                    </motion.div>
                  )}
