@@ -271,8 +271,8 @@ const DivergenceCard = ({ item, index }) => {
   const ctrMom = item.change_7d != null ? -item.change_7d : (item.counter_momentum ?? -domMom);
   const interpretation = item.interpretation || item.summary || '';
   const resolution = item.resolution_triggers || item.break_conditions || [];
-  const domSpark = FLAT_SPARK;
-  const ctrSpark = FLAT_SPARK;
+  const domSpark = item.dominant?.trend_7d || null;
+  const ctrSpark = item.counter?.trend_7d || null;
   // dominant statement
   const domStatement = item.dominant?.statement || item.topic || '—';
   const counterNarrative = item.counter?.statement || item.counter_narrative || (typeof item.counter === 'string' ? item.counter : null) || '—';
