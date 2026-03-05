@@ -350,10 +350,12 @@ const ConsensusRingGrid = ({ consensus }) => {
   return (
     <div>
       <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
-        gap: '28px',
-        padding: '8px 4px',
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '72px',
+        padding: '24px 16px',
       }}>
         {consensus.slice(0, 6).map((item, i) => (
           <ConsensusRing
