@@ -517,40 +517,7 @@ const EmptyState = ({ label }) => (
   </div>
 );
 
-// ─── ChangingTabContent (with Narrative Momentum header) ──────────────────────
-
-const NARRATIVE_MOMENTUM_DATA = [
-  {
-    title: 'AI productivity driving earnings expansion',
-    shift_pts: 12,
-    momentum: 'Increasing',
-    confidence: 'Moderate',
-    interpretation: 'More commentary frames AI as an earnings driver rather than a cost center.'
-  },
-  {
-    title: 'Soft landing narrative strengthening',
-    shift_pts: 6,
-    momentum: 'Increasing',
-    confidence: 'High',
-    interpretation: 'Recent macro prints are being interpreted as growth holding up without re-accelerating inflation.'
-  },
-  {
-    title: 'Rate cuts pulled forward',
-    shift_pts: -5,
-    momentum: 'Weakening',
-    confidence: 'Moderate',
-    interpretation: 'Market pricing is drifting toward fewer/farther cuts as inflation stickiness dominates.'
-  },
-  {
-    title: 'China recovery optimism',
-    shift_pts: -8,
-    momentum: 'Weakening',
-    confidence: 'Low',
-    interpretation: 'Narrative attention is fading as growth concerns reassert and stimulus expectations cool.'
-  }
-];
-
-const ChangingTabContent = () => (
+const ChangingTabContent = ({ momentumItems = [] }) => (
   <div className="space-y-4">
     {/* Header */}
     <div className="flex items-start justify-between gap-6 mb-6 px-1">
@@ -576,10 +543,10 @@ const ChangingTabContent = () => (
     </div>
 
     {/* Narrative Shift Cards */}
-    {NARRATIVE_MOMENTUM_DATA.length > 0 ? (
+    {momentumItems.length > 0 ? (
       <div className="space-y-3">
-        {NARRATIVE_MOMENTUM_DATA.map((item, i) => (
-          <NarrativeShiftCard key={i} item={item} index={i} />
+        {momentumItems.map((item, i) => (
+          <NarrativeShiftCard key={item.id || i} item={item} index={i} />
         ))}
       </div>
     ) : (
