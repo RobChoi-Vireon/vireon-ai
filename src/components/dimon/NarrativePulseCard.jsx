@@ -137,7 +137,7 @@ export default function NarrativePulseCard({ summary = null, isEmpty = false, po
                   Narrative Pulse
                 </h3>
                 <span className="text-[10px] whitespace-nowrap flex-shrink-0" style={{ color: 'rgba(255,255,255,0.32)' }}>
-                  Updated: —
+                  Updated: {resolvedUpdatedDisplay}
                 </span>
               </div>
 
