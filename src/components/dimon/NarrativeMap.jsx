@@ -267,7 +267,7 @@ const DivergenceCard = ({ item, index }) => {
   const ctrSpark = FLAT_SPARK;
   // dominant statement
   const domStatement = item.dominant?.statement || item.topic || '—';
-  const counterNarrative = item.counter?.statement || item.counter_narrative || item.counter || 'Counter narrative';
+  const counterNarrative = item.counter?.statement || item.counter_narrative || (typeof item.counter === 'string' ? item.counter : null) || '—';
 
   return (
     <motion.div
