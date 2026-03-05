@@ -328,7 +328,9 @@ export default function DivergenceReport({ divergences = [], fractureIntensity, 
 
   return (
     <motion.div
-      variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
+      initial={{ opacity: 0, y: 20, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ ...ENTRY, delay: 0.05 }}
       style={{ ...GLASS.panel, padding: '26px 24px 24px', position: 'relative', overflow: 'visible', height: '100%' }}
     >
       {/* Top specular edge */}
