@@ -159,12 +159,12 @@ const DivergenceCard = ({ divergence, onClick, index }) => {
       <motion.div
         onClick={() => onClick?.(divergence)}
         animate={{
-          y: hovered ? -2 : 0,
+          y: hovered ? -3 : 0,
           boxShadow: hovered
-            ? `inset 0 1px 0 rgba(255,255,255,0.10), 0 8px 32px rgba(0,0,0,0.30), 0 0 0 1px rgba(255,255,255,0.09)`
+            ? `inset 0 1px 0 rgba(255,255,255,0.12), 0 12px 40px rgba(0,0,0,0.32), 0 0 0 1px rgba(255,255,255,0.10)`
             : GLASS.card.boxShadow
         }}
-        transition={{ duration: 0.16, ease: EASE }}
+        transition={SPRING}
         style={{
           ...GLASS.card,
           padding: '20px 22px',
