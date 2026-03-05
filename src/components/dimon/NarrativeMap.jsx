@@ -594,74 +594,91 @@ const USGlobalCard = ({ item, index }) => {
 // ─── NarrativeShiftCard ──────────────────────────────────────────────────────
 
 const NarrativeShiftCard = ({ item, index }) => {
+  const [hovered, setHovered] = useState(false);
   const shift = item.change_7d ?? item.shift_pts ?? item.momentum_pts ?? 0;
-  // Direction: "Increasing" = green, "Weakening" = red, "Stable" = gray
   const dir = item.direction || item.momentum || 'Stable';
   const isRising = dir === 'Increasing' || shift > 0;
   const isWeakening = dir === 'Weakening' || shift < 0;
-  const shiftColor = isWeakening ? 'rgba(255,106,122,0.88)' : isRising ? 'rgba(88,227,164,0.88)' : 'rgba(180,190,210,0.75)';
-  const shiftBg = isWeakening ? 'rgba(255,106,122,0.10)' : isRising ? 'rgba(88,227,164,0.10)' : 'rgba(180,190,210,0.08)';
-  const momentum = dir;
-  // Normalize confidence: HIGH → High, MODERATE → Moderate, LOW → Low
+  const momentumColor = isWeakening ? '#ef4444' : isRising ? '#22c55e' : '#9ca3af';
+  const MomIcon = isWeakening ? TrendingDown : isRising ? TrendingUp : Minus;
   const rawConf = item.confidence || 'Moderate';
   const confidence = rawConf.charAt(0).toUpperCase() + rawConf.slice(1).toLowerCase();
   const interpretation = item.commentary || item.interpretation || '';
-  const sparkData = item.trend_7d || null;
-
-  // Confidence color mapping
-  const confidenceMap = {
-    'High': 'rgba(88,227,164,0.70)',
-    'Moderate': 'rgba(255,190,80,0.70)',
-    'Low': 'rgba(255,106,122,0.70)'
-  };
-  const confColor = confidenceMap[confidence] || confidenceMap['Moderate'];
+  const confidenceColor = { High: 'rgba(88,227,164,0.80)', Moderate: 'rgba(255,190,80,0.80)', Low: 'rgba(255,106,122,0.80)' }[confidence] || 'rgba(255,190,80,0.80)';
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.05 * index, duration: 0.36, ease: HORIZON_EASE }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      <HoverCard glowColor="rgba(255,255,255,0.04)" subsurface="rgba(255,255,255,0.015)" style={{ borderRadius: '20px', padding: '18px' }}>
-        <div className="relative z-10 space-y-2.5">
-          {/* Narrative title + shift pill */}
-          <div className="flex items-start justify-between gap-3">
-            <p className="text-[13px] font-semibold leading-[1.5] flex-1" style={{ color: 'rgba(255,255,255,0.95)' }}>
-              {item.statement || item.title || item.narrative || '—'}
-            </p>
-            {shift !== 0 && (
-              <span className="text-[12px] font-bold px-2.5 py-1.5 rounded-full flex-shrink-0" style={{ background: shiftBg, color: shiftColor }}>
-                {isRising ? '+' : ''}{shift} pts
-              </span>
-            )}
-          </div>
+      <motion.div
+        animate={{ scale: hovered ? 1.02 : 1 }}
+        transition={{ duration: 0.18, ease: 'easeOut' }}
+        style={{
+          padding: '24px', borderRadius: '22px',
+          background: 'rgba(14,18,26,0.62)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          backdropFilter: 'blur(22px)', WebkitBackdropFilter: 'blur(22px)',
+        }}
+      >
+        {/* Title */}
+        <p style={{ fontSize: '16px', fontWeight: 550, lineHeight: 1.6, color: 'rgba(255,255,255,0.92)', marginBottom: '8px' }}>
+          {item.statement || item.title || item.narrative || '—'}
+        </p>
 
-          {/* Meta chips: Momentum + Confidence */}
-          <div className="flex gap-2 flex-wrap">
-            <span className="text-[11px] font-medium px-2 py-1 rounded-full" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.65)' }}>
-              Momentum: <span style={{ color: 'rgba(255,255,255,0.88)' }}>{momentum}</span>
+        {/* Description */}
+        {interpretation && (
+          <p style={{ fontSize: '13px', lineHeight: 1.6, color: 'rgba(255,255,255,0.55)', marginBottom: '4px' }}>
+            {interpretation}
+          </p>
+        )}
+
+        {/* Badge row */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px', flexWrap: 'wrap' }}>
+          {/* Momentum badge */}
+          <span style={{
+            display: 'inline-flex', alignItems: 'center', gap: '5px',
+            fontSize: '12px', fontWeight: 600,
+            padding: '8px 14px', borderRadius: '999px',
+            background: 'rgba(20,24,32,0.55)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)',
+            color: momentumColor,
+          }}>
+            <MomIcon style={{ width: '13px', height: '13px' }} strokeWidth={2.5} />
+            {dir}
+          </span>
+
+          {/* Confidence badge */}
+          <span style={{
+            display: 'inline-flex', alignItems: 'center',
+            fontSize: '12px', fontWeight: 600,
+            padding: '8px 14px', borderRadius: '999px',
+            background: 'rgba(20,24,32,0.55)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)',
+            color: confidenceColor,
+          }}>
+            {confidence}
+          </span>
+
+          {/* Shift pts */}
+          {shift !== 0 && (
+            <span style={{
+              fontSize: '12px', fontWeight: 600,
+              padding: '8px 14px', borderRadius: '999px',
+              background: 'rgba(20,24,32,0.55)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              color: momentumColor,
+            }}>
+              {isRising ? '+' : ''}{shift} pts
             </span>
-            <span className="text-[11px] font-medium px-2 py-1 rounded-full" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: confColor }}>
-              Confidence: <span style={{ color: confColor }}>{confidence}</span>
-            </span>
-          </div>
-
-          {/* Trend sparkline — only when real data exists */}
-          {sparkData && (
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wide mb-2" style={{ color: 'rgba(255,255,255,0.33)' }}>7-day trend</p>
-              <MiniSparkline data={sparkData} color={shiftColor} delay={0.25 + 0.05 * index} />
-            </div>
-          )}
-
-          {/* Interpretation */}
-          {interpretation && (
-            <p className="text-[12px] leading-[1.5]" style={{ color: 'rgba(255,255,255,0.68)' }}>
-              {interpretation}
-            </p>
           )}
         </div>
-      </HoverCard>
+      </motion.div>
     </motion.div>
   );
 };
