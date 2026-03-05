@@ -63,14 +63,14 @@ const HeroPanel = ({ sentiment, outlets, window, confidence }) => {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
-      className="rounded-[28px] overflow-hidden relative"
+      className="rounded-[22px] overflow-hidden relative"
       style={{
-        background: 'linear-gradient(180deg, rgba(30,45,70,0.32) 0%, rgba(18,28,48,0.38) 100%)',
-        backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01))',
-        backdropFilter: `blur(28px) saturate(160%)`,
-        WebkitBackdropFilter: `blur(28px) saturate(160%)`,
+        background: 'rgba(30,40,60,0.20)',
+        backgroundImage: 'radial-gradient(120% 90% at 20% 0%, rgba(255,255,255,0.06), rgba(255,255,255,0.01) 45%, rgba(255,255,255,0.00) 70%)',
+        backdropFilter: `blur(24px)`,
+        WebkitBackdropFilter: `blur(24px)`,
         border: `1px solid rgba(255,255,255,0.10)`,
-        boxShadow: `0 0 0 1px rgba(255,255,255,0.02) inset, 0 20px 60px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.10)`,
+        boxShadow: `0 0 0 1px rgba(255,255,255,0.03) inset, 0 18px 44px rgba(0,0,0,0.35)`,
         padding: '32px'
       }}
     >
@@ -83,20 +83,6 @@ const HeroPanel = ({ sentiment, outlets, window, confidence }) => {
           right: '12%',
           height: '1.5px',
           background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
-          pointerEvents: 'none'
-        }}
-      />
-      
-      {/* Ambient top glow */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '80px',
-          background: 'radial-gradient(ellipse at 50% 0%, rgba(100,150,220,0.08) 0%, transparent 70%)',
-          borderRadius: '28px 28px 0 0',
           pointerEvents: 'none'
         }}
       />
@@ -144,13 +130,11 @@ const HeroPanel = ({ sentiment, outlets, window, confidence }) => {
         <div
           style={{
             height: '6px',
-            borderRadius: '8px',
-            background: 'rgba(255,255,255,0.06)',
+            borderRadius: '999px',
+            background: 'rgba(255,255,255,0.12)',
             overflow: 'hidden',
             display: 'flex',
-            width: '100%',
-            boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.20)',
-            border: '1px solid rgba(255,255,255,0.04)'
+            width: '100%'
           }}
         >
           {/* Cautious segment */}
@@ -159,8 +143,9 @@ const HeroPanel = ({ sentiment, outlets, window, confidence }) => {
             animate={{ width: `${cautious_pct}%` }}
             transition={{ duration: 0.8, ease: [0.22, 0.61, 0.36, 1] }}
             style={{
-              background: `linear-gradient(90deg, #FF9E3A 0%, #FF6B3D 100%)`,
-              boxShadow: '0 0 12px rgba(255,107,61,0.30)',
+              background: `linear-gradient(90deg, #ffb15c, #ff7b4d)`,
+              boxShadow: '0 0 12px rgba(255,140,80,0.25)',
+              borderRadius: '999px',
               transition: `width 0.8s ease`
             }}
           />
@@ -172,6 +157,7 @@ const HeroPanel = ({ sentiment, outlets, window, confidence }) => {
             style={{
               background: `linear-gradient(90deg, #687A8C, #9BA8BC)`,
               boxShadow: '0 0 8px rgba(155,168,188,0.20)',
+              borderRadius: '999px',
               transition: `width 0.8s ease`
             }}
           />
@@ -470,17 +456,20 @@ const SourceItem = ({ source, index, onExpand, isExpanded }) => {
         style={{
           padding: '14px',
           borderRadius: '16px',
-          background: 'rgba(255,255,255,0.04)',
-          border: `1px rgba(255,255,255,0.06)`,
-          transition: `all 180ms ease`,
+          background: 'rgba(30,40,60,0.18)',
+          border: `1px solid rgba(255,255,255,0.08)`,
+          transition: `all 200ms ease`,
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: '12px'
+          gap: '12px',
+          backdropFilter: 'blur(18px)',
+          WebkitBackdropFilter: 'blur(18px)'
         }}
         whileHover={{
-          background: 'rgba(255,255,255,0.07)',
+          background: 'rgba(30,40,60,0.26)',
+          border: `1px solid rgba(255,255,255,0.10)`,
           y: -1,
           transition: { duration: 0.18 }
         }}
@@ -559,8 +548,8 @@ const SourceItem = ({ source, index, onExpand, isExpanded }) => {
           >
             <div
               style={{
-                background: 'rgba(30,40,60,0.28)',
-                backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01))',
+                background: 'rgba(30,40,60,0.18)',
+                backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01))',
                 backdropFilter: 'blur(22px)',
                 WebkitBackdropFilter: 'blur(22px)',
                 border: '1px solid rgba(255,255,255,0.08)',
@@ -569,7 +558,7 @@ const SourceItem = ({ source, index, onExpand, isExpanded }) => {
                 display: 'grid',
                 gridTemplateColumns: '1fr 1fr',
                 gap: '24px',
-                boxShadow: '0 0 0 1px rgba(255,255,255,0.02) inset, 0 12px 40px rgba(0,0,0,0.35)'
+                boxShadow: '0 0 0 1px rgba(255,255,255,0.03) inset, 0 14px 40px rgba(0,0,0,0.30)'
               }}
             >
               {/* Left column */}
@@ -683,15 +672,15 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
       onClick={onToggle}
       style={{
         minHeight: '72px',
-        background: 'rgba(30,40,60,0.28)',
-        backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01))',
-        backdropFilter: 'blur(22px)',
-        WebkitBackdropFilter: 'blur(22px)',
-        border: `1px solid rgba(255,255,255,0.08)`,
+        background: 'rgba(30,40,60,0.20)',
+        backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01))',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        border: `1px solid rgba(255,255,255,0.10)`,
         borderRadius: '18px',
         padding: '16px 18px',
-        boxShadow: '0 0 0 1px rgba(255,255,255,0.02) inset, 0 12px 40px rgba(0,0,0,0.35)',
-        transition: `all 180ms ease`,
+        boxShadow: '0 0 0 1px rgba(255,255,255,0.03) inset, 0 16px 44px rgba(0,0,0,0.32)',
+        transition: `all 200ms ease`,
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
@@ -699,9 +688,10 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
         gap: '18px'
       }}
       whileHover={{
-        background: 'rgba(30,40,60,0.36)',
-        border: `1px solid rgba(255,255,255,0.10)`,
-        y: -1,
+        background: 'rgba(30,40,60,0.28)',
+        border: `1px solid rgba(255,255,255,0.12)`,
+        y: -2,
+        boxShadow: '0 0 0 1px rgba(255,255,255,0.04) inset, 0 20px 52px rgba(0,0,0,0.36)',
         transition: { duration: 0.18 }
       }}
     >
@@ -893,12 +883,20 @@ const SourcesSection = ({ sources = [] }) => {
 // ─── MAIN EXPORT ──────────────────────────────────────────────────────────
 export default function NarrativeIntelligence({ sources, sentiment, drivers, implications, outlets, window, confidence }) {
   return (
-    <div style={{ marginTop: '32px' }}>
-      <div style={{ marginBottom: '18px', paddingLeft: '8px' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 600, color: TOKENS.color.text_primary, marginBottom: '4px', opacity: 0.95 }}>
+    <div
+      style={{
+        marginTop: '32px',
+        background: 'radial-gradient(1200px 600px at 15% -10%, rgba(45,80,150,0.10), rgba(0,0,0,0)), radial-gradient(900px 500px at 90% 10%, rgba(30,60,120,0.08), rgba(0,0,0,0))',
+        borderRadius: '32px',
+        padding: '32px',
+        position: 'relative'
+      }}
+    >
+      <div style={{ marginBottom: '24px', paddingLeft: '8px' }}>
+        <h2 style={{ fontSize: '22px', fontWeight: 600, letterSpacing: '-0.01em', color: 'rgba(226,232,240,0.95)', marginBottom: '6px' }}>
           Narrative Intelligence
         </h2>
-        <p style={{ fontSize: '13px', color: 'rgba(213,220,229,0.55)', opacity: 0.70, maxWidth: '600px', lineHeight: 1.4 }}>
+        <p style={{ fontSize: '13px', color: 'rgba(213,220,229,0.55)', opacity: 0.60, maxWidth: '600px', lineHeight: 1.4 }}>
           Curated synthesis from trusted financial outlets.
         </p>
       </div>
