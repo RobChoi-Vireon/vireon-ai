@@ -435,11 +435,16 @@ const FLAT_SPARK = [50, 50, 50, 50, 50, 50, 50];
 
 const NarrativeShiftCard = ({ item, index }) => {
   const shift = item.change_7d ?? item.shift_pts ?? item.momentum_pts ?? 0;
-  const isRising = shift >= 0;
-  const shiftColor = isRising ? 'rgba(88,227,164,0.88)' : 'rgba(255,106,122,0.88)';
-  const shiftBg = isRising ? 'rgba(88,227,164,0.10)' : 'rgba(255,106,122,0.10)';
-  const momentum = item.direction || item.momentum || 'Stable';
-  const confidence = item.confidence || 'Moderate';
+  // Direction: "Increasing" = green, "Weakening" = red, "Stable" = gray
+  const dir = item.direction || item.momentum || 'Stable';
+  const isRising = dir === 'Increasing' || shift > 0;
+  const isWeakening = dir === 'Weakening' || shift < 0;
+  const shiftColor = isWeakening ? 'rgba(255,106,122,0.88)' : isRising ? 'rgba(88,227,164,0.88)' : 'rgba(180,190,210,0.75)';
+  const shiftBg = isWeakening ? 'rgba(255,106,122,0.10)' : isRising ? 'rgba(88,227,164,0.10)' : 'rgba(180,190,210,0.08)';
+  const momentum = dir;
+  // Normalize confidence: HIGH → High, MODERATE → Moderate, LOW → Low
+  const rawConf = item.confidence || 'Moderate';
+  const confidence = rawConf.charAt(0).toUpperCase() + rawConf.slice(1).toLowerCase();
   const interpretation = item.commentary || item.interpretation || '';
   const sparkData = FLAT_SPARK;
 
