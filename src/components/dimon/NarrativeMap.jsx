@@ -250,10 +250,10 @@ const ConsensusCard = ({ item, index }) => {
               </ul>
             </div>
           )}
-          {(sparkData || momentum) && (
+          {(sparkData || momentum != null) && (
             <div className="flex items-center gap-2 pt-2">
               <MiniSparkline data={sparkData} color="rgba(155,180,230,0.78)" delay={0.5 + 0.06 * index} />
-              <MomentumTag pts={momentum} />
+              {momentum != null && <MomentumTag pts={momentum} />}
             </div>
           )}
         </div>
