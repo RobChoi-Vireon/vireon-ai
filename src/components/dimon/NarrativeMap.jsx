@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, GitCommit, Globe, TrendingUp, TrendingDown, Minus, Zap, Info, Clock } from 'lucide-react';
-import NarrativePulseCard from './NarrativePulseCard';
 import NarrativeStateCard from './NarrativeStateCard';
 
 const HORIZON_EASE = [0.26, 0.11, 0.26, 1.0];
