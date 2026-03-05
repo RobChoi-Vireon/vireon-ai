@@ -627,19 +627,27 @@ const SourceItem = ({ source, index, onExpand, isExpanded }) => {
             >
               {/* Left column */}
               <div>
-                <div style={{ fontFamily: TOKENS.font.family, fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.50)', textTransform: 'uppercase', marginBottom: '6px' }}>
-                    Primary Topic
-                  </div>
-                  <p style={{ fontFamily: TOKENS.font.family, fontSize: '13px', fontWeight: 400, color: 'rgba(213,220,229,0.75)', lineHeight: 1.45, marginBottom: '14px' }}>
-                    {source?.topline || 'No topic'}
-                  </p>
+                {(source?.primary_topic || source?.topline) && (
+                  <>
+                    <div style={{ fontFamily: TOKENS.font.family, fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.50)', textTransform: 'uppercase', marginBottom: '6px' }}>
+                      Primary Topic
+                    </div>
+                    <p style={{ fontFamily: TOKENS.font.family, fontSize: '13px', fontWeight: 400, color: 'rgba(213,220,229,0.75)', lineHeight: 1.45, marginBottom: '14px' }}>
+                      {source?.primary_topic || source?.topline}
+                    </p>
+                  </>
+                )}
 
-                  <div style={{ fontFamily: TOKENS.font.family, fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.50)', textTransform: 'uppercase', marginBottom: '6px' }}>
-                    Coverage Context
-                  </div>
-                  <p style={{ fontFamily: TOKENS.font.family, fontSize: '13px', fontWeight: 400, color: 'rgba(213,220,229,0.75)', lineHeight: 1.45 }}>
-                    {source?.market_macro || 'General market focus'}
-                  </p>
+                {(source?.coverage_context || source?.market_macro) && (
+                  <>
+                    <div style={{ fontFamily: TOKENS.font.family, fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.50)', textTransform: 'uppercase', marginBottom: '6px' }}>
+                      Coverage Context
+                    </div>
+                    <p style={{ fontFamily: TOKENS.font.family, fontSize: '13px', fontWeight: 400, color: 'rgba(213,220,229,0.75)', lineHeight: 1.45 }}>
+                      {source?.coverage_context || source?.market_macro}
+                    </p>
+                  </>
+                )}
               </div>
 
               {/* Right column */}
