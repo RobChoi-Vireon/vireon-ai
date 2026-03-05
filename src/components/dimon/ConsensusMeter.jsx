@@ -740,8 +740,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer, sources
           inset 0 1px 0 rgba(255, 255, 255, 0.095),
           inset 0 0 3px rgba(142, 187, 255, 0.045)
         `,
-        willChange: 'transform',
-        transform: `translateY(${backgroundDrift}px)`
+        willChange: 'transform'
       }}
       animate={{
         y: isHovered ? -6 : 0,
