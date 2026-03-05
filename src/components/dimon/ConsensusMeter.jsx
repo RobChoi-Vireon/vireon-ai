@@ -688,41 +688,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer, sources
   const [isHintHovered, setIsHintHovered] = useState(false);
   const [isAnyChipHovered, setIsAnyChipHovered] = useState(false);
   const [hoveredChipColor, setHoveredChipColor] = useState(null);
-  const [backgroundDrift, setBackgroundDrift] = useState(0);
-  const [isLowPower, setIsLowPower] = useState(false);
   const containerRef = useRef(null);
-
-  // Ambient background drift (8-10 seconds, 1-2px)
-  useEffect(() => {
-    if (isLowPower) return;
-    
-    let rafId;
-    let startTime = Date.now();
-    
-    const animate = () => {
-      const elapsed = (Date.now() - startTime) / 1000;
-      const drift = Math.sin(elapsed * (2 * Math.PI / 9)) * 1.5;
-      setBackgroundDrift(drift);
-      rafId = requestAnimationFrame(animate);
-    };
-    
-    rafId = requestAnimationFrame(animate);
-    return () => {
-      if (rafId) cancelAnimationFrame(rafId);
-    };
-  }, [isLowPower]);
-
-  // Detect low power mode
-  useEffect(() => {
-    const checkLowPower = () => {
-      if ('getBattery' in navigator) {
-        navigator.getBattery().then((battery) => {
-          setIsLowPower(battery.level < 0.2 && !battery.charging);
-        });
-      }
-    };
-    checkLowPower();
-  }, []);
 
   if (typeof score !== 'number') {
     return null;
