@@ -645,15 +645,24 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
         {/* Sentiment dots */}
         <div style={{ display: 'flex', gap: '5px' }}>
           {sentimentDots.map((dot, i) => (
-            <div
+            <motion.div
               key={i}
               title={dot.label}
+              initial={{ scale: 1, opacity: 0.7 }}
+              animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
+              transition={{
+                duration: 2.5,
+                repeat: Infinity,
+                delay: i * 0.15,
+                ease: 'easeInOut'
+              }}
               style={{
                 width: '6px',
                 height: '6px',
                 borderRadius: '50%',
                 background: dot.color,
-                flexShrink: 0
+                flexShrink: 0,
+                boxShadow: `0 0 6px ${dot.color}`
               }}
             />
           ))}
