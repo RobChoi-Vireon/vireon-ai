@@ -680,14 +680,6 @@ export default function NarrativeMap({ synthesis, density, narrativeMap }) {
         liveData={narrativeMap?.narrative_state || null}
       />
 
-      {/* Narrative Pulse Summary */}
-      <NarrativePulseCard
-        summary={null}
-        isEmpty={false}
-        positioningState="neutral"
-        liveData={narrativeMap?.narrative_pulse || null}
-      />
-
       {/* Outer liquid-glass container — macOS Tahoe depth model */}
       <div className="relative rounded-[28px] overflow-hidden" style={{
         // Outer shell: deep frosted panel
