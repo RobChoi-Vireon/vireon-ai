@@ -496,11 +496,13 @@ const NarrativeShiftCard = ({ item, index }) => {
             </span>
           </div>
 
-          {/* Trend sparkline */}
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wide mb-2" style={{ color: 'rgba(255,255,255,0.33)' }}>7-day trend</p>
-            <MiniSparkline data={sparkData} color={shiftColor} delay={0.25 + 0.05 * index} />
-          </div>
+          {/* Trend sparkline — only when real data exists */}
+          {sparkData && (
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-wide mb-2" style={{ color: 'rgba(255,255,255,0.33)' }}>7-day trend</p>
+              <MiniSparkline data={sparkData} color={shiftColor} delay={0.25 + 0.05 * index} />
+            </div>
+          )}
 
           {/* Interpretation */}
           {interpretation && (
