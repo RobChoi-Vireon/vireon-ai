@@ -477,8 +477,22 @@ const ImpactIntelligence = ({ impactIntelligence = [], implications = [] }) => {
 
 // ─── SOURCES — GLASS INTELLIGENCE LIST ─────────────────────────────────────
 const SourceItem = ({ source, index, onExpand, isExpanded }) => {
-  const getSentimentColor = (topline) => {
-    const lower = (topline || '').toLowerCase();
+  const getSentimentColor = (sentimentValue) => {
+    // Direct mapping from sentiment field if available
+    if (sentimentValue) {
+      const lower = (sentimentValue || '').toLowerCase();
+      if (lower.includes('positive') || lower.includes('bullish')) {
+        return { bg: 'rgba(95,209,163,0.14)', border: 'rgba(95,209,163,0.22)', text: '#5FD1A3', label: 'Positive' };
+      }
+      if (lower.includes('negative') || lower.includes('bearish') || lower.includes('cautious')) {
+        return { bg: 'rgba(255,120,80,0.14)', border: 'rgba(255,120,80,0.22)', text: '#FF8C6B', label: 'Cautious' };
+      }
+      return { bg: 'rgba(120,140,170,0.12)', border: 'rgba(120,140,170,0.20)', text: '#9BA7BA', label: 'Neutral' };
+    }
+    
+    // Fallback to topline inference
+    const topline = source?.topline || '';
+    const lower = topline.toLowerCase();
     if (lower.includes('risk') || lower.includes('concern') || lower.includes('stress')) {
       return { bg: 'rgba(255,120,80,0.14)', border: 'rgba(255,120,80,0.22)', text: '#FF8C6B', label: 'Cautious' };
     }
@@ -488,9 +502,9 @@ const SourceItem = ({ source, index, onExpand, isExpanded }) => {
     return { bg: 'rgba(120,140,170,0.12)', border: 'rgba(120,140,170,0.20)', text: '#9BA7BA', label: 'Neutral' };
   };
 
-  const sentiment = getSentimentColor(source?.topline);
+  const sentiment = getSentimentColor(source?.sentiment || source?.topline);
   const label = source?.name || `Source ${index + 1}`;
-  const context = source?.specialty || 'General';
+  const context = source?.category || source?.specialty || 'General';
 
   return (
     <motion.div
