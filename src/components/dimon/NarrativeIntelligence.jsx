@@ -178,9 +178,9 @@ const HeroPanel = ({ narrativePulse, sentiment, outlets, window, confidence, tim
           />
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px', fontSize: '12px', fontFamily: TOKENS.font.family, fontWeight: 500, color: 'rgba(213,220,229,0.65)' }}>
-          <div />
-          <span>Cautious {cautious_pct}% / Neutral {neutral_pct}%</span>
-        </div>
+           <div />
+           <span>{primaryLabel} {cautious_pct}% / {secondaryLabel} {neutral_pct}%</span>
+         </div>
       </div>
 
       {/* ── Meta Pills ── */}
