@@ -187,13 +187,17 @@ const HoverCard = ({ children, glowColor = 'rgba(255,255,255,0.06)', subsurface 
 // ─── ConsensusCard ────────────────────────────────────────────────────────────
 
 const ConsensusCard = ({ item, index }) => {
-  const pct = Math.round((item.confidence || 0) * 100);
-  const momentum = item.momentum_pts ?? item.momentum ?? 0;
+  // Support both legacy shape and narrative_map_v1 shape
+  const pct = item.score ?? Math.round((item.confidence || 0) * 100);
+  const momentum = item.change_7d ?? item.momentum_pts ?? item.momentum ?? 0;
   const drivers = item.drivers || [];
   const breakConditions = item.break_conditions || item.break_triggers || [];
-  const sources = item.sources_count ?? item.sources ?? 0;
-  const confidence_level = item.confidence_level || (pct >= 70 ? 'High' : pct >= 45 ? 'Medium' : 'Low');
-  const sparkData = item.sparkline || [pct - 8, pct - 5, pct - 6, pct - 3, pct - 2, pct, pct];
+  // confidence field: "HIGH"/"MODERATE"/"LOW" or legacy computed
+  const rawConf = item.confidence;
+  const confidence_level = (typeof rawConf === 'string' && ['HIGH','MODERATE','LOW'].includes(rawConf))
+    ? rawConf.charAt(0) + rawConf.slice(1).toLowerCase()
+    : (item.confidence_level || (pct >= 70 ? 'High' : pct >= 45 ? 'Medium' : 'Low'));
+  const sparkData = FLAT_SPARK;
 
   return (
     <motion.div
@@ -205,7 +209,7 @@ const ConsensusCard = ({ item, index }) => {
         <div className="relative z-10 space-y-3.5">
           <div className="flex items-start justify-between gap-3">
             <p className="text-[13px] font-semibold leading-[1.5] flex-1" style={{ color: 'rgba(255,255,255,0.95)' }}>
-              {item.claim}
+              {item.statement || item.claim || '—'}
             </p>
             <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
               <span className="text-[18px] font-bold" style={{ color: 'rgba(200,215,255,0.92)', lineHeight: 1.2 }}>{pct}%</span>
