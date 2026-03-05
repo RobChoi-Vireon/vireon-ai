@@ -511,6 +511,19 @@ const SourceItem = ({ source, index, onExpand, isExpanded }) => {
   );
 };
 
+const getSourceColor = (sourceName) => {
+  const colorMap = {
+    'Washington Post': { bg: 'rgba(150, 100, 200, 0.18)', border: 'rgba(150, 100, 200, 0.28)', text: 'rgba(200, 150, 255, 0.85)' },
+    'New York Times': { bg: 'rgba(100, 150, 220, 0.18)', border: 'rgba(100, 150, 220, 0.28)', text: 'rgba(150, 190, 255, 0.85)' },
+    'Wall Street Journal': { bg: 'rgba(200, 100, 100, 0.18)', border: 'rgba(200, 100, 100, 0.28)', text: 'rgba(255, 140, 140, 0.85)' },
+    'Financial Times': { bg: 'rgba(100, 180, 140, 0.18)', border: 'rgba(100, 180, 140, 0.28)', text: 'rgba(150, 220, 180, 0.85)' },
+    'The Economist': { bg: 'rgba(200, 160, 100, 0.18)', border: 'rgba(200, 160, 100, 0.28)', text: 'rgba(255, 200, 120, 0.85)' },
+    'Axios': { bg: 'rgba(150, 150, 180, 0.18)', border: 'rgba(150, 150, 180, 0.28)', text: 'rgba(190, 190, 220, 0.85)' },
+    'Politico': { bg: 'rgba(200, 120, 150, 0.18)', border: 'rgba(200, 120, 150, 0.28)', text: 'rgba(255, 160, 190, 0.85)' }
+  };
+  return colorMap[sourceName] || { bg: 'rgba(255,255,255,0.04)', border: '1px rgba(255,255,255,0.06)', text: 'rgba(255,255,255,0.50)' };
+};
+
 const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
   const defaultSources = [
     { name: 'Washington Post', specialty: 'Policy', topline: 'Tech oversight increasing', policy: 'Congressional committees signaling more enforcement ahead' },
@@ -576,33 +589,36 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
 
       {/* Middle: Outlet Pills + Overflow */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-        {displaySources.map((source, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.2, delay: i * 0.02 }}
-            title={source.name}
-            style={{
-              width: '28px',
-              height: '28px',
-              borderRadius: '10px',
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px rgba(255,255,255,0.06)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '10px',
-              fontWeight: 600,
-              color: 'rgba(255,255,255,0.50)',
-              boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.03)',
-              flexShrink: 0,
-              cursor: 'default'
-            }}
-          >
-            {source.name.charAt(0)}
-          </motion.div>
-        ))}
+        {displaySources.map((source, i) => {
+          const color = getSourceColor(source.name);
+          return (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.2, delay: i * 0.02 }}
+              title={source.name}
+              style={{
+                width: '28px',
+                height: '28px',
+                borderRadius: '10px',
+                background: color.bg,
+                border: `1px ${color.border}`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '10px',
+                fontWeight: 600,
+                color: color.text,
+                boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.03)',
+                flexShrink: 0,
+                cursor: 'default'
+              }}
+            >
+              {source.name.charAt(0)}
+            </motion.div>
+          );
+        })}
         {hasOverflow && (
           <div
             style={{
