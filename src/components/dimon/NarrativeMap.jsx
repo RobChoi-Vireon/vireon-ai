@@ -760,7 +760,7 @@ export default function NarrativeMap({ synthesis, density, narrativeMap }) {
           : <EmptyState label="consensus" />;
       case 'divergences':
         return divergences.length > 0
-          ? <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
+          ? <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
               {divergences.slice(0, 4).map((item, i) => (
                 <DivergenceCard key={item.id || i} item={item} index={i} />
               ))}
