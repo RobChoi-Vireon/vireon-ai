@@ -793,9 +793,9 @@ export default function NarrativeMap({ synthesis, density, narrativeMap }) {
   return (
     <motion.section
       aria-labelledby="narrative-map-heading"
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: HORIZON_EASE }}
+      initial={{ opacity: 0, y: 8 }}
+       animate={{ opacity: 1, y: 0 }}
+       transition={{ duration: 0.48, ease: HORIZON_EASE }}
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-6 px-1">
@@ -921,10 +921,10 @@ export default function NarrativeMap({ synthesis, density, narrativeMap }) {
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
-              initial={{ opacity: 0, y: 10, filter: 'blur(2px)' }}
-              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, y: -6, filter: 'blur(1px)' }}
-              transition={SMOOTH}
+              initial={{ opacity: 0, y: 8, filter: 'blur(2px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, y: -4, filter: 'blur(1px)' }}
+                transition={SMOOTH}
             >
               {renderContent()}
             </motion.div>
