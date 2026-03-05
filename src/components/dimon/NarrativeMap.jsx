@@ -649,10 +649,19 @@ export default function NarrativeMap({ synthesis, density, narrativeMap }) {
       </div>
 
       {/* Narrative State Indicator */}
-      <NarrativeStateCard narrativeState="debated_regime" narrativeStateExplainer={null} />
+      <NarrativeStateCard
+        narrativeState="debated_regime"
+        narrativeStateExplainer={null}
+        liveData={narrativeMap?.narrative_state || null}
+      />
 
       {/* Narrative Pulse Summary */}
-      <NarrativePulseCard summary={null} isEmpty={false} positioningState="neutral" />
+      <NarrativePulseCard
+        summary={null}
+        isEmpty={false}
+        positioningState="neutral"
+        liveData={narrativeMap?.narrative_pulse || null}
+      />
 
       {/* Outer liquid-glass container — macOS Tahoe depth model */}
       <div className="relative rounded-[28px] overflow-hidden" style={{
