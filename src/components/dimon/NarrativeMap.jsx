@@ -222,77 +222,103 @@ const getShortLabel = (item) => {
 
 const ConsensusRing = ({ item, index, isSelected, onSelect }) => {
   const [hovered, setHovered] = useState(false);
+  const [pressed, setPressed] = useState(false);
   const pct = item.score ?? (typeof item.confidence === 'number' && item.confidence > 0 ? Math.round(item.confidence * 100) : 65);
-
-  const color = getRingColor(pct);
-  const badge = getRingBadge(pct);
-  const SIZE = 130;
+  const cfg = getRingConfig(pct);
+  const SIZE = 132;
   const STROKE = 10;
   const RADIUS = (SIZE - STROKE) / 2;
   const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-  const shortLabel = getShortLabel(item);
+  const shortLabel = getShortLabel(item).slice(0, 16);
+  const gradId = `ring-grad-${index}`;
+
+  const bloomOpacity = hovered ? 0.45 : 0.35;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.07 * index, duration: 0.36, ease: HORIZON_EASE }}
       onClick={() => onSelect(index)}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className="flex flex-col items-center cursor-pointer select-none"
-      style={{ gap: '12px' }}
+      onMouseLeave={() => { setHovered(false); setPressed(false); }}
+      onMouseDown={() => setPressed(true)}
+      onMouseUp={() => setPressed(false)}
+      className="flex flex-col items-center select-none"
+      style={{ cursor: 'pointer', gap: '0px' }}
     >
-      {/* Ring SVG */}
+      {/* Ring + bloom wrapper */}
       <motion.div
-        animate={{ scale: hovered ? 1.04 : 1 }}
-        transition={{ duration: 0.18, ease: 'easeOut' }}
+        animate={{ scale: pressed ? 0.985 : hovered ? 1.04 : 1 }}
+        transition={{ duration: pressed ? 0.08 : 0.18, ease: 'easeOut' }}
         style={{
           position: 'relative', width: SIZE, height: SIZE,
-          filter: hovered ? `drop-shadow(0 0 18px ${color}59)` : `drop-shadow(0 0 8px ${color}26)`,
+          // Outer bloom glow
+          filter: `drop-shadow(0 0 22px ${cfg.color}${Math.round(bloomOpacity * 255).toString(16).padStart(2,'0')})`,
           transition: 'filter 0.18s ease',
         }}
       >
-        <svg width={SIZE} height={SIZE} style={{ transform: 'rotate(-90deg)' }}>
+        <svg width={SIZE} height={SIZE} style={{ transform: 'rotate(-90deg)', overflow: 'visible' }}>
+          <defs>
+            <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor={cfg.color} />
+              <stop offset="100%" stopColor={cfg.gradEnd} />
+            </linearGradient>
+          </defs>
           {/* Track */}
           <circle cx={SIZE / 2} cy={SIZE / 2} r={RADIUS} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth={STROKE} />
-          {/* Animated fill */}
+          {/* Animated gradient fill */}
           <motion.circle
             cx={SIZE / 2} cy={SIZE / 2} r={RADIUS}
             fill="none"
-            stroke={color}
+            stroke={`url(#${gradId})`}
             strokeWidth={STROKE}
             strokeLinecap="round"
             strokeDasharray={CIRCUMFERENCE}
             initial={{ strokeDashoffset: CIRCUMFERENCE }}
             animate={{ strokeDashoffset: CIRCUMFERENCE - (pct / 100) * CIRCUMFERENCE }}
-            transition={{ duration: 0.8, delay: 0.1 + 0.07 * index, ease: 'easeOut' }}
+            transition={{ duration: 0.8, delay: 0.07 * index, ease: 'easeOut' }}
           />
         </svg>
+
         {/* Center text */}
         <div style={{
           position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'center', gap: '2px'
+          alignItems: 'center', justifyContent: 'center',
         }}>
-          <span style={{ fontSize: '30px', fontWeight: 600, color: 'rgba(255,255,255,0.95)', lineHeight: 1 }}>
+          <span style={{
+            fontSize: '34px', fontWeight: 650, letterSpacing: '-0.02em',
+            color: 'rgba(255,255,255,0.92)', lineHeight: 1,
+          }}>
             {pct}%
           </span>
-          <span style={{ fontSize: '13px', fontWeight: 500, letterSpacing: '0.05em', opacity: 0.75, color: 'rgba(255,255,255,0.75)', textAlign: 'center', maxWidth: '90px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span style={{
+            fontSize: '12px', fontWeight: 500, letterSpacing: '0.02em',
+            opacity: 0.62, color: 'rgba(255,255,255,0.85)',
+            textAlign: 'center', maxWidth: '88px',
+            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+            marginTop: '5px',
+          }}>
             {shortLabel}
           </span>
         </div>
       </motion.div>
 
-      {/* Strength badge */}
-      <span style={{
-        fontSize: '11px', fontWeight: 700, letterSpacing: '0.04em',
-        padding: '3px 10px', borderRadius: '99px',
-        background: `${badge.color}18`,
-        border: `1px solid ${badge.color}40`,
-        color: badge.color,
-      }}>
-        {badge.label}
-      </span>
+      {/* Badge — 16px below ring */}
+      <div style={{ marginTop: '16px' }}>
+        <span style={{
+          display: 'inline-block',
+          fontSize: '12px', fontWeight: 600, letterSpacing: '0.02em',
+          padding: '8px 14px', borderRadius: '999px',
+          background: 'rgba(20,24,32,0.55)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          backdropFilter: 'blur(18px)',
+          WebkitBackdropFilter: 'blur(18px)',
+          color: cfg.badgeColor + 'CC',
+        }}>
+          {cfg.label}
+        </span>
+      </div>
     </motion.div>
   );
 };
