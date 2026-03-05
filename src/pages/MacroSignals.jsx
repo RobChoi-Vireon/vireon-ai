@@ -325,6 +325,45 @@ const MOCK_DATA = {
       influence: 5,
       reliability: 5,
       historical_bias: "Global macro focus, emerging markets expertise"
+    },
+    {
+      source: "economist",
+      name: "The Economist",
+      specialty: "Analysis",
+      topline: "Structural headwinds outpacing cyclical recovery",
+      policy: "Central banks face credibility test as inflation proves sticky",
+      market_macro: "Long-run productivity growth softening across G7",
+      tones: ["cautionary", "neutral"],
+      risk_flags: ["growth", "policy"],
+      influence: 4,
+      reliability: 5,
+      historical_bias: "Long-term structural and policy-oriented lens"
+    },
+    {
+      source: "axios",
+      name: "Axios",
+      specialty: "Domestic / DC",
+      topline: "White House weighing new executive action on AI",
+      policy: "Bipartisan support forming around data privacy legislation",
+      market_macro: "Tech layoffs drawing renewed scrutiny from regulators",
+      tones: ["neutral"],
+      risk_flags: ["regulatory", "policy"],
+      influence: 3,
+      reliability: 4,
+      historical_bias: "Insider Washington focus, rapid-fire news format"
+    },
+    {
+      source: "politico",
+      name: "Politico",
+      specialty: "Politics / Policy",
+      topline: "Hill divisions stalling fiscal package",
+      policy: "Budget reconciliation process increasingly uncertain",
+      market_macro: "Defense and infrastructure spending at risk from political gridlock",
+      tones: ["cautionary"],
+      risk_flags: ["regulatory", "fiscal"],
+      influence: 3,
+      reliability: 4,
+      historical_bias: "Capitol Hill and executive branch political dynamics"
     }
   ],
   trajectory: [
