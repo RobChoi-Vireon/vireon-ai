@@ -254,7 +254,7 @@ export default function SourceGrid({ sources, density }) {
       {/* Section header */}
       <div className="mb-5 px-1">
         <h2 id="market-narrative-heading" className="text-[22px] font-bold" style={{ color: 'rgba(255,255,255,0.96)' }}>
-          Market Narrative Consensus
+          Media Sentiment Radar
         </h2>
         <p className="text-[13px] mt-1" style={{ color: 'rgba(255,255,255,0.42)' }}>
           Analysis synthesized from major global financial publications.
