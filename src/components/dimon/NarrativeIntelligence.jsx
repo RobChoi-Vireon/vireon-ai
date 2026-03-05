@@ -299,7 +299,20 @@ const DriversSection = ({ narrativeDrivers = [], drivers = [] }) => {
 };
 
 // ─── IMPACT INTELLIGENCE — 2×2 GRID ───────────────────────────────────────
-const ImpactIntelligence = ({ implications = [] }) => {
+const ImpactIntelligence = ({ impactIntelligence = [], implications = [] }) => {
+  const iconMap = {
+    diamond: '◈',
+    'arrow-up-right': '↗',
+    'arrow-down-right': '↘',
+    minus: '−'
+  };
+
+  const directionColorMap = {
+    positive: 'rgba(95,209,163,0.14)',
+    negative: 'rgba(255,100,80,0.14)',
+    neutral: 'rgba(170,172,180,0.14)'
+  };
+
   const fallbackMap = {
     0: {
       title: 'Credit Spreads',
@@ -346,22 +359,34 @@ const ImpactIntelligence = ({ implications = [] }) => {
     }
   ];
 
-  const implList = implications.length > 0 ? implications : defaultImplications;
+  // Use impact_intelligence if available, fall back to implications
+  let implList = [];
+  if (impactIntelligence && impactIntelligence.length > 0) {
+    implList = impactIntelligence;
+  } else if (implications && implications.length > 0) {
+    implList = implications;
+  } else {
+    implList = defaultImplications;
+  }
+
+  implList = implList.slice(0, 4);
   
-  // Helper: resolve title with fallback
+  // Helper: resolve title
   const getTitle = (impl, index) => {
     if (impl.title && impl.title.trim()) return impl.title;
+    if (impl.signal && impl.signal.trim()) return impl.signal;
     return fallbackMap[index]?.title || 'Market Signal';
   };
   
-  // Helper: resolve description with fallback
+  // Helper: resolve description
   const getDescription = (impl, index) => {
     if (impl.description && impl.description.trim()) return impl.description;
     return fallbackMap[index]?.description || 'Monitor this signal for trading implications.';
   };
   
-  // Helper: get icon for card
-  const getIcon = (index) => {
+  // Helper: get icon
+  const getIcon = (impl, index) => {
+    if (impl.icon && iconMap[impl.icon]) return iconMap[impl.icon];
     return fallbackMap[index]?.icon || '◈';
   };
 
