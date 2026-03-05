@@ -110,7 +110,9 @@ const MiniSparkline = ({ data = [60, 58, 62, 61, 65, 67, 66], color, delay = 0 }
   );
 };
 
-// ─── ConfidenceBadge + MomentumTag (unchanged) ───────────────────────────────
+const FLAT_SPARK = [50, 50, 50, 50, 50, 50, 50];
+
+// ─── ConfidenceBadge + MomentumTag ───────────────────────────────────────────
 
 const ConfidenceBadge = ({ level }) => {
   const map = {
