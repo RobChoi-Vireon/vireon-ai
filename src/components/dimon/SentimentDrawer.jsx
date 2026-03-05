@@ -270,12 +270,28 @@ const InsightRevealPanel = ({ segments, delay, summary }) => {
       className="relative rounded-[22px] overflow-hidden mx-auto"
       style={{
         maxWidth: '84%',
-        paddingTop: '24px',
-        paddingBottom: '24px',
-        paddingLeft: '28px',
-        paddingRight: '28px',
         background: 'rgba(28,38,55,0.22)',
-        backgroundImage: `
+        backdropFilter: 'blur(26px)',
+        WebkitBackdropFilter: 'blur(26px)',
+        border: '1px solid rgba(255,255,255,0.10)',
+        boxShadow: `
+          0 0 0 1px rgba(255,255,255,0.03) inset,
+          0 18px 44px rgba(0,0,0,0.35),
+          0 0 0 1px rgba(255,255,255,0.05)
+        `,
+        marginTop: '12px',
+        marginBottom: '32px'
+      }}
+      initial={{ opacity: 0, y: 4 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: delay + 0.09, duration: 0.22, ease: 'easeOut' }}
+    >
+      {/* Reflective Glass Gradient Layer */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        borderRadius: '22px',
+        background: `
           radial-gradient(
             120% 90% at 15% 10%,
             rgba(255,255,255,0.08),
@@ -288,21 +304,9 @@ const InsightRevealPanel = ({ segments, delay, summary }) => {
             rgba(255,255,255,0.01)
           )
         `,
-        backdropFilter: 'blur(26px)',
-        WebkitBackdropFilter: 'blur(26px)',
-        border: '1px solid rgba(255,255,255,0.10)',
-        boxShadow: `
-          0 0 0 1px rgba(255,255,255,0.03) inset,
-          0 18px 44px rgba(0,0,0,0.35),
-          0 0 0 1px rgba(255,255,255,0.05)
-        `,
-        marginTop: '12px',
-        marginBottom: '32px'
-      }}
-      initial={{ opacity: 0, y: 4, scale: 0.99 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ delay: delay + 0.09, duration: 0.22, ease: 'easeOut' }}
-    >
+        pointerEvents: 'none'
+      }} />
+
       <p 
         className="text-center relative z-10"
         style={{ 
@@ -313,7 +317,11 @@ const InsightRevealPanel = ({ segments, delay, summary }) => {
           maxWidth: '760px',
           margin: '0 auto',
           opacity: 0.95,
-          fontWeight: 500
+          fontWeight: 500,
+          paddingTop: '24px',
+          paddingBottom: '24px',
+          paddingLeft: '28px',
+          paddingRight: '28px'
         }}
       >
         {summary || 'Markets are showing slight upward pressure as stricter policies and early signs of credit strain push investors to be more cautious.'}
