@@ -278,6 +278,7 @@ const ConsensusRing = ({ item, index, isSelected, onSelect }) => {
             initial={{ strokeDashoffset: CIRCUMFERENCE }}
             animate={{ strokeDashoffset: CIRCUMFERENCE - (pct / 100) * CIRCUMFERENCE }}
             transition={{ duration: 0.8, delay: 0.07 * index, ease: 'easeOut' }}
+            opacity={cfg.opacity ?? 0.90}
           />
         </svg>
 
