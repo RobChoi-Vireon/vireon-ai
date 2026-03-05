@@ -682,21 +682,21 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
     <motion.div
       onClick={onToggle}
       style={{
-        height: '56px',
+        minHeight: '72px',
         background: 'rgba(30,40,60,0.28)',
         backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01))',
         backdropFilter: 'blur(22px)',
         WebkitBackdropFilter: 'blur(22px)',
         border: `1px solid rgba(255,255,255,0.08)`,
         borderRadius: '18px',
-        padding: '12px 14px',
+        padding: '16px 18px',
         boxShadow: '0 0 0 1px rgba(255,255,255,0.02) inset, 0 12px 40px rgba(0,0,0,0.35)',
         transition: `all 180ms ease`,
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: '12px'
+        gap: '18px'
       }}
       whileHover={{
         background: 'rgba(30,40,60,0.36)',
@@ -706,17 +706,17 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
       }}
     >
       {/* Left: Label + Helper */}
-      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '3px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '5px', minWidth: '160px' }}>
         <div style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.70)', textTransform: 'uppercase' }}>
           Intelligence Sources ({sourceList.length})
         </div>
-        <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.60)', lineHeight: 1 }}>
+        <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.60)', lineHeight: 1.2 }}>
           Tap to view coverage
         </div>
       </div>
 
       {/* Middle: Outlet Pills + Overflow */}
-      <div style={{ display: isExpanded ? 'none' : 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+      <div style={{ display: isExpanded ? 'none' : 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
         {displaySources.map((source, i) => {
           const color = getSourceColor(source.name);
           return (
@@ -727,8 +727,8 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
               transition={{ duration: 0.2, delay: i * 0.02 }}
               title={source.name}
               style={{
-                width: '40px',
-                height: '40px',
+                width: '44px',
+                height: '44px',
                 borderRadius: '12px',
                 background: isExpanded ? 'rgba(255,255,255,0.10)' : color.bg,
                 display: 'flex',
@@ -754,8 +754,8 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.2, delay: visibleCount * 0.02 }}
             style={{
-              width: '40px',
-              height: '40px',
+              width: '44px',
+              height: '44px',
               borderRadius: '12px',
               background: isExpanded ? 'rgba(255,255,255,0.10)' : '#8B5CF6',
               display: 'flex',
@@ -778,9 +778,9 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
       </div>
 
       {/* Right: Sentiment Dots + Chevron */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
         {/* Sentiment dots */}
-        <div style={{ display: 'flex', gap: '5px' }}>
+        <div style={{ display: 'flex', gap: '6px' }}>
           {sentimentDots.map((dot, i) => (
             <motion.div
               key={i}
@@ -794,8 +794,8 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
                 ease: 'easeInOut'
               }}
               style={{
-                width: '6px',
-                height: '6px',
+                width: '7px',
+                height: '7px',
                 borderRadius: '50%',
                 background: '#FFFFFF',
                 flexShrink: 0,
@@ -807,7 +807,7 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
 
         {/* Chevron */}
         <ChevronDown
-          className="w-4 h-4"
+          className="w-5 h-5"
           style={{
             color: 'rgba(255,255,255,0.40)',
             transition: `transform ${TOKENS.motion} ease`,
