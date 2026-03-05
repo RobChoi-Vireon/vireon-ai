@@ -429,10 +429,6 @@ const USGlobalCard = ({ item, index }) => {
   );
 };
 
-// ─── Flat sparkline placeholder (declared before all cards that use it) ─────────
-
-const FLAT_SPARK = [50, 50, 50, 50, 50, 50, 50];
-
 // ─── NarrativeShiftCard (premium OS Horizon for Changing tab) ──────────────────
 
 const NarrativeShiftCard = ({ item, index }) => {
