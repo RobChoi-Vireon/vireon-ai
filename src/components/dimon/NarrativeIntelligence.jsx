@@ -261,9 +261,9 @@ const DriversSection = ({ narrativeDrivers = [], drivers = [] }) => {
         {driverList.map((driver, i) => (
           <motion.div
             key={i}
-            initial={{ opacity: 0, y: 6 }}
+            initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.3 + i * 0.04 }}
+            transition={{ duration: 0.28, delay: 0.28 + i * 0.04, ease: EASE }}
             className="group"
             style={{
               fontFamily: TOKENS.font.family,
@@ -290,7 +290,7 @@ const DriversSection = ({ narrativeDrivers = [], drivers = [] }) => {
               border: `1px solid rgba(255,255,255,0.14)`,
               y: -1,
               boxShadow: '0 0 0 1px rgba(255,255,255,0.03) inset, 0 14px 34px rgba(0,0,0,0.28)',
-              transition: { duration: 0.16 }
+              transition: SPRING
             }}
             title={driver}
           >
@@ -415,9 +415,9 @@ const ImpactIntelligence = ({ impactIntelligence = [], implications = [] }) => {
           return (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 8 }}
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.35 + i * 0.06 }}
+              transition={{ duration: 0.38, delay: 0.33 + i * 0.06, ease: EASE }}
               className="group"
               style={{
                 background: 'rgba(30,40,60,0.20)',
@@ -437,7 +437,7 @@ const ImpactIntelligence = ({ impactIntelligence = [], implications = [] }) => {
                 backgroundImage: 'radial-gradient(120% 90% at 15% 10%, rgba(255,255,255,0.10), rgba(255,255,255,0.02) 45%, rgba(255,255,255,0.00) 70%), linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01))',
                 border: `1px solid rgba(255,255,255,0.14)`,
                 boxShadow: '0 0 0 1px rgba(255,255,255,0.04) inset, 0 22px 56px rgba(0,0,0,0.34)',
-                transition: { duration: 0.16 }
+                transition: SPRING
               }}
             >
               <div style={{ fontFamily: TOKENS.font.family, fontSize: '12px', fontWeight: 600, letterSpacing: '0.10em', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', marginBottom: '8px' }}>
