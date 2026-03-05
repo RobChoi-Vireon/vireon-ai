@@ -332,6 +332,7 @@ const ConsensusDetailDrawer = ({ item }) => {
   const confidence_level = (typeof rawConf === 'string' && ['HIGH','MODERATE','LOW'].includes(rawConf))
     ? rawConf.charAt(0) + rawConf.slice(1).toLowerCase()
     : (item.confidence_level || (pct >= 70 ? 'High' : pct >= 45 ? 'Medium' : 'Low'));
+  const cfg = getRingConfig(pct);
 
   return (
     <motion.div
@@ -341,24 +342,47 @@ const ConsensusDetailDrawer = ({ item }) => {
       transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
       className="overflow-hidden"
     >
-      <div className="mt-5 p-4 rounded-[18px] space-y-3" style={{
-        background: 'rgba(255,255,255,0.04)',
+      <div style={{
+        marginTop: '26px',
+        padding: '22px 24px',
+        borderRadius: '22px',
+        background: 'rgba(14,18,26,0.62)',
         border: '1px solid rgba(255,255,255,0.08)',
+        backdropFilter: 'blur(22px)',
+        WebkitBackdropFilter: 'blur(22px)',
       }}>
-        <p className="text-[13px] font-semibold leading-relaxed" style={{ color: 'rgba(255,255,255,0.90)' }}>
-          "{item.statement || item.claim || '—'}"
+        {/* Quote */}
+        <p style={{ fontSize: '16px', lineHeight: 1.6, color: 'rgba(255,255,255,0.86)', fontWeight: 500 }}>
+          <span style={{ opacity: 0.45, fontWeight: 400 }}>"</span>
+          {item.statement || item.claim || '—'}
+          <span style={{ opacity: 0.45, fontWeight: 400 }}>"</span>
         </p>
-        <div className="flex items-center gap-2">
-          <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.40)' }}>Street Consensus:</span>
-          <ConfidenceBadge level={confidence_level} />
+
+        {/* Street Consensus row */}
+        <div className="flex items-center gap-3" style={{ marginTop: '12px' }}>
+          <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.55)', fontWeight: 500 }}>Street Consensus</span>
+          <span style={{
+            display: 'inline-block',
+            fontSize: '12px', fontWeight: 600,
+            padding: '5px 12px', borderRadius: '999px',
+            background: 'rgba(20,24,32,0.55)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            backdropFilter: 'blur(18px)',
+            WebkitBackdropFilter: 'blur(18px)',
+            color: cfg.badgeColor + 'CC',
+          }}>
+            {cfg.label}
+          </span>
         </div>
+
+        {/* Key Drivers */}
         {(item.drivers || []).length > 0 && (
-          <div className="pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-            <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.28)', marginBottom: '6px' }}>Key Drivers</p>
-            <ul className="space-y-1">
+          <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+            <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.28)', marginBottom: '8px' }}>Key Drivers</p>
+            <ul style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {item.drivers.slice(0, 2).map((d, i) => (
-                <li key={i} className="flex items-start gap-2 text-[12px]" style={{ color: 'rgba(255,255,255,0.60)' }}>
-                  <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(155,180,230,0.55)' }} />
+                <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '13px', color: 'rgba(255,255,255,0.62)', lineHeight: 1.5 }}>
+                  <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: cfg.color + '88', flexShrink: 0, marginTop: '7px' }} />
                   {d}
                 </li>
               ))}
