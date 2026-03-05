@@ -34,9 +34,33 @@ const NARRATIVE_STATES = {
   },
 };
 
-export default function NarrativeStateCard({ narrativeState = 'debated_regime', narrativeStateExplainer = null }) {
-  const config = NARRATIVE_STATES[narrativeState] || NARRATIVE_STATES.debated_regime;
-  const displayExplainer = narrativeStateExplainer || config.explainer;
+// Map color string from backend to a pulse color
+const COLOR_MAP = {
+  green: { pulseColor: 'rgba(88,227,164,0.85)', accent: 'rgba(88,227,164,0.72)', accentGlow: 'rgba(88,227,164,0.18)' },
+  yellow: { pulseColor: 'rgba(255,190,80,0.85)', accent: 'rgba(255,190,80,0.72)', accentGlow: 'rgba(255,190,80,0.18)' },
+  orange: { pulseColor: 'rgba(255,140,50,0.85)', accent: 'rgba(255,140,50,0.72)', accentGlow: 'rgba(255,140,50,0.18)' },
+  red: { pulseColor: 'rgba(255,106,122,0.85)', accent: 'rgba(255,106,122,0.72)', accentGlow: 'rgba(255,106,122,0.18)' },
+};
+
+function toTitleCase(str) {
+  return (str || '').replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+}
+
+export default function NarrativeStateCard({ narrativeState = 'debated_regime', narrativeStateExplainer = null, liveData = null }) {
+  // If liveData is provided (from narrative_map.narrative_state), use it directly
+  let config, label, displayExplainer, asOf;
+  if (liveData) {
+    const colorCfg = COLOR_MAP[liveData.color] || COLOR_MAP.yellow;
+    config = { ...colorCfg };
+    label = toTitleCase(liveData.regime);
+    displayExplainer = liveData.description || '';
+    asOf = liveData.as_of_display || '—';
+  } else {
+    config = NARRATIVE_STATES[narrativeState] || NARRATIVE_STATES.debated_regime;
+    label = config.label;
+    displayExplainer = narrativeStateExplainer || config.explainer;
+    asOf = '—';
+  }
 
   return (
     <motion.div
