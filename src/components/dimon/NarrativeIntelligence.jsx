@@ -615,16 +615,17 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
                 width: '40px',
                 height: '40px',
                 borderRadius: '12px',
-                background: color.bg,
+                background: isExpanded ? 'rgba(255,255,255,0.10)' : color.bg,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: '12px',
                 fontWeight: 700,
-                color: color.text,
+                color: isExpanded ? 'rgba(255,255,255,0.35)' : color.text,
                 flexShrink: 0,
                 cursor: 'default',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.24)'
+                boxShadow: isExpanded ? 'none' : '0 4px 12px rgba(0,0,0,0.24)',
+                transition: 'all 0.2s ease'
               }}
             >
               {getSourceAbbrev(source.name)}
@@ -640,16 +641,17 @@ const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
               width: '40px',
               height: '40px',
               borderRadius: '12px',
-              background: '#8B5CF6',
+              background: isExpanded ? 'rgba(255,255,255,0.10)' : '#8B5CF6',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               fontSize: '12px',
               fontWeight: 700,
-              color: '#FFFFFF',
+              color: isExpanded ? 'rgba(255,255,255,0.35)' : '#FFFFFF',
               flexShrink: 0,
-              boxShadow: '0 4px 12px rgba(0,0,0,0.24)',
-              cursor: 'default'
+              boxShadow: isExpanded ? 'none' : '0 4px 12px rgba(0,0,0,0.24)',
+              cursor: 'default',
+              transition: 'all 0.2s ease'
             }}
             title="Politico"
           >
