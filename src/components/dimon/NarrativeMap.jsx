@@ -735,7 +735,7 @@ export default function NarrativeMap({ synthesis, density, narrativeMap }) {
     switch (activeTab) {
       case 'consensus':
         return consensus.length > 0
-          ? <div className="space-y-4">{consensus.slice(0, 5).map((item, i) => <ConsensusCard key={item.id || i} item={item} index={i} />)}</div>
+          ? <ConsensusRingGrid consensus={consensus} />
           : <EmptyState label="consensus" />;
       case 'divergences':
         return divergences.length > 0
