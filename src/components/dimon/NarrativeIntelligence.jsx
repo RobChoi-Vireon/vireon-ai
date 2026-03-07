@@ -730,9 +730,9 @@ const getSourceAbbrev = (sourceName) => {
 
 const SourcesSummaryBar = ({ sources, isExpanded, onToggle }) => {
   const defaultSources = [
-    { name: 'Washington Post', specialty: 'Policy', topline: 'Tech oversight increasing', policy: 'Congressional committees signaling more enforcement ahead' },
-    { name: 'New York Times', specialty: 'Domestic', topline: 'Clean energy gaining', market_macro: 'Consumer spending showing mixed results' },
-    { name: 'Wall Street Journal', specialty: 'Markets', topline: 'M&A activity declining', policy: 'Company executives expect interest rates to stay high' },
+    { name: 'The Washington Post', specialty: 'Policy', topline: 'Tech oversight increasing', policy: 'Congressional committees signaling more enforcement ahead' },
+    { name: 'The New York Times', specialty: 'Domestic', topline: 'Clean energy gaining', market_macro: 'Consumer spending showing mixed results' },
+    { name: 'The Wall Street Journal', specialty: 'Markets', topline: 'M&A activity declining', policy: 'Company executives expect interest rates to stay high' },
     { name: 'Financial Times', specialty: 'Global', topline: 'China slowdown', market_macro: 'Export patterns changing' },
     { name: 'The Economist', specialty: 'Analysis', topline: 'Structural headwinds', policy: 'Central banks face credibility test' },
     { name: 'Axios', specialty: 'DC', topline: 'AI executive action', policy: 'Bipartisan support forming around data privacy' },
@@ -905,9 +905,9 @@ const SourcesSection = ({ intelligenceSources = [], sources = [] }) => {
   const [isSourcesExpanded, setIsSourcesExpanded] = useState(false);
 
   const defaultSources = [
-    { name: 'Washington Post', specialty: 'Policy', topline: 'Tech oversight increasing', policy: 'Congressional committees signaling more enforcement ahead' },
-    { name: 'New York Times', specialty: 'Domestic', topline: 'Clean energy gaining', market_macro: 'Consumer spending showing mixed results' },
-    { name: 'Wall Street Journal', specialty: 'Markets', topline: 'M&A activity declining', policy: 'Company executives expect interest rates to stay high' },
+    { name: 'The Washington Post', specialty: 'Policy', topline: 'Tech oversight increasing', policy: 'Congressional committees signaling more enforcement ahead' },
+    { name: 'The New York Times', specialty: 'Domestic', topline: 'Clean energy gaining', market_macro: 'Consumer spending showing mixed results' },
+    { name: 'The Wall Street Journal', specialty: 'Markets', topline: 'M&A activity declining', policy: 'Company executives expect interest rates to stay high' },
     { name: 'Financial Times', specialty: 'Global', topline: 'China slowdown', market_macro: 'Export patterns changing' },
     { name: 'The Economist', specialty: 'Analysis', topline: 'Structural headwinds', policy: 'Central banks face credibility test' },
     { name: 'Axios', specialty: 'DC', topline: 'AI executive action', policy: 'Bipartisan support forming around data privacy' },
