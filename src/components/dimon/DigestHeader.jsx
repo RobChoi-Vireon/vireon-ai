@@ -984,39 +984,12 @@ export default function DigestHeader({
                       role="img"
                     >
                       <defs>
-                        {/* Core Stroke Gradient */}
-                        <linearGradient id="haloGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" stopColor="#62CFFF" stopOpacity="0.95">
-                            <animate
-                              attributeName="stop-color"
-                              values="#62CFFF;#77E9CE;#62CFFF"
-                              dur="8s"
-                              repeatCount="indefinite"
-                              calcMode="spline"
-                              keySplines="0.42 0 0.58 1; 0.42 0 0.58 1"
-                            />
-                          </stop>
-                          <stop offset="50%" stopColor="#C9A2FF" stopOpacity="0.95">
-                            <animate
-                              attributeName="stop-color"
-                              values="#C9A2FF;#62CFFF;#C9A2FF"
-                              dur="8s"
-                              repeatCount="indefinite"
-                              calcMode="spline"
-                              keySplines="0.42 0 0.58 1; 0.42 0 0.58 1"
-                            />
-                          </stop>
-                          <stop offset="100%" stopColor="#77E9CE" stopOpacity="0.95">
-                            <animate
-                              attributeName="stop-color"
-                              values="#77E9CE;#C9A2FF;#77E9CE"
-                              dur="8s"
-                              repeatCount="indefinite"
-                              calcMode="spline"
-                              keySplines="0.42 0 0.58 1; 0.42 0 0.58 1"
-                            />
-                          </stop>
-                        </linearGradient>
+                       {/* Core Stroke Gradient — static, no SVG animate */}
+                       <linearGradient id="haloGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                         <stop offset="0%" stopColor="#62CFFF" stopOpacity="0.95" />
+                         <stop offset="50%" stopColor="#C9A2FF" stopOpacity="0.95" />
+                         <stop offset="100%" stopColor="#77E9CE" stopOpacity="0.95" />
+                       </linearGradient>
 
                         {/* Enhanced Atmosphere Gradient with Top Fade */}
                         <linearGradient id="atmosphereFade" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -1352,12 +1325,6 @@ export default function DigestHeader({
                 `,
                 padding: '14px 16px',
                 transform: 'perspective(800px) rotateY(0.8deg)'
-              }}
-              animate={{
-                opacity: [1, 0.97, 1]
-              }}
-              transition={{
-                opacity: { duration: 4.4, repeat: Infinity, ease: "easeInOut" }
               }}
               whileHover={shouldReduceMotion ? {} : {
                 scale: 1.01,
