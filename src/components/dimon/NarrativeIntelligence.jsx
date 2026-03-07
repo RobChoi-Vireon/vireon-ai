@@ -696,16 +696,16 @@ const SourceItem = ({ source, index, onExpand, isExpanded }) => {
 
 const getSourceColor = (sourceName) => {
   const colorMap = {
-    'Washington Post': { bg: '#1a1a2e', text: '#FFFFFF' },
-    'The Washington Post': { bg: '#1a1a2e', text: '#FFFFFF' },
-    'New York Times': { bg: '#1a1a1a', text: '#FFFFFF' },
-    'The New York Times': { bg: '#1a1a1a', text: '#FFFFFF' },
+    'Washington Post': { bg: '#1B4FBF', text: '#FFFFFF' },
+    'The Washington Post': { bg: '#1B4FBF', text: '#FFFFFF' },
+    'New York Times': { bg: '#2D6A27', text: '#FFFFFF' },
+    'The New York Times': { bg: '#2D6A27', text: '#FFFFFF' },
     'Wall Street Journal': { bg: '#0057A8', text: '#FFFFFF' },
     'The Wall Street Journal': { bg: '#0057A8', text: '#FFFFFF' },
     'Financial Times': { bg: '#D946A6', text: '#FFFFFF' },
     'The Financial Times': { bg: '#D946A6', text: '#FFFFFF' },
     'The Economist': { bg: '#E3001B', text: '#FFFFFF' },
-    'Axios': { bg: '#6B7280', text: '#FFFFFF' },
+    'Axios': { bg: '#E05C2A', text: '#FFFFFF' },
     'Politico': { bg: '#8B5CF6', text: '#FFFFFF' }
   };
   return colorMap[sourceName] || { bg: 'rgba(255,255,255,0.08)', text: '#FFFFFF' };
