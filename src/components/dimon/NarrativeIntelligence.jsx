@@ -696,11 +696,15 @@ const SourceItem = ({ source, index, onExpand, isExpanded }) => {
 
 const getSourceColor = (sourceName) => {
   const colorMap = {
-    'Washington Post': { bg: '#3B5FD9', text: '#FFFFFF' },
-    'New York Times': { bg: '#1E3A5F', text: '#FFFFFF' },
-    'Wall Street Journal': { bg: '#FF6B35', text: '#FFFFFF' },
+    'Washington Post': { bg: '#1a1a2e', text: '#FFFFFF' },
+    'The Washington Post': { bg: '#1a1a2e', text: '#FFFFFF' },
+    'New York Times': { bg: '#1a1a1a', text: '#FFFFFF' },
+    'The New York Times': { bg: '#1a1a1a', text: '#FFFFFF' },
+    'Wall Street Journal': { bg: '#0057A8', text: '#FFFFFF' },
+    'The Wall Street Journal': { bg: '#0057A8', text: '#FFFFFF' },
     'Financial Times': { bg: '#D946A6', text: '#FFFFFF' },
-    'The Economist': { bg: '#F59E0B', text: '#FFFFFF' },
+    'The Financial Times': { bg: '#D946A6', text: '#FFFFFF' },
+    'The Economist': { bg: '#E3001B', text: '#FFFFFF' },
     'Axios': { bg: '#6B7280', text: '#FFFFFF' },
     'Politico': { bg: '#8B5CF6', text: '#FFFFFF' }
   };
@@ -710,9 +714,13 @@ const getSourceColor = (sourceName) => {
 const getSourceAbbrev = (sourceName) => {
   const abbrevMap = {
     'Washington Post': 'WP',
+    'The Washington Post': 'WP',
     'New York Times': 'NYT',
+    'The New York Times': 'NYT',
     'Wall Street Journal': 'WSJ',
+    'The Wall Street Journal': 'WSJ',
     'Financial Times': 'FT',
+    'The Financial Times': 'FT',
     'The Economist': 'TE',
     'Axios': 'AX',
     'Politico': 'PO'
