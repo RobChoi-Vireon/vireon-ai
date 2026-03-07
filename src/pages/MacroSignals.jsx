@@ -663,17 +663,13 @@ export default function MacroSignalsPage() {
   const sectionVariants = {
     hidden: { 
       opacity: 0, 
-      y: 40,
-      scale: 0.95,
-      filter: 'blur(8px)'
+      y: 24,
     },
     visible: { 
       opacity: 1, 
       y: 0,
-      scale: 1,
-      filter: 'blur(0px)',
       transition: {
-        duration: 0.9,
+        duration: 0.7,
         ease: [0.16, 1, 0.3, 1],
         type: "spring",
         stiffness: 80,
@@ -689,28 +685,20 @@ export default function MacroSignalsPage() {
       background: '#0B0E13',
       color: '#F8FAFC'
     }}>
-      {/* Cinematic Transition Overlay */}
+      {/* Cinematic Transition Overlay — opacity only, no animated backdropFilter */}
       <motion.div
         className="fixed inset-0 pointer-events-none z-40"
-        initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
         animate={{
           opacity: isTransitioning ? 1 : 0,
-          backdropFilter: isTransitioning ? 'blur(24px)' : 'blur(0px)',
           pointerEvents: isTransitioning ? 'auto' : 'none'
         }}
-        transition={{
-          opacity: { duration: 0.72, ease: [0.16, 1, 0.3, 1] },
-          backdropFilter: { duration: 0.72, ease: [0.16, 1, 0.3, 1] }
-        }}
+        transition={{ opacity: { duration: 0.72, ease: [0.16, 1, 0.3, 1] } }}
         onAnimationComplete={() => {
           if (isTransitioning) {
             setTimeout(() => setIsTransitioning(false), 200);
           }
         }}
-        style={{
-          background: 'rgba(0, 0, 0, 0.15)',
-          WebkitBackdropFilter: 'blur(24px)'
-        }}
+        style={{ background: 'rgba(0, 0, 0, 0.55)' }}
       />
 
       {/* OS Horizon V2 Canvas Atmosphere */}
