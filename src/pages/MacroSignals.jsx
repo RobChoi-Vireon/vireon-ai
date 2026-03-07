@@ -663,13 +663,17 @@ export default function MacroSignalsPage() {
   const sectionVariants = {
     hidden: { 
       opacity: 0, 
-      y: 24,
+      y: 40,
+      scale: 0.95,
+      filter: 'blur(8px)'
     },
     visible: { 
       opacity: 1, 
       y: 0,
+      scale: 1,
+      filter: 'blur(0px)',
       transition: {
-        duration: 0.7,
+        duration: 0.9,
         ease: [0.16, 1, 0.3, 1],
         type: "spring",
         stiffness: 80,
@@ -685,24 +689,39 @@ export default function MacroSignalsPage() {
       background: '#0B0E13',
       color: '#F8FAFC'
     }}>
-      {/* Cinematic Transition Overlay — opacity only, no animated backdropFilter */}
+      {/* Cinematic Transition Overlay */}
       <motion.div
         className="fixed inset-0 pointer-events-none z-40"
+        initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
         animate={{
           opacity: isTransitioning ? 1 : 0,
+          backdropFilter: isTransitioning ? 'blur(24px)' : 'blur(0px)',
           pointerEvents: isTransitioning ? 'auto' : 'none'
         }}
-        transition={{ opacity: { duration: 0.72, ease: [0.16, 1, 0.3, 1] } }}
+        transition={{
+          opacity: { duration: 0.72, ease: [0.16, 1, 0.3, 1] },
+          backdropFilter: { duration: 0.72, ease: [0.16, 1, 0.3, 1] }
+        }}
         onAnimationComplete={() => {
           if (isTransitioning) {
             setTimeout(() => setIsTransitioning(false), 200);
           }
         }}
-        style={{ background: 'rgba(0, 0, 0, 0.55)' }}
+        style={{
+          background: 'rgba(0, 0, 0, 0.15)',
+          WebkitBackdropFilter: 'blur(24px)'
+        }}
       />
 
       {/* OS Horizon V2 Canvas Atmosphere */}
-      <div className="fixed inset-0 pointer-events-none">
+      <div 
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          filter: isAnyDrawerOpen ? 'blur(26px) saturate(1.3) brightness(1.15)' : 'none',
+          transition: 'filter 280ms cubic-bezier(0.19, 1, 0.22, 1)',
+          willChange: 'filter'
+        }}
+      >
         {/* Large-Scale Atmospheric Gradient */}
         <div 
           className="absolute inset-0"
@@ -738,17 +757,14 @@ export default function MacroSignalsPage() {
         />
       </div>
 
-      {/* Drawer dim overlay — cheap opacity instead of page-level blur */}
-      <motion.div
-        className="fixed inset-0 pointer-events-none z-20"
-        animate={{ opacity: isAnyDrawerOpen ? 1 : 0 }}
-        transition={{ duration: 0.28, ease: [0.19, 1, 0.22, 1] }}
-        style={{ background: 'rgba(0,0,0,0.45)' }}
-      />
-
       <main 
         className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pb-6 md:pb-8" 
-        style={{ paddingTop: '16px' }}
+        style={{ 
+          paddingTop: '16px',
+          filter: isAnyDrawerOpen ? 'blur(26px) saturate(1.3) brightness(1.15)' : 'none',
+          transition: 'filter 280ms cubic-bezier(0.19, 1, 0.22, 1)',
+          willChange: 'filter'
+        }}
       >
         <motion.div 
           className="flex items-center justify-between mb-4"

@@ -74,8 +74,8 @@ export default function NarrativeStateCard({ narrativeState = 'debated_regime', 
         className="relative rounded-2xl overflow-hidden p-5"
         style={{
           background: 'linear-gradient(160deg, rgba(255,255,255,0.066) 0%, rgba(255,255,255,0.032) 55%, rgba(255,255,255,0.044) 100%)',
-          backdropFilter: 'blur(24px) saturate(150%)',
-          WebkitBackdropFilter: 'blur(24px) saturate(150%)',
+          backdropFilter: 'blur(52px) saturate(175%) brightness(1.05)',
+          WebkitBackdropFilter: 'blur(52px) saturate(175%) brightness(1.05)',
           border: '1px solid rgba(255,255,255,0.11)',
           boxShadow: [
             'inset 0 1.5px 0 rgba(255,255,255,0.10)',

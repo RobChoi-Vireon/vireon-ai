@@ -826,8 +826,8 @@ export default function NarrativeMap({ synthesis, density, narrativeMap }) {
       <div className="relative rounded-[28px] overflow-hidden" style={{
         // Outer shell: deep frosted panel
         background: 'linear-gradient(160deg, rgba(22,26,40,0.68) 0%, rgba(12,15,24,0.78) 60%, rgba(16,20,34,0.72) 100%)',
-        backdropFilter: 'blur(32px) saturate(160%)',
-        WebkitBackdropFilter: 'blur(32px) saturate(160%)',
+        backdropFilter: 'blur(64px) saturate(180%) brightness(1.04)',
+        WebkitBackdropFilter: 'blur(64px) saturate(180%) brightness(1.04)',
         border: '1px solid rgba(255,255,255,0.10)',
         boxShadow: [
           'inset 0 1.5px 0 rgba(255,255,255,0.10)',           // top specular
