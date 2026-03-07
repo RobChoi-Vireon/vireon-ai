@@ -702,10 +702,10 @@ const getSourceColor = (sourceName) => {
     'The New York Times': { bg: '#2D6A27', text: '#FFFFFF' },
     'Wall Street Journal': { bg: '#B8860B', text: '#FFFFFF' },
     'The Wall Street Journal': { bg: '#B8860B', text: '#FFFFFF' },
-    'Financial Times': { bg: '#D946A6', text: '#FFFFFF' },
-    'The Financial Times': { bg: '#D946A6', text: '#FFFFFF' },
+    'Financial Times': { bg: '#1A7A6E', text: '#FFFFFF' },
+    'The Financial Times': { bg: '#1A7A6E', text: '#FFFFFF' },
     'The Economist': { bg: '#E3001B', text: '#FFFFFF' },
-    'Axios': { bg: '#E05C2A', text: '#FFFFFF' },
+    'Axios': { bg: '#3B5BDB', text: '#FFFFFF' },
     'Politico': { bg: '#8B5CF6', text: '#FFFFFF' }
   };
   return colorMap[sourceName] || { bg: 'rgba(255,255,255,0.08)', text: '#FFFFFF' };
