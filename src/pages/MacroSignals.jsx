@@ -714,14 +714,7 @@ export default function MacroSignalsPage() {
       />
 
       {/* OS Horizon V2 Canvas Atmosphere */}
-      <div 
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          filter: isAnyDrawerOpen ? 'blur(26px) saturate(1.3) brightness(1.15)' : 'none',
-          transition: 'filter 280ms cubic-bezier(0.19, 1, 0.22, 1)',
-          willChange: 'filter'
-        }}
-      >
+      <div className="fixed inset-0 pointer-events-none">
         {/* Large-Scale Atmospheric Gradient */}
         <div 
           className="absolute inset-0"
@@ -757,14 +750,17 @@ export default function MacroSignalsPage() {
         />
       </div>
 
+      {/* Drawer dim overlay — cheap opacity instead of page-level blur */}
+      <motion.div
+        className="fixed inset-0 pointer-events-none z-20"
+        animate={{ opacity: isAnyDrawerOpen ? 1 : 0 }}
+        transition={{ duration: 0.28, ease: [0.19, 1, 0.22, 1] }}
+        style={{ background: 'rgba(0,0,0,0.45)' }}
+      />
+
       <main 
         className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pb-6 md:pb-8" 
-        style={{ 
-          paddingTop: '16px',
-          filter: isAnyDrawerOpen ? 'blur(26px) saturate(1.3) brightness(1.15)' : 'none',
-          transition: 'filter 280ms cubic-bezier(0.19, 1, 0.22, 1)',
-          willChange: 'filter'
-        }}
+        style={{ paddingTop: '16px' }}
       >
         <motion.div 
           className="flex items-center justify-between mb-4"
