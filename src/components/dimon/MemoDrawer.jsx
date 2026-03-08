@@ -424,6 +424,7 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
       translation: simp.translation || '',
       impact_tags: simp.impact_tags || [],
       ripple_impact: det.ripple_impact || '',
+      what_to_watch: det.what_to_watch || null,
       context_points: mappedContextPoints,
       market_impact: det.market_impact || {
         short_term: { text: '', severity: 0, confidence: 0 },
