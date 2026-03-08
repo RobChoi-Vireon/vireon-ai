@@ -691,7 +691,7 @@ export default function ExecutiveTakeaway({ businessMarkets, onOpenMemo, isLoadi
           className="text-sm"
           style={{ color: 'rgba(255, 255, 255, 0.7)' }}
         >
-          High-conviction insights delivered for immediate strategic review.
+          {businessMarkets?.regime_summary || 'High-conviction insights delivered for immediate strategic review.'}
         </p>
       </div>
       
