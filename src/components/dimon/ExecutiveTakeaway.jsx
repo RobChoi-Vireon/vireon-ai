@@ -676,17 +676,43 @@ export default function ExecutiveTakeaway({ businessMarkets, onOpenMemo, isLoadi
     >
       {/* Section header */}
       <div className="mb-6 pl-2">
-        <h2 
-          className="font-semibold mb-2"
-          style={{ 
-            fontSize: '34px',
-            lineHeight: '1.2',
-            color: 'rgba(255, 255, 255, 0.95)',
-            letterSpacing: '-0.02em'
-          }}
-        >
-          U.S. Business & Markets
-        </h2>
+        <div className="flex items-center gap-3 mb-2">
+          <h2 
+            className="font-semibold"
+            style={{ 
+              fontSize: '34px',
+              lineHeight: '1.2',
+              color: 'rgba(255, 255, 255, 0.95)',
+              letterSpacing: '-0.02em'
+            }}
+          >
+            U.S. Business & Markets
+          </h2>
+          {businessMarkets?.regime_label && (
+            <span
+              className="px-2.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wider"
+              style={{
+                background: businessMarkets.regime_label === 'Expansion'
+                  ? 'rgba(34,197,94,0.15)'
+                  : businessMarkets.regime_label === 'Contraction'
+                  ? 'rgba(239,68,68,0.15)'
+                  : 'rgba(234,179,8,0.15)',
+                border: `1px solid ${businessMarkets.regime_label === 'Expansion'
+                  ? 'rgba(34,197,94,0.35)'
+                  : businessMarkets.regime_label === 'Contraction'
+                  ? 'rgba(239,68,68,0.35)'
+                  : 'rgba(234,179,8,0.35)'}`,
+                color: businessMarkets.regime_label === 'Expansion'
+                  ? 'rgb(134,239,172)'
+                  : businessMarkets.regime_label === 'Contraction'
+                  ? 'rgb(252,165,165)'
+                  : 'rgb(253,224,71)'
+              }}
+            >
+              {businessMarkets.regime_label}
+            </span>
+          )}
+        </div>
         <p 
           className="text-sm"
           style={{ color: 'rgba(255, 255, 255, 0.7)' }}
