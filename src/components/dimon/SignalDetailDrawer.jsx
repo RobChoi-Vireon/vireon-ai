@@ -1061,7 +1061,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                         letterSpacing: `${HORIZON.type.meta.tracking}em`,
                       }}
                     >
-                      Sector: {primarySector} • Source: {signal.source?.toUpperCase()}
+                      Sector: {primarySector} • Source: {flagshipDomain}
                     </p>
                     
                     <ContextTags signalAge={ageLabel} durationBias={durationBias} />
@@ -1206,7 +1206,7 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                       </span>
                       <ConfidenceRing value={confOverall} color={HORIZON.color.neutral} size={42} sentiment={sentiment} />
                       <span className="text-xs font-medium" style={{ color: 'rgba(255, 255, 255, 0.58)', marginLeft: '12px' }}>
-                        Backed by <span style={{ fontWeight: 700, color: 'rgba(255, 255, 255, 0.75)' }}>{analysis.correlated.length}</span> verified sources.
+                        Backed by <span style={{ fontWeight: 700, color: 'rgba(255, 255, 255, 0.75)' }}>{sourcesExaminedCount}</span> verified sources.
                       </span>
                     </div>
                   </section>
@@ -1439,29 +1439,27 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                               letterSpacing: '0.01em'
                             }}
                           >
-                            {analysis.correlated.length}
+                            {topWeightedSources.length}
                           </div>
                         </div>
                         <div className="ri-carousel" ref={(el) => {
                           if (el) el.scrollCarouselRef = el;
                         }}>
-                          {analysis.correlated.map((s) => (
+                          {topWeightedSources.map((s, idx) => (
                             s.url ? (
                               <a
-                                key={s.id}
+                                key={idx}
                                 href={s.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="ri-chip"
                               >
-                                {s.label}
+                                {(s.name || s.label || '').toUpperCase()}
                               </a>
                             ) : (
-                              <CorrelatedChip
-                                key={s.id}
-                                signal={s}
-                                onNavigate={(id) => console.log('Navigate to signal:', id)}
-                              />
+                              <span key={idx} className="ri-chip">
+                                {(s.name || s.label || '').toUpperCase()}
+                              </span>
                             )
                           ))}
                         </div>
