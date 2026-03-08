@@ -1453,11 +1453,12 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="ri-chip"
+                                style={{ flexShrink: 0 }}
                               >
                                 {(s.name || s.label || '').toUpperCase()}
                               </a>
                             ) : (
-                              <span key={idx} className="ri-chip">
+                              <span key={idx} className="ri-chip" style={{ flexShrink: 0 }}>
                                 {(s.name || s.label || '').toUpperCase()}
                               </span>
                             )
