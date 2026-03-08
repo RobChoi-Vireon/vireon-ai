@@ -303,11 +303,11 @@ const PrioritySignal = ({ signal, index, onClick }) => {
           {signal.text}
         </motion.p>
         
-        {signal.quick_glance_tags && (
+        {signal.quick_glance_tags && signal.quick_glance_tags.length > 0 && (
           <motion.div 
             className="flex flex-wrap gap-2 mt-4"
             initial={{ opacity: 0 }}
-            animate={{ opacity: isHovered ? 1 : 0 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
           >
             {signal.quick_glance_tags.map((tag, i) => (
@@ -356,7 +356,7 @@ export default function PrioritySignalStrip({ frontPageSignals = null, signals =
         if (!data) return null;
         return {
           tag: toTitleCase(data.bucket || bucket),
-          text: data.headline || data.summary || '',
+          text: data.headline || '',
           urgency: data.urgency || 'medium',
           source: (() => { try { const u = (data.top_sources || [])[0]; return u ? new URL(u).hostname.replace('www.', '').toUpperCase() : ''; } catch { return ''; } })(),
           quick_glance_tags: (data.impact_tags || []).map(tag => ({
