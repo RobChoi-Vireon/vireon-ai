@@ -1623,6 +1623,30 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
                     )}
                   </section>
 
+                  {/* WHAT TO WATCH */}
+                  {viewMode === 'detailed' && analysis.what_to_watch && (
+                    <motion.div
+                      className="flex items-start gap-2"
+                      style={{ marginTop: `${HORIZON.spacing.impactToRipple}px` }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: HORIZON.motion.dur.med / 1000, delay: 0.45 }}
+                      whileHover={{ y: -1 }}
+                      role="region"
+                      aria-label={`What to Watch: ${analysis.what_to_watch}`}
+                    >
+                      <Target className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: 'rgba(255, 255, 255, 0.38)' }} aria-hidden="true" />
+                      <div>
+                        <span className="text-xs font-medium uppercase tracking-wide mr-2" style={{ color: HORIZON.color.textTertiaryDark }}>
+                          What to Watch
+                        </span>
+                        <span style={{ fontSize: `${HORIZON.type.ripple.size}px`, lineHeight: `${HORIZON.type.ripple.lh}px`, fontWeight: HORIZON.type.ripple.weight, color: HORIZON.color.textSecondaryDark }}>
+                          {analysis.what_to_watch}
+                        </span>
+                      </div>
+                    </motion.div>
+                  )}
+
                   {/* AUTO-REVEAL DETAILS */}
                   <div className="ri-details">
                     {/* CONTEXT AND SOURCE - with timestamp coloring */}
