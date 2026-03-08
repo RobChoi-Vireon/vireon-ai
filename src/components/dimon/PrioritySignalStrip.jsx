@@ -307,7 +307,7 @@ const PrioritySignal = ({ signal, index, onClick }) => {
           <motion.div 
             className="flex flex-wrap gap-2 mt-4"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            animate={{ opacity: isHovered ? 1 : 0 }}
             transition={{ duration: 0.3 }}
           >
             {signal.quick_glance_tags.map((tag, i) => (
