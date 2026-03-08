@@ -449,8 +449,8 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
   const { Icon } = theme;
   const confOverall = item.confidence || 50;
 
-  // Calculate source count
-  const sourceCount = item.source_count || 0;
+  // Calculate source count with fallback to top_weighted_sources.length
+  const sourceCount = item.source_count ?? item.top_weighted_sources?.length ?? null;
 
   const macroPosture = item?.drawer?.simplified?.mood || 'wait and see';
 
