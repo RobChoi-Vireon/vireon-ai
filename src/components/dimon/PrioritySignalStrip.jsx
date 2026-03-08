@@ -358,7 +358,11 @@ export default function PrioritySignalStrip({ frontPageSignals = null, signals =
           tag: toTitleCase(data.bucket || bucket),
           text: data.headline || '',
           urgency: data.urgency || 'medium',
-          source: (() => { try { const u = (data.top_sources || [])[0]; return u ? new URL(u).hostname.replace('www.', '').toUpperCase() : ''; } catch { return ''; } })(),
+          source: (() => {
+            if (data.flagship_source?.domain) return data.flagship_source.domain.toUpperCase();
+            // fallback: parse first top_source URL or use source_pills[0].label
+            try { const u = (data.top_sources || [])[0]; return u ? new URL(u).hostname.replace('www.', '').toUpperCase() : ((data.source_pills || [])[0]?.label || ''); } catch { return (data.source_pills || [])[0]?.label || ''; }
+          })(),
           quick_glance_tags: (data.impact_tags || []).map(tag => ({
             label: tag,
             icon: 'Zap',
