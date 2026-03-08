@@ -1538,6 +1538,11 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
                       </div>
                       
                       <ConfidenceRing value={confOverall} color={theme.primaryColor} size={42} sentiment={theme.sentiment} />
+                      {sourceCount != null && sourceCount > 0 && (
+                        <span className="text-xs font-medium" style={{ color: 'rgba(255, 255, 255, 0.58)', marginLeft: '12px' }}>
+                          Backed by <span style={{ fontWeight: 700, color: 'rgba(255, 255, 255, 0.75)' }}>{sourceCount}</span> verified sources.
+                        </span>
+                      )}
                     </div>
                   </section>
 
