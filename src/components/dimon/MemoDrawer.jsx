@@ -1719,8 +1719,7 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
                             >
                               <div className="flex items-center justify-between">
                                 <span className="relative font-semibold text-white bg-gray-500/20 px-3 py-1 rounded-full text-sm" style={{ boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.15)' }}>
-                                  {horizon.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}:
-                                  {analysis.market_impact.category || ''}
+                                  {horizon.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                                 </span>
                                 <div className="flex items-center space-x-4">
                                   <div className="flex items-center space-x-2">
