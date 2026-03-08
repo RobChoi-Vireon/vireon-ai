@@ -476,7 +476,7 @@ export default function PrioritySignalStrip({ frontPageSignals = null, signals =
           className="text-sm"
           style={{ color: 'rgba(255, 255, 255, 0.7)' }}
         >
-          Major Macro Forces Shaping the Economy Today.
+          The most important stories you need to know right now.
         </p>
       </div>
       
