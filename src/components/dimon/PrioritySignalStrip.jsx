@@ -358,7 +358,7 @@ export default function PrioritySignalStrip({ frontPageSignals = null, signals =
           tag: toTitleCase(data.bucket || bucket),
           text: data.headline || data.summary || '',
           urgency: data.urgency || 'medium',
-          source: (data.top_sources || [])[0] || '',
+          source: (() => { try { const u = (data.top_sources || [])[0]; return u ? new URL(u).hostname.replace('www.', '').toUpperCase() : ''; } catch { return ''; } })(),
           quick_glance_tags: (data.impact_tags || []).map(tag => ({
             label: tag,
             icon: 'Zap',
@@ -475,7 +475,7 @@ export default function PrioritySignalStrip({ frontPageSignals = null, signals =
           className="text-sm"
           style={{ color: 'rgba(255, 255, 255, 0.7)' }}
         >
-          The most important stories you need to know right now.
+          Major Macro Forces Shaping the Economy Today.
         </p>
       </div>
       
