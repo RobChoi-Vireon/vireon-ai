@@ -5,9 +5,9 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Scale, DollarSign, Globe, ExternalLink } from 'lucide-react';
+import { Scale, DollarSign, Globe, ExternalLink, TrendingUp, TrendingDown, BarChart3, Building, Briefcase, AlertTriangle, Users, Factory, Landmark } from 'lucide-react';
 
-const icons = { Scale, DollarSign, Globe };
+const icons = { TrendingUp, TrendingDown, BarChart3, DollarSign, Building, Briefcase, AlertTriangle, Users, Globe, Scale, Factory, Landmark };
 
 const TakeawayItem = ({ item, onOpenMemo, index }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -717,7 +717,7 @@ export default function ExecutiveTakeaway({ businessMarkets, onOpenMemo, isLoadi
 
         {/* Responsive grid with Horizon OS spacing */}
         <div className="grid grid-cols-1 gap-y-6 gap-x-8 sm:grid-cols-2 xl:grid-cols-3 relative z-10">
-          {cards.map((item, index) => (
+          {cards.slice(0, 3).map((item, index) => (
             <TakeawayItem 
               key={index} 
               item={item}
