@@ -373,6 +373,27 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
   const translation = bucketData?.simple || null;
   const rippleImpact = bucketData?.ripple_effects || null;
 
+  // Resolve flagship_source: prefer top-level, fall back to drawer.detailed
+  const flagshipSource = bucketData?.flagship_source || bucketData?.drawer?.detailed?.flagship_source;
+  const flagshipDomain = flagshipSource?.domain ? flagshipSource.domain.toUpperCase() : signal.source?.toUpperCase();
+
+  // Resolve sources_examined_count with fallback
+  const rawExaminedCount = bucketData?.sources_examined_count ?? bucketData?.drawer?.detailed?.sources_examined_count;
+  const sourcesExaminedCount = (rawExaminedCount && rawExaminedCount > 0)
+    ? rawExaminedCount
+    : (bucketData?.top_sources?.length || 0);
+
+  // Resolve top_weighted_sources: prefer new field (5-10 items), fall back to source_pills
+  const rawTopWeighted = bucketData?.top_weighted_sources || bucketData?.drawer?.detailed?.top_weighted_sources;
+  const topWeightedSources = (rawTopWeighted && rawTopWeighted.length > 0)
+    ? rawTopWeighted
+    : (bucketData?.source_pills || []).map((pill, idx) => ({
+        name: pill.label || 'Source',
+        url: pill.url || bucketData?.top_sources?.[idx] || null,
+        weight: null,
+        tier: null
+      }));
+
   const analysis = {
     what: bucketData?.what_happened || bucketData?.summary || '',
     why: bucketData?.why_it_matters || '',
