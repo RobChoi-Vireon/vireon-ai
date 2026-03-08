@@ -347,25 +347,24 @@ const PrioritySignal = ({ signal, index, onClick }) => {
   );
 };
 
+const toTitleCase = (str) =>
+  str.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
 export default function PrioritySignalStrip({ frontPageSignals = null, signals = [], onOpenDrawer }) {
-  // Use frontPageSignals if provided (new binding), otherwise fallback to signals array (legacy)
-  const buckets = frontPageSignals ? ['policy', 'credit', 'tech', 'geopolitics'] : null;
-  const displaySignals = buckets 
-    ? buckets.map(bucket => {
-        const data = frontPageSignals[bucket];
+  const displaySignals = frontPageSignals
+    ? Object.entries(frontPageSignals).map(([bucket, data]) => {
         if (!data) return null;
-        
         return {
-          tag: data.headline || 'No Priority Signal Detected',
-          text: data.summary || '',
+          tag: toTitleCase(data.bucket || bucket),
+          text: data.headline || data.summary || '',
           urgency: data.urgency || 'medium',
-          source: data.source_pills?.[0]?.label || '',
+          source: (data.top_sources || [])[0] || '',
           quick_glance_tags: (data.impact_tags || []).map(tag => ({
             label: tag,
             icon: 'Zap',
             color: 'text-gray-300'
           })),
-          bucket: bucket,
+          bucket,
           rawData: data
         };
       }).filter(Boolean)
