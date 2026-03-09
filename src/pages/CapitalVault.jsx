@@ -200,8 +200,6 @@ export default function CapitalVault() {
                   className="space-y-12"
                 >
                   <MarketConceptsSection onSearch={handleSearch} />
-                  <TrendingConceptsSection onSearch={handleSearch} />
-                  <AIInsightsSection onSearch={handleSearch} />
                   <CategoryExplorer onCategorySelect={handleCategorySelect} />
                 </motion.div>
               )}
