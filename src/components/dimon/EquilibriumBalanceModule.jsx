@@ -462,7 +462,9 @@ export default function EquilibriumBalanceModule({
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase',
                   color: 'rgba(255,255,255,0.65)',
-                  marginBottom: '14px'
+                  marginBottom: '14px',
+                  fontFamily: FONT.text,
+                  ...TYPE.smooth
                 }}>
                   What's Driving Markets
                 </h5>
