@@ -261,8 +261,8 @@ export default function EquilibriumBalanceModule({
         width: '100%', 
         margin: '0 auto',
         position: 'relative',
-        height: '28px',
-        marginBottom: '16px'
+        height: '24px',
+        marginBottom: '10px'
       }}>
         {/* Balance Line Base */}
         <motion.div 
