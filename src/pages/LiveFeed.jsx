@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { NewsArticle } from '@/entities/NewsArticle';
 import { Skeleton } from '@/components/ui/skeleton';
-import { RefreshCw, Newspaper, TrendingUp, LayoutGrid, List, AlertTriangle, Zap, Activity, Globe } from 'lucide-react';
+import { RefreshCw, TrendingUp, AlertTriangle, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ArticleCard from '../components/live-feed/ArticleCard';
 import FeedFilters from '../components/live-feed/FeedFilters';
-import TimelineArticleCard from '../components/live-feed/TimelineArticleCard';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function LiveFeed() {
