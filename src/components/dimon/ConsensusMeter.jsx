@@ -870,7 +870,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer, sources
         </motion.div>
       </div>
 
-      <div className="mb-6" style={{ position: 'relative', zIndex: 10 }}>
+      <div className="mb-2" style={{ position: 'relative', zIndex: 10 }}>
         <SignalLensNode 
           score={score} 
           isHovered={isHovered} 
