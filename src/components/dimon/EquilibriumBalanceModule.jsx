@@ -731,7 +731,9 @@ export default function EquilibriumBalanceModule({
                 fontSize: '15px',
                 fontWeight: 600,
                 color: 'rgba(255,255,255,0.95)',
-                letterSpacing: '-0.01em'
+                letterSpacing: '-0.01em',
+                fontFamily: FONT.display,
+                ...TYPE.smooth
               }}>
                 Force Breakdown
               </h3>
