@@ -383,7 +383,9 @@ export default function EquilibriumBalanceModule({
           color: 'rgba(255,255,255,0.58)',
           fontWeight: 500,
           letterSpacing: '0.01em',
-          fontSize: '11px'
+          fontSize: '11px',
+          fontFamily: FONT.text,
+          ...TYPE.smooth
         }}>
           <span>Economy Growing</span>
           <span>Economy Slowing</span>
