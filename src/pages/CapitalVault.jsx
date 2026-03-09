@@ -197,8 +197,8 @@ export default function CapitalVault() {
                   transition={{ duration: 0.3 }}
                   className="space-y-12"
                 >
-                  <MarketConceptsSection onSearch={handleSearch} />
                   <CategoryExplorer onCategorySelect={handleCategorySelect} />
+                  <MarketConceptsSection onSearch={handleSearch} />
                 </motion.div>
               )}
             </AnimatePresence>
