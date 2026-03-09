@@ -380,18 +380,24 @@ export default function InflationSection({ data }) {
       </motion.div>
 
       {/* ── ROW 7: TOP WEIGHTED SOURCES ──────────────────────────────── */}
-      <motion.div {...stagger(7)} style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '10px', fontWeight: 700, color: 'rgba(255,255,255,0.32)', letterSpacing: '0.12em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+      <motion.div {...stagger(7)} style={{
+        ...GLASS_PANEL,
+        padding: '14px 18px',
+        display: 'flex', alignItems: 'center', gap: '14px',
+        position: 'relative', overflow: 'hidden',
+      }}>
+        <div style={TOP_HIGHLIGHT} />
+        <span style={{ fontSize: '14px', fontWeight: 700, color: 'rgba(255,255,255,0.90)', whiteSpace: 'nowrap', flexShrink: 0 }}>
           Top Weighted Sources
         </span>
         <span style={{
-          fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: '999px',
-          background: 'rgba(94,167,255,0.14)', color: 'rgba(140,195,255,0.90)',
-          border: '1px solid rgba(94,167,255,0.22)',
+          fontSize: '12px', fontWeight: 700, padding: '2px 9px', borderRadius: '999px',
+          background: 'rgba(94,167,255,0.18)', color: 'rgba(140,195,255,0.95)',
+          border: '1px solid rgba(94,167,255,0.28)', flexShrink: 0,
         }}>
           {inflationData.sources.length}
         </span>
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '8px', flex: 1, overflow: 'hidden' }}>
           {inflationData.sources.slice(0, 5).map((source, idx) => (
             <a
               key={idx}
@@ -400,22 +406,35 @@ export default function InflationSection({ data }) {
               rel="noopener noreferrer"
               style={{
                 padding: '6px 14px', borderRadius: '999px',
-                background: 'rgba(255,255,255,0.07)',
-                border: '1px solid rgba(255,255,255,0.11)',
-                color: 'rgba(255,255,255,0.76)',
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.10)',
+                color: 'rgba(255,255,255,0.72)',
                 fontSize: '13px', fontWeight: 500,
                 textDecoration: 'none',
                 backdropFilter: 'blur(16px)',
                 transition: 'all 0.18s ease-out',
                 whiteSpace: 'nowrap',
+                flexShrink: 0,
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.13)'; e.currentTarget.style.color = 'rgba(255,255,255,0.96)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; e.currentTarget.style.color = 'rgba(255,255,255,0.76)'; }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.12)'; e.currentTarget.style.color = 'rgba(255,255,255,0.96)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = 'rgba(255,255,255,0.72)'; }}
             >
               {source.name}
             </a>
           ))}
         </div>
+        <button style={{
+          width: '30px', height: '30px', borderRadius: '50%', flexShrink: 0,
+          background: 'rgba(255,255,255,0.07)',
+          border: '1px solid rgba(255,255,255,0.10)',
+          color: 'rgba(255,255,255,0.50)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer', fontSize: '14px', fontWeight: 600,
+          transition: 'all 0.18s ease-out',
+        }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.13)'; e.currentTarget.style.color = 'rgba(255,255,255,0.85)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; e.currentTarget.style.color = 'rgba(255,255,255,0.50)'; }}
+        >›</button>
       </motion.div>
     </div>
   );
