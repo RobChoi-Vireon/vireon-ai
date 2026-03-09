@@ -41,7 +41,9 @@ const SPECULAR = {
 // ─── Interactive Panel ───────────────────────────────────────────────────────
 // Applies Executive Takeaway–style hover effects: parallax tilt, proximity halo,
 // ambient bloom, lift, press feedback, and periodic shimmer sweep.
-const InteractivePanel = ({ children, style = {}, index = 0 }) => {
+// `style`        → applied to the outer glass shell (border/background overrides)
+// `contentStyle` → applied to the inner content div (padding, display, flex, gap)
+const InteractivePanel = ({ children, style = {}, contentStyle = {}, index = 0 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const [tiltX, setTiltX] = useState(0);
@@ -131,8 +133,8 @@ const InteractivePanel = ({ children, style = {}, index = 0 }) => {
         transition={{ duration: 1.4, ease: 'easeInOut', repeat: Infinity, repeatDelay: 7 + index * 1.8 }}
       />
 
-      {/* Content sits above all effects */}
-      <div style={{ position: 'relative', zIndex: 1 }}>
+      {/* Content wrapper — layout styles (padding/flex/gap) go here, not on the outer shell */}
+      <div style={{ position: 'relative', zIndex: 1, ...contentStyle }}>
         {children}
       </div>
     </motion.div>
