@@ -836,7 +836,9 @@ export default function EquilibriumBalanceModule({
                     color: 'rgba(255,255,255,0.6)',
                     textTransform: 'uppercase',
                     letterSpacing: '0.1em',
-                    marginBottom: '4px'
+                    marginBottom: '4px',
+                    fontFamily: FONT.text,
+                    ...TYPE.smooth
                   }}>
                     Stability Index
                   </div>
@@ -844,7 +846,9 @@ export default function EquilibriumBalanceModule({
                     fontSize: '22px',
                     fontWeight: 700,
                     color: 'rgba(184, 231, 255, 0.95)',
-                    fontVariantNumeric: 'tabular-nums'
+                    fontFamily: FONT.display,
+                    ...TYPE.smooth,
+                    ...TYPE.tabular
                   }}>
                     {stabilityIndex}
                   </div>
