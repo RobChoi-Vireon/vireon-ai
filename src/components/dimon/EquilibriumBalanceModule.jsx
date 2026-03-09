@@ -494,7 +494,9 @@ export default function EquilibriumBalanceModule({
                           fontSize: '12px',
                           fontWeight: 500,
                           color: 'rgba(255,255,255,0.85)',
-                          textTransform: 'capitalize'
+                          textTransform: 'capitalize',
+                          fontFamily: FONT.text,
+                          ...TYPE.smooth
                         }}>
                           {force.name}
                         </span>
@@ -502,7 +504,10 @@ export default function EquilibriumBalanceModule({
                       <span style={{
                         fontSize: '13px',
                         fontWeight: 600,
-                        color: force.value > 0 ? '#58E3A4' : force.value < 0 ? '#FF9B7A' : 'rgba(255,255,255,0.6)'
+                        color: force.value > 0 ? '#58E3A4' : force.value < 0 ? '#FF9B7A' : 'rgba(255,255,255,0.6)',
+                        fontFamily: FONT.text,
+                        ...TYPE.smooth,
+                        ...TYPE.tabular
                       }}>
                         {force.value > 0 ? '+' : ''}{Math.round(force.value * 100)}
                       </span>
