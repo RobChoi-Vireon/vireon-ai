@@ -349,38 +349,56 @@ export default function InflationSection({ data }) {
         </div>
       </motion.div>
 
-      {/* ── 7. HOW TO READ THE DATA ── */}
+      {/* ── 7. HOW TO READ THE DATA (collapsible) ── */}
       <motion.div
         initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...ENTRY, delay: 0.28 }}
-        style={{ ...GLASS.card, padding: '14px 18px', display: 'flex', alignItems: 'stretch', gap: '0', marginBottom: '10px', position: 'relative', overflow: 'hidden' }}
+        style={{ ...GLASS.card, marginBottom: '10px', position: 'relative', overflow: 'hidden' }}
       >
         <div style={SPECULAR} />
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', marginRight: '20px', flexShrink: 0 }}>
-          <span style={{ fontSize: '9px', fontWeight: 700, color: 'rgba(255,255,255,0.28)', letterSpacing: '0.12em', textTransform: 'uppercase', lineHeight: 1.5 }}>
-            HOW TO<br />READ THE DATA
+        <button
+          onClick={() => setShowHowToRead(v => !v)}
+          style={{
+            width: '100%', display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 18px',
+            background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left'
+          }}
+        >
+          <span style={{ fontSize: '10px', fontWeight: 700, color: 'rgba(255,255,255,0.38)', letterSpacing: '0.12em', textTransform: 'uppercase', flex: 1 }}>
+            How to Read the Data
           </span>
-        </div>
-        <div style={{ width: '1px', background: 'rgba(255,255,255,0.07)', marginRight: '20px', flexShrink: 0 }} />
-        {[
-          { label: 'CPI', value: d.cpi_pce_collapsed?.split('/')[0]?.trim() || '2.4%', color: '#5EA7FF', desc: d.cpi_plain },
-          { label: 'PCE', value: d.cpi_pce_collapsed?.split('/')[1]?.trim() || '2.5%', color: '#B47FFF', desc: d.pce_plain },
-          { label: 'Gap', value: '0.1%', color: '#FFB020', desc: d.why_fed_prefers },
-        ].map((item, idx, arr) => (
-          <div key={idx} style={{
-            flex: 1, padding: '10px 14px', borderRadius: '12px',
-            background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)',
-            marginRight: idx < arr.length - 1 ? '10px' : 0
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-              <span style={{ fontSize: '12px', fontWeight: 700, color: 'rgba(255,255,255,0.88)' }}>{item.label}</span>
-              <span style={{
-                fontSize: '11px', fontWeight: 700, padding: '1px 7px', borderRadius: '999px',
-                background: `${item.color}10`, color: item.color, border: `1px solid ${item.color}20`
-              }}>{item.value}</span>
+          <motion.div animate={{ rotate: showHowToRead ? 90 : 0 }} transition={{ duration: 0.18 }}>
+            <ChevronRight className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.28)' }} strokeWidth={2} />
+          </motion.div>
+        </button>
+
+        {showHowToRead && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div style={{ display: 'flex', gap: '10px', padding: '0 18px 14px' }}>
+              {[
+                { label: 'CPI', value: d.cpi_pce_collapsed?.split('/')[0]?.trim() || '2.4%', color: '#5EA7FF', desc: d.cpi_plain },
+                { label: 'PCE', value: d.cpi_pce_collapsed?.split('/')[1]?.trim() || '2.5%', color: '#B47FFF', desc: d.pce_plain },
+                { label: 'Gap', value: '0.1%', color: '#FFB020', desc: d.why_fed_prefers },
+              ].map((item, idx) => (
+                <div key={idx} style={{
+                  flex: 1, padding: '10px 14px', borderRadius: '12px',
+                  background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                    <span style={{ fontSize: '12px', fontWeight: 700, color: 'rgba(255,255,255,0.88)' }}>{item.label}</span>
+                    <span style={{
+                      fontSize: '11px', fontWeight: 700, padding: '1px 7px', borderRadius: '999px',
+                      background: `${item.color}10`, color: item.color, border: `1px solid ${item.color}20`
+                    }}>{item.value}</span>
+                  </div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.42)', lineHeight: 1.5, margin: 0 }}>{item.desc}</p>
+                </div>
+              ))}
             </div>
-            <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.42)', lineHeight: 1.5, margin: 0 }}>{item.desc}</p>
-          </div>
-        ))}
+          </motion.div>
+        )}
       </motion.div>
 
       {/* ── 8. TOP WEIGHTED SOURCES ── */}
