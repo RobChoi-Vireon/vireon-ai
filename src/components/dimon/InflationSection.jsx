@@ -324,6 +324,7 @@ export default function InflationSection({ data }) {
         style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}
       >
         {/* Categories */}
+        {d.components && d.components.length > 0 && (
         <InteractivePanel index={5} contentStyle={{ padding: '18px 20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '14px' }}>
             <BarChart2 className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.40)' }} strokeWidth={2} />
@@ -332,15 +333,16 @@ export default function InflationSection({ data }) {
             </span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            {CATEGORY_DATA.map((cat, idx) => {
+            {d.components.slice(0, 5).map((cat, idx) => {
               const barColor = getCategoryColor(cat.yoy);
               const arrowChar = cat.direction === 'up' ? '↑' : cat.direction === 'down' ? '↓' : '→';
+              const arrowColor = cat.direction === 'up' ? '#F26A6A' : cat.direction === 'down' ? '#5CD8A0' : '#9BA3B0';
               return (
                 <div key={idx}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                    <span style={{ fontFamily: FONT.text, fontSize: '14px', fontWeight: 500, color: 'rgba(255,255,255,0.88)', ...TYPE.smoothing }}>{cat.name}</span>
-                   <span style={{ fontFamily: FONT.text, fontSize: '16px', fontWeight: 600, color: barColor, ...TYPE.smoothing, ...TYPE.tabular }}>
-                     {arrowChar} {cat.yoy >= 0 ? '+' : ''}{cat.yoy.toFixed(1)}%
+                   <span style={{ fontFamily: FONT.text, fontSize: '16px', fontWeight: 600, color: arrowColor, ...TYPE.smoothing, ...TYPE.tabular }}>
+                     {arrowChar} {cat.yoy >= 0 ? '+' : ''}{Number(cat.yoy).toFixed(1)}%
                    </span>
                   </div>
                   <MiniBar value={cat.yoy} maxVal={6} color={barColor} delay={0.08 + idx * 0.06} />
@@ -350,6 +352,7 @@ export default function InflationSection({ data }) {
             })}
           </div>
         </InteractivePanel>
+        )}
 
         {/* Key Drivers */}
         <InteractivePanel index={6} contentStyle={{ padding: '18px 20px' }}>
