@@ -785,7 +785,7 @@ export default function EquilibriumBalanceModule({
                         fontFamily: FONT.text,
                         ...TYPE.smooth
                       }}>
-                        {force.name}
+                        {FORCE_COLORS[force.name]?.label || force.name}
                       </span>
                     </div>
                     <span style={{
