@@ -388,8 +388,8 @@ export default function EquilibriumBalanceModule({
           fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
           fontWeight: 400,
           textAlign: 'center',
-          marginTop: '16px',
-          marginBottom: '4px'
+          marginTop: '8px',
+          marginBottom: '2px'
         }}
         animate={{
           opacity: isHovered ? 0.95 : 0.85
