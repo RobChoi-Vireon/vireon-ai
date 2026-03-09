@@ -5,6 +5,15 @@ import { TrendingUp, TrendingDown, Minus, BarChart2, Database, ChevronRight, Fla
 const SPRING = { type: 'spring', stiffness: 380, damping: 40, mass: 0.8 };
 const ENTRY  = { type: 'spring', stiffness: 320, damping: 35, mass: 0.85 };
 
+const FONT = {
+  display: '"SF Pro Display", Inter, system-ui, -apple-system, sans-serif',
+  text:    '"SF Pro Text", Inter, system-ui, -apple-system, sans-serif',
+};
+const TYPE = {
+  smoothing: { WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale', textRendering: 'optimizeLegibility' },
+  tabular:   { fontVariantNumeric: 'tabular-nums' },
+};
+
 const GLASS = {
   panel: {
     background: 'linear-gradient(180deg, rgba(18,22,30,0.72) 0%, rgba(12,15,22,0.80) 100%)',
