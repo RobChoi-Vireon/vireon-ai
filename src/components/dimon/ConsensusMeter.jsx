@@ -838,7 +838,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer, sources
         }}
       />
 
-      <div className="flex items-center justify-between mb-5" style={{ position: 'relative', zIndex: 10 }}>
+      <div className="flex items-center justify-between mb-3" style={{ position: 'relative', zIndex: 10 }}>
         <motion.h2 
           className="text-[16px] font-semibold"
           style={{ 
