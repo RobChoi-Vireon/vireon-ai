@@ -619,7 +619,9 @@ export default function EquilibriumBalanceModule({
                       letterSpacing: '0.1em',
                       textTransform: 'uppercase',
                       color: 'rgba(106, 199, 247, 0.85)',
-                      marginBottom: '6px'
+                      marginBottom: '6px',
+                      fontFamily: FONT.text,
+                      ...TYPE.smooth
                     }}>
                       Lyra Insight
                     </p>
@@ -627,7 +629,9 @@ export default function EquilibriumBalanceModule({
                       fontSize: '13px',
                       lineHeight: '1.55',
                       color: 'rgba(220, 235, 245, 0.95)',
-                      fontWeight: 400
+                      fontWeight: 400,
+                      fontFamily: FONT.text,
+                      ...TYPE.smooth
                     }}>
                       {actionableInsight}
                     </p>
