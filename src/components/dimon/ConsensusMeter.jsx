@@ -900,7 +900,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer, sources
           zIndex: 10,
           fontSize: '10px',
           letterSpacing: '-0.015em',
-          marginTop: '8px',
+          marginTop: '4px',
           fontFamily: '"SF Pro Text", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif'
         }}
         initial={{ opacity: 0 }}
