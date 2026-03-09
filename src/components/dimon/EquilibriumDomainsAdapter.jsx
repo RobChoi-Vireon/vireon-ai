@@ -144,38 +144,40 @@ export function adaptEquilibriumDomains(equilibriumData) {
     const id = d.id || DOMAIN_IDS[idx] || `domain-${idx}`;
     const mock = MOCK_DOMAINS_FALLBACK.find(m => m.id === id) || MOCK_DOMAINS_FALLBACK[idx];
     
+    const strength = typeof d.strength === 'number' ? Math.min(Math.max(d.strength / 100, 0), 1) : (mock?.strength ?? 0.5);
+    
     return {
       id,
-      title: d.title || mock.title,
-      posture: d.posture || mock.posture,
-      trend: d.trend || mock.trend,
-      confidence_pct: typeof d.confidence === 'number' ? d.confidence : mock.confidence_pct,
-      strength: typeof d.strength === 'number' ? d.strength / 100 : mock.strength,
+      title: d.title || mock?.title || 'Domain',
+      posture: d.posture || mock?.posture || 'stable',
+      trend: d.trend || mock?.trend || 'Stable',
+      confidence_pct: typeof d.confidence === 'number' ? d.confidence : mock?.confidence_pct ?? 50,
+      strength: strength,
       confidence_label: d.confidence_label || (d.confidence >= 70 ? 'Strong signal' : d.confidence >= 40 ? 'Moderate signal' : 'Weak signal'),
-      summary: d.posture || mock.summary,
-      insight: d.insight || mock.insight,
+      summary: d.summary || d.posture || mock?.summary || 'No summary available',
+      insight: d.insight || mock?.insight || 'No insight available',
       downstream_effects: (d.signals && Array.isArray(d.signals)) 
         ? d.signals.map(sig => ({ 
             title: sig.headline || '', 
             tags: Array.isArray(sig.tags) ? sig.tags : [], 
             link: '#' 
           })) 
-        : mock.downstream_effects,
+        : (mock?.downstream_effects || []),
       actionable: d.actions 
         ? { 
             horizon: d.action_timeframe || '', 
             conviction: d.action_urgency || 'Moderate', 
             directives: Array.isArray(d.actions) ? d.actions : [] 
           } 
-        : mock.actionable,
+        : (mock?.actionable || { horizon: '1–3 weeks', conviction: 'Moderate', directives: [] }),
       footer: { 
         primary_cta: { label: 'View detailed analysis', route: `/${id}` }, 
         secondary_link: { label: 'View timeline', route: `/timeline/${id}` }, 
         timestamp: new Date().toISOString() 
       },
       last_updated_iso: new Date().toISOString(),
-      sparkline: mock.sparkline,
-      confidenceDelta: typeof d.confidence_delta === 'number' ? d.confidence_delta : mock.confidenceDelta
+      sparkline: mock?.sparkline || [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+      confidenceDelta: typeof d.confidence_delta === 'number' ? d.confidence_delta : (mock?.confidenceDelta ?? 0)
     };
   });
 }
