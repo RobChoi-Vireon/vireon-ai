@@ -34,10 +34,10 @@ const TYPE = {
 };
 
 const FORCE_COLORS = {
-  growth: { core: '#3FAEFF', glow: 'rgba(63,174,255,0.25)', text: '#B8E7FF' },
-  rates: { core: '#C0A6FF', glow: 'rgba(192,166,255,0.25)', text: '#DECFFF' },
-  fx: { core: '#6AC7F7', glow: 'rgba(106,199,247,0.25)', text: '#B8E7FF' },
-  geopolitics: { core: '#FFC772', glow: 'rgba(255,199,114,0.25)', text: '#FFE8B8' }
+  growth: { core: '#3FAEFF', glow: 'rgba(63,174,255,0.25)', text: '#B8E7FF', label: 'Borrowing Costs' },
+  rates: { core: '#C0A6FF', glow: 'rgba(192,166,255,0.25)', text: '#DECFFF', label: 'Savings & Returns' },
+  fx: { core: '#6AC7F7', glow: 'rgba(106,199,247,0.25)', text: '#B8E7FF', label: 'Housing' },
+  geopolitics: { core: '#FFC772', glow: 'rgba(255,199,114,0.25)', text: '#FFE8B8', label: 'Job Market' }
 };
 
 export default function EquilibriumBalanceModule({ 
