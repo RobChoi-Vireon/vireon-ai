@@ -284,7 +284,7 @@ export default function InflationSection({ data }) {
               );
             })}
             {d.drivers.length === 0 && (
-              <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.35)', textAlign: 'center', padding: '20px 0' }}>Driver data pending.</p>
+            <p style={{ fontFamily: FONT.text, fontSize: '13px', fontWeight: 400, color: 'rgba(255,255,255,0.40)', textAlign: 'center', padding: '20px 0', ...TYPE.smoothing }}>Driver data pending.</p>
             )}
           </div>
         </div>
