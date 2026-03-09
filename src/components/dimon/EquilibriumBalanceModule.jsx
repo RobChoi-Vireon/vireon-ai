@@ -133,7 +133,7 @@ export default function EquilibriumBalanceModule({
       style={{
         width: '72%',
         margin: '0 auto',
-        padding: '20px 24px',
+        padding: '14px 20px',
         borderRadius: '16px',
         backdropFilter: 'blur(24px) saturate(165%)',
         WebkitBackdropFilter: 'blur(24px) saturate(165%)',
