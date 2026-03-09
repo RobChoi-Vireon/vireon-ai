@@ -886,7 +886,7 @@ export default function MacroSignalsPage() {
                   variants={sectionVariants}
                   id="section-global-equilibrium-parallax" 
                   data-section-order="3"
-                  className="col-span-12"
+                  className="col-span-12 mt-8"
                 >
                   <GlobalSignalLattice
   equilibriumData={sessionData?.equilibrium}
