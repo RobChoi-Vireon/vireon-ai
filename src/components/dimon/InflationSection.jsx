@@ -149,9 +149,9 @@ const getRegimeTheme = (arrow) => {
 };
 
 const getCategoryColor = (yoy) => {
-  if (yoy < 0)   return '#5CD8A0';
   if (yoy < 2)   return '#5CD8A0';
-  if (yoy < 3.5) return '#FFB020';
+  if (yoy < 3)   return '#9BA3B0';
+  if (yoy < 4)   return '#FFB020';
   return '#F26A6A';
 };
 
