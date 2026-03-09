@@ -539,10 +539,10 @@ const CategoryGlassChips = ({ segments, isHovered, onChipHover, onChipLeave }) =
 
   return (
     <div 
-      className="grid grid-cols-2 gap-x-5 gap-y-3.5 max-w-[360px] mx-auto mb-8"
+      className="grid grid-cols-2 gap-x-4 gap-y-2.5 max-w-[360px] mx-auto mb-3"
       style={{
-        rowGap: '14px',
-        columnGap: '20px'
+        rowGap: '10px',
+        columnGap: '16px'
       }}
     >
       {segments.map((segment, index) => {
