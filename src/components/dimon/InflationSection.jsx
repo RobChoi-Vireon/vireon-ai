@@ -371,7 +371,7 @@ export default function InflationSection({ data }) {
             background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left'
           }}
         >
-          <span style={{ fontSize: '10px', fontWeight: 700, color: 'rgba(255,255,255,0.38)', letterSpacing: '0.12em', textTransform: 'uppercase', flex: 1 }}>
+          <span style={{ fontFamily: FONT.text, fontSize: '14px', fontWeight: 500, color: 'rgba(255,255,255,0.65)', letterSpacing: '0', flex: 1, ...TYPE.smoothing }}>
             How to Read the Data
           </span>
           <motion.div animate={{ rotate: showHowToRead ? 90 : 0 }} transition={{ duration: 0.18 }}>
