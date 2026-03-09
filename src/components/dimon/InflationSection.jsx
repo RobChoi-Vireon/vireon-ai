@@ -62,8 +62,8 @@ const InteractivePanel = ({ children, style = {}, contentStyle = {}, index = 0 }
       if (isHovered) {
         const px = (e.clientX - rect.left) / rect.width - 0.5;
         const py = (e.clientY - rect.top) / rect.height - 0.5;
-        setTiltX(py * -2.5);
-        setTiltY(px * 2.5);
+        setTiltX(py * -1.2);
+        setTiltY(px * 1.2);
       } else {
         setTiltX(0);
         setTiltY(0);
