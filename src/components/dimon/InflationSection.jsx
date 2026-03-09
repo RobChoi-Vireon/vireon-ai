@@ -242,13 +242,13 @@ export default function InflationSection({ data }) {
               return (
                 <div key={idx}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: '13px', fontWeight: 600, color: 'rgba(255,255,255,0.88)' }}>{cat.name}</span>
-                    <span style={{ fontSize: '13px', fontWeight: 700, color: barColor }}>
-                      {arrowChar} {cat.yoy >= 0 ? '+' : ''}{cat.yoy.toFixed(1)}%
-                    </span>
+                   <span style={{ fontFamily: FONT.text, fontSize: '14px', fontWeight: 500, color: 'rgba(255,255,255,0.88)', ...TYPE.smoothing }}>{cat.name}</span>
+                   <span style={{ fontFamily: FONT.text, fontSize: '16px', fontWeight: 600, color: barColor, ...TYPE.smoothing, ...TYPE.tabular }}>
+                     {arrowChar} {cat.yoy >= 0 ? '+' : ''}{cat.yoy.toFixed(1)}%
+                   </span>
                   </div>
                   <MiniBar value={cat.yoy} maxVal={6} color={barColor} delay={0.08 + idx * 0.06} />
-                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.38)', margin: 0, lineHeight: 1.4 }}>{cat.note}</p>
+                  <p style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 400, color: 'rgba(255,255,255,0.75)', margin: 0, lineHeight: 1.4, ...TYPE.smoothing }}>{cat.note}</p>
                 </div>
               );
             })}
