@@ -213,11 +213,11 @@ export default function InflationSection({ data }) {
           style={{ ...GLASS.card, padding: '11px 16px', display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '14px', position: 'relative', overflow: 'hidden' }}
         >
           <div style={SPECULAR} />
-          <span style={{ fontSize: '9px', fontWeight: 700, color: 'rgba(255,255,255,0.32)', letterSpacing: '0.12em', textTransform: 'uppercase', whiteSpace: 'nowrap', flexShrink: 0 }}>
+          <span style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.50)', letterSpacing: '0.06em', textTransform: 'uppercase', whiteSpace: 'nowrap', flexShrink: 0, ...TYPE.smoothing }}>
             Fed Implication
           </span>
           <div style={{ width: '1px', height: '14px', background: 'rgba(255,255,255,0.08)', flexShrink: 0 }} />
-          <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.78)', lineHeight: 1.5 }}>{d.fed_implication}</span>
+          <span style={{ fontFamily: FONT.text, fontSize: '13px', fontWeight: 500, color: 'rgba(255,255,255,0.85)', lineHeight: 1.5, ...TYPE.smoothing }}>{d.fed_implication}</span>
         </motion.div>
       )}
 
