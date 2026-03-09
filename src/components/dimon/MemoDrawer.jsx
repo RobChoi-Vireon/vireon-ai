@@ -1632,7 +1632,7 @@ const MemoDrawer = ({ isOpen, onClose, item, onNavigate }) => {
                   {viewMode === 'detailed' && analysis.what_to_watch && (
                     <motion.div
                       className="flex items-start gap-2"
-                      style={{ marginTop: `${HORIZON.spacing.impactToRipple}px` }}
+                      style={{ marginTop: `${HORIZON.spacing.impactToRipple}px`, marginBottom: '20px' }}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ duration: HORIZON.motion.dur.med / 1000, delay: 0.45 }}
