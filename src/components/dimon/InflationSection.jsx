@@ -417,13 +417,13 @@ export default function InflationSection({ data }) {
       >
         <div style={SPECULAR} />
         <div style={{ display: 'flex', alignItems: 'center', gap: '7px', flexShrink: 0 }}>
-          <span style={{ fontSize: '10px', fontWeight: 700, color: 'rgba(255,255,255,0.38)', letterSpacing: '0.10em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+          <span style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.65)', letterSpacing: '0.06em', textTransform: 'uppercase', whiteSpace: 'nowrap', ...TYPE.smoothing }}>
             Top Weighted Sources
           </span>
           <div style={{
-            fontSize: '10px', fontWeight: 700, padding: '1px 7px', borderRadius: '999px',
+            fontFamily: FONT.text, fontSize: '11px', fontWeight: 600, padding: '1px 7px', borderRadius: '999px',
             background: 'rgba(94,167,255,0.12)', color: 'rgba(140,195,255,0.90)',
-            border: '1px solid rgba(94,167,255,0.22)',
+            border: '1px solid rgba(94,167,255,0.22)', ...TYPE.smoothing, ...TYPE.tabular
           }}>{d.sources.length}</div>
         </div>
         <div style={{ width: '1px', height: '14px', background: 'rgba(255,255,255,0.07)', flexShrink: 0 }} />
