@@ -890,7 +890,9 @@ export default function EquilibriumBalanceModule({
               <p style={{
                 fontSize: '12px',
                 lineHeight: '1.6',
-                color: 'rgba(255,255,255,0.75)'
+                color: 'rgba(255,255,255,0.75)',
+                fontFamily: FONT.text,
+                ...TYPE.smooth
               }}>
                 {summary}
               </p>
