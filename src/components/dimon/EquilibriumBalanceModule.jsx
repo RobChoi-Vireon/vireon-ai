@@ -857,7 +857,9 @@ export default function EquilibriumBalanceModule({
                   fontSize: '12px',
                   color: 'rgba(255,255,255,0.7)',
                   fontWeight: 500,
-                  textAlign: 'right'
+                  textAlign: 'right',
+                  fontFamily: FONT.text,
+                  ...TYPE.smooth
                 }}>
                   {stabilityIndex >= 70 ? 'Very Stable' : stabilityIndex >= 50 ? 'Somewhat Stable' : 'Higher Risk'}
                 </div>
