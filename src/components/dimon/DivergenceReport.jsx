@@ -4,6 +4,15 @@ import { GitCommit, AlertTriangle, ChevronRight, BarChart2, Database, Eye, GitMe
 
 // ─── OS HORIZON TOKENS ───────────────────────────────────────────────────────
 const EASE = [0.26, 0.11, 0.26, 1.0];
+
+const FONT = {
+  display: '"SF Pro Display", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif',
+  text:    '"SF Pro Text", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif',
+};
+const TYPE = {
+  smooth: { WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale', textRendering: 'optimizeLegibility' },
+  tabular: { fontVariantNumeric: 'tabular-nums' },
+};
 const SPRING = { type: 'spring', stiffness: 380, damping: 40, mass: 0.8 };
 const ENTRY = { type: 'spring', stiffness: 320, damping: 35, mass: 0.85 };
 const SMOOTH = { duration: 0.26, ease: [0.22, 0.61, 0.36, 1] };

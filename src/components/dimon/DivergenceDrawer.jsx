@@ -5,6 +5,15 @@ import { X, AlertCircle, Eye, GitMerge, CheckCircle, XCircle, ChevronLeft, Chevr
 // ─── OS HORIZON TOKENS ───────────────────────────────────────────────────────
 const EASE = [0.22, 0.61, 0.36, 1];
 
+const FONT = {
+  display: '"SF Pro Display", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif',
+  text:    '"SF Pro Text", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif',
+};
+const TYPE = {
+  smooth: { WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale', textRendering: 'optimizeLegibility' },
+  tabular: { fontVariantNumeric: 'tabular-nums' },
+};
+
 function getDivergenceTheme(type) {
   const t = (type || '').toUpperCase();
   switch (t) {
