@@ -394,6 +394,20 @@ export default function InflationSection({ data }) {
         </div>
       </motion.div>
 
+      {/* ── INFLATION BY CATEGORY ────────────────────────────────────── */}
+      <AccordionPanel
+        isOpen={drawerCatOpen}
+        onToggle={() => setDrawerCatOpen(!drawerCatOpen)}
+        title="Inflation by Category"
+        delay={0.04}
+      >
+        <div className="px-5 pb-5 pt-1">
+          {CATEGORY_DATA.map((cat, idx) => (
+            <CategoryRow key={idx} category={cat} idx={idx} total={CATEGORY_DATA.length} />
+          ))}
+        </div>
+      </AccordionPanel>
+
       {/* ── DRAWER 1 — WHY INFLATION LOOKS THIS WAY ─────────────────── */}
       <AccordionPanel
         isOpen={drawer1Open}
