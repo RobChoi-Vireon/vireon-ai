@@ -781,7 +781,9 @@ export default function EquilibriumBalanceModule({
                         fontSize: '13px',
                         fontWeight: 600,
                         color: 'rgba(255,255,255,0.85)',
-                        textTransform: 'capitalize'
+                        textTransform: 'capitalize',
+                        fontFamily: FONT.text,
+                        ...TYPE.smooth
                       }}>
                         {force.name}
                       </span>
