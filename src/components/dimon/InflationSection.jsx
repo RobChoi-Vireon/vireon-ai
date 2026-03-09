@@ -494,10 +494,10 @@ export default function InflationSection({ data }) {
                       }}>{item.value}</span>
                     </div>
                     <p style={{ fontFamily: FONT.text, fontSize: '13px', fontWeight: 400, color: 'rgba(255,255,255,0.65)', lineHeight: 1.5, margin: 0, ...TYPE.smoothing }}>{item.desc}</p>
-                  </InteractivePanel>
-                ))}
-              </div>
-            </motion.div>
+                    </InteractivePanel>
+                    ))}
+                    </div>
+                    </motion.div>
           )}
         </InteractivePanel>
       </motion.div>

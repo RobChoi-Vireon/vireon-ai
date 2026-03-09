@@ -723,8 +723,9 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer, sources
     <motion.div
       ref={containerRef}
       variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
-      className="rounded-[30px] flex flex-col cursor-pointer relative overflow-hidden consensus-lens" style={{ height: '100%' }}
+      className="rounded-[30px] flex flex-col cursor-pointer relative overflow-hidden consensus-lens"
       style={{
+        height: '100%',
         padding: '24px 24px 20px 24px',
         background: `
           linear-gradient(180deg, 
