@@ -13,7 +13,7 @@ export default function LiveFeed() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [theme, setTheme] = useState('dark');
-  const [viewMode, setViewMode] = useState('grid');
+  const [viewMode] = useState('grid');
   const [lastUpdated, setLastUpdated] = useState(new Date());
 
   const [filters, setFilters] = useState({
