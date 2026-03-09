@@ -687,7 +687,7 @@ export default function EquilibriumBalanceModule({
       {/* Timestamp Footer */}
       <motion.div
         className="flex items-center justify-center text-xs mt-1.5"
-        style={{ color: 'rgba(255,255,255,0.45)', fontSize: '10px' }}
+        style={{ color: 'rgba(255,255,255,0.45)', fontSize: '10px', fontFamily: FONT.text, ...TYPE.smooth }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5, duration: 0.3 }}
