@@ -343,10 +343,10 @@ export default function InflationSection({ data }) {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             {[{ label: 'Next 30–60 days', items: d.watch_short }, { label: 'Next 6–12 months', items: d.watch_long }].map(({ label, items }) => (
               <div key={label}>
-                <div style={{ fontSize: '11px', fontWeight: 600, color: 'rgba(255,255,255,0.52)', marginBottom: '10px' }}>{label}</div>
+                <div style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.65)', marginBottom: '10px', letterSpacing: '0.02em', ...TYPE.smoothing }}>{label}</div>
                 <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {items.slice(0, 4).map((item, idx) => (
-                    <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '7px', fontSize: '13px', color: 'rgba(255,255,255,0.70)', lineHeight: 1.45 }}>
+                    <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '7px', fontFamily: FONT.text, fontSize: '14px', fontWeight: 400, color: 'rgba(255,255,255,0.85)', lineHeight: 1.5, ...TYPE.smoothing }}>
                       <ChevronRight className="w-3 h-3" style={{ color: 'rgba(255,255,255,0.28)', flexShrink: 0, marginTop: '2px' }} strokeWidth={2} />
                       {item}
                     </li>
