@@ -189,7 +189,8 @@ export default function EquilibriumBalanceModule({
               fontWeight: 600,
               letterSpacing: '-0.01em',
               color: 'rgba(255,255,255,0.95)',
-              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
+              fontFamily: FONT.display,
+              ...TYPE.smooth
             }}
           >
             Global Equilibrium
