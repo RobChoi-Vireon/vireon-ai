@@ -7,23 +7,11 @@ const SMOOTH_EXPAND = { duration: 0.38, ease: [0.22, 0.61, 0.36, 1] };
 const CHEVRON_ROTATE = { duration: 0.32, ease: [0.22, 0.61, 0.36, 1] };
 
 const GLASS_CARD = {
-  background: 'rgba(255,255,255,0.04)',
-  backdropFilter: 'blur(24px) saturate(180%)',
-  WebkitBackdropFilter: 'blur(24px) saturate(180%)',
-  border: '1px solid rgba(255,255,255,0.08)',
-  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.07), 0 4px 32px rgba(0,0,0,0.40)',
-  overflow: 'hidden',
-  transform: 'translateZ(0)',
-  backfaceVisibility: 'hidden',
-  WebkitFontSmoothing: 'antialiased',
-};
-
-const GLASS_ACCORDION = {
-  background: 'rgba(255,255,255,0.025)',
-  backdropFilter: 'blur(32px) saturate(185%)',
-  WebkitBackdropFilter: 'blur(32px) saturate(185%)',
-  border: '1px solid rgba(255,255,255,0.07)',
-  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05), 0 2px 20px rgba(0,0,0,0.32)',
+  background: 'linear-gradient(180deg, rgba(255,255,255,0.052) 0%, rgba(255,255,255,0.030) 100%)',
+  backdropFilter: 'blur(42px) saturate(170%)',
+  WebkitBackdropFilter: 'blur(42px) saturate(170%)',
+  border: '1px solid rgba(255,255,255,0.09)',
+  boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.09), 0 6px 28px rgba(0,0,0,0.12)',
   overflow: 'hidden',
   transform: 'translateZ(0)',
   backfaceVisibility: 'hidden',
@@ -52,9 +40,9 @@ const SignalChip = ({ arrow, label, status, index }) => {
   const Icon = getArrowIcon(arrow);
   const isUp = arrow === 'up';
   const isDown = arrow === 'down';
-  const accentColor = isUp ? '#E8606E' : isDown ? '#4DCA94' : '#8C97A6';
-  const glowColor = isUp ? 'rgba(232,96,110,0.14)' : isDown ? 'rgba(77,202,148,0.11)' : 'rgba(140,151,166,0.08)';
-  const borderColor = isUp ? 'rgba(232,96,110,0.18)' : isDown ? 'rgba(77,202,148,0.15)' : 'rgba(140,151,166,0.12)';
+  const accentColor = isUp ? '#FF6A7A' : isDown ? '#58E3A4' : '#A8B3C7';
+  const glowColor = isUp ? 'rgba(255,106,122,0.18)' : isDown ? 'rgba(88,227,164,0.14)' : 'rgba(168,179,199,0.10)';
+  const borderColor = isUp ? 'rgba(255,106,122,0.22)' : isDown ? 'rgba(88,227,164,0.18)' : 'rgba(168,179,199,0.14)';
 
   return (
     <motion.div
@@ -63,19 +51,18 @@ const SignalChip = ({ arrow, label, status, index }) => {
       transition={{ delay: 0.1 + index * 0.07, duration: 0.4, ease: HORIZON_EASE }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="flex-1 relative rounded-[14px] p-4 cursor-default"
+      className="flex-1 relative rounded-[18px] p-4 cursor-default"
       style={{
         background: hovered
-          ? `radial-gradient(ellipse at top left, rgba(255,255,255,0.06) 0%, transparent 60%), linear-gradient(180deg, ${glowColor} 0%, rgba(255,255,255,0.015) 100%)`
-          : `radial-gradient(ellipse at top left, rgba(255,255,255,0.04) 0%, transparent 60%), linear-gradient(180deg, ${glowColor} 0%, rgba(255,255,255,0.010) 100%)`,
-        border: `1px solid ${hovered ? borderColor.replace('0.18', '0.26').replace('0.15', '0.22').replace('0.12', '0.18') : borderColor}`,
+          ? `linear-gradient(180deg, ${glowColor.replace('0.18', '0.22').replace('0.14', '0.18').replace('0.10', '0.13')} 0%, rgba(255,255,255,0.025) 100%)`
+          : `linear-gradient(180deg, ${glowColor} 0%, rgba(255,255,255,0.015) 100%)`,
+        border: `1px solid ${hovered ? borderColor.replace('0.22', '0.32').replace('0.18', '0.26').replace('0.14', '0.22') : borderColor}`,
         boxShadow: hovered
-          ? `inset 0 1px 0 rgba(255,255,255,0.09), 0 8px 28px rgba(0,0,0,0.22), 0 0 18px ${glowColor}`
-          : `inset 0 1px 0 rgba(255,255,255,0.05), 0 4px 16px rgba(0,0,0,0.14)`,
-        backdropFilter: 'blur(24px) saturate(180%)',
-        WebkitBackdropFilter: 'blur(24px) saturate(180%)',
-        transition: 'all 0.28s cubic-bezier(0.4,0,0.2,1)',
-        transform: hovered ? 'translateY(-1px)' : 'translateY(0)',
+          ? `inset 0 1px 0 rgba(255,255,255,0.10), 0 8px 28px rgba(0,0,0,0.18), 0 0 20px ${glowColor}`
+          : `inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 16px rgba(0,0,0,0.10)`,
+        backdropFilter: 'blur(24px) saturate(160%)',
+        WebkitBackdropFilter: 'blur(24px) saturate(160%)',
+        transition: 'all 0.22s ease-out',
         minWidth: 0,
       }}
     >
@@ -92,7 +79,7 @@ const SignalChip = ({ arrow, label, status, index }) => {
           {label}
         </span>
       </div>
-      <div style={{ fontSize: '14px', fontWeight: 600, lineHeight: 1.5, color: 'rgba(255,255,255,0.82)', letterSpacing: '-0.01em' }}>
+      <div className="text-[15px] font-bold leading-tight" style={{ color: 'rgba(255,255,255,0.94)', letterSpacing: '-0.015em' }}>
         {status}
       </div>
 
@@ -124,11 +111,9 @@ const DriverForceMeter = ({ driver, idx, total }) => (
       <span
         className="text-[11px] font-bold px-2.5 py-1 rounded-full flex-shrink-0"
         style={{
-          background: 'rgba(255,255,255,0.07)',
-          backdropFilter: 'blur(8px)',
-          WebkitBackdropFilter: 'blur(8px)',
-          color: 'rgba(140,195,255,0.88)',
-          border: '1px solid rgba(255,255,255,0.10)'
+          background: 'rgba(94,167,255,0.14)',
+          color: 'rgba(140,195,255,0.92)',
+          border: '1px solid rgba(94,167,255,0.22)'
         }}
       >
         {driver.weight}%
@@ -179,12 +164,11 @@ const AccordionPanel = ({ isOpen, onToggle, title, children, delay = 0 }) => {
       transition={{ duration: 0.4, delay, ease: HORIZON_EASE }}
       className="relative rounded-[20px]"
       style={{
-        ...GLASS_ACCORDION,
+        ...GLASS_CARD,
         boxShadow: hovered
-          ? 'inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 32px rgba(0,0,0,0.38), 0 0 0 1px rgba(255,255,255,0.06)'
-          : GLASS_ACCORDION.boxShadow,
-        transform: hovered ? 'translateY(-1px)' : 'translateY(0)',
-        transition: 'all 0.28s cubic-bezier(0.4,0,0.2,1)',
+          ? 'inset 0 1.5px 0 rgba(255,255,255,0.11), 0 10px 36px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.07)'
+          : GLASS_CARD.boxShadow,
+        transition: 'box-shadow 0.22s ease',
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -322,7 +306,7 @@ export default function InflationSection({ data }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: HORIZON_EASE }}
       className="space-y-3"
-      style={{ overflow: 'visible', background: 'rgba(12,14,18,0.85)', backdropFilter: 'blur(40px)', WebkitBackdropFilter: 'blur(40px)', borderRadius: '24px', padding: '28px' }}
+      style={{ overflow: 'visible' }}
     >
       {/* ── PRIMARY STATUS CARD ─────────────────────────────────────── */}
       <motion.div
@@ -344,7 +328,7 @@ export default function InflationSection({ data }) {
         {/* HEADER */}
         <div className="flex items-start justify-between px-6 pt-6 pb-3 relative z-10">
           <div className="flex-1">
-            <h3 className="font-semibold mb-1.5" style={{ fontSize: '28px', color: 'rgba(255,255,255,0.95)', letterSpacing: '-0.5px' }}>
+            <h3 className="text-2xl font-bold mb-1.5" style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.025em' }}>
               Inflation
             </h3>
             <p className="text-[12px] font-medium" style={{ color: 'rgba(255,255,255,0.40)', letterSpacing: '0.01em' }}>
@@ -373,24 +357,22 @@ export default function InflationSection({ data }) {
         </div>
 
         {/* DELTA ANCHOR */}
-        <div className="px-6 py-3 relative z-10">
-          <div className="inline-flex flex-col px-4 py-2.5 rounded-[12px]" style={{
-            background: 'rgba(99,210,190,0.08)',
-            border: '1px solid rgba(99,210,190,0.20)',
-          }}>
-            <div className="text-[10px] font-semibold uppercase mb-1" style={{ color: 'rgba(99,210,190,0.70)', letterSpacing: '0.12em' }}>
-              Δ Since last update
-            </div>
-            <p className="text-sm font-semibold leading-snug" style={{ color: 'rgba(255,255,255,0.88)' }}>
-              {inflationData.delta_summary}
-            </p>
+        <div className="px-6 py-3.5 relative z-10" style={{
+          background: 'linear-gradient(90deg, rgba(94,167,255,0.10) 0%, rgba(94,167,255,0.04) 100%)',
+          borderBottom: '1px solid rgba(94,167,255,0.10)',
+        }}>
+          <div className="text-[11px] font-semibold uppercase tracking-widest mb-1" style={{ color: 'rgba(94,167,255,0.70)', letterSpacing: '0.07em' }}>
+            Δ Since last update
           </div>
+          <p className="text-sm font-semibold leading-snug" style={{ color: 'rgba(255,255,255,0.90)' }}>
+            {inflationData.delta_summary}
+          </p>
         </div>
 
         <div className="px-5 py-5 space-y-5 relative z-10">
           {/* SIGNAL CHIPS — Current State */}
           <div>
-            <div className="text-[10px] font-semibold uppercase mb-3" style={{ color: 'rgba(255,255,255,0.35)', letterSpacing: '0.12em' }}>
+            <div className="text-[11px] font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.32)', letterSpacing: '0.08em' }}>
               Current state
             </div>
             <div className="flex gap-2.5">
@@ -402,10 +384,10 @@ export default function InflationSection({ data }) {
 
           {/* WHY IT MATTERS */}
           <div style={{ opacity: 0.92 }}>
-            <div className="text-[10px] font-semibold uppercase mb-2" style={{ color: 'rgba(255,255,255,0.35)', letterSpacing: '0.12em' }}>
+            <div className="text-[11px] font-semibold uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.32)', letterSpacing: '0.08em' }}>
               Why it matters
             </div>
-            <p style={{ fontSize: '14px', lineHeight: 1.65, color: 'rgba(255,255,255,0.65)', fontStyle: 'normal' }}>
+            <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.78)' }}>
               {inflationData.fed_implication}
             </p>
           </div>
@@ -455,10 +437,10 @@ export default function InflationSection({ data }) {
         <div className="px-5 pb-5 pt-3">
           <div className="grid grid-cols-2 gap-3">
             {/* Winners panel */}
-            <div className="p-4 rounded-[14px]" style={{
-              background: 'rgba(52,199,89,0.06)',
-              border: '1px solid rgba(52,199,89,0.15)',
-              boxShadow: 'inset 0 1px 0 rgba(52,199,89,0.06)'
+            <div className="p-4 rounded-[16px]" style={{
+              background: 'linear-gradient(180deg, rgba(88,227,164,0.09) 0%, rgba(88,227,164,0.04) 100%)',
+              border: '1px solid rgba(88,227,164,0.15)',
+              boxShadow: 'inset 0 1px 0 rgba(88,227,164,0.08)'
             }}>
               <div className="text-[11px] font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(88,227,164,0.78)', letterSpacing: '0.06em' }}>
                 Winners
@@ -466,17 +448,17 @@ export default function InflationSection({ data }) {
               <ul className="space-y-1.5">
                 {inflationData.winners.slice(0, 4).map((item, idx) => (
                   <li key={idx} className="flex items-start gap-2 text-[13px]" style={{ color: 'rgba(255,255,255,0.72)' }}>
-                    <div className="flex-shrink-0 mt-1.5" style={{ width: '2px', height: '2px', borderRadius: '50%', background: 'rgba(255,255,255,0.40)' }} />
+                    <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(88,227,164,0.70)' }} />
                     {item}
                   </li>
                 ))}
               </ul>
             </div>
             {/* Losers panel */}
-            <div className="p-4 rounded-[14px]" style={{
-              background: 'rgba(255,69,58,0.06)',
-              border: '1px solid rgba(255,69,58,0.15)',
-              boxShadow: 'inset 0 1px 0 rgba(255,69,58,0.05)'
+            <div className="p-4 rounded-[16px]" style={{
+              background: 'linear-gradient(180deg, rgba(255,106,122,0.09) 0%, rgba(255,106,122,0.04) 100%)',
+              border: '1px solid rgba(255,106,122,0.15)',
+              boxShadow: 'inset 0 1px 0 rgba(255,106,122,0.08)'
             }}>
               <div className="text-[11px] font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(255,106,122,0.78)', letterSpacing: '0.06em' }}>
                 Losers
