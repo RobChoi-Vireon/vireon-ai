@@ -52,7 +52,7 @@ const SignalChip = ({ arrow, label, status, index }) => {
   const Icon = getArrowIcon(arrow);
   const isUp = arrow === 'up';
   const isDown = arrow === 'down';
-  const accentColor = isUp ? '#E8606E' : isDown ? '#4DC A94' : '#8C97A6';
+  const accentColor = isUp ? '#E8606E' : isDown ? '#4DCA94' : '#8C97A6';
   const glowColor = isUp ? 'rgba(232,96,110,0.14)' : isDown ? 'rgba(77,202,148,0.11)' : 'rgba(140,151,166,0.08)';
   const borderColor = isUp ? 'rgba(232,96,110,0.18)' : isDown ? 'rgba(77,202,148,0.15)' : 'rgba(140,151,166,0.12)';
 
