@@ -542,7 +542,10 @@ export default function EquilibriumBalanceModule({
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center font-bold" style={{
                       color: 'rgba(255,255,255,0.95)',
-                      fontSize: '11px'
+                      fontSize: '11px',
+                      fontFamily: FONT.display,
+                      ...TYPE.smooth,
+                      ...TYPE.tabular
                     }}>
                       {stabilityIndex}
                     </div>
