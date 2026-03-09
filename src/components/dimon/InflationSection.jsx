@@ -279,7 +279,7 @@ export default function InflationSection({ data }) {
         {[d.headline_state, d.core_state, d.services_state].map((state, i) => {
           const t = getRegimeTheme(state.arrow);
           return (
-            <InteractivePanel key={i} index={i + 1} style={{ padding: '16px 18px' }}>
+            <InteractivePanel key={i} index={i + 1} contentStyle={{ padding: '16px 18px' }}>
               <motion.div style={{
                 position: 'absolute', inset: 0, borderRadius: '20px', pointerEvents: 'none',
                 background: `radial-gradient(ellipse at 0% 50%, ${t.glow} 0%, transparent 65%)`
