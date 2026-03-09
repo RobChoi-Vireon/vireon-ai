@@ -942,9 +942,9 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
   const domains = useMemo(() => {
     if (!equilibriumData?.domains) return MOCK_DOMAINS;
     return (equilibriumData.domains || []).map(d => {
-      const key = d.id;
+      const key = d?.id;
       const mock = MOCK_DOMAINS.find(m => m.id === key);
-      if (!d) return mock;
+      if (!d || !key) return null;
       return { id: key, title: d.title || mock?.title || key, posture: d.posture || '', trend: d.trend || 'stable', confidence_pct: typeof d.confidence === 'number' ? d.confidence : 50, strength: typeof d.confidence === 'number' ? d.confidence / 100 : 0.5, confidence_label: d.confidence >= 70 ? 'Strong signal' : d.confidence >= 40 ? 'Moderate signal' : 'Weak signal', summary: d.posture || '', insight: d.insight || '', downstream_effects: Array.isArray(d.signals) ? d.signals.map(s => ({ title: s.headline || '', tags: Array.isArray(s.tags) ? s.tags : [] })) : [], actionable: Array.isArray(d.actions) ? { horizon: d.action_timeframe || '', conviction: d.action_urgency || 'Moderate', directives: d.actions } : null, footer: { primary_cta: { label: 'View detailed analysis', route: `/${key}` }, secondary_link: { label: 'View timeline', route: `/timeline/${key}` }, timestamp: equilibriumData.as_of || new Date().toISOString() }, last_updated_iso: equilibriumData.as_of || new Date().toISOString(), sparkline: mock?.sparkline || [], confidenceDelta: 0 };
     });
   }, [equilibriumData]);
