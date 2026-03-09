@@ -396,13 +396,13 @@ export default function InflationSection({ data }) {
                   background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)',
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                    <span style={{ fontSize: '12px', fontWeight: 700, color: 'rgba(255,255,255,0.88)' }}>{item.label}</span>
+                    <span style={{ fontFamily: FONT.display, fontSize: '14px', fontWeight: 600, color: 'rgba(255,255,255,0.90)', letterSpacing: '-0.005em', ...TYPE.smoothing }}>{item.label}</span>
                     <span style={{
-                      fontSize: '11px', fontWeight: 700, padding: '1px 7px', borderRadius: '999px',
-                      background: `${item.color}10`, color: item.color, border: `1px solid ${item.color}20`
+                      fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, padding: '1px 7px', borderRadius: '999px',
+                      background: `${item.color}10`, color: item.color, border: `1px solid ${item.color}20`, ...TYPE.smoothing, ...TYPE.tabular
                     }}>{item.value}</span>
                   </div>
-                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.42)', lineHeight: 1.5, margin: 0 }}>{item.desc}</p>
+                  <p style={{ fontFamily: FONT.text, fontSize: '13px', fontWeight: 400, color: 'rgba(255,255,255,0.65)', lineHeight: 1.5, margin: 0, ...TYPE.smoothing }}>{item.desc}</p>
                 </div>
               ))}
             </div>
