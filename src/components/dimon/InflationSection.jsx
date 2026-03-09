@@ -534,8 +534,8 @@ export default function InflationSection({ data }) {
                   textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0, ...TYPE.smoothing,
                   transition: 'all 0.14s ease-out',
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.10)'; e.currentTarget.style.color = 'rgba(255,255,255,0.92)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = 'rgba(255,255,255,0.65)'; }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.10)'; e.currentTarget.style.color = 'rgba(255,255,255,0.92)'; e.currentTarget.style.transform = 'translateY(-1px) scale(1.006)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = 'rgba(255,255,255,0.65)'; e.currentTarget.style.transform = 'translateY(0) scale(1)'; }}
               >
                 {source.name}
               </a>
