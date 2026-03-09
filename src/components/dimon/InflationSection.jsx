@@ -402,10 +402,10 @@ export default function InflationSection({ data }) {
 
           {/* WHY IT MATTERS */}
           <div style={{ opacity: 0.92 }}>
-            <div className="text-[11px] font-semibold uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.32)', letterSpacing: '0.08em' }}>
+            <div className="text-[10px] font-semibold uppercase mb-2" style={{ color: 'rgba(255,255,255,0.35)', letterSpacing: '0.12em' }}>
               Why it matters
             </div>
-            <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.78)' }}>
+            <p style={{ fontSize: '14px', lineHeight: 1.65, color: 'rgba(255,255,255,0.65)', fontStyle: 'normal' }}>
               {inflationData.fed_implication}
             </p>
           </div>
