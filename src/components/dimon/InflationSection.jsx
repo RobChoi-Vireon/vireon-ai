@@ -455,10 +455,10 @@ export default function InflationSection({ data }) {
         <div className="px-5 pb-5 pt-3">
           <div className="grid grid-cols-2 gap-3">
             {/* Winners panel */}
-            <div className="p-4 rounded-[16px]" style={{
-              background: 'linear-gradient(180deg, rgba(88,227,164,0.09) 0%, rgba(88,227,164,0.04) 100%)',
-              border: '1px solid rgba(88,227,164,0.15)',
-              boxShadow: 'inset 0 1px 0 rgba(88,227,164,0.08)'
+            <div className="p-4 rounded-[14px]" style={{
+              background: 'rgba(52,199,89,0.06)',
+              border: '1px solid rgba(52,199,89,0.15)',
+              boxShadow: 'inset 0 1px 0 rgba(52,199,89,0.06)'
             }}>
               <div className="text-[11px] font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(88,227,164,0.78)', letterSpacing: '0.06em' }}>
                 Winners
