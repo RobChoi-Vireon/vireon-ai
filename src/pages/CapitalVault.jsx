@@ -153,7 +153,7 @@ export default function CapitalVault() {
                   </div>
                 </div>
                 <p className="text-[15px]" style={{ color: 'rgba(180, 190, 215, 0.60)', letterSpacing: '-0.01em', fontWeight: 400 }}>
-                  Bloomberg-grade financial knowledge engine, powered by AI
+                  Lighting Fast AI Dictionary, powered by Ori Intelligence
                 </p>
               </div>
 
