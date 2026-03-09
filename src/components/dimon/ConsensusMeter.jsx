@@ -453,7 +453,9 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
                 : `0 0 16px ${scoreColor}30, 0 2px 6px rgba(0,0,0,0.26)`,
               letterSpacing: '-0.03em',
               lineHeight: '1',
-              filter: 'brightness(1.10) contrast(1.10)'
+              filter: 'brightness(1.10) contrast(1.10)',
+              fontFamily: '"SF Pro Display", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif',
+              fontVariantNumeric: 'tabular-nums'
             }}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -481,13 +483,13 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
           
           <div 
             className="text-[17px] font-semibold mb-1 relative z-10" 
-            style={{ color: 'rgba(255,255,255,0.98)', letterSpacing: '-0.01em' }}
+            style={{ color: 'rgba(255,255,255,0.98)', letterSpacing: '-0.01em', fontFamily: '"SF Pro Display", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif' }}
           >
             {consensusLabel ?? `${scoreLabel} View`}
           </div>
           <div 
             className="text-[11px] font-medium relative z-10" 
-            style={{ color: 'rgba(255,255,255,0.65)' }}
+            style={{ color: 'rgba(255,255,255,0.65)', fontFamily: '"SF Pro Text", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif' }}
           >
             Confidence: {confidenceLabel ?? 'Moderate'}
           </div>
@@ -621,7 +623,8 @@ const CategoryGlassChips = ({ segments, isHovered, onChipHover, onChipLeave }) =
                 className="text-[11px] font-medium" 
                 style={{ 
                   color: 'rgba(255,255,255,0.75)',
-                  letterSpacing: '0.01em'
+                  letterSpacing: '0.01em',
+                  fontFamily: '"SF Pro Text", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif'
                 }}
               >
                 {segment.name}
@@ -629,7 +632,7 @@ const CategoryGlassChips = ({ segments, isHovered, onChipHover, onChipLeave }) =
 
               <span 
                 className="text-[12px] font-bold ml-1" 
-                style={{ color: colors.dot }}
+                style={{ color: colors.dot, fontFamily: '"SF Pro Text", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif', fontVariantNumeric: 'tabular-nums' }}
               >
                 {Math.round(value)}%
               </span>
@@ -839,7 +842,8 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer, sources
           className="text-[16px] font-semibold"
           style={{ 
             color: 'rgba(255,255,255,0.96)',
-            letterSpacing: '-0.01em'
+            letterSpacing: '-0.01em',
+            fontFamily: '"SF Pro Display", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif'
           }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -853,7 +857,9 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer, sources
             background: 'rgba(255, 255, 255, 0.08)',
             color: 'rgba(255,255,255,0.70)',
             fontSize: '11px',
-            border: '1px solid rgba(255, 255, 255, 0.06)'
+            border: '1px solid rgba(255, 255, 255, 0.06)',
+            fontFamily: '"SF Pro Text", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif',
+            fontVariantNumeric: 'tabular-nums'
           }}
           initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -893,7 +899,8 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer, sources
           zIndex: 10,
           fontSize: '10px',
           letterSpacing: '-0.015em',
-          marginTop: '8px'
+          marginTop: '8px',
+          fontFamily: '"SF Pro Text", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif'
         }}
         initial={{ opacity: 0 }}
         animate={{ 
@@ -910,7 +917,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer, sources
       {/* Interactive breakdown hint */}
       <motion.div 
         className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center text-xs pointer-events-none"
-        style={{ color: 'rgba(255,255,255,0.50)', zIndex: 10 }}
+        style={{ color: 'rgba(255,255,255,0.50)', zIndex: 10, fontFamily: '"SF Pro Text", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif' }}
         initial={{ opacity: 0 }}
         animate={{ 
           opacity: isHovered ? 1 : 0,
@@ -955,9 +962,10 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer, sources
         }
 
         .consensus-lens * {
-          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+          font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
+          text-rendering: optimizeLegibility;
         }
 
         .signal-orb-outer {
