@@ -4,13 +4,16 @@ import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLef
 import LyraLogo from '../core/LyraLogo';
 import { createPortal } from 'react-dom';
 import EquilibriumPulse from './EquilibriumPulse';
-import { adaptEquilibriumDomains } from './EquilibriumDomainsAdapter';
 
 // ============================================================================
 // EQUILIBRIUM — OS HORIZON V3.2 "UNIFIED MOTION + INFORMATION HIERARCHY"
+// Motion curves + micro-interactions + GPU-optimized transitions + simplified visual language
 // ============================================================================
 
 // 🔒 DESIGN LOCKED — OS HORIZON V4.0
+// Last Updated: 2025-01-20
+// Do not modify visual design without explicit assignment
+// See: DESIGN_LOCKED_COMPONENTS.md
 
 const MOTION_TOKENS = {
   CURVES: {
@@ -91,6 +94,138 @@ const TOKENS = {
 
 const ANGLES = { rates: 22.5, fx: 160.0, growth: 297.5, geopolitics: 75.0 };
 const RADII = { rates: 0.35, fx: 0.39, growth: 0.37, geopolitics: 0.32 };
+
+const MOCK_DOMAINS = [
+  {
+    id: "rates",
+    title: "Rates Markets",
+    posture: "hawkish",
+    trend: "Rising pressure",
+    confidence_pct: 78,
+    strength: 0.82,
+    confidence_label: "Strong signal",
+    summary: "The Federal Reserve is staying tough on inflation because prices keep rising. This means borrowing costs will stay high or go higher.",
+    insight: "Interest rates holding steady while banks and companies adjust to the new normal.",
+    downstream_effects: [
+      { title: "Borrowing costs rising for companies", tags: ["Credit", "High Yield", "Investment Grade"], link: "/credit" },
+      { title: "Tech stock valuations under pressure", tags: ["Tech", "Large-Cap Growth"], link: "/equities/tech" },
+      { title: "Emerging markets paying more to borrow", tags: ["Emerging Markets", "Currency Funding"], link: "/em" }
+    ],
+    actionable: {
+      horizon: "1–3 months",
+      conviction: "High",
+      directives: [
+        "Favor short-term bonds and avoid stocks that are sensitive to interest rates.",
+        "Protect against rising rates and hold dollars instead of emerging market currencies."
+      ]
+    },
+    footer: {
+      primary_cta: { label: "View detailed analysis", route: "/implications/rates" },
+      secondary_link: { label: "View timeline", route: "/timeline/rates" },
+      timestamp: new Date().toISOString()
+    },
+    last_updated_iso: new Date().toISOString(),
+    sparkline: [0.72, 0.74, 0.76, 0.75, 0.78, 0.80, 0.79, 0.81, 0.82],
+    confidenceDelta: 2
+  },
+  {
+    id: "fx",
+    title: "FX Markets",
+    posture: "stable",
+    trend: "Steady trend",
+    confidence_pct: 65,
+    strength: 0.58,
+    confidence_label: "Moderate signal",
+    summary: "Currency markets are settling down as interest rates around the world become more similar. Money is moving less between countries as investors become more cautious.",
+    insight: "Money flows between countries are stabilizing. Investors are becoming less aggressive.",
+    downstream_effects: [
+      { title: "Emerging market currencies steadying", tags: ["Currencies", "Emerging Markets", "Volatility"], link: "/fx/em" },
+      { title: "Energy import costs staying flat", tags: ["Commodities", "Trade"], link: "/commodities" },
+      { title: "Bond interest rates tightening together", tags: ["Fixed Income", "Rates"], link: "/bonds" }
+    ],
+    actionable: {
+      horizon: "2–4 weeks",
+      conviction: "Moderate",
+      directives: [
+        "Watch for interest rate differences between countries—they could shift currency bets.",
+        "Stick with US investments until market swings pick up again."
+      ]
+    },
+    footer: {
+      primary_cta: { label: "View detailed analysis", route: "/fx/dashboard" },
+      secondary_link: { label: "Track currencies", route: "/fx/tracker" },
+      timestamp: new Date().toISOString()
+    },
+    addendum: "Next 48 hours: Currency markets likely to stay calm unless interest rates move unexpectedly.",
+    last_updated_iso: new Date().toISOString(),
+    sparkline: [0.60, 0.59, 0.58, 0.57, 0.58, 0.59, 0.58, 0.57, 0.58],
+    confidenceDelta: -3
+  },
+  {
+    id: "growth",
+    title: "Growth Markets",
+    posture: "softening",
+    trend: "Mild slowdown",
+    confidence_pct: 71,
+    strength: 0.68,
+    confidence_label: "Moderate signal",
+    summary: "China's economy is slowing, which is reducing demand worldwide. The US economy is still holding up but showing signs of cooling across different industries.",
+    insight: "Investors are shifting toward safer, more defensive investments as growth slows.",
+    downstream_effects: [
+      { title: "Raw material prices falling", tags: ["Commodities", "Energy", "Materials"], link: "/commodities" },
+      { title: "Money moving to safer stocks", tags: ["Equities", "Defensive", "Utilities"], link: "/equities/defensive" },
+      { title: "Service businesses holding steady", tags: ["Services", "Labor", "Domestic"], link: "/sectors/services" }
+    ],
+    actionable: {
+      horizon: "1–2 weeks",
+      conviction: "Strong",
+      directives: [
+        "Shift toward defensive stocks and companies that can raise prices easily.",
+        "Watch commodity prices for more signs of weakening demand."
+      ]
+    },
+    footer: {
+      primary_cta: { label: "View detailed analysis", route: "/growth/outlook" },
+      secondary_link: { label: "View sectors", route: "/sectors" },
+      timestamp: new Date().toISOString()
+    },
+    last_updated_iso: new Date().toISOString(),
+    sparkline: [0.75, 0.74, 0.72, 0.70, 0.69, 0.68, 0.67, 0.68, 0.68],
+    confidenceDelta: -1
+  },
+  {
+    id: "geopolitics",
+    title: "Geopolitics Markets",
+    posture: "tightening",
+    trend: "Rising tension",
+    confidence_pct: 58,
+    strength: 0.72,
+    confidence_label: "Moderate signal",
+    summary: "Countries are trading less with each other, forcing companies to rebuild supply chains. Concerns about energy security are increasing tensions in key regions.",
+    insight: "Political tensions are building, creating more uncertainty in specific parts of the world.",
+    downstream_effects: [
+      { title: "Energy prices staying high", tags: ["Energy", "Oil", "Gas"], link: "/energy" },
+      { title: "Companies moving factories back home", tags: ["Industrials", "Supply Chain", "Domestic"], link: "/industrials" },
+      { title: "Countries forming closer trading groups", tags: ["Geopolitics", "Trade", "Policy"], link: "/geopolitics" }
+    ],
+    actionable: {
+      horizon: "3–6 months",
+      conviction: "Moderate",
+      directives: [
+        "Focus on US companies and energy investments that can handle disruptions.",
+        "Spread your investments across multiple countries to reduce risk."
+      ]
+    },
+    footer: {
+      primary_cta: { label: "View detailed analysis", route: "/geopolitics/risk" },
+      secondary_link: { label: "Track supply chains", route: "/supply-chain" },
+      timestamp: new Date().toISOString()
+    },
+    last_updated_iso: new Date().toISOString(),
+    sparkline: [0.65, 0.66, 0.68, 0.70, 0.71, 0.72, 0.71, 0.72, 0.72],
+    confidenceDelta: 4
+  }
+];
 
 // ============================================================================
 // PORTAL OVERLAY ROOT MANAGER
@@ -804,7 +939,15 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
   const [isEquilibriumActive, setIsEquilibriumActive] = useState(false);
   const equilibriumExitTimerRef = useRef(null);
 
-  const domains = useMemo(() => adaptEquilibriumDomains(equilibriumData), [equilibriumData]);
+  const domains = useMemo(() => {
+    if (!equilibriumData?.domains) return MOCK_DOMAINS;
+    return ['rates','fx','growth','geopolitics'].map(key => {
+      const d = equilibriumData.domains[key];
+      const mock = MOCK_DOMAINS.find(m => m.id === key);
+      if (!d) return mock;
+      return { id: key, title: d.title || mock?.title || key, posture: d.posture || '', trend: d.trend || 'stable', confidence_pct: typeof d.confidence === 'number' ? d.confidence : 50, strength: typeof d.strength === 'number' ? d.strength / 100 : 0.5, confidence_label: d.confidence >= 70 ? 'Strong signal' : d.confidence >= 40 ? 'Moderate signal' : 'Weak signal', summary: d.summary || '', insight: d.insight || '', downstream_effects: Array.isArray(d.downstream_effects) ? d.downstream_effects.map(de => ({ title: de.text || '', tags: Array.isArray(de.tags) ? de.tags : [], link: '#' })) : [], actionable: d.actionable ? { horizon: d.actionable.horizon || '', conviction: d.actionable.conviction || 'Moderate', directives: Array.isArray(d.actionable.directives) ? d.actionable.directives : [] } : null, footer: { primary_cta: { label: 'View detailed analysis', route: `/${key}` }, secondary_link: { label: 'View timeline', route: `/timeline/${key}` }, timestamp: equilibriumData.as_of || new Date().toISOString() }, last_updated_iso: equilibriumData.as_of || new Date().toISOString(), sparkline: mock?.sparkline || [], confidenceDelta: typeof d.confidence_delta === 'number' ? d.confidence_delta : 0 };
+    });
+  }, [equilibriumData]);
 
   const getGlobalScale = useCallback(() => {
     if (viewportSize === 'sm') return TOKENS.HORIZON.globalScaleSm;
@@ -1710,7 +1853,12 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
               const isHovered = hoveredDomain === domain.id;
               const isSelected = selectedDomain?.id === domain.id;
               
-              const labelText = domain.title || domain.id;
+              const labelText = {
+                fx: 'Currency Markets',
+                rates: 'Rates Markets',
+                growth: 'Growth Markets',
+                geopolitics: 'Geopolitics'
+              }[domain.id] || domain.id;
 
               return (
                 <motion.div key={`label-${domain.id}`} style={{ position: 'absolute', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', background: 'rgba(10,14,20,0.50)', border: `1px solid ${TOKENS.HORIZON.glassBorder}`, borderRadius: '10px', padding: '6px 11px', fontWeight: 500, fontSize: '12px', letterSpacing: '0.02em', textShadow: '0 1px 2px rgba(0,0,0,0.4)', pointerEvents: 'none', zIndex: 11, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }} animate={{ left: `${labelPos.x}px`, top: `${labelPos.y}px`, x: '-50%', y: '-50%', color: isHovered || isSelected ? TOKENS.colors.textLabel : getDomainText(domain.id), scale: isHovered || isSelected ? 1.05 : 1, boxShadow: isHovered || isSelected ? '0 0 16px rgba(160,191,255,0.15)' : 'none' }} transition={{ left: { duration: TOKENS.HORIZON.t_labelLag, ease: TOKENS.HORIZON.easingApple }, top: { duration: TOKENS.HORIZON.t_labelLag, ease: TOKENS.HORIZON.easingApple }, color: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }, scale: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing }, boxShadow: { duration: TOKENS.HORIZON.t_hover, ease: TOKENS.HORIZON.easing } }}>
