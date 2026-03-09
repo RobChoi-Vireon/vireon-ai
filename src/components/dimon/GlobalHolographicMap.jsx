@@ -227,42 +227,7 @@ const MOCK_DOMAINS = [
   }
 ];
 
-// ============================================================================
-// PORTAL OVERLAY ROOT MANAGER
-// ============================================================================
-const usePortalRoot = () => {
-  const [portalRoot, setPortalRoot] = useState(null);
-
-  useEffect(() => {
-    let root = document.getElementById('equilibrium-overlay-root');
-
-    if (!root) {
-      root = document.createElement('div');
-      root.id = 'equilibrium-overlay-root';
-      root.setAttribute('aria-hidden', 'true');
-      root.style.cssText = `
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        z-index: 9999;
-        overflow: hidden;
-      `;
-      document.body.appendChild(root);
-    }
-
-    setPortalRoot(root);
-
-    return () => {
-      setTimeout(() => {
-        if (root && root.childNodes.length === 0 && document.body.contains(root)) {
-          root.remove();
-        }
-      }, 100);
-    };
-  }, []);
-
-  return portalRoot;
-};
+// HoverCardPortal extracted to EquilibriumHoverCard.jsx
 
 // ============================================================================
 // SMART PLACEMENT CALCULATOR (COLLISION-AWARE)
