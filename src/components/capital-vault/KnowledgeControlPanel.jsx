@@ -3,8 +3,8 @@ import { motion } from 'framer-motion';
 import { TrendingUp, BookOpen, Target, Sparkles, Hash } from 'lucide-react';
 
 const VIEW_MODES = [
-  { id: 'pro', label: 'Pro Level', sub: 'Institutional-grade', icon: TrendingUp, accent: 'rgba(100, 175, 255, 0.85)' },
-  { id: 'novice', label: 'Novice Level', sub: 'Simplified explanations', icon: BookOpen, accent: 'rgba(88, 227, 164, 0.85)' },
+  { id: 'pro', label: 'Pro', sub: 'Institutional-grade', icon: TrendingUp, accent: 'rgba(100, 175, 255, 0.85)' },
+  { id: 'novice', label: 'Beginner', sub: 'Simplified explanations', icon: BookOpen, accent: 'rgba(88, 227, 164, 0.85)' },
   { id: 'principles', label: 'First Principles', sub: 'Concept from fundamentals', icon: Target, accent: 'rgba(200, 145, 255, 0.85)' },
   { id: 'ai', label: 'AI Insight', sub: 'Real-time market context', icon: Sparkles, accent: 'rgba(255, 185, 80, 0.85)' },
 ];
