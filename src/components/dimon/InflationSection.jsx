@@ -344,7 +344,7 @@ export default function InflationSection({ data }) {
         {/* HEADER */}
         <div className="flex items-start justify-between px-6 pt-6 pb-3 relative z-10">
           <div className="flex-1">
-            <h3 className="text-2xl font-bold mb-1.5" style={{ color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.025em' }}>
+            <h3 className="font-semibold mb-1.5" style={{ fontSize: '28px', color: 'rgba(255,255,255,0.95)', letterSpacing: '-0.5px' }}>
               Inflation
             </h3>
             <p className="text-[12px] font-medium" style={{ color: 'rgba(255,255,255,0.40)', letterSpacing: '0.01em' }}>
