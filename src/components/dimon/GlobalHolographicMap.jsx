@@ -941,8 +941,8 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
 
   const domains = useMemo(() => {
     if (!equilibriumData?.domains) return MOCK_DOMAINS;
-    return ['rates','fx','growth','geopolitics'].map(key => {
-      const d = equilibriumData.domains[key];
+    return (equilibriumData.domains || []).map(d => {
+      const key = d.id;
       const mock = MOCK_DOMAINS.find(m => m.id === key);
       if (!d) return mock;
       return { id: key, title: d.title || mock?.title || key, posture: d.posture || '', trend: d.trend || 'stable', confidence_pct: typeof d.confidence === 'number' ? d.confidence : 50, strength: typeof d.strength === 'number' ? d.strength / 100 : 0.5, confidence_label: d.confidence >= 70 ? 'Strong signal' : d.confidence >= 40 ? 'Moderate signal' : 'Weak signal', summary: d.summary || '', insight: d.insight || '', downstream_effects: Array.isArray(d.downstream_effects) ? d.downstream_effects.map(de => ({ title: de.text || '', tags: Array.isArray(de.tags) ? de.tags : [], link: '#' })) : [], actionable: d.actionable ? { horizon: d.actionable.horizon || '', conviction: d.actionable.conviction || 'Moderate', directives: Array.isArray(d.actionable.directives) ? d.actionable.directives : [] } : null, footer: { primary_cta: { label: 'View detailed analysis', route: `/${key}` }, secondary_link: { label: 'View timeline', route: `/timeline/${key}` }, timestamp: equilibriumData.as_of || new Date().toISOString() }, last_updated_iso: equilibriumData.as_of || new Date().toISOString(), sparkline: mock?.sparkline || [], confidenceDelta: typeof d.confidence_delta === 'number' ? d.confidence_delta : 0 };
