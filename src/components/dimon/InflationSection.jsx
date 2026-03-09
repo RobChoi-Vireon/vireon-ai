@@ -466,7 +466,7 @@ export default function InflationSection({ data }) {
               <ul className="space-y-1.5">
                 {inflationData.winners.slice(0, 4).map((item, idx) => (
                   <li key={idx} className="flex items-start gap-2 text-[13px]" style={{ color: 'rgba(255,255,255,0.72)' }}>
-                    <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: 'rgba(88,227,164,0.70)' }} />
+                    <div className="flex-shrink-0 mt-1.5" style={{ width: '2px', height: '2px', borderRadius: '50%', background: 'rgba(255,255,255,0.40)' }} />
                     {item}
                   </li>
                 ))}
