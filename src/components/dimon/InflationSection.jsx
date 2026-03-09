@@ -511,7 +511,7 @@ export default function InflationSection({ data }) {
       <motion.div
         initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...ENTRY, delay: 0.30 }}
       >
-        <InteractivePanel index={11} style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <InteractivePanel index={11} contentStyle={{ padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '7px', flexShrink: 0 }}>
             <span style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.65)', letterSpacing: '0.06em', textTransform: 'uppercase', whiteSpace: 'nowrap', ...TYPE.smoothing }}>
               Top Weighted Sources
