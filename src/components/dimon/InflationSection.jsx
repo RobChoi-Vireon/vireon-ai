@@ -322,7 +322,7 @@ export default function InflationSection({ data }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: HORIZON_EASE }}
       className="space-y-3"
-      style={{ overflow: 'visible' }}
+      style={{ overflow: 'visible', background: 'rgba(12,14,18,0.85)', backdropFilter: 'blur(40px)', WebkitBackdropFilter: 'blur(40px)', borderRadius: '24px', padding: '28px' }}
     >
       {/* ── PRIMARY STATUS CARD ─────────────────────────────────────── */}
       <motion.div
