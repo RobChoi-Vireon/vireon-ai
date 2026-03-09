@@ -4,16 +4,13 @@ import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLef
 import LyraLogo from '../core/LyraLogo';
 import { createPortal } from 'react-dom';
 import EquilibriumPulse from './EquilibriumPulse';
+import { adaptEquilibriumDomains } from './EquilibriumDomainsAdapter';
 
 // ============================================================================
 // EQUILIBRIUM — OS HORIZON V3.2 "UNIFIED MOTION + INFORMATION HIERARCHY"
-// Motion curves + micro-interactions + GPU-optimized transitions + simplified visual language
 // ============================================================================
 
 // 🔒 DESIGN LOCKED — OS HORIZON V4.0
-// Last Updated: 2025-01-20
-// Do not modify visual design without explicit assignment
-// See: DESIGN_LOCKED_COMPONENTS.md
 
 const MOTION_TOKENS = {
   CURVES: {
