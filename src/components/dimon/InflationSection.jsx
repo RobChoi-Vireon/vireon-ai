@@ -397,11 +397,10 @@ export default function InflationSection({ data }) {
         style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr', gap: '10px', marginBottom: '10px' }}
       >
         {/* Winners */}
-        <InteractivePanel index={7} style={{
-          background: 'linear-gradient(180deg, rgba(92,216,160,0.06) 0%, rgba(92,216,160,0.03) 100%)',
-          border: '1px solid rgba(92,216,160,0.12)',
-          padding: '16px 18px',
-        }}>
+        <InteractivePanel index={7}
+          style={{ background: 'linear-gradient(180deg, rgba(92,216,160,0.06) 0%, rgba(92,216,160,0.03) 100%)', border: '1px solid rgba(92,216,160,0.12)' }}
+          contentStyle={{ padding: '16px 18px' }}
+        >
           <div style={{ ...SPECULAR, background: 'linear-gradient(90deg, transparent, rgba(92,216,160,0.14), transparent)' }} />
           <div style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(92,216,160,0.85)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '12px', ...TYPE.smoothing }}>Winners</div>
           <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
