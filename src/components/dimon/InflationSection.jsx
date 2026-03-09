@@ -485,10 +485,7 @@ export default function InflationSection({ data }) {
                    { label: 'PCE', value: d.cpi_pce_collapsed?.split('/')[1]?.trim() || '2.5%', color: '#B47FFF', desc: d.pce_plain },
                    { label: 'Gap', value: '0.1%', color: '#FFB020', desc: d.why_fed_prefers },
                  ].map((item, idx) => (
-                  <div key={idx} style={{
-                    flex: 1, padding: '10px 14px', borderRadius: '12px',
-                    background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)',
-                  }}>
+                  <InteractivePanel key={idx} index={20 + idx} contentStyle={{ flex: 1, padding: '10px 14px' }} style={{ flex: 1 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
                       <span style={{ fontFamily: FONT.display, fontSize: '14px', fontWeight: 600, color: 'rgba(255,255,255,0.90)', letterSpacing: '-0.005em', ...TYPE.smoothing }}>{item.label}</span>
                       <span style={{
