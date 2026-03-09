@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, Minus, BarChart2, Database, ChevronRight, Flame, Wind, Activity, ExternalLink } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, BarChart2, ChevronRight, Flame, Wind } from 'lucide-react';
 
-const SPRING = { type: 'spring', stiffness: 380, damping: 40, mass: 0.8 };
-const ENTRY  = { type: 'spring', stiffness: 320, damping: 35, mass: 0.85 };
+const ENTRY = { type: 'spring', stiffness: 320, damping: 35, mass: 0.85 };
 
 const FONT = {
   display: '"SF Pro Display", Inter, system-ui, -apple-system, sans-serif',
@@ -39,8 +38,108 @@ const SPECULAR = {
   pointerEvents: 'none',
 };
 
-const DIVIDER = { height: '1px', background: 'rgba(255,255,255,0.06)' };
+// ─── Interactive Panel ───────────────────────────────────────────────────────
+// Applies Executive Takeaway–style hover effects: parallax tilt, proximity halo,
+// ambient bloom, lift, press feedback, and periodic shimmer sweep.
+const InteractivePanel = ({ children, style = {}, index = 0 }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
+  const [tiltX, setTiltX] = useState(0);
+  const [tiltY, setTiltY] = useState(0);
+  const [isNearCursor, setIsNearCursor] = useState(false);
+  const ref = useRef(null);
 
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!ref.current) return;
+      const rect = ref.current.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dist = Math.sqrt((e.clientX - cx) ** 2 + (e.clientY - cy) ** 2);
+      setIsNearCursor(dist < 90);
+      if (isHovered) {
+        const px = (e.clientX - rect.left) / rect.width - 0.5;
+        const py = (e.clientY - rect.top) / rect.height - 0.5;
+        setTiltX(py * -2.5);
+        setTiltY(px * 2.5);
+      } else {
+        setTiltX(0);
+        setTiltY(0);
+      }
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [isHovered]);
+
+  return (
+    <motion.div
+      ref={ref}
+      style={{
+        ...GLASS.card,
+        ...style,
+        position: 'relative',
+        overflow: 'hidden',
+        willChange: 'transform',
+        transformStyle: 'preserve-3d',
+      }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => { setIsHovered(false); setTiltX(0); setTiltY(0); }}
+      onMouseDown={() => setIsPressed(true)}
+      onMouseUp={() => setIsPressed(false)}
+      onMouseLeave={() => setIsPressed(false)}
+      animate={{
+        y: isPressed ? 1 : isHovered ? -4 : 0,
+        scale: isPressed ? 0.99 : isHovered ? 1.012 : 1,
+        rotateX: tiltX,
+        rotateY: tiltY,
+      }}
+      transition={{ type: 'spring', stiffness: 300, damping: 28, mass: 1 }}
+    >
+      {/* Specular highlight */}
+      <div style={SPECULAR} />
+
+      {/* Proximity halo */}
+      <motion.div
+        style={{
+          position: 'absolute', inset: '-10px', borderRadius: '24px',
+          background: 'radial-gradient(ellipse at 50% 50%, rgba(86,156,235,0.22) 0%, transparent 70%)',
+          filter: 'blur(16px)', pointerEvents: 'none', zIndex: 0,
+        }}
+        animate={{ opacity: isNearCursor && !isHovered ? 0.04 : 0 }}
+        transition={{ duration: 0.25 }}
+      />
+
+      {/* Ambient bloom on hover */}
+      <motion.div
+        style={{
+          position: 'absolute', inset: 0, borderRadius: '20px', pointerEvents: 'none',
+          background: 'radial-gradient(ellipse at 40% 20%, rgba(86,156,235,0.09) 0%, transparent 65%)',
+          zIndex: 0,
+        }}
+        animate={{ opacity: isHovered ? 1 : 0 }}
+        transition={{ duration: 0.22 }}
+      />
+
+      {/* Periodic shimmer sweep */}
+      <motion.div
+        style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0,
+          background: 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%)',
+          borderRadius: '20px',
+        }}
+        animate={{ x: ['-110%', '110%'], opacity: [0, 0.05, 0] }}
+        transition={{ duration: 1.4, ease: 'easeInOut', repeat: Infinity, repeatDelay: 7 + index * 1.8 }}
+      />
+
+      {/* Content sits above all effects */}
+      <div style={{ position: 'relative', zIndex: 1 }}>
+        {children}
+      </div>
+    </motion.div>
+  );
+};
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 const getRegimeTheme = (arrow) => {
   if (arrow === 'up')   return { label: 'Heating', color: '#F26A6A', glow: 'rgba(242,106,106,0.15)', Icon: TrendingUp };
   if (arrow === 'down') return { label: 'Cooling', color: '#5CD8A0', glow: 'rgba(92,216,160,0.15)',  Icon: TrendingDown };
@@ -82,6 +181,7 @@ const CATEGORY_DATA = [
   { name: 'Energy',     yoy: -0.1, direction: 'down', note: 'Gasoline down 7.5%, electricity up 6.3%' },
 ];
 
+// ─── Main Component ───────────────────────────────────────────────────────────
 export default function InflationSection({ data }) {
   const [showHowToRead, setShowHowToRead] = useState(false);
   if (!data) return null;
@@ -157,14 +257,15 @@ export default function InflationSection({ data }) {
       {d.delta_summary && (
         <motion.div
           initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...ENTRY, delay: 0.08 }}
-          style={{ ...GLASS.card, padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '14px', margin: '16px 0', position: 'relative', overflow: 'hidden' }}
+          style={{ margin: '16px 0' }}
         >
-          <div style={SPECULAR} />
-          <span style={{ fontFamily: FONT.text, fontSize: '11px', fontWeight: 600, color: 'rgba(92,216,160,0.85)', letterSpacing: '0.08em', textTransform: 'uppercase', whiteSpace: 'nowrap', flexShrink: 0, ...TYPE.smoothing }}>
-            Δ Since last update
-          </span>
-          <div style={{ width: '1px', height: '14px', background: 'rgba(255,255,255,0.08)', flexShrink: 0 }} />
-          <span style={{ fontFamily: FONT.text, fontSize: '13px', fontWeight: 500, color: 'rgba(255,255,255,0.85)', lineHeight: 1.5, letterSpacing: '0.01em', ...TYPE.smoothing }}>{d.delta_summary}</span>
+          <InteractivePanel index={0} style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <span style={{ fontFamily: FONT.text, fontSize: '11px', fontWeight: 600, color: 'rgba(92,216,160,0.85)', letterSpacing: '0.08em', textTransform: 'uppercase', whiteSpace: 'nowrap', flexShrink: 0, ...TYPE.smoothing }}>
+              Δ Since last update
+            </span>
+            <div style={{ width: '1px', height: '14px', background: 'rgba(255,255,255,0.08)', flexShrink: 0 }} />
+            <span style={{ fontFamily: FONT.text, fontSize: '13px', fontWeight: 500, color: 'rgba(255,255,255,0.85)', lineHeight: 1.5, letterSpacing: '0.01em', ...TYPE.smoothing }}>{d.delta_summary}</span>
+          </InteractivePanel>
         </motion.div>
       )}
 
@@ -176,8 +277,7 @@ export default function InflationSection({ data }) {
         {[d.headline_state, d.core_state, d.services_state].map((state, i) => {
           const t = getRegimeTheme(state.arrow);
           return (
-            <div key={i} style={{ ...GLASS.card, padding: '16px 18px', position: 'relative', overflow: 'hidden' }}>
-              <div style={SPECULAR} />
+            <InteractivePanel key={i} index={i + 1} style={{ padding: '16px 18px' }}>
               <motion.div style={{
                 position: 'absolute', inset: 0, borderRadius: '20px', pointerEvents: 'none',
                 background: `radial-gradient(ellipse at 0% 50%, ${t.glow} 0%, transparent 65%)`
@@ -201,7 +301,7 @@ export default function InflationSection({ data }) {
                 <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: t.color, boxShadow: `0 0 5px ${t.color}` }} />
                 {t.label}
               </div>
-            </div>
+            </InteractivePanel>
           );
         })}
       </motion.div>
@@ -210,14 +310,15 @@ export default function InflationSection({ data }) {
       {d.fed_implication && (
         <motion.div
           initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...ENTRY, delay: 0.16 }}
-          style={{ ...GLASS.card, padding: '11px 16px', display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '14px', position: 'relative', overflow: 'hidden' }}
+          style={{ marginBottom: '14px' }}
         >
-          <div style={SPECULAR} />
-          <span style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.50)', letterSpacing: '0.06em', textTransform: 'uppercase', whiteSpace: 'nowrap', flexShrink: 0, ...TYPE.smoothing }}>
-            Fed Implication
-          </span>
-          <div style={{ width: '1px', height: '14px', background: 'rgba(255,255,255,0.08)', flexShrink: 0 }} />
-          <span style={{ fontFamily: FONT.text, fontSize: '13px', fontWeight: 500, color: 'rgba(255,255,255,0.85)', lineHeight: 1.5, ...TYPE.smoothing }}>{d.fed_implication}</span>
+          <InteractivePanel index={4} style={{ padding: '11px 16px', display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <span style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.50)', letterSpacing: '0.06em', textTransform: 'uppercase', whiteSpace: 'nowrap', flexShrink: 0, ...TYPE.smoothing }}>
+              Fed Implication
+            </span>
+            <div style={{ width: '1px', height: '14px', background: 'rgba(255,255,255,0.08)', flexShrink: 0 }} />
+            <span style={{ fontFamily: FONT.text, fontSize: '13px', fontWeight: 500, color: 'rgba(255,255,255,0.85)', lineHeight: 1.5, ...TYPE.smoothing }}>{d.fed_implication}</span>
+          </InteractivePanel>
         </motion.div>
       )}
 
@@ -227,8 +328,7 @@ export default function InflationSection({ data }) {
         style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}
       >
         {/* Categories */}
-        <div style={{ ...GLASS.card, padding: '18px 20px', position: 'relative', overflow: 'hidden' }}>
-          <div style={SPECULAR} />
+        <InteractivePanel index={5} style={{ padding: '18px 20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '14px' }}>
             <BarChart2 className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.40)' }} strokeWidth={2} />
             <span style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.65)', letterSpacing: '0.06em', textTransform: 'uppercase', ...TYPE.smoothing }}>
@@ -253,11 +353,10 @@ export default function InflationSection({ data }) {
               );
             })}
           </div>
-        </div>
+        </InteractivePanel>
 
         {/* Key Drivers */}
-        <div style={{ ...GLASS.card, padding: '18px 20px', position: 'relative', overflow: 'hidden' }}>
-          <div style={SPECULAR} />
+        <InteractivePanel index={6} style={{ padding: '18px 20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '14px' }}>
             <Flame className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.40)' }} strokeWidth={2} />
             <span style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.65)', letterSpacing: '0.06em', textTransform: 'uppercase', ...TYPE.smoothing }}>
@@ -284,10 +383,10 @@ export default function InflationSection({ data }) {
               );
             })}
             {d.drivers.length === 0 && (
-            <p style={{ fontFamily: FONT.text, fontSize: '13px', fontWeight: 400, color: 'rgba(255,255,255,0.40)', textAlign: 'center', padding: '20px 0', ...TYPE.smoothing }}>Driver data pending.</p>
+              <p style={{ fontFamily: FONT.text, fontSize: '13px', fontWeight: 400, color: 'rgba(255,255,255,0.40)', textAlign: 'center', padding: '20px 0', ...TYPE.smoothing }}>Driver data pending.</p>
             )}
           </div>
-        </div>
+        </InteractivePanel>
       </motion.div>
 
       {/* ── 6. WINNERS | LOSERS | WHAT TO WATCH (3-col) ── */}
@@ -296,11 +395,10 @@ export default function InflationSection({ data }) {
         style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr', gap: '10px', marginBottom: '10px' }}
       >
         {/* Winners */}
-        <div style={{
-          ...GLASS.card,
+        <InteractivePanel index={7} style={{
           background: 'linear-gradient(180deg, rgba(92,216,160,0.06) 0%, rgba(92,216,160,0.03) 100%)',
           border: '1px solid rgba(92,216,160,0.12)',
-          padding: '16px 18px', position: 'relative', overflow: 'hidden'
+          padding: '16px 18px',
         }}>
           <div style={{ ...SPECULAR, background: 'linear-gradient(90deg, transparent, rgba(92,216,160,0.14), transparent)' }} />
           <div style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(92,216,160,0.85)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '12px', ...TYPE.smoothing }}>Winners</div>
@@ -312,14 +410,13 @@ export default function InflationSection({ data }) {
               </li>
             ))}
           </ul>
-        </div>
+        </InteractivePanel>
 
         {/* Losers */}
-        <div style={{
-          ...GLASS.card,
+        <InteractivePanel index={8} style={{
           background: 'linear-gradient(180deg, rgba(242,106,106,0.06) 0%, rgba(242,106,106,0.03) 100%)',
           border: '1px solid rgba(242,106,106,0.12)',
-          padding: '16px 18px', position: 'relative', overflow: 'hidden'
+          padding: '16px 18px',
         }}>
           <div style={{ ...SPECULAR, background: 'linear-gradient(90deg, transparent, rgba(242,106,106,0.14), transparent)' }} />
           <div style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(242,106,106,0.85)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '12px', ...TYPE.smoothing }}>Losers</div>
@@ -331,11 +428,10 @@ export default function InflationSection({ data }) {
               </li>
             ))}
           </ul>
-        </div>
+        </InteractivePanel>
 
         {/* What to Watch */}
-        <div style={{ ...GLASS.card, padding: '16px 18px', position: 'relative', overflow: 'hidden' }}>
-          <div style={SPECULAR} />
+        <InteractivePanel index={9} style={{ padding: '16px 18px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '14px' }}>
             <Wind className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.40)' }} strokeWidth={2} />
             <span style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.65)', letterSpacing: '0.06em', textTransform: 'uppercase', ...TYPE.smoothing }}>What to Watch</span>
@@ -355,96 +451,97 @@ export default function InflationSection({ data }) {
               </div>
             ))}
           </div>
-        </div>
+        </InteractivePanel>
       </motion.div>
 
       {/* ── 7. HOW TO READ THE DATA (collapsible) ── */}
       <motion.div
         initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...ENTRY, delay: 0.28 }}
-        style={{ ...GLASS.card, marginBottom: '10px', position: 'relative', overflow: 'hidden' }}
+        style={{ marginBottom: '10px' }}
       >
-        <div style={SPECULAR} />
-        <button
-          onClick={() => setShowHowToRead(v => !v)}
-          style={{
-            width: '100%', display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 18px',
-            background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left'
-          }}
-        >
-          <span style={{ fontFamily: FONT.text, fontSize: '14px', fontWeight: 500, color: 'rgba(255,255,255,0.65)', letterSpacing: '0', flex: 1, ...TYPE.smoothing }}>
-            How to Read the Data
-          </span>
-          <motion.div animate={{ rotate: showHowToRead ? 90 : 0 }} transition={{ duration: 0.18 }}>
-            <ChevronRight className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.28)' }} strokeWidth={2} />
-          </motion.div>
-        </button>
-
-        {showHowToRead && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }}
-            style={{ overflow: 'hidden' }}
+        <InteractivePanel index={10}>
+          <button
+            onClick={() => setShowHowToRead(v => !v)}
+            style={{
+              width: '100%', display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 18px',
+              background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left'
+            }}
           >
-            <div style={{ display: 'flex', gap: '10px', padding: '0 18px 14px' }}>
-              {[
-                { label: 'CPI', value: d.cpi_pce_collapsed?.split('/')[0]?.trim() || '2.4%', color: '#5EA7FF', desc: d.cpi_plain },
-                { label: 'PCE', value: d.cpi_pce_collapsed?.split('/')[1]?.trim() || '2.5%', color: '#B47FFF', desc: d.pce_plain },
-                { label: 'Gap', value: '0.1%', color: '#FFB020', desc: d.why_fed_prefers },
-              ].map((item, idx) => (
-                <div key={idx} style={{
-                  flex: 1, padding: '10px 14px', borderRadius: '12px',
-                  background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)',
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                    <span style={{ fontFamily: FONT.display, fontSize: '14px', fontWeight: 600, color: 'rgba(255,255,255,0.90)', letterSpacing: '-0.005em', ...TYPE.smoothing }}>{item.label}</span>
-                    <span style={{
-                      fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, padding: '1px 7px', borderRadius: '999px',
-                      background: `${item.color}10`, color: item.color, border: `1px solid ${item.color}20`, ...TYPE.smoothing, ...TYPE.tabular
-                    }}>{item.value}</span>
+            <span style={{ fontFamily: FONT.text, fontSize: '14px', fontWeight: 500, color: 'rgba(255,255,255,0.65)', letterSpacing: '0', flex: 1, ...TYPE.smoothing }}>
+              How to Read the Data
+            </span>
+            <motion.div animate={{ rotate: showHowToRead ? 90 : 0 }} transition={{ duration: 0.18 }}>
+              <ChevronRight className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.28)' }} strokeWidth={2} />
+            </motion.div>
+          </button>
+
+          {showHowToRead && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }}
+              style={{ overflow: 'hidden' }}
+            >
+              <div style={{ display: 'flex', gap: '10px', padding: '0 18px 14px' }}>
+                {[
+                  { label: 'CPI', value: d.cpi_pce_collapsed?.split('/')[0]?.trim() || '2.4%', color: '#5EA7FF', desc: d.cpi_plain },
+                  { label: 'PCE', value: d.cpi_pce_collapsed?.split('/')[1]?.trim() || '2.5%', color: '#B47FFF', desc: d.pce_plain },
+                  { label: 'Gap', value: '0.1%', color: '#FFB020', desc: d.why_fed_prefers },
+                ].map((item, idx) => (
+                  <div key={idx} style={{
+                    flex: 1, padding: '10px 14px', borderRadius: '12px',
+                    background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)',
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                      <span style={{ fontFamily: FONT.display, fontSize: '14px', fontWeight: 600, color: 'rgba(255,255,255,0.90)', letterSpacing: '-0.005em', ...TYPE.smoothing }}>{item.label}</span>
+                      <span style={{
+                        fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, padding: '1px 7px', borderRadius: '999px',
+                        background: `${item.color}10`, color: item.color, border: `1px solid ${item.color}20`, ...TYPE.smoothing, ...TYPE.tabular
+                      }}>{item.value}</span>
+                    </div>
+                    <p style={{ fontFamily: FONT.text, fontSize: '13px', fontWeight: 400, color: 'rgba(255,255,255,0.65)', lineHeight: 1.5, margin: 0, ...TYPE.smoothing }}>{item.desc}</p>
                   </div>
-                  <p style={{ fontFamily: FONT.text, fontSize: '13px', fontWeight: 400, color: 'rgba(255,255,255,0.65)', lineHeight: 1.5, margin: 0, ...TYPE.smoothing }}>{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        )}
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </InteractivePanel>
       </motion.div>
 
       {/* ── 8. TOP WEIGHTED SOURCES ── */}
       <motion.div
         initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...ENTRY, delay: 0.30 }}
-        style={{ ...GLASS.card, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px', position: 'relative', overflow: 'hidden' }}
       >
-        <div style={SPECULAR} />
-        <div style={{ display: 'flex', alignItems: 'center', gap: '7px', flexShrink: 0 }}>
-          <span style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.65)', letterSpacing: '0.06em', textTransform: 'uppercase', whiteSpace: 'nowrap', ...TYPE.smoothing }}>
-            Top Weighted Sources
-          </span>
-          <div style={{
-            fontFamily: FONT.text, fontSize: '11px', fontWeight: 600, padding: '1px 7px', borderRadius: '999px',
-            background: 'rgba(94,167,255,0.12)', color: 'rgba(140,195,255,0.90)',
-            border: '1px solid rgba(94,167,255,0.22)', ...TYPE.smoothing, ...TYPE.tabular
-          }}>{d.sources.length}</div>
-        </div>
-        <div style={{ width: '1px', height: '14px', background: 'rgba(255,255,255,0.07)', flexShrink: 0 }} />
-        <div style={{ display: 'flex', gap: '7px', flex: 1, overflow: 'hidden' }}>
-          {d.sources.slice(0, 5).map((source, idx) => (
-            <a key={idx} href={source.url || '#'} target="_blank" rel="noopener noreferrer"
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: '4px',
-                padding: '4px 12px', borderRadius: '999px',
-                background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
-                fontFamily: FONT.text, color: 'rgba(255,255,255,0.65)', fontSize: '12px', fontWeight: 500, letterSpacing: '0.03em',
-                textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0, ...TYPE.smoothing,
-                transition: 'all 0.14s ease-out',
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.10)'; e.currentTarget.style.color = 'rgba(255,255,255,0.92)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = 'rgba(255,255,255,0.62)'; }}
-            >
-              {source.name}
-            </a>
-          ))}
-        </div>
+        <InteractivePanel index={11} style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '7px', flexShrink: 0 }}>
+            <span style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.65)', letterSpacing: '0.06em', textTransform: 'uppercase', whiteSpace: 'nowrap', ...TYPE.smoothing }}>
+              Top Weighted Sources
+            </span>
+            <div style={{
+              fontFamily: FONT.text, fontSize: '11px', fontWeight: 600, padding: '1px 7px', borderRadius: '999px',
+              background: 'rgba(94,167,255,0.12)', color: 'rgba(140,195,255,0.90)',
+              border: '1px solid rgba(94,167,255,0.22)', ...TYPE.smoothing, ...TYPE.tabular
+            }}>{d.sources.length}</div>
+          </div>
+          <div style={{ width: '1px', height: '14px', background: 'rgba(255,255,255,0.07)', flexShrink: 0 }} />
+          <div style={{ display: 'flex', gap: '7px', flex: 1, overflow: 'hidden' }}>
+            {d.sources.slice(0, 5).map((source, idx) => (
+              <a key={idx} href={source.url || '#'} target="_blank" rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '4px',
+                  padding: '4px 12px', borderRadius: '999px',
+                  background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+                  fontFamily: FONT.text, color: 'rgba(255,255,255,0.65)', fontSize: '12px', fontWeight: 500, letterSpacing: '0.03em',
+                  textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0, ...TYPE.smoothing,
+                  transition: 'all 0.14s ease-out',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.10)'; e.currentTarget.style.color = 'rgba(255,255,255,0.92)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = 'rgba(255,255,255,0.65)'; }}
+              >
+                {source.name}
+              </a>
+            ))}
+          </div>
+        </InteractivePanel>
       </motion.div>
     </motion.div>
   );
