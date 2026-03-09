@@ -261,7 +261,7 @@ export default function InflationSection({ data }) {
           initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...ENTRY, delay: 0.08 }}
           style={{ margin: '16px 0' }}
         >
-          <InteractivePanel index={0} style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <InteractivePanel index={0} contentStyle={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '14px' }}>
             <span style={{ fontFamily: FONT.text, fontSize: '11px', fontWeight: 600, color: 'rgba(92,216,160,0.85)', letterSpacing: '0.08em', textTransform: 'uppercase', whiteSpace: 'nowrap', flexShrink: 0, ...TYPE.smoothing }}>
               Δ Since last update
             </span>
