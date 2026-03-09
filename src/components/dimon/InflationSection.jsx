@@ -184,18 +184,18 @@ export default function InflationSection({ data }) {
               }} />
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px', position: 'relative', zIndex: 2 }}>
                 <t.Icon className="w-3 h-3" style={{ color: t.color }} strokeWidth={2.5} />
-                <span style={{ fontSize: '9px', fontWeight: 700, color: 'rgba(255,255,255,0.38)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                <span style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 500, color: 'rgba(255,255,255,0.65)', letterSpacing: '0.06em', textTransform: 'uppercase', ...TYPE.smoothing }}>
                   {state.label}
                 </span>
               </div>
-              <p style={{ fontSize: '14px', fontWeight: 600, color: 'rgba(255,255,255,0.92)', lineHeight: 1.4, margin: '0 0 12px', position: 'relative', zIndex: 2 }}>
+              <p style={{ fontFamily: FONT.text, fontSize: '15px', fontWeight: 500, color: 'rgba(255,255,255,0.92)', lineHeight: 1.45, margin: '0 0 12px', position: 'relative', zIndex: 2, ...TYPE.smoothing }}>
                 {state.status}
               </p>
               <div style={{
                 display: 'inline-flex', alignItems: 'center', gap: '5px',
                 padding: '3px 10px 3px 7px', borderRadius: '999px',
                 background: `${t.color}0C`, border: `1px solid ${t.color}22`,
-                fontSize: '9px', fontWeight: 700, color: t.color, letterSpacing: '0.06em', textTransform: 'uppercase',
+                fontFamily: FONT.text, fontSize: '12px', fontWeight: 500, color: t.color, letterSpacing: '0.04em', textTransform: 'uppercase',
                 position: 'relative', zIndex: 2
               }}>
                 <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: t.color, boxShadow: `0 0 5px ${t.color}` }} />
