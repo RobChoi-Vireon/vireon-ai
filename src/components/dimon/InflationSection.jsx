@@ -219,10 +219,62 @@ const AccordionPanel = ({ isOpen, onToggle, title, children, delay = 0 }) => {
 };
 
 
+const CATEGORY_DATA = [
+  { name: 'Food', yoy: 2.9, direction: 'up', note: 'Beef and coffee prices remain elevated' },
+  { name: 'Energy', yoy: -0.1, direction: 'down', note: 'Gasoline down 7.5%, electricity up 6.3%' },
+  { name: 'Shelter', yoy: 3.0, direction: 'flat', note: 'Biggest CPI weight, slowly cooling' },
+  { name: 'Services', yoy: 4.9, direction: 'flat', note: 'Medical care 3.2%, personal care 5.4%' },
+  { name: 'Core Goods', yoy: 1.1, direction: 'flat', note: 'Used cars deflating, apparel stable' },
+];
+
+const getCategoryBarColor = (yoy) => {
+  const abs = Math.abs(yoy);
+  if (abs < 2) return '#58E3A4';
+  if (abs < 3) return '#A8B3C7';
+  if (abs < 4) return '#F5A623';
+  return '#FF6A7A';
+};
+
+const CategoryRow = ({ category, idx, total }) => {
+  const absYoy = Math.abs(category.yoy);
+  const barWidth = Math.min((absYoy / 6) * 100, 100);
+  const barColor = getCategoryBarColor(category.yoy);
+  const arrowColor = category.direction === 'up' ? '#FF6A7A' : category.direction === 'down' ? '#58E3A4' : '#A8B3C7';
+  const arrowChar = category.direction === 'up' ? '↑' : category.direction === 'down' ? '↓' : '→';
+
+  return (
+    <div
+      className="py-3.5"
+      style={{ borderBottom: idx < total - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}
+    >
+      <div className="flex items-center justify-between gap-3 mb-2">
+        <span className="text-[13px] font-semibold" style={{ color: 'rgba(255,255,255,0.92)', letterSpacing: '-0.01em' }}>
+          {category.name}
+        </span>
+        <span className="text-[13px] font-bold flex-shrink-0" style={{ color: arrowColor }}>
+          {arrowChar} {category.yoy >= 0 ? '+' : ''}{category.yoy.toFixed(1)}%
+        </span>
+      </div>
+      <div style={{ height: '5px', borderRadius: '3px', background: 'rgba(255,255,255,0.06)', marginBottom: '8px', overflow: 'hidden' }}>
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${Math.max(barWidth, 1.5)}%` }}
+          transition={{ duration: 0.8, delay: 0.1 + idx * 0.08, ease: [0.22, 0.61, 0.36, 1] }}
+          style={{ height: '100%', borderRadius: '3px', background: barColor, opacity: 0.8 }}
+        />
+      </div>
+      <p className="text-[12px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.48)' }}>
+        {category.note}
+      </p>
+    </div>
+  );
+};
+
 export default function InflationSection({ data }) {
   const [drawer1Open, setDrawer1Open] = useState(false);
   const [drawer2Open, setDrawer2Open] = useState(false);
   const [drawer3Open, setDrawer3Open] = useState(false);
+  const [drawerCatOpen, setDrawerCatOpen] = useState(false);
   const [showCPIPCE, setShowCPIPCE] = useState(false);
 
   if (!data) return null;
