@@ -338,7 +338,7 @@ export default function InflationSection({ data }) {
           <div style={SPECULAR} />
           <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '14px' }}>
             <Wind className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.40)' }} strokeWidth={2} />
-            <span style={{ fontSize: '10px', fontWeight: 700, color: 'rgba(255,255,255,0.38)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>What to Watch</span>
+            <span style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.65)', letterSpacing: '0.06em', textTransform: 'uppercase', ...TYPE.smoothing }}>What to Watch</span>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             {[{ label: 'Next 30–60 days', items: d.watch_short }, { label: 'Next 6–12 months', items: d.watch_long }].map(({ label, items }) => (
