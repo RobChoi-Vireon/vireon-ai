@@ -199,6 +199,7 @@ export default function InflationSection({ data }) {
     watch_long: data.watch_long || [],
     sources: data.sources || [],
     cpi_pce_collapsed: data.cpi_pce_collapsed || '',
+    components: data.inflation?.components || data.components || null,
   };
 
   const regimeTheme = getRegimeTheme(d.headline_state.arrow);
