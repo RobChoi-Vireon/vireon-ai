@@ -4,6 +4,7 @@ import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLef
 import LyraLogo from '../core/LyraLogo';
 import EquilibriumPulse from './EquilibriumPulse';
 import HoverCardPortal from './EquilibriumHoverCard';
+import EquilibriumDrawerBody from './EquilibriumDrawerBody';
 
 // ============================================================================
 // EQUILIBRIUM — OS HORIZON V3.2 "UNIFIED MOTION + INFORMATION HIERARCHY"
