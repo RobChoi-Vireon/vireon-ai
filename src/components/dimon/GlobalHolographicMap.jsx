@@ -1854,10 +1854,10 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
               const isSelected = selectedDomain?.id === domain.id;
               
               const labelText = {
-                fx: TOKENS.MACRO.fx.label,
-                rates: TOKENS.MACRO.rates.label,
-                growth: TOKENS.MACRO.growth.label,
-                geopolitics: TOKENS.MACRO.geopolitics.label
+                fx: 'Housing',
+                rates: 'Savings & Returns',
+                growth: 'Borrowing Costs',
+                geopolitics: 'Job Market'
               }[domain.id] || domain.id;
 
               return (
