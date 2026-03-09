@@ -90,10 +90,10 @@ const InteractivePanel = ({ children, style = {}, contentStyle = {}, index = 0 }
       onMouseUp={() => setIsPressed(false)}
       onMouseLeave={() => setIsPressed(false)}
       animate={{
-        y: isPressed ? 1 : isHovered ? -4 : 0,
-        scale: isPressed ? 0.99 : isHovered ? 1.012 : 1,
-        rotateX: tiltX,
-        rotateY: tiltY,
+        y: isPressed ? 1 : isHovered ? -2 : 0,
+        scale: isPressed ? 0.99 : isHovered ? 1.006 : 1,
+        rotateX: tiltX * 0.5,
+        rotateY: tiltY * 0.5,
       }}
       transition={{ type: 'spring', stiffness: 300, damping: 28, mass: 1 }}
     >
