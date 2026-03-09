@@ -330,7 +330,7 @@ export default function InflationSection({ data }) {
         style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}
       >
         {/* Categories */}
-        <InteractivePanel index={5} style={{ padding: '18px 20px' }}>
+        <InteractivePanel index={5} contentStyle={{ padding: '18px 20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '14px' }}>
             <BarChart2 className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.40)' }} strokeWidth={2} />
             <span style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.65)', letterSpacing: '0.06em', textTransform: 'uppercase', ...TYPE.smoothing }}>
