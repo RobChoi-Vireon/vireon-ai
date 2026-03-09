@@ -92,9 +92,6 @@ const TOKENS = {
 const ANGLES = { rates: 22.5, fx: 160.0, growth: 297.5, geopolitics: 75.0 };
 const RADII = { rates: 0.35, fx: 0.39, growth: 0.37, geopolitics: 0.32 };
 
-// Import adapter that handles data binding from equilibrium.domains array
-import { adaptEquilibriumDomains } from './EquilibriumDomainsAdapter';
-
 // ============================================================================
 // PORTAL OVERLAY ROOT MANAGER
 // ============================================================================
