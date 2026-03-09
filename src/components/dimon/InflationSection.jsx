@@ -481,10 +481,10 @@ export default function InflationSection({ data }) {
             >
               <div style={{ display: 'flex', gap: '10px', padding: '0 18px 14px' }}>
                 {[
-                  { label: 'CPI', value: d.cpi_pce_collapsed?.split('/')[0]?.trim() || '2.4%', color: '#5EA7FF', desc: d.cpi_plain },
-                  { label: 'PCE', value: d.cpi_pce_collapsed?.split('/')[1]?.trim() || '2.5%', color: '#B47FFF', desc: d.pce_plain },
-                  { label: 'Gap', value: '0.1%', color: '#FFB020', desc: d.why_fed_prefers },
-                ].map((item, idx) => (
+                   { label: 'CPI', value: (d.cpi_pce_collapsed?.match(/[\d.]+%/) || [])[0] || '', color: '#5EA7FF', desc: d.cpi_plain },
+                   { label: 'PCE', value: d.cpi_pce_collapsed?.split('/')[1]?.trim() || '2.5%', color: '#B47FFF', desc: d.pce_plain },
+                   { label: 'Gap', value: '0.1%', color: '#FFB020', desc: d.why_fed_prefers },
+                 ].map((item, idx) => (
                   <div key={idx} style={{
                     flex: 1, padding: '10px 14px', borderRadius: '12px',
                     background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)',
