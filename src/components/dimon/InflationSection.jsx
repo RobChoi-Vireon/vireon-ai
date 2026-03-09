@@ -124,9 +124,11 @@ const DriverForceMeter = ({ driver, idx, total }) => (
       <span
         className="text-[11px] font-bold px-2.5 py-1 rounded-full flex-shrink-0"
         style={{
-          background: 'rgba(94,167,255,0.14)',
-          color: 'rgba(140,195,255,0.92)',
-          border: '1px solid rgba(94,167,255,0.22)'
+          background: 'rgba(255,255,255,0.07)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          color: 'rgba(140,195,255,0.88)',
+          border: '1px solid rgba(255,255,255,0.10)'
         }}
       >
         {driver.weight}%
