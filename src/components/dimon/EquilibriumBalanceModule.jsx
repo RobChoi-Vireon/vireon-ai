@@ -557,14 +557,18 @@ export default function EquilibriumBalanceModule({
                       letterSpacing: '0.1em',
                       fontWeight: 600,
                       marginBottom: '2px',
-                      textTransform: 'uppercase'
+                      textTransform: 'uppercase',
+                      fontFamily: FONT.text,
+                      ...TYPE.smooth
                     }}>
                       Stability Index
                     </div>
                     <div style={{
                       fontSize: '12px',
                       color: 'rgba(255,255,255,0.85)',
-                      fontWeight: 500
+                      fontWeight: 500,
+                      fontFamily: FONT.text,
+                      ...TYPE.smooth
                     }}>
                       {stabilityIndex >= 70 ? 'Very Stable' : stabilityIndex >= 50 ? 'Somewhat Stable' : 'Higher Risk'}
                     </div>
