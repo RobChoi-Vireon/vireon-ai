@@ -940,8 +940,8 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
   const equilibriumExitTimerRef = useRef(null);
 
   const domains = useMemo(() => {
-    if (!equilibriumData?.domains) return MOCK_DOMAINS;
-    return (equilibriumData.domains || []).map(d => {
+    if (!equilibriumData?.domains || !Array.isArray(equilibriumData.domains) || equilibriumData.domains.length === 0) return MOCK_DOMAINS;
+    const result = (equilibriumData.domains || []).map(d => {
       if (!d || !d.id) return null;
       const key = d.id;
       const mock = MOCK_DOMAINS.find(m => m.id === key);
