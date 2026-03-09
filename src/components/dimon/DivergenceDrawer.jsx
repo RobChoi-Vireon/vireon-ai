@@ -100,7 +100,8 @@ const SourceChip = ({ source, present }) => {
 const SectionLabel = ({ children }) => (
   <p style={{
     fontSize: '10px', fontWeight: 600, letterSpacing: '0.12em',
-    textTransform: 'uppercase', color: 'rgba(255,255,255,0.42)', marginBottom: '10px'
+    textTransform: 'uppercase', color: 'rgba(255,255,255,0.42)', marginBottom: '10px',
+    fontFamily: FONT.text, WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale', textRendering: 'optimizeLegibility'
   }}>
     {children}
   </p>
