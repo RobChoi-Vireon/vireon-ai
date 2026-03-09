@@ -179,11 +179,12 @@ const AccordionPanel = ({ isOpen, onToggle, title, children, delay = 0 }) => {
       transition={{ duration: 0.4, delay, ease: HORIZON_EASE }}
       className="relative rounded-[20px]"
       style={{
-        ...GLASS_CARD,
+        ...GLASS_ACCORDION,
         boxShadow: hovered
-          ? 'inset 0 1.5px 0 rgba(255,255,255,0.11), 0 10px 36px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.07)'
-          : GLASS_CARD.boxShadow,
-        transition: 'box-shadow 0.22s ease',
+          ? 'inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 32px rgba(0,0,0,0.38), 0 0 0 1px rgba(255,255,255,0.06)'
+          : GLASS_ACCORDION.boxShadow,
+        transform: hovered ? 'translateY(-1px)' : 'translateY(0)',
+        transition: 'all 0.28s cubic-bezier(0.4,0,0.2,1)',
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
