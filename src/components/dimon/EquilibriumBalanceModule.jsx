@@ -24,6 +24,15 @@ const MOTION_TOKENS = {
   }
 };
 
+const FONT = {
+  display: '"SF Pro Display", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif',
+  text:    '"SF Pro Text", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif',
+};
+const TYPE = {
+  smooth: { WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale', textRendering: 'optimizeLegibility' },
+  tabular: { fontVariantNumeric: 'tabular-nums' },
+};
+
 const FORCE_COLORS = {
   growth: { core: '#3FAEFF', glow: 'rgba(63,174,255,0.25)', text: '#B8E7FF' },
   rates: { core: '#C0A6FF', glow: 'rgba(192,166,255,0.25)', text: '#DECFFF' },
