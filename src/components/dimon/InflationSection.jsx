@@ -63,18 +63,19 @@ const SignalChip = ({ arrow, label, status, index }) => {
       transition={{ delay: 0.1 + index * 0.07, duration: 0.4, ease: HORIZON_EASE }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="flex-1 relative rounded-[18px] p-4 cursor-default"
+      className="flex-1 relative rounded-[14px] p-4 cursor-default"
       style={{
         background: hovered
-          ? `linear-gradient(180deg, ${glowColor.replace('0.18', '0.22').replace('0.14', '0.18').replace('0.10', '0.13')} 0%, rgba(255,255,255,0.025) 100%)`
-          : `linear-gradient(180deg, ${glowColor} 0%, rgba(255,255,255,0.015) 100%)`,
-        border: `1px solid ${hovered ? borderColor.replace('0.22', '0.32').replace('0.18', '0.26').replace('0.14', '0.22') : borderColor}`,
+          ? `radial-gradient(ellipse at top left, rgba(255,255,255,0.06) 0%, transparent 60%), linear-gradient(180deg, ${glowColor} 0%, rgba(255,255,255,0.015) 100%)`
+          : `radial-gradient(ellipse at top left, rgba(255,255,255,0.04) 0%, transparent 60%), linear-gradient(180deg, ${glowColor} 0%, rgba(255,255,255,0.010) 100%)`,
+        border: `1px solid ${hovered ? borderColor.replace('0.18', '0.26').replace('0.15', '0.22').replace('0.12', '0.18') : borderColor}`,
         boxShadow: hovered
-          ? `inset 0 1px 0 rgba(255,255,255,0.10), 0 8px 28px rgba(0,0,0,0.18), 0 0 20px ${glowColor}`
-          : `inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 16px rgba(0,0,0,0.10)`,
-        backdropFilter: 'blur(24px) saturate(160%)',
-        WebkitBackdropFilter: 'blur(24px) saturate(160%)',
-        transition: 'all 0.22s ease-out',
+          ? `inset 0 1px 0 rgba(255,255,255,0.09), 0 8px 28px rgba(0,0,0,0.22), 0 0 18px ${glowColor}`
+          : `inset 0 1px 0 rgba(255,255,255,0.05), 0 4px 16px rgba(0,0,0,0.14)`,
+        backdropFilter: 'blur(24px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+        transition: 'all 0.28s cubic-bezier(0.4,0,0.2,1)',
+        transform: hovered ? 'translateY(-1px)' : 'translateY(0)',
         minWidth: 0,
       }}
     >
