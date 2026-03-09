@@ -590,10 +590,12 @@ export default function EquilibriumBalanceModule({
                         ? 'rgba(255, 155, 122, 0.25)'
                         : 'rgba(255,255,255,0.12)'}`,
                     fontSize: '11px',
-                    fontWeight: 600,
-                    color: getTrendColor(),
-                    textTransform: 'capitalize'
-                  }}
+                     fontWeight: 600,
+                     color: getTrendColor(),
+                     textTransform: 'capitalize',
+                     fontFamily: FONT.text,
+                     ...TYPE.smooth
+                    }}
                 >
                   {trend}
                 </div>
