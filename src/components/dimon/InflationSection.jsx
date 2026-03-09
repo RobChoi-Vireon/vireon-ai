@@ -382,20 +382,6 @@ export default function InflationSection({ data }) {
             </div>
           </div>
 
-          {/* INFLATION BY CATEGORY */}
-          <AccordionPanel
-            isOpen={drawerCatOpen}
-            onToggle={() => setDrawerCatOpen(!drawerCatOpen)}
-            title="Inflation by Category"
-            delay={0}
-          >
-            <div className="px-5 pb-5 pt-1">
-              {CATEGORY_DATA.map((cat, idx) => (
-                <CategoryRow key={idx} category={cat} idx={idx} total={CATEGORY_DATA.length} />
-              ))}
-            </div>
-          </AccordionPanel>
-
           {/* WHY IT MATTERS */}
           <div style={{ opacity: 0.92 }}>
             <div className="text-[11px] font-semibold uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.32)', letterSpacing: '0.08em' }}>
