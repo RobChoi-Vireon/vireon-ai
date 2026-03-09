@@ -617,7 +617,7 @@ function LayoutContent({ children, currentPageName }) {
     const navItems = [
     { id: 'macrosignals', title: 'Macro Signals', href: createPageUrl('MacroSignals'), icon: Globe },
     { id: 'home', title: 'Market Pulse', href: createPageUrl('Home'), icon: Activity },
-    { id: 'insights', title: 'AI Insights', href: createPageUrl('Insights'), icon: Brain },
+    // { id: 'insights', title: 'AI Insights', href: createPageUrl('Insights'), icon: Brain },
     { id: 'watchlist', title: 'Watchlist', href: createPageUrl('Watchlist'), icon: Eye },
     { id: 'livefeed', title: 'Live Feed', href: createPageUrl('LiveFeed'), icon: Newspaper },
     { id: 'capitalvault', title: 'Capital Vault', href: createPageUrl('CapitalVault'), icon: BookOpen },
