@@ -92,7 +92,7 @@ const SignalChip = ({ arrow, label, status, index }) => {
           {label}
         </span>
       </div>
-      <div className="text-[15px] font-bold leading-tight" style={{ color: 'rgba(255,255,255,0.94)', letterSpacing: '-0.015em' }}>
+      <div style={{ fontSize: '14px', fontWeight: 600, lineHeight: 1.5, color: 'rgba(255,255,255,0.82)', letterSpacing: '-0.01em' }}>
         {status}
       </div>
 
