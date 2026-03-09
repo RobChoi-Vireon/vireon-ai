@@ -792,7 +792,9 @@ export default function EquilibriumBalanceModule({
                       fontSize: '15px',
                       fontWeight: 700,
                       color: force.value > 0 ? '#58E3A4' : force.value < 0 ? '#FF9B7A' : 'rgba(255,255,255,0.6)',
-                      fontVariantNumeric: 'tabular-nums'
+                      fontFamily: FONT.display,
+                      ...TYPE.smooth,
+                      ...TYPE.tabular
                     }}>
                       {force.value > 0 ? '+' : ''}{(force.value * 100).toFixed(0)}%
                     </span>
