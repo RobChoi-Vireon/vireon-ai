@@ -175,13 +175,7 @@ const MiniBar = ({ value, maxVal = 6, color, delay = 0 }) => {
   );
 };
 
-const CATEGORY_DATA = [
-  { name: 'Services',   yoy: 4.9,  direction: 'up',   note: 'Medical care 3.2%, personal care 5.4%' },
-  { name: 'Food',       yoy: 2.9,  direction: 'up',   note: 'Beef and coffee prices remain elevated' },
-  { name: 'Shelter',    yoy: 3.0,  direction: 'flat', note: 'Biggest CPI weight, slowly cooling' },
-  { name: 'Core Goods', yoy: 1.1,  direction: 'flat', note: 'Used cars deflating, apparel stable' },
-  { name: 'Energy',     yoy: -0.1, direction: 'down', note: 'Gasoline down 7.5%, electricity up 6.3%' },
-];
+
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function InflationSection({ data }) {
