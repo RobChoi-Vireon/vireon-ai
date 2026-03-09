@@ -151,7 +151,7 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
   const orbBrightness = isAnyChipHovered ? 0.97 : 1;
 
   return (
-    <div className="relative flex items-center justify-center" style={{ minHeight: '170px' }}>
+    <div className="relative flex items-center justify-center" style={{ minHeight: '148px' }}>
       {/* Ultra-Subtle Background Wavefield */}
       <svg 
         width="160" 
