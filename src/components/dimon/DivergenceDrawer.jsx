@@ -84,7 +84,8 @@ const SourceChip = ({ source, present }) => {
         border: `1px solid ${present ? 'rgba(88,227,164,0.20)' : 'rgba(255,106,122,0.20)'}`,
         fontSize: '11px', fontWeight: 600, color,
         letterSpacing: '0.04em', cursor: 'default',
-        boxShadow: hov ? `0 0 10px ${present ? 'rgba(88,227,164,0.15)' : 'rgba(255,106,122,0.15)'}` : 'none'
+        boxShadow: hov ? `0 0 10px ${present ? 'rgba(88,227,164,0.15)' : 'rgba(255,106,122,0.15)'}` : 'none',
+        fontFamily: FONT.text, ...TYPE.smooth
       }}
     >
       {present
@@ -261,7 +262,8 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px', flexWrap: 'wrap' }}>
                     <h2 style={{
                       fontSize: '17px', fontWeight: 600, color: 'rgba(255,255,255,0.96)',
-                      letterSpacing: '-0.015em', lineHeight: 1.2
+                      letterSpacing: '-0.015em', lineHeight: 1.2,
+                      fontFamily: FONT.display, ...TYPE.smooth
                     }}>
                       Divergence Analysis
                     </h2>
@@ -269,14 +271,16 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                     <span style={{
                       fontSize: '10px', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase',
                       padding: '3px 8px', borderRadius: '999px',
-                      color: theme.color, background: `${theme.color}12`, border: `1px solid ${theme.color}25`
+                      color: theme.color, background: `${theme.color}12`, border: `1px solid ${theme.color}25`,
+                      fontFamily: FONT.text, ...TYPE.smooth
                     }}>
                       {theme.label}
                     </span>
                   </div>
                   <p style={{
                     fontSize: '12.5px', color: 'rgba(255,255,255,0.48)', lineHeight: 1.4,
-                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
+                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                    fontFamily: FONT.text, ...TYPE.smooth
                   }}>
                     {displayTitle}
                   </p>
@@ -317,7 +321,8 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                 }}>
                   <p style={{
                     fontSize: '15px', lineHeight: '1.62', fontWeight: 500,
-                    color: 'rgba(255,255,255,0.92)', letterSpacing: '-0.008em'
+                    color: 'rgba(255,255,255,0.92)', letterSpacing: '-0.008em',
+                    fontFamily: FONT.text, ...TYPE.smooth
                   }}>
                     {details.morning_takeaway}
                   </p>
@@ -349,10 +354,10 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                   {/* Confidence row */}
                   <div style={{ marginBottom: '14px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                      <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.55)', fontWeight: 500 }}>
+                      <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.55)', fontWeight: 500, fontFamily: FONT.text, ...TYPE.smooth }}>
                         Analysis Confidence
                       </span>
-                      <span style={{ fontSize: '13px', fontWeight: 700, color: theme.color, letterSpacing: '-0.01em' }}>
+                      <span style={{ fontSize: '13px', fontWeight: 700, color: theme.color, letterSpacing: '-0.01em', fontFamily: FONT.text, ...TYPE.smooth, ...TYPE.tabular }}>
                         {confidence}%
                       </span>
                     </div>
@@ -386,7 +391,7 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                     <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
                       {presentIn.length > 0 && (
                         <div style={{ flex: 1, minWidth: '120px' }}>
-                          <p style={{ fontSize: '10px', fontWeight: 600, color: 'rgba(88,227,164,0.65)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '8px' }}>
+                          <p style={{ fontSize: '10px', fontWeight: 600, color: 'rgba(88,227,164,0.65)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '8px', fontFamily: FONT.text, ...TYPE.smooth }}>
                             Present In
                           </p>
                           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
@@ -396,7 +401,7 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                       )}
                       {missingIn.length > 0 && (
                         <div style={{ flex: 1, minWidth: '120px' }}>
-                          <p style={{ fontSize: '10px', fontWeight: 600, color: 'rgba(255,106,122,0.65)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '8px' }}>
+                          <p style={{ fontSize: '10px', fontWeight: 600, color: 'rgba(255,106,122,0.65)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '8px', fontFamily: FONT.text, ...TYPE.smooth }}>
                             Missing In
                           </p>
                           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
@@ -431,7 +436,8 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
                   </div>
                   <p style={{
                     fontSize: '13.5px', lineHeight: '1.62', fontWeight: 400,
-                    color: 'rgba(210,235,252,0.88)', letterSpacing: '-0.003em'
+                    color: 'rgba(210,235,252,0.88)', letterSpacing: '-0.003em',
+                    fontFamily: FONT.text, ...TYPE.smooth
                   }}>
                     {details.forward_outlook}
                   </p>
@@ -445,10 +451,10 @@ export default function DivergenceDrawer({ isOpen, onClose, divergence, onNaviga
               padding: '11px 22px', borderTop: '1px solid rgba(255,255,255,0.06)',
               display: 'flex', alignItems: 'center', justifyContent: 'space-between'
             }}>
-              <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.28)', letterSpacing: '0.02em' }}>
+              <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.28)', letterSpacing: '0.02em', fontFamily: FONT.text, ...TYPE.smooth }}>
                 ← → navigate · Esc close
               </span>
-              <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.28)' }}>
+              <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.28)', fontFamily: FONT.text, ...TYPE.smooth }}>
                 {presentIn.length + missingIn.length} sources analysed
               </span>
             </div>
@@ -480,7 +486,7 @@ function BulletRow({ text, color, glow, delay }) {
         width: '5px', height: '5px', borderRadius: '50%', flexShrink: 0, marginTop: '7px',
         background: color, boxShadow: `0 0 7px ${glow}`
       }} />
-      <p style={{ fontSize: '13.5px', lineHeight: '1.58', color: 'rgba(255,255,255,0.78)', fontWeight: 400 }}>
+      <p style={{ fontSize: '13.5px', lineHeight: '1.58', color: 'rgba(255,255,255,0.78)', fontWeight: 400, fontFamily: FONT.text, ...TYPE.smooth }}>
         {text}
       </p>
     </motion.div>
