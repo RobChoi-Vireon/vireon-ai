@@ -160,11 +160,11 @@ export default function InflationSection({ data }) {
           style={{ ...GLASS.card, padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '14px', margin: '16px 0', position: 'relative', overflow: 'hidden' }}
         >
           <div style={SPECULAR} />
-          <span style={{ fontSize: '9px', fontWeight: 700, color: 'rgba(92,216,160,0.85)', letterSpacing: '0.14em', textTransform: 'uppercase', whiteSpace: 'nowrap', flexShrink: 0 }}>
+          <span style={{ fontFamily: FONT.text, fontSize: '11px', fontWeight: 600, color: 'rgba(92,216,160,0.85)', letterSpacing: '0.08em', textTransform: 'uppercase', whiteSpace: 'nowrap', flexShrink: 0, ...TYPE.smoothing }}>
             Δ Since last update
           </span>
           <div style={{ width: '1px', height: '14px', background: 'rgba(255,255,255,0.08)', flexShrink: 0 }} />
-          <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.78)', lineHeight: 1.5 }}>{d.delta_summary}</span>
+          <span style={{ fontFamily: FONT.text, fontSize: '13px', fontWeight: 500, color: 'rgba(255,255,255,0.85)', lineHeight: 1.5, letterSpacing: '0.01em', ...TYPE.smoothing }}>{d.delta_summary}</span>
         </motion.div>
       )}
 
