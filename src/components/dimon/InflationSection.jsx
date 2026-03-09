@@ -314,7 +314,7 @@ export default function InflationSection({ data }) {
           initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...ENTRY, delay: 0.16 }}
           style={{ marginBottom: '14px' }}
         >
-          <InteractivePanel index={4} style={{ padding: '11px 16px', display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <InteractivePanel index={4} contentStyle={{ padding: '11px 16px', display: 'flex', alignItems: 'center', gap: '14px' }}>
             <span style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.50)', letterSpacing: '0.06em', textTransform: 'uppercase', whiteSpace: 'nowrap', flexShrink: 0, ...TYPE.smoothing }}>
               Fed Implication
             </span>
