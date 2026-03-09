@@ -390,7 +390,7 @@ export default function InflationSection({ data }) {
         <div className="px-5 py-5 space-y-5 relative z-10">
           {/* SIGNAL CHIPS — Current State */}
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.32)', letterSpacing: '0.08em' }}>
+            <div className="text-[10px] font-semibold uppercase mb-3" style={{ color: 'rgba(255,255,255,0.35)', letterSpacing: '0.12em' }}>
               Current state
             </div>
             <div className="flex gap-2.5">
