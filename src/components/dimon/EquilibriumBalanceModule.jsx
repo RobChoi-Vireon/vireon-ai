@@ -172,7 +172,7 @@ export default function EquilibriumBalanceModule({
       }} />
 
       {/* Header Row */}
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex items-center justify-between mb-3">
         <motion.div className="flex items-center gap-3">
           <h4 
             style={{
