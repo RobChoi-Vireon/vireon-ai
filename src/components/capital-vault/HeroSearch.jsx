@@ -183,26 +183,7 @@ export default function HeroSearch({ onSearch, isLoading, history, setHistory, s
         </AnimatePresence>
       </form>
 
-      {/* Hint examples */}
-      {!query && (
-        <motion.div
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.4 }}
-          className="flex flex-wrap justify-center gap-x-6 gap-y-2 mt-5"
-        >
-          {HINT_EXAMPLES.map((hint, i) => (
-            <button
-              key={i}
-              onClick={() => { setQuery(hint.replace(/^What is |What drives /i, '').replace('?', '')); onSearch(hint.replace(/^What is |What drives /i, '').replace('?', '')); }}
-              className="text-sm transition-colors hover:text-white"
-              style={{ color: 'rgba(160,170,190,0.52)', fontStyle: 'italic' }}
-            >
-              {hint}
-            </button>
-          ))}
-        </motion.div>
-      )}
+
     </div>
   );
 }
