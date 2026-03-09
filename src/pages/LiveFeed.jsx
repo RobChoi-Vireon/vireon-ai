@@ -222,30 +222,7 @@ export default function LiveFeed() {
     setIsLoading(false);
   };
 
-  const viewToggle = (
-    <div className={`flex items-center p-1 rounded-2xl backdrop-blur-xl border transition-all duration-300 hover:shadow-lg ${theme === 'dark' ? 'bg-white/[0.08] border-white/10 hover:border-white/20' : 'bg-black/[0.04] border-black/[0.08] hover:border-black/[0.12]'}`}>
-      <motion.button 
-        onClick={() => setViewMode('grid')}
-        className={`p-3 rounded-xl text-sm font-bold transition-all duration-300 min-w-[120px] ${viewMode === 'grid' ? (theme === 'dark' ? 'bg-white/15 text-white shadow-lg' : 'bg-white text-black shadow-lg') : (theme === 'dark' ? 'text-gray-400 hover:text-white hover:bg-white/10' : 'text-gray-500 hover:text-black hover:bg-black/5')}`}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        aria-label="Switch to grid view"
-      >
-        <LayoutGrid className="w-5 h-5 inline mr-2" />
-        Grid View
-      </motion.button>
-      <motion.button 
-        onClick={() => setViewMode('timeline')}
-        className={`p-3 rounded-xl text-sm font-bold transition-all duration-300 min-w-[120px] ${viewMode === 'timeline' ? (theme === 'dark' ? 'bg-white/15 text-white shadow-lg' : 'bg-white text-black shadow-lg') : (theme === 'dark' ? 'text-gray-400 hover:text-white hover:bg-white/10' : 'text-gray-500 hover:text-black hover:bg-black/5')}`}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        aria-label="Switch to timeline view"
-      >
-        <List className="w-5 h-5 inline mr-2" />
-        Timeline
-      </motion.button>
-    </div>
-  );
+
 
   const containerVariants = {
     hidden: { opacity: 0 },
