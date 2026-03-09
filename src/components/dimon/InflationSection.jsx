@@ -322,10 +322,10 @@ export default function InflationSection({ data }) {
           padding: '16px 18px', position: 'relative', overflow: 'hidden'
         }}>
           <div style={{ ...SPECULAR, background: 'linear-gradient(90deg, transparent, rgba(242,106,106,0.14), transparent)' }} />
-          <div style={{ fontSize: '10px', fontWeight: 700, color: 'rgba(242,106,106,0.85)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '12px' }}>Losers</div>
+          <div style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(242,106,106,0.85)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '12px', ...TYPE.smoothing }}>Losers</div>
           <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {d.losers.slice(0, 5).map((item, idx) => (
-              <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '13px', color: 'rgba(255,255,255,0.78)' }}>
+              <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontFamily: FONT.text, fontSize: '14px', fontWeight: 400, color: 'rgba(255,255,255,0.85)', lineHeight: 1.6, ...TYPE.smoothing }}>
                 <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'rgba(242,106,106,0.75)', flexShrink: 0, marginTop: '5px', boxShadow: '0 0 5px rgba(242,106,106,0.45)' }} />
                 {item}
               </li>
