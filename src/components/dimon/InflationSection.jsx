@@ -141,8 +141,8 @@ export default function InflationSection({ data }) {
           display: 'inline-flex', alignItems: 'center', gap: '7px',
           padding: '7px 14px 7px 11px', borderRadius: '999px',
           background: `${regimeTheme.color}0C`, border: `1px solid ${regimeTheme.color}25`,
-          backdropFilter: 'blur(12px)', fontSize: '11px', fontWeight: 700,
-          color: regimeTheme.color, letterSpacing: '0.07em', textTransform: 'uppercase'
+          backdropFilter: 'blur(12px)', fontFamily: FONT.text, fontSize: '11px', fontWeight: 600,
+          color: regimeTheme.color, letterSpacing: '0.06em', textTransform: 'uppercase', ...TYPE.smoothing
         }}>
           <motion.div
             animate={{ opacity: [1, 0.4, 1] }}
