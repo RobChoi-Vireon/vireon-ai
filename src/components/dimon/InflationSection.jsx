@@ -414,11 +414,10 @@ export default function InflationSection({ data }) {
         </InteractivePanel>
 
         {/* Losers */}
-        <InteractivePanel index={8} style={{
-          background: 'linear-gradient(180deg, rgba(242,106,106,0.06) 0%, rgba(242,106,106,0.03) 100%)',
-          border: '1px solid rgba(242,106,106,0.12)',
-          padding: '16px 18px',
-        }}>
+        <InteractivePanel index={8}
+          style={{ background: 'linear-gradient(180deg, rgba(242,106,106,0.06) 0%, rgba(242,106,106,0.03) 100%)', border: '1px solid rgba(242,106,106,0.12)' }}
+          contentStyle={{ padding: '16px 18px' }}
+        >
           <div style={{ ...SPECULAR, background: 'linear-gradient(90deg, transparent, rgba(242,106,106,0.14), transparent)' }} />
           <div style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(242,106,106,0.85)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '12px', ...TYPE.smoothing }}>Losers</div>
           <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
