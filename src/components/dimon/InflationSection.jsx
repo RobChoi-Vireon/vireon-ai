@@ -373,16 +373,18 @@ export default function InflationSection({ data }) {
         </div>
 
         {/* DELTA ANCHOR */}
-        <div className="px-6 py-3.5 relative z-10" style={{
-          background: 'linear-gradient(90deg, rgba(94,167,255,0.10) 0%, rgba(94,167,255,0.04) 100%)',
-          borderBottom: '1px solid rgba(94,167,255,0.10)',
-        }}>
-          <div className="text-[11px] font-semibold uppercase tracking-widest mb-1" style={{ color: 'rgba(94,167,255,0.70)', letterSpacing: '0.07em' }}>
-            Δ Since last update
+        <div className="px-6 py-3 relative z-10">
+          <div className="inline-flex flex-col px-4 py-2.5 rounded-[12px]" style={{
+            background: 'rgba(99,210,190,0.08)',
+            border: '1px solid rgba(99,210,190,0.20)',
+          }}>
+            <div className="text-[10px] font-semibold uppercase mb-1" style={{ color: 'rgba(99,210,190,0.70)', letterSpacing: '0.12em' }}>
+              Δ Since last update
+            </div>
+            <p className="text-sm font-semibold leading-snug" style={{ color: 'rgba(255,255,255,0.88)' }}>
+              {inflationData.delta_summary}
+            </p>
           </div>
-          <p className="text-sm font-semibold leading-snug" style={{ color: 'rgba(255,255,255,0.90)' }}>
-            {inflationData.delta_summary}
-          </p>
         </div>
 
         <div className="px-5 py-5 space-y-5 relative z-10">
