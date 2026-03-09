@@ -448,76 +448,35 @@ export default function LiveFeed() {
               </motion.div>
             </motion.div>
           ) : (
-            <AnimatePresence mode="wait">
-              {viewMode === 'grid' ? (
-                <motion.div
-                  key="grid"
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8"
-                >
-                  {filteredArticles.length > 0 ? (
-                    filteredArticles.map((article, index) => (
-                      <motion.div key={article.id} variants={itemVariants}>
-                        <ArticleCard article={article} theme={theme} />
-                      </motion.div>
-                    ))
-                  ) : (
-                    <motion.div 
-                      className="col-span-full text-center py-20"
-                      variants={itemVariants}
-                    >
-                      <div className={`w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6 ${theme === 'dark' ? 'bg-white/[0.08]' : 'bg-gray-100'}`}>
-                        <TrendingUp className={`w-10 h-10 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
-                      </div>
-                      <h3 className={`text-2xl font-bold mb-3 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-                        No stories match your filters
-                      </h3>
-                      <p className={`text-base ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}>
-                        Try changing your filters or refresh the page
-                      </p>
-                    </motion.div>
-                  )}
-                </motion.div>
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8"
+            >
+              {filteredArticles.length > 0 ? (
+                filteredArticles.map((article) => (
+                  <motion.div key={article.id} variants={itemVariants}>
+                    <ArticleCard article={article} theme={theme} />
+                  </motion.div>
+                ))
               ) : (
-                <motion.div
-                  key="timeline"
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  className="relative" 
+                <motion.div 
+                  className="col-span-full text-center py-20"
+                  variants={itemVariants}
                 >
-                  <div className={`hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full rounded-full ${theme === 'dark' ? 'bg-white/10' : 'bg-gray-200'}`} />
-                  <div className="space-y-12">
-                    {filteredArticles.length > 0 ? (
-                      filteredArticles.map((article, index) => (
-                        <motion.div key={article.id} variants={itemVariants}>
-                          <TimelineArticleCard article={article} index={index} theme={theme} />
-                        </motion.div>
-                      ))
-                    ) : (
-                      <motion.div 
-                        className="text-center py-20"
-                        variants={itemVariants}
-                      >
-                        <div className={`w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6 ${theme === 'dark' ? 'bg-white/[0.08]' : 'bg-gray-100'}`}>
-                          <TrendingUp className={`w-10 h-10 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
-                        </div>
-                        <h3 className={`text-2xl font-bold mb-3 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-                          No articles match your filters
-                        </h3>
-                        <p className={`text-base ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}>
-                          Try adjusting your search criteria or refresh the feed
-                        </p>
-                      </motion.div>
-                    )}
+                  <div className={`w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6 ${theme === 'dark' ? 'bg-white/[0.08]' : 'bg-gray-100'}`}>
+                    <TrendingUp className={`w-10 h-10 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
                   </div>
+                  <h3 className={`text-2xl font-bold mb-3 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                    No stories match your filters
+                  </h3>
+                  <p className={`text-base ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}>
+                    Try changing your filters or refresh the page
+                  </p>
                 </motion.div>
               )}
-            </AnimatePresence>
+            </motion.div>
           )}
         </div>
       </div>
