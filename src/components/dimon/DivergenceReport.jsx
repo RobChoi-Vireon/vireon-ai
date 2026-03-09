@@ -79,7 +79,7 @@ const FractureBar = ({ count }) => {
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-      <span style={{ fontSize: '11px', fontWeight: 500, color: 'rgba(255,255,255,0.55)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+      <span style={{ fontSize: '11px', fontWeight: 500, color: 'rgba(255,255,255,0.55)', letterSpacing: '0.06em', textTransform: 'uppercase', fontFamily: FONT.text, ...TYPE.smooth }}>
         Fracture Intensity
       </span>
       <div
@@ -125,7 +125,7 @@ const FractureBar = ({ count }) => {
           )}
         </AnimatePresence>
       </div>
-      <span style={{ fontSize: '11px', fontWeight: 700, color: 'rgba(180,127,255,0.85)', letterSpacing: '0.02em' }}>
+      <span style={{ fontSize: '11px', fontWeight: 700, color: 'rgba(180,127,255,0.85)', letterSpacing: '0.02em', fontFamily: FONT.text, ...TYPE.smooth, ...TYPE.tabular }}>
         {intensity}/5
       </span>
     </div>
@@ -226,7 +226,8 @@ const DivergenceCard = ({ divergence, onClick, index }) => {
             <h4 style={{
               fontSize: '14px', fontWeight: 600, color: 'rgba(255,255,255,0.94)',
               letterSpacing: '-0.01em', lineHeight: 1.3,
-              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
+              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              fontFamily: FONT.display, ...TYPE.smooth
             }}>
               {String(headline)}
             </h4>
@@ -238,7 +239,8 @@ const DivergenceCard = ({ divergence, onClick, index }) => {
             padding: '4px 10px 4px 8px', borderRadius: '999px',
             background: `${risk.color}0C`, border: `1px solid ${risk.color}22`,
             backdropFilter: 'blur(12px)', fontSize: '10px', fontWeight: 600,
-            color: risk.color, letterSpacing: '0.05em', textTransform: 'uppercase'
+            color: risk.color, letterSpacing: '0.05em', textTransform: 'uppercase',
+            fontFamily: FONT.text, ...TYPE.smooth
           }}>
             <div style={{
               width: '5px', height: '5px', borderRadius: '50%',
@@ -251,7 +253,8 @@ const DivergenceCard = ({ divergence, onClick, index }) => {
         {/* ── Summary ── */}
         <p style={{
           fontSize: '13px', lineHeight: '1.55', color: 'rgba(255,255,255,0.72)',
-          fontWeight: 400, position: 'relative', zIndex: 2, marginBottom: '14px'
+          fontWeight: 400, position: 'relative', zIndex: 2, marginBottom: '14px',
+          fontFamily: FONT.text, ...TYPE.smooth
         }}>
           {contextCue}
         </p>
@@ -264,13 +267,13 @@ const DivergenceCard = ({ divergence, onClick, index }) => {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
             <BarChart2 className="w-3 h-3" style={{ color: 'rgba(255,255,255,0.40)' }} strokeWidth={2} />
-            <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.52)', fontWeight: 500 }}>
+            <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.52)', fontWeight: 500, fontFamily: FONT.text, ...TYPE.smooth, ...TYPE.tabular }}>
               {confidence}% confidence
             </span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
             <Database className="w-3 h-3" style={{ color: 'rgba(255,255,255,0.40)' }} strokeWidth={2} />
-            <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.52)', fontWeight: 500 }}>
+            <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.52)', fontWeight: 500, fontFamily: FONT.text, ...TYPE.smooth, ...TYPE.tabular }}>
               {sourceCount} {sourceCount === 1 ? 'source' : 'sources'}
             </span>
           </div>
@@ -281,7 +284,7 @@ const DivergenceCard = ({ divergence, onClick, index }) => {
             padding: '2px 8px', borderRadius: '999px',
             background: `${typeTheme.color}0A`, border: `1px solid ${typeTheme.color}18`,
             fontSize: '10px', fontWeight: 600, color: `${typeTheme.color}CC`, letterSpacing: '0.04em',
-            textTransform: 'uppercase'
+            textTransform: 'uppercase', fontFamily: FONT.text, ...TYPE.smooth
           }}>
             {typeTheme.label}
           </div>
@@ -327,10 +330,10 @@ export default function DivergenceReport({ divergences = [], fractureIntensity, 
         }}>
           <GitCommit className="w-5 h-5" style={{ color: 'rgba(180,127,255,0.80)' }} strokeWidth={2} />
         </div>
-        <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'rgba(255,255,255,0.88)', marginBottom: '6px', letterSpacing: '-0.005em' }}>
+        <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'rgba(255,255,255,0.88)', marginBottom: '6px', letterSpacing: '-0.005em', fontFamily: FONT.display, ...TYPE.smooth }}>
           No Divergences Detected
         </h3>
-        <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.48)', lineHeight: '1.5', textAlign: 'center' }}>
+        <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.48)', lineHeight: '1.5', textAlign: 'center', fontFamily: FONT.text, ...TYPE.smooth }}>
           All sources are aligned on the key narratives today.
         </p>
       </motion.div>
@@ -370,10 +373,10 @@ export default function DivergenceReport({ divergences = [], fractureIntensity, 
             <GitCommit className="w-4.5 h-4.5" style={{ color: 'rgba(180,127,255,0.88)' }} strokeWidth={2} />
           </div>
           <div>
-            <h2 style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.01em', lineHeight: 1.2, marginBottom: '3px' }}>
+            <h2 style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(255,255,255,0.96)', letterSpacing: '-0.01em', lineHeight: 1.2, marginBottom: '3px', fontFamily: FONT.display, ...TYPE.smooth }}>
               Divergence Report
             </h2>
-            <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.48)', lineHeight: 1.4 }}>
+            <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.48)', lineHeight: 1.4, fontFamily: FONT.text, ...TYPE.smooth }}>
               Where credible sources disagree.
             </p>
           </div>
@@ -399,7 +402,7 @@ export default function DivergenceReport({ divergences = [], fractureIntensity, 
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...ENTRY, delay: 0.38 }}
         >
-          <span style={{ fontSize: '12px', color: 'rgba(180,127,255,0.80)', fontWeight: 500 }}>
+          <span style={{ fontSize: '12px', color: 'rgba(180,127,255,0.80)', fontWeight: 500, fontFamily: FONT.text, ...TYPE.smooth }}>
             +{divergences.length - 3} more fractures detected
           </span>
           <motion.button
@@ -407,7 +410,8 @@ export default function DivergenceReport({ divergences = [], fractureIntensity, 
             style={{
               display: 'block', margin: '6px auto 0',
               fontSize: '11px', fontWeight: 500, color: 'rgba(255,255,255,0.45)',
-              background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.02em'
+              background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.02em',
+              fontFamily: FONT.text, ...TYPE.smooth
             }}
             whileHover={{ color: 'rgba(255,255,255,0.70)' }}
             transition={{ duration: 0.14 }}
