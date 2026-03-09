@@ -353,7 +353,6 @@ export default function LiveFeed() {
             </div>
           </div>
           <div className="flex items-center space-x-4 w-full md:w-auto">
-            {viewToggle}
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Button 
                 onClick={loadArticles} 
