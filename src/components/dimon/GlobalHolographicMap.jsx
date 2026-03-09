@@ -953,7 +953,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
   }, [viewportSize]);
 
   const dominantDriver = useMemo(() => {
-    if (equilibriumData?.dominant_force) return equilibriumData.dominant_force;
+    if (equilibriumData?.dominant_force) return equilibriumData?.dominant_force;
     const maxStrength = Math.max(...domains.map(d => d.strength));
     const dominant = domains.find(d => d.strength === maxStrength);
     if (maxStrength < 0.65) return "balanced";
