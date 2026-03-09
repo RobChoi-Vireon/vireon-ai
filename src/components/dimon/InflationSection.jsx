@@ -130,10 +130,10 @@ export default function InflationSection({ data }) {
       {/* ── 1. HEADER ── */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '6px', position: 'relative' }}>
         <div>
-          <h2 style={{ fontSize: '32px', fontWeight: 700, color: 'rgba(255,255,255,0.97)', letterSpacing: '-0.5px', margin: 0, lineHeight: 1.1 }}>
+          <h2 style={{ fontFamily: FONT.display, fontSize: '28px', fontWeight: 600, color: 'rgba(255,255,255,0.97)', letterSpacing: '-0.01em', margin: 0, lineHeight: 1.2, ...TYPE.smoothing }}>
             Inflation
           </h2>
-          <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.38)', margin: '4px 0 0' }}>
+          <p style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 400, color: 'rgba(255,255,255,0.65)', margin: '4px 0 0', letterSpacing: '0', lineHeight: 1.4, ...TYPE.smoothing }}>
             {d.timestamp_display ? `Last updated ${d.timestamp_display}` : 'Real-time price pressure signals.'}
           </p>
         </div>
