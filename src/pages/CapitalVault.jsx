@@ -6,8 +6,6 @@ import LyraLogo from '../components/core/LyraLogo';
 import StarfieldBackground from '../components/capital-vault/StarfieldBackground';
 import HeroSearch from '../components/capital-vault/HeroSearch';
 import MarketConceptsSection from '../components/capital-vault/MarketConceptsSection';
-import TrendingConceptsSection from '../components/capital-vault/TrendingConceptsSection';
-import AIInsightsSection from '../components/capital-vault/AIInsightsSection';
 import CategoryExplorer from '../components/capital-vault/CategoryExplorer';
 import KnowledgeControlPanel from '../components/capital-vault/KnowledgeControlPanel';
 import SearchResultCard from '../components/capital-vault/SearchResultCard';
