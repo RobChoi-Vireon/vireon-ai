@@ -74,6 +74,7 @@ const CATEGORY_DATA = [
 ];
 
 export default function InflationSection({ data }) {
+  const [showHowToRead, setShowHowToRead] = useState(false);
   if (!data) return null;
 
   const d = {
