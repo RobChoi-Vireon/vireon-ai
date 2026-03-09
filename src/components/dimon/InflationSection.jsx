@@ -7,11 +7,23 @@ const SMOOTH_EXPAND = { duration: 0.38, ease: [0.22, 0.61, 0.36, 1] };
 const CHEVRON_ROTATE = { duration: 0.32, ease: [0.22, 0.61, 0.36, 1] };
 
 const GLASS_CARD = {
-  background: 'linear-gradient(180deg, rgba(255,255,255,0.052) 0%, rgba(255,255,255,0.030) 100%)',
-  backdropFilter: 'blur(42px) saturate(170%)',
-  WebkitBackdropFilter: 'blur(42px) saturate(170%)',
-  border: '1px solid rgba(255,255,255,0.09)',
-  boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.09), 0 6px 28px rgba(0,0,0,0.12)',
+  background: 'rgba(255,255,255,0.04)',
+  backdropFilter: 'blur(24px) saturate(180%)',
+  WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+  border: '1px solid rgba(255,255,255,0.08)',
+  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.07), 0 4px 32px rgba(0,0,0,0.40)',
+  overflow: 'hidden',
+  transform: 'translateZ(0)',
+  backfaceVisibility: 'hidden',
+  WebkitFontSmoothing: 'antialiased',
+};
+
+const GLASS_ACCORDION = {
+  background: 'rgba(255,255,255,0.025)',
+  backdropFilter: 'blur(32px) saturate(185%)',
+  WebkitBackdropFilter: 'blur(32px) saturate(185%)',
+  border: '1px solid rgba(255,255,255,0.07)',
+  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05), 0 2px 20px rgba(0,0,0,0.32)',
   overflow: 'hidden',
   transform: 'translateZ(0)',
   backfaceVisibility: 'hidden',
