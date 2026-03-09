@@ -473,10 +473,10 @@ export default function InflationSection({ data }) {
               </ul>
             </div>
             {/* Losers panel */}
-            <div className="p-4 rounded-[16px]" style={{
-              background: 'linear-gradient(180deg, rgba(255,106,122,0.09) 0%, rgba(255,106,122,0.04) 100%)',
-              border: '1px solid rgba(255,106,122,0.15)',
-              boxShadow: 'inset 0 1px 0 rgba(255,106,122,0.08)'
+            <div className="p-4 rounded-[14px]" style={{
+              background: 'rgba(255,69,58,0.06)',
+              border: '1px solid rgba(255,69,58,0.15)',
+              boxShadow: 'inset 0 1px 0 rgba(255,69,58,0.05)'
             }}>
               <div className="text-[11px] font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(255,106,122,0.78)', letterSpacing: '0.06em' }}>
                 Losers
