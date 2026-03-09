@@ -271,15 +271,15 @@ export default function InflationSection({ data }) {
               return (
                 <div key={idx}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0' }}>
-                    <span style={{ fontSize: '13px', fontWeight: 600, color: 'rgba(255,255,255,0.90)' }}>{driver.name}</span>
+                    <span style={{ fontFamily: FONT.text, fontSize: '14px', fontWeight: 500, color: 'rgba(255,255,255,0.90)', ...TYPE.smoothing }}>{driver.name}</span>
                     <div style={{
-                      padding: '2px 9px', borderRadius: '6px', fontSize: '10px', fontWeight: 700,
+                      fontFamily: FONT.text, padding: '2px 9px', borderRadius: '6px', fontSize: '11px', fontWeight: 600,
                       background: `${roleColor}0C`, border: `1px solid ${roleColor}22`,
-                      color: roleColor, letterSpacing: '0.04em', textTransform: 'uppercase'
+                      color: roleColor, letterSpacing: '0.06em', textTransform: 'uppercase', ...TYPE.smoothing
                     }}>{roleLabel}</div>
                   </div>
                   <MiniBar value={driver.weight} maxVal={100} color={`linear-gradient(90deg, rgba(94,167,255,0.80), rgba(160,120,255,0.65))`} delay={0.10 + idx * 0.08} />
-                  <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.50)', margin: '4px 0 0', lineHeight: 1.5 }}>{driver.reason}</p>
+                  <p style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 400, color: 'rgba(255,255,255,0.75)', margin: '4px 0 0', lineHeight: 1.5, ...TYPE.smoothing }}>{driver.reason}</p>
                 </div>
               );
             })}
