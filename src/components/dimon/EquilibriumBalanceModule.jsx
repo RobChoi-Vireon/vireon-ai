@@ -252,8 +252,9 @@ export default function EquilibriumBalanceModule({
                   fontSize: '12px',
                   fontWeight: 500,
                   color: 'rgba(90, 160, 255, 0.95)',
-                  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
+                  fontFamily: FONT.text,
                   whiteSpace: 'nowrap',
+                  ...TYPE.smooth,
                   display: 'flex',
                   alignItems: 'center',
                   gap: '4px'
