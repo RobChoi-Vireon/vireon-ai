@@ -434,8 +434,8 @@ export default function InflationSection({ data }) {
                 display: 'inline-flex', alignItems: 'center', gap: '4px',
                 padding: '4px 12px', borderRadius: '999px',
                 background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
-                color: 'rgba(255,255,255,0.62)', fontSize: '12px', fontWeight: 500,
-                textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0,
+                fontFamily: FONT.text, color: 'rgba(255,255,255,0.65)', fontSize: '12px', fontWeight: 500, letterSpacing: '0.03em',
+                textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0, ...TYPE.smoothing,
                 transition: 'all 0.14s ease-out',
               }}
               onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.10)'; e.currentTarget.style.color = 'rgba(255,255,255,0.92)'; }}
