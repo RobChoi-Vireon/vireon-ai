@@ -1736,8 +1736,8 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
                 {connections.map((conn, i) => {
                   const from = domains.find(d => d.id === conn.from);
                   const to = domains.find(d => d.id === conn.to);
-                  const fromPos = getOrbPosition(conn.from, from.strength, swayTime, parallaxX.get(), parallaxY.get());
-                  const toPos = getOrbPosition(conn.to, to.strength, swayTime, parallaxX.get(), parallaxY.get());
+                  if (!from || !to) return null;
+                  const fromPos = getOrbPosition(conn.from, from.strength, swayTime, parallaxX.get(), parallaxY.get()); const toPos = getOrbPosition(conn.to, to.strength, swayTime, parallaxX.get(), parallaxY.get());
                   const isAdjacent = hoveredDomain === conn.from || hoveredDomain === conn.to || selectedDomain?.id === conn.from || selectedDomain?.id === conn.to;
                   const isFlashing = filamentFlash === conn.from || filamentFlash === conn.to;
 
