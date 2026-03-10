@@ -116,9 +116,9 @@ export default function EquilibriumPulse({
         setIsValueChanging(false);
       }, duration + 120);
       
-      setPrevEquilibriumScore(equilibriumScore);
+      setPrevEquilibriumScore(normalizedScore);
     }
-  }, [equilibriumScore, prevEquilibriumScore, pulseX]);
+  }, [normalizedScore, prevEquilibriumScore, pulseX]);
 
   useEffect(() => {
     if (shouldReduceMotion || drawerOpen) return;
