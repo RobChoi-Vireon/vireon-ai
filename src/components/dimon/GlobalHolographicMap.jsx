@@ -1405,7 +1405,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
          <div className="flex items-center space-x-3">
            <div>
              <h2 style={{ fontSize: '18px', lineHeight: '24px', fontWeight: 600, color: TOKENS.colors.textPrimary, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif' }}>Equilibrium</h2>
-             <p style={{ fontSize: '13px', color: TOKENS.colors.textTertiary, letterSpacing: '0.2em', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>Real-time balance of global macro forces.</p>
+             <p style={{ fontSize: '13px', fontWeight: 400, color: TOKENS.colors.textTertiary, letterSpacing: '-0.005em', lineHeight: '1.5', fontFamily: '"SF Pro Text", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif', WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale' }}>How the economy impacts your finances.</p>
            </div>
          </div>
 
