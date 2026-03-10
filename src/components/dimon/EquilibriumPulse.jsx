@@ -82,7 +82,12 @@ export default function EquilibriumPulse({
   const containerRef = useRef(null);
   const rafRef = useRef(null);
 
-  const pulseX = useSpring(equilibriumScore * 100, { stiffness: 60, damping: 20 });
+  // equilibriumScore prop is 0-1 internally, but raw value from API is 0-100
+  // 100 = far left (for you), 0 = far right (against you), so we invert: position = 1 - (score/100)
+  const normalizedScore = typeof equilibriumScore === 'number' && equilibriumScore > 1 
+    ? 1 - (equilibriumScore / 100) 
+    : 1 - equilibriumScore;
+  const pulseX = useSpring(normalizedScore * 100, { stiffness: 60, damping: 20 });
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
