@@ -517,9 +517,9 @@ export default function EquilibriumPulse({
             className="absolute"
             style={{
               top: '50%',
-              left: `${equilibriumScore * 100}%`,
-              transform: 'translate(-50%, -50%)',
-              width: '80px',
+                  left: `${normalizedScore * 100}%`,
+                  transform: 'translate(-50%, -50%)',
+                  width: '80px',
               height: '20px',
               background: `radial-gradient(ellipse, ${isSliderHovered || isSliderFocused ? 'rgba(142, 187, 255, 0.50)' : getPulseGlow()} 0%, transparent 70%)`,
               filter: 'blur(12px)',
