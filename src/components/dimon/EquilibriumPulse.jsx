@@ -738,7 +738,7 @@ export default function EquilibriumPulse({
                   color: 'rgba(255,255,255,0.68)',
                   marginBottom: '14px'
                 }}>
-                  What's Driving Markets
+                  Your Money At A Glance
                 </h5>
                 
                 <div className="grid grid-cols-2 gap-2.5">
