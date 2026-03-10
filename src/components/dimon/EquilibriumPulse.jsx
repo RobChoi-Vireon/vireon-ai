@@ -313,12 +313,12 @@ export default function EquilibriumPulse({
           <div
             className="px-2.5 py-1 rounded-lg"
             style={{
-              background: 'rgba(255,255,255,0.10)',
+              background: stateLabel === 'Favorable' ? 'rgba(88,227,164,0.15)' : stateLabel === 'Challenging' ? 'rgba(255,185,80,0.15)' : 'rgba(90,160,255,0.15)',
               fontSize: '11px',
               fontWeight: 600,
-              color: 'rgba(255,255,255,0.88)',
+              color: stateLabel === 'Favorable' ? 'rgba(88,227,164,0.95)' : stateLabel === 'Challenging' ? 'rgba(255,185,80,0.95)' : 'rgba(90,160,255,0.95)',
               letterSpacing: '0.02em',
-              border: '1px solid rgba(255,255,255,0.08)'
+              border: stateLabel === 'Favorable' ? '1px solid rgba(88,227,164,0.25)' : stateLabel === 'Challenging' ? '1px solid rgba(255,185,80,0.25)' : '1px solid rgba(90,160,255,0.20)'
             }}
           >
             {getStateLabel()}
