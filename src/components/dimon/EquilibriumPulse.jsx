@@ -555,9 +555,9 @@ export default function EquilibriumPulse({
           className="absolute pointer-events-none"
           style={{
             top: '50%',
-            left: `${equilibriumScore * 100}%`,
-            transform: 'translate(-50%, -50%)',
-            width: '28px',
+              left: `${normalizedScore * 100}%`,
+              transform: 'translate(-50%, -50%)',
+              width: '28px',
             height: '28px',
             borderRadius: '999px',
             border: '2px solid rgba(90, 160, 255, 0.5)',
