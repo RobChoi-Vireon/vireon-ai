@@ -520,6 +520,7 @@ export default function InflationSection({ data }) {
             </motion.div>
           )}
         </InteractivePanel>
+        </motion.div>
       </motion.div>
 
       {/* ── 8. TOP WEIGHTED SOURCES ── */}
