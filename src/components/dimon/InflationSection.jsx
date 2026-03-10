@@ -414,8 +414,8 @@ export default function InflationSection({ data }) {
               <motion.div
                 animate={!showImpact ? {
                   rotate: 0,
-                  opacity: [0.28, 0.75, 0.28],
-                  x: [0, 2, 0],
+                  opacity: [0.20, 1, 0.20],
+                  x: [0, 4, 0],
                 } : { rotate: 90, opacity: 1, x: 0 }}
                 transition={!showImpact ? {
                   duration: 3.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2,
