@@ -671,7 +671,6 @@ const TimelineEvolution = ({ trajectory }) => {
 };
 
 export default function StrategicTrajectory({ trajectory = [], density }) {
-  const [viewMode, setViewMode] = useState('expanded'); // 'expanded' or 'compact'
   const [isExpanded, setIsExpanded] = useState(false);
 
   const spacingClass = density === 'compact' ? 'p-4' : density === 'spacious' ? 'p-8' : 'p-6';
@@ -679,10 +678,6 @@ export default function StrategicTrajectory({ trajectory = [], density }) {
   if (!trajectory || trajectory.length === 0) {
     return null;
   }
-
-  const toggleViewMode = () => {
-    setViewMode(viewMode === 'expanded' ? 'compact' : 'expanded');
-  };
 
   return (
     <motion.section
@@ -743,76 +738,28 @@ export default function StrategicTrajectory({ trajectory = [], density }) {
           >
             {isExpanded ? 'Hide Evolution' : 'Show Evolution'}
           </motion.button>
-          
-          <motion.button
-            onClick={toggleViewMode}
-            className="px-3 py-1.5 text-sm font-medium rounded-full border border-white/20 bg-white/5 hover:bg-white/10 transition-colors"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            {viewMode === 'expanded' ? 'Compact View' : 'Expanded View'}
-          </motion.button>
         </div>
       </div>
 
       {/* Main Content */}
-      <AnimatePresence mode="wait">
-        {viewMode === 'expanded' ? (
-          <motion.div
-            key="expanded"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <motion.div 
-              className="grid grid-cols-1 md:grid-cols-3 gap-6"
-              variants={{
-                hidden: { opacity: 0 },
-                visible: { 
-                  opacity: 1,
-                  transition: { staggerChildren: 0.1 } // Fixed: Faster staggering
-                }
-              }}
-              initial="hidden"
-              animate="visible"
-            >
-              {trajectory.map((item, index) => (
-                <HorizonTile
-                  key={item.horizon}
-                  item={item}
-                  index={index}
-                  delay={index * 0.1} // Fixed: Much shorter delay
-                />
-              ))}
-            </motion.div>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="compact"
-            variants={{
-              hidden: { opacity: 0 },
-              visible: { 
-                opacity: 1,
-                transition: { staggerChildren: 0.05 } // Fixed: Even faster for compact
-              }
-            }}
-            initial="hidden"
-            animate="visible"
-            exit={{ opacity: 0 }}
-            className="space-y-3"
-          >
-            {trajectory.map((item, index) => (
-              <CompactRow
-                key={item.horizon}
-                item={item}
-                index={index}
-                delay={0.05} // Fixed: Very short delay
-              />
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <motion.div 
+        className="grid grid-cols-1 md:grid-cols-3 gap-6"
+        variants={{
+          hidden: { opacity: 0 },
+          visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+        }}
+        initial="hidden"
+        animate="visible"
+      >
+        {trajectory.map((item, index) => (
+          <HorizonTile
+            key={item.horizon}
+            item={item}
+            index={index}
+            delay={index * 0.1}
+          />
+        ))}
+      </motion.div>
 
       {/* Timeline Evolution */}
       <AnimatePresence>
