@@ -381,9 +381,9 @@ export default function InflationSection({ data }) {
           style={{ borderRadius: '20px', position: 'relative' }}
           animate={!showImpact ? {
             boxShadow: [
-              '0 0 0px rgba(94,167,255,0), inset 0 0 0px rgba(94,167,255,0)',
-              '0 0 36px rgba(94,167,255,0.38), inset 0 0 44px rgba(94,167,255,0.14)',
-              '0 0 0px rgba(94,167,255,0), inset 0 0 0px rgba(94,167,255,0)',
+              '0 0 0px rgba(255,140,60,0), inset 0 0 0px rgba(255,140,60,0)',
+              '0 0 36px rgba(255,140,60,0.38), inset 0 0 44px rgba(255,160,80,0.14)',
+              '0 0 0px rgba(255,140,60,0), inset 0 0 0px rgba(255,140,60,0)',
             ]
           } : {
             boxShadow: '0 0 0px rgba(94,167,255,0)',
