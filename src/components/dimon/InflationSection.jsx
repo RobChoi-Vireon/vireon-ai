@@ -38,11 +38,6 @@ const SPECULAR = {
   pointerEvents: 'none',
 };
 
-// ─── Interactive Panel ───────────────────────────────────────────────────────
-// Applies Executive Takeaway–style hover effects: parallax tilt, proximity halo,
-// ambient bloom, lift, press feedback, and periodic shimmer sweep.
-// `style`        → applied to the outer glass shell (border/background overrides)
-// `contentStyle` → applied to the inner content div (padding, display, flex, gap)
 const InteractivePanel = ({ children, style = {}, contentStyle = {}, index = 0, noBloom = false }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
@@ -97,10 +92,7 @@ const InteractivePanel = ({ children, style = {}, contentStyle = {}, index = 0, 
       }}
       transition={{ type: 'spring', stiffness: 300, damping: 28, mass: 1 }}
     >
-      {/* Specular highlight */}
       <div style={SPECULAR} />
-
-      {/* Proximity halo */}
       <motion.div
         style={{
           position: 'absolute', inset: '-10px', borderRadius: '24px',
@@ -110,21 +102,17 @@ const InteractivePanel = ({ children, style = {}, contentStyle = {}, index = 0, 
         animate={{ opacity: isNearCursor && !isHovered ? 0.02 : 0 }}
         transition={{ duration: 0.25 }}
       />
-
-      {/* Ambient bloom on hover */}
       {!noBloom && (
-      <motion.div
-        style={{
-          position: 'absolute', inset: 0, borderRadius: '20px', pointerEvents: 'none',
-          background: 'radial-gradient(ellipse at 40% 20%, rgba(86,156,235,0.03) 0%, transparent 65%)',
-          zIndex: 0,
-        }}
-        animate={{ opacity: isHovered ? 1 : 0 }}
-        transition={{ duration: 0.22 }}
-      />
+        <motion.div
+          style={{
+            position: 'absolute', inset: 0, borderRadius: '20px', pointerEvents: 'none',
+            background: 'radial-gradient(ellipse at 40% 20%, rgba(86,156,235,0.03) 0%, transparent 65%)',
+            zIndex: 0,
+          }}
+          animate={{ opacity: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.22 }}
+        />
       )}
-
-      {/* Periodic shimmer sweep */}
       <motion.div
         style={{
           position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0,
@@ -134,8 +122,6 @@ const InteractivePanel = ({ children, style = {}, contentStyle = {}, index = 0, 
         animate={{ x: ['-110%', '110%'], opacity: [0, 0.05, 0] }}
         transition={{ duration: 1.4, ease: 'easeInOut', repeat: Infinity, repeatDelay: 7 + index * 1.8 }}
       />
-
-      {/* Content wrapper — layout styles (padding/flex/gap) go here, not on the outer shell */}
       <div style={{ position: 'relative', zIndex: 1, ...contentStyle }}>
         {children}
       </div>
@@ -143,7 +129,6 @@ const InteractivePanel = ({ children, style = {}, contentStyle = {}, index = 0, 
   );
 };
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
 const getRegimeTheme = (arrow) => {
   if (arrow === 'up')   return { label: 'Heating', color: '#F26A6A', glow: 'rgba(242,106,106,0.15)', Icon: TrendingUp };
   if (arrow === 'down') return { label: 'Cooling', color: '#5CD8A0', glow: 'rgba(92,216,160,0.15)',  Icon: TrendingDown };
@@ -177,9 +162,6 @@ const MiniBar = ({ value, maxVal = 6, color, delay = 0 }) => {
   );
 };
 
-
-
-// ─── Main Component ───────────────────────────────────────────────────────────
 export default function InflationSection({ data }) {
   const [showImpact, setShowImpact] = useState(false);
   if (!data) return null;
@@ -326,38 +308,36 @@ export default function InflationSection({ data }) {
         initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ...ENTRY, delay: 0.20 }}
         style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}
       >
-        {/* Categories */}
         {d.components && d.components.length > 0 && (
-        <InteractivePanel index={5} contentStyle={{ padding: '18px 20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '14px' }}>
-            <BarChart2 className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.40)' }} strokeWidth={2} />
-            <span style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.65)', letterSpacing: '0.06em', textTransform: 'uppercase', ...TYPE.smoothing }}>
-              Inflation by Category
-            </span>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            {d.components.slice(0, 5).map((cat, idx) => {
-              const barColor = getCategoryColor(cat.yoy);
-              const arrowChar = cat.direction === 'up' ? '↑' : cat.direction === 'down' ? '↓' : '→';
-              const arrowColor = cat.direction === 'up' ? '#F26A6A' : cat.direction === 'down' ? '#5CD8A0' : '#9BA3B0';
-              return (
-                <div key={idx}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                   <span style={{ fontFamily: FONT.text, fontSize: '14px', fontWeight: 500, color: 'rgba(255,255,255,0.88)', ...TYPE.smoothing }}>{cat.name}</span>
-                   <span style={{ fontFamily: FONT.text, fontSize: '16px', fontWeight: 600, color: arrowColor, ...TYPE.smoothing, ...TYPE.tabular }}>
-                     {arrowChar} {cat.yoy >= 0 ? '+' : ''}{Number(cat.yoy).toFixed(1)}%
-                   </span>
+          <InteractivePanel index={5} contentStyle={{ padding: '18px 20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '14px' }}>
+              <BarChart2 className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.40)' }} strokeWidth={2} />
+              <span style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.65)', letterSpacing: '0.06em', textTransform: 'uppercase', ...TYPE.smoothing }}>
+                Inflation by Category
+              </span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              {d.components.slice(0, 5).map((cat, idx) => {
+                const barColor = getCategoryColor(cat.yoy);
+                const arrowChar = cat.direction === 'up' ? '↑' : cat.direction === 'down' ? '↓' : '→';
+                const arrowColor = cat.direction === 'up' ? '#F26A6A' : cat.direction === 'down' ? '#5CD8A0' : '#9BA3B0';
+                return (
+                  <div key={idx}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span style={{ fontFamily: FONT.text, fontSize: '14px', fontWeight: 500, color: 'rgba(255,255,255,0.88)', ...TYPE.smoothing }}>{cat.name}</span>
+                      <span style={{ fontFamily: FONT.text, fontSize: '16px', fontWeight: 600, color: arrowColor, ...TYPE.smoothing, ...TYPE.tabular }}>
+                        {arrowChar} {cat.yoy >= 0 ? '+' : ''}{Number(cat.yoy).toFixed(1)}%
+                      </span>
+                    </div>
+                    <MiniBar value={cat.yoy} maxVal={6} color={barColor} delay={0.08 + idx * 0.06} />
+                    <p style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 400, color: 'rgba(255,255,255,0.75)', margin: 0, lineHeight: 1.4, ...TYPE.smoothing }}>{cat.note}</p>
                   </div>
-                  <MiniBar value={cat.yoy} maxVal={6} color={barColor} delay={0.08 + idx * 0.06} />
-                  <p style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 400, color: 'rgba(255,255,255,0.75)', margin: 0, lineHeight: 1.4, ...TYPE.smoothing }}>{cat.note}</p>
-                </div>
-              );
-            })}
-          </div>
-        </InteractivePanel>
+                );
+              })}
+            </div>
+          </InteractivePanel>
         )}
 
-        {/* Key Drivers */}
         <InteractivePanel index={6} contentStyle={{ padding: '18px 20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '14px' }}>
             <Flame className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.40)' }} strokeWidth={2} />
@@ -379,7 +359,7 @@ export default function InflationSection({ data }) {
                       color: roleColor, letterSpacing: '0.06em', textTransform: 'uppercase', ...TYPE.smoothing
                     }}>{roleLabel}</div>
                   </div>
-                  <MiniBar value={driver.weight} maxVal={100} color={`linear-gradient(90deg, rgba(94,167,255,0.80), rgba(160,120,255,0.65))`} delay={0.10 + idx * 0.08} />
+                  <MiniBar value={driver.weight} maxVal={100} color="linear-gradient(90deg, rgba(94,167,255,0.80), rgba(160,120,255,0.65))" delay={0.10 + idx * 0.08} />
                   <p style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 400, color: 'rgba(255,255,255,0.75)', margin: '4px 0 0', lineHeight: 1.5, ...TYPE.smoothing }}>{driver.reason}</p>
                 </div>
               );
@@ -391,153 +371,154 @@ export default function InflationSection({ data }) {
         </InteractivePanel>
       </motion.div>
 
-      {/* ── 6. WINNERS | LOSERS | WHAT TO WATCH (3-col) ── */}
+      {/* ── 6. IMPACT ACCORDION ── */}
       <motion.div
         initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ...ENTRY, delay: 0.24 }}
         style={{ marginBottom: '10px' }}
       >
+        {/* Breathing bloom wrapper — only active when closed */}
         <motion.div
           style={{ borderRadius: '20px', position: 'relative' }}
           animate={!showImpact ? {
             boxShadow: [
               '0 0 0px rgba(94,167,255,0), inset 0 0 0px rgba(94,167,255,0)',
               '0 0 22px rgba(94,167,255,0.18), inset 0 0 28px rgba(94,167,255,0.06)',
-              '0 0 0px rgba(94,167,255,0), inset 0 0 0px rgba(94,167,255,0)'
+              '0 0 0px rgba(94,167,255,0), inset 0 0 0px rgba(94,167,255,0)',
             ]
           } : {
-            boxShadow: '0 0 0px rgba(94,167,255,0)'
+            boxShadow: '0 0 0px rgba(94,167,255,0)',
           }}
           transition={!showImpact ? {
-            duration: 3.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2
+            duration: 3.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2,
           } : { duration: 0.4, ease: 'easeOut' }}
         >
-        <InteractivePanel index={6} noBloom>
-          <button
-            onClick={() => setShowImpact(v => !v)}
-            style={{
-              width: '100%', display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 18px',
-              background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left'
-            }}
-          >
-            <motion.span
-              style={{ fontFamily: FONT.text, fontSize: '14px', letterSpacing: '0', flex: 1, ...TYPE.smoothing }}
-              animate={!showImpact ? {
-                color: ['rgba(255,255,255,0.65)', 'rgba(140,190,255,0.90)', 'rgba(255,255,255,0.65)'],
-                fontWeight: 500
-              } : { color: 'rgba(255,255,255,0.65)', fontWeight: 500 }}
-              transition={!showImpact ? {
-                duration: 3.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2
-              } : { duration: 0.3 }}
+          <InteractivePanel index={6} noBloom>
+            <button
+              onClick={() => setShowImpact(v => !v)}
+              style={{
+                width: '100%', display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 18px',
+                background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left'
+              }}
             >
-              Impact
-            </motion.span>
-            <motion.div
-              animate={!showImpact ? {
-                rotate: 0,
-                opacity: [0.28, 0.75, 0.28],
-                x: [0, 2, 0]
-              } : { rotate: 90, opacity: 1, x: 0 }}
-              transition={!showImpact ? {
-                duration: 3.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2
-              } : { duration: 0.18 }}
-            >
-              <ChevronRight className="w-3.5 h-3.5" style={{ color: 'rgba(94,167,255,0.75)' }} strokeWidth={2} />
-            </motion.div>
-          </button>
-          {showImpact && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }}
-              style={{ overflow: 'hidden' }}
-            >
-              <div style={{ padding: '0 14px 20px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr', gap: '12px', marginBottom: '16px' }}>
-        {/* Winners */}
-        <InteractivePanel index={7} noBloom
-          style={{ background: 'linear-gradient(180deg, rgba(92,216,160,0.06) 0%, rgba(92,216,160,0.03) 100%)', border: '1px solid rgba(92,216,160,0.12)' }}
-          contentStyle={{ padding: '16px 18px' }}
-        >
-          <div style={{ ...SPECULAR, background: 'linear-gradient(90deg, transparent, rgba(92,216,160,0.14), transparent)' }} />
-          <div style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(92,216,160,0.85)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '12px', ...TYPE.smoothing }}>Winners</div>
-          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {d.winners.slice(0, 5).map((item, idx) => (
-              <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontFamily: FONT.text, fontSize: '14px', fontWeight: 400, color: 'rgba(255,255,255,0.85)', lineHeight: 1.6, ...TYPE.smoothing }}>
-                <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'rgba(92,216,160,0.75)', flexShrink: 0, marginTop: '5px', boxShadow: '0 0 5px rgba(92,216,160,0.45)' }} />
-                {item}
-              </li>
-            ))}
-          </ul>
-        </InteractivePanel>
+              <motion.span
+                style={{ fontFamily: FONT.text, fontSize: '14px', fontWeight: 500, letterSpacing: '0', flex: 1, ...TYPE.smoothing }}
+                animate={!showImpact ? {
+                  color: ['rgba(255,255,255,0.65)', 'rgba(140,190,255,0.90)', 'rgba(255,255,255,0.65)'],
+                } : { color: 'rgba(255,255,255,0.65)' }}
+                transition={!showImpact ? {
+                  duration: 3.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2,
+                } : { duration: 0.3 }}
+              >
+                Impact
+              </motion.span>
+              <motion.div
+                animate={!showImpact ? {
+                  rotate: 0,
+                  opacity: [0.28, 0.75, 0.28],
+                  x: [0, 2, 0],
+                } : { rotate: 90, opacity: 1, x: 0 }}
+                transition={!showImpact ? {
+                  duration: 3.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2,
+                } : { duration: 0.18 }}
+              >
+                <ChevronRight className="w-3.5 h-3.5" style={{ color: 'rgba(94,167,255,0.75)' }} strokeWidth={2} />
+              </motion.div>
+            </button>
 
-        {/* Losers */}
-        <InteractivePanel index={8} noBloom
-          style={{ background: 'linear-gradient(180deg, rgba(242,106,106,0.06) 0%, rgba(242,106,106,0.03) 100%)', border: '1px solid rgba(242,106,106,0.12)' }}
-          contentStyle={{ padding: '16px 18px' }}
-        >
-          <div style={{ ...SPECULAR, background: 'linear-gradient(90deg, transparent, rgba(242,106,106,0.14), transparent)' }} />
-          <div style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(242,106,106,0.85)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '12px', ...TYPE.smoothing }}>Losers</div>
-          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {d.losers.slice(0, 5).map((item, idx) => (
-              <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontFamily: FONT.text, fontSize: '14px', fontWeight: 400, color: 'rgba(255,255,255,0.85)', lineHeight: 1.6, ...TYPE.smoothing }}>
-                <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'rgba(242,106,106,0.75)', flexShrink: 0, marginTop: '5px', boxShadow: '0 0 5px rgba(242,106,106,0.45)' }} />
-                {item}
-              </li>
-            ))}
-          </ul>
-        </InteractivePanel>
-
-        {/* What to Watch */}
-        <InteractivePanel index={9} noBloom contentStyle={{ padding: '16px 18px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '14px' }}>
-            <Wind className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.40)' }} strokeWidth={2} />
-            <span style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.65)', letterSpacing: '0.06em', textTransform: 'uppercase', ...TYPE.smoothing }}>What to Watch</span>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-            {[{ label: 'Next 30–60 days', items: d.watch_short }, { label: 'Next 6–12 months', items: d.watch_long }].map(({ label, items }) => (
-              <div key={label}>
-                <div style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.65)', marginBottom: '10px', letterSpacing: '0.02em', ...TYPE.smoothing }}>{label}</div>
-                <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {items.slice(0, 4).map((item, idx) => (
-                    <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '7px', fontFamily: FONT.text, fontSize: '14px', fontWeight: 400, color: 'rgba(255,255,255,0.85)', lineHeight: 1.5, ...TYPE.smoothing }}>
-                      <ChevronRight className="w-3 h-3" style={{ color: 'rgba(255,255,255,0.28)', flexShrink: 0, marginTop: '2px' }} strokeWidth={2} />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </InteractivePanel>
-              </div>{/* end grid */}
-
-              {/* How to Read the Data — plain content, inside Impact */}
-              <div style={{ marginTop: '4px' }}>
-                <div style={{ fontFamily: FONT.text, fontSize: '11px', fontWeight: 600, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '10px', ...TYPE.smoothing }}>
-                  How to Read the Data
-                </div>
-                <div style={{ display: 'flex', gap: '10px' }}>
-                  {[
-                    { label: 'CPI', value: (d.cpi_pce_collapsed?.match(/[\d.]+%/) || [])[0] || '', color: '#5EA7FF', desc: d.cpi_plain },
-                    { label: 'PCE', value: d.cpi_pce_collapsed?.split('/')[1]?.trim() || '2.5%', color: '#B47FFF', desc: d.pce_plain },
-                    { label: 'Gap', value: '0.1%', color: '#FFB020', desc: d.why_fed_prefers },
-                  ].map((item, idx) => (
-                    <InteractivePanel key={idx} index={20 + idx} contentStyle={{ flex: 1, padding: '10px 14px' }} style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                        <span style={{ fontFamily: FONT.display, fontSize: '14px', fontWeight: 600, color: 'rgba(255,255,255,0.90)', letterSpacing: '-0.005em', ...TYPE.smoothing }}>{item.label}</span>
-                        <span style={{
-                          fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, padding: '1px 7px', borderRadius: '999px',
-                          background: `${item.color}10`, color: item.color, border: `1px solid ${item.color}20`, ...TYPE.smoothing, ...TYPE.tabular
-                        }}>{item.value}</span>
-                      </div>
-                      <p style={{ fontFamily: FONT.text, fontSize: '13px', fontWeight: 400, color: 'rgba(255,255,255,0.65)', lineHeight: 1.5, margin: 0, ...TYPE.smoothing }}>{item.desc}</p>
+            {showImpact && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }}
+                style={{ overflow: 'hidden' }}
+              >
+                <div style={{ padding: '0 14px 20px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr', gap: '12px', marginBottom: '16px' }}>
+                    {/* Winners */}
+                    <InteractivePanel index={7} noBloom
+                      style={{ background: 'linear-gradient(180deg, rgba(92,216,160,0.06) 0%, rgba(92,216,160,0.03) 100%)', border: '1px solid rgba(92,216,160,0.12)' }}
+                      contentStyle={{ padding: '16px 18px' }}
+                    >
+                      <div style={{ ...SPECULAR, background: 'linear-gradient(90deg, transparent, rgba(92,216,160,0.14), transparent)' }} />
+                      <div style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(92,216,160,0.85)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '12px', ...TYPE.smoothing }}>Winners</div>
+                      <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {d.winners.slice(0, 5).map((item, idx) => (
+                          <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontFamily: FONT.text, fontSize: '14px', fontWeight: 400, color: 'rgba(255,255,255,0.85)', lineHeight: 1.6, ...TYPE.smoothing }}>
+                            <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'rgba(92,216,160,0.75)', flexShrink: 0, marginTop: '5px', boxShadow: '0 0 5px rgba(92,216,160,0.45)' }} />
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
                     </InteractivePanel>
-                  ))}
+
+                    {/* Losers */}
+                    <InteractivePanel index={8} noBloom
+                      style={{ background: 'linear-gradient(180deg, rgba(242,106,106,0.06) 0%, rgba(242,106,106,0.03) 100%)', border: '1px solid rgba(242,106,106,0.12)' }}
+                      contentStyle={{ padding: '16px 18px' }}
+                    >
+                      <div style={{ ...SPECULAR, background: 'linear-gradient(90deg, transparent, rgba(242,106,106,0.14), transparent)' }} />
+                      <div style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(242,106,106,0.85)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '12px', ...TYPE.smoothing }}>Losers</div>
+                      <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {d.losers.slice(0, 5).map((item, idx) => (
+                          <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontFamily: FONT.text, fontSize: '14px', fontWeight: 400, color: 'rgba(255,255,255,0.85)', lineHeight: 1.6, ...TYPE.smoothing }}>
+                            <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'rgba(242,106,106,0.75)', flexShrink: 0, marginTop: '5px', boxShadow: '0 0 5px rgba(242,106,106,0.45)' }} />
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </InteractivePanel>
+
+                    {/* What to Watch */}
+                    <InteractivePanel index={9} noBloom contentStyle={{ padding: '16px 18px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '14px' }}>
+                        <Wind className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.40)' }} strokeWidth={2} />
+                        <span style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.65)', letterSpacing: '0.06em', textTransform: 'uppercase', ...TYPE.smoothing }}>What to Watch</span>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                        {[{ label: 'Next 30–60 days', items: d.watch_short }, { label: 'Next 6–12 months', items: d.watch_long }].map(({ label, items }) => (
+                          <div key={label}>
+                            <div style={{ fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.65)', marginBottom: '10px', letterSpacing: '0.02em', ...TYPE.smoothing }}>{label}</div>
+                            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                              {items.slice(0, 4).map((item, idx) => (
+                                <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '7px', fontFamily: FONT.text, fontSize: '14px', fontWeight: 400, color: 'rgba(255,255,255,0.85)', lineHeight: 1.5, ...TYPE.smoothing }}>
+                                  <ChevronRight className="w-3 h-3" style={{ color: 'rgba(255,255,255,0.28)', flexShrink: 0, marginTop: '2px' }} strokeWidth={2} />
+                                  {item}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
+                    </InteractivePanel>
+                  </div>
+
+                  {/* How to Read the Data */}
+                  <div style={{ marginTop: '4px' }}>
+                    <div style={{ fontFamily: FONT.text, fontSize: '11px', fontWeight: 600, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '10px', ...TYPE.smoothing }}>
+                      How to Read the Data
+                    </div>
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                      {[
+                        { label: 'CPI', value: (d.cpi_pce_collapsed?.match(/[\d.]+%/) || [])[0] || '', color: '#5EA7FF', desc: d.cpi_plain },
+                        { label: 'PCE', value: d.cpi_pce_collapsed?.split('/')[1]?.trim() || '2.5%', color: '#B47FFF', desc: d.pce_plain },
+                        { label: 'Gap', value: '0.1%', color: '#FFB020', desc: d.why_fed_prefers },
+                      ].map((item, idx) => (
+                        <InteractivePanel key={idx} index={20 + idx} contentStyle={{ flex: 1, padding: '10px 14px' }} style={{ flex: 1 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                            <span style={{ fontFamily: FONT.display, fontSize: '14px', fontWeight: 600, color: 'rgba(255,255,255,0.90)', letterSpacing: '-0.005em', ...TYPE.smoothing }}>{item.label}</span>
+                            <span style={{
+                              fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, padding: '1px 7px', borderRadius: '999px',
+                              background: `${item.color}10`, color: item.color, border: `1px solid ${item.color}20`, ...TYPE.smoothing, ...TYPE.tabular
+                            }}>{item.value}</span>
+                          </div>
+                          <p style={{ fontFamily: FONT.text, fontSize: '13px', fontWeight: 400, color: 'rgba(255,255,255,0.65)', lineHeight: 1.5, margin: 0, ...TYPE.smoothing }}>{item.desc}</p>
+                        </InteractivePanel>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
-              </div>
-            </motion.div>
-          )}
-        </InteractivePanel>
+              </motion.div>
+            )}
+          </InteractivePanel>
         </motion.div>
       </motion.div>
 
