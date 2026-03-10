@@ -151,11 +151,11 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
   const orbBrightness = isAnyChipHovered ? 0.97 : 1;
 
   return (
-    <div className="relative flex items-center justify-center" style={{ minHeight: '210px' }}>
+    <div className="relative flex items-center justify-center" style={{ minHeight: '190px' }}>
       {/* Ultra-Subtle Background Wavefield */}
       <svg 
-        width="220" 
-        height="220" 
+        width="195" 
+        height="195" 
         viewBox="0 0 160 160"
         className="absolute"
         style={{
@@ -265,9 +265,9 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
       <motion.div
         className="absolute signal-orb-outer"
         style={{
-          width: '220px',
-          height: '220px',
-          borderRadius: '110px',
+          width: '195px',
+          height: '195px',
+          borderRadius: '98px',
           background: `
             linear-gradient(145deg, 
               rgba(142, 187, 255, 0.135) 0%, 
@@ -871,7 +871,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer, sources
       </div>
 
       <div className="flex flex-col items-center justify-center flex-1" style={{ position: 'relative', zIndex: 10 }}>
-        <div className="mb-2 w-full">
+        <div className="mb-8 w-full">
           <SignalLensNode 
             score={score} 
             isHovered={isHovered} 
