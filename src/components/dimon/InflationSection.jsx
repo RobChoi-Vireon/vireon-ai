@@ -473,6 +473,7 @@ export default function InflationSection({ data }) {
             ))}
           </div>
         </InteractivePanel>
+              </div>{/* end grid */}
 
               {/* How to Read the Data — plain content, inside Impact */}
               <div style={{ marginTop: '4px' }}>
