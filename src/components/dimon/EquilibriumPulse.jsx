@@ -44,7 +44,7 @@ const FORCE_COLORS = {
 const FORCE_LABELS = {
   growth: 'Borrowing',
   rates: 'Savings',
-  fx: 'Housing',
+  fx: 'Housing Market',
   geopolitics: 'Jobs'
 };
 
