@@ -112,6 +112,7 @@ const InteractivePanel = ({ children, style = {}, contentStyle = {}, index = 0, 
       />
 
       {/* Ambient bloom on hover */}
+      {!noBloom && (
       <motion.div
         style={{
           position: 'absolute', inset: 0, borderRadius: '20px', pointerEvents: 'none',
@@ -121,6 +122,7 @@ const InteractivePanel = ({ children, style = {}, contentStyle = {}, index = 0, 
         animate={{ opacity: isHovered ? 1 : 0 }}
         transition={{ duration: 0.22 }}
       />
+      )}
 
       {/* Periodic shimmer sweep */}
       <motion.div
