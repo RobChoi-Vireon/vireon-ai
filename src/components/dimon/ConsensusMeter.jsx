@@ -870,25 +870,27 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer, sources
         </motion.div>
       </div>
 
-      <div className="mb-2" style={{ position: 'relative', zIndex: 10 }}>
-        <SignalLensNode 
-          score={score} 
-          isHovered={isHovered} 
-          parentRef={containerRef}
-          isAnyChipHovered={isAnyChipHovered}
-          hoveredChipColor={hoveredChipColor}
-          consensusLabel={consensusLabel}
-          confidenceLabel={confidenceLabel}
-        />
-      </div>
+      <div className="flex flex-col items-center justify-center flex-1" style={{ position: 'relative', zIndex: 10 }}>
+        <div className="mb-2 w-full">
+          <SignalLensNode 
+            score={score} 
+            isHovered={isHovered} 
+            parentRef={containerRef}
+            isAnyChipHovered={isAnyChipHovered}
+            hoveredChipColor={hoveredChipColor}
+            consensusLabel={consensusLabel}
+            confidenceLabel={confidenceLabel}
+          />
+        </div>
 
-      <div style={{ position: 'relative', zIndex: 10 }}>
-        <CategoryGlassChips 
-          segments={segments} 
-          isHovered={isHovered}
-          onChipHover={handleChipHover}
-          onChipLeave={handleChipLeave}
-        />
+        <div className="w-full">
+          <CategoryGlassChips 
+            segments={segments} 
+            isHovered={isHovered}
+            onChipHover={handleChipHover}
+            onChipLeave={handleChipLeave}
+          />
+        </div>
       </div>
 
       {/* Choreographed metadata */}
