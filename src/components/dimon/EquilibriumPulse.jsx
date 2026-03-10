@@ -768,7 +768,7 @@ export default function EquilibriumPulse({
                           color: 'rgba(255,255,255,0.92)',
                           textTransform: 'capitalize'
                         }}>
-                          {force.name}
+                          {FORCE_LABELS[force.name] || force.name}
                         </span>
                       </div>
                       <span style={{
@@ -776,7 +776,7 @@ export default function EquilibriumPulse({
                         fontWeight: 700,
                         color: force.value > 0 ? '#6EF3A5' : force.value < 0 ? '#F38B82' : 'rgba(255,255,255,0.60)'
                       }}>
-                        {force.value > 0 ? '+' : ''}{Math.round(force.value * 100)}
+                        {force.value > 0 ? '+' : ''}{Math.round(force.value)}
                       </span>
                     </motion.div>
                   ))}
