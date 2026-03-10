@@ -868,15 +868,11 @@ export default function EquilibriumPulse({
                       fontWeight: 400,
                       letterSpacing: '-0.003em'
                     }}>
-                      {lyraInsight || (dominantForce === 'balanced'
-                        ? "Markets are calm right now. Good time to look at both safe and growth-oriented investments."
-                        : equilibriumScore > 0.6
-                          ? "Global tensions and rising rates are creating pressure. Consider safer investments."
-                          : "The economy is holding up well despite higher borrowing costs. Growth stocks look attractive.")}
+                      {lyraInsight}
                     </p>
                   </div>
                 </div>
-              </motion.div>
+              </motion.div>}
 
               {/* Drawer Arrow */}
               <div style={{
