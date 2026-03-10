@@ -655,7 +655,7 @@ export default function EquilibriumPulse({
           fontWeight: 500,
           fontSize: '13px',
           letterSpacing: '0.01em',
-          bottom: '-30px',
+          bottom: '-36px',
           paddingLeft: '8px',
           paddingRight: '8px'
         }}>
@@ -673,7 +673,7 @@ export default function EquilibriumPulse({
           fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
           fontWeight: 500,
           textAlign: 'center',
-          marginTop: '38px',
+          marginTop: '56px',
           marginBottom: 0,
           letterSpacing: '-0.005em',
           textShadow: '0 1px 2px rgba(0,0,0,0.20)'
