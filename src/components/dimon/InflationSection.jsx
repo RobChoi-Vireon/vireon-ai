@@ -381,9 +381,9 @@ export default function InflationSection({ data }) {
           style={{ borderRadius: '20px', position: 'relative' }}
           animate={!showImpact ? {
             boxShadow: [
-              '0 0 0px rgba(255,140,60,0), inset 0 0 0px rgba(255,140,60,0)',
-              '0 0 36px rgba(255,140,60,0.38), inset 0 0 44px rgba(255,160,80,0.14)',
-              '0 0 0px rgba(255,140,60,0), inset 0 0 0px rgba(255,140,60,0)',
+              '0 0 0px rgba(94,167,255,0), inset 0 0 0px rgba(94,167,255,0)',
+              '0 0 36px rgba(94,167,255,0.38), inset 0 0 44px rgba(94,167,255,0.14)',
+              '0 0 0px rgba(94,167,255,0), inset 0 0 0px rgba(94,167,255,0)',
             ]
           } : {
             boxShadow: '0 0 0px rgba(94,167,255,0)',
@@ -403,7 +403,7 @@ export default function InflationSection({ data }) {
               <motion.span
                 style={{ fontFamily: FONT.text, fontSize: '14px', fontWeight: 500, letterSpacing: '0', flex: 1, ...TYPE.smoothing }}
                 animate={!showImpact ? {
-                  color: ['rgba(255,255,255,0.55)', 'rgba(255,175,90,1)', 'rgba(255,255,255,0.55)'],
+                  color: ['rgba(255,255,255,0.55)', 'rgba(160,210,255,1)', 'rgba(255,255,255,0.55)'],
                 } : { color: 'rgba(255,255,255,0.65)' }}
                 transition={!showImpact ? {
                   duration: 3.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2,
@@ -421,7 +421,7 @@ export default function InflationSection({ data }) {
                   duration: 3.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2,
                 } : { duration: 0.18 }}
               >
-                <ChevronRight className="w-3.5 h-3.5" style={{ color: 'rgba(255,150,60,0.85)' }} strokeWidth={2} />
+                <ChevronRight className="w-3.5 h-3.5" style={{ color: 'rgba(94,167,255,0.75)' }} strokeWidth={2} />
               </motion.div>
             </button>
 
