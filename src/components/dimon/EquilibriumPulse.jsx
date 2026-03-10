@@ -654,8 +654,8 @@ export default function EquilibriumPulse({
           paddingLeft: '8px',
           paddingRight: '8px'
         }}>
-          <span>Economy Growing</span>
-          <span>Economy Slowing</span>
+          <span>Money Working For You</span>
+          <span>Money Working Against You</span>
         </div>
       </div>
 
