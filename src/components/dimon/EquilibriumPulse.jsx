@@ -158,10 +158,10 @@ export default function EquilibriumPulse({
   const getStateLabel = () => {
     if (stateLabel) return stateLabel;
     if (dominantForce === 'balanced') return 'Balanced';
-    if (Math.abs(equilibriumScore - 0.5) < 0.15) return 'Steady';
+    if (Math.abs(normalizedScore - 0.5) < 0.15) return 'Steady';
     if (volatility > 0.6) return 'Splitting';
-    if (equilibriumScore < 0.4) return 'Pro-Growth';
-    if (equilibriumScore > 0.6) return 'Under Pressure';
+    if (normalizedScore < 0.4) return 'Pro-Growth';
+    if (normalizedScore > 0.6) return 'Under Pressure';
     return 'In Flux';
   };
 
