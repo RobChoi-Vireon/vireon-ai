@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DimonDigestRun } from '@/entities/DimonDigestRun';
 import { OrientationSession } from '@/entities/OrientationSession';
+import { MacroSignalsArchive } from '@/entities/MacroSignalsArchive';
 import { generateDimonDigest } from '@/functions/generateDimonDigest';
 import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import HorizonWelcomeOverlay from '@/components/core/HorizonWelcomeOverlay';
@@ -478,14 +479,29 @@ export default function MacroSignalsPage() {
     performance.mark('digest_fetch_start');
 
     try {
-      // Fetch latest OrientationSession
-      const sessions = await OrientationSession.list('-updated_date', 1);
-      
-      if (sessions && sessions.length > 0) {
-        setSessionData(sessions[0]);
-        setOrientationData(sessions[0]);
+      const today = new Date().toISOString().split('T')[0];
+      const isToday = !date || date === today;
+
+      if (isToday) {
+        // Existing behavior: load from OrientationSession
+        const sessions = await OrientationSession.list('-updated_date', 1);
+        if (sessions && sessions.length > 0) {
+          setSessionData(sessions[0]);
+          setOrientationData(sessions[0]);
+        }
+      } else {
+        // Past date: query MacroSignalsArchive
+        const archives = await MacroSignalsArchive.filter({ date: date });
+        if (archives && archives.length > 0) {
+          const payload = archives[0].payload;
+          setSessionData(payload);
+          setOrientationData(payload);
+        } else {
+          setError("No data available for this date");
+          return;
+        }
       }
-      
+
       // Simulate fetching digest data with a delay
       await new Promise(resolve => setTimeout(resolve, 1200));
       
