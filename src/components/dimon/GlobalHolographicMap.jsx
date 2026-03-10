@@ -975,7 +975,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
   }, [dominantDriver, domains, equilibriumData]);
 
   const globalSummary = useMemo(() => {
-    if (equilibriumData?.summary) return equilibriumData.summary;
+    if (equilibriumData?.overall_summary || equilibriumData?.summary) return equilibriumData.overall_summary || equilibriumData.summary;
     if (dominantDriver === "balanced") return `Market forces in near-perfect balance; tactical opportunities across sectors.`;
     const dominant = domains.find(d => d.id === dominantDriver);
     return `${dominant.title.split(' ')[0]} dynamics are pulling the market with ${Math.round(dominant.strength * 100)}% conviction.`;
