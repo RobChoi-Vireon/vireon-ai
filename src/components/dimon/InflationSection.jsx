@@ -381,12 +381,12 @@ export default function InflationSection({ data }) {
           style={{ borderRadius: '20px', position: 'relative' }}
           animate={!showImpact ? {
             boxShadow: [
-              '0 0 0px rgba(94,167,255,0), inset 0 0 0px rgba(94,167,255,0)',
-              '0 0 36px rgba(94,167,255,0.38), inset 0 0 44px rgba(94,167,255,0.14)',
-              '0 0 0px rgba(94,167,255,0), inset 0 0 0px rgba(94,167,255,0)',
+              '0 0 0px rgba(255,118,42,0), inset 0 0 0px rgba(255,118,42,0), 0 0 0 1px rgba(255,118,42,0)',
+              '0 0 32px rgba(255,118,42,0.36), inset 0 0 56px rgba(255,100,30,0.22), 0 0 0 1px rgba(255,118,42,0.50)',
+              '0 0 0px rgba(255,118,42,0), inset 0 0 0px rgba(255,118,42,0), 0 0 0 1px rgba(255,118,42,0)',
             ]
           } : {
-            boxShadow: '0 0 0px rgba(94,167,255,0)',
+            boxShadow: '0 0 0px rgba(255,118,42,0)',
           }}
           transition={!showImpact ? {
             duration: 3.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2,
