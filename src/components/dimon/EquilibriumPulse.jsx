@@ -167,8 +167,8 @@ export default function EquilibriumPulse({
 
   const getPulseColor = () => {
     if (dominantForce === 'balanced') return '#8DC4FF';
-    if (equilibriumScore < 0.35) return FORCE_COLORS.growth.core;
-    if (equilibriumScore > 0.65) return FORCE_COLORS.geopolitics.core;
+    if (normalizedScore < 0.35) return FORCE_COLORS.growth.core;
+    if (normalizedScore > 0.65) return FORCE_COLORS.geopolitics.core;
     if (dominantForce === 'rates') return FORCE_COLORS.rates.core;
     if (dominantForce === 'fx') return FORCE_COLORS.fx.core;
     return '#8DC4FF';
@@ -176,8 +176,8 @@ export default function EquilibriumPulse({
 
   const getPulseGlow = () => {
     if (dominantForce === 'balanced') return 'rgba(141,196,255,0.40)';
-    if (equilibriumScore < 0.35) return FORCE_COLORS.growth.glow;
-    if (equilibriumScore > 0.65) return FORCE_COLORS.geopolitics.glow;
+    if (normalizedScore < 0.35) return FORCE_COLORS.growth.glow;
+    if (normalizedScore > 0.65) return FORCE_COLORS.geopolitics.glow;
     if (dominantForce === 'rates') return FORCE_COLORS.rates.glow;
     if (dominantForce === 'fx') return FORCE_COLORS.fx.glow;
     return 'rgba(141,196,255,0.40)';
