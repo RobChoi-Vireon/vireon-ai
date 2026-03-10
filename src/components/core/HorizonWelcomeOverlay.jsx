@@ -334,7 +334,6 @@ export default function HorizonWelcomeOverlay({ onDismiss, isTestMode = false })
               filter: 'blur(12px) brightness(1.6)',
               scale: 1.08
             }}
-            transition={{ duration: 0.65, ease: "easeOut" }}
             animate={{
               x: isIdle ? 0 : cursorInfluence.x,
               y: isIdle ? 0 : cursorInfluence.y
