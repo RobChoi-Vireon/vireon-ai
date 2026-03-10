@@ -831,7 +831,7 @@ export default function EquilibriumPulse({
                     fontWeight: 600,
                     letterSpacing: '-0.005em'
                   }}>
-                    {stabilityIndex >= 70 ? 'Very Stable' : stabilityIndex >= 50 ? 'Somewhat Stable' : 'Higher Risk'}
+                    {stabilityIndex >= 80 ? 'Very Stable' : stabilityIndex >= 60 ? 'Stable' : stabilityIndex >= 40 ? 'Shifting' : stabilityIndex >= 20 ? 'Volatile' : 'Turbulent'}
                   </div>
                 </div>
               </div>
