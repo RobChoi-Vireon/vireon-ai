@@ -104,13 +104,13 @@ export default function EquilibriumPulse({
 
   // Value change detection with micro-settle
   useEffect(() => {
-    if (Math.abs(equilibriumScore - prevEquilibriumScore) > 0.01) {
+    if (Math.abs(normalizedScore - prevEquilibriumScore) > 0.01) {
       setIsValueChanging(true);
       
-      const distance = Math.abs(equilibriumScore - prevEquilibriumScore);
+      const distance = Math.abs(normalizedScore - prevEquilibriumScore);
       const duration = distance < 0.10 ? 220 : distance < 0.30 ? 280 : 320;
       
-      pulseX.set(equilibriumScore * 100);
+      pulseX.set(normalizedScore * 100);
       
       setTimeout(() => {
         setIsValueChanging(false);
