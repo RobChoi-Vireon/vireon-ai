@@ -396,6 +396,21 @@ export default function InflationSection({ data }) {
         initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ...ENTRY, delay: 0.24 }}
         style={{ marginBottom: '10px' }}
       >
+        <motion.div
+          style={{ borderRadius: '20px', position: 'relative' }}
+          animate={!showImpact ? {
+            boxShadow: [
+              '0 0 0px rgba(94,167,255,0), inset 0 0 0px rgba(94,167,255,0)',
+              '0 0 22px rgba(94,167,255,0.18), inset 0 0 28px rgba(94,167,255,0.06)',
+              '0 0 0px rgba(94,167,255,0), inset 0 0 0px rgba(94,167,255,0)'
+            ]
+          } : {
+            boxShadow: '0 0 0px rgba(94,167,255,0)'
+          }}
+          transition={!showImpact ? {
+            duration: 3.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2
+          } : { duration: 0.4, ease: 'easeOut' }}
+        >
         <InteractivePanel index={6} noBloom>
           <button
             onClick={() => setShowImpact(v => !v)}
