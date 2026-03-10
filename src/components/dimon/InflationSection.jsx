@@ -43,7 +43,7 @@ const SPECULAR = {
 // ambient bloom, lift, press feedback, and periodic shimmer sweep.
 // `style`        → applied to the outer glass shell (border/background overrides)
 // `contentStyle` → applied to the inner content div (padding, display, flex, gap)
-const InteractivePanel = ({ children, style = {}, contentStyle = {}, index = 0 }) => {
+const InteractivePanel = ({ children, style = {}, contentStyle = {}, index = 0, noBloom = false }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const [tiltX, setTiltX] = useState(0);
