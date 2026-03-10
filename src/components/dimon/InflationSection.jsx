@@ -410,7 +410,7 @@ export default function InflationSection({ data }) {
               <motion.span
                 style={{ fontFamily: FONT.text, fontSize: '14px', fontWeight: 500, letterSpacing: '0', flex: 1, ...TYPE.smoothing }}
                 animate={!showImpact ? {
-                  color: ['rgba(255,255,255,0.55)', 'rgba(255,148,80,1)', 'rgba(255,255,255,0.55)'],
+                  color: ['rgba(255,255,255,0.55)', 'rgba(255,200,90,1)', 'rgba(255,255,255,0.55)'],
                 } : { color: 'rgba(255,255,255,0.65)' }}
                 transition={!showImpact ? {
                   duration: 3.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2,
