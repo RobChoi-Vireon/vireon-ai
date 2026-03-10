@@ -837,42 +837,44 @@ export default function EquilibriumPulse({
               </div>
 
               {/* Lyra Actionable Insight */}
-              {(lyraInsight) && <motion.div
-                className="px-4 py-3.5 rounded-xl"
-                style={{
-                  background: 'rgba(106, 199, 247, 0.06)',
-                  border: '1px solid rgba(106, 199, 247, 0.16)',
-                  boxShadow: 'inset 0 0 20px rgba(106, 199, 247, 0.07)'
-                }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3, duration: 0.2 }}
-              >
-                <div className="flex items-start gap-3">
-                  <Sparkles className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: 'rgba(106, 199, 247, 0.82)' }} />
-                  <div>
-                    <p style={{
-                      fontSize: '10px',
-                      fontWeight: 600,
-                      letterSpacing: '0.12em',
-                      textTransform: 'uppercase',
-                      color: 'rgba(106, 199, 247, 0.85)',
-                      marginBottom: '6px'
-                    }}>
-                      Ori Insight
-                    </p>
-                    <p style={{
-                      fontSize: '13px',
-                      lineHeight: '1.52',
-                      color: 'rgba(235, 245, 252, 0.97)',
-                      fontWeight: 400,
-                      letterSpacing: '-0.003em'
-                    }}>
-                      {lyraInsight}
-                    </p>
+              {lyraInsight && (
+                <motion.div
+                  className="px-4 py-3.5 rounded-xl"
+                  style={{
+                    background: 'rgba(106, 199, 247, 0.06)',
+                    border: '1px solid rgba(106, 199, 247, 0.16)',
+                    boxShadow: 'inset 0 0 20px rgba(106, 199, 247, 0.07)'
+                  }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3, duration: 0.2 }}
+                >
+                  <div className="flex items-start gap-3">
+                    <Sparkles className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: 'rgba(106, 199, 247, 0.82)' }} />
+                    <div>
+                      <p style={{
+                        fontSize: '10px',
+                        fontWeight: 600,
+                        letterSpacing: '0.12em',
+                        textTransform: 'uppercase',
+                        color: 'rgba(106, 199, 247, 0.85)',
+                        marginBottom: '6px'
+                      }}>
+                        Ori Insight
+                      </p>
+                      <p style={{
+                        fontSize: '13px',
+                        lineHeight: '1.52',
+                        color: 'rgba(235, 245, 252, 0.97)',
+                        fontWeight: 400,
+                        letterSpacing: '-0.003em'
+                      }}>
+                        {lyraInsight}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </motion.div>}
+                </motion.div>
+              )}
 
               {/* Drawer Arrow */}
               <div style={{
