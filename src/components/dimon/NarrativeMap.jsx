@@ -149,8 +149,8 @@ const MomentumTag = ({ pts }) => {
 // ─── Tab definition ───────────────────────────────────────────────────────────
 
 const TABS = [
-  { id: 'consensus',   label: 'Consensus',    sub: { before: 'Where the ', bold: 'Street agrees',       after: '' },           Icon: CheckCircle, color: 'rgba(88,227,164,0.85)',  glow: 'rgba(88,227,164,0.20)'  },
-  { id: 'divergences', label: 'Divergences',  sub: { before: 'Where ',     bold: 'Narratives Fracture', after: '' },           Icon: GitCommit,   color: 'rgba(180,120,255,0.85)', glow: 'rgba(180,120,255,0.18)' },
+  { id: 'consensus',   label: 'Consensus',    sub: { before: 'Where the ', bold: 'street agrees',       after: '' },           Icon: CheckCircle, color: 'rgba(88,227,164,0.85)',  glow: 'rgba(88,227,164,0.20)'  },
+  { id: 'divergences', label: 'Divergences',  sub: { before: 'Where ',     bold: 'narratives fracture', after: '' },           Icon: GitCommit,   color: 'rgba(180,120,255,0.85)', glow: 'rgba(180,120,255,0.18)' },
   { id: 'us_global',   label: 'US vs Global', sub: { before: '',           bold: 'Regional',            after: ' interpretation' }, Icon: Globe,  color: 'rgba(94,167,255,0.85)',  glow: 'rgba(94,167,255,0.18)'  },
   { id: 'changing',    label: 'Changing',     sub: { before: '',           bold: 'Narratives changing', after: ' this week' }, Icon: Zap,         color: 'rgba(255,190,80,0.85)',  glow: 'rgba(255,190,80,0.18)'  },
 ];
