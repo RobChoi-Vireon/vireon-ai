@@ -180,6 +180,7 @@ const MiniBar = ({ value, maxVal = 6, color, delay = 0 }) => {
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function InflationSection({ data }) {
   const [showHowToRead, setShowHowToRead] = useState(false);
+  const [showImpact, setShowImpact] = useState(false);
   if (!data) return null;
 
   const d = {
@@ -392,8 +393,30 @@ export default function InflationSection({ data }) {
       {/* ── 6. WINNERS | LOSERS | WHAT TO WATCH (3-col) ── */}
       <motion.div
         initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ...ENTRY, delay: 0.24 }}
-        style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr', gap: '10px', marginBottom: '10px' }}
+        style={{ marginBottom: '10px' }}
       >
+        <InteractivePanel index={6}>
+          <button
+            onClick={() => setShowImpact(v => !v)}
+            style={{
+              width: '100%', display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 18px',
+              background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left'
+            }}
+          >
+            <span style={{ fontFamily: FONT.text, fontSize: '14px', fontWeight: 500, color: 'rgba(255,255,255,0.65)', letterSpacing: '0', flex: 1, ...TYPE.smoothing }}>
+              Impact
+            </span>
+            <motion.div animate={{ rotate: showImpact ? 90 : 0 }} transition={{ duration: 0.18 }}>
+              <ChevronRight className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.28)' }} strokeWidth={2} />
+            </motion.div>
+          </button>
+          {showImpact && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }}
+              style={{ overflow: 'hidden' }}
+            >
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr', gap: '10px', padding: '0 0 14px 0' }}>
         {/* Winners */}
         <InteractivePanel index={7}
           style={{ background: 'linear-gradient(180deg, rgba(92,216,160,0.06) 0%, rgba(92,216,160,0.03) 100%)', border: '1px solid rgba(92,216,160,0.12)' }}
@@ -449,6 +472,10 @@ export default function InflationSection({ data }) {
               </div>
             ))}
           </div>
+        </InteractivePanel>
+              </div>
+            </motion.div>
+          )}
         </InteractivePanel>
       </motion.div>
 
