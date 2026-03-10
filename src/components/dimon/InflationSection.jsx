@@ -382,7 +382,7 @@ export default function InflationSection({ data }) {
           animate={!showImpact ? {
             boxShadow: [
               '0 0 0px rgba(94,167,255,0), inset 0 0 0px rgba(94,167,255,0)',
-              '0 0 22px rgba(94,167,255,0.18), inset 0 0 28px rgba(94,167,255,0.06)',
+              '0 0 36px rgba(94,167,255,0.38), inset 0 0 44px rgba(94,167,255,0.14)',
               '0 0 0px rgba(94,167,255,0), inset 0 0 0px rgba(94,167,255,0)',
             ]
           } : {
