@@ -469,7 +469,7 @@ export default function MacroSignalsPage() {
     return deepSanitize(MOCK_DATA);
   }, []);
 
-  const fetchDigest = useCallback(async (date) => {
+  const fetchDigest = useCallback(async (date = targetDate) => {
     setIsLoading(true);
     setError(null);
     setDigest(null);
