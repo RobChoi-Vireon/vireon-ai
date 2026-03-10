@@ -376,7 +376,7 @@ export default function InflationSection({ data }) {
         initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ...ENTRY, delay: 0.24 }}
         style={{ marginBottom: '10px' }}
       >
-        {/* Breathing bloom wrapper — only active when closed */}
+        {/* Breathing bloom wrapper — warm incandescent pulse */}
         <div style={{ borderRadius: '20px', position: 'relative' }}>
           {/* Interior color dispersion — warm incandescent pulse */}
           <motion.div
