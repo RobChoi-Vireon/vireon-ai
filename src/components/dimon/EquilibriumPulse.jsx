@@ -139,7 +139,7 @@ export default function EquilibriumPulse({
   const pulseDrift = useMemo(() => {
     if (shouldReduceMotion || drawerOpen) return 0;
     const speed = 0.3 + (volatility * 0.7);
-    const direction = (equilibriumScore - 0.5) * 2;
+    const direction = (normalizedScore - 0.5) * 2;
     return Math.sin(pulseTime * speed) * 2 * (1 + Math.abs(direction) * 0.5);
   }, [pulseTime, volatility, equilibriumScore, shouldReduceMotion, drawerOpen]);
 
