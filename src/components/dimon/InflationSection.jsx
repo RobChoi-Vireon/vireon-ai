@@ -422,8 +422,17 @@ export default function InflationSection({ data }) {
             <span style={{ fontFamily: FONT.text, fontSize: '14px', fontWeight: 500, color: 'rgba(255,255,255,0.65)', letterSpacing: '0', flex: 1, ...TYPE.smoothing }}>
               Impact
             </span>
-            <motion.div animate={{ rotate: showImpact ? 90 : 0 }} transition={{ duration: 0.18 }}>
-              <ChevronRight className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.28)' }} strokeWidth={2} />
+            <motion.div
+              animate={!showImpact ? {
+                rotate: 0,
+                opacity: [0.28, 0.75, 0.28],
+                x: [0, 2, 0]
+              } : { rotate: 90, opacity: 1, x: 0 }}
+              transition={!showImpact ? {
+                duration: 3.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2
+              } : { duration: 0.18 }}
+            >
+              <ChevronRight className="w-3.5 h-3.5" style={{ color: 'rgba(94,167,255,0.75)' }} strokeWidth={2} />
             </motion.div>
           </button>
           {showImpact && (
