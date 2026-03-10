@@ -104,10 +104,10 @@ const InteractivePanel = ({ children, style = {}, contentStyle = {}, index = 0 }
       <motion.div
         style={{
           position: 'absolute', inset: '-10px', borderRadius: '24px',
-          background: 'radial-gradient(ellipse at 50% 50%, rgba(86,156,235,0.22) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse at 50% 50%, rgba(86,156,235,0.10) 0%, transparent 70%)',
           filter: 'blur(16px)', pointerEvents: 'none', zIndex: 0,
         }}
-        animate={{ opacity: isNearCursor && !isHovered ? 0.04 : 0 }}
+        animate={{ opacity: isNearCursor && !isHovered ? 0.02 : 0 }}
         transition={{ duration: 0.25 }}
       />
 
@@ -115,7 +115,7 @@ const InteractivePanel = ({ children, style = {}, contentStyle = {}, index = 0 }
       <motion.div
         style={{
           position: 'absolute', inset: 0, borderRadius: '20px', pointerEvents: 'none',
-          background: 'radial-gradient(ellipse at 40% 20%, rgba(86,156,235,0.09) 0%, transparent 65%)',
+          background: 'radial-gradient(ellipse at 40% 20%, rgba(86,156,235,0.03) 0%, transparent 65%)',
           zIndex: 0,
         }}
         animate={{ opacity: isHovered ? 1 : 0 }}
@@ -179,7 +179,6 @@ const MiniBar = ({ value, maxVal = 6, color, delay = 0 }) => {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function InflationSection({ data }) {
-  const [showHowToRead, setShowHowToRead] = useState(false);
   const [showImpact, setShowImpact] = useState(false);
   if (!data) return null;
 
@@ -416,7 +415,8 @@ export default function InflationSection({ data }) {
               transition={{ duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }}
               style={{ overflow: 'hidden' }}
             >
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr', gap: '10px', padding: '0 0 14px 0' }}>
+              <div style={{ padding: '0 14px 20px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr', gap: '12px', marginBottom: '16px' }}>
         {/* Winners */}
         <InteractivePanel index={7}
           style={{ background: 'linear-gradient(180deg, rgba(92,216,160,0.06) 0%, rgba(92,216,160,0.03) 100%)', border: '1px solid rgba(92,216,160,0.12)' }}
@@ -473,58 +473,33 @@ export default function InflationSection({ data }) {
             ))}
           </div>
         </InteractivePanel>
+
+              {/* How to Read the Data — plain content, inside Impact */}
+              <div style={{ marginTop: '4px' }}>
+                <div style={{ fontFamily: FONT.text, fontSize: '11px', fontWeight: 600, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '10px', ...TYPE.smoothing }}>
+                  How to Read the Data
+                </div>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  {[
+                    { label: 'CPI', value: (d.cpi_pce_collapsed?.match(/[\d.]+%/) || [])[0] || '', color: '#5EA7FF', desc: d.cpi_plain },
+                    { label: 'PCE', value: d.cpi_pce_collapsed?.split('/')[1]?.trim() || '2.5%', color: '#B47FFF', desc: d.pce_plain },
+                    { label: 'Gap', value: '0.1%', color: '#FFB020', desc: d.why_fed_prefers },
+                  ].map((item, idx) => (
+                    <InteractivePanel key={idx} index={20 + idx} contentStyle={{ flex: 1, padding: '10px 14px' }} style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                        <span style={{ fontFamily: FONT.display, fontSize: '14px', fontWeight: 600, color: 'rgba(255,255,255,0.90)', letterSpacing: '-0.005em', ...TYPE.smoothing }}>{item.label}</span>
+                        <span style={{
+                          fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, padding: '1px 7px', borderRadius: '999px',
+                          background: `${item.color}10`, color: item.color, border: `1px solid ${item.color}20`, ...TYPE.smoothing, ...TYPE.tabular
+                        }}>{item.value}</span>
+                      </div>
+                      <p style={{ fontFamily: FONT.text, fontSize: '13px', fontWeight: 400, color: 'rgba(255,255,255,0.65)', lineHeight: 1.5, margin: 0, ...TYPE.smoothing }}>{item.desc}</p>
+                    </InteractivePanel>
+                  ))}
+                </div>
+              </div>
               </div>
             </motion.div>
-          )}
-        </InteractivePanel>
-      </motion.div>
-
-      {/* ── 7. HOW TO READ THE DATA (collapsible) ── */}
-      <motion.div
-        initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...ENTRY, delay: 0.28 }}
-        style={{ marginBottom: '10px' }}
-      >
-        <InteractivePanel index={10}>
-          <button
-            onClick={() => setShowHowToRead(v => !v)}
-            style={{
-              width: '100%', display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 18px',
-              background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left'
-            }}
-          >
-            <span style={{ fontFamily: FONT.text, fontSize: '14px', fontWeight: 500, color: 'rgba(255,255,255,0.65)', letterSpacing: '0', flex: 1, ...TYPE.smoothing }}>
-              How to Read the Data
-            </span>
-            <motion.div animate={{ rotate: showHowToRead ? 90 : 0 }} transition={{ duration: 0.18 }}>
-              <ChevronRight className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.28)' }} strokeWidth={2} />
-            </motion.div>
-          </button>
-
-          {showHowToRead && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }}
-              style={{ overflow: 'hidden' }}
-            >
-              <div style={{ display: 'flex', gap: '10px', padding: '0 18px 14px' }}>
-                {[
-                   { label: 'CPI', value: (d.cpi_pce_collapsed?.match(/[\d.]+%/) || [])[0] || '', color: '#5EA7FF', desc: d.cpi_plain },
-                   { label: 'PCE', value: d.cpi_pce_collapsed?.split('/')[1]?.trim() || '2.5%', color: '#B47FFF', desc: d.pce_plain },
-                   { label: 'Gap', value: '0.1%', color: '#FFB020', desc: d.why_fed_prefers },
-                 ].map((item, idx) => (
-                  <InteractivePanel key={idx} index={20 + idx} contentStyle={{ flex: 1, padding: '10px 14px' }} style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                      <span style={{ fontFamily: FONT.display, fontSize: '14px', fontWeight: 600, color: 'rgba(255,255,255,0.90)', letterSpacing: '-0.005em', ...TYPE.smoothing }}>{item.label}</span>
-                      <span style={{
-                        fontFamily: FONT.text, fontSize: '12px', fontWeight: 600, padding: '1px 7px', borderRadius: '999px',
-                        background: `${item.color}10`, color: item.color, border: `1px solid ${item.color}20`, ...TYPE.smoothing, ...TYPE.tabular
-                      }}>{item.value}</span>
-                    </div>
-                    <p style={{ fontFamily: FONT.text, fontSize: '13px', fontWeight: 400, color: 'rgba(255,255,255,0.65)', lineHeight: 1.5, margin: 0, ...TYPE.smoothing }}>{item.desc}</p>
-                    </InteractivePanel>
-                    ))}
-                    </div>
-                    </motion.div>
           )}
         </InteractivePanel>
       </motion.div>
