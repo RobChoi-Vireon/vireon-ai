@@ -450,8 +450,8 @@ export default function EquilibriumPulse({
         onBlur={() => setIsSliderFocused(false)}
         tabIndex={0}
         role="slider"
-        aria-label={`Equilibrium at ${Math.round(equilibriumScore * 100)}%`}
-        aria-valuenow={Math.round(equilibriumScore * 100)}
+        aria-label={`Equilibrium at ${Math.round(normalizedScore * 100)}%`}
+        aria-valuenow={Math.round(normalizedScore * 100)}
         aria-valuemin={0}
         aria-valuemax={100}
       >
