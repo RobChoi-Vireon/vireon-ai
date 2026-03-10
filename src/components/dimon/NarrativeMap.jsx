@@ -149,10 +149,10 @@ const MomentumTag = ({ pts }) => {
 // ─── Tab definition ───────────────────────────────────────────────────────────
 
 const TABS = [
-  { id: 'consensus',   label: 'Consensus',    sub: { prefix: 'Where', rest: ' the Street agrees' },      Icon: CheckCircle, color: 'rgba(88,227,164,0.85)',  glow: 'rgba(88,227,164,0.20)'  },
-  { id: 'divergences', label: 'Divergences',  sub: { prefix: 'Where', rest: ' narratives fracture' },    Icon: GitCommit,   color: 'rgba(180,120,255,0.85)', glow: 'rgba(180,120,255,0.18)' },
-  { id: 'us_global',   label: 'US vs Global', sub: { prefix: 'Regional', rest: ' interpretation' },      Icon: Globe,       color: 'rgba(94,167,255,0.85)',  glow: 'rgba(94,167,255,0.18)'  },
-  { id: 'changing',    label: 'Changing',     sub: { prefix: 'Narratives', rest: ' changing this week' },Icon: Zap,         color: 'rgba(255,190,80,0.85)',  glow: 'rgba(255,190,80,0.18)'  },
+  { id: 'consensus',   label: 'Consensus',    sub: { before: 'Where the ', bold: 'Street agrees',       after: '' },           Icon: CheckCircle, color: 'rgba(88,227,164,0.85)',  glow: 'rgba(88,227,164,0.20)'  },
+  { id: 'divergences', label: 'Divergences',  sub: { before: 'Where ',     bold: 'Narratives Fracture', after: '' },           Icon: GitCommit,   color: 'rgba(180,120,255,0.85)', glow: 'rgba(180,120,255,0.18)' },
+  { id: 'us_global',   label: 'US vs Global', sub: { before: '',           bold: 'Regional',            after: ' interpretation' }, Icon: Globe,  color: 'rgba(94,167,255,0.85)',  glow: 'rgba(94,167,255,0.18)'  },
+  { id: 'changing',    label: 'Changing',     sub: { before: '',           bold: 'Narratives changing', after: ' this week' }, Icon: Zap,         color: 'rgba(255,190,80,0.85)',  glow: 'rgba(255,190,80,0.18)'  },
 ];
 
 // ─── Liquid-glass hoverable card wrapper ─────────────────────────────────────
@@ -895,7 +895,7 @@ export default function NarrativeMap({ synthesis, density, narrativeMap }) {
                   </span>
                   </div>
                   <span className="text-[11px] relative z-10 leading-[1.3]" style={{ color: isActive ? 'rgba(255,255,255,0.40)' : 'rgba(255,255,255,0.25)', transition: 'color 0.2s ease' }}>
-                    <span style={{ fontWeight: 600, color: isActive ? 'rgba(255,255,255,0.52)' : 'rgba(255,255,255,0.35)' }}>{tab.sub.prefix}</span>{tab.sub.rest}
+                    {tab.sub.before}<span style={{ fontWeight: 600, color: isActive ? 'rgba(255,255,255,0.52)' : 'rgba(255,255,255,0.35)' }}>{tab.sub.bold}</span>{tab.sub.after}
                   </span>
                 {/* Glowing underline — liquid light edge */}
                 {isActive && (
