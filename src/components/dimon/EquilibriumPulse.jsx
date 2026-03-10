@@ -41,6 +41,13 @@ const FORCE_COLORS = {
   geopolitics: { core: '#FFD37A', glow: 'rgba(255,211,122,0.40)' }
 };
 
+const FORCE_LABELS = {
+  growth: 'Borrowing',
+  rates: 'Savings',
+  fx: 'Housing',
+  geopolitics: 'Jobs'
+};
+
 export default function EquilibriumPulse({ 
   equilibriumScore = 0.52,
   volatility = 0.35,
