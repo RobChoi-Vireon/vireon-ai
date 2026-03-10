@@ -377,21 +377,28 @@ export default function InflationSection({ data }) {
         style={{ marginBottom: '10px' }}
       >
         {/* Breathing bloom wrapper — only active when closed */}
-        <motion.div
-          style={{ borderRadius: '20px', position: 'relative' }}
-          animate={!showImpact ? {
-            boxShadow: [
-              '0 0 0px rgba(255,118,42,0), inset 0 0 0px rgba(255,118,42,0), 0 0 0 1px rgba(255,118,42,0)',
-              '0 0 32px rgba(255,118,42,0.36), inset 0 0 56px rgba(255,100,30,0.22), 0 0 0 1px rgba(255,118,42,0.50)',
-              '0 0 0px rgba(255,118,42,0), inset 0 0 0px rgba(255,118,42,0), 0 0 0 1px rgba(255,118,42,0)',
-            ]
-          } : {
-            boxShadow: '0 0 0px rgba(255,118,42,0)',
-          }}
-          transition={!showImpact ? {
-            duration: 3.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2,
-          } : { duration: 0.4, ease: 'easeOut' }}
-        >
+        <div style={{ borderRadius: '20px', position: 'relative' }}>
+          {/* Interior color dispersion — warm incandescent pulse */}
+          <motion.div
+            style={{
+              position: 'absolute', inset: 0, borderRadius: '20px', pointerEvents: 'none', zIndex: 2,
+              background: 'radial-gradient(ellipse at 25% 0%, rgba(255,196,60,0.28) 0%, rgba(255,160,40,0.14) 35%, transparent 68%)',
+            }}
+            animate={!showImpact ? { opacity: [0, 1, 0] } : { opacity: 0 }}
+            transition={!showImpact ? {
+              duration: 3.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2,
+            } : { duration: 0.4, ease: 'easeOut' }}
+          />
+          <motion.div
+            style={{
+              position: 'absolute', inset: 0, borderRadius: '20px', pointerEvents: 'none', zIndex: 2,
+              background: 'radial-gradient(ellipse at 75% 100%, rgba(255,180,50,0.18) 0%, rgba(255,150,35,0.08) 40%, transparent 65%)',
+            }}
+            animate={!showImpact ? { opacity: [0, 0.7, 0] } : { opacity: 0 }}
+            transition={!showImpact ? {
+              duration: 3.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2, delay: 0.3,
+            } : { duration: 0.4, ease: 'easeOut' }}
+          />
           <InteractivePanel index={6} noBloom>
             <button
               onClick={() => setShowImpact(v => !v)}
