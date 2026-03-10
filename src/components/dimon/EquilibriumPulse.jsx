@@ -837,7 +837,7 @@ export default function EquilibriumPulse({
               </div>
 
               {/* Lyra Actionable Insight */}
-              <motion.div
+              {(lyraInsight) && <motion.div
                 className="px-4 py-3.5 rounded-xl"
                 style={{
                   background: 'rgba(106, 199, 247, 0.06)',
