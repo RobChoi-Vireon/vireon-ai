@@ -1921,7 +1921,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
             equilibriumScore={balanceBias}
             volatility={equilibriumData?.volatility != null ? equilibriumData.volatility / 100 : 0.3 + (Math.abs(balanceBias - 0.5) * 0.4)}
             dominantForce={dominantDriver}
-            forces={equilibriumData?.forces ? { growth: equilibriumData.forces.growth / 100, rates: equilibriumData.forces.rates / 100, fx: equilibriumData.forces.fx / 100, geopolitics: equilibriumData.forces.geopolitics / 100 } : { growth: domains.find(d => d.id === 'growth')?.strength || 0, rates: -(domains.find(d => d.id === 'rates')?.strength || 0), fx: (domains.find(d => d.id === 'fx')?.strength || 0) * 0.5, geopolitics: -(domains.find(d => d.id === 'geopolitics')?.strength || 0) }}
+            forces={equilibriumData?.forces ? { growth: equilibriumData.forces.growth, rates: equilibriumData.forces.rates, fx: equilibriumData.forces.fx, geopolitics: equilibriumData.forces.geopolitics } : { growth: domains.find(d => d.id === 'growth')?.strength || 0, rates: -(domains.find(d => d.id === 'rates')?.strength || 0), fx: (domains.find(d => d.id === 'fx')?.strength || 0) * 0.5, geopolitics: -(domains.find(d => d.id === 'geopolitics')?.strength || 0) }}
             stabilityIndex={equilibriumData?.stability_index != null ? equilibriumData.stability_index : (dominantDriver === 'balanced' ? 85 : Math.round(75 - (Math.abs(balanceBias - 0.5) * 50)))}
             summary={globalSummary}
             lyraInsight={equilibriumData?.lyra_insight}
