@@ -151,11 +151,11 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
   const orbBrightness = isAnyChipHovered ? 0.97 : 1;
 
   return (
-    <div className="relative flex items-center justify-center" style={{ minHeight: '148px' }}>
+    <div className="relative flex items-center justify-center" style={{ minHeight: '210px' }}>
       {/* Ultra-Subtle Background Wavefield */}
       <svg 
-        width="160" 
-        height="160" 
+        width="220" 
+        height="220" 
         viewBox="0 0 160 160"
         className="absolute"
         style={{
@@ -265,9 +265,9 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
       <motion.div
         className="absolute signal-orb-outer"
         style={{
-          width: '160px',
-          height: '160px',
-          borderRadius: '80px',
+          width: '220px',
+          height: '220px',
+          borderRadius: '110px',
           background: `
             linear-gradient(145deg, 
               rgba(142, 187, 255, 0.135) 0%, 
@@ -445,7 +445,7 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
           />
           
           <motion.span
-            className="text-[46px] font-bold relative z-10"
+            className="text-[58px] font-bold relative z-10"
             style={{ 
               color: scoreColor,
               textShadow: isHovered 
@@ -482,7 +482,7 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
           />
           
           <div 
-            className="text-[17px] font-semibold mb-1 relative z-10" 
+            className="text-[19px] font-semibold mb-1 relative z-10" 
             style={{ color: 'rgba(255,255,255,0.98)', letterSpacing: '-0.01em', fontFamily: '"SF Pro Display", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif' }}
           >
             {consensusLabel ?? `${scoreLabel} View`}
@@ -539,10 +539,10 @@ const CategoryGlassChips = ({ segments, isHovered, onChipHover, onChipLeave }) =
 
   return (
     <div 
-      className="grid grid-cols-2 gap-x-4 gap-y-2.5 max-w-[360px] mx-auto mb-3"
+      className="grid grid-cols-2 gap-x-4 gap-y-2.5 w-full mx-auto mb-3"
       style={{
-        rowGap: '10px',
-        columnGap: '16px'
+        rowGap: '12px',
+        columnGap: '14px'
       }}
     >
       {segments.map((segment, index) => {
@@ -576,7 +576,7 @@ const CategoryGlassChips = ({ segments, isHovered, onChipHover, onChipLeave }) =
             onHoverEnd={handleChipLeave}
           >
             <motion.div
-              className="px-3 py-1.5 rounded-xl flex items-center gap-2 relative overflow-hidden"
+              className="px-4 py-2.5 rounded-xl flex items-center gap-2 relative overflow-hidden"
               style={{
                 background: 'rgba(255, 255, 255, 0.04)',
                 backdropFilter: 'blur(21px)',
@@ -620,7 +620,7 @@ const CategoryGlassChips = ({ segments, isHovered, onChipHover, onChipLeave }) =
               />
 
               <span 
-                className="text-[11px] font-medium" 
+                className="text-[13px] font-medium" 
                 style={{ 
                   color: 'rgba(255,255,255,0.75)',
                   letterSpacing: '0.01em',
@@ -631,7 +631,7 @@ const CategoryGlassChips = ({ segments, isHovered, onChipHover, onChipLeave }) =
               </span>
 
               <span 
-                className="text-[12px] font-bold ml-1" 
+                className="text-[14px] font-bold ml-1" 
                 style={{ color: colors.dot, fontFamily: '"SF Pro Text", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif', fontVariantNumeric: 'tabular-nums' }}
               >
                 {Math.round(value)}%
