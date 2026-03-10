@@ -428,7 +428,7 @@ export default function InflationSection({ data }) {
                   duration: 3.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2,
                 } : { duration: 0.18 }}
               >
-                <ChevronRight className="w-3.5 h-3.5" style={{ color: 'rgba(255,118,42,0.80)' }} strokeWidth={2} />
+                <ChevronRight className="w-3.5 h-3.5" style={{ color: 'rgba(255,200,90,0.85)' }} strokeWidth={2} />
               </motion.div>
             </button>
 
