@@ -855,12 +855,12 @@ export default function LyraChatbot({ pageContext }) {
                        transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
                       }}
                       onFocus={e => {
-                       e.target.style.borderColor = 'rgba(77, 163, 255, 0.6)';
-                       e.target.style.boxShadow = '0 0 0 3px rgba(77, 163, 255, 0.15), 0 0 20px rgba(77, 163, 255, 0.08)';
+                        e.target.style.borderColor = 'rgba(77, 163, 255, 0.85)';
+                        e.target.style.boxShadow = '0 0 0 3px rgba(77, 163, 255, 0.25), 0 0 32px rgba(77, 163, 255, 0.30), 0 0 60px rgba(77, 163, 255, 0.12)';
                       }}
                       onBlur={e => {
-                       e.target.style.borderColor = 'var(--border)';
-                       e.target.style.boxShadow = 'none';
+                        e.target.style.borderColor = 'var(--border)';
+                        e.target.style.boxShadow = 'none';
                       }}
                     />
 
