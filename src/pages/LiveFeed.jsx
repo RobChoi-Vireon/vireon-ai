@@ -7,8 +7,7 @@ import FeedFilters from '../components/live-feed/FeedFilters';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function LiveFeed() {
-  const [articles, setArticles] = useState([]);
-  const [filteredArticles, setFilteredArticles] = useState([]);
+
   const [isLoading, setIsLoading] = useState(false);
   const [error] = useState(null);
   const [theme] = useState('dark');
