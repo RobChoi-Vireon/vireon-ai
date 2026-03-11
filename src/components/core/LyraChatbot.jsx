@@ -31,6 +31,12 @@ const TypingIndicator = ({ theme }) => (
   </div>
 );
 
+const OriAvatar = () => (
+  <div className="w-8 h-8 rounded-full elevation-1 flex items-center justify-center flex-shrink-0">
+    <OriBotAvatar size={22} />
+  </div>
+);
+
 const ChatMessage = memo(({ message, isUser, onCopy, timestamp }) => {
   const [copied, setCopied] = useState(false);
 
