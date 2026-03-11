@@ -754,9 +754,7 @@ export default function LyraChatbot({ pageContext }) {
                 style={{ borderColor: 'var(--border)' }}
               >
                 <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 rounded-full elevation-1 flex items-center justify-center">
-                    <Sparkles className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-                  </div>
+                  <OriAvatar />
                   <div>
                     <h3
                       id="lyra-title"
