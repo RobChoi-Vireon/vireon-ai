@@ -81,6 +81,18 @@ const ChatMessage = memo(({ message, isUser, onCopy, timestamp }) => {
             maxWidth: '62ch'
           }}
         >
+          {isUser && (
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: '12%',
+              right: '12%',
+              height: '1px',
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent)',
+              pointerEvents: 'none',
+              borderRadius: '0 0 0 0'
+            }} />
+          )}
           <p style={{
             fontSize: '14px',
             lineHeight: '1.6',
