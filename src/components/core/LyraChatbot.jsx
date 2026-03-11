@@ -744,17 +744,8 @@ export default function LyraChatbot({ pageContext }) {
                       className="font-semibold"
                       style={{ color: 'var(--text-primary)' }}
                     >
-                      Ori
+                      Ori Intelligence
                     </h3>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-green-500 rounded-full" />
-                      <span
-                        className="text-xs"
-                        style={{ color: 'var(--text-tertiary)' }}
-                      >
-                        Online
-                      </span>
-                    </div>
                   </div>
                 </div>
 
