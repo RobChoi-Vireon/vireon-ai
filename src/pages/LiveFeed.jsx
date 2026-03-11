@@ -159,36 +159,22 @@ export default function LiveFeed() {
     }
   ];
 
-  const loadArticles = async (retries = 3) => {
+  const loadArticles = () => {
     setIsLoading(true);
-    setError(null);
-    for (let attempt = 1; attempt <= retries; attempt++) {
-      try {
-        const fetchedArticles = await NewsArticle.list('-published_date', 50);
-        if (fetchedArticles && fetchedArticles.length > 0) {
-          setArticles(fetchedArticles);
-          setFilteredArticles(fetchedArticles);
-        } else {
-          // Use mock data if no real articles
-          setArticles(MOCK_ARTICLES);
-          setFilteredArticles(MOCK_ARTICLES);
-        }
-        setLastUpdated(new Date());
-        setIsLoading(false);
-        return;
-      } catch (err) {
-        console.error(`Error loading articles (attempt ${attempt}):`, err);
-        if (attempt === retries) {
-          // Fallback to mock data on error
-          setArticles(MOCK_ARTICLES);
-          setFilteredArticles(MOCK_ARTICLES);
-          setError(null); // Don't show error, just use mock data
-        }
-        await new Promise(res => setTimeout(res, 1000 * attempt));
-      }
-    }
-    setIsLoading(false);
+    setTimeout(() => setIsLoading(false), 400);
   };
+
+  const filteredArticles = (() => {
+    let result = MOCK_ARTICLES;
+    if (filters.sector !== "All") result = result.filter(a => a.sector === filters.sector);
+    if (filters.category !== "All") result = result.filter(a => a.category === filters.category);
+    if (filters.impact !== "All") {
+      if (filters.impact === 'High (7+)') result = result.filter(a => a.impact_score >= 7);
+      if (filters.impact === 'Medium (4-6)') result = result.filter(a => a.impact_score >= 4 && a.impact_score < 7);
+      if (filters.impact === 'Low (1-3)') result = result.filter(a => a.impact_score < 4);
+    }
+    return result;
+  })();
 
 
 
