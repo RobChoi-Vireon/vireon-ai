@@ -742,7 +742,13 @@ export default function LyraChatbot({ pageContext }) {
                     <h3
                       id="lyra-title"
                       className="font-semibold"
-                      style={{ color: 'var(--text-primary)' }}
+                      style={{ 
+                        color: 'var(--text-primary)',
+                        fontSize: '15px',
+                        letterSpacing: '-0.02em',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif',
+                        WebkitFontSmoothing: 'antialiased'
+                      }}
                     >
                       Ori Intelligence
                     </h3>
