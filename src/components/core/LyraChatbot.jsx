@@ -810,19 +810,7 @@ export default function LyraChatbot({ pageContext }) {
 
               {/* Messages */}
               <div ref={messageContainerRef} onScroll={handleScroll} className="relative flex-1 overflow-y-auto p-4">
-                {messages.length === 1 && (
-                  <div className="mb-4">
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {suggestedChips.map((chip, index) => (
-                        <SuggestedChip
-                          key={index}
-                          text={chip}
-                          onClick={handleChipClick}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
+
 
                 {messages.map((message) => (
                   <ChatMessage
@@ -865,7 +853,7 @@ export default function LyraChatbot({ pageContext }) {
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
                       onKeyDown={handleKeyPress}
-                      placeholder={pageContext === 'landing' ? "Ask about Vireon's features..." : "Ask anything… Try 'Explain VIX' or 'Set an alert for AAPL ±2%'"}
+                      placeholder="Ask anything..."
                       rows="1"
                       className="w-full px-4 py-3 rounded-xl text-sm resize-none transition-all duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-none"
                       style={{
