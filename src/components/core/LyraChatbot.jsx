@@ -846,13 +846,21 @@ export default function LyraChatbot({ pageContext }) {
                       onKeyDown={handleKeyPress}
                       placeholder=""
                       rows="1"
-                      className="w-full px-4 py-3 rounded-xl text-sm resize-none transition-all duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                      className="w-full px-4 py-3 rounded-xl text-sm resize-none transition-all duration-300 focus:outline-none"
                       style={{
-                        backgroundColor: 'var(--card)',
-                        border: '1px solid var(--border)',
-                        color: 'var(--text-primary)',
-                        '--tw-ring-color': 'var(--accent)',
-                        maxHeight: '120px'
+                       backgroundColor: 'var(--card)',
+                       border: '1px solid var(--border)',
+                       color: 'var(--text-primary)',
+                       maxHeight: '120px',
+                       transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
+                      }}
+                      onFocus={e => {
+                       e.target.style.borderColor = 'rgba(77, 163, 255, 0.6)';
+                       e.target.style.boxShadow = '0 0 0 3px rgba(77, 163, 255, 0.15), 0 0 20px rgba(77, 163, 255, 0.08)';
+                      }}
+                      onBlur={e => {
+                       e.target.style.borderColor = 'var(--border)';
+                       e.target.style.boxShadow = 'none';
                       }}
                     />
 
