@@ -9,47 +9,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function LiveFeed() {
   const [articles, setArticles] = useState([]);
   const [filteredArticles, setFilteredArticles] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [theme, setTheme] = useState('dark');
-  const [viewMode] = useState('grid');
-  const [lastUpdated, setLastUpdated] = useState(new Date());
+  const [isLoading, setIsLoading] = useState(false);
+  const [error] = useState(null);
+  const [theme] = useState('dark');
+  const [lastUpdated] = useState(new Date());
 
   const [filters, setFilters] = useState({
     sector: "All",
     category: "All",
     impact: "All"
   });
-
-  useEffect(() => {
-    const root = document.documentElement;
-    const currentTheme = root.classList.contains('dark') ? 'dark' : 'light';
-    setTheme(currentTheme);
-
-    const observer = new MutationObserver(() => {
-      setTheme(root.classList.contains('dark') ? 'dark' : 'light');
-    });
-    observer.observe(root, { attributes: true, attributeFilter: ['class'] });
-
-    loadArticles();
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    let result = articles;
-    if (filters.sector !== "All") {
-      result = result.filter(a => a.sector === filters.sector);
-    }
-    if (filters.category !== "All") {
-      result = result.filter(a => a.category === filters.category);
-    }
-    if (filters.impact !== "All") {
-        if (filters.impact === 'High (7+)') result = result.filter(a => a.impact_score >= 7);
-        if (filters.impact === 'Medium (4-6)') result = result.filter(a => a.impact_score >= 4 && a.impact_score < 7);
-        if (filters.impact === 'Low (1-3)') result = result.filter(a => a.impact_score < 4);
-    }
-    setFilteredArticles(result);
-  }, [filters, articles]);
 
   const MOCK_ARTICLES = [
     {
