@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { NewsArticle } from '@/entities/NewsArticle';
+import React, { useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { RefreshCw, TrendingUp, AlertTriangle, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
