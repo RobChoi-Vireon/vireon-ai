@@ -721,8 +721,7 @@ export default function LyraChatbot({ pageContext }) {
               transition={panelTransition}
               className={`
                 lyra-panel fixed z-50 flex flex-col overflow-hidden
-                md:bottom-24 md:right-8 md:w-96 md:h-[500px] md:rounded-2xl
-                bottom-0 left-0 right-0 h-[85vh] rounded-t-2xl
+                bottom-24 right-8 w-96 h-[500px] rounded-2xl
                 elevation-3
                 ${isPinching ? 'select-none' : ''}
               `}
@@ -921,16 +920,7 @@ export default function LyraChatbot({ pageContext }) {
                         maxHeight: '120px'
                       }}
                     />
-                    <div
-                      className="text-xs mt-1 flex items-center justify-between"
-                      style={{ color: 'var(--text-tertiary)' }}
-                    >
-                      <span>AI may be inaccurate. Verify critical info.</span>
-                      <div className="flex items-center space-x-3">
-                        <span>⌘↵ to send</span>
-                        <span className="hidden md:inline">⌘W to close</span>
-                      </div>
-                    </div>
+
                   </div>
 
                   <motion.button
