@@ -853,7 +853,7 @@ export default function LyraChatbot({ pageContext }) {
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
                       onKeyDown={handleKeyPress}
-                      placeholder="Ask anything..."
+                      placeholder=""
                       rows="1"
                       className="w-full px-4 py-3 rounded-xl text-sm resize-none transition-all duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-none"
                       style={{
