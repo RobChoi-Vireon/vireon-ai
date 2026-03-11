@@ -66,7 +66,15 @@ const ChatMessage = memo(({ message, isUser, onCopy, timestamp }) => {
             maxWidth: '62ch'
           }}
         >
-          <p className="text-sm leading-relaxed whitespace-pre-wrap">
+          <p style={{
+            fontSize: '14px',
+            lineHeight: '1.6',
+            letterSpacing: '-0.008em',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif',
+            WebkitFontSmoothing: 'antialiased',
+            fontWeight: 400,
+            whiteSpace: 'pre-wrap'
+          }}>
             {message}
           </p>
           {!isUser && (
