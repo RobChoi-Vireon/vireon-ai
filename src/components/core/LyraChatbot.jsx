@@ -860,7 +860,7 @@ export default function LyraChatbot({ pageContext }) {
                       onKeyDown={handleKeyPress}
                       placeholder=""
                       rows="1"
-                      className="w-full px-4 py-3 rounded-xl text-sm resize-none transition-all duration-300 focus:outline-none"
+                      className="w-full px-4 py-3 rounded-xl resize-none transition-all duration-300 focus:outline-none"
                       style={{
                        backgroundColor: 'var(--card)',
                        border: '1px solid var(--border)',
