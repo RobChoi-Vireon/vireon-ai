@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback, memo, useMemo } from 'react';
 import { motion, AnimatePresence, useMotionValue } from 'framer-motion';
 import { MessageCircle, Send, X, Sparkles, Copy, Check, MoreVertical, ArrowDown } from 'lucide-react';
+import OriBotAvatar from './OriBotAvatar';
 import { InvokeLLM } from '@/integrations/Core';
 import LyraLogo from './LyraLogo'; // This assumes LyraLogo is now in a separate file.
 
