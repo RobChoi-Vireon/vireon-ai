@@ -54,8 +54,8 @@ const ChatMessage = memo(({ message, isUser, onCopy, timestamp }) => {
       className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4 group`}
     >
       {!isUser && (
-        <div className="w-8 h-8 rounded-full elevation-1 flex items-center justify-center mr-3 mt-1 flex-shrink-0">
-          <Sparkles className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+        <div className="mr-3 mt-1">
+          <OriAvatar />
         </div>
       )}
       <div className="flex flex-col max-w-[75%]">
