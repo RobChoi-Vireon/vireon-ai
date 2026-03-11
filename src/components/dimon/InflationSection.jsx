@@ -376,29 +376,22 @@ export default function InflationSection({ data }) {
         initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ...ENTRY, delay: 0.24 }}
         style={{ marginBottom: '10px' }}
       >
-        {/* Breathing bloom wrapper — warm incandescent pulse */}
-        <div style={{ borderRadius: '20px', position: 'relative' }}>
-          {/* Interior color dispersion — warm incandescent pulse */}
-          <motion.div
-            style={{
-              position: 'absolute', inset: 0, borderRadius: '20px', pointerEvents: 'none', zIndex: 2,
-              background: 'radial-gradient(ellipse at 25% 0%, rgba(255,196,60,0.28) 0%, rgba(255,160,40,0.14) 35%, transparent 68%)',
-            }}
-            animate={!showImpact ? { opacity: [0, 1, 0] } : { opacity: 0 }}
-            transition={!showImpact ? {
-              duration: 3.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2,
-            } : { duration: 0.4, ease: 'easeOut' }}
-          />
-          <motion.div
-            style={{
-              position: 'absolute', inset: 0, borderRadius: '20px', pointerEvents: 'none', zIndex: 2,
-              background: 'radial-gradient(ellipse at 75% 100%, rgba(255,180,50,0.18) 0%, rgba(255,150,35,0.08) 40%, transparent 65%)',
-            }}
-            animate={!showImpact ? { opacity: [0, 0.7, 0] } : { opacity: 0 }}
-            transition={!showImpact ? {
-              duration: 3.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2, delay: 0.3,
-            } : { duration: 0.4, ease: 'easeOut' }}
-          />
+        {/* Breathing bloom wrapper — only active when closed */}
+        <motion.div
+          style={{ borderRadius: '20px', position: 'relative' }}
+          animate={!showImpact ? {
+            boxShadow: [
+              '0 0 0px rgba(94,167,255,0), inset 0 0 0px rgba(94,167,255,0)',
+              '0 0 36px rgba(94,167,255,0.38), inset 0 0 44px rgba(94,167,255,0.14)',
+              '0 0 0px rgba(94,167,255,0), inset 0 0 0px rgba(94,167,255,0)',
+            ]
+          } : {
+            boxShadow: '0 0 0px rgba(94,167,255,0)',
+          }}
+          transition={!showImpact ? {
+            duration: 3.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2,
+          } : { duration: 0.4, ease: 'easeOut' }}
+        >
           <InteractivePanel index={6} noBloom>
             <button
               onClick={() => setShowImpact(v => !v)}
@@ -410,7 +403,7 @@ export default function InflationSection({ data }) {
               <motion.span
                 style={{ fontFamily: FONT.text, fontSize: '14px', fontWeight: 500, letterSpacing: '0', flex: 1, ...TYPE.smoothing }}
                 animate={!showImpact ? {
-                  color: ['rgba(255,255,255,0.55)', 'rgba(255,200,90,1)', 'rgba(255,255,255,0.55)'],
+                  color: ['rgba(255,255,255,0.55)', 'rgba(160,210,255,1)', 'rgba(255,255,255,0.55)'],
                 } : { color: 'rgba(255,255,255,0.65)' }}
                 transition={!showImpact ? {
                   duration: 3.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2,
@@ -428,7 +421,7 @@ export default function InflationSection({ data }) {
                   duration: 3.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2,
                 } : { duration: 0.18 }}
               >
-                <ChevronRight className="w-3.5 h-3.5" style={{ color: 'rgba(255,200,90,0.85)' }} strokeWidth={2} />
+                <ChevronRight className="w-3.5 h-3.5" style={{ color: 'rgba(94,167,255,0.75)' }} strokeWidth={2} />
               </motion.div>
             </button>
 
@@ -526,7 +519,7 @@ export default function InflationSection({ data }) {
               </motion.div>
             )}
           </InteractivePanel>
-        </div>
+        </motion.div>
       </motion.div>
 
       {/* ── 8. TOP WEIGHTED SOURCES ── */}
