@@ -804,17 +804,7 @@ export default function LyraChatbot({ pageContext }) {
                     </AnimatePresence>
                   </div>
 
-                  <button
-                    onClick={() => setIsOpen(false)}
-                    className="md:hidden p-2 rounded-lg transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-                    style={{
-                      color: 'var(--text-tertiary)',
-                      '--tw-ring-color': 'var(--accent)'
-                    }}
-                    aria-label="Close chat"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
+
                 </div>
               </div>
 
