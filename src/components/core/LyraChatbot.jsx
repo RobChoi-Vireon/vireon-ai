@@ -98,8 +98,14 @@ const ChatMessage = memo(({ message, isUser, onCopy, timestamp }) => {
         </div>
         {timestamp && (
           <div
-            className={`text-xs mt-1 ${isUser ? 'text-right' : 'text-left ml-11'}`}
-            style={{ color: 'var(--text-tertiary)' }}
+            className={`mt-1 ${isUser ? 'text-right' : 'text-left ml-11'}`}
+            style={{ 
+              color: 'var(--text-tertiary)',
+              fontSize: '11px',
+              letterSpacing: '0.01em',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif',
+              fontWeight: 400
+            }}
           >
             {timestamp}
           </div>
