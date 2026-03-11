@@ -67,18 +67,19 @@ const ChatMessage = memo(({ message, isUser, onCopy, timestamp }) => {
           `}
           style={{
             background: isUser
-              ? 'linear-gradient(180deg, rgba(255,255,255,0.092) 0%, rgba(255,255,255,0.058) 100%)'
+              ? 'rgba(28, 31, 42, 0.88)'
               : 'var(--card)',
-            backdropFilter: isUser ? 'blur(36px) saturate(185%)' : undefined,
-            WebkitBackdropFilter: isUser ? 'blur(36px) saturate(185%)' : undefined,
+            backdropFilter: isUser ? 'blur(40px) saturate(180%)' : undefined,
+            WebkitBackdropFilter: isUser ? 'blur(40px) saturate(180%)' : undefined,
             border: isUser
-              ? '1px solid rgba(255,255,255,0.11)'
+              ? '1px solid rgba(255,255,255,0.07)'
               : undefined,
             boxShadow: isUser
-              ? 'inset 0 1.5px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.08), 0 6px 24px rgba(0,0,0,0.22)'
+              ? 'inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 32px rgba(0,0,0,0.35)'
               : undefined,
-            color: isUser ? 'rgba(255,255,255,0.93)' : 'var(--text-primary)',
-            maxWidth: '62ch'
+            color: isUser ? 'rgba(255,255,255,0.92)' : 'var(--text-primary)',
+            maxWidth: '62ch',
+            borderRadius: '18px'
           }}
         >
           {isUser && (
