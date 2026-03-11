@@ -866,6 +866,11 @@ export default function LyraChatbot({ pageContext }) {
                        border: '1px solid var(--border)',
                        color: 'var(--text-primary)',
                        maxHeight: '120px',
+                       fontSize: '14px',
+                       lineHeight: '1.6',
+                       letterSpacing: '-0.008em',
+                       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif',
+                       WebkitFontSmoothing: 'antialiased',
                        transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
                       }}
                       onFocus={e => {
