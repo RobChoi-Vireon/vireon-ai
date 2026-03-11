@@ -712,7 +712,7 @@ export default function LyraChatbot({ pageContext }) {
               transition={panelTransition}
               className={`
                 lyra-panel fixed z-50 flex flex-col overflow-hidden
-                bottom-24 right-8 w-96 h-[500px] rounded-2xl
+                bottom-24 right-8 w-[460px] h-[640px] rounded-[28px]
                 elevation-3
                 ${isPinching ? 'select-none' : ''}
               `}
