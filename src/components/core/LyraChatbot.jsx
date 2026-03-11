@@ -701,16 +701,7 @@ export default function LyraChatbot({ pageContext }) {
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Mobile backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              className="md:hidden fixed inset-0 z-40"
-              style={{ backgroundColor: 'var(--scrim)' }}
-              onClick={() => setIsOpen(false)}
-            />
+
 
             <motion.div
               ref={panelRef}
@@ -736,32 +727,7 @@ export default function LyraChatbot({ pageContext }) {
               aria-labelledby="lyra-title"
               aria-modal="true"
             >
-              {/* Mobile handle */}
-              <div className="md:hidden flex justify-center pt-2 pb-1">
-                <div
-                  className="w-8 h-1 rounded-full"
-                  style={{ backgroundColor: 'var(--border)' }}
-                />
-                {/* Pinch gesture hint for mobile users */}
-                <div className="absolute top-4 right-4">
-                  <motion.div
-                    initial={{ opacity: 0.5, scale: 1 }}
-                    animate={{ 
-                      opacity: [0.5, 0.8, 0.5],
-                      scale: [1, 0.9, 1]
-                    }}
-                    transition={{ 
-                      duration: 2,
-                      repeat: Infinity,
-                      repeatDelay: 3
-                    }}
-                    className="text-xs"
-                    style={{ color: 'var(--text-tertiary)' }}
-                  >
-                    👌 Pinch to close
-                  </motion.div>
-                </div>
-              </div>
+
 
               {/* Header */}
               <div
