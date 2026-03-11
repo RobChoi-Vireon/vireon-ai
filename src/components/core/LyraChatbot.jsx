@@ -7,9 +7,7 @@ import LyraLogo from './LyraLogo'; // This assumes LyraLogo is now in a separate
 
 const TypingIndicator = ({ theme }) => (
   <div className="flex items-center space-x-2 p-4">
-    <div className="w-8 h-8 rounded-full elevation-1 flex items-center justify-center">
-      <Sparkles className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-    </div>
+    <OriAvatar />
     <div className="flex space-x-1">
       {[0, 1, 2].map(i => (
         <motion.div
