@@ -731,6 +731,7 @@ export default function ConsensusMeter({ score, confidencePct, breakdown, onOpen
     return null;
   }
 
+  const tiltAccent = getTiltAccent(dominantTilt, score);
   const segments = breakdown?.segments || [];
   const resolvedSourcesCount = sourcesCount ?? 5;
   const updatedAgo = timestampDisplay ?? "2m ago";
