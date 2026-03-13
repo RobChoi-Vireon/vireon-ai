@@ -688,14 +688,39 @@ const CategoryGlassChips = ({ segments, isHovered, onChipHover, onChipLeave }) =
 // ============================================================================
 const getConvictionColor = (label) => {
   const l = (label || '').toLowerCase();
-  if (l.includes('strong')) return '#2BC686';
-  if (l.includes('moderate')) return '#5EA7FF';
-  if (l.includes('mixed') || l.includes('signals')) return '#FFB020';
-  if (l.includes('weak')) return '#FF8C42';
+  if (l.includes('strong conviction')) return '#4ADE80';
+  if (l.includes('moderate conviction')) return '#4ADE80';
+  if (l.includes('mixed')) return '#F5A623';
+  if (l.includes('weak') || l.includes('no clear')) return '#6B7280';
   return '#9BA8B5';
 };
 
-export default function ConsensusMeter({ score, confidencePct, breakdown, onOpenDrawer, sourcesCount, timestampDisplay, confidenceLabel, consensusLabel }) {
+const getTiltAccent = (tilt, score) => {
+  const t = (tilt || 'neutral').toLowerCase();
+  const lowConfidence = typeof score === 'number' && score < 45;
+  if (t === 'bullish') return {
+    cardGlowOpacity: lowConfidence ? 0.04 : (score >= 65 ? 0.15 : 0.08),
+    cardGlowColor: '245, 166, 35',
+    orbRingColor: `rgba(245, 166, 35, ${lowConfidence ? 0.15 : 0.3})`,
+    scoreColor: '#F5A623'
+  };
+  if (t === 'bearish') return {
+    cardGlowOpacity: lowConfidence ? 0.04 : (score >= 65 ? 0.15 : 0.08),
+    cardGlowColor: '232, 93, 117',
+    orbRingColor: `rgba(232, 93, 117, ${lowConfidence ? 0.15 : 0.3})`,
+    scoreColor: '#E85D75'
+  };
+  return { cardGlowOpacity: 0, cardGlowColor: null, orbRingColor: null, scoreColor: null };
+};
+
+const getFactorDotColor = (tilt) => {
+  const t = (tilt || '').toLowerCase();
+  if (t === 'bullish') return '#4ADE80';
+  if (t === 'bearish') return '#F87171';
+  return '#9CA3AF';
+};
+
+export default function ConsensusMeter({ score, confidencePct, breakdown, onOpenDrawer, sourcesCount, timestampDisplay, confidenceLabel, consensusLabel, dominantTilt }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isHintHovered, setIsHintHovered] = useState(false);
   const [isAnyChipHovered, setIsAnyChipHovered] = useState(false);
