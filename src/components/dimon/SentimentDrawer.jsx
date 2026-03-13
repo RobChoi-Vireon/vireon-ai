@@ -1109,7 +1109,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail, summ
             {regimeLabel && (
               <motion.p
                 className="text-[11px] font-medium text-center uppercase tracking-widest"
-                style={{ color: 'rgba(255,255,255,0.52)', letterSpacing: '0.07em', marginBottom: '10px', fontFamily: SF.text, WebkitFontSmoothing: 'antialiased' }}
+                style={{ color: drawerAccent?.regimeTint || 'rgba(255,255,255,0.52)', letterSpacing: '0.07em', marginBottom: '10px', fontFamily: SF.text, WebkitFontSmoothing: 'antialiased' }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.74, duration: 0.24 }}
