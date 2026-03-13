@@ -716,6 +716,177 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
 };
 
 // ============================================================================
+// FACTOR CARDS — Dynamic array from factor_tilt.factors
+// ============================================================================
+const getTiltColor = (tilt) => {
+  const t = (tilt || '').toLowerCase();
+  if (t === 'bullish') return '#2BC686';
+  if (t === 'bearish') return '#F26A6A';
+  return '#9BA8B5';
+};
+
+const getSeverityColor = (severity) => {
+  const s = (severity || '').toLowerCase();
+  if (s === 'critical') return '#F26A6A';
+  if (s === 'high') return '#FF8C42';
+  if (s === 'moderate') return '#FFB020';
+  return '#9BA8B5';
+};
+
+const getTrendIcon = (trend) => {
+  const t = (trend || '').toLowerCase();
+  if (t === 'rising') return <ArrowUp className="w-3 h-3" strokeWidth={2.5} />;
+  if (t === 'falling') return <ArrowDown className="w-3 h-3" strokeWidth={2.5} />;
+  if (t === 'emerging') return <Sparkles className="w-3 h-3" strokeWidth={2} />;
+  if (t === 'fading') return <Minus className="w-3 h-3 opacity-50" strokeWidth={2} />;
+  return <Minus className="w-3 h-3" strokeWidth={2} />;
+};
+
+const FactorCards = ({ factors, delay }) => {
+  if (!factors || factors.length === 0) return null;
+  return (
+    <div style={{ marginTop: '48px', marginBottom: '28px' }}>
+      <div className="text-[11px] font-medium uppercase tracking-wider mb-5"
+        style={{ color: 'rgba(255,255,255,0.58)', letterSpacing: '0.06em', fontWeight: 500 }}>
+        What's Behind This Reading
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        {factors.map((factor, idx) => {
+          if (!factor) return null;
+          const tiltColor = getTiltColor(factor.tilt);
+          return (
+            <motion.div
+              key={factor.name || idx}
+              className="relative rounded-[22px] overflow-hidden"
+              style={{
+                background: 'linear-gradient(180deg, rgba(255,255,255,0.045) 0%, rgba(255,255,255,0.028) 100%)',
+                backdropFilter: 'blur(14px) saturate(152%)',
+                WebkitBackdropFilter: 'blur(14px) saturate(152%)',
+                border: '1px solid rgba(255,255,255,0.06)',
+                padding: '18px',
+                boxShadow: 'inset 0 1px 0 rgba(0,0,0,0.06), 0 6px 18px rgba(0,0,0,0.08)'
+              }}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: delay + idx * 0.06, duration: 0.32, ease: MOTION.CURVES.spring }}
+            >
+              {/* Top row: name + weight */}
+              <div className="flex items-start justify-between mb-3">
+                <span className="text-[14px] font-semibold" style={{ color: 'rgba(255,255,255,0.92)', letterSpacing: '-0.01em' }}>
+                  {factor.name}
+                </span>
+                {factor.weight != null && (
+                  <span className="text-[13px] font-medium" style={{ color: tiltColor }}>
+                    {factor.weight}%
+                  </span>
+                )}
+              </div>
+              {/* Badges row */}
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                {factor.tilt && (
+                  <span className="text-[9px] font-semibold uppercase px-2 py-0.5 rounded-md"
+                    style={{ background: `${tiltColor}18`, color: tiltColor, border: `1px solid ${tiltColor}28`, letterSpacing: '0.05em' }}>
+                    {factor.tilt.toUpperCase()}
+                  </span>
+                )}
+                {factor.conviction && (
+                  <span className="text-[9px] font-medium uppercase px-2 py-0.5 rounded-md"
+                    style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.08)', letterSpacing: '0.04em' }}>
+                    {factor.conviction}
+                  </span>
+                )}
+                {factor.trend && (
+                  <span className="inline-flex items-center gap-1 text-[9px] font-medium uppercase px-2 py-0.5 rounded-md"
+                    style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.08)', letterSpacing: '0.04em' }}>
+                    {getTrendIcon(factor.trend)}
+                    {factor.trend}
+                  </span>
+                )}
+              </div>
+              {/* Insight */}
+              {factor.insight && (
+                <p className="text-[12px] leading-snug" style={{ color: 'rgba(255,255,255,0.65)', lineHeight: '1.4' }}>
+                  {factor.insight}
+                </p>
+              )}
+            </motion.div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+// ============================================================================
+// DIVERGENCE SECTION — Dynamic array from divergence.items
+// ============================================================================
+const DivergenceSection = ({ items, delay }) => {
+  if (!items || items.length === 0) return null;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 4 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: 0.24, ease: MOTION.CURVES.silk }}
+      style={{ marginTop: '56px', marginBottom: '32px' }}
+    >
+      <h3 className="text-[11px] uppercase mb-8"
+        style={{ color: 'rgba(255,255,255,0.72)', letterSpacing: '0.056em', fontWeight: 400 }}>
+        Divergence
+      </h3>
+      <div className="flex flex-col gap-[14px]">
+        {items.map((item, idx) => {
+          if (!item) return null;
+          const sevColor = getSeverityColor(item.severity);
+          return (
+            <div
+              key={idx}
+              className="relative rounded-[20px] overflow-hidden"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.063) 0%, rgba(255,255,255,0.032) 100%)',
+                backdropFilter: 'blur(16px) saturate(145%)',
+                WebkitBackdropFilter: 'blur(16px) saturate(145%)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                padding: '16px 24px',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.09), 0 4px 14px rgba(0,0,0,0.08)'
+              }}
+            >
+              {/* Top highlight line */}
+              <div style={{
+                position: 'absolute', top: 0, left: '20%', right: '20%', height: '1px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)',
+                pointerEvents: 'none'
+              }} />
+              <div className="flex items-start justify-between gap-3 mb-2">
+                <p className="text-[13px] font-semibold leading-snug" style={{ color: 'rgba(255,255,255,0.90)', letterSpacing: '-0.01em' }}>
+                  {item.headline}
+                </p>
+                {item.severity && (
+                  <span className="text-[9px] font-semibold uppercase px-2 py-0.5 rounded-md flex-shrink-0"
+                    style={{ background: `${sevColor}18`, color: sevColor, border: `1px solid ${sevColor}28`, letterSpacing: '0.05em' }}>
+                    {item.severity}
+                  </span>
+                )}
+              </div>
+              {item.morning_takeaway && (
+                <p className="text-[12px] leading-snug mb-2" style={{ color: 'rgba(255,255,255,0.60)', lineHeight: '1.45' }}>
+                  {item.morning_takeaway}
+                </p>
+              )}
+              {item.challenges_factor && (
+                <span className="text-[10px] px-2 py-0.5 rounded-md"
+                  style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.50)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  Challenges: {item.challenges_factor}{item.challenges_tilt ? ` ${item.challenges_tilt} tilt` : ''}
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+};
+
+// ============================================================================
 // MAIN STREET ALIGNMENT DRAWER
 // ============================================================================
 const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail, summary, regimeLabel, convictionLabel, sourcesCount, timestampDisplay, factors, divergenceItems, forceDetails }) => {
