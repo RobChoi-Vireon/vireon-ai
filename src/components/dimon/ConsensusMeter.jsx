@@ -33,7 +33,7 @@ const CATEGORY_COLORS = {
 // ============================================================================
 // SIGNAL LENS NODE — Hero Object with Cinematic Motion
 // ============================================================================
-const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hoveredChipColor, consensusLabel, confidenceLabel }) => {
+const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hoveredChipColor, consensusLabel, confidenceLabel, scoreColorOverride }) => {
   const [wavePhase, setWavePhase] = useState(0);
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
   const [breathingPhase, setBreathingPhase] = useState(0);
@@ -139,7 +139,7 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
     return <div className="w-1.5 h-1.5 rounded-full" style={{ background: 'currentColor' }} />;
   };
 
-  const scoreColor = getZoneColor(score);
+  const scoreColor = scoreColorOverride || getZoneColor(score);
   const scoreLabel = getZoneLabel(score);
   
   // Breathing motion — only active on hover
