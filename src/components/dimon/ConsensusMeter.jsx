@@ -33,7 +33,7 @@ const CATEGORY_COLORS = {
 // ============================================================================
 // SIGNAL LENS NODE — Hero Object with Cinematic Motion
 // ============================================================================
-const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hoveredChipColor, consensusLabel, confidenceLabel, scoreColorOverride }) => {
+const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hoveredChipColor, consensusLabel, confidenceLabel, scoreColorOverride, orbRingColor }) => {
   const [wavePhase, setWavePhase] = useState(0);
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
   const [breathingPhase, setBreathingPhase] = useState(0);
@@ -277,7 +277,7 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
           `,
           backdropFilter: 'blur(22px) saturate(148%)',
           WebkitBackdropFilter: 'blur(22px) saturate(148%)',
-          border: tiltAccent.orbRingColor ? `1px solid ${tiltAccent.orbRingColor}` : '1px solid rgba(255, 255, 255, 0.20)',
+          border: orbRingColor ? `1px solid ${orbRingColor}` : '1px solid rgba(255, 255, 255, 0.20)',
           boxShadow: `
             inset 0 2px 12px rgba(255, 255, 255, 0.16),
             inset 0 -3px 10px rgba(0, 0, 0, 0.15),
@@ -913,6 +913,7 @@ export default function ConsensusMeter({ score, confidencePct, breakdown, onOpen
             consensusLabel={consensusLabel}
             confidenceLabel={confidenceLabel}
             scoreColorOverride={tiltAccent.scoreColor}
+            orbRingColor={tiltAccent.orbRingColor}
           />
         </div>
 
