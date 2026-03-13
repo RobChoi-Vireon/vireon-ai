@@ -71,7 +71,7 @@ const SEGMENT_CONFIG = {
 // ============================================================================
 // OS HORIZON 2.0 LIVING ALIGNMENT ORB
 // ============================================================================
-const LivingAlignmentOrb = ({ score, delay }) => {
+const LivingAlignmentOrb = ({ score, delay, convictionLabel }) => {
   const [breathingPhase, setBreathingPhase] = useState(0);
   const [particlePhase, setParticlePhase] = useState(0);
   
@@ -228,7 +228,7 @@ const LivingAlignmentOrb = ({ score, delay }) => {
           animate={{ opacity: 1 }}
           transition={{ delay: delay + 0.28, duration: 0.3 }}
         >
-          Alignment
+          Conviction
         </motion.span>
         
         <motion.span
@@ -254,7 +254,7 @@ const LivingAlignmentOrb = ({ score, delay }) => {
           animate={{ opacity: 1 }}
           transition={{ delay: delay + 0.62, duration: 0.28 }}
         >
-          Moderate alignment
+          {convictionLabel || 'Moderate Conviction'}
         </motion.div>
       </div>
     </motion.div>
@@ -718,7 +718,7 @@ const InsightCapsules = ({ segments, delay, onOpenDetail }) => {
 // ============================================================================
 // MAIN STREET ALIGNMENT DRAWER
 // ============================================================================
-const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail, summary, sourcesCount, timestampDisplay, forceDetails }) => {
+const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail, summary, regimeLabel, convictionLabel, sourcesCount, timestampDisplay, factors, divergenceItems, forceDetails }) => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -848,7 +848,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail, summ
                     letterSpacing: '0.005em',
                     marginBottom: '2px'
                   }}>
-                    Street Alignment
+                    Factor Tilt
                   </h2>
                   <p style={{ 
                     fontSize: '15px',
@@ -856,7 +856,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail, summ
                     fontWeight: 400,
                     marginTop: '4px'
                   }}>
-                    Consensus & Macro Force Breakdown
+                    Factor Tilt &amp; Divergence
                   </p>
                 </div>
               </div>
@@ -888,7 +888,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail, summ
             }}
           >
             {/* Living Orb */}
-            <LivingAlignmentOrb score={consensusScore} delay={0.02} />
+            <LivingAlignmentOrb score={consensusScore} delay={0.02} convictionLabel={convictionLabel} />
             
             {/* Metadata */}
             <motion.p
@@ -901,14 +901,31 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail, summ
               Based on {sourcesCount ?? 5} sources • Updated {timestampDisplay ?? '2m ago'}
             </motion.p>
 
+            {/* Regime Label */}
+            {regimeLabel && (
+              <motion.p
+                className="text-[11px] font-medium text-center uppercase tracking-widest"
+                style={{ color: 'rgba(255,255,255,0.52)', letterSpacing: '0.07em', marginBottom: '10px' }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.74, duration: 0.24 }}
+              >
+                {regimeLabel}
+              </motion.p>
+            )}
+
             {/* Insight Reveal Panel */}
-            <InsightRevealPanel segments={segments} delay={0.78} summary={summary} />
+            {summary && <InsightRevealPanel segments={segments} delay={0.78} summary={summary} />}
 
-            {/* Macro Forces Grid */}
-            <MacroForceGrid segments={segments} delay={0.88} onOpenDetail={onOpenDetail} />
+            {/* Factor Cards */}
+            {factors && factors.length > 0 && (
+              <FactorCards factors={factors} delay={0.88} />
+            )}
 
-            {/* Insight Capsules */}
-            <InsightCapsules segments={segments} delay={0.95} onOpenDetail={onOpenDetail} />
+            {/* Divergence Section */}
+            {divergenceItems && divergenceItems.length > 0 && (
+              <DivergenceSection items={divergenceItems} delay={0.95} />
+            )}
           </div>
         </motion.div>
       </motion.div>
