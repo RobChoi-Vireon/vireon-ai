@@ -762,13 +762,9 @@ export default function ConsensusMeter({ score, confidencePct, breakdown, onOpen
       style={{
         height: '100%',
         padding: '24px 24px 20px 24px',
-        background: `
-          linear-gradient(180deg, 
-            rgba(20, 24, 32, 0.88) 0%,
-            rgba(19, 23, 31, 0.895) 45%,
-            rgba(18, 22, 30, 0.91) 100%
-          )
-        `,
+        background: tiltAccent.cardGlowColor
+          ? `linear-gradient(180deg, rgba(13, 17, 23, 0.92) 0%, rgba(${tiltAccent.cardGlowColor}, ${tiltAccent.cardGlowOpacity}) 100%)`
+          : `linear-gradient(180deg, rgba(20, 24, 32, 0.88) 0%, rgba(19, 23, 31, 0.895) 45%, rgba(18, 22, 30, 0.91) 100%)`,
         backdropFilter: 'blur(28px) saturate(154%)',
         WebkitBackdropFilter: 'blur(28px) saturate(154%)',
         border: '1px solid rgba(255, 255, 255, 0.14)',
