@@ -931,6 +931,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail, summ
 
   const consensusScore = useMemo(() => (typeof score === 'number' ? score : 0), [score]);
   const segments = useMemo(() => (Array.isArray(breakdown?.segments) ? breakdown.segments : []), [breakdown]);
+  const drawerAccent = getDrawerTiltAccent(dominantTilt, consensusScore);
 
   if (!isOpen) return null;
 
