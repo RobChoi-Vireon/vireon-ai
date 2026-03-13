@@ -78,7 +78,7 @@ const SEGMENT_CONFIG = {
 // ============================================================================
 // OS HORIZON 2.0 LIVING ALIGNMENT ORB
 // ============================================================================
-const LivingAlignmentOrb = ({ score, delay, convictionLabel }) => {
+const LivingAlignmentOrb = ({ score, delay, convictionLabel, drawerAccent }) => {
   const [breathingPhase, setBreathingPhase] = useState(0);
   const [particlePhase, setParticlePhase] = useState(0);
   
