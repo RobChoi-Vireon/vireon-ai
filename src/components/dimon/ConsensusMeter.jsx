@@ -911,6 +911,7 @@ export default function ConsensusMeter({ score, confidencePct, breakdown, onOpen
             hoveredChipColor={hoveredChipColor}
             consensusLabel={consensusLabel}
             confidenceLabel={confidenceLabel}
+            scoreColorOverride={tiltAccent.scoreColor}
           />
         </div>
 
@@ -920,6 +921,7 @@ export default function ConsensusMeter({ score, confidencePct, breakdown, onOpen
             isHovered={isHovered}
             onChipHover={handleChipHover}
             onChipLeave={handleChipLeave}
+            useTiltDots={true}
           />
         </div>
       </div>
