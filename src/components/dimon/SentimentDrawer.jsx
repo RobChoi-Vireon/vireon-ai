@@ -7,6 +7,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { X, Activity, Shield, Briefcase, BarChart3, Globe, TrendingUp, TrendingDown, Minus, Sparkles, ArrowUp, ArrowDown } from 'lucide-react';
 
+// Apple-grade font stacks
+const SF = {
+  display: '"SF Pro Display", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Inter", sans-serif',
+  text: '"SF Pro Text", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Inter", sans-serif',
+  mono: '"SF Mono", "Fira Code", "Menlo", monospace'
+};
+
 // OS Horizon Motion DNA
 const MOTION = {
   CURVES: {
@@ -223,7 +230,7 @@ const LivingAlignmentOrb = ({ score, delay, convictionLabel }) => {
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <motion.span
           className="text-[11px] font-medium uppercase tracking-widest mb-2.5"
-          style={{ color: 'rgba(255,255,255,0.66)', letterSpacing: '0.18em' }}
+          style={{ color: 'rgba(255,255,255,0.66)', letterSpacing: '0.18em', fontFamily: SF.text, WebkitFontSmoothing: 'antialiased' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: delay + 0.28, duration: 0.3 }}
@@ -238,7 +245,10 @@ const LivingAlignmentOrb = ({ score, delay, convictionLabel }) => {
             color: 'rgba(255,255,255,0.95)',
             textShadow: `0 0 32px ${color}48, 0 3px 14px rgba(0,0,0,0.32)`,
             letterSpacing: '-0.045em',
-            marginBottom: '6px'
+            marginBottom: '6px',
+            fontFamily: SF.display,
+            WebkitFontSmoothing: 'antialiased',
+            fontVariantNumeric: 'tabular-nums'
           }}
           initial={{ opacity: 0, scale: 0.84 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -249,7 +259,7 @@ const LivingAlignmentOrb = ({ score, delay, convictionLabel }) => {
         
         <motion.div
           className="text-[14px] font-medium"
-          style={{ color: 'rgba(255,255,255,0.58)' }}
+          style={{ color: 'rgba(255,255,255,0.58)', fontFamily: SF.text, WebkitFontSmoothing: 'antialiased', letterSpacing: '-0.008em' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: delay + 0.62, duration: 0.28 }}
@@ -328,16 +338,19 @@ const InsightRevealPanel = ({ segments, delay, summary }) => {
         className="text-center relative z-10"
         style={{ 
           fontSize: '15.5px',
-          lineHeight: '1.42',
+          lineHeight: '1.47',
           color: 'rgba(255,255,255,0.92)',
-          letterSpacing: '-0.15px',
+          letterSpacing: '-0.18px',
           textShadow: '0px 1.2px 2.4px rgba(0,0,0,0.28)',
           maxWidth: '82%',
           margin: '0 auto',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          minHeight: '100%'
+          minHeight: '100%',
+          fontFamily: SF.text,
+          WebkitFontSmoothing: 'antialiased',
+          fontWeight: 400
         }}
       >
         {summary || 'Markets are showing slight upward pressure as stricter policies and early signs of credit strain push investors to be more cautious.'}
@@ -747,7 +760,7 @@ const FactorCards = ({ factors, delay }) => {
   return (
     <div style={{ marginTop: '48px', marginBottom: '28px' }}>
       <div className="text-[11px] font-medium uppercase tracking-wider mb-5"
-        style={{ color: 'rgba(255,255,255,0.58)', letterSpacing: '0.06em', fontWeight: 500 }}>
+        style={{ color: 'rgba(255,255,255,0.58)', letterSpacing: '0.07em', fontWeight: 500, fontFamily: SF.text, WebkitFontSmoothing: 'antialiased' }}>
         What's Behind This Reading
       </div>
       <div className="grid grid-cols-2 gap-4">
@@ -772,11 +785,11 @@ const FactorCards = ({ factors, delay }) => {
             >
               {/* Top row: name + weight */}
               <div className="flex items-start justify-between mb-3">
-                <span className="text-[14px] font-semibold" style={{ color: 'rgba(255,255,255,0.92)', letterSpacing: '-0.01em' }}>
+                <span style={{ fontSize: '14px', fontWeight: 600, color: 'rgba(255,255,255,0.92)', letterSpacing: '-0.016em', fontFamily: SF.display, WebkitFontSmoothing: 'antialiased' }}>
                   {factor.name}
                 </span>
                 {factor.weight != null && (
-                  <span className="text-[13px] font-medium" style={{ color: tiltColor }}>
+                  <span style={{ fontSize: '14px', fontWeight: 500, color: tiltColor, fontFamily: SF.display, WebkitFontSmoothing: 'antialiased', fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.01em' }}>
                     {factor.weight}%
                   </span>
                 )}
@@ -784,20 +797,17 @@ const FactorCards = ({ factors, delay }) => {
               {/* Badges row */}
               <div className="flex flex-wrap gap-1.5 mb-3">
                 {factor.tilt && (
-                  <span className="text-[9px] font-semibold uppercase px-2 py-0.5 rounded-md"
-                    style={{ background: `${tiltColor}18`, color: tiltColor, border: `1px solid ${tiltColor}28`, letterSpacing: '0.05em' }}>
+                  <span style={{ fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', padding: '2px 7px', borderRadius: '6px', background: `${tiltColor}18`, color: tiltColor, border: `1px solid ${tiltColor}28`, letterSpacing: '0.06em', fontFamily: SF.text, WebkitFontSmoothing: 'antialiased' }}>
                     {factor.tilt.toUpperCase()}
                   </span>
                 )}
                 {factor.conviction && (
-                  <span className="text-[9px] font-medium uppercase px-2 py-0.5 rounded-md"
-                    style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.08)', letterSpacing: '0.04em' }}>
+                  <span style={{ fontSize: '10px', fontWeight: 500, textTransform: 'uppercase', padding: '2px 7px', borderRadius: '6px', background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.55)', border: '1px solid rgba(255,255,255,0.08)', letterSpacing: '0.05em', fontFamily: SF.text, WebkitFontSmoothing: 'antialiased' }}>
                     {factor.conviction}
                   </span>
                 )}
                 {factor.trend && (
-                  <span className="inline-flex items-center gap-1 text-[9px] font-medium uppercase px-2 py-0.5 rounded-md"
-                    style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.08)', letterSpacing: '0.04em' }}>
+                  <span className="inline-flex items-center gap-1" style={{ fontSize: '10px', fontWeight: 500, textTransform: 'uppercase', padding: '2px 7px', borderRadius: '6px', background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.55)', border: '1px solid rgba(255,255,255,0.08)', letterSpacing: '0.05em', fontFamily: SF.text, WebkitFontSmoothing: 'antialiased' }}>
                     {getTrendIcon(factor.trend)}
                     {factor.trend}
                   </span>
@@ -805,7 +815,7 @@ const FactorCards = ({ factors, delay }) => {
               </div>
               {/* Insight */}
               {factor.insight && (
-                <p className="text-[12px] leading-snug" style={{ color: 'rgba(255,255,255,0.65)', lineHeight: '1.4' }}>
+                <p style={{ fontSize: '12.5px', color: 'rgba(255,255,255,0.60)', lineHeight: '1.50', letterSpacing: '-0.008em', fontFamily: SF.text, WebkitFontSmoothing: 'antialiased', fontWeight: 400 }}>
                   {factor.insight}
                 </p>
               )}
@@ -829,8 +839,7 @@ const DivergenceSection = ({ items, delay }) => {
       transition={{ delay, duration: 0.24, ease: MOTION.CURVES.silk }}
       style={{ marginTop: '56px', marginBottom: '32px' }}
     >
-      <h3 className="text-[11px] uppercase mb-8"
-        style={{ color: 'rgba(255,255,255,0.72)', letterSpacing: '0.056em', fontWeight: 400 }}>
+      <h3 style={{ fontSize: '11px', textTransform: 'uppercase', marginBottom: '32px', color: 'rgba(255,255,255,0.58)', letterSpacing: '0.07em', fontWeight: 500, fontFamily: SF.text, WebkitFontSmoothing: 'antialiased' }}>
         Divergence
       </h3>
       <div className="flex flex-col gap-[14px]">
@@ -857,24 +866,22 @@ const DivergenceSection = ({ items, delay }) => {
                 pointerEvents: 'none'
               }} />
               <div className="flex items-start justify-between gap-3 mb-2">
-                <p className="text-[13px] font-semibold leading-snug" style={{ color: 'rgba(255,255,255,0.90)', letterSpacing: '-0.01em' }}>
+                <p style={{ fontSize: '13.5px', fontWeight: 600, color: 'rgba(255,255,255,0.90)', letterSpacing: '-0.016em', lineHeight: '1.38', fontFamily: SF.display, WebkitFontSmoothing: 'antialiased' }}>
                   {item.headline}
                 </p>
                 {item.severity && (
-                  <span className="text-[9px] font-semibold uppercase px-2 py-0.5 rounded-md flex-shrink-0"
-                    style={{ background: `${sevColor}18`, color: sevColor, border: `1px solid ${sevColor}28`, letterSpacing: '0.05em' }}>
+                  <span className="flex-shrink-0" style={{ fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', padding: '2px 7px', borderRadius: '6px', background: `${sevColor}18`, color: sevColor, border: `1px solid ${sevColor}28`, letterSpacing: '0.06em', fontFamily: SF.text, WebkitFontSmoothing: 'antialiased' }}>
                     {item.severity}
                   </span>
                 )}
               </div>
               {item.morning_takeaway && (
-                <p className="text-[12px] leading-snug mb-2" style={{ color: 'rgba(255,255,255,0.60)', lineHeight: '1.45' }}>
+                <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.56)', lineHeight: '1.50', letterSpacing: '-0.008em', marginBottom: '8px', fontFamily: SF.text, WebkitFontSmoothing: 'antialiased', fontWeight: 400 }}>
                   {item.morning_takeaway}
                 </p>
               )}
               {item.challenges_factor && (
-                <span className="text-[10px] px-2 py-0.5 rounded-md"
-                  style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.50)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                <span style={{ fontSize: '11px', padding: '2px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.45)', border: '1px solid rgba(255,255,255,0.08)', fontFamily: SF.text, WebkitFontSmoothing: 'antialiased', letterSpacing: '-0.005em' }}>
                   Challenges: {item.challenges_factor}{item.challenges_tilt ? ` ${item.challenges_tilt} tilt` : ''}
                 </span>
               )}
@@ -1016,16 +1023,21 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail, summ
                     fontSize: '24px',
                     fontWeight: 600,
                     color: 'rgba(255,255,255,0.94)',
-                    letterSpacing: '0.005em',
-                    marginBottom: '2px'
+                    letterSpacing: '-0.022em',
+                    marginBottom: '2px',
+                    fontFamily: SF.display,
+                    WebkitFontSmoothing: 'antialiased'
                   }}>
                     Factor Tilt
                   </h2>
                   <p style={{ 
-                    fontSize: '15px',
-                    color: 'rgba(255,255,255,0.55)',
+                    fontSize: '14px',
+                    color: 'rgba(255,255,255,0.50)',
                     fontWeight: 400,
-                    marginTop: '4px'
+                    marginTop: '3px',
+                    letterSpacing: '-0.008em',
+                    fontFamily: SF.text,
+                    WebkitFontSmoothing: 'antialiased'
                   }}>
                     Factor Tilt &amp; Divergence
                   </p>
@@ -1064,7 +1076,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail, summ
             {/* Metadata */}
             <motion.p
               className="text-[11px] text-center"
-              style={{ color: 'rgba(255,255,255,0.46)', marginBottom: '24px' }}
+              style={{ color: 'rgba(255,255,255,0.46)', marginBottom: '24px', fontFamily: SF.text, WebkitFontSmoothing: 'antialiased', letterSpacing: '-0.005em' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.72, duration: 0.25 }}
@@ -1076,7 +1088,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail, summ
             {regimeLabel && (
               <motion.p
                 className="text-[11px] font-medium text-center uppercase tracking-widest"
-                style={{ color: 'rgba(255,255,255,0.52)', letterSpacing: '0.07em', marginBottom: '10px' }}
+                style={{ color: 'rgba(255,255,255,0.52)', letterSpacing: '0.07em', marginBottom: '10px', fontFamily: SF.text, WebkitFontSmoothing: 'antialiased' }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.74, duration: 0.24 }}
