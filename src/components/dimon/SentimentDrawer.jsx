@@ -1092,7 +1092,7 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail, summ
             }}
           >
             {/* Living Orb */}
-            <LivingAlignmentOrb score={consensusScore} delay={0.02} convictionLabel={convictionLabel} />
+            <LivingAlignmentOrb score={consensusScore} delay={0.02} convictionLabel={convictionLabel} drawerAccent={drawerAccent} />
             
             {/* Metadata */}
             <motion.p
