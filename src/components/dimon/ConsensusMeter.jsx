@@ -515,7 +515,7 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
 // ============================================================================
 // MINI GLASS CHIPS — 2×2 Grid Layout (Apple-Grade Spatial Balance)
 // ============================================================================
-const CategoryGlassChips = ({ segments, isHovered, onChipHover, onChipLeave }) => {
+const CategoryGlassChips = ({ segments, isHovered, onChipHover, onChipLeave, useTiltDots }) => {
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
   const [hoveredChip, setHoveredChip] = useState(null);
 
@@ -552,6 +552,7 @@ const CategoryGlassChips = ({ segments, isHovered, onChipHover, onChipLeave }) =
           dot: '#AAB1B8',
           tint: 'rgba(170, 177, 184, 0.02)'
         };
+        const dotColor = useTiltDots ? getFactorDotColor(segment.tilt) : colors.dot;
         const value = (segment.weight || 0) * 100;
         const isChipHovered = hoveredChip === segment.name;
         const isOtherChipHovered = hoveredChip && hoveredChip !== segment.name;
@@ -614,7 +615,7 @@ const CategoryGlassChips = ({ segments, isHovered, onChipHover, onChipLeave }) =
               <div
                 className="w-1.5 h-1.5 rounded-full flex-shrink-0"
                 style={{
-                  background: colors.dot,
+                  background: dotColor,
                   boxShadow: `0 0 10px ${colors.glow}, inset 0 0 3px rgba(255,255,255,0.35)`
                 }}
               />
