@@ -277,7 +277,7 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
           `,
           backdropFilter: 'blur(22px) saturate(148%)',
           WebkitBackdropFilter: 'blur(22px) saturate(148%)',
-          border: '1px solid rgba(255, 255, 255, 0.20)',
+          border: tiltAccent.orbRingColor ? `1px solid ${tiltAccent.orbRingColor}` : '1px solid rgba(255, 255, 255, 0.20)',
           boxShadow: `
             inset 0 2px 12px rgba(255, 255, 255, 0.16),
             inset 0 -3px 10px rgba(0, 0, 0, 0.15),
