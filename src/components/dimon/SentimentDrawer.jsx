@@ -193,7 +193,7 @@ const LivingAlignmentOrb = ({ score, delay, convictionLabel, drawerAccent }) => 
           background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.07) 100%)',
           backdropFilter: 'blur(14px) saturate(165%)',
           WebkitBackdropFilter: 'blur(14px) saturate(165%)',
-          border: '1px solid rgba(255,255,255,0.22)',
+          border: drawerAccent?.ringBorder ? `1px solid ${drawerAccent.ringBorder}` : '1px solid rgba(255,255,255,0.22)',
           boxShadow: `
             inset 0 2px 24px rgba(255,255,255,0.20),
             inset 0 -2px 18px rgba(0,0,0,0.28),
@@ -242,8 +242,8 @@ const LivingAlignmentOrb = ({ score, delay, convictionLabel, drawerAccent }) => 
           style={{ 
             fontSize: '42px',
             fontWeight: 600,
-            color: 'rgba(255,255,255,0.95)',
-            textShadow: `0 0 32px ${color}48, 0 3px 14px rgba(0,0,0,0.32)`,
+            color: drawerAccent?.scoreColor || 'rgba(255,255,255,0.95)',
+            textShadow: `0 0 32px ${drawerAccent?.scoreColor || color}48, 0 3px 14px rgba(0,0,0,0.32)`,
             letterSpacing: '-0.045em',
             marginBottom: '6px',
             fontFamily: SF.display,
