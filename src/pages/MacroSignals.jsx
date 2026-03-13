@@ -636,6 +636,7 @@ export default function MacroSignalsPage() {
   const sourcesCount = factorTilt?.sources_count || 5;
   const confidencePct = globalSignals?.confidence ?? 66;
   const forces = factorTilt?.factors || [];
+  const dominantTilt = factorTilt?.dominant_tilt || 'neutral';
   const forceDetails = {};
   const divergence = globalSignals?.divergence;
   const fracture = divergence?.fracture_intensity || 2;
@@ -643,7 +644,7 @@ export default function MacroSignalsPage() {
   const timestampDisplay = globalSignals?.timestamp_display || "";
 
   const consensusBreakdown = globalSignals
-    ? { segments: forces.map(f => ({ name: f.name, weight: (f.weight || 0) / 100, trend: f.trend, insight: f.insight })) }
+    ? { segments: forces.map(f => ({ name: f.name, weight: (f.weight || 0) / 100, trend: f.trend, insight: f.insight, tilt: f.tilt })) }
     : digest?.consensus_breakdown;
 
   const containerVariants = {
@@ -934,6 +935,7 @@ export default function MacroSignalsPage() {
                             confidenceLabel={confidenceLabel}
                             consensusLabel={consensusLabel}
                             onOpenDrawer={openConsensusDrawer}
+                            dominantTilt={dominantTilt}
                         />
                     </div>
                     <div className="flex flex-col h-full">
@@ -1039,6 +1041,7 @@ export default function MacroSignalsPage() {
         divergenceItems={divergenceItems}
         forceDetails={forceDetails}
         onOpenDetail={setSelectedSegment}
+        dominantTilt={dominantTilt}
       />
       <DivergenceDrawer
         isOpen={!!selectedDivergence}
