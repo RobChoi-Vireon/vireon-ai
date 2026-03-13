@@ -1005,7 +1005,9 @@ const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail, summ
             transform: 'translateX(-50%)',
             width: '420px',
             height: '420px',
-            background: 'radial-gradient(circle at 50% 50%, rgba(155, 185, 255, 0.22) 0%, rgba(0, 0, 0, 0) 72%)',
+            background: drawerAccent.ambientColor
+              ? `radial-gradient(circle at 50% 50%, ${drawerAccent.ambientColor} 0%, rgba(0,0,0,0) 72%)`
+              : 'radial-gradient(circle at 50% 50%, rgba(155, 185, 255, 0.22) 0%, rgba(0, 0, 0, 0) 72%)',
             filter: 'blur(80px)',
             mixBlendMode: 'screen',
             pointerEvents: 'none'
