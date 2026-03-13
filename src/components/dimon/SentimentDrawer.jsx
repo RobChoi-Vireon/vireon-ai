@@ -896,7 +896,25 @@ const DivergenceSection = ({ items, delay }) => {
 // ============================================================================
 // MAIN STREET ALIGNMENT DRAWER
 // ============================================================================
-const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail, summary, regimeLabel, convictionLabel, sourcesCount, timestampDisplay, factors, divergenceItems, forceDetails }) => {
+const getDrawerTiltAccent = (tilt, score) => {
+  const t = (tilt || 'neutral').toLowerCase();
+  const low = typeof score === 'number' && score < 45;
+  if (t === 'bullish') return {
+    ambientColor: `rgba(245, 166, 35, ${low ? 0.06 : 0.14})`,
+    ringBorder: `rgba(245, 166, 35, 0.25)`,
+    scoreColor: '#F5A623',
+    regimeTint: '#F5A623'
+  };
+  if (t === 'bearish') return {
+    ambientColor: `rgba(232, 93, 117, ${low ? 0.06 : 0.14})`,
+    ringBorder: `rgba(232, 93, 117, 0.25)`,
+    scoreColor: '#E85D75',
+    regimeTint: '#E85D75'
+  };
+  return { ambientColor: null, ringBorder: null, scoreColor: null, regimeTint: null };
+};
+
+const SentimentDrawer = ({ isOpen, onClose, score, breakdown, onOpenDetail, summary, regimeLabel, convictionLabel, sourcesCount, timestampDisplay, factors, divergenceItems, forceDetails, dominantTilt }) => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
