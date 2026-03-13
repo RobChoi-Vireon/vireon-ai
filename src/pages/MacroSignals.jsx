@@ -629,13 +629,14 @@ export default function MacroSignalsPage() {
 
   // Global signals — all derived variables defined before JSX
   const globalSignals = sessionData?.global_signals;
-  const consensus = globalSignals?.consensus;
-  const consensusLabel = consensus?.label || "Mixed View";
-  const consensusScore = consensus?.score ?? 66;
-  const confidenceLabel = consensus?.confidence_label || "Moderate";
-  const sourcesCount = consensus?.sources_count || 5;
-  const forces = consensus?.forces || [];
-  const forceDetails = consensus?.force_details || {};
+  const factorTilt = globalSignals?.factor_tilt;
+  const consensusLabel = factorTilt?.conviction_label || "Mixed View";
+  const consensusScore = factorTilt?.conviction_score ?? 66;
+  const confidenceLabel = factorTilt?.confidence_label || "Moderate";
+  const sourcesCount = factorTilt?.sources_count || 5;
+  const confidencePct = globalSignals?.confidence ?? 66;
+  const forces = factorTilt?.factors || [];
+  const forceDetails = {};
   const divergence = globalSignals?.divergence;
   const fracture = divergence?.fracture_intensity || 2;
   const divergenceItems = divergence?.items || [];
@@ -926,6 +927,7 @@ export default function MacroSignalsPage() {
                     <div className="flex flex-col h-full">
                         <ConsensusMeter 
                             score={consensusScore}
+                            confidencePct={confidencePct}
                             breakdown={consensusBreakdown}
                             sourcesCount={sourcesCount}
                             timestampDisplay={timestampDisplay}
@@ -1028,9 +1030,13 @@ export default function MacroSignalsPage() {
         onClose={closeConsensusDrawer}
         score={consensusScore}
         breakdown={consensusBreakdown}
-        summary={consensus?.summary}
+        summary={factorTilt?.regime_summary}
+        regimeLabel={factorTilt?.regime_label}
+        convictionLabel={consensusLabel}
         sourcesCount={sourcesCount}
         timestampDisplay={timestampDisplay}
+        factors={forces}
+        divergenceItems={divergenceItems}
         forceDetails={forceDetails}
         onOpenDetail={setSelectedSegment}
       />

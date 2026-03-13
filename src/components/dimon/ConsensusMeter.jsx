@@ -483,7 +483,7 @@ const SignalLensNode = ({ score, isHovered, parentRef, isAnyChipHovered, hovered
           
           <div 
             className="text-[19px] font-semibold mb-1 relative z-10" 
-            style={{ color: 'rgba(255,255,255,0.98)', letterSpacing: '-0.01em', fontFamily: '"SF Pro Display", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif' }}
+            style={{ color: getConvictionColor(consensusLabel), letterSpacing: '-0.01em', fontFamily: '"SF Pro Display", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif' }}
           >
             {consensusLabel ?? `${scoreLabel} View`}
           </div>
@@ -686,7 +686,16 @@ const CategoryGlassChips = ({ segments, isHovered, onChipHover, onChipLeave }) =
 // ============================================================================
 // MAIN CONSENSUS COMPONENT — Cinematic Choreography System
 // ============================================================================
-export default function ConsensusMeter({ score, breakdown, onOpenDrawer, sourcesCount, timestampDisplay, confidenceLabel, consensusLabel }) {
+const getConvictionColor = (label) => {
+  const l = (label || '').toLowerCase();
+  if (l.includes('strong')) return '#2BC686';
+  if (l.includes('moderate')) return '#5EA7FF';
+  if (l.includes('mixed') || l.includes('signals')) return '#FFB020';
+  if (l.includes('weak')) return '#FF8C42';
+  return '#9BA8B5';
+};
+
+export default function ConsensusMeter({ score, confidencePct, breakdown, onOpenDrawer, sourcesCount, timestampDisplay, confidenceLabel, consensusLabel }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isHintHovered, setIsHintHovered] = useState(false);
   const [isAnyChipHovered, setIsAnyChipHovered] = useState(false);
@@ -850,7 +859,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer, sources
           animate={{ opacity: 1 }}
           transition={{ delay: 0.08, ease: MOTION.CURVES.tertiary }}
         >
-          Consensus
+          Factor Tilt
         </motion.h2>
         <motion.div
           className="px-3 py-1.5 rounded-full text-xs font-semibold"
@@ -866,7 +875,7 @@ export default function ConsensusMeter({ score, breakdown, onOpenDrawer, sources
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.18, ease: MOTION.CURVES.secondary }}
         >
-          {score}%
+          {confidencePct ?? score}%
         </motion.div>
       </div>
 
