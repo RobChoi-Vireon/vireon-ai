@@ -446,57 +446,70 @@ export default function LyraChatbot({ pageContext }) {
     }, 20000); // 20-second timeout
 
     try {
-      const MAX_RETRIES = 2;
-      let fullResponse;
-      let responseSources = [];
+      const res = await fetch("https://tdvmquuvtcxfkalumjlw.supabase.co/functions/v1/ori-query", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          query: userMessage,
+          user_id: "vireon-user",
+          timestamp: new Date().toISOString()
+        })
+      });
 
-      for (let attempt = 1; attempt <= MAX_RETRIES + 1; attempt++) {
-        try {
-          const res = await fetch("https://roberthchoi.app.n8n.cloud/webhook/ori-query", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              query: userMessage,
-              user_id: "vireon-user",
-              timestamp: new Date().toISOString()
-            })
-          });
-          const data = await res.json();
-          fullResponse = data.answer;
-          responseSources = data.sources || [];
-          break;
-        } catch (err) {
-          console.error(`Lyra chat attempt ${attempt} failed:`, err);
-          if (attempt > MAX_RETRIES) throw err;
-          await new Promise(res => setTimeout(res, 1000 * attempt));
-        }
-      }
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
       clearTimeout(streamTimeout);
 
-      // Simulate streaming response
-      let currentText = '';
-      let i = 0;
-      const streamSpeed = 30;
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let currentText = "";
+      let responseSources = [];
 
-      activeStream.current = setInterval(() => {
-        const chunkSize = Math.floor(Math.random() * 5) + 3;
-        currentText += fullResponse.substring(i, i + chunkSize);
-        i += chunkSize;
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
 
-        setMessages(prev =>
-          prev.map(msg => msg.id === aiMessageId ? { ...msg, text: currentText } : msg)
-        );
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop();
 
-        if (i >= fullResponse.length) {
-          clearInterval(activeStream.current);
-          const responseTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-          setMessages(prev =>
-            prev.map(msg => msg.id === aiMessageId ? { ...msg, text: fullResponse, timestamp: responseTimestamp, sources: responseSources } : msg)
-          );
-          setIsTyping(false);
+        let eventType = null;
+        for (const line of lines) {
+          if (line.startsWith("event: ")) {
+            eventType = line.slice(7).trim();
+          } else if (line.startsWith("data: ") && eventType) {
+            try {
+              const payload = JSON.parse(line.slice(6));
+              if (eventType === "token" && payload.text) {
+                currentText += payload.text;
+                setMessages(prev =>
+                  prev.map(msg => msg.id === aiMessageId
+                    ? { ...msg, text: currentText }
+                    : msg)
+                );
+              } else if (eventType === "sources" && payload.sources) {
+                responseSources = payload.sources;
+              } else if (eventType === "error") {
+                currentText = "I encountered an issue. Please try again.";
+                setMessages(prev =>
+                  prev.map(msg => msg.id === aiMessageId
+                    ? { ...msg, text: currentText, error: true }
+                    : msg)
+                );
+              }
+            } catch (e) {}
+            eventType = null;
+          }
         }
-      }, streamSpeed);
+      }
+
+      setMessages(prev =>
+        prev.map(msg => msg.id === aiMessageId
+          ? { ...msg, text: currentText, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), sources: responseSources }
+          : msg)
+      );
+      setIsTyping(false);
 
     } catch (error) {
       clearTimeout(streamTimeout);
