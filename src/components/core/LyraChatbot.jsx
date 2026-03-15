@@ -517,6 +517,9 @@ export default function LyraChatbot({ pageContext }) {
         }
       }
 
+      if (rafId) cancelAnimationFrame(rafId);
+      flushBuffer();
+
       setMessages(prev =>
         prev.map(msg => msg.id === aiMessageId
           ? { ...msg, text: currentText, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), sources: responseSources }
