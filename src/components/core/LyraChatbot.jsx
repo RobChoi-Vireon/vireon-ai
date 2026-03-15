@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback, memo, useMemo } from 'react';
 import { motion, AnimatePresence, useMotionValue } from 'framer-motion';
-import { MessageCircle, Send, X, Sparkles, Copy, Check, MoreVertical, ArrowDown } from 'lucide-react';
+import { MessageCircle, Send, X, Sparkles, Copy, Check, MoreVertical, ArrowDown, Plus } from 'lucide-react';
 import OriBotAvatar from './OriBotAvatar';
 import ReactMarkdown from 'react-markdown';
 import LyraLogo from './LyraLogo'; // This assumes LyraLogo is now in a separate file.
@@ -197,6 +197,8 @@ export default function LyraChatbot({ pageContext }) {
   const [isTyping, setIsTyping] = useState(false);
   const [usePageContextToggle, setUsePageContextToggle] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [sessionId, setSessionId] = useState(null);
+  const [followupQuestions, setFollowupQuestions] = useState([]);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const panelRef = useRef(null);
@@ -422,15 +424,15 @@ export default function LyraChatbot({ pageContext }) {
   }, [isOpen, isPinching, initialPinchDistance]);
 
 
-  const handleSendMessage = async () => {
-    if (!inputValue.trim() || isTyping) return;
-
-    const userMessage = inputValue.trim();
+  const handleSendMessage = async (messageOverride) => {
+    const userMessage = (typeof messageOverride === 'string' ? messageOverride : inputValue).trim();
+    if (!userMessage || isTyping) return;
     const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const userMessageId = Date.now();
     const aiMessageId = userMessageId + 1;
 
     setInputValue('');
+    setFollowupQuestions([]);
     setMessages(prev => [...prev, { id: userMessageId, text: userMessage, isUser: true, timestamp }]);
     
     // Artificial delay to show user message before AI typing indicator
@@ -450,9 +452,10 @@ export default function LyraChatbot({ pageContext }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          query: userMessage,
-          user_id: "vireon-user",
-          timestamp: new Date().toISOString()
+        query: userMessage,
+        user_id: "vireon-user",
+        timestamp: new Date().toISOString(),
+        session_id: sessionId
         })
       });
 
@@ -466,14 +469,14 @@ export default function LyraChatbot({ pageContext }) {
       let currentText = "";
       let responseSources = [];
 
-      let tokenBuffer = "";
+      let tokenBuffer = [];
       let flushInterval = null;
       const startFlushing = () => {
         if (flushInterval) return;
         flushInterval = setInterval(() => {
-          if (tokenBuffer) {
-            currentText += tokenBuffer;
-            tokenBuffer = "";
+          if (tokenBuffer.length > 0) {
+            currentText += tokenBuffer.join('');
+            tokenBuffer = [];
             setMessages(prev =>
               prev.map(msg => msg.id === aiMessageId
                 ? { ...msg, text: currentText }
@@ -499,8 +502,12 @@ export default function LyraChatbot({ pageContext }) {
             try {
               const payload = JSON.parse(line.slice(6));
               if (eventType === "token" && payload.text) {
-                tokenBuffer += payload.text;
+                tokenBuffer.push(payload.text);
                 startFlushing();
+              } else if (eventType === "meta" && payload.session_id) {
+                setSessionId(payload.session_id);
+              } else if (eventType === "followups" && payload.questions) {
+                setFollowupQuestions(payload.questions);
               } else if (eventType === "sources" && payload.sources) {
                 responseSources = payload.sources;
               } else if (eventType === "error") {
@@ -518,9 +525,9 @@ export default function LyraChatbot({ pageContext }) {
       }
 
       if (flushInterval) clearInterval(flushInterval);
-      if (tokenBuffer) {
-        currentText += tokenBuffer;
-        tokenBuffer = "";
+      if (tokenBuffer.length > 0) {
+        currentText += tokenBuffer.join('');
+        tokenBuffer = [];
       }
 
       setMessages(prev =>
@@ -805,7 +812,7 @@ export default function LyraChatbot({ pageContext }) {
               transition={panelTransition}
               className={`
                 lyra-panel fixed z-50 flex flex-col overflow-hidden
-                bottom-24 right-8 w-[620px] rounded-[28px]
+                bottom-24 right-8 rounded-[28px]
                 elevation-3
                 ${isPinching ? 'select-none' : ''}
               `}
@@ -813,8 +820,10 @@ export default function LyraChatbot({ pageContext }) {
                 backgroundColor: 'var(--card)',
                 backdropFilter: 'blur(20px)',
                 WebkitBackdropFilter: 'blur(20px)',
-                height: 'max(680px, 75vh)',
-                maxHeight: '85vh',
+                width: '560px',
+                maxWidth: '90vw',
+                height: 'max(720px, 80vh)',
+                maxHeight: '90vh',
                 transform: isPinching && !initialPinchDistance ? 'scale(0.98)' : 'scale(1)',
                 transition: 'transform 0.1s ease-out'
               }}
@@ -849,6 +858,15 @@ export default function LyraChatbot({ pageContext }) {
                 </div>
 
                 <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => { setSessionId(null); setMessages(initialMessages); setFollowupQuestions([]); }}
+                    className="p-2 rounded-lg transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                    style={{ color: 'var(--text-tertiary)', '--tw-ring-color': 'var(--accent)' }}
+                    title="New chat"
+                    aria-label="New chat"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
                   <div className="relative">
                     {pageContext !== 'landing' && (
                        <button
@@ -914,6 +932,25 @@ export default function LyraChatbot({ pageContext }) {
                 ))}
 
                 {isTyping && <TypingIndicator theme={theme} />}
+                {followupQuestions.length > 0 && !isTyping && (
+                  <div className="flex flex-wrap gap-2 px-2 mb-3">
+                    {followupQuestions.map((q, i) => (
+                      <button
+                        key={i}
+                        onClick={() => handleSendMessage(q)}
+                        className="text-xs px-3 py-1.5 rounded-full transition-all duration-200 hover:scale-[1.02] text-left"
+                        style={{
+                          background: 'rgba(167, 116, 255, 0.08)',
+                          border: '1px solid rgba(167, 116, 255, 0.25)',
+                          color: 'rgba(200, 170, 255, 0.9)',
+                          backdropFilter: 'blur(8px)',
+                        }}
+                      >
+                        {q}
+                      </button>
+                    ))}
+                  </div>
+                )}
                 <div ref={messagesEndRef} />
                 
                 <AnimatePresence>
