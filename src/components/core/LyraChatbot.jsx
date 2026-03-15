@@ -466,6 +466,21 @@ export default function LyraChatbot({ pageContext }) {
       let currentText = "";
       let responseSources = [];
 
+      let tokenBuffer = "";
+      let rafId = null;
+      const flushBuffer = () => {
+        if (tokenBuffer) {
+          currentText += tokenBuffer;
+          tokenBuffer = "";
+          setMessages(prev =>
+            prev.map(msg => msg.id === aiMessageId
+              ? { ...msg, text: currentText }
+              : msg)
+          );
+        }
+        rafId = null;
+      };
+
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -482,12 +497,10 @@ export default function LyraChatbot({ pageContext }) {
             try {
               const payload = JSON.parse(line.slice(6));
               if (eventType === "token" && payload.text) {
-                currentText += payload.text;
-                setMessages(prev =>
-                  prev.map(msg => msg.id === aiMessageId
-                    ? { ...msg, text: currentText }
-                    : msg)
-                );
+                tokenBuffer += payload.text;
+                if (!rafId) {
+                  rafId = requestAnimationFrame(flushBuffer);
+                }
               } else if (eventType === "sources" && payload.sources) {
                 responseSources = payload.sources;
               } else if (eventType === "error") {
