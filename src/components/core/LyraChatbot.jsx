@@ -1016,11 +1016,9 @@ export default function LyraChatbot({ pageContext }) {
                       width: '48px',
                       height: '48px',
                       alignSelf: 'stretch',
-                      background: 'linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.08) 100%)',
-                      backdropFilter: 'blur(20px) saturate(160%)',
-                      WebkitBackdropFilter: 'blur(20px) saturate(160%)',
-                      border: '1px solid rgba(255,255,255,0.18)',
-                      boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.22), 0 4px 16px rgba(0,0,0,0.18)',
+                      background: 'linear-gradient(135deg, rgba(30,32,48,0.95) 0%, rgba(20,22,36,0.98) 100%)',
+                      border: '1px solid rgba(255,255,255,0.14)',
+                      boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.10), 0 4px 16px rgba(0,0,0,0.30)',
                       '--tw-ring-color': 'rgba(167, 116, 255, 0.5)'
                     }}
                     whileHover={{ scale: 1.04, boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.28), 0 6px 20px rgba(0,0,0,0.22)' }}
