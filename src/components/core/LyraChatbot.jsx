@@ -810,7 +810,9 @@ export default function LyraChatbot({ pageContext }) {
                 backgroundColor: 'var(--card)',
                 backdropFilter: 'blur(20px)',
                 WebkitBackdropFilter: 'blur(20px)',
-                transform: isPinching && !initialPinchDistance ? 'scale(0.98)' : 'scale(1)', // Visual feedback during pinch
+                height: 'max(680px, 75vh)',
+                maxHeight: '85vh',
+                transform: isPinching && !initialPinchDistance ? 'scale(0.98)' : 'scale(1)',
                 transition: 'transform 0.1s ease-out'
               }}
               role="dialog"
