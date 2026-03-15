@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback, memo, useMemo } from '
 import { motion, AnimatePresence, useMotionValue } from 'framer-motion';
 import { MessageCircle, Send, X, Sparkles, Copy, Check, MoreVertical, ArrowDown } from 'lucide-react';
 import OriBotAvatar from './OriBotAvatar';
-import { InvokeLLM } from '@/integrations/Core';
+import ReactMarkdown from 'react-markdown';
 import LyraLogo from './LyraLogo'; // This assumes LyraLogo is now in a separate file.
 
 const TypingIndicator = ({ theme }) => (
@@ -35,7 +35,7 @@ const OriAvatar = () => (
   </div>
 );
 
-const ChatMessage = memo(({ message, isUser, onCopy, timestamp }) => {
+const ChatMessage = memo(({ message, isUser, onCopy, timestamp, sources }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -94,17 +94,25 @@ const ChatMessage = memo(({ message, isUser, onCopy, timestamp }) => {
               borderRadius: '0 0 0 0'
             }} />
           )}
-          <p style={{
-            fontSize: '14px',
-            lineHeight: '1.6',
-            letterSpacing: '-0.008em',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif',
-            WebkitFontSmoothing: 'antialiased',
-            fontWeight: 400,
-            whiteSpace: 'pre-wrap'
-          }}>
-            {message}
-          </p>
+          {isUser ? (
+            <p style={{ fontSize: '14px', lineHeight: '1.6', letterSpacing: '-0.008em', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif', WebkitFontSmoothing: 'antialiased', fontWeight: 400, whiteSpace: 'pre-wrap' }}>
+              {message}
+            </p>
+          ) : (
+            <ReactMarkdown
+              components={{
+                h3: ({ children }) => <h3 style={{ fontWeight: 700, fontSize: '15px', marginTop: '12px', marginBottom: '4px', color: 'var(--text-primary)', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif' }}>{children}</h3>,
+                strong: ({ children }) => <strong style={{ fontWeight: 600 }}>{children}</strong>,
+                ul: ({ children }) => <ul style={{ paddingLeft: '18px', margin: '4px 0', listStyleType: 'disc' }}>{children}</ul>,
+                ol: ({ children }) => <ol style={{ paddingLeft: '18px', margin: '4px 0', listStyleType: 'decimal' }}>{children}</ol>,
+                li: ({ children }) => <li style={{ marginBottom: '3px', fontSize: '14px', lineHeight: '1.6' }}>{children}</li>,
+                a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer" style={{ color: '#4DA3FF', textDecoration: 'underline' }}>{children}</a>,
+                p: ({ children }) => <p style={{ fontSize: '14px', lineHeight: '1.6', letterSpacing: '-0.008em', margin: '4px 0', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif', WebkitFontSmoothing: 'antialiased' }}>{children}</p>,
+              }}
+            >
+              {message}
+            </ReactMarkdown>
+          )}
           {!isUser && (
             <button
               onClick={handleCopy}
@@ -124,6 +132,20 @@ const ChatMessage = memo(({ message, isUser, onCopy, timestamp }) => {
             </button>
           )}
         </div>
+        {!isUser && sources && sources.length > 0 && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '8px' }}>
+            {sources.map((src, i) => (
+              <a key={i} href={src.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '11px', padding: '2px 9px', borderRadius: '999px', background: 'rgba(255,255,255,0.07)', color: 'var(--text-secondary)', textDecoration: 'none', border: '1px solid rgba(255,255,255,0.08)', cursor: 'pointer' }}>
+                {src.domain}
+              </a>
+            ))}
+          </div>
+        )}
+        {!isUser && (
+          <p style={{ fontSize: '10px', color: 'var(--text-tertiary)', fontStyle: 'italic', marginTop: '5px' }}>
+            Data may be delayed. Not financial advice.
+          </p>
+        )}
         {timestamp && (
           <div
             className={`mt-1 ${isUser ? 'text-right' : 'text-left ml-11'}`}
@@ -424,56 +446,53 @@ export default function LyraChatbot({ pageContext }) {
     }, 20000); // 20-second timeout
 
     try {
-      let systemPrompt;
-      if (pageContext === 'landing') {
-        systemPrompt = `You are Ori, a friendly and helpful guide for Vireon, a premium financial intelligence platform. Your ONLY goal is to explain what Vireon is, its features, its target audience (traders, analysts, students, executives), and its benefits. Be concise and clear. DO NOT answer questions about anything else (markets, stocks, general knowledge). If asked something off-topic, politely steer the conversation back to Vireon's features. For example: "That's a great question! While I'm focused on explaining Vireon, I can tell you that our platform provides real-time data and AI insights to help you answer questions just like that." End your responses by encouraging the user to sign up or see a demo.`;
-      } else {
-        systemPrompt = `You are Ori, an AI assistant for Vireon, a premium financial intelligence platform. You help users with market analysis, financial concepts, and Vireon features. Be concise, helpful, and professional.`;
-        if (usePageContextToggle) {
-          systemPrompt += ` Current context: User is viewing ${window.location.pathname}. Include relevant context when helpful.`;
-        }
-      }
-
-      const MAX_RETRIES = 2; // Total attempts = 1 initial + MAX_RETRIES
+      const MAX_RETRIES = 2;
       let fullResponse;
+      let responseSources = [];
 
       for (let attempt = 1; attempt <= MAX_RETRIES + 1; attempt++) {
         try {
-          fullResponse = await InvokeLLM({
-            prompt: `${systemPrompt}\n\nUser question: ${userMessage}`,
-            add_context_from_internet: false
+          const res = await fetch("https://roberthchoi.app.n8n.cloud/webhook/ori-query", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              query: userMessage,
+              user_id: "vireon-user",
+              timestamp: new Date().toISOString()
+            })
           });
-          break; // Success, exit loop
+          const data = await res.json();
+          fullResponse = data.answer;
+          responseSources = data.sources || [];
+          break;
         } catch (err) {
           console.error(`Lyra chat attempt ${attempt} failed:`, err);
-          if (attempt > MAX_RETRIES) {
-            throw err; // Rethrow after final attempt fails
-          }
-          await new Promise(res => setTimeout(res, 1000 * attempt)); // Wait with exponential backoff (1s, 2s, ...)
+          if (attempt > MAX_RETRIES) throw err;
+          await new Promise(res => setTimeout(res, 1000 * attempt));
         }
       }
-      
+
       clearTimeout(streamTimeout);
 
       // Simulate streaming response
       let currentText = '';
       let i = 0;
-      const streamSpeed = 30; // ms per chunk
-      
+      const streamSpeed = 30;
+
       activeStream.current = setInterval(() => {
-        const chunkSize = Math.floor(Math.random() * 5) + 3; // Random chunk size for more natural feel
+        const chunkSize = Math.floor(Math.random() * 5) + 3;
         currentText += fullResponse.substring(i, i + chunkSize);
         i += chunkSize;
 
-        setMessages(prev => 
-            prev.map(msg => msg.id === aiMessageId ? {...msg, text: currentText} : msg)
+        setMessages(prev =>
+          prev.map(msg => msg.id === aiMessageId ? { ...msg, text: currentText } : msg)
         );
 
         if (i >= fullResponse.length) {
           clearInterval(activeStream.current);
           const responseTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-          setMessages(prev => 
-            prev.map(msg => msg.id === aiMessageId ? {...msg, text: fullResponse, timestamp: responseTimestamp} : msg)
+          setMessages(prev =>
+            prev.map(msg => msg.id === aiMessageId ? { ...msg, text: fullResponse, timestamp: responseTimestamp, sources: responseSources } : msg)
           );
           setIsTyping(false);
         }
@@ -856,6 +875,7 @@ export default function LyraChatbot({ pageContext }) {
                     isUser={message.isUser}
                     timestamp={message.timestamp}
                     onCopy={handleCopyMessage}
+                    sources={message.sources}
                   />
                 ))}
 
