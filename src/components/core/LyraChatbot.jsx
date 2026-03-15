@@ -465,6 +465,20 @@ export default function LyraChatbot({ pageContext }) {
       let buffer = "";
       let currentText = "";
       let responseSources = [];
+      let tokenBuffer = "";
+      let rafId = null;
+      const flushBuffer = () => {
+        if (tokenBuffer) {
+          currentText += tokenBuffer;
+          tokenBuffer = "";
+          setMessages(prev =>
+            prev.map(msg => msg.id === aiMessageId
+              ? { ...msg, text: currentText }
+              : msg)
+          );
+        }
+        rafId = null;
+      };
 
       while (true) {
         const { done, value } = await reader.read();
@@ -482,15 +496,14 @@ export default function LyraChatbot({ pageContext }) {
             try {
               const payload = JSON.parse(line.slice(6));
               if (eventType === "token" && payload.text) {
-                currentText += payload.text;
-                setMessages(prev =>
-                  prev.map(msg => msg.id === aiMessageId
-                    ? { ...msg, text: currentText }
-                    : msg)
-                );
+                tokenBuffer += payload.text;
+                if (!rafId) {
+                  rafId = requestAnimationFrame(flushBuffer);
+                }
               } else if (eventType === "sources" && payload.sources) {
                 responseSources = payload.sources;
               } else if (eventType === "error") {
+                if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
                 currentText = "I encountered an issue. Please try again.";
                 setMessages(prev =>
                   prev.map(msg => msg.id === aiMessageId
@@ -503,6 +516,10 @@ export default function LyraChatbot({ pageContext }) {
           }
         }
       }
+
+      // Flush any remaining buffered tokens
+      if (rafId) { cancelAnimationFrame(rafId); }
+      if (tokenBuffer) { currentText += tokenBuffer; }
 
       setMessages(prev =>
         prev.map(msg => msg.id === aiMessageId
