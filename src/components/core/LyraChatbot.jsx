@@ -1033,11 +1033,41 @@ export default function LyraChatbot({ pageContext }) {
                       background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent)',
                       pointerEvents: 'none'
                     }} />
-                    <img
+                    {/* Glow halo behind V when typing */}
+                    {isTyping && (
+                      <motion.div
+                        style={{
+                          position: 'absolute',
+                          inset: 0,
+                          borderRadius: '10px',
+                          background: 'radial-gradient(circle, rgba(167,116,255,0.35) 0%, transparent 70%)',
+                          pointerEvents: 'none',
+                        }}
+                        animate={{ opacity: [0.4, 1, 0.4], scale: [0.9, 1.1, 0.9] }}
+                        transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
+                      />
+                    )}
+                    <motion.img
                       src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68943f7eb0fb9393bf9a8069/953ec1ec3_Logo-01.png"
                       alt="Send"
-                      className="object-contain relative z-10"
-                      style={{ width: '28px', height: '28px', filter: 'brightness(1.4) saturate(1.3)' }}
+                      className="object-contain"
+                      style={{
+                        width: '38px',
+                        height: '38px',
+                        filter: 'brightness(2.2) saturate(2.5) drop-shadow(0 0 6px rgba(167,116,255,0.9)) drop-shadow(0 -2px 4px rgba(100,180,255,0.7))',
+                        position: 'relative',
+                        zIndex: 10,
+                        transform: 'translateY(-1px)',
+                      }}
+                      animate={isTyping ? {
+                        filter: [
+                          'brightness(2.2) saturate(2.5) drop-shadow(0 0 6px rgba(167,116,255,0.9)) drop-shadow(0 -2px 4px rgba(100,180,255,0.7))',
+                          'brightness(3.0) saturate(3.0) drop-shadow(0 0 14px rgba(167,116,255,1.0)) drop-shadow(0 -3px 8px rgba(100,200,255,1.0))',
+                          'brightness(2.2) saturate(2.5) drop-shadow(0 0 6px rgba(167,116,255,0.9)) drop-shadow(0 -2px 4px rgba(100,180,255,0.7))',
+                        ],
+                        y: [-1, -3, -1],
+                      } : { y: -1 }}
+                      transition={isTyping ? { duration: 1.2, repeat: Infinity, ease: 'easeInOut' } : {}}
                     />
                   </motion.button>
                 </div>
