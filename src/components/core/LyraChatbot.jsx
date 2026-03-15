@@ -705,19 +705,14 @@ export default function LyraChatbot({ pageContext }) {
           onClick={() => {
             setIsOpen(!isOpen);
           }}
-          className="w-14 h-14 rounded-[18px] flex items-center justify-center transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 overflow-hidden"
+          className="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
           style={{
-            background: 'linear-gradient(145deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 60%, rgba(180,160,255,0.10) 100%)',
-            border: '1px solid rgba(255,255,255,0.22)',
-            boxShadow: `
-              inset 0 1.5px 0 rgba(255,255,255,0.30),
-              inset 0 -1px 0 rgba(0,0,0,0.10),
-              0 8px 32px rgba(130,100,255,0.22),
-              0 2px 8px rgba(0,0,0,0.18)
-            `,
-            backdropFilter: 'blur(20px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+            background: 'radial-gradient(circle, rgba(0,229,255,0.1) 0%, rgba(153,50,204,0.1) 100%)',
+            border: '1px solid rgba(0,229,255,0.2)',
+            color: '#FFFFFF',
             '--tw-ring-color': 'var(--accent)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
             cursor: 'pointer'
           }}
           animate={{
@@ -774,12 +769,12 @@ export default function LyraChatbot({ pageContext }) {
                 animate={{
                   opacity: 1,
                   rotate: 0,
-                  scale: [1, 1.04, 1],
+                  scale: [1, 1.1, 1], // Pulsing effect
                   transition: {
                     opacity: { duration: 0.15 },
                     rotate: { duration: 0.15 },
                     scale: {
-                      duration: 2.2,
+                      duration: 1.8,
                       repeat: Infinity,
                       repeatType: "mirror",
                       ease: "easeInOut"
@@ -788,11 +783,7 @@ export default function LyraChatbot({ pageContext }) {
                 }}
                 exit={{ opacity: 0, rotate: -90, scale: 0.9 }}
               >
-                <img
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68943f7eb0fb9393bf9a8069/953ec1ec3_Logo-01.png"
-                  alt="Vireon"
-                  style={{ width: '32px', height: '32px', objectFit: 'contain', filter: 'drop-shadow(0 0 8px rgba(167,116,255,0.6))' }}
-                />
+                <LyraLogo className="w-8 h-8" />
               </motion.div>
             )}
           </AnimatePresence>
