@@ -1011,7 +1011,7 @@ export default function LyraChatbot({ pageContext }) {
                   <motion.button
                     onClick={handleSendMessage}
                     disabled={!inputValue.trim() || isTyping}
-                    className="rounded-xl flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 relative overflow-hidden flex-shrink-0"
+                    className="rounded-xl flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 relative flex-shrink-0"
                     style={{
                       width: '48px',
                       height: '48px',
