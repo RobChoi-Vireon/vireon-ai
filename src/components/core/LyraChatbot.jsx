@@ -500,9 +500,7 @@ export default function LyraChatbot({ pageContext }) {
               const payload = JSON.parse(line.slice(6));
               if (eventType === "token" && payload.text) {
                 tokenBuffer += payload.text;
-                if (!rafId) {
-                  rafId = requestAnimationFrame(flushBuffer);
-                }
+                startFlushing();
               } else if (eventType === "sources" && payload.sources) {
                 responseSources = payload.sources;
               } else if (eventType === "error") {
