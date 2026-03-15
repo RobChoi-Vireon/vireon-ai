@@ -974,8 +974,11 @@ export default function LyraChatbot({ pageContext }) {
                   <motion.button
                     onClick={handleSendMessage}
                     disabled={!inputValue.trim() || isTyping}
-                    className="w-10 h-10 rounded-xl flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 relative overflow-hidden"
+                    className="rounded-xl flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 relative overflow-hidden flex-shrink-0"
                     style={{
+                      width: '48px',
+                      height: '48px',
+                      alignSelf: 'stretch',
                       background: 'linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.08) 100%)',
                       backdropFilter: 'blur(20px) saturate(160%)',
                       WebkitBackdropFilter: 'blur(20px) saturate(160%)',
@@ -983,7 +986,7 @@ export default function LyraChatbot({ pageContext }) {
                       boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.22), 0 4px 16px rgba(0,0,0,0.18)',
                       '--tw-ring-color': 'rgba(167, 116, 255, 0.5)'
                     }}
-                    whileHover={{ scale: 1.06, boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.28), 0 6px 20px rgba(0,0,0,0.22)' }}
+                    whileHover={{ scale: 1.04, boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.28), 0 6px 20px rgba(0,0,0,0.22)' }}
                     whileTap={{ scale: 0.95 }}
                     aria-label="Send message"
                   >
@@ -996,7 +999,8 @@ export default function LyraChatbot({ pageContext }) {
                     <img
                       src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68943f7eb0fb9393bf9a8069/953ec1ec3_Logo-01.png"
                       alt="Send"
-                      className="w-5 h-5 object-contain relative z-10"
+                      className="object-contain relative z-10"
+                      style={{ width: '28px', height: '28px', filter: 'brightness(1.4) saturate(1.3)' }}
                     />
                   </motion.button>
                 </div>
