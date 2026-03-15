@@ -517,8 +517,11 @@ export default function LyraChatbot({ pageContext }) {
         }
       }
 
-      if (rafId) cancelAnimationFrame(rafId);
-      flushBuffer();
+      if (flushInterval) clearInterval(flushInterval);
+      if (tokenBuffer) {
+        currentText += tokenBuffer;
+        tokenBuffer = "";
+      }
 
       setMessages(prev =>
         prev.map(msg => msg.id === aiMessageId
