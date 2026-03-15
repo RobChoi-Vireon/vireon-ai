@@ -774,12 +774,12 @@ export default function LyraChatbot({ pageContext }) {
                 animate={{
                   opacity: 1,
                   rotate: 0,
-                  scale: [1, 1.1, 1], // Pulsing effect
+                  scale: [1, 1.04, 1],
                   transition: {
                     opacity: { duration: 0.15 },
                     rotate: { duration: 0.15 },
                     scale: {
-                      duration: 1.8,
+                      duration: 2.2,
                       repeat: Infinity,
                       repeatType: "mirror",
                       ease: "easeInOut"
@@ -788,7 +788,11 @@ export default function LyraChatbot({ pageContext }) {
                 }}
                 exit={{ opacity: 0, rotate: -90, scale: 0.9 }}
               >
-                <LyraLogo className="w-8 h-8" />
+                <img
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68943f7eb0fb9393bf9a8069/953ec1ec3_Logo-01.png"
+                  alt="Vireon"
+                  style={{ width: '32px', height: '32px', objectFit: 'contain', filter: 'drop-shadow(0 0 8px rgba(167,116,255,0.6))' }}
+                />
               </motion.div>
             )}
           </AnimatePresence>
