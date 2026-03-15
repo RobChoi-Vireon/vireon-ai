@@ -467,18 +467,20 @@ export default function LyraChatbot({ pageContext }) {
       let responseSources = [];
 
       let tokenBuffer = "";
-      let rafId = null;
-      const flushBuffer = () => {
-        if (tokenBuffer) {
-          currentText += tokenBuffer;
-          tokenBuffer = "";
-          setMessages(prev =>
-            prev.map(msg => msg.id === aiMessageId
-              ? { ...msg, text: currentText }
-              : msg)
-          );
-        }
-        rafId = null;
+      let flushInterval = null;
+      const startFlushing = () => {
+        if (flushInterval) return;
+        flushInterval = setInterval(() => {
+          if (tokenBuffer) {
+            currentText += tokenBuffer;
+            tokenBuffer = "";
+            setMessages(prev =>
+              prev.map(msg => msg.id === aiMessageId
+                ? { ...msg, text: currentText }
+                : msg)
+            );
+          }
+        }, 50);
       };
 
       while (true) {
