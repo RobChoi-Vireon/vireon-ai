@@ -705,14 +705,19 @@ export default function LyraChatbot({ pageContext }) {
           onClick={() => {
             setIsOpen(!isOpen);
           }}
-          className="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+          className="w-14 h-14 rounded-[18px] flex items-center justify-center transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 overflow-hidden"
           style={{
-            background: 'radial-gradient(circle, rgba(0,229,255,0.1) 0%, rgba(153,50,204,0.1) 100%)',
-            border: '1px solid rgba(0,229,255,0.2)',
-            color: '#FFFFFF',
+            background: 'linear-gradient(145deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 60%, rgba(180,160,255,0.10) 100%)',
+            border: '1px solid rgba(255,255,255,0.22)',
+            boxShadow: `
+              inset 0 1.5px 0 rgba(255,255,255,0.30),
+              inset 0 -1px 0 rgba(0,0,0,0.10),
+              0 8px 32px rgba(130,100,255,0.22),
+              0 2px 8px rgba(0,0,0,0.18)
+            `,
+            backdropFilter: 'blur(20px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(20px) saturate(180%)',
             '--tw-ring-color': 'var(--accent)',
-            backdropFilter: 'blur(8px)',
-            WebkitBackdropFilter: 'blur(8px)',
             cursor: 'pointer'
           }}
           animate={{
