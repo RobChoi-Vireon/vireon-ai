@@ -507,7 +507,7 @@ export default function LyraChatbot({ pageContext }) {
         const newMessages = prev.filter(m => m.id !== aiMessageId); // Remove the empty AI message placeholder
         return [...newMessages, { 
           id: aiMessageId, 
-          text: "I'm having trouble connecting. Please try again.",
+          text: "I'm having trouble connecting right now. Please try again.",
           isUser: false, 
           error: true,
           timestamp: errorTimestamp
