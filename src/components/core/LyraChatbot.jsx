@@ -105,9 +105,9 @@ const ChatMessage = memo(({ message, isUser, onCopy, timestamp, sources }) => {
                 strong: ({ children }) => <strong style={{ fontWeight: 600 }}>{children}</strong>,
                 ul: ({ children }) => <ul style={{ paddingLeft: '18px', margin: '4px 0', listStyleType: 'disc' }}>{children}</ul>,
                 ol: ({ children }) => <ol style={{ paddingLeft: '18px', margin: '4px 0', listStyleType: 'decimal' }}>{children}</ol>,
-                li: ({ children }) => <li style={{ marginBottom: '3px', fontSize: '14px', lineHeight: '1.6' }}>{children}</li>,
+                li: ({ children }) => <li style={{ marginBottom: '4px', fontSize: '15px', lineHeight: '1.65' }}>{children}</li>,
                 a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer" style={{ color: '#4DA3FF', textDecoration: 'underline' }}>{children}</a>,
-                p: ({ children }) => <p style={{ fontSize: '14px', lineHeight: '1.6', letterSpacing: '-0.008em', margin: '4px 0', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif', WebkitFontSmoothing: 'antialiased' }}>{children}</p>,
+                p: ({ children }) => <p style={{ fontSize: '15px', lineHeight: '1.65', letterSpacing: '-0.01em', margin: '4px 0', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif', WebkitFontSmoothing: 'antialiased' }}>{children}</p>,
               }}
             >
               {message}
@@ -820,8 +820,8 @@ export default function LyraChatbot({ pageContext }) {
                 backgroundColor: 'var(--card)',
                 backdropFilter: 'blur(20px)',
                 WebkitBackdropFilter: 'blur(20px)',
-                width: '560px',
-                maxWidth: '90vw',
+                width: '680px',
+                maxWidth: '92vw',
                 height: 'max(720px, 80vh)',
                 maxHeight: '90vh',
                 transform: isPinching && !initialPinchDistance ? 'scale(0.98)' : 'scale(1)',
@@ -989,9 +989,9 @@ export default function LyraChatbot({ pageContext }) {
                        border: '1px solid var(--border)',
                        color: 'var(--text-primary)',
                        maxHeight: '120px',
-                       fontSize: '14px',
-                       lineHeight: '1.6',
-                       letterSpacing: '-0.008em',
+                       fontSize: '15px',
+                       lineHeight: '1.65',
+                       letterSpacing: '-0.01em',
                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif',
                        WebkitFontSmoothing: 'antialiased',
                        transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
