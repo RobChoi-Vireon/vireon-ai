@@ -1054,16 +1054,16 @@ export default function LyraChatbot({ pageContext }) {
                       style={{
                         width: '38px',
                         height: '38px',
-                        filter: 'brightness(2.2) saturate(2.5) drop-shadow(0 0 6px rgba(167,116,255,0.9)) drop-shadow(0 -2px 4px rgba(100,180,255,0.7))',
+                        filter: 'saturate(1.8) contrast(1.2)',
                         position: 'relative',
                         zIndex: 10,
                         transform: 'translateY(-1px)',
                       }}
                       animate={isTyping ? {
                         filter: [
-                          'brightness(2.2) saturate(2.5) drop-shadow(0 0 6px rgba(167,116,255,0.9)) drop-shadow(0 -2px 4px rgba(100,180,255,0.7))',
-                          'brightness(3.0) saturate(3.0) drop-shadow(0 0 14px rgba(167,116,255,1.0)) drop-shadow(0 -3px 8px rgba(100,200,255,1.0))',
-                          'brightness(2.2) saturate(2.5) drop-shadow(0 0 6px rgba(167,116,255,0.9)) drop-shadow(0 -2px 4px rgba(100,180,255,0.7))',
+                          'saturate(1.8) contrast(1.2)',
+                          'saturate(2.4) contrast(1.4) brightness(1.15)',
+                          'saturate(1.8) contrast(1.2)',
                         ],
                         y: [-1, -3, -1],
                       } : { y: -1 }}
