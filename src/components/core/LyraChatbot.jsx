@@ -1045,27 +1045,17 @@ export default function LyraChatbot({ pageContext }) {
                         transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
                       />
                     )}
-                    <motion.img
-                      src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68943f7eb0fb9393bf9a8069/953ec1ec3_Logo-01.png"
-                      alt="Send"
-                      className="object-contain"
-                      style={{
-                        width: '38px',
-                        height: '38px',
-                        filter: 'saturate(1.8) contrast(1.2)',
-                        position: 'relative',
-                        zIndex: 10,
-                        transform: 'translateY(-1px)',
-                      }}
-                      animate={isTyping ? {
-                        filter: [
-                          'saturate(1.8) contrast(1.2)',
-                          'saturate(2.4) contrast(1.4) brightness(1.15)',
-                          'saturate(1.8) contrast(1.2)',
-                        ],
-                        y: [-1, -3, -1],
-                      } : { y: -1 }}
-                      transition={isTyping ? { duration: 1.2, repeat: Infinity, ease: 'easeInOut' } : {}}
+                    <img
+                     src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68943f7eb0fb9393bf9a8069/953ec1ec3_Logo-01.png"
+                     alt="Send"
+                     className="object-contain"
+                     style={{
+                       width: '38px',
+                       height: '38px',
+                       position: 'relative',
+                       zIndex: 10,
+                       imageRendering: 'crisp-edges',
+                     }}
                     />
                   </motion.button>
                 </div>
