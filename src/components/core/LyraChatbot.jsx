@@ -112,6 +112,7 @@ const ChatMessage = memo(({ message, isUser, onCopy, timestamp, sources, isStrea
             >
               {message}
             </ReactMarkdown>
+            {isStreaming && <span style={{ display: 'inline-block', animation: 'ori-cursor-blink 500ms step-end infinite', opacity: 1 }}>▊</span>}
           )}
           {!isUser && (
             <button
