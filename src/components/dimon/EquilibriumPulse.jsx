@@ -123,13 +123,39 @@ export default function EquilibriumPulse({
     }
   }, [normalizedScore, prevEquilibriumScore, pulseX]);
 
+  // PERF: rAF writes to ref + DOM directly, bypasses React render
   useEffect(() => {
-    if (shouldReduceMotion || drawerOpen) return;
+    if (shouldReduceMotion || drawerOpen) {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      return;
+    }
 
     let startTime = Date.now();
     const animate = () => {
       const elapsed = (Date.now() - startTime) / 1000;
-      setPulseTime(elapsed);
+      pulseTimeRef.current = elapsed;
+
+      const speed = 0.3 + (volatility * 0.7);
+      const direction = (normalizedScore - 0.5) * 2;
+      const drift = Math.sin(elapsed * speed) * 2 * (1 + Math.abs(direction) * 0.5);
+      const breathe = Math.sin(elapsed * (2 * Math.PI / MOTION_TOKENS.DURATIONS.breathe)) * 0.03;
+      const scale = 1 + breathe;
+      const glowIntensity = 0.4 + Math.sin(elapsed * (2 * Math.PI / MOTION_TOKENS.DURATIONS.breathe)) * 0.12;
+
+      // Apply position drift directly to pulse particle DOM element
+      if (pulseParticleRef.current) {
+        const baseLeft = normalizedScore * 100;
+        pulseParticleRef.current.style.left = `${baseLeft + drift}%`;
+        pulseParticleRef.current.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        const boxShadow = `0 0 ${22 * glowIntensity}px ${getPulseGlow()}, 0 0 8px rgba(255,255,255,0.55), inset 0 0 0 2px rgba(255,255,255,0.45)`;
+        pulseParticleRef.current.style.boxShadow = boxShadow;
+      }
+
+      // Apply ambient underside glow opacity
+      if (ambientGlowRef.current) {
+        ambientGlowRef.current.style.opacity = String(glowIntensity * 0.6);
+      }
+
       rafRef.current = requestAnimationFrame(animate);
     };
 
@@ -137,26 +163,13 @@ export default function EquilibriumPulse({
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [shouldReduceMotion, drawerOpen]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shouldReduceMotion, drawerOpen, volatility, normalizedScore]);
 
-  const pulseDrift = useMemo(() => {
-    if (shouldReduceMotion || drawerOpen) return 0;
-    const speed = 0.3 + (volatility * 0.7);
-    const direction = (normalizedScore - 0.5) * 2;
-    return Math.sin(pulseTime * speed) * 2 * (1 + Math.abs(direction) * 0.5);
-  }, [pulseTime, volatility, equilibriumScore, shouldReduceMotion, drawerOpen]);
-
-  const pulseScale = useMemo(() => {
-    if (shouldReduceMotion || drawerOpen || !isMounted) return 1;
-    const breathe = Math.sin(pulseTime * (2 * Math.PI / MOTION_TOKENS.DURATIONS.breathe)) * 0.03;
-    return 1 + breathe;
-  }, [pulseTime, shouldReduceMotion, drawerOpen, isMounted]);
-
-  const pulseGlowIntensity = useMemo(() => {
-    if (shouldReduceMotion || drawerOpen || !isMounted) return 0.4;
-    const pulse = Math.sin(pulseTime * (2 * Math.PI / MOTION_TOKENS.DURATIONS.breathe)) * 0.12;
-    return 0.4 + pulse;
-  }, [pulseTime, shouldReduceMotion, drawerOpen, isMounted]);
+  // Static fallback values used for initial render / framer-motion props (not updated via rAF)
+  const pulseDrift = 0;
+  const pulseScale = 1;
+  const pulseGlowIntensity = 0.4;
 
   const getStateLabel = () => {
     if (stateLabel) return stateLabel;
