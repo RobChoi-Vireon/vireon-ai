@@ -922,9 +922,8 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
   const [viewportSize, setViewportSize] = useState('lg');
   const [drawerOrigin, setDrawerOrigin] = useState(null);
   const [showBeam, setShowBeam] = useState(false);
-  const [swayTime, setSwayTime] = useState(0);
+  const swayTimeRef = useRef(0); const [swayTick, setSwayTick] = useState(0); const swayTime = swayTimeRef.current;
   const [orbPulseActive, setOrbPulseActive] = useState(false);
-  const [drawerLuminance, setDrawerLuminance] = useState(1.0);
 
   const glassParallaxX = useSpring(0, { damping: 30, stiffness: 90 });
   const glassParallaxY = useSpring(0, { damping: 30, stiffness: 90 });
