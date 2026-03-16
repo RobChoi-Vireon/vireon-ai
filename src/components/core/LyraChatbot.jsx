@@ -228,7 +228,7 @@ export default function LyraChatbot({ pageContext }) {
   const fabWrapperRef = useRef(null);
   const auraRef = useRef(null);
   const scrollTimeout = useRef(null);
-  const [isScrolling, setIsScrolling] = useState(false);
+  const isScrollingRef = useRef(false);
 
   // Pinch-to-close gesture state
   const [initialPinchDistance, setInitialPinchDistance] = useState(null);
