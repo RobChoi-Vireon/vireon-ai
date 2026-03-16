@@ -189,9 +189,9 @@ const MOCK_DOMAINS = [
     footer: {
       primary_cta: { label: "View detailed analysis", route: "/growth/outlook" },
       secondary_link: { label: "View sectors", route: "/sectors" },
-      timestamp: new Date().toISOString()
+      timestamp: _NOW
     },
-    last_updated_iso: new Date().toISOString(),
+    last_updated_iso: _NOW,
     sparkline: [0.75, 0.74, 0.72, 0.70, 0.69, 0.68, 0.67, 0.68, 0.68],
     confidenceDelta: -1
   },
