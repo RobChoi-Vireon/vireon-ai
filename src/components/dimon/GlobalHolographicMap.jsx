@@ -1235,7 +1235,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
   useEffect(() => {
     if (shouldReduceMotion || !selectedDomain) {
       drawerLuminanceRef.current = 1.0;
-      if (drawerRef.current) drawerRef.current.style.filter = 'brightness(1)';
+      if (drawerPanelRef.current) drawerPanelRef.current.style.filter = 'brightness(1)';
       return;
     }
 
