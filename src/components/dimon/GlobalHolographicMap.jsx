@@ -922,8 +922,9 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
   const [viewportSize, setViewportSize] = useState('lg');
   const [drawerOrigin, setDrawerOrigin] = useState(null);
   const [showBeam, setShowBeam] = useState(false);
-  const swayTimeRef = useRef(0); const [swayTick, setSwayTick] = useState(0); const swayTime = swayTimeRef.current;
+  const [swayTime, setSwayTime] = useState(0);
   const [orbPulseActive, setOrbPulseActive] = useState(false);
+  const [drawerLuminance, setDrawerLuminance] = useState(1.0);
 
   const glassParallaxX = useSpring(0, { damping: 30, stiffness: 90 });
   const glassParallaxY = useSpring(0, { damping: 30, stiffness: 90 });
@@ -1232,18 +1233,22 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
 
   useEffect(() => {
     if (shouldReduceMotion || !selectedDomain) {
-      if (drawerRef.current) drawerRef.current.style.filter = 'brightness(1)';
+      setDrawerLuminance(1.0);
       return;
     }
+
     let rafId;
-    const startTime = Date.now();
+    let startTime = Date.now();
+
     const animate = () => {
       const elapsed = (Date.now() - startTime) / 1000;
-      const sineWave = Math.sin((elapsed % TOKENS.HORIZON.t_orbLifePulse) / TOKENS.HORIZON.t_orbLifePulse * Math.PI * 2);
+      const pulsePhase = (elapsed % TOKENS.HORIZON.t_orbLifePulse) / TOKENS.HORIZON.t_orbLifePulse;
+      const sineWave = Math.sin(pulsePhase * Math.PI * 2);
       const luminance = 1.0 + (sineWave * 0.03);
-      if (drawerRef.current) drawerRef.current.style.filter = `brightness(${luminance})`;
+      setDrawerLuminance(luminance);
       rafId = requestAnimationFrame(animate);
     };
+
     rafId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafId);
   }, [shouldReduceMotion, selectedDomain]);
@@ -1329,13 +1334,10 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
 
   useEffect(() => {
     if (shouldReduceMotion) return;
-    let rafId, lastTime = Date.now(), tickAccum = 0;
+    let rafId, lastTime = Date.now();
     const animate = () => {
       const now = Date.now();
-      const delta = (now - lastTime) / 1000;
-      swayTimeRef.current += delta;
-      tickAccum += delta;
-      if (tickAccum >= 0.1) { tickAccum = 0; setSwayTick(t => t + 1); }
+      setSwayTime(prev => prev + (now - lastTime) / 1000);
       lastTime = now;
       rafId = requestAnimationFrame(animate);
     };
@@ -1347,9 +1349,45 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
     return () => {
       if (hoverEnterTimerRef.current) clearTimeout(hoverEnterTimerRef.current);
       if (hoverExitTimerRef.current) clearTimeout(hoverExitTimerRef.current);
-      if (equilibriumExitTimerRef.current) clearTimeout(equilibriumExitTimerRef.current);
     };
   }, []);
+
+  // Cleanup equilibrium exit timer on unmount
+  useEffect(() => {
+    return () => {
+      if (equilibriumExitTimerRef.current) {
+        clearTimeout(equilibriumExitTimerRef.current);
+      }
+    };
+  }, []);
+
+  const drawerCenterPosition = useMemo(() => {
+    if (!selectedDomain || !drawerOrigin) return { x: 0, y: 0 };
+
+    const headerHeight = 72;
+    const safeTopPadding = 8;
+    const safeTop = headerHeight + safeTopPadding;
+    const bottomMargin = 16;
+
+    const drawerWidth = 520;
+    const maxDrawerHeight = Math.min(window.innerHeight - headerHeight - 72 - bottomMargin, 700);
+    const drawerHeight = maxDrawerHeight;
+
+    const bloomOriginY = drawerOrigin.screenY + 10;
+
+    let targetTop = bloomOriginY - (drawerHeight / 2);
+    targetTop = Math.max(targetTop, safeTop);
+    targetTop = Math.min(targetTop, window.innerHeight - drawerHeight - bottomMargin);
+
+    const viewportAdjustment = window.innerHeight < 720 ? 24 : 0;
+
+    return {
+      left: `calc(50% - ${drawerWidth / 2}px)`,
+      top: targetTop,
+      width: drawerWidth,
+      height: drawerHeight - viewportAdjustment
+    };
+  }, [selectedDomain, drawerOrigin]);
 
 
   return (
@@ -1945,7 +1983,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
                   border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
                   boxShadow: `0 0 60px rgba(0, 0, 0, 0.15), ${TOKENS.HORIZON.panelShadow}, 0 0 12px ${TOKENS.HORIZON.drawerEdgeBloom}, inset 0 0 0 1px rgba(255,255,255,0.10)`,
                   borderRadius: '24px',
-                  filter: 'brightness(1)',
+                  filter: `brightness(${drawerLuminance})`,
                   pointerEvents: 'auto'
                 }}
               initial={{
