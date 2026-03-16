@@ -321,7 +321,7 @@ export default function LyraChatbot({ pageContext }) {
     }
   }, [isOpen]);
 
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     const container = messageContainerRef.current;
     if (container) {
       const isScrolledToBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 50; // 50px tolerance
@@ -332,7 +332,7 @@ export default function LyraChatbot({ pageContext }) {
         setUserScrolledUp(true);
       }
     }
-  };
+  }, []);
   
   // --- Interaction Effects ---
   useEffect(() => {
