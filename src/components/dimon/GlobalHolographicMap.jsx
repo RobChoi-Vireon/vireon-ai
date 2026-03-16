@@ -1161,7 +1161,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
     setHoveredNodeRect(null);
     setIsCardHovered(false);
 
-    const domainPos = getOrbPosition(domain.id, domain.strength, swayTime, 0, 0);
+    const domainPos = getOrbPosition(domain.id, domain.strength, swayTimeRef.current, 0, 0);
     const containerRect = containerRef.current?.getBoundingClientRect();
 
     if (containerRect) {
