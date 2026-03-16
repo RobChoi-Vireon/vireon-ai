@@ -124,9 +124,9 @@ const MOCK_DOMAINS = [
     footer: {
       primary_cta: { label: "View detailed analysis", route: "/implications/rates" },
       secondary_link: { label: "View timeline", route: "/timeline/rates" },
-      timestamp: new Date().toISOString()
+      timestamp: _NOW
     },
-    last_updated_iso: new Date().toISOString(),
+    last_updated_iso: _NOW,
     sparkline: [0.72, 0.74, 0.76, 0.75, 0.78, 0.80, 0.79, 0.81, 0.82],
     confidenceDelta: 2
   },
