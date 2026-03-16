@@ -662,8 +662,8 @@ function LayoutContent({ children, currentPageName }) {
           transition: none !important;
         }
         
-        html.transitions-enabled * {
-          transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, opacity 200ms ease, transform 200ms ease, box-shadow 200ms ease !important;
+        html.transitions-enabled *:not([style*="transform"]):not([data-framer-motion]) {
+          transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease !important;
         }
         
         html { background-color: #0B0E13; }
