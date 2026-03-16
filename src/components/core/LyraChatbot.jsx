@@ -99,20 +99,22 @@ const ChatMessage = memo(({ message, isUser, onCopy, timestamp, sources, isStrea
               {message}
             </p>
           ) : (
-            <ReactMarkdown
-              components={{
-                h3: ({ children }) => <h3 style={{ fontWeight: 700, fontSize: '15px', marginTop: '12px', marginBottom: '4px', color: 'var(--text-primary)', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif' }}>{children}</h3>,
-                strong: ({ children }) => <strong style={{ fontWeight: 600 }}>{children}</strong>,
-                ul: ({ children }) => <ul style={{ paddingLeft: '18px', margin: '4px 0', listStyleType: 'disc' }}>{children}</ul>,
-                ol: ({ children }) => <ol style={{ paddingLeft: '18px', margin: '4px 0', listStyleType: 'decimal' }}>{children}</ol>,
-                li: ({ children }) => <li style={{ marginBottom: '4px', fontSize: '15px', lineHeight: '1.65' }}>{children}</li>,
-                a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer" style={{ color: '#4DA3FF', textDecoration: 'underline' }}>{children}</a>,
-                p: ({ children }) => <p style={{ fontSize: '15px', lineHeight: '1.65', letterSpacing: '-0.01em', margin: '4px 0', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif', WebkitFontSmoothing: 'antialiased' }}>{children}</p>,
-              }}
-            >
-              {message}
-            </ReactMarkdown>
-            {isStreaming && <span style={{ display: 'inline-block', animation: 'ori-cursor-blink 500ms step-end infinite', opacity: 1 }}>▊</span>}
+            <>
+              <ReactMarkdown
+                components={{
+                  h3: ({ children }) => <h3 style={{ fontWeight: 700, fontSize: '15px', marginTop: '12px', marginBottom: '4px', color: 'var(--text-primary)', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif' }}>{children}</h3>,
+                  strong: ({ children }) => <strong style={{ fontWeight: 600 }}>{children}</strong>,
+                  ul: ({ children }) => <ul style={{ paddingLeft: '18px', margin: '4px 0', listStyleType: 'disc' }}>{children}</ul>,
+                  ol: ({ children }) => <ol style={{ paddingLeft: '18px', margin: '4px 0', listStyleType: 'decimal' }}>{children}</ol>,
+                  li: ({ children }) => <li style={{ marginBottom: '4px', fontSize: '15px', lineHeight: '1.65' }}>{children}</li>,
+                  a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer" style={{ color: '#4DA3FF', textDecoration: 'underline' }}>{children}</a>,
+                  p: ({ children }) => <p style={{ fontSize: '15px', lineHeight: '1.65', letterSpacing: '-0.01em', margin: '4px 0', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif', WebkitFontSmoothing: 'antialiased' }}>{children}</p>,
+                }}
+              >
+                {message}
+              </ReactMarkdown>
+              {isStreaming && <span style={{ display: 'inline-block', animation: 'ori-cursor-blink 500ms step-end infinite', opacity: 1 }}>▊</span>}
+            </>
           )}
           {!isUser && (
             <button
