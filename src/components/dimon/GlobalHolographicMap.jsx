@@ -1331,13 +1331,13 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
     const interval = setInterval(() => setNoiseDrift(prev => (prev + 0.3) % 1000), 1000);
     return () => clearInterval(interval);
   }, [shouldReduceMotion]);
-
+  // PERF: rAF writes to ref + DOM directly, bypasses React render
   useEffect(() => {
     if (shouldReduceMotion) return;
     let rafId, lastTime = Date.now();
     const animate = () => {
       const now = Date.now();
-      setSwayTime(prev => prev + (now - lastTime) / 1000);
+      swayTimeRef.current += (now - lastTime) / 1000;
       lastTime = now;
       rafId = requestAnimationFrame(animate);
     };
