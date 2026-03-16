@@ -1231,24 +1231,24 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
     handleOpenDrawer(domains[(idx - 1 + domains.length) % domains.length]);
   }, [selectedDomain, domains, handleOpenDrawer]);
 
+  // PERF: rAF writes to ref + DOM directly, bypasses React render
   useEffect(() => {
     if (shouldReduceMotion || !selectedDomain) {
-      setDrawerLuminance(1.0);
+      drawerLuminanceRef.current = 1.0;
+      if (drawerRef.current) drawerRef.current.style.filter = 'brightness(1)';
       return;
     }
 
     let rafId;
     let startTime = Date.now();
-
     const animate = () => {
       const elapsed = (Date.now() - startTime) / 1000;
       const pulsePhase = (elapsed % TOKENS.HORIZON.t_orbLifePulse) / TOKENS.HORIZON.t_orbLifePulse;
-      const sineWave = Math.sin(pulsePhase * Math.PI * 2);
-      const luminance = 1.0 + (sineWave * 0.03);
-      setDrawerLuminance(luminance);
+      const luminance = 1.0 + (Math.sin(pulsePhase * Math.PI * 2) * 0.03);
+      drawerLuminanceRef.current = luminance;
+      if (drawerRef.current) drawerRef.current.style.filter = `brightness(${luminance})`;
       rafId = requestAnimationFrame(animate);
     };
-
     rafId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafId);
   }, [shouldReduceMotion, selectedDomain]);
