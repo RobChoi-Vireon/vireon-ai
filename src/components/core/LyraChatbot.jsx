@@ -135,7 +135,7 @@ const ChatMessage = memo(({ message, isUser, onCopy, timestamp, sources }) => {
         {!isUser && sources && sources.length > 0 && (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '8px' }}>
             {sources.map((src, i) => (
-              <a key={i} href={src.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '11px', padding: '2px 9px', borderRadius: '999px', background: 'rgba(255,255,255,0.07)', textDecoration: 'none', cursor: 'pointer', border: `1px solid ${src.type === 'filing' ? 'rgba(251,191,36,0.35)' : src.type === 'data' ? 'rgba(56,189,248,0.35)' : src.type === 'vireon' ? 'rgba(167,116,255,0.35)' : 'rgba(255,255,255,0.08)'}`, color: src.type === 'filing' ? 'rgba(251,191,36,0.9)' : src.type === 'data' ? 'rgba(56,189,248,0.9)' : src.type === 'vireon' ? 'rgba(167,116,255,0.9)' : 'var(--text-secondary)' }}>
+              <a key={i} href={src.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '11px', padding: '2px 9px', borderRadius: '999px', background: 'rgba(255,255,255,0.07)', color: 'var(--text-secondary)', textDecoration: 'none', border: '1px solid rgba(255,255,255,0.08)', cursor: 'pointer' }}>
                 {src.domain}
               </a>
             ))}
