@@ -1961,32 +1961,6 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
           from { opacity: 1; transform: scale(0); }
           to { opacity: 0; transform: scale(2); }
         }
-        :root {
-          --z-app: 10;
-          --z-popover: 40;
-          --z-tooltip: 45;
-          --z-modal: 50;
-          --z-toast: 60;
-          --z-devtools: 70;
-          --header-h: 72px;
-          --bg: #0B0E13;
-          --card: rgba(18, 20, 28, 0.65);
-          --border: #2C2F36;
-          --shadow: rgba(0, 0, 0, 0.45);
-          --text-primary: #F3F5F7;
-          --text-secondary: #B6BDCB;
-          --text-tertiary: #7E8798;
-          --muted: #5B6170;
-          --accent: #4DA3FF;
-          --bull: #58E3A4;
-          --bear: #FF6A7A;
-          --neutral: #A8B3C7;
-          --chart-bg: #0F1115;
-          --chart-grid: #242833;
-          --chart-text: #B6BDCB;
-          --scrim: rgba(0, 0, 0, 0.55);
-          --horizon-link: rgba(90, 160, 255, 0.95);
-        }
 
         html:not(.transitions-enabled) * {
           transition: none !important;
