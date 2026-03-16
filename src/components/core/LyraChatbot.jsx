@@ -619,17 +619,11 @@ export default function LyraChatbot({ pageContext }) {
     }
   };
 
-  // Mobile constant loop animation
+  // Mobile ring - static, no loop
   const mobileRingVariants = {
     animate: {
-      strokeDashoffset: [302, 0, 302],
-      opacity: [0.6, 1, 0.6],
-      transition: {
-        duration: 3,
-        ease: "linear",
-        repeat: Infinity,
-        repeatType: "loop"
-      }
+      strokeDashoffset: 0,
+      opacity: 0.8,
     }
   };
 
