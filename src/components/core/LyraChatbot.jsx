@@ -642,7 +642,7 @@ export default function LyraChatbot({ pageContext }) {
   };
 
   // Detect if we're on mobile
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const isMobile = useMemo(() => typeof window !== 'undefined' && window.innerWidth < 768, []);
   
   return (
     <>
