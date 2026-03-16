@@ -923,7 +923,8 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
   const [viewportSize, setViewportSize] = useState('lg');
   const [drawerOrigin, setDrawerOrigin] = useState(null);
   const [showBeam, setShowBeam] = useState(false);
-  const [swayTime, setSwayTime] = useState(0);
+  // PERF: rAF writes to ref + DOM directly, bypasses React render
+  const swayTimeRef = useRef(0);
   const [orbPulseActive, setOrbPulseActive] = useState(false);
   const [drawerLuminance, setDrawerLuminance] = useState(1.0);
 
