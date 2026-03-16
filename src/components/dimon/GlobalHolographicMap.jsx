@@ -1336,7 +1336,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
     let rafId, lastTime = Date.now();
     const animate = () => {
       const now = Date.now();
-      setSwayTime(prev => prev + (now - lastTime) / 1000);
+      swayTimeRef.current += (now - lastTime) / 1000;
       lastTime = now;
       rafId = requestAnimationFrame(animate);
     };
