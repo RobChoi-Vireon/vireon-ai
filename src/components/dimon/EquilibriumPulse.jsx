@@ -72,7 +72,7 @@ export default function EquilibriumPulse({
   const [isMoreFocused, setIsMoreFocused] = useState(false);
   const [isMorePressed, setIsMorePressed] = useState(false);
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
-  const pulseTimeRef = useRef(0);
+  const [pulseTime, setPulseTime] = useState(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [showRipple, setShowRipple] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -81,9 +81,6 @@ export default function EquilibriumPulse({
   
   const containerRef = useRef(null);
   const rafRef = useRef(null);
-  const pulseParticleRef = useRef(null);
-  const pulseRailGlowRef = useRef(null);
-  const ambientGlowRef = useRef(null);
 
   // equilibriumScore prop is 0-1 internally, but raw value from API is 0-100
   // 100 = far left (for you), 0 = far right (against you), so we invert: position = 1 - (score/100)
@@ -123,39 +120,13 @@ export default function EquilibriumPulse({
     }
   }, [normalizedScore, prevEquilibriumScore, pulseX]);
 
-  // PERF: rAF writes to ref + DOM directly, bypasses React render
   useEffect(() => {
-    if (shouldReduceMotion || drawerOpen) {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      return;
-    }
+    if (shouldReduceMotion || drawerOpen) return;
 
     let startTime = Date.now();
     const animate = () => {
       const elapsed = (Date.now() - startTime) / 1000;
-      pulseTimeRef.current = elapsed;
-
-      const speed = 0.3 + (volatility * 0.7);
-      const direction = (normalizedScore - 0.5) * 2;
-      const drift = Math.sin(elapsed * speed) * 2 * (1 + Math.abs(direction) * 0.5);
-      const breathe = Math.sin(elapsed * (2 * Math.PI / MOTION_TOKENS.DURATIONS.breathe)) * 0.03;
-      const scale = 1 + breathe;
-      const glowIntensity = 0.4 + Math.sin(elapsed * (2 * Math.PI / MOTION_TOKENS.DURATIONS.breathe)) * 0.12;
-
-      // Apply position drift directly to pulse particle DOM element
-      if (pulseParticleRef.current) {
-        const baseLeft = normalizedScore * 100;
-        pulseParticleRef.current.style.left = `${baseLeft + drift}%`;
-        pulseParticleRef.current.style.transform = `translate(-50%, -50%) scale(${scale})`;
-        const boxShadow = `0 0 ${22 * glowIntensity}px ${getPulseGlow()}, 0 0 8px rgba(255,255,255,0.55), inset 0 0 0 2px rgba(255,255,255,0.45)`;
-        pulseParticleRef.current.style.boxShadow = boxShadow;
-      }
-
-      // Apply ambient underside glow opacity
-      if (ambientGlowRef.current) {
-        ambientGlowRef.current.style.opacity = String(glowIntensity * 0.6);
-      }
-
+      setPulseTime(elapsed);
       rafRef.current = requestAnimationFrame(animate);
     };
 
@@ -163,13 +134,26 @@ export default function EquilibriumPulse({
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shouldReduceMotion, drawerOpen, volatility, normalizedScore]);
+  }, [shouldReduceMotion, drawerOpen]);
 
-  // Static fallback values used for initial render / framer-motion props (not updated via rAF)
-  const pulseDrift = 0;
-  const pulseScale = 1;
-  const pulseGlowIntensity = 0.4;
+  const pulseDrift = useMemo(() => {
+    if (shouldReduceMotion || drawerOpen) return 0;
+    const speed = 0.3 + (volatility * 0.7);
+    const direction = (normalizedScore - 0.5) * 2;
+    return Math.sin(pulseTime * speed) * 2 * (1 + Math.abs(direction) * 0.5);
+  }, [pulseTime, volatility, equilibriumScore, shouldReduceMotion, drawerOpen]);
+
+  const pulseScale = useMemo(() => {
+    if (shouldReduceMotion || drawerOpen || !isMounted) return 1;
+    const breathe = Math.sin(pulseTime * (2 * Math.PI / MOTION_TOKENS.DURATIONS.breathe)) * 0.03;
+    return 1 + breathe;
+  }, [pulseTime, shouldReduceMotion, drawerOpen, isMounted]);
+
+  const pulseGlowIntensity = useMemo(() => {
+    if (shouldReduceMotion || drawerOpen || !isMounted) return 0.4;
+    const pulse = Math.sin(pulseTime * (2 * Math.PI / MOTION_TOKENS.DURATIONS.breathe)) * 0.12;
+    return 0.4 + pulse;
+  }, [pulseTime, shouldReduceMotion, drawerOpen, isMounted]);
 
   const getStateLabel = () => {
     if (stateLabel) return stateLabel;
@@ -592,7 +576,6 @@ export default function EquilibriumPulse({
 
         {/* Layer 3: Living Pulse Particle (Horizon Slider Spec: 180ms spring on drag) */}
         <motion.div
-          ref={pulseParticleRef}
           className="pulse-particle"
           style={{
             position: 'absolute',
@@ -647,7 +630,6 @@ export default function EquilibriumPulse({
 
           {/* Ambient Underside Glow (Apple Control Center style) */}
           <motion.div 
-            ref={ambientGlowRef}
             style={{
               position: 'absolute',
               bottom: '-5px',
