@@ -592,6 +592,7 @@ export default function EquilibriumPulse({
 
         {/* Layer 3: Living Pulse Particle (Horizon Slider Spec: 180ms spring on drag) */}
         <motion.div
+          ref={pulseParticleRef}
           className="pulse-particle"
           style={{
             position: 'absolute',
