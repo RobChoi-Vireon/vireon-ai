@@ -341,9 +341,9 @@ export default function LyraChatbot({ pageContext }) {
 
     const handleScrollFab = () => { // Renamed to avoid conflict with handleScroll for chat
       if (isOpen) return;
-      setIsScrolling(true);
+      isScrollingRef.current = true;
       clearTimeout(scrollTimeout.current);
-      scrollTimeout.current = setTimeout(() => setIsScrolling(false), 120);
+      scrollTimeout.current = setTimeout(() => { isScrollingRef.current = false; }, 120);
     };
 
     window.addEventListener('scroll', handleScrollFab, { passive: true });
