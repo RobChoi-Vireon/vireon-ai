@@ -221,9 +221,9 @@ const MOCK_DOMAINS = [
     footer: {
       primary_cta: { label: "View detailed analysis", route: "/geopolitics/risk" },
       secondary_link: { label: "Track supply chains", route: "/supply-chain" },
-      timestamp: new Date().toISOString()
+      timestamp: _NOW
     },
-    last_updated_iso: new Date().toISOString(),
+    last_updated_iso: _NOW,
     sparkline: [0.65, 0.66, 0.68, 0.70, 0.71, 0.72, 0.71, 0.72, 0.72],
     confidenceDelta: 4
   }
