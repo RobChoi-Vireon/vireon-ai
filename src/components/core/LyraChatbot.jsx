@@ -35,7 +35,7 @@ const OriAvatar = () => (
   </div>
 );
 
-const ChatMessage = memo(({ message, isUser, onCopy, timestamp, sources }) => {
+const ChatMessage = memo(({ message, isUser, onCopy, timestamp, sources, isStreaming }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
