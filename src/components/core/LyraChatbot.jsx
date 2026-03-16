@@ -137,7 +137,7 @@ const ChatMessage = memo(({ message, isUser, onCopy, timestamp, sources, isStrea
         </div>
         {!isUser && sources && sources.length > 0 && (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '8px' }}>
-            {sources.map((src, i) => {
+            {sources.filter(src => src.url && src.domain).map((src, i) => {
               const typePrefix = src.type === 'filing' ? 'SEC' : src.type === 'data' ? 'DATA' : src.type === 'internal' ? 'VIREON' : null;
               return (
                 <a key={i} href={src.url} target="_blank" rel="noopener noreferrer" title={src.snippet ?? src.title} style={{ fontSize: '11px', padding: '2px 9px', borderRadius: '999px', background: 'rgba(255,255,255,0.07)', color: 'var(--text-secondary)', textDecoration: 'none', border: '1px solid rgba(255,255,255,0.08)', cursor: 'pointer' }}>
