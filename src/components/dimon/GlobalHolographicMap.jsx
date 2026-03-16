@@ -1233,7 +1233,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
 
   useEffect(() => {
     if (shouldReduceMotion || !selectedDomain) {
-      setDrawerLuminance(1.0);
+      drawerLuminanceRef.current = 1.0;
       return;
     }
 
@@ -1244,8 +1244,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
       const elapsed = (Date.now() - startTime) / 1000;
       const pulsePhase = (elapsed % TOKENS.HORIZON.t_orbLifePulse) / TOKENS.HORIZON.t_orbLifePulse;
       const sineWave = Math.sin(pulsePhase * Math.PI * 2);
-      const luminance = 1.0 + (sineWave * 0.03);
-      setDrawerLuminance(luminance);
+      drawerLuminanceRef.current = 1.0 + (sineWave * 0.03);
       rafId = requestAnimationFrame(animate);
     };
 
