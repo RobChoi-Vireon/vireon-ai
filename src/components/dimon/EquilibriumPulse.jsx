@@ -135,24 +135,24 @@ export default function EquilibriumPulse({
     };
   }, [shouldReduceMotion, drawerOpen]);
 
-  const pulseDrift = useMemo(() => {
+  const pulseDrift = (() => {
     if (shouldReduceMotion || drawerOpen) return 0;
     const speed = 0.3 + (volatility * 0.7);
     const direction = (normalizedScore - 0.5) * 2;
-    return Math.sin(pulseTime * speed) * 2 * (1 + Math.abs(direction) * 0.5);
-  }, [pulseTime, volatility, equilibriumScore, shouldReduceMotion, drawerOpen]);
+    return Math.sin(pulseTimeRef.current * speed) * 2 * (1 + Math.abs(direction) * 0.5);
+  })();
 
-  const pulseScale = useMemo(() => {
+  const pulseScale = (() => {
     if (shouldReduceMotion || drawerOpen || !isMounted) return 1;
-    const breathe = Math.sin(pulseTime * (2 * Math.PI / MOTION_TOKENS.DURATIONS.breathe)) * 0.03;
+    const breathe = Math.sin(pulseTimeRef.current * (2 * Math.PI / MOTION_TOKENS.DURATIONS.breathe)) * 0.03;
     return 1 + breathe;
-  }, [pulseTime, shouldReduceMotion, drawerOpen, isMounted]);
+  })();
 
-  const pulseGlowIntensity = useMemo(() => {
+  const pulseGlowIntensity = (() => {
     if (shouldReduceMotion || drawerOpen || !isMounted) return 0.4;
-    const pulse = Math.sin(pulseTime * (2 * Math.PI / MOTION_TOKENS.DURATIONS.breathe)) * 0.12;
+    const pulse = Math.sin(pulseTimeRef.current * (2 * Math.PI / MOTION_TOKENS.DURATIONS.breathe)) * 0.12;
     return 0.4 + pulse;
-  }, [pulseTime, shouldReduceMotion, drawerOpen, isMounted]);
+  })();
 
   const getStateLabel = () => {
     if (stateLabel) return stateLabel;
