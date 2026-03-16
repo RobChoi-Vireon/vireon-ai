@@ -1956,14 +1956,11 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
         )}
       </AnimatePresence>
 
-      {/* styles moved to index.css / Layout */}
       <style jsx>{`
         @keyframes ripple {
           from { opacity: 1; transform: scale(0); }
           to { opacity: 0; transform: scale(2); }
         }
-
-        /* Global Z-Index Scale */
         :root {
           --z-app: 10;
           --z-popover: 40;
