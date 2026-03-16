@@ -657,6 +657,10 @@ export default function LyraChatbot({ pageContext }) {
   return (
     <>
       <style>{`
+        @keyframes ori-cursor-blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
+        }
         @media (prefers-reduced-motion: reduce) {
           .lyra-ghost, .lyra-aura {
             display: none !important;
