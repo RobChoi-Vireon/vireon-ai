@@ -1364,33 +1364,8 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
     };
   }, []);
 
-  const drawerCenterPosition = useMemo(() => {
-    if (!selectedDomain || !drawerOrigin) return { x: 0, y: 0 };
-
-    const headerHeight = 72;
-    const safeTopPadding = 8;
-    const safeTop = headerHeight + safeTopPadding;
-    const bottomMargin = 16;
-
-    const drawerWidth = 520;
-    const maxDrawerHeight = Math.min(window.innerHeight - headerHeight - 72 - bottomMargin, 700);
-    const drawerHeight = maxDrawerHeight;
-
-    const bloomOriginY = drawerOrigin.screenY + 10;
-
-    let targetTop = bloomOriginY - (drawerHeight / 2);
-    targetTop = Math.max(targetTop, safeTop);
-    targetTop = Math.min(targetTop, window.innerHeight - drawerHeight - bottomMargin);
-
-    const viewportAdjustment = window.innerHeight < 720 ? 24 : 0;
-
-    return {
-      left: `calc(50% - ${drawerWidth / 2}px)`,
-      top: targetTop,
-      width: drawerWidth,
-      height: drawerHeight - viewportAdjustment
-    };
-  }, [selectedDomain, drawerOrigin]);
+  // drawerCenterPosition unused after drawer extraction
+  
 
 
   return (
