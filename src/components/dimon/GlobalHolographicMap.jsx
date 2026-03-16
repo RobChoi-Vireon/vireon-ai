@@ -156,10 +156,10 @@ const MOCK_DOMAINS = [
     footer: {
       primary_cta: { label: "View detailed analysis", route: "/fx/dashboard" },
       secondary_link: { label: "Track currencies", route: "/fx/tracker" },
-      timestamp: new Date().toISOString()
+      timestamp: _NOW
     },
     addendum: "Next 48 hours: Currency markets likely to stay calm unless interest rates move unexpectedly.",
-    last_updated_iso: new Date().toISOString(),
+    last_updated_iso: _NOW,
     sparkline: [0.60, 0.59, 0.58, 0.57, 0.58, 0.59, 0.58, 0.57, 0.58],
     confidenceDelta: -3
   },
