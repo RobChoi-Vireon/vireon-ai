@@ -72,7 +72,7 @@ export default function EquilibriumPulse({
   const [isMoreFocused, setIsMoreFocused] = useState(false);
   const [isMorePressed, setIsMorePressed] = useState(false);
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
-  const pulseTimeRef = useRef(0);
+  const [pulseTime, setPulseTime] = useState(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [showRipple, setShowRipple] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -125,7 +125,8 @@ export default function EquilibriumPulse({
 
     let startTime = Date.now();
     const animate = () => {
-      pulseTimeRef.current = (Date.now() - startTime) / 1000;
+      const elapsed = (Date.now() - startTime) / 1000;
+      setPulseTime(elapsed);
       rafRef.current = requestAnimationFrame(animate);
     };
 
@@ -135,24 +136,24 @@ export default function EquilibriumPulse({
     };
   }, [shouldReduceMotion, drawerOpen]);
 
-  const pulseDrift = (() => {
+  const pulseDrift = useMemo(() => {
     if (shouldReduceMotion || drawerOpen) return 0;
     const speed = 0.3 + (volatility * 0.7);
     const direction = (normalizedScore - 0.5) * 2;
-    return Math.sin(pulseTimeRef.current * speed) * 2 * (1 + Math.abs(direction) * 0.5);
-  })();
+    return Math.sin(pulseTime * speed) * 2 * (1 + Math.abs(direction) * 0.5);
+  }, [pulseTime, volatility, equilibriumScore, shouldReduceMotion, drawerOpen]);
 
-  const pulseScale = (() => {
+  const pulseScale = useMemo(() => {
     if (shouldReduceMotion || drawerOpen || !isMounted) return 1;
-    const breathe = Math.sin(pulseTimeRef.current * (2 * Math.PI / MOTION_TOKENS.DURATIONS.breathe)) * 0.03;
+    const breathe = Math.sin(pulseTime * (2 * Math.PI / MOTION_TOKENS.DURATIONS.breathe)) * 0.03;
     return 1 + breathe;
-  })();
+  }, [pulseTime, shouldReduceMotion, drawerOpen, isMounted]);
 
-  const pulseGlowIntensity = (() => {
+  const pulseGlowIntensity = useMemo(() => {
     if (shouldReduceMotion || drawerOpen || !isMounted) return 0.4;
-    const pulse = Math.sin(pulseTimeRef.current * (2 * Math.PI / MOTION_TOKENS.DURATIONS.breathe)) * 0.12;
+    const pulse = Math.sin(pulseTime * (2 * Math.PI / MOTION_TOKENS.DURATIONS.breathe)) * 0.12;
     return 0.4 + pulse;
-  })();
+  }, [pulseTime, shouldReduceMotion, drawerOpen, isMounted]);
 
   const getStateLabel = () => {
     if (stateLabel) return stateLabel;

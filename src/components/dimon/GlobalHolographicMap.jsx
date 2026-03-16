@@ -922,9 +922,9 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
   const [viewportSize, setViewportSize] = useState('lg');
   const [drawerOrigin, setDrawerOrigin] = useState(null);
   const [showBeam, setShowBeam] = useState(false);
-  const swayTimeRef = useRef(0);
+  const [swayTime, setSwayTime] = useState(0);
   const [orbPulseActive, setOrbPulseActive] = useState(false);
-  const drawerLuminanceRef = useRef(1.0);
+  const [drawerLuminance, setDrawerLuminance] = useState(1.0);
 
   const glassParallaxX = useSpring(0, { damping: 30, stiffness: 90 });
   const glassParallaxY = useSpring(0, { damping: 30, stiffness: 90 });
@@ -1158,7 +1158,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
     setHoveredNodeRect(null);
     setIsCardHovered(false);
 
-    const domainPos = getOrbPosition(domain.id, domain.strength, swayTimeRef.current, 0, 0);
+    const domainPos = getOrbPosition(domain.id, domain.strength, swayTime, 0, 0);
     const containerRect = containerRef.current?.getBoundingClientRect();
 
     if (containerRect) {
@@ -1184,7 +1184,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
       setTimeout(() => { setOrbPulseActive(false); setShowBeam(true); }, TOKENS.HORIZON.t_orbBreathIn * 1000);
       setTimeout(() => setSelectedDomain(domain), (TOKENS.HORIZON.t_orbBreathIn + TOKENS.HORIZON.t_beamLink) * 1000);
     }
-  }, [selectedDomain, getOrbPosition]);
+  }, [selectedDomain, getOrbPosition, swayTime]);
 
   const handleCardClick = useCallback((domain) => {
     if (hoverEnterTimerRef.current) {
@@ -1233,7 +1233,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
 
   useEffect(() => {
     if (shouldReduceMotion || !selectedDomain) {
-      drawerLuminanceRef.current = 1.0;
+      setDrawerLuminance(1.0);
       return;
     }
 
@@ -1244,7 +1244,8 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
       const elapsed = (Date.now() - startTime) / 1000;
       const pulsePhase = (elapsed % TOKENS.HORIZON.t_orbLifePulse) / TOKENS.HORIZON.t_orbLifePulse;
       const sineWave = Math.sin(pulsePhase * Math.PI * 2);
-      drawerLuminanceRef.current = 1.0 + (sineWave * 0.03);
+      const luminance = 1.0 + (sineWave * 0.03);
+      setDrawerLuminance(luminance);
       rafId = requestAnimationFrame(animate);
     };
 
@@ -1336,7 +1337,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
     let rafId, lastTime = Date.now();
     const animate = () => {
       const now = Date.now();
-      swayTimeRef.current += (now - lastTime) / 1000;
+      setSwayTime(prev => prev + (now - lastTime) / 1000);
       lastTime = now;
       rafId = requestAnimationFrame(animate);
     };
@@ -1612,7 +1613,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
 
           {/* BLOOM HALOS (BENEATH CONSTELLATION) */}
           {domains.map((domain) => {
-            const pos = getOrbPosition(domain.id, domain.strength, swayTimeRef.current, 0, 0);
+            const pos = getOrbPosition(domain.id, domain.strength, swayTime, 0, 0);
             const bloomRadius = Math.min(...TOKENS.HORIZON.localBloomRadius) + (domain.strength * (Math.max(...TOKENS.HORIZON.localBloomRadius) - Math.min(...TOKENS.HORIZON.localBloomRadius)));
             const isActiveOrb = selectedDomain?.id === domain.id;
             const isHovered = hoveredDomain === domain.id;
@@ -1735,8 +1736,8 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
                 {connections.map((conn, i) => {
                   const from = domains.find(d => d.id === conn.from);
                   const to = domains.find(d => d.id === conn.to);
-                  const fromPos = getOrbPosition(conn.from, from.strength, swayTimeRef.current, parallaxX.get(), parallaxY.get());
-                  const toPos = getOrbPosition(conn.to, to.strength, swayTimeRef.current, parallaxX.get(), parallaxY.get());
+                  const fromPos = getOrbPosition(conn.from, from.strength, swayTime, parallaxX.get(), parallaxY.get());
+                  const toPos = getOrbPosition(conn.to, to.strength, swayTime, parallaxX.get(), parallaxY.get());
                   const isAdjacent = hoveredDomain === conn.from || hoveredDomain === conn.to || selectedDomain?.id === conn.from || selectedDomain?.id === conn.to;
                   const isFlashing = filamentFlash === conn.from || filamentFlash === conn.to;
 
@@ -1748,7 +1749,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
 
               <g style={{ mixBlendMode: 'screen' }}>
                 {domains.map((domain, idx) => {
-                  const orbPos = getOrbPosition(domain.id, domain.strength, swayTimeRef.current, parallaxX.get(), parallaxY.get());
+                  const orbPos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
                   const color = getDomainColor(domain.id);
                   const bloom = getDomainBloom(domain.id);
                   const isHovered = hoveredDomain === domain.id;
@@ -1847,7 +1848,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
 
             {/* LABELS */}
             {domains.map((domain) => {
-              const orbPos = getOrbPosition(domain.id, domain.strength, swayTimeRef.current, parallaxX.get(), parallaxY.get());
+              const orbPos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
               const labelPos = getLabelPosition(orbPos.x, orbPos.y, orbPos.radius, domain.id);
               const isHovered = hoveredDomain === domain.id;
               const isSelected = selectedDomain?.id === domain.id;
@@ -1982,7 +1983,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
                   border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
                   boxShadow: `0 0 60px rgba(0, 0, 0, 0.15), ${TOKENS.HORIZON.panelShadow}, 0 0 12px ${TOKENS.HORIZON.drawerEdgeBloom}, inset 0 0 0 1px rgba(255,255,255,0.10)`,
                   borderRadius: '24px',
-                  filter: `brightness(${drawerLuminanceRef.current})`,
+                  filter: `brightness(${drawerLuminance})`,
                   pointerEvents: 'auto'
                 }}
               initial={{

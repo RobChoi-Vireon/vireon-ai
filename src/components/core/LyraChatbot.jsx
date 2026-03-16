@@ -35,7 +35,7 @@ const OriAvatar = () => (
   </div>
 );
 
-const ChatMessage = memo(({ message, isUser, onCopy, timestamp, sources, isStreaming }) => {
+const ChatMessage = memo(({ message, isUser, onCopy, timestamp, sources }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -99,22 +99,19 @@ const ChatMessage = memo(({ message, isUser, onCopy, timestamp, sources, isStrea
               {message}
             </p>
           ) : (
-            <>
-              <ReactMarkdown
-                components={{
-                  h3: ({ children }) => <h3 style={{ fontWeight: 700, fontSize: '15px', marginTop: '12px', marginBottom: '4px', color: 'var(--text-primary)', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif' }}>{children}</h3>,
-                  strong: ({ children }) => <strong style={{ fontWeight: 600 }}>{children}</strong>,
-                  ul: ({ children }) => <ul style={{ paddingLeft: '18px', margin: '4px 0', listStyleType: 'disc' }}>{children}</ul>,
-                  ol: ({ children }) => <ol style={{ paddingLeft: '18px', margin: '4px 0', listStyleType: 'decimal' }}>{children}</ol>,
-                  li: ({ children }) => <li style={{ marginBottom: '4px', fontSize: '15px', lineHeight: '1.65' }}>{children}</li>,
-                  a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer" style={{ color: '#4DA3FF', textDecoration: 'underline' }}>{children}</a>,
-                  p: ({ children }) => <p style={{ fontSize: '15px', lineHeight: '1.65', letterSpacing: '-0.01em', margin: '4px 0', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif', WebkitFontSmoothing: 'antialiased' }}>{children}</p>,
-                }}
-              >
-                {message}
-              </ReactMarkdown>
-              {isStreaming && <span style={{ display: 'inline-block', animation: 'ori-cursor-blink 500ms step-end infinite', opacity: 1 }}>▊</span>}
-            </>
+            <ReactMarkdown
+              components={{
+                h3: ({ children }) => <h3 style={{ fontWeight: 700, fontSize: '15px', marginTop: '12px', marginBottom: '4px', color: 'var(--text-primary)', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif' }}>{children}</h3>,
+                strong: ({ children }) => <strong style={{ fontWeight: 600 }}>{children}</strong>,
+                ul: ({ children }) => <ul style={{ paddingLeft: '18px', margin: '4px 0', listStyleType: 'disc' }}>{children}</ul>,
+                ol: ({ children }) => <ol style={{ paddingLeft: '18px', margin: '4px 0', listStyleType: 'decimal' }}>{children}</ol>,
+                li: ({ children }) => <li style={{ marginBottom: '4px', fontSize: '15px', lineHeight: '1.65' }}>{children}</li>,
+                a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer" style={{ color: '#4DA3FF', textDecoration: 'underline' }}>{children}</a>,
+                p: ({ children }) => <p style={{ fontSize: '15px', lineHeight: '1.65', letterSpacing: '-0.01em', margin: '4px 0', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif', WebkitFontSmoothing: 'antialiased' }}>{children}</p>,
+              }}
+            >
+              {message}
+            </ReactMarkdown>
           )}
           {!isUser && (
             <button
@@ -137,14 +134,11 @@ const ChatMessage = memo(({ message, isUser, onCopy, timestamp, sources, isStrea
         </div>
         {!isUser && sources && sources.length > 0 && (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '8px' }}>
-            {sources.filter(src => src.url && src.domain).map((src, i) => {
-              const typePrefix = src.type === 'filing' ? 'SEC' : src.type === 'data' ? 'DATA' : src.type === 'internal' ? 'VIREON' : null;
-              return (
-                <a key={i} href={src.url} target="_blank" rel="noopener noreferrer" title={src.snippet ?? src.title} style={{ fontSize: '11px', padding: '2px 9px', borderRadius: '999px', background: 'rgba(255,255,255,0.07)', color: 'var(--text-secondary)', textDecoration: 'none', border: '1px solid rgba(255,255,255,0.08)', cursor: 'pointer' }}>
-                  {typePrefix && <span style={{ opacity: 0.7, fontSize: '0.7em' }}>{typePrefix} | </span>}{src.domain}
-                </a>
-              );
-            })}
+            {sources.map((src, i) => (
+              <a key={i} href={src.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '11px', padding: '2px 9px', borderRadius: '999px', background: 'rgba(255,255,255,0.07)', color: 'var(--text-secondary)', textDecoration: 'none', border: '1px solid rgba(255,255,255,0.08)', cursor: 'pointer' }}>
+                {src.domain}
+              </a>
+            ))}
           </div>
         )}
         {!isUser && (
@@ -659,10 +653,6 @@ export default function LyraChatbot({ pageContext }) {
   return (
     <>
       <style>{`
-        @keyframes ori-cursor-blink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0; }
-        }
         @media (prefers-reduced-motion: reduce) {
           .lyra-ghost, .lyra-aura {
             display: none !important;
@@ -938,7 +928,6 @@ export default function LyraChatbot({ pageContext }) {
                     timestamp={message.timestamp}
                     onCopy={handleCopyMessage}
                     sources={message.sources}
-                    isStreaming={isTyping && !message.isUser && !message.timestamp}
                   />
                 ))}
 
