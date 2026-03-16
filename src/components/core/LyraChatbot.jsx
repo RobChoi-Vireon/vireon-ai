@@ -182,7 +182,7 @@ const SuggestedChip = ({ text, onClick }) => (
 );
 
 export default function LyraChatbot({ pageContext }) {
-  const theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+  const theme = useMemo(() => document.documentElement.classList.contains('dark') ? 'dark' : 'light', []);
   const [isOpen, setIsOpen] = useState(false);
 
   const initialMessages = useMemo(() => {
