@@ -1956,13 +1956,12 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
         )}
       </AnimatePresence>
 
+      {/* styles moved to index.css / Layout */}
       <style jsx>{`
         @keyframes ripple {
           from { opacity: 1; transform: scale(0); }
           to { opacity: 0; transform: scale(2); }
         }
-
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
         /* Global Z-Index Scale */
         :root {
