@@ -72,7 +72,7 @@ export default function EquilibriumPulse({
   const [isMoreFocused, setIsMoreFocused] = useState(false);
   const [isMorePressed, setIsMorePressed] = useState(false);
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
-  const [pulseTime, setPulseTime] = useState(0);
+  const pulseTimeRef = useRef(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [showRipple, setShowRipple] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
