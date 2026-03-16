@@ -1748,7 +1748,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
 
               <g style={{ mixBlendMode: 'screen' }}>
                 {domains.map((domain, idx) => {
-                  const orbPos = getOrbPosition(domain.id, domain.strength, swayTime, parallaxX.get(), parallaxY.get());
+                  const orbPos = getOrbPosition(domain.id, domain.strength, swayTimeRef.current, parallaxX.get(), parallaxY.get());
                   const color = getDomainColor(domain.id);
                   const bloom = getDomainBloom(domain.id);
                   const isHovered = hoveredDomain === domain.id;
