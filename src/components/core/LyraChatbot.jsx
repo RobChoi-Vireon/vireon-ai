@@ -486,56 +486,59 @@ export default function LyraChatbot({ pageContext }) {
         }, 50);
       };
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
 
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop();
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop();
 
-        let eventType = null;
-        for (const line of lines) {
-          if (line.startsWith("event: ")) {
-            eventType = line.slice(7).trim();
-          } else if (line.startsWith("data: ") && eventType) {
-            try {
-              const payload = JSON.parse(line.slice(6));
-              if (eventType === "token" && payload.text) {
-                tokenBuffer.push(payload.text);
-                startFlushing();
-              } else if (eventType === "meta" && payload.session_id) {
-                setSessionId(payload.session_id);
-              } else if (eventType === "followups" && payload.questions) {
-                setFollowupQuestions(payload.questions);
-              } else if (eventType === "sources" && payload.sources) {
-                responseSources = payload.sources;
-              } else if (eventType === "error") {
-                currentText = "I encountered an issue. Please try again.";
-                setMessages(prev =>
-                  prev.map(msg => msg.id === aiMessageId
-                    ? { ...msg, text: currentText, error: true }
-                    : msg)
-                );
-              }
-            } catch (e) {}
-            eventType = null;
+          let eventType = null;
+          for (const line of lines) {
+            if (line.startsWith("event: ")) {
+              eventType = line.slice(7).trim();
+            } else if (line.startsWith("data: ") && eventType) {
+              try {
+                const payload = JSON.parse(line.slice(6));
+                if (eventType === "token" && payload.text) {
+                  tokenBuffer.push(payload.text);
+                  startFlushing();
+                } else if (eventType === "meta" && payload.session_id) {
+                  setSessionId(payload.session_id);
+                } else if (eventType === "followups" && payload.questions) {
+                  setFollowupQuestions(payload.questions);
+                } else if (eventType === "sources" && payload.sources) {
+                  responseSources = payload.sources;
+                } else if (eventType === "error") {
+                  currentText = "I encountered an issue. Please try again.";
+                  setMessages(prev =>
+                    prev.map(msg => msg.id === aiMessageId
+                      ? { ...msg, text: currentText, error: true }
+                      : msg)
+                  );
+                }
+              } catch (e) {}
+              eventType = null;
+            }
           }
         }
-      }
 
-      if (flushInterval) clearInterval(flushInterval);
-      if (tokenBuffer.length > 0) {
-        currentText += tokenBuffer.join('');
-        tokenBuffer = [];
-      }
+        if (tokenBuffer.length > 0) {
+          currentText += tokenBuffer.join('');
+          tokenBuffer = [];
+        }
 
-      setMessages(prev =>
-        prev.map(msg => msg.id === aiMessageId
-          ? { ...msg, text: currentText, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), sources: responseSources }
-          : msg)
-      );
-      setIsTyping(false);
+        setMessages(prev =>
+          prev.map(msg => msg.id === aiMessageId
+            ? { ...msg, text: currentText, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), sources: responseSources }
+            : msg)
+        );
+      } finally {
+        if (flushInterval) clearInterval(flushInterval);
+        setIsTyping(false);
+      }
 
     } catch (error) {
       clearTimeout(streamTimeout);
@@ -552,8 +555,6 @@ export default function LyraChatbot({ pageContext }) {
           timestamp: errorTimestamp
         }];
       });
-      
-      setIsTyping(false);
     }
   };
 
