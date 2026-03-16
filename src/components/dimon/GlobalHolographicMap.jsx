@@ -1335,13 +1335,29 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
     return () => clearInterval(interval);
   }, [shouldReduceMotion]);
 
+  // PERF: rAF writes to ref + DOM directly, bypasses React render
   useEffect(() => {
     if (shouldReduceMotion) return;
-    let rafId, lastTime = Date.now();
-    const animate = () => {
-      const now = Date.now();
-      setSwayTime(prev => prev + (now - lastTime) / 1000);
-      lastTime = now;
+    let rafId, last = performance.now();
+    const animate = (now) => {
+      swayTimeRef.current += (now - last) / 1000; last = now;
+      const t = swayTimeRef.current;
+      if (containerRef.current) {
+        const w = containerRef.current.getBoundingClientRect().width || 800;
+        const gs = TOKENS.HORIZON.globalScale;
+        const cxv = w / 2, cyv = 250 + (500 * TOKENS.HORIZON.clusterOffsetY / 100);
+        const orb = Math.min(w, 500) * 0.34 * TOKENS.HORIZON.orbitRadiusScale * gs;
+        ['rates','fx','growth','geopolitics'].forEach(id => {
+          const el = containerRef.current.querySelector(`[data-domain-id="${id}"]`);
+          if (!el) return;
+          const str = parseFloat(el.getAttribute('data-strength') || '0.7');
+          const ang = ANGLES[id] * (Math.PI / 180), sp = (ANGLES[id] / 360) * Math.PI * 2;
+          const r = orb * RADII[id] * (0.9 + str * 0.2);
+          const sr = 8 + Math.abs(Math.sin(sp)) * 2, sa = (t * 2 * Math.PI) / TOKENS.HORIZON.t_orbit;
+          el.setAttribute('cx', cxv + r * Math.cos(ang) + Math.cos(sa + sp) * sr);
+          el.setAttribute('cy', cyv + r * Math.sin(ang) + Math.sin(sa + sp) * sr);
+        });
+      }
       rafId = requestAnimationFrame(animate);
     };
     rafId = requestAnimationFrame(animate);
