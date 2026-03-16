@@ -94,6 +94,7 @@ const TOKENS = {
 };
 
 const ANGLES = { rates: 22.5, fx: 160.0, growth: 297.5, geopolitics: 75.0 };
+const _NOW = new Date().toISOString();
 const RADII = { rates: 0.35, fx: 0.39, growth: 0.37, geopolitics: 0.32 };
 
 const MOCK_DOMAINS = [
