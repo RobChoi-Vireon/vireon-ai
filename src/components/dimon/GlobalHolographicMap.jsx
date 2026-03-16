@@ -1329,10 +1329,13 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
 
   useEffect(() => {
     if (shouldReduceMotion) return;
-    let rafId, lastTime = Date.now();
+    let rafId, lastTime = Date.now(), tickAccum = 0;
     const animate = () => {
       const now = Date.now();
-      setSwayTime(prev => prev + (now - lastTime) / 1000);
+      const delta = (now - lastTime) / 1000;
+      swayTimeRef.current += delta;
+      tickAccum += delta;
+      if (tickAccum >= 0.1) { tickAccum = 0; setSwayTick(t => t + 1); }
       lastTime = now;
       rafId = requestAnimationFrame(animate);
     };
@@ -1344,45 +1347,9 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
     return () => {
       if (hoverEnterTimerRef.current) clearTimeout(hoverEnterTimerRef.current);
       if (hoverExitTimerRef.current) clearTimeout(hoverExitTimerRef.current);
+      if (equilibriumExitTimerRef.current) clearTimeout(equilibriumExitTimerRef.current);
     };
   }, []);
-
-  // Cleanup equilibrium exit timer on unmount
-  useEffect(() => {
-    return () => {
-      if (equilibriumExitTimerRef.current) {
-        clearTimeout(equilibriumExitTimerRef.current);
-      }
-    };
-  }, []);
-
-  const drawerCenterPosition = useMemo(() => {
-    if (!selectedDomain || !drawerOrigin) return { x: 0, y: 0 };
-
-    const headerHeight = 72;
-    const safeTopPadding = 8;
-    const safeTop = headerHeight + safeTopPadding;
-    const bottomMargin = 16;
-
-    const drawerWidth = 520;
-    const maxDrawerHeight = Math.min(window.innerHeight - headerHeight - 72 - bottomMargin, 700);
-    const drawerHeight = maxDrawerHeight;
-
-    const bloomOriginY = drawerOrigin.screenY + 10;
-
-    let targetTop = bloomOriginY - (drawerHeight / 2);
-    targetTop = Math.max(targetTop, safeTop);
-    targetTop = Math.min(targetTop, window.innerHeight - drawerHeight - bottomMargin);
-
-    const viewportAdjustment = window.innerHeight < 720 ? 24 : 0;
-
-    return {
-      left: `calc(50% - ${drawerWidth / 2}px)`,
-      top: targetTop,
-      width: drawerWidth,
-      height: drawerHeight - viewportAdjustment
-    };
-  }, [selectedDomain, drawerOrigin]);
 
 
   return (
