@@ -717,8 +717,8 @@ export default function LyraChatbot({ pageContext }) {
             cursor: 'pointer'
           }}
           animate={{
-            y: isScrolling && !isOpen ? -2 : 0,
-            scale: (isScrolling && !isOpen) ? 1.05 : 1.0,
+            y: isScrollingRef.current && !isOpen ? -2 : 0,
+            scale: (isScrollingRef.current && !isOpen) ? 1.05 : 1.0,
           }}
           whileTap={{ scale: 0.95 }}
           aria-label={isOpen ? 'Close Ori chat' : 'Open Ori chat'}
