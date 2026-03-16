@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { Globe, X, TrendingUp, TrendingDown, Minus, ArrowRight, Info, ChevronLeft, ChevronRight, BarChart3, DollarSign, Activity, Sparkles } from 'lucide-react';
-import EquilibriumDrawerBody from './EquilibriumDrawerBody';
 import LyraLogo from '../core/LyraLogo';
 import { createPortal } from 'react-dom';
 import EquilibriumPulse from './EquilibriumPulse';
@@ -94,7 +93,6 @@ const TOKENS = {
 };
 
 const ANGLES = { rates: 22.5, fx: 160.0, growth: 297.5, geopolitics: 75.0 };
-const _NOW = new Date().toISOString();
 const RADII = { rates: 0.35, fx: 0.39, growth: 0.37, geopolitics: 0.32 };
 
 const MOCK_DOMAINS = [
@@ -124,9 +122,9 @@ const MOCK_DOMAINS = [
     footer: {
       primary_cta: { label: "View detailed analysis", route: "/implications/rates" },
       secondary_link: { label: "View timeline", route: "/timeline/rates" },
-      timestamp: _NOW
+      timestamp: new Date().toISOString()
     },
-    last_updated_iso: _NOW,
+    last_updated_iso: new Date().toISOString(),
     sparkline: [0.72, 0.74, 0.76, 0.75, 0.78, 0.80, 0.79, 0.81, 0.82],
     confidenceDelta: 2
   },
@@ -156,10 +154,10 @@ const MOCK_DOMAINS = [
     footer: {
       primary_cta: { label: "View detailed analysis", route: "/fx/dashboard" },
       secondary_link: { label: "Track currencies", route: "/fx/tracker" },
-      timestamp: _NOW
+      timestamp: new Date().toISOString()
     },
     addendum: "Next 48 hours: Currency markets likely to stay calm unless interest rates move unexpectedly.",
-    last_updated_iso: _NOW,
+    last_updated_iso: new Date().toISOString(),
     sparkline: [0.60, 0.59, 0.58, 0.57, 0.58, 0.59, 0.58, 0.57, 0.58],
     confidenceDelta: -3
   },
@@ -189,9 +187,9 @@ const MOCK_DOMAINS = [
     footer: {
       primary_cta: { label: "View detailed analysis", route: "/growth/outlook" },
       secondary_link: { label: "View sectors", route: "/sectors" },
-      timestamp: _NOW
+      timestamp: new Date().toISOString()
     },
-    last_updated_iso: _NOW,
+    last_updated_iso: new Date().toISOString(),
     sparkline: [0.75, 0.74, 0.72, 0.70, 0.69, 0.68, 0.67, 0.68, 0.68],
     confidenceDelta: -1
   },
@@ -221,9 +219,9 @@ const MOCK_DOMAINS = [
     footer: {
       primary_cta: { label: "View detailed analysis", route: "/geopolitics/risk" },
       secondary_link: { label: "Track supply chains", route: "/supply-chain" },
-      timestamp: _NOW
+      timestamp: new Date().toISOString()
     },
-    last_updated_iso: _NOW,
+    last_updated_iso: new Date().toISOString(),
     sparkline: [0.65, 0.66, 0.68, 0.70, 0.71, 0.72, 0.71, 0.72, 0.72],
     confidenceDelta: 4
   }
@@ -924,8 +922,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
   const [viewportSize, setViewportSize] = useState('lg');
   const [drawerOrigin, setDrawerOrigin] = useState(null);
   const [showBeam, setShowBeam] = useState(false);
-  // PERF: rAF writes to ref + DOM directly, bypasses React render
-  const swayTimeRef = useRef(0);
+  const [swayTime, setSwayTime] = useState(0);
   const [orbPulseActive, setOrbPulseActive] = useState(false);
   const [drawerLuminance, setDrawerLuminance] = useState(1.0);
 
@@ -1161,7 +1158,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
     setHoveredNodeRect(null);
     setIsCardHovered(false);
 
-    const domainPos = getOrbPosition(domain.id, domain.strength, swayTimeRef.current, 0, 0);
+    const domainPos = getOrbPosition(domain.id, domain.strength, swayTime, 0, 0);
     const containerRect = containerRef.current?.getBoundingClientRect();
 
     if (containerRect) {
@@ -1187,7 +1184,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
       setTimeout(() => { setOrbPulseActive(false); setShowBeam(true); }, TOKENS.HORIZON.t_orbBreathIn * 1000);
       setTimeout(() => setSelectedDomain(domain), (TOKENS.HORIZON.t_orbBreathIn + TOKENS.HORIZON.t_beamLink) * 1000);
     }
-  }, [selectedDomain, getOrbPosition]);
+  }, [selectedDomain, getOrbPosition, swayTime]);
 
   const handleCardClick = useCallback((domain) => {
     if (hoverEnterTimerRef.current) {
@@ -1335,29 +1332,13 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
     return () => clearInterval(interval);
   }, [shouldReduceMotion]);
 
-  // PERF: rAF writes to ref + DOM directly, bypasses React render
   useEffect(() => {
     if (shouldReduceMotion) return;
-    let rafId, last = performance.now();
-    const animate = (now) => {
-      swayTimeRef.current += (now - last) / 1000; last = now;
-      const t = swayTimeRef.current;
-      if (containerRef.current) {
-        const w = containerRef.current.getBoundingClientRect().width || 800;
-        const gs = TOKENS.HORIZON.globalScale;
-        const cxv = w / 2, cyv = 250 + (500 * TOKENS.HORIZON.clusterOffsetY / 100);
-        const orb = Math.min(w, 500) * 0.34 * TOKENS.HORIZON.orbitRadiusScale * gs;
-        ['rates','fx','growth','geopolitics'].forEach(id => {
-          const el = containerRef.current.querySelector(`[data-domain-id="${id}"]`);
-          if (!el) return;
-          const str = parseFloat(el.getAttribute('data-strength') || '0.7');
-          const ang = ANGLES[id] * (Math.PI / 180), sp = (ANGLES[id] / 360) * Math.PI * 2;
-          const r = orb * RADII[id] * (0.9 + str * 0.2);
-          const sr = 8 + Math.abs(Math.sin(sp)) * 2, sa = (t * 2 * Math.PI) / TOKENS.HORIZON.t_orbit;
-          el.setAttribute('cx', cxv + r * Math.cos(ang) + Math.cos(sa + sp) * sr);
-          el.setAttribute('cy', cyv + r * Math.sin(ang) + Math.sin(sa + sp) * sr);
-        });
-      }
+    let rafId, lastTime = Date.now();
+    const animate = () => {
+      const now = Date.now();
+      setSwayTime(prev => prev + (now - lastTime) / 1000);
+      lastTime = now;
       rafId = requestAnimationFrame(animate);
     };
     rafId = requestAnimationFrame(animate);
@@ -1380,8 +1361,33 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
     };
   }, []);
 
-  // drawerCenterPosition unused after drawer extraction
-  
+  const drawerCenterPosition = useMemo(() => {
+    if (!selectedDomain || !drawerOrigin) return { x: 0, y: 0 };
+
+    const headerHeight = 72;
+    const safeTopPadding = 8;
+    const safeTop = headerHeight + safeTopPadding;
+    const bottomMargin = 16;
+
+    const drawerWidth = 520;
+    const maxDrawerHeight = Math.min(window.innerHeight - headerHeight - 72 - bottomMargin, 700);
+    const drawerHeight = maxDrawerHeight;
+
+    const bloomOriginY = drawerOrigin.screenY + 10;
+
+    let targetTop = bloomOriginY - (drawerHeight / 2);
+    targetTop = Math.max(targetTop, safeTop);
+    targetTop = Math.min(targetTop, window.innerHeight - drawerHeight - bottomMargin);
+
+    const viewportAdjustment = window.innerHeight < 720 ? 24 : 0;
+
+    return {
+      left: `calc(50% - ${drawerWidth / 2}px)`,
+      top: targetTop,
+      width: drawerWidth,
+      height: drawerHeight - viewportAdjustment
+    };
+  }, [selectedDomain, drawerOrigin]);
 
 
   return (
@@ -1932,22 +1938,596 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
 
       {/* EXPANSION DRAWER — ANCHORED INSIDE ORB CLUSTER */}
       <AnimatePresence>
-        {selectedDomain && !isSwitchingNode && containerRef.current && (
-          <EquilibriumDrawerBody
-            selectedDomain={selectedDomain}
-            drawerLuminance={drawerLuminance}
-            shouldReduceMotion={shouldReduceMotion}
-            glassParallaxX={glassParallaxX}
-            glassParallaxY={glassParallaxY}
-            cx={cx}
-            cy={cy}
-            drawerRef={drawerRef}
-            handleCloseDrawer={handleCloseDrawer}
-            handlePrevDomain={handlePrevDomain}
-            handleNextDomain={handleNextDomain}
-            isLowPower={isLowPower}
-          />
-        )}
+        {selectedDomain && !isSwitchingNode && containerRef.current && (() => {
+          return (
+            <>
+              {/* Local Overlay within Section */}
+              <motion.div
+                className="absolute z-40"
+                style={{
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: 'rgba(6,8,13,0.65)',
+                  backdropFilter: 'blur(8px) brightness(0.92)',
+                  WebkitBackdropFilter: 'blur(8px) brightness(0.92)',
+                  pointerEvents: 'auto',
+                  borderRadius: '24px'
+                }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={handleCloseDrawer}
+              />
+
+              {/* Anchored Expansion Panel */}
+              <motion.div
+                ref={drawerRef}
+                className="absolute z-50 flex flex-col drawer-with-header-safe"
+                role="dialog"
+                aria-modal="true"
+                aria-label={`${selectedDomain.title} detailed analysis`}
+                style={{
+                  top: `${cy}px`,
+                  left: `${cx}px`,
+                  transform: 'translate(-50%, -50%)',
+                  width: '520px',
+                  maxWidth: 'calc(100% - 48px)',
+                  maxHeight: '500px',
+                  overflow: 'hidden',
+                  backdropFilter: TOKENS.HORIZON.drawerBlur,
+                  WebkitBackdropFilter: TOKENS.HORIZON.drawerBlur,
+                  background: TOKENS.HORIZON.drawerGlass,
+                  border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
+                  boxShadow: `0 0 60px rgba(0, 0, 0, 0.15), ${TOKENS.HORIZON.panelShadow}, 0 0 12px ${TOKENS.HORIZON.drawerEdgeBloom}, inset 0 0 0 1px rgba(255,255,255,0.10)`,
+                  borderRadius: '24px',
+                  filter: `brightness(${drawerLuminance})`,
+                  pointerEvents: 'auto'
+                }}
+              initial={{
+                scale: 0.92,
+                opacity: 0
+              }}
+              animate={{
+                scale: 1,
+                opacity: 1,
+                transition: {
+                  duration: MOTION_TOKENS.DURATIONS.drawerInhale,
+                  ease: MOTION_TOKENS.CURVES.drawerInhale
+                }
+              }}
+              exit={{
+                scale: 0.94,
+                opacity: 0,
+                transition: {
+                  duration: MOTION_TOKENS.DURATIONS.base,
+                  ease: MOTION_TOKENS.CURVES.horizonOut
+                }
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+            {/* Background layers */}
+            <div
+              className="drawer-header-blur-extension"
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                top: '-16px',
+                height: '16px',
+                backdropFilter: TOKENS.HORIZON.drawerBlur,
+                WebkitBackdropFilter: TOKENS.HORIZON.drawerBlur,
+                background: 'linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0))',
+                pointerEvents: 'none',
+                zIndex: 0
+              }}
+              aria-hidden="true"
+            />
+
+            <motion.div
+              style={{
+                position: 'absolute',
+                left: '50%',
+                top: '50%',
+                transform: 'translate3d(-50%, -50%, 0)',
+                width: '120%',
+                height: '120%',
+                background: `radial-gradient(circle at center, ${getDomainGlow(selectedDomain.id)} 0%, transparent 70%)`,
+                opacity: 0.15,
+                filter: 'blur(40px)',
+                pointerEvents: 'none',
+                mixBlendMode: 'screen',
+                zIndex: 0
+              }}
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: 0.15,
+                x: glassParallaxX,
+                y: glassParallaxY,
+                transition: {
+                  opacity: { duration: 0.5, ease: 'easeOut' }
+                }
+              }}
+              exit={{
+                opacity: 0,
+                transition: { duration: 0.25 }
+              }}
+            />
+
+            <motion.div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '80px',
+                background: `linear-gradient(to bottom, ${TOKENS.HORIZON.lightTemp} 0%, ${TOKENS.HORIZON.lightTempBottom} 100%)`,
+                pointerEvents: 'none',
+                borderRadius: '24px 24px 0 0',
+                zIndex: 1
+              }}
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: 1,
+                transition: { duration: 0.35, delay: 0.15, ease: 'easeOut' }
+              }}
+              exit={{
+                opacity: 0,
+                transition: { duration: 0.2 }
+              }}
+            />
+
+            <div className="panel-glass" style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '100%', background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%)', pointerEvents: 'none', borderRadius: '24px', zIndex: 1 }} />
+
+            {/* HEADER */}
+            <motion.div
+              className="flex-shrink-0 p-3 border-b"
+              style={{
+                background: TOKENS.HORIZON.drawerTint,
+                borderColor: TOKENS.HORIZON.drawerDivider,
+                backdropFilter: getBlur('chip'),
+                position: 'relative',
+                zIndex: 10,
+                overflow: 'visible'
+              }}
+              initial={{ opacity: 0, y: -4 }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: MOTION_TOKENS.DURATIONS.fast,
+                  delay: shouldReduceMotion ? 0 : 0.03,
+                  ease: MOTION_TOKENS.CURVES.horizonIn
+                }
+              }}
+              exit={{
+                opacity: 0,
+                y: -5,
+                transition: { duration: MOTION_TOKENS.DURATIONS.fast }
+              }}
+            >
+              <div className="flex items-start justify-between mb-2">
+                <div className="flex items-center gap-4">
+                  <motion.div
+                    className="w-10 h-10 rounded-full flex items-center justify-center"
+                    style={{
+                      background: `${getDomainColor(selectedDomain.id)}12`,
+                      border: `1px solid ${getDomainColor(selectedDomain.id)}25`,
+                      boxShadow: `0 0 16px ${getDomainBloom(selectedDomain.id)}`,
+                      color: getDomainColor(selectedDomain.id)
+                    }}
+                    animate={shouldReduceMotion ? {} : {
+                      filter: ['brightness(1)', 'brightness(1.06)', 'brightness(1)']
+                    }}
+                    transition={{
+                      duration: 6,
+                      repeat: Infinity,
+                      ease: 'easeInOut'
+                    }}
+                  >
+                    {getDomainIcon(selectedDomain.id)}
+                  </motion.div>
+                  <div>
+                    <h3 style={{
+                      color: TOKENS.colors.textPrimary,
+                      fontSize: '17px',
+                      fontWeight: 600,
+                      lineHeight: '1.2',
+                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                      letterSpacing: '-0.01em',
+                      marginBottom: '4px'
+                    }}>
+                      {selectedDomain.title}
+                    </h3>
+                    <div className="flex items-center gap-2">
+                      {React.cloneElement(getPostureIcon(selectedDomain.posture), {className: "w-3.5 h-3.5", style: { color: getDomainText(selectedDomain.id) }})}
+                      <span style={{ color: getDomainText(selectedDomain.id), fontSize: '13px', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif', fontWeight: 500, letterSpacing: '0.2px' }}>
+                        {selectedDomain.trend}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button onClick={handlePrevDomain} className="p-2 rounded-lg hover:bg-white/10 transition-colors" style={{ color: TOKENS.colors.textTertiary, minWidth: '36px', minHeight: '36px' }} aria-label="Previous domain"><ChevronLeft className="w-4 h-4" /></button>
+                  <button onClick={handleNextDomain} className="p-2 rounded-lg hover:bg-white/10 transition-colors" style={{ color: TOKENS.colors.textTertiary, minWidth: '36px', minHeight: '36px' }} aria-label="Next domain"><ChevronRight className="w-4 h-4" /></button>
+                  <button onClick={handleCloseDrawer} className="p-2 rounded-lg hover:bg-white/10 transition-colors" style={{ color: TOKENS.colors.textTertiary, minWidth: '36px', minHeight: '36px' }} aria-label="Close drawer"><X className="w-5 h-5" /></button>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="relative w-9 h-9">
+                  <svg className="transform -rotate-90" width="36" height="36">
+                    <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2.5" />
+                    <motion.circle
+                      cx="18" cy="18" r="15" fill="none"
+                      stroke={getDomainColor(selectedDomain.id)}
+                      strokeWidth="2.5" strokeLinecap="round"
+                      strokeDasharray="94"
+                      initial={{ strokeDashoffset: 94, opacity: 0.9 }}
+                      animate={{ strokeDashoffset: 94 - (94 * selectedDomain.confidence_pct / 100), opacity: 0.98 }}
+                      transition={{ duration: 0.6, delay: 0.2, ease: MOTION_TOKENS.CURVES.horizonIn }}
+                      style={{ filter: `drop-shadow(0 0 6px ${getDomainBloom(selectedDomain.id)})` }}
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center font-bold" style={{ color: TOKENS.colors.textPrimary, fontSize: '11px' }}>
+                    {selectedDomain.confidence_pct}
+                    {selectedDomain.confidenceDelta !== undefined && (
+                      <span className={`absolute -right-2 -top-1 text-[9px] ${selectedDomain.confidenceDelta > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                        {selectedDomain.confidenceDelta > 0 ? '↑' : '↓'}{Math.abs(selectedDomain.confidenceDelta)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <div className="text-xs font-medium mb-1" style={{
+                    color: 'rgba(255,255,255,0.68)',
+                    letterSpacing: '0.18em',
+                    fontSize: '10px',
+                    lineHeight: '1.4',
+                    fontWeight: 600,
+                    textTransform: 'uppercase'
+                  }}>
+                    CONFIDENCE
+                  </div>
+                  <div className="text-sm" style={{
+                    color: TOKENS.colors.textPrimary,
+                    fontWeight: 600,
+                    fontSize: '14px',
+                    lineHeight: '1.4',
+                    letterSpacing: '-0.005em'
+                  }}>
+                    {selectedDomain.confidence_pct}% · {selectedDomain.confidence_label}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* SCROLLABLE BODY — OS HORIZON V3.2 HIERARCHY */}
+            <motion.div
+              className="overflow-y-auto"
+              style={{ 
+                position: 'relative', 
+                zIndex: 2, 
+                paddingLeft: '20px', 
+                paddingRight: '20px', 
+                paddingTop: '16px', 
+                paddingBottom: '16px', 
+                overflowX: 'hidden'
+              }}
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: 1,
+                transition: {
+                  duration: MOTION_TOKENS.DURATIONS.fast,
+                  delay: shouldReduceMotion ? 0 : 0.06,
+                  ease: MOTION_TOKENS.CURVES.horizonIn
+                }
+              }}
+              exit={{
+                opacity: 0,
+                transition: { duration: MOTION_TOKENS.DURATIONS.fast }
+              }}
+            >
+              {/* 1) WHAT IT MEANS */}
+              <motion.div
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: shouldReduceMotion ? 0 : 0.09,
+                  duration: MOTION_TOKENS.DURATIONS.fast
+                }}
+                style={{ marginBottom: '12px' }}
+              >
+                <h4 style={{
+                  color: 'rgba(255,255,255,0.68)',
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  marginBottom: '6px',
+                  lineHeight: '1.3',
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase'
+                }}>
+                  What It Means
+                </h4>
+                <p style={{
+                  color: TOKENS.colors.textBody,
+                  fontSize: '13px',
+                  lineHeight: '1.55',
+                  fontWeight: 400,
+                  wordWrap: 'break-word',
+                  overflowWrap: 'break-word'
+                }}>
+                  {selectedDomain.summary}
+                </p>
+                {selectedDomain.addendum && (
+                  <p style={{
+                    color: TOKENS.colors.textSecondary,
+                    fontSize: '12px',
+                    marginTop: '10px',
+                    opacity: 0.85,
+                    lineHeight: '1.5',
+                    fontWeight: 400
+                  }}>
+                    {selectedDomain.addendum}
+                  </p>
+                )}
+              </motion.div>
+
+              {/* 2) DOWNSTREAM EFFECTS — SIMPLIFIED */}
+              <motion.div
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: shouldReduceMotion ? 0 : 0.12,
+                  duration: MOTION_TOKENS.DURATIONS.fast
+                }}
+                style={{ marginBottom: '18px' }}
+              >
+                <h4 style={{
+                  color: 'rgba(255,255,255,0.68)',
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  marginBottom: '10px',
+                  lineHeight: '1.3',
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase'
+                }}>
+                  What Happens Next
+                </h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {selectedDomain.downstream_effects.map((effect, i) => (
+                    <motion.div
+                      key={i}
+                      className="eq-effect-row-minimal group"
+                      initial={{ opacity: 0, x: -4 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{
+                        delay: shouldReduceMotion ? 0 : 0.15 + (i * 0.04),
+                        duration: MOTION_TOKENS.DURATIONS.fast,
+                        ease: MOTION_TOKENS.CURVES.horizonIn
+                      }}
+                      whileHover={effect.link ? {
+                        x: 4,
+                        transition: {
+                          duration: 0.14,
+                          ease: MOTION_TOKENS.CURVES.horizonIn
+                        }
+                      } : {}}
+                      style={{
+                        background: 'rgba(255,255,255,0.03)',
+                        borderRadius: '10px',
+                        padding: '10px 12px',
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        justifyContent: 'space-between',
+                        gap: '10px',
+                        position: 'relative',
+                        cursor: effect.link ? 'pointer' : 'default',
+                        transition: `transform 0.14s ${MOTION_TOKENS.CURVES.horizonIn.map(n => n).join(',')}, filter 0.14s ease`
+                      }}
+                      onClick={effect.link ? () => console.log(`Navigate to ${effect.link}`) : undefined}
+                    >
+                      <div className="flex-1 min-w-0">
+                        <p style={{
+                          color: TOKENS.colors.textBody,
+                          fontSize: '12.5px',
+                          lineHeight: '1.4',
+                          fontWeight: 500,
+                          marginBottom: '5px'
+                        }}>
+                          {effect.title}
+                        </p>
+                        <div style={{
+                          fontSize: '10px',
+                          color: TOKENS.colors.textMuted,
+                          fontWeight: 400,
+                          letterSpacing: '0.02em'
+                        }}>
+                          {effect.tags.map((tag, idx) => (
+                            <React.Fragment key={idx}>
+                              {idx > 0 && <span style={{ opacity: 0.7, margin: '0 4px' }}>·</span>}
+                              <span style={{ textTransform: 'lowercase' }}>{tag.toLowerCase()}</span>
+                            </React.Fragment>
+                          ))}
+                        </div>
+                      </div>
+                      {effect.link && (
+                        <motion.div
+                          style={{ flexShrink: 0, paddingTop: '2px' }}
+                          animate={{ opacity: 0.4 }}
+                          whileHover={{ opacity: 0.8 }}
+                          transition={{ duration: 0.14 }}
+                        >
+                          <ArrowRight className="w-3.5 h-3.5" style={{ color: TOKENS.colors.textTertiary }} />
+                        </motion.div>
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+
+              {/* 3) ACTIONABLE SIGNAL — SOFT GLOW PANEL */}
+              <motion.div
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: shouldReduceMotion ? 0 : 0.18,
+                  duration: MOTION_TOKENS.DURATIONS.fast
+                }}
+                className="p-3 rounded-2xl relative overflow-hidden"
+                style={{
+                  background: 'rgba(255,255,255,0.03)',
+                  border: '1px solid rgba(255,255,255,0.06)',
+                  borderRadius: '12px',
+                  boxShadow: `inset 0 0 20px ${getDomainGlow(selectedDomain.id)}`,
+                  padding: '14px 16px',
+                  marginBottom: '16px'
+                }}
+                whileHover={shouldReduceMotion ? {} : {
+                  filter: 'brightness(1.03)',
+                  transition: { duration: 0.14 }
+                }}
+              >
+                {!shouldReduceMotion && (
+                  <motion.div
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: `radial-gradient(circle at 50% 0%, ${getDomainGlow(selectedDomain.id)}, transparent 70%)`,
+                      opacity: 0.12,
+                      pointerEvents: 'none'
+                    }}
+                    animate={{
+                      opacity: [0.12, 0.18, 0.12]
+                    }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: 'easeInOut'
+                    }}
+                  />
+                )}
+
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-xs font-semibold" style={{
+                    color: 'rgba(255,255,255,0.68)',
+                    letterSpacing: '0.12em',
+                    fontSize: '10px',
+                    lineHeight: '1.3',
+                    fontWeight: 600,
+                    textTransform: 'uppercase'
+                  }}>
+                    What You Should Do
+                  </p>
+                  <div className="flex items-center gap-3 text-xs">
+                    <span style={{ color: 'rgba(255, 255, 255, 0.58)', fontSize: '12px' }}>
+                      {selectedDomain.actionable.horizon}
+                    </span>
+                    <span
+                      className="px-2.5 py-1 rounded-full text-[10px] font-semibold"
+                      style={{
+                        background: selectedDomain.actionable.conviction === 'Strong'
+                          ? 'rgba(88, 227, 164, 0.15)'
+                          : selectedDomain.actionable.conviction === 'Moderate'
+                            ? 'rgba(90, 160, 255, 0.15)'
+                            : 'rgba(255, 255, 255, 0.10)',
+                        color: selectedDomain.actionable.conviction === 'Strong'
+                          ? 'rgba(88, 227, 164, 0.95)'
+                          : selectedDomain.actionable.conviction === 'Moderate'
+                            ? 'rgba(90, 160, 255, 0.95)'
+                            : 'rgba(255, 255, 255, 0.75)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        letterSpacing: '0.03em'
+                      }}
+                    >
+                      {selectedDomain.actionable.conviction}
+                    </span>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {selectedDomain.actionable.directives.map((directive, i) => (
+                    <motion.div
+                      key={i}
+                      className="flex items-start gap-3"
+                      initial={{ opacity: 0, x: -3 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{
+                        delay: shouldReduceMotion ? 0 : 0.21 + (i * 0.05),
+                        duration: MOTION_TOKENS.DURATIONS.fast
+                      }}
+                    >
+                      <div style={{
+                        width: '4px',
+                        height: '4px',
+                        borderRadius: '999px',
+                        background: getDomainColor(selectedDomain.id),
+                        marginTop: '5px',
+                        flexShrink: 0,
+                        boxShadow: `0 0 6px ${getDomainBloom(selectedDomain.id)}`
+                      }} />
+                      <p style={{
+                        color: 'rgba(220, 230, 240, 0.96)',
+                        fontSize: '12.5px',
+                        lineHeight: '1.5',
+                        fontWeight: 400,
+                        flex: 1,
+                        wordWrap: 'break-word',
+                        overflowWrap: 'break-word'
+                      }}>
+                        {directive}
+                      </p>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            </motion.div>
+
+            {/* FIXED FOOTER */}
+            <motion.div
+              className="flex-shrink-0 border-t"
+              style={{
+                background: TOKENS.HORIZON.drawerTint,
+                borderColor: TOKENS.HORIZON.drawerDivider,
+                backdropFilter: getBlur('panel'),
+                zIndex: 10,
+                paddingLeft: '16px',
+                paddingRight: '16px',
+                paddingTop: '12px',
+                paddingBottom: '12px',
+                overflow: 'visible'
+              }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: MOTION_TOKENS.DURATIONS.fast,
+                  delay: shouldReduceMotion ? 0 : 0.24,
+                  ease: MOTION_TOKENS.CURVES.horizonIn
+                }
+              }}
+              exit={{
+                opacity: 0,
+                y: 5,
+                transition: { duration: MOTION_TOKENS.DURATIONS.fast }
+              }}
+            >
+              <div className="flex items-center justify-between text-xs" style={{ color: TOKENS.colors.textTertiary, fontSize: '11px' }}>
+                <span style={{ opacity: 0.70 }}>
+                  Updated {new Date(selectedDomain.footer.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </span>
+                <span style={{ opacity: 0.55, letterSpacing: '0.05em' }}>
+                  1–4 · ← → · ESC
+                </span>
+              </div>
+              </motion.div>
+              </motion.div>
+            </>
+          );
+        })()}
       </AnimatePresence>
 
       <style jsx>{`
@@ -1956,20 +2536,381 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
           to { opacity: 0; transform: scale(2); }
         }
 
-        .orb-halo, .link-path, .glow-overlay, .panel-glass { pointer-events: none !important; }
-        .orb-cluster-visual { pointer-events: all; }
-        .orb-nucleus { min-width: 44px; min-height: 44px; }
-        .orb-nucleus::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; pointer-events: auto; }
-        .orb-nucleus:focus-visible { outline: 2px solid rgba(122,215,240,0.9); outline-offset: 3px; z-index: 102; }
-        .drawer-with-header-safe:focus-within { outline: 2px solid rgba(66,135,245,0.6); outline-offset: -2px; z-index: 102; }
-        .eq-effect-row-minimal { will-change: transform, filter; }
-        .eq-effect-row-minimal:hover { filter: brightness(1.02); }
-        .eq-hover-card, .eq-confidence-ring, .eq-insight-chip, .drawer-with-header-safe, .eq-effect-row-minimal { transform: translateZ(0); backface-visibility: hidden; }
-        .hero-orbs-muted { pointer-events: none !important; }
-        .hero-orbs-muted .orb-nucleus { pointer-events: none !important; cursor: default !important; }
-        .hero-orbs-muted .orb-halo, .hero-orbs-muted .link-path { opacity: 0.5 !important; }
-        @media (prefers-reduced-motion: reduce) { .eq-hover-card, .eq-confidence-ring, .eq-insight-chip, .drawer-with-header-safe, .eq-effect-row-minimal { transition: none !important; animation: none !important; } }
-        @media (pointer: coarse) { .orb-nucleus { min-width: 44px; min-height: 44px; } }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+        /* Global Z-Index Scale */
+        :root {
+          --z-app: 10;
+          --z-popover: 40;
+          --z-tooltip: 45;
+          --z-modal: 50;
+          --z-toast: 60;
+          --z-devtools: 70;
+          --header-h: 72px;
+          --bg: #0B0E13;
+          --card: rgba(18, 20, 28, 0.65);
+          --border: #2C2F36;
+          --shadow: rgba(0, 0, 0, 0.45);
+          --text-primary: #F3F5F7;
+          --text-secondary: #B6BDCB;
+          --text-tertiary: #7E8798;
+          --muted: #5B6170;
+          --accent: #4DA3FF;
+          --bull: #58E3A4;
+          --bear: #FF6A7A;
+          --neutral: #A8B3C7;
+          --chart-bg: #0F1115;
+          --chart-grid: #242833;
+          --chart-text: #B6BDCB;
+          --scrim: rgba(0, 0, 0, 0.55);
+          --horizon-link: rgba(90, 160, 255, 0.95);
+        }
+
+        html:not(.transitions-enabled) * {
+          transition: none !important;
+        }
+
+        html.transitions-enabled * {
+          transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, opacity 200ms ease, transform 200ms ease, box-shadow 200ms ease !important;
+        }
+
+        html { background-color: #0B0E13; }
+
+        .vireon-portal-container {
+          position: relative;
+          z-index: var(--z-modal);
+        }
+
+        .drawer-overlay {
+          position: fixed;
+          inset: 0;
+          z-index: var(--z-modal);
+          background: rgba(0, 0, 0, 0.5);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+        }
+
+        .drawer-panel {
+          position: fixed;
+          z-index: calc(var(--z-modal) + 1);
+          background: rgba(18, 20, 25, 0.95);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+          overscroll-behavior: contain;
+        }
+
+        body.drawer-open {
+          overflow: hidden;
+          position: fixed;
+          width: 100%;
+        }
+
+        .elevation-0 {
+          background: var(--bg);
+        }
+
+        .elevation-1 {
+          background: var(--card);
+          border: 1px solid var(--border);
+          box-shadow: 0 2px 12px var(--shadow);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+        }
+
+        .elevation-2 {
+          background: var(--card);
+          border: 1px solid var(--border);
+          box-shadow: 0 8px 32px var(--shadow);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+        }
+
+        .elevation-3 {
+          background: var(--card);
+          border: 1px solid var(--border);
+          box-shadow: 0 16px 64px var(--shadow);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+        }
+
+        * {
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            transform: none !important;
+          }
+        }
+
+        html.transitions-enabled *:not([data-no-transition]) {
+          transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, opacity 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+        }
+
+        *:focus-visible {
+          outline: 2px solid var(--accent);
+          outline-offset: 2px;
+          z-index: calc(var(--z-modal) + 2);
+        }
+
+        .cta-expand-signal:focus-visible {
+          outline: none;
+          box-shadow:
+            inset 0 0 0 1.5px rgba(255, 255, 255, 0.28),
+            0 0 0 3px rgba(255, 255, 255, 0.10);
+        }
+
+        @media (prefers-contrast: high) {
+          * {
+            border-color: currentColor !important;
+          }
+        }
+
+        ::-webkit-scrollbar {
+          width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+          background: var(--muted);
+          border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background: var(--text-tertiary);
+        }
+
+        @supports (padding: max(0px)) {
+          .drawer-panel-bottom {
+            padding-bottom: max(env(safe-area-inset-bottom), 16px);
+          }
+
+          .drawer-panel-top {
+            top: max(var(--header-h), env(safe-area-inset-top));
+          }
+        }
+
+        .animate-shimmer {
+          background: linear-gradient(
+            90deg,
+            var(--card) 0%,
+            var(--border) 50%,
+            var(--card) 100%
+          );
+          background-size: 200% 100%;
+          animation: shimmer 1.3s infinite;
+        }
+
+        @keyframes shimmer {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+
+        .card-hover {
+          transition: transform 150ms ease-out, box-shadow 150ms ease-out;
+        }
+
+        .card-hover:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 12px 40px var(--shadow);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .card-hover:hover {
+            transform: none;
+          }
+        }
+
+        .tap-highlight-transparent {
+          -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+          font-size: 15px;
+          line-height: 1.5;
+          color: var(--text-primary);
+          background: var(--bg);
+        }
+
+        @media (max-width: 768px) {
+          :root {
+            --header-h: 60px;
+          }
+
+          body {
+            font-size: 14px;
+            line-height: 1.55;
+          }
+        }
+
+        .toast-success {
+          background: rgba(43, 190, 118, 0.08);
+          border: 1px solid rgba(43, 190, 118, 0.15);
+          color: var(--bull);
+        }
+
+        .toast-error {
+          background: rgba(227, 63, 95, 0.08);
+          border: 1px solid rgba(227, 63, 95, 0.15);
+          color: var(--bear);
+        }
+
+        @media (pointer: coarse) {
+          .cta-expand-signal {
+            min-width: 44px;
+            min-height: 44px;
+          }
+        }
+
+        .cta-expand-signal:active {
+          filter: brightness(1.02);
+        }
+
+        .orb-nucleus {
+          min-width: 44px;
+          min-height: 44px;
+        }
+
+        .orb-nucleus::after {
+          content: "";
+          position: absolute;
+          inset: -6px;
+          border-radius: 50%;
+          pointer-events: auto;
+        }
+
+        .orb-nucleus:focus-visible {
+          outline: 2px solid rgba(122,215,240,0.9);
+          outline-offset: 3px;
+          z-index: 102;
+        }
+
+        .drawer-with-header-safe:focus-within {
+          outline: 2px solid rgba(66,135,245,0.6);
+          outline-offset: -2px;
+          z-index: 102;
+        }
+
+        .orb-halo, .link-path, .glow-overlay, .panel-glass, .drawer-overlay {
+          pointer-events: none !important;
+        }
+        .orb-cluster-visual {
+          pointer-events: all;
+        }
+
+        /* OS HORIZON V3.2 — DRAWER ENHANCEMENTS */
+
+        .eq-effect-row-minimal {
+          will-change: transform, filter;
+        }
+
+        .eq-effect-row-minimal:hover {
+          filter: brightness(1.02);
+        }
+
+        /* GPU Compositing */
+        .eq-hover-card,
+        .eq-confidence-ring,
+        .eq-insight-chip,
+        .cta-expand-signal,
+        .drawer-with-header-safe,
+        .eq-effect-row-minimal {
+          transform: translateZ(0);
+          backface-visibility: hidden;
+        }
+
+        .eq-hover-card p,
+        .eq-hover-card span,
+        .drawer-with-header-safe p,
+        .drawer-with-header-safe span {
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          text-rendering: optimizeLegibility;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .eq-hover-card,
+          .eq-confidence-ring,
+          .eq-insight-chip,
+          .cta-expand-signal,
+          .drawer-with-header-safe,
+          .eq-effect-row-minimal {
+            transition: none !important;
+            animation: none !important;
+          }
+
+          .eq-confidence-ring circle {
+            animation: none !important;
+          }
+        }
+
+        @media (prefers-contrast: high) {
+          .eq-hover-card {
+            border-color: rgba(255, 255, 255, 0.5) !important;
+          }
+
+          .eq-hover-card p,
+          .eq-hover-card span {
+            color: #FFFFFF !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 1) !important;
+          }
+        }
+
+        @media (pointer: coarse) {
+          .cta-expand-signal,
+          .orb-nucleus {
+            min-width: 44px;
+            min-height: 44px;
+          }
+        }
+
+        .cta-expand-signal:focus-visible {
+          outline: none;
+          box-shadow:
+            inset 0 0 0 1.5px rgba(255, 255, 255, 0.28),
+            0 0 0 3px rgba(255, 255, 255, 0.10);
+        }
+
+        .orb-nucleus:focus-visible {
+          outline: 2px solid rgba(122,215,240,0.9);
+          outline-offset: 3px;
+          z-index: 102;
+        }
+
+        .orb-halo,
+        .link-path,
+        .glow-overlay,
+        .panel-glass,
+        .drawer-overlay {
+          pointer-events: none !important;
+        }
+
+        /* Ensure .orb-cluster-visual manages pointer events correctly */
+        .orb-cluster-visual {
+            pointer-events: all;
+        }
+
+        /* OS HORIZON V4.0 — HERO MUTED STATE */
+        .hero-orbs-muted {
+          pointer-events: none !important;
+        }
+
+        .hero-orbs-muted .orb-nucleus {
+          pointer-events: none !important;
+          cursor: default !important;
+        }
+
+        .hero-orbs-muted .orb-halo,
+        .hero-orbs-muted .link-path {
+          opacity: 0.5 !important;
+        }
       `}</style>
     </motion.section>
   );
