@@ -936,6 +936,7 @@ export default function LyraChatbot({ pageContext }) {
                     timestamp={message.timestamp}
                     onCopy={handleCopyMessage}
                     sources={message.sources}
+                    isStreaming={isTyping && !message.isUser && !message.timestamp}
                   />
                 ))}
 
