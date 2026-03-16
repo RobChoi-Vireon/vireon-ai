@@ -647,6 +647,7 @@ export default function EquilibriumPulse({
 
           {/* Ambient Underside Glow (Apple Control Center style) */}
           <motion.div 
+            ref={ambientGlowRef}
             style={{
               position: 'absolute',
               bottom: '-5px',
