@@ -1187,7 +1187,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
       setTimeout(() => { setOrbPulseActive(false); setShowBeam(true); }, TOKENS.HORIZON.t_orbBreathIn * 1000);
       setTimeout(() => setSelectedDomain(domain), (TOKENS.HORIZON.t_orbBreathIn + TOKENS.HORIZON.t_beamLink) * 1000);
     }
-  }, [selectedDomain, getOrbPosition, swayTime]);
+  }, [selectedDomain, getOrbPosition]);
 
   const handleCardClick = useCallback((domain) => {
     if (hoverEnterTimerRef.current) {
