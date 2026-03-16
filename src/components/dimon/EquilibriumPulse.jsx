@@ -125,8 +125,7 @@ export default function EquilibriumPulse({
 
     let startTime = Date.now();
     const animate = () => {
-      const elapsed = (Date.now() - startTime) / 1000;
-      setPulseTime(elapsed);
+      pulseTimeRef.current = (Date.now() - startTime) / 1000;
       rafRef.current = requestAnimationFrame(animate);
     };
 
