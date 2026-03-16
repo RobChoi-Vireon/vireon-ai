@@ -767,21 +767,8 @@ export default function LyraChatbot({ pageContext }) {
               <motion.div
                 key="open"
                 initial={{ opacity: 0, rotate: 90, scale: 0.9 }}
-                animate={{
-                  opacity: 1,
-                  rotate: 0,
-                  scale: [1, 1.1, 1], // Pulsing effect
-                  transition: {
-                    opacity: { duration: 0.15 },
-                    rotate: { duration: 0.15 },
-                    scale: {
-                      duration: 1.8,
-                      repeat: Infinity,
-                      repeatType: "mirror",
-                      ease: "easeInOut"
-                    }
-                  }
-                }}
+                animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                transition={{ duration: 0.15 }}
                 exit={{ opacity: 0, rotate: -90, scale: 0.9 }}
               >
                 <LyraLogo className="w-8 h-8" />
