@@ -1613,7 +1613,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
 
           {/* BLOOM HALOS (BENEATH CONSTELLATION) */}
           {domains.map((domain) => {
-            const pos = getOrbPosition(domain.id, domain.strength, swayTime, 0, 0);
+            const pos = getOrbPosition(domain.id, domain.strength, swayTimeRef.current, 0, 0);
             const bloomRadius = Math.min(...TOKENS.HORIZON.localBloomRadius) + (domain.strength * (Math.max(...TOKENS.HORIZON.localBloomRadius) - Math.min(...TOKENS.HORIZON.localBloomRadius)));
             const isActiveOrb = selectedDomain?.id === domain.id;
             const isHovered = hoveredDomain === domain.id;
