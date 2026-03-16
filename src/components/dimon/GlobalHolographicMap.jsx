@@ -1945,7 +1945,7 @@ const MacroConstellation = ({ onOpenSignalDrawer, equilibriumData }) => {
                   border: `1px solid ${TOKENS.HORIZON.glassBorder}`,
                   boxShadow: `0 0 60px rgba(0, 0, 0, 0.15), ${TOKENS.HORIZON.panelShadow}, 0 0 12px ${TOKENS.HORIZON.drawerEdgeBloom}, inset 0 0 0 1px rgba(255,255,255,0.10)`,
                   borderRadius: '24px',
-                  filter: `brightness(${drawerLuminance})`,
+                  filter: 'brightness(1)',
                   pointerEvents: 'auto'
                 }}
               initial={{
