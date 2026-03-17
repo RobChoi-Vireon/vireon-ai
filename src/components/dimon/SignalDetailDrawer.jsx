@@ -1164,9 +1164,8 @@ export default function SignalDetailDrawer({ isOpen, onClose, signal, onNavigate
 
               {/* BODY */}
               <div
-                className="relative z-10 overflow-y-auto"
+                className="relative z-10 overflow-y-auto flex-1 min-h-0"
                 style={{
-                  maxHeight: 'calc(88vh - 180px)',
                   scrollbarWidth: 'thin',
                   scrollbarColor: 'rgba(255, 255, 255, 0.18) rgba(255, 255, 255, 0.04)',
                 }}
